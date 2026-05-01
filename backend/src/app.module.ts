@@ -1,0 +1,30 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
+import { HealthModule } from './modules/health/health.module';
+import { ClaudeUsageModule } from './modules/claude-usage/claude-usage.module';
+import { FixturesModule } from './modules/fixtures/fixtures.module';
+import { StandingsModule } from './modules/standings/standings.module';
+import { NewsModule } from './modules/news/news.module';
+import { CupsModule } from './modules/cups/cups.module';
+import { EventsModule } from './modules/events/events.module';
+import { WikiImageModule } from './modules/wiki-image/wiki-image.module';
+import { ChannelsModule } from './modules/channels/channels.module';
+import { LineupModule } from './modules/lineup/lineup.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
+    EventsModule,
+    ClaudeUsageModule,
+    HealthModule,
+    FixturesModule,
+    StandingsModule,
+    NewsModule,
+    CupsModule,
+    WikiImageModule,
+    ChannelsModule,
+    LineupModule,
+  ],
+})
+export class AppModule {}

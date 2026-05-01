@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 232 25% 5%;
+    --surface: 228 21% 8%;
+    --surface-2: 226 22% 11%;
+
+    --border: 224 19% 15%;
+    --border-strong: 226 18% 21%;
+
+    --ol-blue: 224 64% 33%;
+    --ol-blue-bright: 226 56% 51%;
+    --ol-red: 0 73% 50%;
+    --ol-red-bright: 0 84% 60%;
+
+    --fg: 0 0% 96%;
+    --fg-muted: 215 20% 65%;
+    --fg-dim: 215 16% 47%;
+    --fg-bright: 0 0% 100%;
+
+    --win: 142 71% 36%;
+    --draw: 41 91% 41%;
+    --loss: 0 73% 50%;
+    --live: 0 84% 60%;
+  }
+
+  * {
+    @apply border-border;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans relative;
+    font-feature-settings: 'cv11', 'ss01';
+    background-image:
+      /* Wide RED neon glow at top — bleeds down ~60vh (matches Olympique en rouge) */
+      radial-gradient(ellipse 130% 55% at 50% 0%, hsl(0 78% 50% / 0.22), transparent 70%),
+      /* Wide BLUE neon glow at bottom — bleeds up ~50vh (matches Lyonnais en bleu) */
+      radial-gradient(ellipse 130% 50% at 50% 100%, hsl(224 80% 50% / 0.22), transparent 70%),
+      /* Subtle accent — second red tint top-right for depth */
+      radial-gradient(ellipse 60% 35% at 85% 5%, hsl(0 90% 55% / 0.10), transparent 60%),
+      /* Subtle accent — second blue tint bottom-left */
+      radial-gradient(ellipse 50% 35% at 15% 95%, hsl(210 90% 55% / 0.10), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  /* Neon strip — RED glowing line top */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, hsl(0 90% 60% / 0.55) 30%, hsl(0 90% 70% / 0.75) 50%, hsl(0 90% 60% / 0.55) 70%, transparent 100%);
+    box-shadow: 0 0 14px hsl(0 90% 55% / 0.6), 0 0 32px hsl(0 90% 50% / 0.35);
+    pointer-events: none;
+    z-index: 60;
+  }
+
+  /* Neon strip — BLUE glowing line bottom */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, hsl(224 90% 60% / 0.55) 30%, hsl(224 90% 75% / 0.75) 50%, hsl(224 90% 60% / 0.55) 70%, transparent 100%);
+    box-shadow: 0 0 14px hsl(224 90% 55% / 0.6), 0 0 32px hsl(224 90% 50% / 0.35);
+    pointer-events: none;
+    z-index: 60;
+  }
+
+  /* FC Noobz theme override — green neons + dark blue/black bg */
+  body.theme-fcnoobz {
+    background-image:
+      radial-gradient(ellipse 130% 55% at 50% 0%, hsl(132 70% 45% / 0.18), transparent 70%),
+      radial-gradient(ellipse 130% 50% at 50% 100%, hsl(218 90% 35% / 0.20), transparent 70%);
+  }
+  body.theme-fcnoobz::before {
+    background: linear-gradient(90deg, transparent 0%, hsl(132 80% 50% / 0.65) 30%, hsl(132 90% 65% / 0.85) 50%, hsl(132 80% 50% / 0.65) 70%, transparent 100%);
+    box-shadow: 0 0 14px hsl(132 90% 50% / 0.65), 0 0 32px hsl(132 80% 45% / 0.4);
+  }
+  body.theme-fcnoobz::after {
+    background: linear-gradient(90deg, transparent 0%, hsl(132 80% 50% / 0.65) 30%, hsl(132 90% 65% / 0.85) 50%, hsl(132 80% 50% / 0.65) 70%, transparent 100%);
+    box-shadow: 0 0 14px hsl(132 90% 50% / 0.65), 0 0 32px hsl(132 80% 45% / 0.4);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border-strong rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-fg-dim;
+  }
+}
+
+@layer utilities {
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-dim;
+  }
+
+  .num {
+    @apply font-mono tabular-nums;
+  }
+}

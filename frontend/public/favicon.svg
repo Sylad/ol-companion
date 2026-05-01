@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <clipPath id="rounded">
+      <rect x="4" y="4" width="92" height="92" rx="14" ry="14"/>
+    </clipPath>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7dd8a"/>
+      <stop offset="50%" stop-color="#c9a24a"/>
+      <stop offset="100%" stop-color="#80652b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Red/blue split background, rounded square -->
+  <g clip-path="url(#rounded)">
+    <rect x="0" y="0" width="50" height="100" fill="#dc2626"/>
+    <rect x="50" y="0" width="50" height="100" fill="#1e3a8a"/>
+  </g>
+
+  <!-- Gold border -->
+  <rect x="4" y="4" width="92" height="92" rx="14" ry="14" fill="none" stroke="url(#gold)" stroke-width="3.5"/>
+
+  <!-- Stylized roaring lion head — simplified silhouette -->
+  <g fill="#ffffff" stroke="#c9a24a" stroke-width="0.8" stroke-linejoin="round">
+    <!-- Mane (8 spikes around) -->
+    <path d="
+      M 50 14
+      L 56 24 L 64 18 L 64 28 L 74 24 L 70 34 L 80 34 L 74 42
+      L 84 46 L 76 52 L 84 60 L 74 62 L 78 72 L 68 70 L 70 80 L 60 76
+      L 58 86 L 50 80 L 42 86 L 40 76 L 30 80 L 32 70 L 22 72 L 26 62
+      L 16 60 L 24 52 L 16 46 L 26 42 L 20 34 L 30 34 L 26 24 L 36 28
+      L 36 18 L 44 24 Z
+    "/>
+    <!-- Inner face — softer fill -->
+    <ellipse cx="50" cy="50" rx="16" ry="18" fill="#f3e0b8" stroke="#c9a24a" stroke-width="0.6"/>
+    <!-- Eyes -->
+    <ellipse cx="43" cy="46" rx="2.2" ry="2.5" fill="#1a1a1a" stroke="none"/>
+    <ellipse cx="57" cy="46" rx="2.2" ry="2.5" fill="#1a1a1a" stroke="none"/>
+    <!-- Nose -->
+    <path d="M 50 53 L 46 58 L 54 58 Z" fill="#1a1a1a" stroke="none"/>
+    <!-- Roaring mouth -->
+    <path d="M 50 58 Q 44 64 42 70 Q 50 68 58 70 Q 56 64 50 58 Z" fill="#1a1a1a" stroke="none"/>
+    <!-- Teeth hint -->
+    <path d="M 47 65 L 47 68 M 50 66 L 50 69 M 53 65 L 53 68" stroke="#ffffff" stroke-width="1.2"/>
+  </g>
+</svg>

@@ -1,0 +1,38 @@
+# Dépendances
+node_modules/
+
+# Builds
+dist/
+.angular/
+.vite/
+*.tsbuildinfo
+
+# Données runtime (caches API qui se regénèrent au démarrage)
+data/
+backend/data/
+
+# Environnement (secrets)
+.env
+.env.local
+*.env.local
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Frontend Angular pré-refonte (gardé en archive locale uniquement)
+frontend-angular/
+
+# Coverage / tests
+coverage/
+*.lcov
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+@eaDir/

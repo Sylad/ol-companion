@@ -1,0 +1,26 @@
+name: ol-companion
+
+services:
+  ol-backend:
+    build:
+      context: ./backend
+    ports:
+      - "3002:3002"
+    env_file: ./backend/.env
+    environment:
+      NODE_ENV: production
+      CORS_ORIGIN: "http://nas:4202"
+      SHARED_DATA_DIR: /app/shared-data
+    volumes:
+      - /volume2/docker/developpeur/data/ol:/app/data
+      - /volume2/docker/developpeur/data/shared:/app/shared-data
+    restart: unless-stopped
+
+  ol-frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "4202:80"
+    depends_on:
+      - ol-backend
+    restart: unless-stopped
