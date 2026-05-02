@@ -1,4 +1,5 @@
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { EventBusService } from '../events/event-bus.service';
@@ -32,27 +33,25 @@ const SCORES365_HEADERS = {
   'Origin': 'https://www.365scores.com',
 };
 
-const REFRESH_INTERVAL_MS = 5 * 60_000;
-
 @Injectable()
-export class StandingsService implements OnModuleInit, OnModuleDestroy {
+export class StandingsService implements OnModuleInit {
   private readonly logger = new Logger(StandingsService.name);
   private readonly cacheFile = path.resolve(process.cwd(), 'data', 'standings-cache.json');
-  private refreshTimer: NodeJS.Timeout | null = null;
 
   constructor(private readonly bus: EventBusService) {}
 
   onModuleInit() {
     this.ensureHistoryFile();
-    this.refreshTimer = setInterval(() => {
-      this.getCurrentStandings({ force: true }).catch((err) =>
-        this.logger.warn(`Periodic standings refresh failed: ${(err as Error).message}`),
-      );
-    }, REFRESH_INTERVAL_MS);
+    this.getCurrentStandings({ force: true }).catch((err) =>
+      this.logger.warn(`Initial standings refresh failed: ${(err as Error).message}`),
+    );
   }
 
-  onModuleDestroy() {
-    if (this.refreshTimer) clearInterval(this.refreshTimer);
+  @Cron('0 0 * * * *', { name: 'standings-refresh', timeZone: 'Europe/Paris' })
+  async scheduledRefresh() {
+    await this.getCurrentStandings({ force: true }).catch((err) =>
+      this.logger.warn(`Periodic standings refresh failed: ${(err as Error).message}`),
+    );
   }
 
   async getCurrentStandings(opts: { force?: boolean } = {}): Promise<SeasonStandings | null> {
