@@ -2,6 +2,7 @@ import { Loader2, Trophy, ShieldAlert } from 'lucide-react';
 import { useCups } from '@/hooks/use-cups';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { CupMatchRow } from '@/components/cup-match-row';
+import { Bracket } from '@/components/bracket';
 import { cn } from '@/lib/utils';
 import type { CupInfo } from '@/types/api';
 
@@ -95,13 +96,18 @@ function CupCard({ cup }: { cup: CupInfo }) {
         )}
       </header>
 
-      <div className="p-4 space-y-3">
-        {cup.matches.length === 0 && (
-          <p className="text-center text-fg-muted py-6">Aucun match disponible.</p>
+      <div className="p-4 space-y-4">
+        {cup.bracket && (
+          <Bracket bracket={cup.bracket} />
         )}
-        {cup.matches.map((m) => (
-          <CupMatchRow key={m.id} match={m} />
-        ))}
+        <div className="space-y-3">
+          {cup.matches.length === 0 && (
+            <p className="text-center text-fg-muted py-6">Aucun match disponible.</p>
+          )}
+          {cup.matches.map((m) => (
+            <CupMatchRow key={m.id} match={m} />
+          ))}
+        </div>
       </div>
     </section>
   );
