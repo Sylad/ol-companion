@@ -78,7 +78,11 @@ export class NewsService {
       const link = this.extractTag(block, 'link') || this.extractTag(block, 'guid');
       const pubDate = this.extractTag(block, 'pubDate');
       const rawDescription = this.extractTag(block, 'description');
-      const description = this.decode(rawDescription.replace(/<[^>]+>/g, '').trim().slice(0, 240));
+      // Google News double-encodes HTML (&lt;a&gt;...). Decode first, strip tags,
+      // decode again to flatten any residual entities, then trim and clip.
+      const description = this.decode(
+        this.decode(rawDescription).replace(/<[^>]+>/g, ''),
+      ).trim().slice(0, 240);
       const category = this.decode(this.extractTag(block, 'category'));
       const image = this.extractImage(block) || this.extractImage(rawDescription);
       if (title && link) {
