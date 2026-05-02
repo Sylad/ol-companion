@@ -66,10 +66,10 @@ describe('BracketService.fetchBracket', () => {
 
   it('labels EL stages from round of 16 (stageNum 3) onward', async () => {
     withFetch([
-      sample365({ stageNum: 3 }),
-      sample365({ stageNum: 4 }),
-      sample365({ stageNum: 5 }),
-      sample365({ stageNum: 6 }),
+      sample365({ id: 10, stageNum: 3 }),
+      sample365({ id: 11, stageNum: 4 }),
+      sample365({ id: 12, stageNum: 5 }),
+      sample365({ id: 13, stageNum: 6 }),
     ]);
     const r = await service.fetchBracket(573, 3, new Date('2025-08-01'));
     expect(r!.stages.map((s) => s.stageFr)).toEqual([
