@@ -179,13 +179,13 @@ Composant `bracket.tsx` placé **au-dessus** de `<CupMatchRow>` dans `cups.tsx:C
 
 | Service | Cron | Fréquence | Notes |
 |---|---|---|---|
-| standings | `0 0 * * * *` | toutes les heures | |
-| fixtures | `0 */30 * * * *` | toutes les 30 min | |
-| cups (+ bracket) | `0 0 */2 * * *` | toutes les 2h | |
-| news | `0 */30 * * * *` | toutes les 30 min | |
-| lineup | `0 */5 * * * *` | toutes les 5 min | |
-| players | `0 0 */6 * * *` | toutes les 6h | |
-| events | `0 0 */6 * * *` | toutes les 6h | |
+| standings | `0 0 * * * *` | toutes les heures | migration depuis setInterval |
+| fixtures | `0 */30 * * * *` | toutes les 30 min | migration depuis setInterval |
+| cups (+ bracket) | `0 0 */2 * * *` | toutes les 2h | nouveau |
+| news | `0 */30 * * * *` | toutes les 30 min | nouveau |
+| lineup | `0 */15 * * * *` | toutes les 15 min | nouveau |
+
+Les modules `events` (event-bus uniquement) et `players` (pas de service backend) n'ont pas de refresh data → pas de `@Cron`.
 
 **Migration `setInterval` → `@Cron`** :
 
@@ -230,11 +230,9 @@ export class SeasonResetService {
   @Cron('0 0 3 1 8 *', { timeZone: 'Europe/Paris', name: 'season-reset' })
   async resetSeason() {
     const season = getPreviousSeason();
-    await this.archiveCaches(season);       // déplace data/*-cache.json → data/archive/<season>/
-    await this.archiveStandingsHistory(season); // déplace data/standings-history.json → data/archive/<season>/
-    await this.clearCaches();               // supprime les caches restants
-    this.bus.emit('season:reset', { archivedSeason: season.id });
-    // Les @Cron des autres services regénéreront les caches au prochain tick.
+    // Déplace data/*-cache.json + data/standings-history.json + data/season-rankings.json
+    // → data/archive/<season>/. Les @Cron des autres services regénèrent au prochain tick.
+    return this.archiveAndClear(season);
   }
 }
 ```
