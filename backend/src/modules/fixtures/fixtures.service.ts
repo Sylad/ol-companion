@@ -1,5 +1,6 @@
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { EventBusService } from '../events/event-bus.service';
@@ -20,13 +21,11 @@ export interface Match {
 
 const OL_TEAM_ID = 523;
 const CACHE_TTL_MS = 3600_000;
-const REFRESH_INTERVAL_MS = 5 * 60_000;
 
 @Injectable()
-export class FixturesService implements OnModuleInit, OnModuleDestroy {
+export class FixturesService implements OnModuleInit {
   private readonly logger = new Logger(FixturesService.name);
   private readonly cacheFile = path.resolve(process.cwd(), 'data', 'fixtures-cache.json');
-  private refreshTimer: NodeJS.Timeout | null = null;
 
   constructor(
     private config: ConfigService,
@@ -34,15 +33,16 @@ export class FixturesService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   onModuleInit() {
-    this.refreshTimer = setInterval(() => {
-      this.getFixtures({ force: true }).catch((err) =>
-        this.logger.warn(`Periodic fixtures refresh failed: ${(err as Error).message}`),
-      );
-    }, REFRESH_INTERVAL_MS);
+    this.getFixtures({ force: true }).catch((err) =>
+      this.logger.warn(`Initial fixtures refresh failed: ${(err as Error).message}`),
+    );
   }
 
-  onModuleDestroy() {
-    if (this.refreshTimer) clearInterval(this.refreshTimer);
+  @Cron('0 */30 * * * *', { name: 'fixtures-refresh', timeZone: 'Europe/Paris' })
+  async scheduledRefresh() {
+    await this.getFixtures({ force: true }).catch((err) =>
+      this.logger.warn(`Periodic fixtures refresh failed: ${(err as Error).message}`),
+    );
   }
 
   async getFixtures(opts: { force?: boolean } = {}): Promise<Match[]> {

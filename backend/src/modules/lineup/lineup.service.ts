@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -47,12 +48,27 @@ const SCORES365_HEADERS = {
 };
 
 @Injectable()
-export class LineupService {
+export class LineupService implements OnModuleInit {
   private readonly logger = new Logger(LineupService.name);
 
-  async getLatestLineup(): Promise<LineupResponse | null> {
-    const cached = this.readCache();
-    if (cached) return cached;
+  onModuleInit() {
+    this.getLatestLineup({ force: true }).catch((err) =>
+      this.logger.warn(`Initial lineup refresh failed: ${(err as Error).message}`),
+    );
+  }
+
+  @Cron('0 */15 * * * *', { name: 'lineup-refresh', timeZone: 'Europe/Paris' })
+  async scheduledRefresh() {
+    await this.getLatestLineup({ force: true }).catch((err) =>
+      this.logger.warn(`Periodic lineup refresh failed: ${(err as Error).message}`),
+    );
+  }
+
+  async getLatestLineup(opts: { force?: boolean } = {}): Promise<LineupResponse | null> {
+    if (!opts.force) {
+      const cached = this.readCache();
+      if (cached) return cached;
+    }
 
     try {
       const gameId = await this.findLatestGameId();
