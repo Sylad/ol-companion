@@ -1,8 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getPreviousSeason } from './season.util';
+
+export const SEASON_RESET_DATA_DIR = 'SEASON_RESET_DATA_DIR';
 
 const CACHES_TO_ARCHIVE = [
   'cups-cache.json',
@@ -19,7 +21,7 @@ export class SeasonResetService {
   private readonly logger = new Logger(SeasonResetService.name);
   private readonly dataDir: string;
 
-  constructor(dataDir?: string) {
+  constructor(@Optional() @Inject(SEASON_RESET_DATA_DIR) dataDir?: string) {
     this.dataDir = dataDir ?? path.resolve(process.cwd(), 'data');
   }
 
