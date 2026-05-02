@@ -35,26 +35,36 @@ export class BracketService {
   private readonly logger = new Logger(BracketService.name);
 
   async fetchBracket(competitionId: number, fromStageNum: number, seasonStart: Date): Promise<BracketInfo | null> {
-    const url = `https://data.365scores.com/web/games/?appTypeId=5&langId=1&timezoneName=Europe/Paris&competitions=${competitionId}&limit=200`;
+    // 365scores splits its game list across two endpoints: /results/ for finished
+    // matches, /fixtures/ for upcoming. Merge both for a complete bracket view.
+    const base = `https://data.365scores.com/web/games`;
+    const params = `appTypeId=5&langId=1&timezoneName=Europe/Paris&competitions=${competitionId}&limit=200`;
+    const urls = [`${base}/results/?${params}`, `${base}/fixtures/?${params}`];
 
-    let games: any[] = [];
-    try {
-      const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
-      if (!res.ok) {
-        this.logger.warn(`Bracket fetch HTTP ${res.status} for comp ${competitionId}`);
-        return null;
+    const games: any[] = [];
+    for (const url of urls) {
+      try {
+        const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+        if (!res.ok) {
+          this.logger.warn(`Bracket fetch HTTP ${res.status} for comp ${competitionId} (${url})`);
+          continue;
+        }
+        const d = await res.json() as any;
+        games.push(...(d.games ?? []));
+      } catch (err) {
+        this.logger.warn(`Bracket fetch failed for comp ${competitionId}: ${(err as Error).message}`);
       }
-      const d = await res.json() as any;
-      games = d.games ?? [];
-    } catch (err) {
-      this.logger.warn(`Bracket fetch failed for comp ${competitionId}: ${(err as Error).message}`);
-      return null;
     }
+    if (games.length === 0) return null;
 
     const seasonStartMs = seasonStart.getTime();
     const stageNames = STAGE_NAMES[competitionId] ?? {};
 
-    const eligible = games
+    // Dedupe by id (the two endpoints can overlap on the same game)
+    const dedupedById = new Map<number, any>();
+    for (const g of games) dedupedById.set(g.id, g);
+
+    const eligible = Array.from(dedupedById.values())
       .filter((g) => (g.stageNum ?? 0) >= fromStageNum)
       .filter((g) => new Date(g.startTime).getTime() >= seasonStartMs);
 
