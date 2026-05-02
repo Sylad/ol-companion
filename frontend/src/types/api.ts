@@ -87,6 +87,31 @@ export interface CupInfo {
   currentStageFr: string;
   isEliminated: boolean;
   matches: CupMatch[];
+  bracket?: BracketInfo;
+}
+
+export interface BracketMatch {
+  id: number;
+  date: string;
+  homeTeam: string; homeTeamId: number; homeLogo?: string;
+  awayTeam: string; awayTeamId: number; awayLogo?: string;
+  homeScore: number | null; awayScore: number | null;
+  status: 'SCHEDULED' | 'IN_PLAY' | 'FINISHED';
+  stageNum: number;
+  stageFr: string;
+  hasOL: boolean;
+}
+
+export interface BracketStage {
+  stageNum: number;
+  stageFr: string;
+  matches: BracketMatch[];
+}
+
+export interface BracketInfo {
+  competitionId: number;
+  fromStageNum: number;
+  stages: BracketStage[];
 }
 
 export interface LineupPlayer {
