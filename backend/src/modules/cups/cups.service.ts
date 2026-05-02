@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getCurrentSeason } from '../scheduler/season.util';
@@ -122,11 +123,23 @@ export class CupsService implements OnModuleInit {
     } catch (err) {
       this.logger.warn(`Could not invalidate cups cache: ${(err as Error).message}`);
     }
+    this.getCups({ force: true }).catch((err) =>
+      this.logger.warn(`Initial cups refresh failed: ${(err as Error).message}`),
+    );
   }
 
-  async getCups(): Promise<CupInfo[]> {
-    const cached = this.readCache();
-    if (cached) return cached;
+  @Cron('0 0 */2 * * *', { name: 'cups-refresh', timeZone: 'Europe/Paris' })
+  async scheduledRefresh() {
+    await this.getCups({ force: true }).catch((err) =>
+      this.logger.warn(`Periodic cups refresh failed: ${(err as Error).message}`),
+    );
+  }
+
+  async getCups(opts: { force?: boolean } = {}): Promise<CupInfo[]> {
+    if (!opts.force) {
+      const cached = this.readCache();
+      if (cached) return cached;
+    }
 
     try {
       const results = await this.fetchCupsFrom365Scores();
