@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getCurrentSeason } from '../scheduler/season.util';
 
 export interface CupMatch {
   id: number;
@@ -98,7 +99,7 @@ export class CupsService {
   private async fetchCupsFrom365Scores(): Promise<CupInfo[]> {
     const allGames: any[] = [];
     const baseUrl = 'https://data.365scores.com/web/games';
-    const seasonStart = new Date('2025-08-01').getTime();
+    const seasonStart = getCurrentSeason().startDate.getTime();
 
     // Fetch paginated results (follow previousPage up to 3 pages to cover full season)
     let url: string | null = `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=50`;
