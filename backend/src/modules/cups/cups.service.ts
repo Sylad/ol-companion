@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getCurrentSeason } from '../scheduler/season.util';
+import { BracketService } from './bracket.service';
 
 export interface CupMatch {
   id: number;
@@ -86,6 +87,11 @@ const COMP_STAGES: Record<number, Record<number, string>> = {
   573: EL_STAGES,
 };
 
+const BRACKET_FROM_STAGE: Record<number, number> = {
+  37: 6,   // CdF: from quarter-finals
+  573: 3,  // EL: from round of 16
+};
+
 // Cup display order (first = most important)
 const COMP_ORDER = [37, 573];
 
@@ -102,10 +108,21 @@ const SCORES365_HEADERS = {
 };
 
 @Injectable()
-export class CupsService {
+export class CupsService implements OnModuleInit {
   private readonly logger = new Logger(CupsService.name);
 
-  constructor(private config: ConfigService) {}
+  constructor(
+    private config: ConfigService,
+    private readonly bracketService: BracketService,
+  ) {}
+
+  onModuleInit() {
+    try {
+      if (fs.existsSync(CACHE_FILE)) fs.unlinkSync(CACHE_FILE);
+    } catch (err) {
+      this.logger.warn(`Could not invalidate cups cache: ${(err as Error).message}`);
+    }
+  }
 
   async getCups(): Promise<CupInfo[]> {
     const cached = this.readCache();
@@ -193,6 +210,19 @@ export class CupsService {
       this.logger.log(`Cup: ${compName} — ${matches.length} matchs, éliminé=${isEliminated}`);
     }
 
+    const seasonStartDate = getCurrentSeason().startDate;
+    for (const cup of results) {
+      const fromStageNum = BRACKET_FROM_STAGE[cup.competitionId];
+      if (fromStageNum === undefined) continue;
+      const olStageNumbers = cup.matches
+        .map((m) => this.stageFrToNum(cup.competitionId, m.stageFr))
+        .filter((n): n is number => n !== null);
+      const olMaxStage = olStageNumbers.length ? Math.max(...olStageNumbers) : 0;
+      if (olMaxStage < fromStageNum) continue;
+      const bracket = await this.bracketService.fetchBracket(cup.competitionId, fromStageNum, seasonStartDate);
+      if (bracket) cup.bracket = bracket;
+    }
+
     // Sort: CdF first, then EL (per user preference)
     results.sort((a, b) => {
       const ai = COMP_ORDER.indexOf(a.competitionId);
@@ -249,5 +279,13 @@ export class CupsService {
   private writeCache(data: CupInfo[]): void {
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
     fs.writeFileSync(CACHE_FILE, JSON.stringify({ ts: Date.now(), data }));
+  }
+
+  private stageFrToNum(competitionId: number, stageFr: string): number | null {
+    const stages = COMP_STAGES[competitionId] ?? {};
+    for (const [num, label] of Object.entries(stages)) {
+      if (label === stageFr || stageFr.startsWith(label)) return Number(num);
+    }
+    return null;
   }
 }
