@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import configuration from './config/configuration';
 import { HealthModule } from './modules/health/health.module';
 import { ClaudeUsageModule } from './modules/claude-usage/claude-usage.module';
@@ -11,10 +12,13 @@ import { EventsModule } from './modules/events/events.module';
 import { WikiImageModule } from './modules/wiki-image/wiki-image.module';
 import { ChannelsModule } from './modules/channels/channels.module';
 import { LineupModule } from './modules/lineup/lineup.module';
+import { SchedulerModule } from './modules/scheduler/scheduler.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
+    ScheduleModule.forRoot(),
+    SchedulerModule,
     EventsModule,
     ClaudeUsageModule,
     HealthModule,

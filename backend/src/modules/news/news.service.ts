@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -33,13 +34,28 @@ const RSS_SOURCES = [
 const CACHE_TTL_MS = 900_000; // 15 minutes
 
 @Injectable()
-export class NewsService {
+export class NewsService implements OnModuleInit {
   private readonly logger = new Logger(NewsService.name);
   private readonly cacheFile = path.resolve(process.cwd(), 'data', 'news-cache.json');
 
-  async getNews(): Promise<NewsItem[]> {
-    const cached = this.readCache();
-    if (cached) return cached;
+  onModuleInit() {
+    this.getNews({ force: true }).catch((err) =>
+      this.logger.warn(`Initial news refresh failed: ${(err as Error).message}`),
+    );
+  }
+
+  @Cron('0 */30 * * * *', { name: 'news-refresh', timeZone: 'Europe/Paris' })
+  async scheduledRefresh() {
+    await this.getNews({ force: true }).catch((err) =>
+      this.logger.warn(`Periodic news refresh failed: ${(err as Error).message}`),
+    );
+  }
+
+  async getNews(opts: { force?: boolean } = {}): Promise<NewsItem[]> {
+    if (!opts.force) {
+      const cached = this.readCache();
+      if (cached) return cached;
+    }
 
     const allItems: NewsItem[] = [];
 
@@ -78,7 +94,11 @@ export class NewsService {
       const link = this.extractTag(block, 'link') || this.extractTag(block, 'guid');
       const pubDate = this.extractTag(block, 'pubDate');
       const rawDescription = this.extractTag(block, 'description');
-      const description = this.decode(rawDescription.replace(/<[^>]+>/g, '').trim().slice(0, 240));
+      // Google News double-encodes HTML (&lt;a&gt;...). Decode first, strip tags,
+      // decode again to flatten any residual entities, then trim and clip.
+      const description = this.decode(
+        this.decode(rawDescription).replace(/<[^>]+>/g, ''),
+      ).trim().slice(0, 240);
       const category = this.decode(this.extractTag(block, 'category'));
       const image = this.extractImage(block) || this.extractImage(rawDescription);
       if (title && link) {
