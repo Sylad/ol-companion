@@ -12,11 +12,13 @@ import { EventsModule } from './modules/events/events.module';
 import { WikiImageModule } from './modules/wiki-image/wiki-image.module';
 import { ChannelsModule } from './modules/channels/channels.module';
 import { LineupModule } from './modules/lineup/lineup.module';
+import { SchedulerModule } from './modules/scheduler/scheduler.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
     ScheduleModule.forRoot(),
+    SchedulerModule,
     EventsModule,
     ClaudeUsageModule,
     HealthModule,
