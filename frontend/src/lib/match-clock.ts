@@ -36,8 +36,12 @@ export function deriveClock(s: Pick<LiveMatchSummary, 'gameTimeDisplay' | 'statu
     return { phase: 'ended', label: 'TERMINÉ', isActive: false };
   }
   // statusGroup === 3 (live) — refine via statusText
-  if (txt.includes('mi-temps') || txt === 'halftime') {
-    return { phase: 'half-time', label: 'MI-TEMPS', isActive: false };
+  // Order matters: check active-play phrases FIRST (they may contain "mi-temps" inside e.g. "Deuxième mi-temps").
+  if (txt.includes('deuxième') || txt.includes('seconde') || txt.includes('2nd')) {
+    return { phase: 'second-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
+  }
+  if (txt.includes('première') || txt.includes('1st')) {
+    return { phase: 'first-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
   }
   if (txt.includes('tirs au but') || txt.includes('séance de penalty') || txt.includes('penalty shootout')) {
     return { phase: 'shootout', label: 'TAB', isActive: true };
@@ -45,11 +49,9 @@ export function deriveClock(s: Pick<LiveMatchSummary, 'gameTimeDisplay' | 'statu
   if (txt.includes('prolongation') || txt.includes('extra time')) {
     return { phase: 'extra-time', label: s.gameTimeDisplay || 'PROLONGATIONS', isActive: true };
   }
-  if (txt.includes('deuxième') || txt.includes('seconde') || txt.includes('2nd')) {
-    return { phase: 'second-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
-  }
-  if (txt.includes('première') || txt.includes('1st')) {
-    return { phase: 'first-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
+  // Bare "Mi-temps" / "Halftime" pause label (only fires when not in 1st/2nd half block above).
+  if (txt.includes('mi-temps') || txt === 'halftime') {
+    return { phase: 'half-time', label: 'MI-TEMPS', isActive: false };
   }
   return { phase: 'first-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
 }
