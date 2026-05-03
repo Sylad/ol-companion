@@ -39,13 +39,14 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
           <Pitch />
           {shots.map((s) => {
             const isHome = s.competitorId === homeId;
-            // Mirror so Lyon attacks right, opponent attacks left
-            const lineMirrored = isHome ? s.line : 100 - s.line;
-            const sideAdj = isHome ? s.side : 100 - s.side;
-            const x = (lineMirrored / 100) * W;
-            const y = (sideAdj / 100) * H;
+            // 365scores: `side` = % along the long axis (own goal → opponent goal),
+            // `line` = % along the short axis (touchline → touchline, 50 = centre).
+            // Mirror `side` for the away team so home attacks right and away attacks left.
+            const sideMirrored = isHome ? s.side : 100 - s.side;
+            const x = (sideMirrored / 100) * W;
+            const y = (s.line / 100) * H;
             // Marker size: √xG scale, clamped to avoid penalties (xG≈0.78) eclipsing the field.
-            const r = Math.min(20, 5 + Math.sqrt(Math.max(s.xg, 0.005)) * 22);
+            const r = Math.min(18, 4 + Math.sqrt(Math.max(s.xg, 0.005)) * 18);
             return (
               <ShotMarker
                 key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
