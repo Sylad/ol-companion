@@ -8,7 +8,7 @@ export interface WikiImageResult {
 
 const BASE = 'https://fr.wikipedia.org/w/api.php';
 const CACHE = new Map<string, WikiImageResult>();
-const HEADERS = { 'User-Agent': 'OLCompanion/2.0 (https://nas/ol)' };
+const HEADERS = { 'User-Agent': 'OLCompanion/2.0 (https://github.com/Sylad/ol-companion)' };
 
 @Injectable()
 export class WikiImageService {
