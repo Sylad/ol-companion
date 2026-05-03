@@ -156,3 +156,68 @@ export interface YoutubeChannel {
 }
 
 export const OL_TEAM_ID = 523;
+
+export type LiveMatchStatus = 'upcoming' | 'live' | 'ended';
+
+export interface LiveMatchSide {
+  id: number;
+  name: string;
+  symbolicName: string;
+  imageVersion: number;
+  score: number | null;
+}
+
+export interface LiveMatchSummary {
+  gameId: number;
+  matchupId: string;
+  competitionId: number;
+  competitionName: string;
+  status: LiveMatchStatus;
+  statusGroup: number;
+  statusText: string;
+  gameTime: number;
+  gameTimeDisplay: string;
+  startTime: string;
+  home: LiveMatchSide;
+  away: LiveMatchSide;
+}
+
+export interface LiveMatchTimelineEvent {
+  competitorId: number;
+  gameTime: number;
+  gameTimeDisplay: string;
+  type: string;
+  isMajor: boolean;
+  playerId: number | null;
+  extraPlayerId: number | null;
+  description: string;
+}
+
+export interface LiveMatchTopPerformer {
+  role: string;
+  homePlayer: { id: number; name: string; statValue: string; statName: string } | null;
+  awayPlayer: { id: number; name: string; statValue: string; statName: string } | null;
+}
+
+export interface LiveMatchShot {
+  competitorId: number;
+  playerId: number;
+  time: string;
+  xg: number;
+  xgot: number;
+  bodyPart: string;
+  outcome: string;
+  line: number;
+  side: number;
+}
+
+export interface LiveMatchStats extends LiveMatchSummary {
+  teamStats: {
+    home: Record<string, number>;
+    away: Record<string, number>;
+  };
+  events: LiveMatchTimelineEvent[];
+  topPerformers: LiveMatchTopPerformer[];
+  shots: LiveMatchShot[];
+  updatedAt: string;
+}

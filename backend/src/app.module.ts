@@ -12,6 +12,7 @@ import { EventsModule } from './modules/events/events.module';
 import { WikiImageModule } from './modules/wiki-image/wiki-image.module';
 import { ChannelsModule } from './modules/channels/channels.module';
 import { LineupModule } from './modules/lineup/lineup.module';
+import { LiveMatchModule } from './modules/live-match/live-match.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
 
 @Module({
@@ -29,6 +30,7 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     WikiImageModule,
     ChannelsModule,
     LineupModule,
+    LiveMatchModule,
   ],
 })
 export class AppModule {}

@@ -13,6 +13,7 @@ import { CupsPage } from './routes/cups';
 import { PlayersPage } from './routes/players';
 import { FcNoobzPage } from './routes/fcnoobz';
 import { AboutPage } from './routes/about';
+import { MatchPage } from './routes/match';
 
 const rootRoute = createRootRoute({
   component: AppShell,
@@ -66,6 +67,15 @@ const aboutRoute = createRoute({
   component: AboutPage,
 });
 
+const matchRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/match/$gameId',
+  component: MatchPage,
+  validateSearch: (search: Record<string, unknown>): { matchupId?: string } => ({
+    matchupId: typeof search.matchupId === 'string' ? search.matchupId : undefined,
+  }),
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   fixturesRoute,
@@ -75,6 +85,7 @@ const routeTree = rootRoute.addChildren([
   playersRoute,
   fcnoobzRoute,
   aboutRoute,
+  matchRoute,
 ]);
 
 export const router = createRouter({
