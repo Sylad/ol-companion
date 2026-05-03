@@ -71,8 +71,8 @@ function StatRow({
   );
 }
 
-function TimelineRow({ event, homeId, awayId, homeSymbol, awaySymbol }: {
-  event: LiveMatchTimelineEvent; homeId: number; awayId: number; homeSymbol: string; awaySymbol: string;
+function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
+  event: LiveMatchTimelineEvent; homeId: number; homeSymbol: string; awaySymbol: string;
 }) {
   const isHome = event.competitorId === homeId;
   const label = EVENT_LABEL[event.type] ?? event.description;
@@ -178,7 +178,6 @@ export function MatchPage() {
                 key={`${e.gameTime}-${i}`}
                 event={e}
                 homeId={data.home.id}
-                awayId={data.away.id}
                 homeSymbol={data.home.symbolicName}
                 awaySymbol={data.away.symbolicName}
               />
