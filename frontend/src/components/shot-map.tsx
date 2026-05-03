@@ -1,18 +1,19 @@
 import type { LiveMatchShot } from '@/types/api';
 import { cn } from '@/lib/utils';
 
-// Vertical pitch (portrait). 365scores stores shot coords this way:
+// Horizontal (landscape) pitch — uses full available width.
+// 365scores stores shot coords this way:
 //   side = % along the long axis (own goal at 0 → opponent goal at 100)
 //   line = % along the short axis (touchline 0 → touchline 100, 50 = centre)
-const W = 450;
-const H = 700;
-const HALF_Y = H / 2;
-const PEN_W = 270;
-const PEN_H = 110;
-const PEN_X = (W - PEN_W) / 2;
-const SIX_W = 130;
-const SIX_H = 40;
-const SIX_X = (W - SIX_W) / 2;
+const W = 700;
+const H = 450;
+const HALF_X = W / 2;
+const PEN_W = 110;
+const PEN_H = 270;
+const PEN_Y = (H - PEN_H) / 2;
+const SIX_W = 40;
+const SIX_H = 130;
+const SIX_Y = (H - SIX_H) / 2;
 const SPOT_DIST = 75;
 
 interface Props {
@@ -36,23 +37,23 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
           <LegendDot color="ol-blue" label={`${awaySymbol} ${awayName}`} />
         </div>
       </header>
-      <div className="p-4 flex flex-col items-center">
-        <div className="relative w-full max-w-[420px]">
-          {/* Direction labels */}
-          <div className="absolute -top-1 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-wider text-ol-red-bright font-bold pointer-events-none">
-            ↑ {homeSymbol} attaque
+      <div className="p-4">
+        <div className="relative w-full">
+          {/* Direction labels on touchlines */}
+          <div className="absolute top-1/2 left-1 -translate-y-1/2 text-[9px] uppercase tracking-wider text-ol-blue font-bold pointer-events-none [writing-mode:vertical-rl] rotate-180">
+            ← {awaySymbol} attaque
           </div>
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-wider text-ol-blue font-bold pointer-events-none">
-            {awaySymbol} attaque ↓
+          <div className="absolute top-1/2 right-1 -translate-y-1/2 text-[9px] uppercase tracking-wider text-ol-red-bright font-bold pointer-events-none [writing-mode:vertical-rl]">
+            {homeSymbol} attaque →
           </div>
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Shot map">
             <Pitch />
             {shots.map((s) => {
               const isHome = s.competitorId === homeId;
-              // Vertical pitch: long axis = vertical (Y), short axis = horizontal (X).
-              // Home attacks UP (target at top, y→0), away attacks DOWN (target at bottom).
-              const x = (s.line / 100) * W;
-              const y = isHome ? (1 - s.side / 100) * H : (s.side / 100) * H;
+              // Landscape pitch: long axis = horizontal (X), short axis = vertical (Y).
+              // Home attacks RIGHT (target at right), away attacks LEFT (target at left).
+              const x = isHome ? (s.side / 100) * W : (1 - s.side / 100) * W;
+              const y = (s.line / 100) * H;
               const r = Math.min(9, 2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9);
               return (
                 <ShotMarker
@@ -68,13 +69,13 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
             })}
           </svg>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim w-full max-w-[420px]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
           <OutcomeLegend label="But" kind="goal" />
           <OutcomeLegend label="Cadré" kind="on-target" />
           <OutcomeLegend label="Bloqué" kind="blocked" />
           <OutcomeLegend label="Manqué" kind="off-target" />
         </div>
-        <p className="text-[10px] text-fg-dim mt-2 leading-relaxed text-center max-w-[420px]">
+        <p className="text-[10px] text-fg-dim mt-2 leading-relaxed">
           Taille du marqueur = qualité du tir (xG). Le rond avec un halo = but.
         </p>
       </div>
@@ -91,19 +92,18 @@ function Pitch() {
       <rect x={0} y={0} width={W} height={H} fill={grass} />
       {/* Touchlines */}
       <rect x={0.5} y={0.5} width={W - 1} height={H - 1} fill="none" stroke={stroke} strokeWidth={1} />
-      {/* Halfway line */}
-      <line x1={0} y1={HALF_Y} x2={W} y2={HALF_Y} stroke={stroke} strokeWidth={1} />
-      {/* Center circle + spot */}
-      <circle cx={W / 2} cy={HALF_Y} r={50} fill="none" stroke={stroke} strokeWidth={1} />
-      <circle cx={W / 2} cy={HALF_Y} r={2} fill={stroke} />
-      {/* Top penalty box */}
-      <rect x={PEN_X} y={0} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <rect x={SIX_X} y={0} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <circle cx={W / 2} cy={SPOT_DIST} r={2} fill={stroke} />
-      {/* Bottom penalty box */}
-      <rect x={PEN_X} y={H - PEN_H} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <rect x={SIX_X} y={H - SIX_H} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <circle cx={W / 2} cy={H - SPOT_DIST} r={2} fill={stroke} />
+      {/* Halfway line + center circle */}
+      <line x1={HALF_X} y1={0} x2={HALF_X} y2={H} stroke={stroke} strokeWidth={1} />
+      <circle cx={HALF_X} cy={H / 2} r={50} fill="none" stroke={stroke} strokeWidth={1} />
+      <circle cx={HALF_X} cy={H / 2} r={2} fill={stroke} />
+      {/* Left penalty box (away team's target = home defending) */}
+      <rect x={0} y={PEN_Y} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={1} />
+      <rect x={0} y={SIX_Y} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={1} />
+      <circle cx={SPOT_DIST} cy={H / 2} r={2} fill={stroke} />
+      {/* Right penalty box (home team's target = away defending) */}
+      <rect x={W - PEN_W} y={PEN_Y} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={1} />
+      <rect x={W - SIX_W} y={SIX_Y} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={1} />
+      <circle cx={W - SPOT_DIST} cy={H / 2} r={2} fill={stroke} />
     </g>
   );
 }
