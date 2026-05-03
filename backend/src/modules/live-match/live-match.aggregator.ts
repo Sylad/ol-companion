@@ -77,22 +77,22 @@ function describeEvent(e: any): string {
 function eventTypeKey(e: any): string {
   const id: number = e?.eventType?.id ?? 0;
   const subId: number = e?.eventType?.subTypeId ?? 0;
-  // map a couple of common 365scores ids to friendly keys; fallback to numeric tag.
+  const name: string = String(e?.eventType?.name ?? '').toLowerCase();
+  const subName: string = String(e?.eventType?.subTypeName ?? '').toLowerCase();
+  const combined = `${name} ${subName}`;
+  // map a couple of common 365scores ids to friendly keys; fallback to label heuristics.
   if (id === 1) {
-    if (subId === 1) return 'goal';
-    if (subId === 8) return 'penalty_goal';
-    if (subId === 4) return 'own_goal';
+    if (combined.includes('penalti') || subId === 3 || subId === 8) return 'penalty_goal';
+    if (combined.includes('csc') || combined.includes('contre son camp') || subId === 4) return 'own_goal';
     return 'goal';
   }
   if (id === 2) {
+    if (combined.includes('rouge')) return 'red_card';
+    if (combined.includes('2e') || combined.includes('second')) return 'second_yellow_red';
+    if (combined.includes('jaune')) return 'yellow_card';
     if (subId === 1) return 'yellow_card';
     if (subId === 2) return 'red_card';
     if (subId === 3) return 'second_yellow_red';
-    // 365scores varies subTypeId; fallback to French label
-    const subName: string = String(e?.eventType?.subTypeName ?? '').toLowerCase();
-    if (subName.includes('rouge')) return 'red_card';
-    if (subName.includes('jaune') && subName.includes('2')) return 'second_yellow_red';
-    if (subName.includes('jaune')) return 'yellow_card';
     return 'card';
   }
   if (id === 3) return 'substitution';
