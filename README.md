@@ -15,23 +15,26 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
 ## Fonctionnalités
 
 - **Dashboard** — prochain match, dernier résultat, position au classement
+- **Live match** — quand l'OL joue (ou vient de jouer) : carte sur l'accueil + page dédiée `/match/:gameId` avec timeline (buts, cartons, subs), shot map (xG par tir + outcome), 14 stats agrégées par équipe avec barres comparatives, top performers par rôle. Updates via **SSE push** (cron 30 s qui diffe la signature et émet un event si quelque chose change).
 - **Classement Ligue 1** avec règles LFP (différence générale, buts marqués, etc.) — données 365scores
 - **Trajectoire saison** : tracker de position (chart Recharts, line OL bleu + dot OL rouge sur la journée courante)
 - **Calendrier** — fixtures passés + à venir avec adversaires, scores, compositions
 - **Effectif** — composition (formation field SVG dynamique) + liste des joueurs avec photos 365scores CDN
-- **Coupes** — Coupe de France + Coupes d'Europe le cas échéant
-- **News** — agrégat de sites OL (officiel, olympique-et-lyonnais.com)
-- **YouTube** — chaînes lore/club (officielle, Olympique-et-Lyonnais, Julien Le Gone, Le Onze Lyonnais, Aulasinho, Teddy Spencer)
-- **FC Noobz** — section privée perso (ex: équipe loisirs entre amis)
+- **Coupes** — Coupe de France + Coupes d'Europe le cas échéant. **Bracket schématique** affiché à partir des 1/4 (CdF) ou 1/8 (EL), avec confrontations aller/retour groupées et équipe qualifiée en gras.
+- **News** — agrégat RSS multi-sources (OL officiel, Olympique-et-Lyonnais, L'Équipe, Google News)
+- **YouTube** — chaînes lore/club recommandées
+- **FC Noobz** — section privée perso (équipe loisirs entre amis)
+- **Reset saison automatique** — cron annuel le 1er août archive les caches dans `data/archive/<season>/` et redémarre la collecte. Endpoint admin `POST /api/admin/reset-season` pour le forcer manuellement.
 
 ## Stack
 
 | Couche | Tech |
 |---|---|
-| Frontend | React 18 + TypeScript 5 + Vite 5 + Tailwind 3 + TanStack Router/Query + Recharts |
-| Backend | NestJS 10 + TypeScript 5 + Anthropic SDK + node-fetch |
-| Storage | JSON cache local (TTL 1h sur fixtures, etc.) |
-| Sources externes | [365scores](https://www.365scores.com/) (classement + lineups), [football-data.org](https://www.football-data.org/) (free tier, fixtures), Wikipedia FR |
+| Frontend | React 18 + TypeScript 5 + Vite 5 + Tailwind 3 + TanStack Router/Query + Recharts + Lucide |
+| Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) + Anthropic SDK |
+| Live updates | SSE (`@nestjs/common` `@Sse` + `EventSource` côté client + `invalidateQueries` TanStack) |
+| Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
+| Sources externes | [365scores](https://www.365scores.com/) (classement, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier, fixtures), Wikipedia FR (logos) |
 | Build | Docker multi-stage (node:20-alpine → nginx:alpine) |
 | Déploiement | docker-compose (testé Synology NAS DSM) |
 
@@ -68,7 +71,10 @@ Les caches API (fixtures, standings, etc.) se peuplent au premier appel.
 
 ## Notes
 
-- 365scores n'a pas d'API publique officielle ; ce projet utilise leur endpoint web non-documenté avec headers raisonnables. Si tu forks pour un autre club, regarde `backend/src/modules/standings/` et `backend/src/modules/lineup/` pour le pattern.
+- **API 365scores non officielle** — ce projet appelle les endpoints web de 365scores avec des headers réalistes. Ils peuvent changer de structure ou bloquer du jour au lendemain. Si tu forks pour un autre club, regarde `backend/src/modules/standings/`, `live-match/`, `cups/bracket.service.ts`, `lineup/` pour le pattern (User-Agent + headers + parsing).
+- **football-data.org** : API publique avec free tier (10 req/min, suffit pour Ligue 1).
+- **Anthropic SDK** : optionnel, sert pour quelques résumés. Sans clé, l'app fonctionne et masque proprement les sections concernées.
+- **Reverse-engineering raisonnable** : un seul utilisateur, polling 30 s max sur les matchs live, 1 h sur le classement. Pas de proxy commercial, pas de scraping massif.
 - Le module wiki-image est porté du projet warhammer40k (FR cette fois).
 
 ## Crédits IA
