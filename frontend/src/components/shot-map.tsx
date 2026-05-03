@@ -44,7 +44,8 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
             const sideAdj = isHome ? s.side : 100 - s.side;
             const x = (lineMirrored / 100) * W;
             const y = (sideAdj / 100) * H;
-            const r = Math.max(5, Math.sqrt(Math.max(s.xg, 0.005)) * 50);
+            // Marker size: √xG scale, clamped to avoid penalties (xG≈0.78) eclipsing the field.
+            const r = Math.min(20, 5 + Math.sqrt(Math.max(s.xg, 0.005)) * 22);
             return (
               <ShotMarker
                 key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
