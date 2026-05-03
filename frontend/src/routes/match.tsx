@@ -1,7 +1,8 @@
 import { useParams, useSearch, Link } from '@tanstack/react-router';
-import { Loader2, Radio, ArrowLeft } from 'lucide-react';
+import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
 import { ShotMap } from '@/components/shot-map';
+import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
 import type { LiveMatchTimelineEvent } from '@/types/api';
 
@@ -126,6 +127,9 @@ export function MatchPage() {
 
   const olIsHome = data.home.id === OL_ID;
   const isLive = data.status === 'live';
+  const isUpcoming = data.status === 'upcoming';
+  const clock = deriveClock(data);
+  const isPaused = clock.phase === 'half-time';
 
   return (
     <div className="space-y-6">
@@ -137,19 +141,33 @@ export function MatchPage() {
       <section className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-3 flex items-center justify-between border-b border-border">
           <div className="flex items-center gap-2">
-            {isLive ? (
+            {isPaused ? (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-fg-muted/20 text-fg text-[10px] font-bold uppercase tracking-wider">
+                <Pause className="h-3 w-3" strokeWidth={2.5} />
+                Pause
+              </span>
+            ) : isLive ? (
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-ol-red text-white text-[10px] font-bold uppercase tracking-wider">
                 <Radio className="h-3 w-3 animate-pulse" strokeWidth={2.5} />
                 Live
               </span>
+            ) : isUpcoming ? (
+              <span className="inline-flex items-center gap-1.5 text-fg-muted text-[10px] font-bold uppercase tracking-wider">
+                <Clock className="h-3 w-3" strokeWidth={2.5} />
+                À venir
+              </span>
             ) : (
-              <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted">
-                {data.status === 'ended' ? 'Terminé' : 'À venir'}
+              <span className="inline-flex items-center gap-1.5 text-fg-muted text-[10px] font-bold uppercase tracking-wider">
+                <Trophy className="h-3 w-3" strokeWidth={2.5} />
+                Terminé
               </span>
             )}
             <span className="text-xs text-fg-muted">{data.competitionName}</span>
           </div>
-          <span className="text-xs text-fg-muted num tabular-nums">{data.gameTimeDisplay || data.statusText}</span>
+          <span className={cn(
+            'text-xs num tabular-nums font-semibold',
+            clock.isActive ? 'text-fg-bright' : 'text-fg-muted',
+          )}>{clock.label}</span>
         </header>
         <div className="px-5 py-8 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="text-right">
