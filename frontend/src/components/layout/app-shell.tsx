@@ -2,8 +2,10 @@ import { Outlet } from '@tanstack/react-router';
 import { Sidebar } from './sidebar';
 import { BottomNav } from './bottom-nav';
 import { PageBackdrop } from '@/components/page-backdrop';
+import { useEventStream } from '@/hooks/use-event-stream';
 
 export function AppShell() {
+  useEventStream();
   return (
     <div className="min-h-full relative">
       <PageBackdrop />
