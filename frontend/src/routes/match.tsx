@@ -193,7 +193,6 @@ export function MatchPage() {
         <ShotMap
           shots={data.shots}
           homeId={data.home.id}
-          awayId={data.away.id}
           homeName={data.home.name}
           awayName={data.away.name}
           homeSymbol={data.home.symbolicName}

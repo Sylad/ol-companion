@@ -8,7 +8,6 @@ const HALF = W / 2;
 interface Props {
   shots: LiveMatchShot[];
   homeId: number;
-  awayId: number;
   homeName: string;
   awayName: string;
   homeSymbol: string;
@@ -23,7 +22,7 @@ interface Props {
  * - Lyon shots in red, opponent in blue.
  * - Marker radius proportional to √xG. Outcome encoded in stroke style.
  */
-export function ShotMap({ shots, homeId, awayId, homeName, awayName, homeSymbol, awaySymbol }: Props) {
+export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySymbol }: Props) {
   if (!shots.length) return null;
 
   return (
@@ -122,7 +121,6 @@ function ShotMarker({
   const fill = isHome ? 'hsl(var(--ol-red))' : 'hsl(var(--ol-blue))';
   const stroke = isHome ? 'hsl(var(--ol-red-bright))' : '#62a8e3';
   const isGoal = outcome === 'But';
-  const isOnTarget = outcome === 'Cadré' || outcome === 'Sauvé' || outcome === 'Saved';
   const isBlocked = outcome === 'Bloqué' || outcome === 'Blocked';
   const isMissed = outcome === 'Manqué' || outcome === 'Missed' || outcome === 'Hors cadre';
 
