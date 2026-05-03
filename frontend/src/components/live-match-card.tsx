@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { Radio, Trophy, Clock } from 'lucide-react';
+import { Radio, Trophy, Clock, Pause } from 'lucide-react';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
+import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
 
 const OL_ID = 465;
@@ -48,6 +49,8 @@ export function LiveMatchCard() {
   const olIsHome = current.home.id === OL_ID;
   const isLive = current.status === 'live';
   const isUpcoming = current.status === 'upcoming';
+  const clock = deriveClock(current);
+  const isPaused = clock.phase === 'half-time';
 
   const homePoss = stats?.teamStats.home['Touches'] ?? 0;
   const awayPoss = stats?.teamStats.away['Touches'] ?? 0;
@@ -69,7 +72,12 @@ export function LiveMatchCard() {
     >
       <header className="px-5 py-3 flex items-center justify-between border-b border-border">
         <div className="flex items-center gap-2">
-          {isLive ? (
+          {isPaused ? (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-fg-muted/20 text-fg text-[10px] font-bold uppercase tracking-wider">
+              <Pause className="h-3 w-3" strokeWidth={2.5} />
+              Pause
+            </span>
+          ) : isLive ? (
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-ol-red text-white text-[10px] font-bold uppercase tracking-wider">
               <Radio className="h-3 w-3 animate-pulse" strokeWidth={2.5} />
               Live
@@ -87,7 +95,10 @@ export function LiveMatchCard() {
           )}
           <span className="text-xs text-fg-muted">{current.competitionName}</span>
         </div>
-        <span className="text-xs text-fg-muted num tabular-nums">{current.gameTimeDisplay || current.statusText}</span>
+        <span className={cn(
+          'text-xs num tabular-nums font-semibold',
+          clock.isActive ? 'text-fg-bright' : 'text-fg-muted',
+        )}>{clock.label}</span>
       </header>
 
       <div className="px-5 py-5 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
