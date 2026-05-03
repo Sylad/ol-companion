@@ -1,8 +1,10 @@
 # OL Companion
 
-> Compagnon perso pour suivre l'Olympique Lyonnais : calendrier, classement Ligue 1 (avec règles LFP de départage), effectif, news, coupes. Plus une section privée FC Noobz pour suivre l'équipe loisirs entre amis.
+> Compagnon perso pour suivre l'Olympique Lyonnais : live match, calendrier, classement Ligue 1 (avec règles LFP de départage), effectif, news, coupes (avec bracket). Plus une section privée FC Noobz pour suivre l'équipe loisirs entre amis.
 
-![OL Companion — dashboard — placeholder](./docs/screenshots/dashboard.png)
+![OL Companion — dashboard live match](./docs/screenshots/dashboard.png)
+
+> Dashboard pendant un match : carte live (statut, score, possession, tirs, xG, derniers events) + tracker de classement saison. Mis à jour en push via SSE quand quelque chose bouge côté 365scores.
 
 ## Pourquoi
 
@@ -25,6 +27,38 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
 - **YouTube** — chaînes lore/club recommandées
 - **FC Noobz** — section privée perso (équipe loisirs entre amis)
 - **Reset saison automatique** — cron annuel le 1er août archive les caches dans `data/archive/<season>/` et redémarre la collecte. Endpoint admin `POST /api/admin/reset-season` pour le forcer manuellement.
+
+## Captures
+
+### Page match — timeline + shot map + stats équipe + top performers
+
+![Match live avec shot map et stats](./docs/screenshots/match-live.png)
+
+Tous les blocs viennent **du même endpoint 365scores** (`/web/game/?gameId=X&matchupId=H-A-G`) — les stats équipe sont reconstruites côté backend en agrégeant les stats de chaque titulaire, et le shot chart utilise la convention de coordonnées (`side` = axe long, `line` = axe court) avec marqueurs proportionnels à √xG.
+
+### Coupes — bracket aller/retour avec confrontations groupées
+
+![Coupes — Coupe de France + Europa League brackets](./docs/screenshots/cups-bracket.png)
+
+Le bracket apparaît dès les **1/4 de finale** (Coupe de France) ou les **1/8** (Europa League). Pour les coupes européennes, les deux manches d'une confrontation sont fusionnées dans une seule carte avec colonnes `A` (aller) et `R` (retour) et l'équipe qualifiée en gras. La confrontation impliquant l'OL est highlightée en rouge.
+
+### Classement Ligue 1 — règles LFP
+
+![Classement Ligue 1 avec qualifications EU](./docs/screenshots/standings.png)
+
+Différence de buts, buts marqués, départage selon les règles LFP (et pas l'ordre d'appel football-data qui ignore le tie-break). Bandes colorées sur la gauche pour la qualification européenne / barrage / relégation.
+
+### Effectif — formation + banc
+
+![Composition du dernier match](./docs/screenshots/players.png)
+
+SVG dynamique du terrain avec position de chaque titulaire selon la formation 365scores, photos joueurs depuis le CDN 365scores (pas Wikipedia, plus fiable pour les noms ambigus), banc à droite avec poste + numéro.
+
+### News multi-sources
+
+![Page actu avec chaînes YouTube et flux RSS agrégés](./docs/screenshots/news.png)
+
+Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe filtré par mots-clés OL, Google News). Décodage HTML double pour Google News qui encode parfois ses descriptions deux fois.
 
 ## Stack
 
