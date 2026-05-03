@@ -88,6 +88,11 @@ function eventTypeKey(e: any): string {
     if (subId === 1) return 'yellow_card';
     if (subId === 2) return 'red_card';
     if (subId === 3) return 'second_yellow_red';
+    // 365scores varies subTypeId; fallback to French label
+    const subName: string = String(e?.eventType?.subTypeName ?? '').toLowerCase();
+    if (subName.includes('rouge')) return 'red_card';
+    if (subName.includes('jaune') && subName.includes('2')) return 'second_yellow_red';
+    if (subName.includes('jaune')) return 'yellow_card';
     return 'card';
   }
   if (id === 3) return 'substitution';

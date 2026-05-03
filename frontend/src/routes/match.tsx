@@ -1,6 +1,7 @@
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
+import { ShotMap } from '@/components/shot-map';
 import { cn } from '@/lib/utils';
 import type { LiveMatchTimelineEvent } from '@/types/api';
 
@@ -13,6 +14,7 @@ const EVENT_LABEL: Record<string, string> = {
   yellow_card: '🟨 Carton jaune',
   red_card: '🟥 Carton rouge',
   second_yellow_red: '🟥 2e jaune',
+  card: '🟨 Carton',
   substitution: '↔ Remplacement',
   var: 'VAR',
   penalty_missed: '❌ Penalty raté',
@@ -184,6 +186,19 @@ export function MatchPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {/* Shot map */}
+      {data.shots.length > 0 && (
+        <ShotMap
+          shots={data.shots}
+          homeId={data.home.id}
+          awayId={data.away.id}
+          homeName={data.home.name}
+          awayName={data.away.name}
+          homeSymbol={data.home.symbolicName}
+          awaySymbol={data.away.symbolicName}
+        />
       )}
 
       {/* Stats */}
