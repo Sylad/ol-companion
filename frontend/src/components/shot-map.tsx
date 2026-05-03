@@ -53,7 +53,7 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
               // Home attacks UP (target at top, y→0), away attacks DOWN (target at bottom).
               const x = (s.line / 100) * W;
               const y = isHome ? (1 - s.side / 100) * H : (s.side / 100) * H;
-              const r = Math.min(18, 4 + Math.sqrt(Math.max(s.xg, 0.005)) * 18);
+              const r = Math.min(9, 2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9);
               return (
                 <ShotMarker
                   key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
@@ -132,12 +132,12 @@ function ShotMarker({
   const title = `${shot.time} · ${outcome} · xG ${shot.xg.toFixed(2)} · ${shot.bodyPart}`;
 
   if (isBlocked) {
-    const half = Math.max(r, 6);
+    const half = Math.max(r, 3);
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={2.5} strokeLinecap="round" />
-        <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={2.5} strokeLinecap="round" />
+        <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={1.75} strokeLinecap="round" />
+        <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={1.75} strokeLinecap="round" />
       </g>
     );
   }
@@ -153,8 +153,8 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={r + 4} fill="none" stroke="white" strokeWidth={1.5} opacity={0.6} />
-        <circle cx={x} cy={y} r={r} fill={fill} stroke="white" strokeWidth={2} />
+        <circle cx={x} cy={y} r={r + 2} fill="none" stroke="white" strokeWidth={1} opacity={0.6} />
+        <circle cx={x} cy={y} r={r} fill={fill} stroke="white" strokeWidth={1.25} />
       </g>
     );
   }
