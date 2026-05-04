@@ -7,6 +7,8 @@ import { getCurrentSeason } from '../scheduler/season.util';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface CupMatch {
   id: number;
@@ -144,7 +146,7 @@ export class CupsService implements OnModuleInit {
   }
 
   private async fetchCupsFrom365Scores(): Promise<CupInfo[]> {
-    const allGames: any[] = [];
+    const allGames: Scores365Game[] = [];
     const baseUrl = 'https://data.365scores.com/web/games';
     const seasonStart = getCurrentSeason().startDate.getTime();
 
@@ -154,15 +156,15 @@ export class CupsService implements OnModuleInit {
       try {
         const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
         if (!res.ok) break;
-        const d = await res.json() as any;
-        const games: any[] = d.games ?? [];
+        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores cups results');
+        const games = d.games ?? [];
         allGames.push(...games);
 
         // Stop if oldest game is before this season
         const oldest = games[games.length - 1];
         if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
 
-        const prev: string = d.paging?.previousPage;
+        const prev = d.paging?.previousPage;
         url = prev ? `https://data.365scores.com${prev}` : null;
       } catch (err: unknown) {
         this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
@@ -177,7 +179,7 @@ export class CupsService implements OnModuleInit {
         { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) }
       );
       if (res.ok) {
-        const d = await res.json() as any;
+        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores cups upcoming');
         allGames.push(...(d.games ?? []));
       }
     } catch (err: unknown) {
@@ -189,15 +191,16 @@ export class CupsService implements OnModuleInit {
     // Filter: keep only cup competitions, current season (since Aug 2025)
     const cupGames = allGames.filter(g => {
       if (g.competitionId === LIGUE1_365SCORES_ID) return false;
-      if (!COMP_NAMES[g.competitionId]) return false;
+      if (g.competitionId === undefined || !COMP_NAMES[g.competitionId]) return false;
       return new Date(g.startTime).getTime() >= seasonStart;
     });
 
     // Group by competition
-    const byComp = new Map<number, any[]>();
+    const byComp = new Map<number, Scores365Game[]>();
     for (const g of cupGames) {
-      if (!byComp.has(g.competitionId)) byComp.set(g.competitionId, []);
-      byComp.get(g.competitionId)!.push(g);
+      const cid = g.competitionId!;
+      if (!byComp.has(cid)) byComp.set(cid, []);
+      byComp.get(cid)!.push(g);
     }
 
     const results: CupInfo[] = [];
@@ -243,13 +246,13 @@ export class CupsService implements OnModuleInit {
     return results;
   }
 
-  private gameToMatch(g: any, compId: number, stageNames: Record<number, string>): CupMatch {
+  private gameToMatch(g: Scores365Game, compId: number, stageNames: Record<number, string>): CupMatch {
     const date = new Date(g.startTime).toISOString();
-    const statusGroup: number = g.statusGroup;
+    const statusGroup = g.statusGroup;
     const status = statusGroup === 4 ? 'FINISHED' : statusGroup === 2 ? 'IN_PLAY' : 'SCHEDULED';
 
-    const stageNum: number = g.stageNum ?? 0;
-    const roundNum: number = g.roundNum ?? 0;
+    const stageNum = g.stageNum ?? 0;
+    const roundNum = g.roundNum ?? 0;
     const stageFr = stageNames[stageNum] ?? (stageNum ? `Tour ${stageNum}` : '');
 
     // EL league phase: append match day
@@ -269,8 +272,8 @@ export class CupsService implements OnModuleInit {
       homeTeamId: g.homeCompetitor?.id ?? 0,
       awayTeam: g.awayCompetitor?.name ?? '',
       awayTeamId: g.awayCompetitor?.id ?? 0,
-      homeScore,
-      awayScore,
+      homeScore: homeScore ?? null,
+      awayScore: awayScore ?? null,
       status,
       stage,
       stageFr,

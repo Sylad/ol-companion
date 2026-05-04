@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { z } from 'zod';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface WikiImageResult {
   imageUrl: string | null;
@@ -10,8 +12,26 @@ const BASE = 'https://fr.wikipedia.org/w/api.php';
 const CACHE = new Map<string, WikiImageResult>();
 const HEADERS = { 'User-Agent': 'OLCompanion/2.0 (https://github.com/Sylad/ol-companion)' };
 
+const PageSchema = z.object({
+  title: z.string().optional(),
+  missing: z.string().optional(),
+  thumbnail: z.object({ source: z.string() }).optional(),
+});
+
+const PageImageResponseSchema = z.object({
+  query: z.object({ pages: z.record(z.string(), PageSchema).optional() }).optional(),
+});
+
+const SearchResponseSchema = z.object({
+  query: z
+    .object({ search: z.array(z.object({ title: z.string() })).optional() })
+    .optional(),
+});
+
 @Injectable()
 export class WikiImageService {
+  private readonly logger = new Logger(WikiImageService.name);
+
   async getImage(query: string): Promise<WikiImageResult> {
     const key = query.toLowerCase().trim();
     if (CACHE.has(key)) return CACHE.get(key)!;
@@ -25,11 +45,11 @@ export class WikiImageService {
 
       const searchUrl = `${BASE}?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=5&format=json&origin=*`;
       const searchRes = await fetch(searchUrl, { headers: HEADERS });
-      const searchData = (await searchRes.json()) as any;
+      const searchData = parseExternal(SearchResponseSchema, await searchRes.json(), 'wiki search');
 
-      const results: any[] = searchData?.query?.search ?? [];
+      const results = searchData.query?.search ?? [];
       for (const r of results) {
-        const result = await this.fetchPageImage(r.title as string);
+        const result = await this.fetchPageImage(r.title);
         if (result.imageUrl) {
           CACHE.set(key, result);
           return result;
@@ -39,7 +59,8 @@ export class WikiImageService {
       const empty: WikiImageResult = { imageUrl: null, pageTitle: null, pageUrl: null };
       CACHE.set(key, empty);
       return empty;
-    } catch {
+    } catch (err: unknown) {
+      this.logger.warn(`Wiki image lookup failed for "${query}": ${(err as Error)?.message ?? err}`);
       const empty: WikiImageResult = { imageUrl: null, pageTitle: null, pageUrl: null };
       CACHE.set(key, empty);
       return empty;
@@ -49,16 +70,16 @@ export class WikiImageService {
   private async fetchPageImage(pageTitle: string): Promise<WikiImageResult> {
     const url = `${BASE}?action=query&titles=${encodeURIComponent(pageTitle)}&prop=pageimages&format=json&pithumbsize=1200&origin=*`;
     const res = await fetch(url, { headers: HEADERS });
-    const data = (await res.json()) as any;
+    const data = parseExternal(PageImageResponseSchema, await res.json(), 'wiki pageimages');
 
-    const pages = data?.query?.pages ?? {};
-    const page = Object.values(pages)[0] as any;
+    const pages = data.query?.pages ?? {};
+    const page = Object.values(pages)[0];
     if (!page || page.missing !== undefined) {
       return { imageUrl: null, pageTitle: null, pageUrl: null };
     }
 
-    const thumbnail = page?.thumbnail?.source ?? null;
-    const resolvedTitle = (page?.title as string) ?? pageTitle;
+    const thumbnail = page.thumbnail?.source ?? null;
+    const resolvedTitle = page.title ?? pageTitle;
     return {
       imageUrl: thumbnail,
       pageTitle: resolvedTitle,

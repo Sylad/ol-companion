@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { OL_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { Scores365GamesResponseSchema } from '../../config/scores365-game.schema';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface LineupPlayer {
   id: number;
@@ -87,9 +89,9 @@ export class LineupService implements OnModuleInit {
       this.logger.warn(`results endpoint HTTP ${res.status}`);
       return null;
     }
-    const data = (await res.json()) as any;
-    const games: any[] = data.games ?? [];
-    const finished = games.find((g) => g.statusGroup === 4 && g.hasLineups);
+    const data = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores lineup results');
+    const games = data.games ?? [];
+    const finished = games.find((g) => g.statusGroup === 4 && (g as { hasLineups?: boolean }).hasLineups);
     return finished?.id ?? games[0]?.id ?? null;
   }
 
