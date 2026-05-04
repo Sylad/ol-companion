@@ -1,4 +1,4 @@
-import type { BracketMatch as BracketMatchType } from '@/types/api';
+import { OL_365SCORES_ID, type BracketMatch as BracketMatchType } from '@/types/api';
 import { cn } from '@/lib/utils';
 
 function formatShortDate(iso: string): string {
@@ -61,8 +61,8 @@ export function BracketTie({ matches }: Props) {
         <span className="text-center w-6">R</span>
       </div>
 
-      <TeamRow team={teamA} won={aWon} dim={bWon} highlight={hasOL && teamA.id === 465} />
-      <TeamRow team={teamB} won={bWon} dim={aWon} highlight={hasOL && teamB.id === 465} />
+      <TeamRow team={teamA} won={aWon} dim={bWon} highlight={hasOL && teamA.id === OL_365SCORES_ID} />
+      <TeamRow team={teamB} won={bWon} dim={aWon} highlight={hasOL && teamB.id === OL_365SCORES_ID} />
 
       {/* Leg dates / status footer */}
       <div className="flex justify-between text-[10px] uppercase tracking-wider text-fg-dim mt-1.5">

@@ -3,15 +3,9 @@ import { Cron } from '@nestjs/schedule';
 import { EventBusService } from '../events/event-bus.service';
 import { aggregate, summarize, LIVE_MATCH_OL_ID } from './live-match.aggregator';
 import type { LiveMatchSummary, LiveMatchStats, LiveMatchChangedPayload } from './live-match.types';
+import { scores365Headers } from '../../config/scores365-http';
 
-const SCORES365_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'application/json',
-  'Accept-Language': 'fr-FR,fr;q=0.9',
-  'X-Domain': 'fr',
-  'Referer': 'https://www.365scores.com/fr/football',
-  'Origin': 'https://www.365scores.com',
-};
+const SCORES365_HEADERS = scores365Headers();
 
 const POST_MATCH_WINDOW_MS = 2 * 3600_000; // expose stats up to 2h after final whistle
 

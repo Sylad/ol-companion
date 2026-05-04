@@ -5,6 +5,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getCurrentSeason } from '../scheduler/season.util';
 import { BracketService } from './bracket.service';
+import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
+import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
 
 export interface CupMatch {
   id: number;
@@ -53,9 +55,6 @@ export interface BracketInfo {
   stages: BracketStage[];
 }
 
-const OL_365SCORES_ID = 465;
-const LIGUE1_COMP_ID = 35;
-
 const COMP_NAMES: Record<number, string> = {
   37: 'Coupe de France',
   573: 'UEFA Europa League',
@@ -99,14 +98,7 @@ const COMP_ORDER = [37, 573];
 const CACHE_TTL_MS = 7200_000; // 2h
 const CACHE_FILE = path.resolve(process.cwd(), 'data', 'cups-cache.json');
 
-const SCORES365_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'application/json',
-  'Accept-Language': 'fr-FR,fr;q=0.9',
-  'X-Domain': 'fr',
-  'Referer': 'https://www.365scores.com/fr/football/team/lyon-465',
-  'Origin': 'https://www.365scores.com',
-};
+const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 
 @Injectable()
 export class CupsService implements OnModuleInit {
@@ -172,7 +164,10 @@ export class CupsService implements OnModuleInit {
 
         const prev: string = d.paging?.previousPage;
         url = prev ? `https://data.365scores.com${prev}` : null;
-      } catch { break; }
+      } catch (err: unknown) {
+        this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
+        break;
+      }
     }
 
     // Fetch upcoming games (for future cup matches)
@@ -185,13 +180,15 @@ export class CupsService implements OnModuleInit {
         const d = await res.json() as any;
         allGames.push(...(d.games ?? []));
       }
-    } catch { /* ignore */ }
+    } catch (err: unknown) {
+      this.logger.warn(`365scores upcoming fetch failed: ${(err as Error)?.message ?? err}`);
+    }
 
     this.logger.log(`365scores: ${allGames.length} événements récupérés`);
 
     // Filter: keep only cup competitions, current season (since Aug 2025)
     const cupGames = allGames.filter(g => {
-      if (g.competitionId === LIGUE1_COMP_ID) return false;
+      if (g.competitionId === LIGUE1_365SCORES_ID) return false;
       if (!COMP_NAMES[g.competitionId]) return false;
       return new Date(g.startTime).getTime() >= seasonStart;
     });
@@ -285,7 +282,9 @@ export class CupsService implements OnModuleInit {
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
       if (Date.now() - ts < CACHE_TTL_MS) return data;
-    } catch {}
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read cups cache ${CACHE_FILE}: ${(err as Error)?.message ?? err}`);
+    }
     return null;
   }
 

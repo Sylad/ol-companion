@@ -140,7 +140,9 @@ export class NewsService implements OnModuleInit {
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
       if (Date.now() - ts < CACHE_TTL_MS && data?.length > 0) return data;
-    } catch {}
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read news cache ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
+    }
     return null;
   }
 

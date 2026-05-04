@@ -3,8 +3,7 @@ import { Radio, Trophy, Clock, Pause } from 'lucide-react';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
-
-const OL_ID = 465;
+import { OL_365SCORES_ID as OL_ID } from '@/types/api';
 
 function StatBar({
   label,
