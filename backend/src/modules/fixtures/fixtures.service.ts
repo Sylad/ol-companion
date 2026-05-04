@@ -4,6 +4,7 @@ import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { EventBusService } from '../events/event-bus.service';
+import { OL_TEAM_ID, LIGUE1_FOOTBALL_DATA_ID } from '../../config/constants';
 
 export interface Match {
   id: number;
@@ -19,7 +20,6 @@ export interface Match {
   matchday: number | null;
 }
 
-const OL_TEAM_ID = 523;
 const CACHE_TTL_MS = 3600_000;
 
 @Injectable()
@@ -88,17 +88,19 @@ export class FixturesService implements OnModuleInit {
     // Fetch current matchday from standings cache if available
     let startMatchday = 30;
     try {
-      const standingsCachePath = require('path').resolve(process.cwd(), 'data', 'standings-cache.json');
-      if (require('fs').existsSync(standingsCachePath)) {
-        const { data } = JSON.parse(require('fs').readFileSync(standingsCachePath, 'utf-8'));
+      const standingsCachePath = path.resolve(process.cwd(), 'data', 'standings-cache.json');
+      if (fs.existsSync(standingsCachePath)) {
+        const { data } = JSON.parse(fs.readFileSync(standingsCachePath, 'utf-8'));
         startMatchday = (data?.currentMatchday ?? 30) + 1;
       }
-    } catch {}
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read standings cache for matchday hint: ${(err as Error)?.message ?? err}`);
+    }
 
     const matchdays = [startMatchday, startMatchday + 1, startMatchday + 2];
     for (const md of matchdays) {
       try {
-        const url = `https://api.football-data.org/v4/competitions/2015/matches?matchday=${md}`;
+        const url = `https://api.football-data.org/v4/competitions/${LIGUE1_FOOTBALL_DATA_ID}/matches?matchday=${md}`;
         const res = await fetch(url, {
           headers: { 'X-Auth-Token': apiKey },
           signal: AbortSignal.timeout(10_000),
@@ -162,7 +164,9 @@ export class FixturesService implements OnModuleInit {
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
       if (Date.now() - ts < CACHE_TTL_MS) return data;
-    } catch {}
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read fixtures cache ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
+    }
     return null;
   }
 
@@ -171,7 +175,8 @@ export class FixturesService implements OnModuleInit {
     try {
       const { data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
       return data;
-    } catch {
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read fixtures cache (raw) ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
       return null;
     }
   }

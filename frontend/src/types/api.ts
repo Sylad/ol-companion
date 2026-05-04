@@ -155,7 +155,11 @@ export interface YoutubeChannel {
   priority: boolean;
 }
 
+/** football-data.org team id (canonical id used across the frontend). */
 export const OL_TEAM_ID = 523;
+
+/** 365scores team id (used by /api/standings, /api/cups, /api/live-match payloads). */
+export const OL_365SCORES_ID = 465;
 
 export type LiveMatchStatus = 'upcoming' | 'live' | 'ended';
 

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { BracketInfo, BracketMatch, BracketStage } from './cups.service';
-
-const OL_365SCORES_ID = 465;
+import { OL_365SCORES_ID } from '../../config/constants';
+import { scores365Headers } from '../../config/scores365-http';
 
 const CDF_STAGES: Record<number, string> = {
   6: '1/4 de finale',
@@ -21,14 +21,7 @@ const STAGE_NAMES: Record<number, Record<number, string>> = {
   573: EL_STAGES,
 };
 
-const SCORES365_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'application/json',
-  'Accept-Language': 'fr-FR,fr;q=0.9',
-  'X-Domain': 'fr',
-  'Referer': 'https://www.365scores.com/fr/football',
-  'Origin': 'https://www.365scores.com',
-};
+const SCORES365_HEADERS = scores365Headers();
 
 @Injectable()
 export class BracketService {

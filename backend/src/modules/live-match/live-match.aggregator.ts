@@ -8,8 +8,7 @@ import type {
   LiveMatchSide,
   LiveMatchStatus,
 } from './live-match.types';
-
-const OL_365_ID = 465;
+import { OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
 
 /**
  * Parses a 365scores stat value like "5", "12'", "4/8", "70%" into a number.

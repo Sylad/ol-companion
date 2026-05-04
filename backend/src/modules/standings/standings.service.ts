@@ -3,6 +3,8 @@ import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { EventBusService } from '../events/event-bus.service';
+import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
+import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
 
 export type FormOutcome = 'W' | 'D' | 'L';
 
@@ -17,21 +19,11 @@ export interface SeasonStandings { season: string; updatedAt: string; currentMat
 export interface HistoryEntry { season: string; finalPosition: number; points: number; }
 export interface OlSeasonRanking { matchday: number; position: number; points: number; }
 
-const LIGUE1_365_ID = 35;
-const OL_365_ID = 465;
-const OL_TEAM_ID = 523; // legacy football-data id, kept for frontend compatibility
 const CACHE_TTL_MS = 3600_000;
 const HISTORY_FILE = path.resolve(process.cwd(), 'data', 'standings-history.json');
 const SEASON_FILE = path.resolve(process.cwd(), 'data', 'season-rankings.json');
 
-const SCORES365_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'application/json',
-  'Accept-Language': 'fr-FR,fr;q=0.9',
-  'X-Domain': 'fr',
-  'Referer': 'https://www.365scores.com/fr/football/league/ligue-1-35',
-  'Origin': 'https://www.365scores.com',
-};
+const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.ligue1);
 
 @Injectable()
 export class StandingsService implements OnModuleInit {
@@ -61,7 +53,7 @@ export class StandingsService implements OnModuleInit {
     }
 
     try {
-      const url = `https://data.365scores.com/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365_ID}`;
+      const url = `https://data.365scores.com/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
       const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
       if (!res.ok) {
         this.logger.warn(`365scores standings → HTTP ${res.status}`);
@@ -96,7 +88,7 @@ export class StandingsService implements OnModuleInit {
           return {
             position: r.position,
             team: c.name ?? c.symbolicName ?? 'Inconnu',
-            teamId: c.id === OL_365_ID ? OL_TEAM_ID : c.id,
+            teamId: c.id === OL_365SCORES_ID ? OL_TEAM_ID : c.id,
             played: r.gamePlayed ?? 0,
             won: r.gamesWon ?? 0,
             draw: r.gamesEven ?? 0,
@@ -131,11 +123,24 @@ export class StandingsService implements OnModuleInit {
 
   getSeasonRankings(): OlSeasonRanking[] {
     if (!fs.existsSync(SEASON_FILE)) return [];
-    try { return JSON.parse(fs.readFileSync(SEASON_FILE, 'utf-8')); } catch { return []; }
+    try {
+      return JSON.parse(fs.readFileSync(SEASON_FILE, 'utf-8'));
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read ${SEASON_FILE}: ${(err as Error)?.message ?? err}`);
+      return [];
+    }
   }
 
   getHistory(): HistoryEntry[] {
-    try { return JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8')) as HistoryEntry[]; } catch { return []; }
+    try {
+      return JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8')) as HistoryEntry[];
+    } catch (err: unknown) {
+      const e = err as NodeJS.ErrnoException;
+      if (e?.code !== 'ENOENT') {
+        this.logger.warn(`Failed to read ${HISTORY_FILE}: ${e?.message ?? err}`);
+      }
+      return [];
+    }
   }
 
   private updateSeasonRankings(standings: SeasonStandings): void {
@@ -201,7 +206,9 @@ export class StandingsService implements OnModuleInit {
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
       if (Date.now() - ts < CACHE_TTL_MS) return data;
-    } catch {}
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read standings cache ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
+    }
     return null;
   }
 

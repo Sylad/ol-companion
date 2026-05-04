@@ -4,9 +4,7 @@ import { useLiveMatchStats } from '@/hooks/use-live-match';
 import { ShotMap } from '@/components/shot-map';
 import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
-import type { LiveMatchTimelineEvent } from '@/types/api';
-
-const OL_ID = 465;
+import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent } from '@/types/api';
 
 const EVENT_LABEL: Record<string, string> = {
   goal: '⚽ But',

@@ -2,6 +2,8 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { OL_365SCORES_ID } from '../../config/constants';
+import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
 
 export interface LineupPlayer {
   id: number;
@@ -34,18 +36,10 @@ export interface LineupResponse {
   injured: LineupPlayer[];
 }
 
-const OL_365_ID = 465;
 const CACHE_TTL_MS = 6 * 3600_000; // 6h
 const CACHE_FILE = path.resolve(process.cwd(), 'data', 'lineup-cache.json');
 
-const SCORES365_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'application/json',
-  'Accept-Language': 'fr-FR,fr;q=0.9',
-  'X-Domain': 'fr',
-  'Referer': 'https://www.365scores.com/fr/football/team/lyon-465',
-  'Origin': 'https://www.365scores.com',
-};
+const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 
 @Injectable()
 export class LineupService implements OnModuleInit {
@@ -87,7 +81,7 @@ export class LineupService implements OnModuleInit {
   }
 
   private async findLatestGameId(): Promise<number | null> {
-    const url = `https://data.365scores.com/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365_ID}&limit=10`;
+    const url = `https://data.365scores.com/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=10`;
     const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
     if (!res.ok) {
       this.logger.warn(`results endpoint HTTP ${res.status}`);
@@ -111,7 +105,7 @@ export class LineupService implements OnModuleInit {
     const g = data.game;
     if (!g) return null;
 
-    const olIsHome = g.homeCompetitor?.id === OL_365_ID;
+    const olIsHome = g.homeCompetitor?.id === OL_365SCORES_ID;
     const olCompetitor = olIsHome ? g.homeCompetitor : g.awayCompetitor;
     const opponentCompetitor = olIsHome ? g.awayCompetitor : g.homeCompetitor;
 
@@ -192,7 +186,9 @@ export class LineupService implements OnModuleInit {
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
       if (Date.now() - ts < CACHE_TTL_MS) return data;
-    } catch {}
+    } catch (err: unknown) {
+      this.logger.warn(`Failed to read lineup cache ${CACHE_FILE}: ${(err as Error)?.message ?? err}`);
+    }
     return null;
   }
 
