@@ -5,6 +5,8 @@ import * as path from 'path';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { parseExternal } from '../../common/zod-validation.pipe';
+import { Scores365StandingsResponseSchema } from './standings.schema';
 
 export type FormOutcome = 'W' | 'D' | 'L';
 
@@ -59,14 +61,14 @@ export class StandingsService implements OnModuleInit {
         this.logger.warn(`365scores standings → HTTP ${res.status}`);
         return null;
       }
-      const data = await res.json() as any;
-      const block = data.standings?.find((s: any) => s.isCurrentStage) ?? data.standings?.[0];
+      const data = parseExternal(Scores365StandingsResponseSchema, await res.json(), '365scores standings');
+      const block = data.standings?.find((s) => s.isCurrentStage) ?? data.standings?.[0];
       if (!block?.rows?.length) return null;
 
-      const seasonName: string | undefined = data.competitions?.[0]?.seasons
-        ?.find((s: any) => s.num === block.seasonNum)?.name;
+      const seasonName = data.competitions?.[0]?.seasons
+        ?.find((s) => s.num === block.seasonNum)?.name;
       const season = seasonName?.split('/')[0] ?? new Date().getFullYear().toString();
-      const playedCounts = block.rows.map((r: any) => r.gamePlayed as number);
+      const playedCounts = block.rows.map((r) => r.gamePlayed ?? 0);
       const currentMatchday = Math.max(0, ...playedCounts);
       const minPlayed = Math.min(...playedCounts);
       const roundComplete = minPlayed === currentMatchday;
@@ -75,15 +77,14 @@ export class StandingsService implements OnModuleInit {
         season,
         updatedAt: new Date().toISOString(),
         currentMatchday,
-        table: block.rows.map((r: any) => {
+        table: block.rows.map((r) => {
           const c = r.competitor;
           const gf = r.for ?? 0;
           const ga = r.against ?? 0;
-          const rawForm = Array.isArray(r.recentForm) ? r.recentForm : null;
-          const recentForm: FormOutcome[] | undefined = rawForm
-            ? rawForm
-                .map((o: number) => (o === 1 ? 'W' : o === 2 ? 'D' : o === 0 ? 'L' : null))
-                .filter((x: FormOutcome | null): x is FormOutcome => x !== null)
+          const recentForm: FormOutcome[] | undefined = r.recentForm
+            ? r.recentForm
+                .map((o) => (o === 1 ? 'W' : o === 2 ? 'D' : o === 0 ? 'L' : null))
+                .filter((x): x is FormOutcome => x !== null)
             : undefined;
           return {
             position: r.position,
