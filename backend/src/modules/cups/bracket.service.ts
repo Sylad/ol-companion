@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import type { BracketInfo, BracketMatch, BracketStage } from './cups.service';
 import { OL_365SCORES_ID } from '../../config/constants';
 import { scores365Headers } from '../../config/scores365-http';
+import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 const CDF_STAGES: Record<number, string> = {
   6: '1/4 de finale',
@@ -34,7 +36,7 @@ export class BracketService {
     const params = `appTypeId=5&langId=1&timezoneName=Europe/Paris&competitions=${competitionId}&limit=200`;
     const urls = [`${base}/results/?${params}`, `${base}/fixtures/?${params}`];
 
-    const games: any[] = [];
+    const games: Scores365Game[] = [];
     for (const url of urls) {
       try {
         const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
@@ -42,7 +44,7 @@ export class BracketService {
           this.logger.warn(`Bracket fetch HTTP ${res.status} for comp ${competitionId} (${url})`);
           continue;
         }
-        const d = await res.json() as any;
+        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores bracket');
         games.push(...(d.games ?? []));
       } catch (err) {
         this.logger.warn(`Bracket fetch failed for comp ${competitionId}: ${(err as Error).message}`);
@@ -54,7 +56,7 @@ export class BracketService {
     const stageNames = STAGE_NAMES[competitionId] ?? {};
 
     // Dedupe by id (the two endpoints can overlap on the same game)
-    const dedupedById = new Map<number, any>();
+    const dedupedById = new Map<number, Scores365Game>();
     for (const g of games) dedupedById.set(g.id, g);
 
     const eligible = Array.from(dedupedById.values())
@@ -65,7 +67,7 @@ export class BracketService {
 
     const byStage = new Map<number, BracketMatch[]>();
     for (const g of eligible) {
-      const stageNum = g.stageNum;
+      const stageNum = g.stageNum ?? 0;
       if (!byStage.has(stageNum)) byStage.set(stageNum, []);
       byStage.get(stageNum)!.push(this.toBracketMatch(g, stageNames));
     }
@@ -81,7 +83,7 @@ export class BracketService {
     return { competitionId, fromStageNum, stages };
   }
 
-  private toBracketMatch(g: any, stageNames: Record<number, string>): BracketMatch {
+  private toBracketMatch(g: Scores365Game, stageNames: Record<number, string>): BracketMatch {
     const status =
       g.statusGroup === 4 ? 'FINISHED'
       : g.statusGroup === 2 ? 'IN_PLAY'
@@ -89,6 +91,7 @@ export class BracketService {
     const homeId = g.homeCompetitor?.id ?? 0;
     const awayId = g.awayCompetitor?.id ?? 0;
     const hasScore = status !== 'SCHEDULED';
+    const stageNum = g.stageNum ?? 0;
     return {
       id: g.id,
       date: new Date(g.startTime).toISOString(),
@@ -99,8 +102,8 @@ export class BracketService {
       homeScore: hasScore ? (g.homeCompetitor?.score ?? null) : null,
       awayScore: hasScore ? (g.awayCompetitor?.score ?? null) : null,
       status,
-      stageNum: g.stageNum,
-      stageFr: stageNames[g.stageNum] ?? `Stage ${g.stageNum}`,
+      stageNum,
+      stageFr: stageNames[stageNum] ?? `Stage ${stageNum}`,
       hasOL: homeId === OL_365SCORES_ID || awayId === OL_365SCORES_ID,
     };
   }

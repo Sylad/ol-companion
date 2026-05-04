@@ -4,6 +4,8 @@ import { EventBusService } from '../events/event-bus.service';
 import { aggregate, summarize, LIVE_MATCH_OL_ID } from './live-match.aggregator';
 import type { LiveMatchSummary, LiveMatchStats, LiveMatchChangedPayload } from './live-match.types';
 import { scores365Headers } from '../../config/scores365-http';
+import { Scores365GamesResponseSchema } from '../../config/scores365-game.schema';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 const SCORES365_HEADERS = scores365Headers();
 
@@ -128,10 +130,9 @@ export class LiveMatchService implements OnModuleInit {
     try {
       const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
       if (!res.ok) return null;
-      const d = (await res.json()) as any;
-      const games: any[] = d?.games ?? [];
-      for (const g of games) {
-        if (!statusGroups.includes(g.statusGroup)) continue;
+      const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores live-match candidate');
+      for (const g of d.games ?? []) {
+        if (g.statusGroup === undefined || !statusGroups.includes(g.statusGroup)) continue;
         const summary = summarize(g);
         if (opts.onlyRecent && !this.withinPostMatchWindow(summary)) continue;
         if (opts.onlyUpcoming && !this.withinUpcomingWindow(summary)) continue;
