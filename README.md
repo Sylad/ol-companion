@@ -1,6 +1,14 @@
 # OL Companion
 
+[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?logo=anthropic&logoColor=white)](https://claude.com/claude-code)
+[![Designed with ChatGPT](https://img.shields.io/badge/Designed%20with-ChatGPT-10A37F?logo=openai&logoColor=white)](https://chat.openai.com)
+[![React 18](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![NestJS 11](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > Compagnon perso pour suivre l'Olympique Lyonnais : live match, calendrier, classement Ligue 1 (avec règles LFP de départage), effectif, news, coupes (avec bracket). Plus une section privée FC Noobz pour suivre l'équipe loisirs entre amis.
+
+**100% du code écrit en pair-programming avec [Claude Code](https://claude.com/claude-code).** Direction artistique humaine + logo et premières maquettes UX par [ChatGPT](https://chat.openai.com), implémentation Claude. Voir [HOW-IT-WORKS.md](./HOW-IT-WORKS.md) pour le détail de qui fait quoi (spoiler : **aucun appel Claude au runtime** — tout est scraping 365scores déterministe).
 
 ![OL Companion — dashboard live match](./docs/screenshots/dashboard.png)
 
