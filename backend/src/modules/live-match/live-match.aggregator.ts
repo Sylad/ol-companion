@@ -9,6 +9,13 @@ import type {
   LiveMatchStatus,
 } from './live-match.types';
 import { OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
+import type {
+  Scores365Competitor,
+  Scores365Event,
+  Scores365GameDetailed,
+  Scores365GameDetailResponse,
+  Scores365TopPerformerCategory,
+} from '../../config/scores365-game.schema';
 
 /**
  * Parses a 365scores stat value like "5", "12'", "4/8", "70%" into a number.
@@ -36,13 +43,13 @@ export function parseStatValue(v: unknown): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function aggregateTeamStats(competitor: any): LiveMatchTeamStats {
+function aggregateTeamStats(competitor: Scores365Competitor | undefined): LiveMatchTeamStats {
   const totals: LiveMatchTeamStats = {};
   const members = competitor?.lineups?.members ?? [];
   for (const m of members) {
     if (m.status !== 1) continue; // starters only (status 1 = Starting)
-    for (const s of (m.stats ?? []) as any[]) {
-      const name = s.name as string | undefined;
+    for (const s of m.stats ?? []) {
+      const name = s.name;
       if (!name) continue;
       totals[name] = (totals[name] ?? 0) + parseStatValue(s.value);
     }
@@ -56,7 +63,7 @@ function deriveStatus(statusGroup: number): LiveMatchStatus {
   return 'upcoming';
 }
 
-function toSide(c: any): LiveMatchSide {
+function toSide(c: Scores365Competitor | undefined): LiveMatchSide {
   return {
     id: c?.id ?? 0,
     name: c?.name ?? '',
@@ -66,18 +73,18 @@ function toSide(c: any): LiveMatchSide {
   };
 }
 
-function describeEvent(e: any): string {
-  const eventType = e?.eventType ?? {};
-  const type: string = eventType.name ?? '';
-  const subType: string = eventType.subTypeName ?? '';
+function describeEvent(e: Scores365Event): string {
+  const eventType = e.eventType ?? {};
+  const type = eventType.name ?? '';
+  const subType = eventType.subTypeName ?? '';
   return [type, subType].filter(Boolean).join(' — ') || 'Événement';
 }
 
-function eventTypeKey(e: any): string {
-  const id: number = e?.eventType?.id ?? 0;
-  const subId: number = e?.eventType?.subTypeId ?? 0;
-  const name: string = String(e?.eventType?.name ?? '').toLowerCase();
-  const subName: string = String(e?.eventType?.subTypeName ?? '').toLowerCase();
+function eventTypeKey(e: Scores365Event): string {
+  const id = e.eventType?.id ?? 0;
+  const subId = e.eventType?.subTypeId ?? 0;
+  const name = String(e.eventType?.name ?? '').toLowerCase();
+  const subName = String(e.eventType?.subTypeName ?? '').toLowerCase();
   const combined = `${name} ${subName}`;
   // map a couple of common 365scores ids to friendly keys; fallback to label heuristics.
   if (id === 1) {
@@ -100,30 +107,31 @@ function eventTypeKey(e: any): string {
   return `event_${id}_${subId}`;
 }
 
-function toTimelineEvents(g: any): LiveMatchTimelineEvent[] {
-  const events: any[] = g?.events ?? [];
+function toTimelineEvents(g: Scores365GameDetailed): LiveMatchTimelineEvent[] {
+  const events = g.events ?? [];
   return events.map((e) => ({
-    competitorId: e?.competitorId ?? 0,
-    gameTime: typeof e?.gameTime === 'number' ? e.gameTime : 0,
-    gameTimeDisplay: e?.gameTimeDisplay ?? '',
+    competitorId: e.competitorId ?? 0,
+    gameTime: typeof e.gameTime === 'number' ? e.gameTime : 0,
+    gameTimeDisplay: e.gameTimeDisplay ?? '',
     type: eventTypeKey(e),
-    isMajor: !!e?.isMajor,
-    playerId: typeof e?.playerId === 'number' ? e.playerId : null,
-    extraPlayerId: Array.isArray(e?.extraPlayers) && e.extraPlayers.length > 0 ? e.extraPlayers[0] : null,
+    isMajor: !!e.isMajor,
+    playerId: typeof e.playerId === 'number' ? e.playerId : null,
+    extraPlayerId: Array.isArray(e.extraPlayers) && e.extraPlayers.length > 0 ? e.extraPlayers[0] : null,
     description: describeEvent(e),
   })).sort((a, b) => a.gameTime - b.gameTime);
 }
 
-function shotOutcome(o: any): string {
+function shotOutcome(o: { name?: string } | undefined): string {
   return o?.name ?? '';
 }
 
-function toShots(g: any): LiveMatchShot[] {
-  const events: any[] = g?.chartEvents?.events ?? [];
+function toShots(g: Scores365GameDetailed): LiveMatchShot[] {
+  const events = g.chartEvents?.events ?? [];
   return events
-    .filter((e) => typeof e?.competitorNum === 'number')
+    .filter((e) => typeof e.competitorNum === 'number')
     .map((e) => {
-      const competitorId = e.competitorNum === 1 ? g.homeCompetitor?.id : g.awayCompetitor?.id;
+      const competitorId =
+        e.competitorNum === 1 ? g.homeCompetitor?.id : g.awayCompetitor?.id;
       return {
         competitorId: competitorId ?? 0,
         playerId: e.playerId ?? 0,
@@ -138,14 +146,16 @@ function toShots(g: any): LiveMatchShot[] {
     });
 }
 
-function toTopPerformers(g: any): LiveMatchTopPerformer[] {
-  const cats: any[] = g?.topPerformers?.categories ?? [];
+function toTopPerformers(g: Scores365GameDetailed): LiveMatchTopPerformer[] {
+  const cats: Scores365TopPerformerCategory[] = g.topPerformers?.categories ?? [];
   return cats.map((c) => {
-    const homeP = c?.homePlayer;
-    const awayP = c?.awayPlayer;
-    const firstStat = (p: any) => p?.stats?.[0] ?? {};
+    const homeP = c.homePlayer;
+    const awayP = c.awayPlayer;
+    const firstStat = (
+      p: Scores365TopPerformerCategory['homePlayer'] | Scores365TopPerformerCategory['awayPlayer'],
+    ): { name?: string; value?: string | number } => p?.stats?.[0] ?? {};
     return {
-      role: c?.name ?? '',
+      role: c.name ?? '',
       homePlayer: homeP
         ? {
             id: homeP.athleteId ?? homeP.id ?? 0,
@@ -166,16 +176,16 @@ function toTopPerformers(g: any): LiveMatchTopPerformer[] {
   });
 }
 
-export function summarize(rawGame: any): LiveMatchSummary {
+export function summarize(rawGame: Scores365GameDetailed): LiveMatchSummary {
   const home = rawGame.homeCompetitor;
   const away = rawGame.awayCompetitor;
   return {
     gameId: rawGame.id,
-    matchupId: `${home.id}-${away.id}-${rawGame.id}`,
-    competitionId: rawGame.competitionId,
+    matchupId: `${home?.id ?? 0}-${away?.id ?? 0}-${rawGame.id}`,
+    competitionId: rawGame.competitionId ?? 0,
     competitionName: rawGame.competitionDisplayName ?? '',
-    status: deriveStatus(rawGame.statusGroup),
-    statusGroup: rawGame.statusGroup,
+    status: deriveStatus(rawGame.statusGroup ?? 0),
+    statusGroup: rawGame.statusGroup ?? 0,
     statusText: rawGame.statusText ?? '',
     gameTime: typeof rawGame.gameTime === 'number' ? rawGame.gameTime : 0,
     gameTimeDisplay: rawGame.gameTimeDisplay ?? '',
@@ -185,7 +195,7 @@ export function summarize(rawGame: any): LiveMatchSummary {
   };
 }
 
-export function aggregate(raw365Response: any): LiveMatchStats {
+export function aggregate(raw365Response: Scores365GameDetailResponse): LiveMatchStats {
   const game = raw365Response?.game;
   if (!game) throw new Error('Missing game in 365scores response');
   const summary = summarize(game);
