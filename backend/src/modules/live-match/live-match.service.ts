@@ -4,7 +4,11 @@ import { EventBusService } from '../events/event-bus.service';
 import { aggregate, summarize, LIVE_MATCH_OL_ID } from './live-match.aggregator';
 import type { LiveMatchSummary, LiveMatchStats, LiveMatchChangedPayload } from './live-match.types';
 import { scores365Headers } from '../../config/scores365-http';
-import { Scores365GamesResponseSchema } from '../../config/scores365-game.schema';
+import {
+  Scores365GameDetailResponseSchema,
+  Scores365GamesResponseSchema,
+  type Scores365GameDetailResponse,
+} from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
 const SCORES365_HEADERS = scores365Headers();
@@ -54,7 +58,7 @@ export class LiveMatchService implements OnModuleInit {
       return cached.payload;
     }
 
-    const raw = await this.fetch365Game(gameId, matchupId);
+    const raw = await this.fetch365GameDetail(gameId, matchupId);
     if (!raw?.game) {
       this.logger.warn(`No game data from 365scores for ${gameId} (matchupId=${matchupId})`);
       return cached?.payload ?? null;
@@ -202,14 +206,24 @@ export class LiveMatchService implements OnModuleInit {
     return delta > 0 && delta < 24 * 3600_000;
   }
 
-  private async fetch365Game(gameId: number, matchupId: string): Promise<any> {
+  private async fetch365GameDetail(
+    gameId: number,
+    matchupId: string,
+  ): Promise<Scores365GameDetailResponse | null> {
     const url = `https://webws.365scores.com/web/game/?appTypeId=5&langId=15&gameId=${gameId}&matchupId=${matchupId}&timezoneName=Europe/Paris&userCountryId=5`;
     const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
     if (!res.ok) {
       this.logger.warn(`365 game HTTP ${res.status} for ${gameId}`);
       return null;
     }
-    return res.json();
+    try {
+      const json = await res.json();
+      return parseExternal(Scores365GameDetailResponseSchema, json, '365scores game detail');
+    } catch (err) {
+      // Schema drift on 365scores → log and degrade gracefully instead of crashing.
+      this.logger.warn(`365 game payload validation failed for ${gameId}: ${(err as Error).message}`);
+      return null;
+    }
   }
 }
 
