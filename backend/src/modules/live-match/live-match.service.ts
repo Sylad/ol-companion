@@ -74,6 +74,7 @@ export class LiveMatchService implements OnModuleInit {
 
   @Cron('*/30 * * * * *', { name: 'live-match-poll', timeZone: 'Europe/Paris' })
   async pollLiveMatch() {
+    if (this.shouldSkipPoll()) return;
     try {
       const current = await this.refreshCurrent();
       if (!current) return;
@@ -95,6 +96,48 @@ export class LiveMatchService implements OnModuleInit {
     } catch (err) {
       this.logger.warn(`pollLiveMatch failed: ${(err as Error).message}`);
     }
+  }
+
+  /**
+   * Throttle the cron to spare 365scores from useless traffic.
+   *
+   * - **Night** (02:00-08:00 Europe/Paris) : OL never plays then — hard skip.
+   * - **No match in sight** : throttle full refresh to once every 15 min instead
+   *   of every 30 s. We still detect new matches at most 15 min late.
+   * - **Upcoming match more than 3 h away** : throttle to once every 5 min.
+   *
+   * Live or just-ended matches keep the 30 s cadence.
+   */
+  private shouldSkipPoll(): boolean {
+    if (this.isNightTimeParis()) return true;
+
+    const sinceLastRefresh = Date.now() - this.cachedCurrentAt;
+    const current = this.cachedCurrent;
+
+    // No current/upcoming match known → throttle to 15 min between full refreshes.
+    if (!current) {
+      return sinceLastRefresh < 15 * 60_000;
+    }
+
+    // Upcoming match more than 3 h away → throttle to 5 min.
+    const isUpcoming = current.statusGroup === 1 || current.statusGroup === 2;
+    if (isUpcoming) {
+      const minsToKickoff = (new Date(current.startTime).getTime() - Date.now()) / 60_000;
+      if (minsToKickoff > 180) return sinceLastRefresh < 5 * 60_000;
+    }
+
+    // Live, just-ended, or kickoff within 3 h → full 30 s cadence.
+    return false;
+  }
+
+  private isNightTimeParis(): boolean {
+    const hourStr = new Intl.DateTimeFormat('fr-FR', {
+      hour: 'numeric',
+      hourCycle: 'h23',
+      timeZone: 'Europe/Paris',
+    }).format(new Date());
+    const hour = parseInt(hourStr, 10);
+    return hour >= 2 && hour < 8;
   }
 
   private async refreshCurrent(): Promise<LiveMatchSummary | null> {
