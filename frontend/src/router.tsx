@@ -14,6 +14,7 @@ import { PlayersPage } from './routes/players';
 import { FcNoobzPage } from './routes/fcnoobz';
 import { AboutPage } from './routes/about';
 import { MatchPage } from './routes/match';
+import { MapPage } from './routes/map';
 
 const rootRoute = createRootRoute({
   component: AppShell,
@@ -76,6 +77,12 @@ const matchRoute = createRoute({
   }),
 });
 
+const mapRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/map',
+  component: MapPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   fixturesRoute,
@@ -86,6 +93,7 @@ const routeTree = rootRoute.addChildren([
   fcnoobzRoute,
   aboutRoute,
   matchRoute,
+  mapRoute,
 ]);
 
 export const router = createRouter({

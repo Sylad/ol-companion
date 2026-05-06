@@ -121,3 +121,43 @@
     @apply font-mono tabular-nums;
   }
 }
+
+/* Leaflet overrides — dark theme + OL accent. Loaded outside @layer because
+   leaflet ships its own CSS that we want to override at full specificity. */
+.leaflet-container {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: hsl(var(--surface));
+  color: hsl(var(--fg));
+  border: 1px solid hsl(var(--border-strong));
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.leaflet-popup-content {
+  margin: 12px 14px;
+  line-height: 1.4;
+}
+.leaflet-popup-close-button {
+  color: hsl(var(--fg-dim)) !important;
+}
+.leaflet-popup-close-button:hover {
+  color: hsl(var(--fg)) !important;
+}
+.leaflet-control-attribution {
+  background: hsl(var(--surface) / 0.85) !important;
+  color: hsl(var(--fg-muted)) !important;
+  font-size: 10px;
+}
+.leaflet-control-attribution a {
+  color: hsl(var(--ol-blue-bright));
+}
+.leaflet-control-zoom a {
+  background: hsl(var(--surface)) !important;
+  color: hsl(var(--fg)) !important;
+  border-color: hsl(var(--border-strong)) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: hsl(var(--surface-2)) !important;
+}
