@@ -117,3 +117,52 @@ export function computeH2H(matches: OlMatchVsClub[]): H2HSummary {
   }
   return summary;
 }
+
+/** Result of a single OL fixture for the bicolor map markers. */
+export type OLMatchResult = 'W' | 'L' | 'D' | 'FUTURE';
+
+export interface ClubH2HLeg {
+  date: string;
+  result: OLMatchResult;
+  venue: 'home' | 'away';
+}
+
+export interface ClubH2HSeason {
+  /** Match aller — chronologically the first OL vs club fixture this season. */
+  legA: ClubH2HLeg | null;
+  /** Match retour — the second OL vs club fixture this season. */
+  legB: ClubH2HLeg | null;
+}
+
+/**
+ * Computes the leg A / leg B summary for OL vs a given club this Ligue 1 season.
+ * Used by the map markers to render a 2-color circle (left = leg A, right = leg B).
+ *
+ * Edge cases:
+ * - 0 matches found (incomplete fixtures cache) -> both legs null
+ * - 1 match found (mid-season scrape, calendar quirk) -> legA set, legB null
+ * - non-finished match (TIMED / SCHEDULED / IN_PLAY / POSTPONED) -> result 'FUTURE'
+ */
+export function computeClubH2HSeason(
+  fixtures: Fixture[] | undefined,
+  club: Ligue1Club,
+): ClubH2HSeason {
+  const matches = olMatchesVsClub(fixtures, club);
+  const toLeg = (m: OlMatchVsClub): ClubH2HLeg => {
+    let result: OLMatchResult;
+    if (m.isPast && m.outcome) {
+      result = m.outcome;
+    } else {
+      result = 'FUTURE';
+    }
+    return {
+      date: m.fixture.date,
+      result,
+      venue: m.isHome ? 'home' : 'away',
+    };
+  };
+  return {
+    legA: matches[0] ? toLeg(matches[0]) : null,
+    legB: matches[1] ? toLeg(matches[1]) : null,
+  };
+}
