@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import { Home, CalendarDays, ListOrdered, Newspaper, Trophy, Users } from 'lucide-react';
+import { Home, CalendarDays, ListOrdered, Newspaper, Trophy, Users, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SidebarLinks } from './sidebar-links';
 
@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
   { to: '/players', label: 'Joueurs', icon: Users, exact: false },
   { to: '/news', label: 'Actu', icon: Newspaper, exact: false },
   { to: '/cups', label: 'Coupes', icon: Trophy, exact: false },
+  { to: '/map', label: 'Carte L1', icon: MapPin, exact: false },
 ] as const;
 
 export function Sidebar() {
