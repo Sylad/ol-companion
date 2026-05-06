@@ -249,7 +249,9 @@ export class CupsService implements OnModuleInit {
   private gameToMatch(g: Scores365Game, compId: number, stageNames: Record<number, string>): CupMatch {
     const date = new Date(g.startTime).toISOString();
     const statusGroup = g.statusGroup;
-    const status = statusGroup === 4 ? 'FINISHED' : statusGroup === 2 ? 'IN_PLAY' : 'SCHEDULED';
+    // 365scores statusGroups: 1=scheduled-soon, 2=scheduled-future, 3=live, 4=ended.
+    // (cf. season-matches.service.ts:226 for canonical mapping.)
+    const status = statusGroup === 4 ? 'FINISHED' : statusGroup === 3 ? 'IN_PLAY' : 'SCHEDULED';
 
     const stageNum = g.stageNum ?? 0;
     const roundNum = g.roundNum ?? 0;

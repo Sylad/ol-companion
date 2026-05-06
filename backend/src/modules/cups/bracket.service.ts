@@ -84,9 +84,12 @@ export class BracketService {
   }
 
   private toBracketMatch(g: Scores365Game, stageNames: Record<number, string>): BracketMatch {
+    // 365scores statusGroups: 1=scheduled-soon, 2=scheduled-future, 3=live, 4=ended.
+    // Treating 2 as IN_PLAY would tag a "future scheduled" match as in-play (cf.
+    // season-matches.service.ts:226 for the canonical mapping documentation).
     const status =
       g.statusGroup === 4 ? 'FINISHED'
-      : g.statusGroup === 2 ? 'IN_PLAY'
+      : g.statusGroup === 3 ? 'IN_PLAY'
       : 'SCHEDULED';
     const homeId = g.homeCompetitor?.id ?? 0;
     const awayId = g.awayCompetitor?.id ?? 0;
