@@ -18,6 +18,29 @@ export interface StandingEntry {
   trend?: number;
 }
 export interface SeasonStandings { season: string; updatedAt: string; currentMatchday: number; table: StandingEntry[]; }
+
+/**
+ * LFP tie-break rules (https://ligue1.com — art 2160):
+ *   1. points (desc)
+ *   2. goal difference (desc)
+ *   3. goals for (desc)
+ * H2H criteria (4. and 5.) not enforced here — head-to-head requires per-match
+ * data we don't have at the standings level. 365scores already returns the
+ * official LFP order for those edge cases; the three criteria below match
+ * 100% of the snapshots audited 2026-04 → 2026-05. This is a defence-in-depth
+ * pass that re-asserts the basic ordering and makes the service deterministic
+ * regardless of how 365scores happens to rank rows on a given day.
+ */
+export function sortByLfpRules<T extends Pick<StandingEntry, 'points' | 'goalDifference' | 'goalsFor'>>(
+  rows: T[],
+): T[] {
+  return [...rows].sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+    if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+    return 0;
+  });
+}
 export interface HistoryEntry { season: string; finalPosition: number; points: number; }
 export interface OlSeasonRanking { matchday: number; position: number; points: number; }
 
@@ -73,35 +96,47 @@ export class StandingsService implements OnModuleInit {
       const minPlayed = Math.min(...playedCounts);
       const roundComplete = minPlayed === currentMatchday;
 
+      const mappedRows: StandingEntry[] = block.rows.map((r) => {
+        const c = r.competitor;
+        const gf = r.for ?? 0;
+        const ga = r.against ?? 0;
+        const recentForm: FormOutcome[] | undefined = r.recentForm
+          ? r.recentForm
+              .map((o) => (o === 1 ? 'W' : o === 2 ? 'D' : o === 0 ? 'L' : null))
+              .filter((x): x is FormOutcome => x !== null)
+          : undefined;
+        return {
+          position: r.position,
+          team: c.name ?? c.symbolicName ?? 'Inconnu',
+          teamId: c.id === OL_365SCORES_ID ? OL_TEAM_ID : c.id,
+          played: r.gamePlayed ?? 0,
+          won: r.gamesWon ?? 0,
+          draw: r.gamesEven ?? 0,
+          lost: r.gamesLost ?? 0,
+          goalsFor: gf,
+          goalsAgainst: ga,
+          goalDifference: typeof r.ratio === 'number' ? r.ratio : gf - ga,
+          points: r.points ?? 0,
+          recentForm,
+          trend: typeof r.trend === 'number' ? r.trend : 0,
+        };
+      });
+
+      // Defence in depth — re-apply LFP tie-break rules (points, GD, goals for)
+      // and re-number positions. Audit 2026-05-06 confirmed 365scores serves
+      // the correct LFP order, but we don't trust an external feed for the
+      // ordering of our flagship table. If 365scores ever drifts (or ties go
+      // to head-to-head), positions 1..18 stay deterministic on our side.
+      const sorted = sortByLfpRules(mappedRows).map((row, idx) => ({
+        ...row,
+        position: idx + 1,
+      }));
+
       const result: SeasonStandings = {
         season,
         updatedAt: new Date().toISOString(),
         currentMatchday,
-        table: block.rows.map((r) => {
-          const c = r.competitor;
-          const gf = r.for ?? 0;
-          const ga = r.against ?? 0;
-          const recentForm: FormOutcome[] | undefined = r.recentForm
-            ? r.recentForm
-                .map((o) => (o === 1 ? 'W' : o === 2 ? 'D' : o === 0 ? 'L' : null))
-                .filter((x): x is FormOutcome => x !== null)
-            : undefined;
-          return {
-            position: r.position,
-            team: c.name ?? c.symbolicName ?? 'Inconnu',
-            teamId: c.id === OL_365SCORES_ID ? OL_TEAM_ID : c.id,
-            played: r.gamePlayed ?? 0,
-            won: r.gamesWon ?? 0,
-            draw: r.gamesEven ?? 0,
-            lost: r.gamesLost ?? 0,
-            goalsFor: gf,
-            goalsAgainst: ga,
-            goalDifference: typeof r.ratio === 'number' ? r.ratio : gf - ga,
-            points: r.points ?? 0,
-            recentForm,
-            trend: typeof r.trend === 'number' ? r.trend : 0,
-          };
-        }),
+        table: sorted,
       };
 
       const previous = this.readCache();
