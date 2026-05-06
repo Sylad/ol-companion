@@ -1,4 +1,4 @@
-import type { Fixture } from '@/types/api';
+import type { Fixture, SeasonMatch } from '@/types/api';
 import { OL_TEAM_ID } from '@/types/api';
 import { LIGUE1_CLUBS_COORDS, type Ligue1Club } from './ligue1-clubs-coords';
 
@@ -17,6 +17,11 @@ export function resolveOpponentClub(fixture: Fixture): Ligue1Club | undefined {
 
   const byId = LIGUE1_CLUBS_COORDS.find((c) => c.idFootballData && c.idFootballData === oppId);
   if (byId) return byId;
+
+  // /api/season-matches sends 365scores team ids verbatim for non-OL clubs
+  // (only OL is remapped to OL_TEAM_ID at the boundary).
+  const byId365 = LIGUE1_CLUBS_COORDS.find((c) => c.id365 === oppId);
+  if (byId365) return byId365;
 
   const lower = (oppName ?? '').toLowerCase();
   if (!lower) return undefined;
@@ -165,4 +170,55 @@ export function computeClubH2HSeason(
     legA: matches[0] ? toLeg(matches[0]) : null,
     legB: matches[1] ? toLeg(matches[1]) : null,
   };
+}
+
+/* -------------------------------------------------------------------- */
+/* /api/season-matches helpers — full-season multi-competition source.  */
+/* These exist alongside the Fixture-based helpers above so the map     */
+/* can render Ligue 1 markers AND a "Coupe de France" popup section    */
+/* without merging the two payloads.                                    */
+/* -------------------------------------------------------------------- */
+
+/** Filter a SeasonMatch list to the Ligue 1 competition only. */
+export function filterLigue1(matches: SeasonMatch[] | undefined): SeasonMatch[] {
+  return (matches ?? []).filter((m) => m.competitionCode === 'L1');
+}
+
+export interface CupMatchVsClub {
+  match: SeasonMatch;
+  isHome: boolean;
+  isPast: boolean;
+  outcome: 'W' | 'D' | 'L' | null;
+}
+
+/**
+ * Returns OL's Coupe de France matches vs a given Ligue 1 club this season,
+ * sorted oldest-first. Empty array when none — most clubs have zero CdF
+ * encounters per season (knockout draw).
+ */
+export function olCupMatchesVsClub(
+  matches: SeasonMatch[] | undefined,
+  club: Ligue1Club,
+  competitionCode: 'CDF' | 'UEL' = 'CDF',
+): CupMatchVsClub[] {
+  if (!matches?.length) return [];
+  const out: CupMatchVsClub[] = [];
+
+  for (const m of matches) {
+    if (m.competitionCode !== competitionCode) continue;
+    const opp = resolveOpponentClub(m);
+    if (!opp || opp.id365 !== club.id365) continue;
+
+    const isHome = m.homeTeamId === OL_TEAM_ID;
+    const isPast = m.status === 'FINISHED';
+    let outcome: CupMatchVsClub['outcome'] = null;
+    if (isPast && m.homeScore !== null && m.awayScore !== null) {
+      const olScore = isHome ? m.homeScore : m.awayScore;
+      const oppScore = isHome ? m.awayScore : m.homeScore;
+      outcome = olScore > oppScore ? 'W' : olScore < oppScore ? 'L' : 'D';
+    }
+    out.push({ match: m, isHome, isPast, outcome });
+  }
+
+  return out.sort((a, b) => new Date(a.match.date).getTime() - new Date(b.match.date).getTime());
 }

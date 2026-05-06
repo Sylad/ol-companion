@@ -5,6 +5,7 @@ import configuration from './config/configuration';
 import { HealthModule } from './modules/health/health.module';
 import { ClaudeUsageModule } from './modules/claude-usage/claude-usage.module';
 import { FixturesModule } from './modules/fixtures/fixtures.module';
+import { SeasonMatchesModule } from './modules/season-matches/season-matches.module';
 import { StandingsModule } from './modules/standings/standings.module';
 import { NewsModule } from './modules/news/news.module';
 import { CupsModule } from './modules/cups/cups.module';
@@ -24,6 +25,7 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     ClaudeUsageModule,
     HealthModule,
     FixturesModule,
+    SeasonMatchesModule,
     StandingsModule,
     NewsModule,
     CupsModule,

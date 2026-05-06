@@ -57,6 +57,17 @@ export interface Fixture {
   matchday: number | null;
 }
 
+/**
+ * Extended fixture coming from /api/season-matches (365scores-backed,
+ * full season). Same wire shape as `Fixture` plus a `competitionCode`
+ * discriminator so the UI can switch on a stable code instead of
+ * parsing free-form competition names.
+ */
+export interface SeasonMatch extends Fixture {
+  competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
+  competitionId: number;
+}
+
 export interface NewsItem {
   title: string;
   link: string;
