@@ -1,7 +1,9 @@
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
+import { useMatchEventBurst } from '@/hooks/use-match-event-burst';
 import { ShotMap } from '@/components/shot-map';
+import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent } from '@/types/api';
@@ -105,6 +107,7 @@ export function MatchPage() {
     Number.isFinite(numericGameId) ? numericGameId : null,
     matchupId ?? null,
   );
+  const burst = useMatchEventBurst(data);
 
   if (isLoading) {
     return (
@@ -131,6 +134,7 @@ export function MatchPage() {
 
   return (
     <div className="space-y-6">
+      {burst && <MatchEventBurst key={burst.id} type={burst.type} />}
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
         <ArrowLeft className="h-4 w-4" /> Accueil
       </Link>
