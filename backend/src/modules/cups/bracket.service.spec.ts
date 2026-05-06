@@ -64,6 +64,23 @@ describe('BracketService.fetchBracket', () => {
     expect(r!.stages[0].matches[0].id).toBe(2);
   });
 
+  it('maps 365scores statusGroup to bracket status (4=FINISHED, 3=IN_PLAY, 1+2=SCHEDULED)', async () => {
+    // Regression guard: statusGroup=2 means "scheduled-future" (not in-play).
+    // Mapping it to IN_PLAY would tag a match in 4 days as live (cf. cups bug 2026-05-06).
+    withFetch([
+      sample365({ id: 1, stageNum: 6, statusGroup: 4 }),
+      sample365({ id: 2, stageNum: 6, statusGroup: 3, homeCompetitor: { id: 200, name: 'PSG' }, awayCompetitor: { id: 465, name: 'Lyon' } }),
+      sample365({ id: 3, stageNum: 6, statusGroup: 2, homeCompetitor: { id: 300, name: 'Nice' }, awayCompetitor: { id: 465, name: 'Lyon' } }),
+      sample365({ id: 4, stageNum: 6, statusGroup: 1, homeCompetitor: { id: 400, name: 'Brest' }, awayCompetitor: { id: 465, name: 'Lyon' } }),
+    ]);
+    const r = await service.fetchBracket(37, 6, new Date('2025-08-01'));
+    const byId = new Map(r!.stages[0].matches.map((m) => [m.id, m]));
+    expect(byId.get(1)!.status).toBe('FINISHED');
+    expect(byId.get(2)!.status).toBe('IN_PLAY');
+    expect(byId.get(3)!.status).toBe('SCHEDULED');
+    expect(byId.get(4)!.status).toBe('SCHEDULED');
+  });
+
   it('labels EL stages from round of 16 (stageNum 3) onward', async () => {
     withFetch([
       sample365({ id: 10, stageNum: 3 }),
