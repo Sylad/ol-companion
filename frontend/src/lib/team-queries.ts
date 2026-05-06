@@ -1,7 +1,10 @@
 // Map: 365scores teamId OR football-data teamId → wiki page name (clubs Ligue 1 2025-26)
-// Les IDs ne se chevauchent pas (sauf OL=523 qui est intentionnellement partagé via remap backend).
+// IDs football-data audités contre /api/fixtures live (2026-05-06).
+// Avant : la table avait des IDs football-data inventés (511 → Le Havre alors que
+// 511 = Toulouse côté football-data) → mauvaises résolutions wiki sur tout
+// le composant TeamLogo (dashboard hero, match-card, last-result, cup-match-row).
 const TEAM_WIKI_BY_ID: Record<number, string> = {
-  // === 365scores IDs (utilisés par /api/standings) ===
+  // === 365scores IDs (utilisés par /api/standings, /api/cups, /api/season-matches) ===
   480: 'Paris Saint-Germain Football Club',
   481: 'Racing Club de Lens',
   478: 'Lille Olympique Sporting Club',
@@ -20,30 +23,26 @@ const TEAM_WIKI_BY_ID: Record<number, string> = {
   486: 'Football Club de Nantes',
   484: 'Football Club de Metz',
 
-  // === Adversaires fréquents en coupes européennes (365scores IDs) ===
-  // À enrichir au fur et à mesure des tirages
-  // Eredivisie / Bundesliga / Serie A / Liga / Premier League — clubs notables
-  // (laisse vide pour l'instant, fallback wiki search via teamName)
-
   // === football-data IDs (utilisés par /api/fixtures) — OL=523 est partagé via remap ===
+  // Source : curl http://nas:3002/api/fixtures (audit 2026-05-06).
+  511: 'Toulouse Football Club',
+  512: 'Stade brestois 29',
+  516: 'Olympique de Marseille',
+  519: 'Association de la jeunesse auxerroise',
+  521: 'Lille Olympique Sporting Club',
+  522: 'Olympique gymnaste club Nice',
   523: 'Olympique lyonnais',
   524: 'Paris Saint-Germain Football Club',
-  521: 'Olympique de Marseille',
-  522: 'Association sportive de Monaco Football Club',
-  511: 'Havre Athletic Club',
-  519: 'Association de la jeunesse auxerroise',
-  527: 'Lille Olympique Sporting Club',
-  528: 'Football Club de Lorient',
-  533: 'Racing Club de Lens',
-  542: "Angers Sporting Club de l'Ouest",
+  525: 'Football Club de Lorient',
+  529: 'Stade rennais Football Club',
+  532: "Angers Sporting Club de l'Ouest",
+  533: 'Havre Athletic Club',
   543: 'Football Club de Nantes',
-  544: 'Toulouse Football Club',
-  548: 'Stade rennais Football Club',
-  549: 'Olympique gymnaste club Nice',
-  559: 'Stade brestois 29',
-  1062: 'Football Club de Metz',
-  1063: 'Racing Club de Strasbourg Alsace',
-  7793: 'Paris Football Club',
+  545: 'Football Club de Metz',
+  546: 'Racing Club de Lens',
+  548: 'Association sportive de Monaco Football Club',
+  576: 'Racing Club de Strasbourg Alsace',
+  1045: 'Paris Football Club',
 };
 
 export function teamWikiQuery(teamId: number, fallbackName: string): string {
