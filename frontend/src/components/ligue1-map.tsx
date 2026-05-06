@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useFixtures } from '@/hooks/use-fixtures';
+import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { useStandings } from '@/hooks/use-standings';
 import {
   LIGUE1_CLUBS_COORDS,
@@ -13,10 +13,12 @@ import {
 import {
   computeClubH2HSeason,
   computeH2H,
+  filterLigue1,
+  olCupMatchesVsClub,
   olMatchesVsClub,
   type OLMatchResult,
 } from '@/lib/ligue1-club-match';
-import { OL_TEAM_ID, type StandingEntry } from '@/types/api';
+import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
 /**
  * Ligue 1 club map.
@@ -123,15 +125,22 @@ function formatDate(iso: string): string {
 interface ClubPopupProps {
   club: Ligue1Club;
   standingEntry: StandingEntry | undefined;
-  fixturesData: ReturnType<typeof useFixtures>['data'];
+  /** L1-only slice — used for the season W/N/L bilan + per-leg list. */
+  ligue1Matches: SeasonMatch[];
+  /** Full season — used to surface Coupe de France encounter(s) below. */
+  allMatches: SeasonMatch[] | undefined;
 }
 
-function ClubPopup({ club, standingEntry, fixturesData }: ClubPopupProps) {
+function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopupProps) {
   const matches = useMemo(
-    () => olMatchesVsClub(fixturesData, club),
-    [fixturesData, club],
+    () => olMatchesVsClub(ligue1Matches, club),
+    [ligue1Matches, club],
   );
   const h2h = useMemo(() => computeH2H(matches), [matches]);
+  const cupMatches = useMemo(
+    () => olCupMatchesVsClub(allMatches, club, 'CDF'),
+    [allMatches, club],
+  );
   const played = matches.filter((m) => m.isPast);
   const upcoming = matches.filter((m) => !m.isPast);
   const isOL = club.id365 === OL_ID_365;
@@ -247,6 +256,46 @@ function ClubPopup({ club, standingEntry, fixturesData }: ClubPopupProps) {
               </ul>
             </div>
           )}
+
+          {cupMatches.length > 0 && (
+            <div className="mt-3 pt-2 border-t border-border">
+              <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1.5 font-semibold flex items-center gap-1">
+                <span aria-hidden>🏆</span>
+                <span>Coupe de France</span>
+              </div>
+              <ul className="space-y-1">
+                {cupMatches.map((m) => {
+                  const isHome = m.isHome;
+                  const olScore = isHome ? m.match.homeScore : m.match.awayScore;
+                  const oppScore = isHome ? m.match.awayScore : m.match.homeScore;
+                  const chipColor = m.isPast ? colorForResult(m.outcome ?? 'FUTURE') : RESULT_DARK;
+                  const chipLetter = m.isPast
+                    ? m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·'
+                    : '·';
+                  return (
+                    <li key={m.match.id} className="flex items-center gap-2 text-[11px]">
+                      <span
+                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
+                        style={{ background: chipColor }}
+                        aria-label={chipLetter}
+                      >
+                        {chipLetter}
+                      </span>
+                      <span className="text-fg-dim w-[68px] num">{formatDate(m.match.date)}</span>
+                      <span className="text-fg-muted">{isHome ? 'D' : 'E'}</span>
+                      {m.isPast && olScore !== null && oppScore !== null ? (
+                        <span className="num font-bold">
+                          {olScore}–{oppScore}
+                        </span>
+                      ) : (
+                        <span className="text-fg-dim italic">à venir</span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </>
       )}
 
@@ -263,7 +312,10 @@ interface ClubMarkerProps {
   club: Ligue1Club;
   positionOffsetMeters?: { dx: number; dy: number };
   standingEntry?: StandingEntry;
-  fixturesData: ReturnType<typeof useFixtures>['data'];
+  /** L1-only matches — drives the bicolor marker (legA / legB). */
+  ligue1Matches: SeasonMatch[];
+  /** Full season — passed through to the popup for the CdF block. */
+  allMatches: SeasonMatch[] | undefined;
 }
 
 /** Convert a small metres offset to lat/lng — fine for sub-km nudges. */
@@ -278,7 +330,7 @@ function offsetLatLng(
   return [lat + dLat, lng + dLng];
 }
 
-function ClubMarker({ club, positionOffsetMeters, standingEntry, fixturesData }: ClubMarkerProps) {
+function ClubMarker({ club, positionOffsetMeters, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
   const isOL = club.id365 === OL_ID_365;
   const [lat, lng] = positionOffsetMeters
     ? offsetLatLng(club.lat, club.lng, positionOffsetMeters.dx, positionOffsetMeters.dy)
@@ -286,9 +338,10 @@ function ClubMarker({ club, positionOffsetMeters, standingEntry, fixturesData }:
 
   const icon = useMemo(() => {
     if (isOL) return OL_ICON;
-    const season = computeClubH2HSeason(fixturesData, club);
+    // Markers strictly reflect Ligue 1 — never CdF/UEL.
+    const season = computeClubH2HSeason(ligue1Matches, club);
     return getClubIcon(season.legA?.result ?? null, season.legB?.result ?? null);
-  }, [isOL, fixturesData, club]);
+  }, [isOL, ligue1Matches, club]);
 
   return (
     <Marker
@@ -298,7 +351,12 @@ function ClubMarker({ club, positionOffsetMeters, standingEntry, fixturesData }:
       zIndexOffset={isOL ? 1000 : 0}
     >
       <Popup>
-        <ClubPopup club={club} standingEntry={standingEntry} fixturesData={fixturesData} />
+        <ClubPopup
+          club={club}
+          standingEntry={standingEntry}
+          ligue1Matches={ligue1Matches}
+          allMatches={allMatches}
+        />
       </Popup>
     </Marker>
   );
@@ -340,8 +398,13 @@ function MapLegend() {
 
 export function Ligue1Map() {
   const standingsQ = useStandings();
-  const fixturesQ = useFixtures();
+  const seasonMatchesQ = useSeasonMatches();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const ligue1Matches = useMemo(
+    () => filterLigue1(seasonMatchesQ.data),
+    [seasonMatchesQ.data],
+  );
 
   const standingsByTeamId = useMemo(() => {
     const map = new Map<number, StandingEntry>();
@@ -389,7 +452,8 @@ export function Ligue1Map() {
               club={club}
               positionOffsetMeters={offset}
               standingEntry={findStandingForClub(club)}
-              fixturesData={fixturesQ.data}
+              ligue1Matches={ligue1Matches}
+              allMatches={seasonMatchesQ.data}
             />
           );
         })}
