@@ -18,7 +18,7 @@ const STACK = [
     group: 'Backend',
     icon: Server,
     items: [
-      'NestJS 10 + TypeScript 5',
+      'NestJS 11 + TypeScript 5',
       'Stockage JSON local (cache fixtures)',
       'Proxy 365scores (classement live + forme)',
       'Proxy football-data.org (calendrier officiel)',

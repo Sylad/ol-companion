@@ -28,6 +28,9 @@ export function useEventStream() {
           case 'season-rankings-changed':
             qc.invalidateQueries({ queryKey: ['season-rankings'] });
             break;
+          case 'season-matches-changed':
+            qc.invalidateQueries({ queryKey: ['season-matches'] });
+            break;
           case 'claude-balance-changed':
             qc.invalidateQueries({ queryKey: ['claude-usage'] });
             break;
