@@ -18,6 +18,11 @@ export class PinGuard implements CanActivate {
     if (!this.pin) return true;
 
     const req = ctx.switchToHttp().getRequest<Request>();
+
+    // Le flux SSE ne peut pas porter le header Authorization (EventSource standard
+    // n'a pas d'API pour les headers custom). Bypass pour préserver le push live.
+    if (req.url.startsWith('/api/events')) return true;
+
     const auth = req.headers['authorization'] ?? '';
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
 
