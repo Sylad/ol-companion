@@ -11,6 +11,7 @@ import { StandingsPage } from './routes/standings';
 import { NewsPage } from './routes/news';
 import { CupsPage } from './routes/cups';
 import { PlayersPage } from './routes/players';
+import { PlayerDetailPage } from './routes/player.$athleteId';
 import { FcNoobzPage } from './routes/fcnoobz';
 import { AboutPage } from './routes/about';
 import { MatchPage } from './routes/match';
@@ -56,6 +57,12 @@ const playersRoute = createRoute({
   component: PlayersPage,
 });
 
+const playerDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/player/$athleteId',
+  component: PlayerDetailPage,
+});
+
 const fcnoobzRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/fcnoobz',
@@ -90,6 +97,7 @@ const routeTree = rootRoute.addChildren([
   newsRoute,
   cupsRoute,
   playersRoute,
+  playerDetailRoute,
   fcnoobzRoute,
   aboutRoute,
   matchRoute,
