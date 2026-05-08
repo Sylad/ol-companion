@@ -236,3 +236,53 @@ export interface LiveMatchStats extends LiveMatchSummary {
   shots: LiveMatchShot[];
   updatedAt: string;
 }
+
+/* ------------------------------------------------------------------ */
+/* Per-player season-cumulative stats — backed by /api/players/...    */
+/* The backend replays the live-match aggregator across every match   */
+/* in season-matches-cache so the data sits in one canonical bucket.  */
+/* ------------------------------------------------------------------ */
+
+export interface PlayerByMatch {
+  gameId: number;
+  date: string;
+  opponent: string;
+  isHome: boolean;
+  olScore: number | null;
+  opponentScore: number | null;
+  result: 'W' | 'D' | 'L' | null;
+  competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
+  minutes: number;
+  goals: number;
+  assists: number;
+  shots: number;
+  shotsOnTarget: number;
+  yellowCards: number;
+  redCards: number;
+  rating: number | null;
+  isStarter: boolean;
+}
+
+export interface PlayerSeasonStats {
+  athleteId: number;
+  memberId: number;
+  name: string;
+  shortName: string;
+  jerseyNumber: number | null;
+  position: string;
+  positionShort: string;
+  imageVersion: number | null;
+  matchesPlayed: number;
+  matchesStarted: number;
+  minutesPlayed: number;
+  goals: number;
+  assists: number;
+  goalContributions: number;
+  shots: number;
+  shotsOnTarget: number;
+  shotAccuracy: number;
+  yellowCards: number;
+  redCards: number;
+  averageRating: number | null;
+  byMatch: PlayerByMatch[];
+}

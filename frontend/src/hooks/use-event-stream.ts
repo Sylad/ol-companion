@@ -30,6 +30,8 @@ export function useEventStream() {
             break;
           case 'season-matches-changed':
             qc.invalidateQueries({ queryKey: ['season-matches'] });
+            // Player season stats are derived from season-matches → same trigger.
+            qc.invalidateQueries({ queryKey: ['player-stats'] });
             break;
           case 'claude-balance-changed':
             qc.invalidateQueries({ queryKey: ['claude-usage'] });

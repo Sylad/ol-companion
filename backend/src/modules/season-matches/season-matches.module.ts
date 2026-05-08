@@ -5,5 +5,6 @@ import { SeasonMatchesController } from './season-matches.controller';
 @Module({
   controllers: [SeasonMatchesController],
   providers: [SeasonMatchesService],
+  exports: [SeasonMatchesService],
 })
 export class SeasonMatchesModule {}
