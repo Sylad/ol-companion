@@ -4,9 +4,11 @@ import { BottomNav } from './bottom-nav';
 import { PageBackdrop } from '@/components/page-backdrop';
 import { DemoBanner } from '@/components/demo-banner';
 import { useEventStream } from '@/hooks/use-event-stream';
+import { useMatchNotifications } from '@/hooks/use-match-notifications';
 
 export function AppShell() {
   useEventStream();
+  useMatchNotifications();
   return (
     <div className="min-h-full relative">
       <PageBackdrop />
