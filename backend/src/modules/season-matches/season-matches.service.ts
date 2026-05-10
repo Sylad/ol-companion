@@ -13,7 +13,7 @@ import {
   EUROPA_LEAGUE_365SCORES_ID,
 } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
-import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
+import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
 /**
@@ -135,12 +135,12 @@ export class SeasonMatchesService implements OnModuleInit {
 
     for (let page = 0; page < PAGES && url; page++) {
       try {
-        const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+        const res: Response = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
         if (!res.ok) {
           this.logger.warn(`365scores results page ${page} → HTTP ${res.status}`);
           break;
         }
-        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores season results');
+        const d: Scores365GamesResponse = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores season results');
         const list = d.games ?? [];
         for (const g of list) games.set(g.id, g);
 
@@ -154,7 +154,7 @@ export class SeasonMatchesService implements OnModuleInit {
         const oldest = list[list.length - 1];
         if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
 
-        const prev = d.paging?.previousPage;
+        const prev: string | undefined = d.paging?.previousPage;
         url = prev ? `https://data.365scores.com${prev}` : null;
       } catch (err) {
         this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
