@@ -12,16 +12,21 @@ const competitorSchema = z.object({
   score: z.number().optional(),
 });
 
-export const Scores365GameSchema = z.object({
-  id: z.number(),
-  startTime: z.string(),
-  competitionId: z.number().optional(),
-  statusGroup: z.number().optional(),
-  stageNum: z.number().optional(),
-  roundNum: z.number().optional(),
-  homeCompetitor: competitorSchema.optional(),
-  awayCompetitor: competitorSchema.optional(),
-});
+export const Scores365GameSchema = z
+  .object({
+    id: z.number(),
+    startTime: z.string(),
+    competitionId: z.number().optional(),
+    statusGroup: z.number().optional(),
+    stageNum: z.number().optional(),
+    roundNum: z.number().optional(),
+    /** Some endpoints expose this on the list payload to flag whether
+     *  lineup-detail endpoints will return useful data. Used by lineup. */
+    hasLineups: z.boolean().optional(),
+    homeCompetitor: competitorSchema.optional(),
+    awayCompetitor: competitorSchema.optional(),
+  })
+  .passthrough();
 
 export type Scores365Game = z.infer<typeof Scores365GameSchema>;
 
