@@ -86,8 +86,10 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 ### Standings — source unique 365scores + tri LFP
 - ✅ Source = **365scores** (`competitions=35`), qui respecte l'ordre LFP officiel (différence générale, buts marqués, face-à-face).
 - ❌ Ne **PAS** reconstruire un H2H local depuis football-data.org — déjà essayé, ne match pas ligue1.com.
+- ❌ Sofascore renvoie `403 Forbidden` côté serveur (Cloudflare bot-check). Tested 2026-05-10, rejeté comme alternative.
 - ✅ Defense in depth : `standings.service.ts` ré-applique le tri LFP officiel localement après fetch (commit `faa283f`). Si 365scores change de format un jour, on reste robuste.
-- ✅ **Round-complete check** : la mise à jour de `season-rankings.json` ne se fait que si `MIN(played) === MAX(played)` (journée complète pour TOUTES les équipes), pour éviter les snapshots mid-journée. Journées historiques pré-2026-04-28 peuvent être incorrectes — dette acceptée par user, pas de reconstruction.
+- ✅ **Current matchday robuste aux fixtures décalées** (fix 2026-05-10) : `currentMatchday` = MODE des `played` counts (pas le max), `roundComplete` = `≥ 75% des équipes au matchday courant` (pas `min === max`). Une équipe rescheduled-ahead (cas Nantes 2026-05-10 : 17 équipes à MD32, Nantes à MD33) ne fige plus la mise à jour de `season-rankings.json`. L'ancrage de l'entrée OL dans `season-rankings.json` est désormais sur `OL.played` directement, pas sur le `currentMatchday` de la ligue. Voir helpers `computeCurrentMatchday()` et `isRoundComplete()` testés (11 specs).
+- ✅ Journées historiques pré-2026-04-28 peuvent être incorrectes — dette acceptée par user, pas de reconstruction.
 
 ### Headers 365scores obligatoires
 Sinon HTTP 403 :
