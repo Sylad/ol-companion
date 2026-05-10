@@ -4,6 +4,7 @@ import { DashboardStats } from '@/components/dashboard-stats';
 import { LastResult } from '@/components/last-result';
 import { LiveMatchCard } from '@/components/live-match-card';
 import { PositionTracker } from '@/components/position-tracker';
+import { SeasonSummary } from '@/components/season-summary';
 
 export function DashboardPage() {
   return (
@@ -13,6 +14,7 @@ export function DashboardPage() {
       <LiveMatchCard />
       <DashboardStats />
       <LastResult />
+      <SeasonSummary />
       <PositionTracker />
     </div>
   );

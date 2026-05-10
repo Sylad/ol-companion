@@ -238,6 +238,52 @@ export interface LiveMatchStats extends LiveMatchSummary {
 }
 
 /* ------------------------------------------------------------------ */
+/* Team-level season-cumulative stats — backed by                     */
+/* /api/season-matches/team-stats. Derived from season-matches-cache  */
+/* so reads cost ~0 and refresh tracks the cron there.                */
+/* ------------------------------------------------------------------ */
+
+export type CompetitionCode = 'L1' | 'CDF' | 'UEL' | 'OTHER';
+
+export interface PerCompetitionTeamStats {
+  competitionCode: CompetitionCode;
+  played: number;
+  won: number;
+  draw: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  cleanSheets: number;
+  points: number;
+}
+
+export interface TeamSeasonChartPoint {
+  matchIndex: number;
+  date: string;
+  goalDifference: number;
+  points: number | null;
+  competitionCode: CompetitionCode;
+  result: 'W' | 'D' | 'L';
+}
+
+export interface TeamSeasonStats {
+  played: number;
+  won: number;
+  draw: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  goalsForPerMatch: number;
+  goalsAgainstPerMatch: number;
+  cleanSheets: number;
+  cleanSheetRate: number;
+  winRate: number;
+  perCompetition: PerCompetitionTeamStats[];
+  chart: TeamSeasonChartPoint[];
+}
+
+/* ------------------------------------------------------------------ */
 /* Per-player season-cumulative stats — backed by /api/players/...    */
 /* The backend replays the live-match aggregator across every match   */
 /* in season-matches-cache so the data sits in one canonical bucket.  */
