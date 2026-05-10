@@ -54,20 +54,27 @@ export function Bracket({ bracket }: Props) {
   return (
     <div className="rounded-md border border-border bg-surface-2 p-3">
       <div className="eyebrow mb-2">Tableau</div>
-      {/* Desktop: horizontal columns per stage */}
-      <div className="hidden md:flex gap-3">
-        {stagesWithItems.map(({ stage, items }) => (
-          <div key={stage.stageNum} className="flex-1 min-w-[180px]">
-            <div className="text-xs font-semibold text-fg-muted uppercase tracking-wider mb-2 text-center">
-              {stage.stageFr}
+      {/* Desktop: horizontal columns per stage with horizontal scroll on narrow cards */}
+      <div className="hidden md:block relative">
+        <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin]">
+          {stagesWithItems.map(({ stage, items }) => (
+            <div key={stage.stageNum} className="shrink-0 w-44">
+              <div className="text-xs font-semibold text-fg-muted uppercase tracking-wider mb-2 text-center">
+                {stage.stageFr}
+              </div>
+              <div className="flex flex-col gap-3 justify-around h-full">
+                {items.map((it) => (
+                  <StageItemRender key={it.key} item={it} />
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col gap-3 justify-around h-full">
-              {items.map((it) => (
-                <StageItemRender key={it.key} item={it} />
-              ))}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        {/* Right edge gradient hint when content overflows */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute right-0 top-0 bottom-2 w-6 bg-gradient-to-l from-surface-2 to-transparent"
+        />
       </div>
       {/* Mobile: vertical stack per stage */}
       <div className="md:hidden space-y-3">
