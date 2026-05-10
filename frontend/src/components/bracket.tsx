@@ -53,13 +53,20 @@ function BracketDesktopLayout({ stagesWithItems, columnWidthClass }: {
   columnWidthClass: string;
 }) {
   return (
-    <div className="flex gap-3 overflow-x-auto overflow-y-hidden pb-2 [scrollbar-width:thin]">
+    // items-stretch (default flex) fait que toutes les colonnes prennent la
+    // même hauteur que la plus chargée (1/8 ou 1/4 typiquement). Combiné au
+    // h-full + justify-around à l'intérieur, ça espace les matchs de chaque
+    // round verticalement → forme d'arbre de tournoi : 8 matchs collés en
+    // 1/8, 4 matchs espacés en 1/4, 2 matchs très espacés en 1/2, etc.
+    // overflow-y-hidden garde la barre verticale parasite éloignée mais
+    // n'empêche pas le calcul de hauteur (items-stretch s'applique avant).
+    <div className="flex gap-3 overflow-x-auto overflow-y-hidden pb-2 [scrollbar-width:thin] items-stretch">
       {stagesWithItems.map(({ stage, items }) => (
-        <div key={stage.stageNum} className={`shrink-0 ${columnWidthClass}`}>
+        <div key={stage.stageNum} className={`shrink-0 flex flex-col ${columnWidthClass}`}>
           <div className="text-xs font-semibold text-fg-muted uppercase tracking-wider mb-2 text-center">
             {stage.stageFr}
           </div>
-          <div className="flex flex-col gap-3 justify-around">
+          <div className="flex flex-col gap-3 justify-around flex-1">
             {items.map((it) => (
               <StageItemRender key={it.key} item={it} />
             ))}
