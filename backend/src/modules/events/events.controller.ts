@@ -1,8 +1,10 @@
 import { Controller, Sse, MessageEvent } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Observable, interval, map, merge } from 'rxjs';
 import { EventBusService } from './event-bus.service';
 
 @Controller('events')
+@SkipThrottle()
 export class EventsController {
   constructor(private readonly bus: EventBusService) {}
 

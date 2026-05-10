@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import configuration from './config/configuration';
 import { DemoModule } from './modules/demo/demo.module';
 import { DemoModeMiddleware } from './modules/demo/demo-mode.middleware';
@@ -23,6 +25,15 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
   imports: [
     ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
     ScheduleModule.forRoot(),
+    // Rate limiting global. Audit a flagué le risque de hammering sur
+    // /api/wiki-image et /api/standings/news (exposés via tunnel démo
+    // Cloudflare). Bucket court (10/s) pour absorber les bursts UI, bucket
+    // long (60/min) pour limiter les abus de tiers extérieurs (365scores
+    // pourrait nous bannir si on relaie trop d'IPs publiques).
+    ThrottlerModule.forRoot([
+      { name: 'short', ttl: 1000, limit: 10 },
+      { name: 'long', ttl: 60_000, limit: 60 },
+    ]),
     DemoModule,
     SchedulerModule,
     EventsModule,
@@ -38,6 +49,9 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     LineupModule,
     LiveMatchModule,
     PlayersModule,
+  ],
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {
