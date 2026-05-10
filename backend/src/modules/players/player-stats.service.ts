@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Subscription } from 'rxjs';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import {
   SeasonMatchesService,
@@ -205,14 +206,13 @@ export class PlayerStatsService implements OnModuleInit {
   private writeCacheToDisk(): void {
     try {
       const file_ = this.cacheFile;
-      fs.mkdirSync(path.dirname(file_), { recursive: true });
       const dump: CachedFile = {
         ts: this.cacheBuiltAt,
         data: Object.fromEntries(
           [...this.cache.entries()].map(([id, s]) => [String(id), s]),
         ),
       };
-      fs.writeFileSync(file_, JSON.stringify(dump));
+      atomicWriteJsonSync(file_, dump);
     } catch (err) {
       this.logger.warn(
         `Failed to write player-stats cache: ${(err as Error).message}`,

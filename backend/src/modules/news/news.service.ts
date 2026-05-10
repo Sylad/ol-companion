@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 
 export interface NewsItem {
   title: string;
@@ -148,6 +149,6 @@ export class NewsService implements OnModuleInit {
 
   private writeCache(data: NewsItem[]): void {
     fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
-    fs.writeFileSync(this.cacheFile, JSON.stringify({ ts: Date.now(), data }));
+    atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
   }
 }
