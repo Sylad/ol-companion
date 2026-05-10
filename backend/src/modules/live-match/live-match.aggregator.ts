@@ -109,16 +109,79 @@ function eventTypeKey(e: Scores365Event): string {
 
 function toTimelineEvents(g: Scores365GameDetailed): LiveMatchTimelineEvent[] {
   const events = g.events ?? [];
-  return events.map((e) => ({
-    competitorId: e.competitorId ?? 0,
-    gameTime: typeof e.gameTime === 'number' ? e.gameTime : 0,
-    gameTimeDisplay: e.gameTimeDisplay ?? '',
-    type: eventTypeKey(e),
-    isMajor: !!e.isMajor,
-    playerId: typeof e.playerId === 'number' ? e.playerId : null,
-    extraPlayerId: Array.isArray(e.extraPlayers) && e.extraPlayers.length > 0 ? e.extraPlayers[0] : null,
-    description: describeEvent(e),
-  })).sort((a, b) => a.gameTime - b.gameTime);
+  const mapped: LiveMatchTimelineEvent[] = events
+    .map((e) => ({
+      competitorId: e.competitorId ?? 0,
+      gameTime: typeof e.gameTime === 'number' ? e.gameTime : 0,
+      gameTimeDisplay: e.gameTimeDisplay ?? '',
+      type: eventTypeKey(e),
+      isMajor: !!e.isMajor,
+      playerId: typeof e.playerId === 'number' ? e.playerId : null,
+      extraPlayerId:
+        Array.isArray(e.extraPlayers) && e.extraPlayers.length > 0 ? e.extraPlayers[0] : null,
+      description: describeEvent(e),
+    }))
+    .sort((a, b) => a.gameTime - b.gameTime);
+  return deriveSecondYellowReds(mapped);
+}
+
+/**
+ * FIFA rule: a player who collects two yellow cards in the same match is sent off
+ * (red card). 365scores sometimes emits a dedicated `second_yellow_red` event,
+ * sometimes only two `yellow_card` events. To present a uniform UX, we walk the
+ * timeline once and synthesize a `second_yellow_red` event on the 2nd yellow
+ * when 365scores didn't already do it.
+ *
+ * Idempotent: if a real `second_yellow_red` or `red_card` already exists at the
+ * same minute for the same player, no synthetic event is added.
+ */
+export function deriveSecondYellowReds(
+  events: LiveMatchTimelineEvent[],
+): LiveMatchTimelineEvent[] {
+  const yellowsByPlayer = new Map<number, number>();
+  const synthesized: LiveMatchTimelineEvent[] = [];
+  for (const e of events) {
+    if (e.playerId == null) continue;
+    if (e.type === 'yellow_card') {
+      const next = (yellowsByPlayer.get(e.playerId) ?? 0) + 1;
+      yellowsByPlayer.set(e.playerId, next);
+      if (next === 2) {
+        // Skip if 365scores already exposes a sending-off for this player at
+        // (or after) this minute — avoids duplicate.
+        const alreadySentOff = events.some(
+          (other) =>
+            other.playerId === e.playerId &&
+            (other.type === 'second_yellow_red' || other.type === 'red_card') &&
+            other.gameTime >= e.gameTime,
+        );
+        if (!alreadySentOff) {
+          synthesized.push({
+            competitorId: e.competitorId,
+            gameTime: e.gameTime,
+            gameTimeDisplay: e.gameTimeDisplay,
+            type: 'second_yellow_red',
+            isMajor: true,
+            playerId: e.playerId,
+            extraPlayerId: null,
+            description: '2e carton jaune — Expulsion',
+            derived: true,
+          });
+        }
+      }
+    } else if (e.type === 'second_yellow_red') {
+      // Treat as 2 yellows accumulated, even if only one yellow event is in the feed.
+      const next = Math.max(2, (yellowsByPlayer.get(e.playerId) ?? 0) + 1);
+      yellowsByPlayer.set(e.playerId, next);
+    }
+  }
+  if (synthesized.length === 0) return events;
+  return [...events, ...synthesized].sort((a, b) => {
+    if (a.gameTime !== b.gameTime) return a.gameTime - b.gameTime;
+    // Synthetic 2nd-yellow-red appears immediately after its triggering yellow.
+    if (a.derived && !b.derived) return 1;
+    if (!a.derived && b.derived) return -1;
+    return 0;
+  });
 }
 
 function shotOutcome(o: { name?: string } | undefined): string {
