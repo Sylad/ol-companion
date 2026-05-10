@@ -8,7 +8,7 @@ import { getCurrentSeason } from '../scheduler/season.util';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
-import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
+import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface CupMatch {
@@ -155,9 +155,9 @@ export class CupsService implements OnModuleInit {
     let url: string | null = `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=50`;
     for (let page = 0; page < 4 && url; page++) {
       try {
-        const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+        const res: Response = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
         if (!res.ok) break;
-        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores cups results');
+        const d: Scores365GamesResponse = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores cups results');
         const games = d.games ?? [];
         allGames.push(...games);
 
@@ -165,7 +165,7 @@ export class CupsService implements OnModuleInit {
         const oldest = games[games.length - 1];
         if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
 
-        const prev = d.paging?.previousPage;
+        const prev: string | undefined = d.paging?.previousPage;
         url = prev ? `https://data.365scores.com${prev}` : null;
       } catch (err: unknown) {
         this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
