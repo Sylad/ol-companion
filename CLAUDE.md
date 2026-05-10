@@ -124,4 +124,10 @@ Centralisés dans `SCORES365_HEADERS`.
 - Invalidation **manuelle** si schéma cache change avant rebuild backend (sinon vieux objets servis avec champs manquants).
 
 ### Season reset
-- Cron 1er août 03:00 Europe/Paris archive `data/<cache>.json` → `data/archive/<season>/`. Endpoint manuel `POST /api/admin/reset-season` derrière `PinGuard` (pas encore activé, mais réservé).
+- Cron 1er août 03:00 Europe/Paris archive `data/<cache>.json` → `data/archive/<season>/`. Endpoint manuel `POST /api/admin/reset-season` derrière `PinGuard` + `DemoWriteGuard`.
+
+### PIN guard + mode démo verrouillé (Cloudflare)
+- `APP_PIN` (vide → permissif) protège les endpoints write : `PUT /api/claude/balance`, `POST /api/admin/reset-season`. SSE `/api/events` toujours bypass.
+- `DEMO_FORCED_HOSTS` (default `trycloudflare.com,cfargotunnel.com`) : si le `Host`/`X-Forwarded-Host` matche, le PIN est bypassé MAIS les écritures retournent 403 (`DemoWriteGuard`). Le frontend affiche le badge "Mode démo verrouillée" via `/api/demo/status` (hook `useDemoStatus` + `DemoBanner`).
+- Pour exposer une démo publique : `ssh nas "cloudflared tunnel --url http://localhost:4202"` → URL random `https://*.trycloudflare.com` automatiquement en mode démo verrouillée.
+- Voir `forced_demo_host_pattern.md` (mémoire user) pour le pattern complet, partagé avec finance-tracker.
