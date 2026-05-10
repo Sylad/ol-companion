@@ -41,6 +41,54 @@ export function sortByLfpRules<T extends Pick<StandingEntry, 'points' | 'goalDif
     return 0;
   });
 }
+
+/**
+ * "Current matchday" = the most common played-count across the league.
+ *
+ * Why not `max(played)` ? Because rescheduled fixtures regularly leave one
+ * team a game ahead of the rest (e.g. 2026-05-10 snapshot: Nantes played
+ * MD33 while every other club was finishing MD32 — including OL). Using
+ * `max` returned `currentMatchday = 33` and made `roundComplete` (which
+ * gates `season-rankings.json` writes) impossible to satisfy until every
+ * single club had also played MD33, freezing the position tracker on MD31
+ * even though OL had clearly closed MD32 in 3rd place.
+ *
+ * Mode is robust to up to ~7 outliers in either direction (it just needs
+ * one cohort to be the largest). For the stable case `min === max`, mode
+ * still equals max — we don't regress on round-aligned snapshots.
+ */
+export function computeCurrentMatchday(playedCounts: number[]): number {
+  if (playedCounts.length === 0) return 0;
+  const tally = new Map<number, number>();
+  for (const p of playedCounts) tally.set(p, (tally.get(p) ?? 0) + 1);
+  let bestCount = -1;
+  let bestPlayed = 0;
+  for (const [played, count] of tally) {
+    // Tie-break: prefer the higher played value (more recent matchday).
+    if (count > bestCount || (count === bestCount && played > bestPlayed)) {
+      bestCount = count;
+      bestPlayed = played;
+    }
+  }
+  return bestPlayed;
+}
+
+/**
+ * A round is "complete enough" to record the season-rankings snapshot when
+ * a clear majority of clubs have played `currentMatchday` games. We tolerate
+ * a couple of outliers in either direction (rescheduled-ahead AND not-yet-
+ * caught-up) so that one quirky fixture cannot block the tracker forever.
+ *
+ * Threshold: ≥ 14/18 teams at `currentMatchday`. With the standard 18-team
+ * Ligue 1 format that means at most 4 outliers, well above what real
+ * scheduling drift produces.
+ */
+export function isRoundComplete(playedCounts: number[], currentMatchday: number): boolean {
+  if (!playedCounts.length || currentMatchday <= 0) return false;
+  const atMatchday = playedCounts.filter((p) => p === currentMatchday).length;
+  const threshold = Math.max(1, Math.ceil(playedCounts.length * 0.75));
+  return atMatchday >= threshold;
+}
 export interface HistoryEntry { season: string; finalPosition: number; points: number; }
 export interface OlSeasonRanking { matchday: number; position: number; points: number; }
 
@@ -92,9 +140,8 @@ export class StandingsService implements OnModuleInit {
         ?.find((s) => s.num === block.seasonNum)?.name;
       const season = seasonName?.split('/')[0] ?? new Date().getFullYear().toString();
       const playedCounts = block.rows.map((r) => r.gamePlayed ?? 0);
-      const currentMatchday = Math.max(0, ...playedCounts);
-      const minPlayed = Math.min(...playedCounts);
-      const roundComplete = minPlayed === currentMatchday;
+      const currentMatchday = computeCurrentMatchday(playedCounts);
+      const roundComplete = isRoundComplete(playedCounts, currentMatchday);
 
       const mappedRows: StandingEntry[] = block.rows.map((r) => {
         const c = r.competitor;
@@ -145,7 +192,10 @@ export class StandingsService implements OnModuleInit {
       if (roundComplete) {
         this.updateSeasonRankings(result);
       } else {
-        this.logger.log(`Skip season-rankings update: round ${currentMatchday} not complete (min=${minPlayed})`);
+        const atCurrent = playedCounts.filter((p) => p === currentMatchday).length;
+        this.logger.log(
+          `Skip season-rankings update: round ${currentMatchday} not yet complete (${atCurrent}/${playedCounts.length} teams at MD${currentMatchday})`,
+        );
       }
       if (this.standingsTableChanged(previous, result)) {
         this.bus.emit('standings-changed', { currentMatchday: result.currentMatchday });
@@ -181,12 +231,18 @@ export class StandingsService implements OnModuleInit {
 
   private updateSeasonRankings(standings: SeasonStandings): void {
     const ol = standings.table.find(e => e.teamId === OL_TEAM_ID);
-    if (!ol || !standings.currentMatchday) return;
+    if (!ol || !ol.played) return;
+    // Anchor on OL's own `played` count rather than the league-wide
+    // `currentMatchday`. The position-tracker is "OL's path through the
+    // season", so the natural index is "after OL's Nth match". This stays
+    // correct even when one club has a rescheduled fixture pushing the
+    // league-wide max ahead of OL.
+    const matchday = ol.played;
     const rankings = this.getSeasonRankings();
-    const idx = rankings.findIndex(r => r.matchday === standings.currentMatchday);
+    const idx = rankings.findIndex(r => r.matchday === matchday);
     const existing = idx >= 0 ? rankings[idx] : null;
     const entry: OlSeasonRanking = {
-      matchday: standings.currentMatchday,
+      matchday,
       position: ol.position,
       points: ol.points,
     };
