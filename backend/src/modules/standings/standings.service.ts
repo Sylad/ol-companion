@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
@@ -251,8 +252,7 @@ export class StandingsService implements OnModuleInit {
     }
     if (idx >= 0) rankings[idx] = entry; else rankings.push(entry);
     rankings.sort((a, b) => a.matchday - b.matchday);
-    fs.mkdirSync(path.dirname(SEASON_FILE), { recursive: true });
-    fs.writeFileSync(SEASON_FILE, JSON.stringify(rankings, null, 2));
+    atomicWriteJsonSync(SEASON_FILE, rankings);
     this.bus.emit('season-rankings-changed', entry);
   }
 
@@ -275,7 +275,7 @@ export class StandingsService implements OnModuleInit {
     const entry: HistoryEntry = { season: standings.season, finalPosition: olEntry.position, points: olEntry.points };
     if (idx >= 0) history[idx] = entry; else history.push(entry);
     history.sort((a, b) => a.season.localeCompare(b.season));
-    fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+    atomicWriteJsonSync(HISTORY_FILE, history);
   }
 
   private ensureHistoryFile(): void {
@@ -288,8 +288,7 @@ export class StandingsService implements OnModuleInit {
         { season: '2023', finalPosition: 6, points: 52 },
         { season: '2024', finalPosition: 6, points: 55 },
       ];
-      fs.mkdirSync(path.dirname(HISTORY_FILE), { recursive: true });
-      fs.writeFileSync(HISTORY_FILE, JSON.stringify(seed, null, 2));
+      atomicWriteJsonSync(HISTORY_FILE, seed);
     }
   }
 
@@ -305,7 +304,6 @@ export class StandingsService implements OnModuleInit {
   }
 
   private writeCache(data: SeasonStandings): void {
-    fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
-    fs.writeFileSync(this.cacheFile, JSON.stringify({ ts: Date.now(), data }));
+    atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
   }
 }

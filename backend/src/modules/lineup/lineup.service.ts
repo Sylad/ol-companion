@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { OL_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
 import {
@@ -205,6 +206,6 @@ export class LineupService implements OnModuleInit {
 
   private writeCache(data: LineupResponse): void {
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify({ ts: Date.now(), data }));
+    atomicWriteJsonSync(CACHE_FILE, { ts: Date.now(), data });
   }
 }

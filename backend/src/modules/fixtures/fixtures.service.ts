@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { OL_TEAM_ID, LIGUE1_FOOTBALL_DATA_ID } from '../../config/constants';
 import {
@@ -198,7 +199,7 @@ export class FixturesService implements OnModuleInit {
 
   private writeCache(data: Match[]): void {
     fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
-    fs.writeFileSync(this.cacheFile, JSON.stringify({ ts: Date.now(), data }));
+    atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
   }
 
   private fixturesChanged(prev: Match[] | null, next: Match[]): boolean {

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { getCurrentSeason } from '../scheduler/season.util';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
@@ -295,7 +296,7 @@ export class CupsService implements OnModuleInit {
 
   private writeCache(data: CupInfo[]): void {
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify({ ts: Date.now(), data }));
+    atomicWriteJsonSync(CACHE_FILE, { ts: Date.now(), data });
   }
 
   private stageFrToNum(competitionId: number, stageFr: string): number | null {

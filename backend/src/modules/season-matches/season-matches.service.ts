@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
+import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { getCurrentSeason } from '../scheduler/season.util';
 import {
@@ -287,7 +288,7 @@ export class SeasonMatchesService implements OnModuleInit {
 
   private writeCache(data: SeasonMatch[]): void {
     fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
-    fs.writeFileSync(this.cacheFile, JSON.stringify({ ts: Date.now(), data }));
+    atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
   }
 
   private matchesChanged(prev: SeasonMatch[] | null, next: SeasonMatch[]): boolean {
