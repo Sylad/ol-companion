@@ -4,7 +4,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { OL_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
-import { Scores365GamesResponseSchema } from '../../config/scores365-game.schema';
+import {
+  Scores365GameDetailResponseSchema,
+  Scores365GamesResponseSchema,
+  type Scores365LineupMember,
+} from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface LineupPlayer {
@@ -91,7 +95,7 @@ export class LineupService implements OnModuleInit {
     }
     const data = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores lineup results');
     const games = data.games ?? [];
-    const finished = games.find((g) => g.statusGroup === 4 && (g as { hasLineups?: boolean }).hasLineups);
+    const finished = games.find((g) => g.statusGroup === 4 && g.hasLineups === true);
     return finished?.id ?? games[0]?.id ?? null;
   }
 
@@ -103,7 +107,8 @@ export class LineupService implements OnModuleInit {
       return null;
     }
 
-    const data = (await res.json()) as any;
+    const json = await res.json();
+    const data = parseExternal(Scores365GameDetailResponseSchema, json, `365scores lineup game ${gameId}`);
     const g = data.game;
     if (!g) return null;
 
@@ -117,26 +122,30 @@ export class LineupService implements OnModuleInit {
       return null;
     }
 
-    const memberById = new Map<number, any>();
+    /** Top-level `game.members[]` carries display metadata (name/jersey/imageVersion);
+     *  lineup `members[]` carries on-pitch state (formation/ranking/status). We index
+     *  the meta map by id then merge per lineup row. */
+    type TopLevelMember = NonNullable<typeof g.members>[number];
+    const memberById = new Map<number, TopLevelMember>();
     for (const m of g.members ?? []) memberById.set(m.id, m);
 
-    const allPlayers: LineupPlayer[] = olLineup.members.map((m: any): LineupPlayer => {
-      const meta = memberById.get(m.id) ?? {};
+    const allPlayers: LineupPlayer[] = olLineup.members.map((m: Scores365LineupMember): LineupPlayer => {
+      const meta = memberById.get(m.id);
       const positionName = m.position?.name ?? '';
       const positionShort = m.formation?.shortName ?? this.shortenPosition(positionName);
       return {
         id: m.id,
-        athleteId: meta.athleteId ?? m.id,
-        name: meta.name ?? `Joueur #${m.id}`,
-        shortName: meta.shortName ?? meta.name ?? `Joueur #${m.id}`,
-        jerseyNumber: typeof meta.jerseyNumber === 'number' ? meta.jerseyNumber : null,
+        athleteId: meta?.athleteId ?? m.athleteId ?? m.id,
+        name: meta?.name ?? `Joueur #${m.id}`,
+        shortName: meta?.shortName ?? meta?.name ?? `Joueur #${m.id}`,
+        jerseyNumber: typeof meta?.jerseyNumber === 'number' ? meta.jerseyNumber : null,
         position: positionName,
         positionShort,
         yardLine: m.yardFormation?.line ?? 0,
         yardSide: m.yardFormation?.fieldSide ?? 50,
         ranking: typeof m.ranking === 'number' ? m.ranking : null,
         isStarting: m.status === 1,
-        imageVersion: meta.imageVersion,
+        imageVersion: meta?.imageVersion,
       };
     });
 

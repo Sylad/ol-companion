@@ -5,6 +5,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { EventBusService } from '../events/event-bus.service';
 import { OL_TEAM_ID, LIGUE1_FOOTBALL_DATA_ID } from '../../config/constants';
+import {
+  FootballDataMatchesResponseSchema,
+  type FootballDataMatch,
+} from '../../config/football-data.schema';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface Match {
   id: number;
@@ -106,25 +111,17 @@ export class FixturesService implements OnModuleInit {
           signal: AbortSignal.timeout(10_000),
         });
         if (!res.ok) continue;
-        const data = await res.json() as any;
+        const data = parseExternal(
+          FootballDataMatchesResponseSchema,
+          await res.json(),
+          `football-data competition J${md}`,
+        );
         const olMatch = (data.matches ?? []).find(
-          (m: any) => m.homeTeam?.id === OL_TEAM_ID || m.awayTeam?.id === OL_TEAM_ID
+          (m) => m.homeTeam.id === OL_TEAM_ID || m.awayTeam.id === OL_TEAM_ID,
         );
         if (olMatch && new Date(olMatch.utcDate) > now) {
-          this.logger.log(`Prochain match OL trouvé via compétition J${md}: ${olMatch.homeTeam.shortName} vs ${olMatch.awayTeam.shortName}`);
-          return [{
-            id: olMatch.id,
-            date: olMatch.utcDate,
-            homeTeam: olMatch.homeTeam.name ?? olMatch.homeTeam.shortName,
-            homeTeamId: olMatch.homeTeam.id,
-            awayTeam: olMatch.awayTeam.name ?? olMatch.awayTeam.shortName,
-            awayTeamId: olMatch.awayTeam.id,
-            homeScore: olMatch.score?.fullTime?.home ?? null,
-            awayScore: olMatch.score?.fullTime?.away ?? null,
-            competition: olMatch.competition?.name ?? 'Ligue 1',
-            status: olMatch.status,
-            matchday: olMatch.matchday ?? md,
-          }];
+          this.logger.log(`Prochain match OL trouvé via compétition J${md}: ${olMatch.homeTeam.shortName ?? ''} vs ${olMatch.awayTeam.shortName ?? ''}`);
+          return [this.toMatch(olMatch, md)];
         }
       } catch (err) {
         this.logger.warn(`Competition matchday ${md} fetch failed: ${(err as Error).message}`);
@@ -143,20 +140,38 @@ export class FixturesService implements OnModuleInit {
       this.logger.warn(`fixtures?status=${status} → HTTP ${res.status}`);
       return [];
     }
-    const data = await res.json() as any;
-    return (data.matches ?? []).map((m: any) => ({
+    const data = parseExternal(
+      FootballDataMatchesResponseSchema,
+      await res.json(),
+      `football-data fixtures status=${status}`,
+    );
+    return (data.matches ?? []).map((m) => this.toMatch(m));
+  }
+
+  /**
+   * football-data → internal `Match` mapping. Centralized so both the
+   * team endpoint AND the competition fallback (used to find the next
+   * match when the team endpoint returns no SCHEDULED matches on the
+   * free tier) emit the exact same shape.
+   */
+  private toMatch(m: FootballDataMatch, fallbackMatchday?: number): Match {
+    const allowed: Match['status'][] = ['SCHEDULED', 'TIMED', 'IN_PLAY', 'FINISHED', 'POSTPONED'];
+    const status = (allowed as string[]).includes(m.status)
+      ? (m.status as Match['status'])
+      : 'SCHEDULED';
+    return {
       id: m.id,
       date: m.utcDate,
-      homeTeam: m.homeTeam.name ?? m.homeTeam.shortName,
+      homeTeam: m.homeTeam.name ?? m.homeTeam.shortName ?? '',
       homeTeamId: m.homeTeam.id,
-      awayTeam: m.awayTeam.name ?? m.awayTeam.shortName,
+      awayTeam: m.awayTeam.name ?? m.awayTeam.shortName ?? '',
       awayTeamId: m.awayTeam.id,
       homeScore: m.score?.fullTime?.home ?? null,
       awayScore: m.score?.fullTime?.away ?? null,
-      competition: m.competition?.name ?? '',
-      status: m.status,
-      matchday: m.matchday ?? null,
-    }));
+      competition: m.competition?.name ?? (fallbackMatchday !== undefined ? 'Ligue 1' : ''),
+      status,
+      matchday: m.matchday ?? fallbackMatchday ?? null,
+    };
   }
 
   private readCache(): Match[] | null {

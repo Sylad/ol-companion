@@ -81,7 +81,7 @@ export class SeasonMatchesService implements OnModuleInit {
   private readonly cacheFile = path.resolve(process.cwd(), 'data', 'season-matches-cache.json');
 
   /** Test seam — overriden via spec, defaults to global fetch. */
-  fetcher: Fetcher = (input, init) => fetch(input as any, init);
+  fetcher: Fetcher = (input, init) => fetch(input, init);
 
   constructor(private readonly bus: EventBusService) {}
 
