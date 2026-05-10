@@ -63,7 +63,7 @@ describe('DemoModeMiddleware', () => {
     middleware.use(req as never, {} as never, () => {
       captured = { demoMode: ctx.isDemoMode(), forced: ctx.isForced() };
     });
-    expect(captured?.forced).toBe(true);
+    expect(captured!.forced).toBe(true);
   });
 
   it('honors X-Demo-Mode opt-in (demoMode true, forced false)', () => {
@@ -84,6 +84,6 @@ describe('DemoModeMiddleware', () => {
       captured = { demoMode: ctx.isDemoMode(), forced: ctx.isForced() };
     });
     // Empty pattern would match any host if not filtered → must NOT force demo here.
-    expect(captured?.forced).toBe(false);
+    expect(captured!.forced).toBe(false);
   });
 });
