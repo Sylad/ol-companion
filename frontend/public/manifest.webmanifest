@@ -1,0 +1,27 @@
+{
+  "name": "OL Companion",
+  "short_name": "OL Companion",
+  "description": "Suivi de l'Olympique Lyonnais — classement, calendrier, live, lore.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#08090d",
+  "background_color": "#08090d",
+  "lang": "fr",
+  "categories": ["sports", "news", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "401x417",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "401x417",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
