@@ -12,11 +12,17 @@ export interface LiveMatchTimelineEvent {
   competitorId: number;
   gameTime: number;          // minute (e.g. 6.0)
   gameTimeDisplay: string;   // "6'", "45+2'"
-  type: string;              // 'goal', 'yellow_card', 'red_card', 'substitution', 'penalty_missed', ...
+  type: string;              // 'goal', 'yellow_card', 'red_card', 'second_yellow_red', 'substitution', 'penalty_missed', ...
   isMajor: boolean;
   playerId: number | null;
   extraPlayerId: number | null;  // assist player or sub-in
   description: string;            // human-readable label
+  /**
+   * True when this event was synthesized by the aggregator (not present in the
+   * raw 365scores payload). Currently only used for `second_yellow_red` events
+   * derived from two prior yellows on the same player.
+   */
+  derived?: boolean;
 }
 
 export interface LiveMatchTopPerformer {

@@ -206,6 +206,8 @@ export interface LiveMatchTimelineEvent {
   playerId: number | null;
   extraPlayerId: number | null;
   description: string;
+  /** True if synthesized client/server-side (e.g. 2nd-yellow → red derivation). */
+  derived?: boolean;
 }
 
 export interface LiveMatchTopPerformer {
