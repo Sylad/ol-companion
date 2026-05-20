@@ -1,0 +1,47 @@
+# .claudeignore — ol-companion (React + Vite + Tailwind + NestJS)
+
+# --- Node ---
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+**/coverage/
+
+# --- Vite / React ---
+.vite/
+**/.vite/
+frontend/dist/
+backend/dist/
+
+# --- Git ---
+.git/
+.svn/
+
+# --- Logs / temp ---
+*.log
+*.tmp
+*.swp
+*.bak
+logs/
+
+# --- IDE ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Data cache (fixtures-cache.json TTL 1h) ---
+data/cache/
+backend/data/cache/
+data/fixtures-cache.json
+backend/data/fixtures-cache.json
+
+# --- Claude state ---
+~/.claude/
+.claude/cache/
+
+# --- Lockfiles ---
+package-lock.json

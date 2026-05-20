@@ -72,8 +72,8 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 
 | Couche | Tech |
 |---|---|
-| Frontend | React 18 + TypeScript 5 + Vite 5 + Tailwind 3 + TanStack Router/Query + Recharts + Lucide |
-| Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) + Anthropic SDK |
+| Frontend | React 18 + TypeScript 5 + Vite 5 + Tailwind 3 + TanStack Router/Query + Recharts + Leaflet 1.9 + Lucide |
+| Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) + Anthropic SDK (`claude-sonnet-4-6`) |
 | Live updates | SSE (`@nestjs/common` `@Sse` + `EventSource` côté client + `invalidateQueries` TanStack) |
 | Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
 | Sources externes | [365scores](https://www.365scores.com/) (classement, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier, fixtures), Wikipedia FR (logos) |
