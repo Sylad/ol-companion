@@ -12,6 +12,7 @@ const STACK = [
       'TanStack Router (code-based)',
       'TanStack Query (cache & mutations)',
       'Recharts (graphes classement / saison)',
+      'Leaflet 1.9 + react-leaflet (carte Ligue 1)',
       'Lucide (icônes minimalistes)',
     ],
   },
@@ -20,6 +21,7 @@ const STACK = [
     icon: Server,
     items: [
       'NestJS 11 + TypeScript 5',
+      'Anthropic SDK 0.91 · modèle claude-sonnet-4-6',
       'Stockage JSON local (cache fixtures)',
       'Proxy 365scores (classement live + forme)',
       'Proxy football-data.org (calendrier officiel)',
