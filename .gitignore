@@ -36,3 +36,4 @@ coverage/
 Thumbs.db
 desktop.ini
 @eaDir/
+.token-savior-cache.json
