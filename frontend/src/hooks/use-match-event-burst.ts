@@ -9,8 +9,11 @@ function mapEventType(type: string): EventBurstType | null {
   if (type === 'yellow_card' || type === 'card') return 'yellow';
   if (type === 'substitution') return 'sub';
   if (type === 'var') return 'var';
+  if (type === 'penalty_awarded') return 'penalty_awarded';
   if (type === 'penalty_missed') return 'penalty_missed';
   if (type === 'goal_cancelled') return 'goal_cancelled';
+  if (type === 'half_time') return 'half_time';
+  if (type === 'full_time') return 'full_time';
   return null;
 }
 
@@ -67,9 +70,12 @@ export function useMatchEventBurst(stats: LiveMatchStats | undefined): ActiveBur
     // timeline event still triggers a goal burst.
     const priority: Record<EventBurstType, number> = {
       goal_cancelled: 6,
+      full_time: 6,
       red: 5,
       goal: 4,
+      penalty_awarded: 3,
       penalty_missed: 3,
+      half_time: 2,
       var: 2,
       yellow: 1,
       sub: 0,

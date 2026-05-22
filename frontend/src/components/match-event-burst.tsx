@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 
-export type EventBurstType = 'goal' | 'yellow' | 'red' | 'sub' | 'var' | 'penalty_missed' | 'goal_cancelled';
+export type EventBurstType =
+  | 'goal'
+  | 'yellow'
+  | 'red'
+  | 'sub'
+  | 'var'
+  | 'penalty_awarded'
+  | 'penalty_missed'
+  | 'goal_cancelled'
+  | 'half_time'
+  | 'full_time';
 
 interface Props {
   type: EventBurstType;
@@ -14,8 +24,11 @@ const DEFAULT_DURATION: Record<EventBurstType, number> = {
   red: 1700,
   sub: 1300,
   var: 1800,
+  penalty_awarded: 1700,
   penalty_missed: 1700,
   goal_cancelled: 1900,
+  half_time: 1600,
+  full_time: 1900,
 };
 
 /**
@@ -52,8 +65,11 @@ export function MatchEventBurst({ type, durationMs }: Props) {
       {type === 'red' && <CardBurst color="red" />}
       {type === 'sub' && <SubBurst />}
       {type === 'var' && <ReviewBurst label="VAR" sublabel="Vérification en cours" />}
+      {type === 'penalty_awarded' && <PenaltyAwardedBurst />}
       {type === 'penalty_missed' && <PenaltyMissedBurst />}
       {type === 'goal_cancelled' && <ReviewBurst label="BUT ANNULÉ" sublabel="Décision confirmée" danger />}
+      {type === 'half_time' && <WhistleBurst label="MI-TEMPS" sublabel="Retour aux vestiaires" />}
+      {type === 'full_time' && <WhistleBurst label="FIN DU MATCH" sublabel="Coup de sifflet final" final />}
     </div>
   );
 }
@@ -266,6 +282,26 @@ function ReviewBurst({
 
 /* ------------------------- PENALTY MISSED ----------------------- */
 
+function PenaltyAwardedBurst() {
+  return (
+    <>
+      <div className="absolute inset-0 mb-penalty-awarded-halo" />
+      <div className="relative mb-penalty-awarded-wrapper">
+        <svg width="280" height="180" viewBox="0 0 280 180" className="mb-penalty-spot">
+          <rect x="20" y="24" width="240" height="132" rx="8" fill="none" stroke="hsl(var(--fg) / 0.75)" strokeWidth="4" />
+          <path d="M20 52 H86 V128 H20" fill="none" stroke="hsl(var(--fg) / 0.65)" strokeWidth="3" />
+          <path d="M260 52 H194 V128 H260" fill="none" stroke="hsl(var(--fg) / 0.65)" strokeWidth="3" />
+          <circle cx="140" cy="90" r="7" fill="hsl(var(--ol-red-bright))" />
+          <circle cx="140" cy="90" r="24" fill="none" stroke="hsl(var(--ol-red-bright))" strokeWidth="3" />
+        </svg>
+        <div className="font-display font-black text-white mb-penalty-awarded-label">
+          PENALTY
+        </div>
+      </div>
+    </>
+  );
+}
+
 function PenaltyMissedBurst() {
   return (
     <>
@@ -279,6 +315,35 @@ function PenaltyMissedBurst() {
         <div className="font-display font-black text-white mb-penalty-label">
           PENALTY RATÉ
         </div>
+      </div>
+    </>
+  );
+}
+
+/* ----------------------------- WHISTLE -------------------------- */
+
+function WhistleBurst({
+  label,
+  sublabel,
+  final = false,
+}: {
+  label: string;
+  sublabel: string;
+  final?: boolean;
+}) {
+  return (
+    <>
+      <div className={final ? 'absolute inset-0 mb-whistle-halo mb-whistle-halo-final' : 'absolute inset-0 mb-whistle-halo'} />
+      <div className="mb-whistle-panel">
+        <div className="mb-whistle-icon" aria-hidden>
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="font-display font-black text-white mb-whistle-label">
+          {label}
+        </div>
+        <div className="mb-whistle-sublabel">{sublabel}</div>
       </div>
     </>
   );

@@ -1,5 +1,16 @@
 import { useState } from 'react';
-import { AlertTriangle, Flag, Goal, RefreshCw, ShieldAlert, Tv, XCircle } from 'lucide-react';
+import {
+  AlertTriangle,
+  CircleDot,
+  Flag,
+  Goal,
+  RefreshCw,
+  ShieldAlert,
+  Timer,
+  Trophy,
+  Tv,
+  XCircle,
+} from 'lucide-react';
 import { MatchEventBurst, type EventBurstType } from '@/components/match-event-burst';
 import { cn } from '@/lib/utils';
 
@@ -41,10 +52,31 @@ const EVENTS: StudioEvent[] = [
     tone: 'blue',
   },
   {
+    type: 'penalty_awarded',
+    label: 'Penalty sifflé',
+    description: 'Point de penalty, halo rouge et bleu, tension avant le tir.',
+    icon: CircleDot,
+    tone: 'red',
+  },
+  {
     type: 'goal_cancelled',
     label: 'But annulé',
     description: 'Décision VAR ou hors-jeu, prêt à brancher si 365scores le remonte.',
     icon: XCircle,
+    tone: 'red',
+  },
+  {
+    type: 'half_time',
+    label: 'Mi-temps',
+    description: 'Coup de sifflet de pause, sobre et lisible.',
+    icon: Timer,
+    tone: 'blue',
+  },
+  {
+    type: 'full_time',
+    label: 'Fin de match',
+    description: 'Coup de sifflet final, plus solennel.',
+    icon: Trophy,
     tone: 'red',
   },
   {
