@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CalendarDays, MapPin } from 'lucide-react';
+import { CalendarDays, MapPin, Radio, Shield, Sparkles } from 'lucide-react';
 import { useFixtures } from '@/hooks/use-fixtures';
 import { useWikiImage } from '@/hooks/use-wiki-image';
 import { TeamLogo } from './team-logo';
@@ -25,6 +25,18 @@ function countdown(iso: string): string {
   if (hours >= 2) return `dans ${hours}h`;
   const minutes = Math.floor(diff / 60000);
   return `dans ${minutes} min`;
+}
+
+function hoursUntil(iso: string): number {
+  return (new Date(iso).getTime() - Date.now()) / 3600000;
+}
+
+function isSameLocalDay(iso: string): boolean {
+  const d = new Date(iso);
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear()
+    && d.getMonth() === now.getMonth()
+    && d.getDate() === now.getDate();
 }
 
 export function DashboardHero() {
@@ -55,17 +67,39 @@ export function DashboardHero() {
     ? { id: nextMatch.awayTeamId, name: nextMatch.awayTeam }
     : { id: nextMatch.homeTeamId, name: nextMatch.homeTeam };
   const isLive = nextMatch.status === 'IN_PLAY';
+  const isMatchday = isLive || isSameLocalDay(nextMatch.date);
+  const isSoon = !isLive && hoursUntil(nextMatch.date) <= 36;
+  const pulseLabel = isLive
+    ? 'Match en direct'
+    : isMatchday
+      ? 'Jour de match'
+      : isSoon
+        ? "Approche du coup d'envoi"
+        : 'Prochain rendez-vous';
 
   return (
-    <section className="relative overflow-hidden rounded-md border border-border bg-surface min-h-[260px]">
+    <section
+      className={cn(
+        'relative overflow-hidden rounded-md border bg-surface min-h-[260px]',
+        isMatchday
+          ? 'border-ol-red shadow-[0_0_0_1px_rgba(244,30,55,0.22),0_24px_70px_-45px_rgba(244,30,55,0.75)]'
+          : 'border-border',
+      )}
+    >
       {stadiumImg?.imageUrl && (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-30"
+          className={cn('absolute inset-0 bg-cover bg-center', isMatchday ? 'opacity-40' : 'opacity-30')}
           style={{ backgroundImage: `url(${stadiumImg.imageUrl})` }}
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/85 to-bg/40" />
       <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/60 to-transparent" />
+      {isMatchday && (
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px bg-ol-red-bright shadow-[0_0_18px_rgba(239,68,68,0.9)]"
+        />
+      )}
 
       <div className="relative z-10 p-6 lg:p-8 grid lg:grid-cols-[1.4fr_auto] gap-6 items-center">
         <div className="space-y-4">
@@ -74,7 +108,7 @@ export function DashboardHero() {
               'eyebrow',
               isLive ? 'text-live animate-pulse-live px-2 py-0.5 rounded-sm bg-live/10' : 'text-ol-red-bright'
             )}>
-              {isLive ? 'Live' : 'Prochain match'}
+              {pulseLabel}
             </span>
             <span className="text-xs text-fg-dim">· {nextMatch.competition}{nextMatch.matchday ? ` · J${nextMatch.matchday}` : ''}</span>
           </div>
@@ -111,6 +145,39 @@ export function DashboardHero() {
               <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
               {olIsHome ? 'Groupama Stadium · Décines-Charpieu' : `Stade ${teamShortName(nextMatch.homeTeam)}`}
             </span>
+          </div>
+        </div>
+
+        <div className="rounded-md border border-border bg-surface/70 p-4 backdrop-blur-md lg:min-w-[260px]">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-fg-dim font-semibold">
+            {isLive ? (
+              <Radio className="h-3.5 w-3.5 text-ol-red-bright animate-pulse" strokeWidth={2} />
+            ) : isMatchday ? (
+              <Sparkles className="h-3.5 w-3.5 text-ol-red-bright" strokeWidth={2} />
+            ) : (
+              <Shield className="h-3.5 w-3.5 text-ol-blue-bright" strokeWidth={2} />
+            )}
+            Tableau de bord match
+          </div>
+          <div className="mt-3 space-y-2">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="text-fg-muted">Statut</span>
+              <span className="font-semibold text-fg-bright">{isLive ? 'En cours' : countdown(nextMatch.date)}</span>
+            </div>
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="text-fg-muted">Adversaire</span>
+              <span className="font-semibold text-fg-bright text-right">{opponent.name}</span>
+            </div>
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="text-fg-muted">Lieu</span>
+              <span className="font-semibold text-fg-bright">{olIsHome ? 'Domicile' : 'Extérieur'}</span>
+            </div>
+          </div>
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface-2">
+            <div
+              className={cn('h-full rounded-full', isLive ? 'bg-ol-red-bright' : 'bg-ol-blue-bright')}
+              style={{ width: isLive ? '100%' : isMatchday ? '72%' : isSoon ? '46%' : '24%' }}
+            />
           </div>
         </div>
       </div>

@@ -1,21 +1,53 @@
+import { lazy, Suspense, type ComponentType } from 'react';
 import {
   createRootRoute,
   createRoute,
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
+import { Loader2 } from 'lucide-react';
 import { AppShell } from './components/layout/app-shell';
 import { DashboardPage } from './routes/index';
-import { FixturesPage } from './routes/fixtures';
-import { StandingsPage } from './routes/standings';
-import { NewsPage } from './routes/news';
-import { CupsPage } from './routes/cups';
-import { PlayersPage } from './routes/players';
-import { PlayerDetailPage } from './routes/player.$athleteId';
-import { FcNoobzPage } from './routes/fcnoobz';
-import { AboutPage } from './routes/about';
-import { MatchPage } from './routes/match';
-import { MapPage } from './routes/map';
+
+const FixturesPage = lazyNamed(() => import('./routes/fixtures'), 'FixturesPage');
+const StandingsPage = lazyNamed(() => import('./routes/standings'), 'StandingsPage');
+const NewsPage = lazyNamed(() => import('./routes/news'), 'NewsPage');
+const CupsPage = lazyNamed(() => import('./routes/cups'), 'CupsPage');
+const PlayersPage = lazyNamed(() => import('./routes/players'), 'PlayersPage');
+const PlayerDetailPage = lazyNamed(() => import('./routes/player.$athleteId'), 'PlayerDetailPage');
+const FcNoobzPage = lazyNamed(() => import('./routes/fcnoobz'), 'FcNoobzPage');
+const AboutPage = lazyNamed(() => import('./routes/about'), 'AboutPage');
+const MatchPage = lazyNamed(() => import('./routes/match'), 'MatchPage');
+const MapPage = lazyNamed(() => import('./routes/map'), 'MapPage');
+
+function lazyNamed<TModule, TName extends keyof TModule>(
+  loader: () => Promise<TModule>,
+  name: TName,
+) {
+  return lazy(async () => {
+    const mod = await loader();
+    return { default: mod[name] as ComponentType };
+  });
+}
+
+function RoutePending() {
+  return (
+    <div className="flex min-h-[45vh] items-center justify-center text-fg-dim">
+      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+      Chargement...
+    </div>
+  );
+}
+
+function withSuspense(Page: ComponentType) {
+  return function LazyRoute() {
+    return (
+      <Suspense fallback={<RoutePending />}>
+        <Page />
+      </Suspense>
+    );
+  };
+}
 
 const rootRoute = createRootRoute({
   component: AppShell,
@@ -30,55 +62,55 @@ const indexRoute = createRoute({
 const fixturesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/fixtures',
-  component: FixturesPage,
+  component: withSuspense(FixturesPage),
 });
 
 const standingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/standings',
-  component: StandingsPage,
+  component: withSuspense(StandingsPage),
 });
 
 const newsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/news',
-  component: NewsPage,
+  component: withSuspense(NewsPage),
 });
 
 const cupsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/cups',
-  component: CupsPage,
+  component: withSuspense(CupsPage),
 });
 
 const playersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/players',
-  component: PlayersPage,
+  component: withSuspense(PlayersPage),
 });
 
 const playerDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/player/$athleteId',
-  component: PlayerDetailPage,
+  component: withSuspense(PlayerDetailPage),
 });
 
 const fcnoobzRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/fcnoobz',
-  component: FcNoobzPage,
+  component: withSuspense(FcNoobzPage),
 });
 
 const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/about',
-  component: AboutPage,
+  component: withSuspense(AboutPage),
 });
 
 const matchRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/match/$gameId',
-  component: MatchPage,
+  component: withSuspense(MatchPage),
   validateSearch: (search: Record<string, unknown>): { matchupId?: string } => ({
     matchupId: typeof search.matchupId === 'string' ? search.matchupId : undefined,
   }),
@@ -87,7 +119,7 @@ const matchRoute = createRoute({
 const mapRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/map',
-  component: MapPage,
+  component: withSuspense(MapPage),
 });
 
 const routeTree = rootRoute.addChildren([

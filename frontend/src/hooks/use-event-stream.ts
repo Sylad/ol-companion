@@ -1,15 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+
+export type EventStreamStatus = 'connecting' | 'connected' | 'reconnecting';
 
 /**
  * Subscribes to the backend SSE channel (`/api/events`) once at app start
  * and invalidates the relevant React Query caches when matching events arrive.
  */
-export function useEventStream() {
+export function useEventStream(): EventStreamStatus {
   const qc = useQueryClient();
+  const [status, setStatus] = useState<EventStreamStatus>('connecting');
 
   useEffect(() => {
     const es = new EventSource('/api/events');
+
+    es.onopen = () => setStatus('connected');
 
     es.onmessage = (e) => {
       try {
@@ -46,9 +51,12 @@ export function useEventStream() {
     };
 
     es.onerror = () => {
-      // EventSource auto-reconnects; nothing to do here.
+      // EventSource auto-reconnects; surface the state without adding manual retry logic.
+      setStatus('reconnecting');
     };
 
     return () => es.close();
   }, [qc]);
+
+  return status;
 }

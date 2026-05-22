@@ -2,6 +2,8 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import { Home, CalendarDays, ListOrdered, Newspaper, Trophy, Users, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SidebarLinks } from './sidebar-links';
+import { LiveConnectionBadge } from '@/components/live-connection-badge';
+import type { EventStreamStatus } from '@/hooks/use-event-stream';
 
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: Home, exact: true },
@@ -13,7 +15,7 @@ export const NAV_ITEMS = [
   { to: '/map', label: 'Carte L1', icon: MapPin, exact: false },
 ] as const;
 
-export function Sidebar() {
+export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamStatus }) {
   const { location } = useRouterState();
   const path = location.pathname;
 
@@ -100,7 +102,8 @@ export function Sidebar() {
         <SidebarLinks />
       </div>
 
-      <div className="px-6 py-3 border-t border-border">
+      <div className="space-y-2 px-6 py-3 border-t border-border">
+        <LiveConnectionBadge status={eventStreamStatus} />
         <div className="text-[10px] uppercase tracking-[0.14em] text-fg-dim">v2.0</div>
       </div>
     </aside>

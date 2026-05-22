@@ -147,9 +147,14 @@ export function AboutPage() {
                 <ExternalLink className="h-3 w-3" />
               </a>
               {' '}a été mon premier complice : génération du logo OL Companion, maquettes UX
-              et propositions de design qui ont guidé la construction. Une vraie collab à trois —
-              humain + ChatGPT (visuels) + Claude Code (implémentation), pour explorer le front
-              moderne en sortant de ma zone Java.
+              et propositions de design qui ont guidé la construction. Une collab humaine et IA :
+              ChatGPT pour les pistes visuelles, Claude Code pour l'implémentation, puis Codex
+              pour quelques passes de refonte et de review.
+            </p>
+            <p className="text-fg leading-relaxed mt-3">
+              Plus récemment, Codex a pris le relais sur une passe d'amélioration ciblée :
+              chargement progressif des routes, état de connexion live visible, lecture produit
+              du dashboard et ajustements de structure sans casser l'existant.
             </p>
             <div className="mt-4 flex items-center gap-1.5 text-xs text-fg-dim">
               <Sparkles className="h-3 w-3 text-ol-red-bright" />
