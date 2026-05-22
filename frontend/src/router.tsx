@@ -19,7 +19,6 @@ const FcNoobzPage = lazyNamed(() => import('./routes/fcnoobz'), 'FcNoobzPage');
 const AboutPage = lazyNamed(() => import('./routes/about'), 'AboutPage');
 const MatchPage = lazyNamed(() => import('./routes/match'), 'MatchPage');
 const MapPage = lazyNamed(() => import('./routes/map'), 'MapPage');
-const LiveStudioPage = lazyNamed(() => import('./routes/live-studio'), 'LiveStudioPage');
 
 function lazyNamed<TModule, TName extends keyof TModule>(
   loader: () => Promise<TModule>,
@@ -123,12 +122,6 @@ const mapRoute = createRoute({
   component: withSuspense(MapPage),
 });
 
-const liveStudioRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/live-studio',
-  component: withSuspense(LiveStudioPage),
-});
-
 const routeTree = rootRoute.addChildren([
   indexRoute,
   fixturesRoute,
@@ -141,7 +134,6 @@ const routeTree = rootRoute.addChildren([
   aboutRoute,
   matchRoute,
   mapRoute,
-  liveStudioRoute,
 ]);
 
 export const router = createRouter({
