@@ -1,4 +1,4 @@
-import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles } from 'lucide-react';
+import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Tv } from 'lucide-react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 
@@ -30,6 +30,7 @@ const SOURCES: ExternalSource[] = [
 export function SidebarLinks() {
   const { location } = useRouterState();
   const aboutActive = location.pathname.startsWith('/about');
+  const liveStudioActive = location.pathname.startsWith('/live-studio');
 
   return (
     <div className="px-3 pb-2 space-y-0.5">
@@ -54,6 +55,22 @@ export function SidebarLinks() {
       ))}
 
       <div className="my-2 mx-3 h-px bg-border" />
+
+      <Link
+        to="/live-studio"
+        className={cn(
+          'group flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors',
+          liveStudioActive
+            ? 'bg-surface-2 text-fg-bright'
+            : 'text-fg-muted hover:bg-surface-2/60 hover:text-fg',
+        )}
+      >
+        <Tv
+          className={cn('h-[14px] w-[14px] shrink-0', liveStudioActive && 'text-ol-blue-bright')}
+          strokeWidth={1.75}
+        />
+        <span className="flex-1 truncate">Studio live</span>
+      </Link>
 
       <Link
         to="/about"

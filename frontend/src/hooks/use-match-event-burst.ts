@@ -8,6 +8,9 @@ function mapEventType(type: string): EventBurstType | null {
   if (type === 'red_card' || type === 'second_yellow_red') return 'red';
   if (type === 'yellow_card' || type === 'card') return 'yellow';
   if (type === 'substitution') return 'sub';
+  if (type === 'var') return 'var';
+  if (type === 'penalty_missed') return 'penalty_missed';
+  if (type === 'goal_cancelled') return 'goal_cancelled';
   return null;
 }
 
@@ -62,7 +65,15 @@ export function useMatchEventBurst(stats: LiveMatchStats | undefined): ActiveBur
     // Pick the highest-priority new event: red > yellow > goal > sub. Goals win
     // over substitutions when they share a tick. Score-change without a matching
     // timeline event still triggers a goal burst.
-    const priority: Record<EventBurstType, number> = { red: 4, goal: 3, yellow: 2, sub: 1 };
+    const priority: Record<EventBurstType, number> = {
+      goal_cancelled: 6,
+      red: 5,
+      goal: 4,
+      penalty_missed: 3,
+      var: 2,
+      yellow: 1,
+      sub: 0,
+    };
     let chosen: { type: EventBurstType; sig: string } | null = null;
     for (const e of newEvents) {
       const t = mapEventType(e.type);

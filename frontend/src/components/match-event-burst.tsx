@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export type EventBurstType = 'goal' | 'yellow' | 'red' | 'sub';
+export type EventBurstType = 'goal' | 'yellow' | 'red' | 'sub' | 'var' | 'penalty_missed' | 'goal_cancelled';
 
 interface Props {
   type: EventBurstType;
@@ -13,10 +13,13 @@ const DEFAULT_DURATION: Record<EventBurstType, number> = {
   yellow: 1500,
   red: 1700,
   sub: 1300,
+  var: 1800,
+  penalty_missed: 1700,
+  goal_cancelled: 1900,
 };
 
 /**
- * Full-screen overlay celebrating live-match events: goal, yellow card, red card, substitution.
+ * Full-screen overlay celebrating live-match events: goal, cards, substitution, VAR, missed penalty.
  *
  * The component is mounted with a `key` tied to the latest event id so React remounts on each
  * event and replays the animation. It auto-removes itself after `durationMs` so the page is
@@ -48,6 +51,9 @@ export function MatchEventBurst({ type, durationMs }: Props) {
       {type === 'yellow' && <CardBurst color="yellow" />}
       {type === 'red' && <CardBurst color="red" />}
       {type === 'sub' && <SubBurst />}
+      {type === 'var' && <ReviewBurst label="VAR" sublabel="Vérification en cours" />}
+      {type === 'penalty_missed' && <PenaltyMissedBurst />}
+      {type === 'goal_cancelled' && <ReviewBurst label="BUT ANNULÉ" sublabel="Décision confirmée" danger />}
     </div>
   );
 }
@@ -228,6 +234,51 @@ function SubBurst() {
             strokeLinejoin="round"
           />
         </svg>
+      </div>
+    </>
+  );
+}
+
+/* ----------------------------- VAR ----------------------------- */
+
+function ReviewBurst({
+  label,
+  sublabel,
+  danger = false,
+}: {
+  label: string;
+  sublabel: string;
+  danger?: boolean;
+}) {
+  return (
+    <>
+      <div className={danger ? 'absolute inset-0 mb-review-halo mb-review-halo-danger' : 'absolute inset-0 mb-review-halo'} />
+      <div className="mb-review-panel">
+        <div className="mb-review-frame">
+          <span className="mb-review-scan" />
+          <div className="font-display font-black text-white mb-review-label">{label}</div>
+          <div className="text-fg-muted mb-review-sublabel">{sublabel}</div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------- PENALTY MISSED ----------------------- */
+
+function PenaltyMissedBurst() {
+  return (
+    <>
+      <div className="absolute inset-0 mb-penalty-halo" />
+      <div className="relative mb-penalty-wrapper">
+        <div className="mb-penalty-ball">●</div>
+        <div className="mb-penalty-cross">
+          <span />
+          <span />
+        </div>
+        <div className="font-display font-black text-white mb-penalty-label">
+          PENALTY RATÉ
+        </div>
       </div>
     </>
   );
