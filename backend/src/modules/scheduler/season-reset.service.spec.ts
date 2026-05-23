@@ -19,6 +19,8 @@ describe('SeasonResetService', () => {
   it('archives existing caches into data/archive/<season>/ and clears them', async () => {
     fs.writeFileSync(path.join(dataDir, 'cups-cache.json'), '{"data":1}');
     fs.writeFileSync(path.join(dataDir, 'fixtures-cache.json'), '{"data":2}');
+    fs.writeFileSync(path.join(dataDir, 'season-matches-cache.json'), '{"data":3}');
+    fs.writeFileSync(path.join(dataDir, 'player-stats-cache.json'), '{"data":4}');
     fs.writeFileSync(path.join(dataDir, 'standings-history.json'), '[]');
 
     await service.resetSeason(new Date('2026-08-01T03:00:00'));
@@ -26,10 +28,14 @@ describe('SeasonResetService', () => {
     const archive = path.join(dataDir, 'archive', '2025-2026');
     expect(fs.existsSync(path.join(archive, 'cups-cache.json'))).toBe(true);
     expect(fs.existsSync(path.join(archive, 'fixtures-cache.json'))).toBe(true);
+    expect(fs.existsSync(path.join(archive, 'season-matches-cache.json'))).toBe(true);
+    expect(fs.existsSync(path.join(archive, 'player-stats-cache.json'))).toBe(true);
     expect(fs.existsSync(path.join(archive, 'standings-history.json'))).toBe(true);
 
     expect(fs.existsSync(path.join(dataDir, 'cups-cache.json'))).toBe(false);
     expect(fs.existsSync(path.join(dataDir, 'fixtures-cache.json'))).toBe(false);
+    expect(fs.existsSync(path.join(dataDir, 'season-matches-cache.json'))).toBe(false);
+    expect(fs.existsSync(path.join(dataDir, 'player-stats-cache.json'))).toBe(false);
     expect(fs.existsSync(path.join(dataDir, 'standings-history.json'))).toBe(false);
   });
 
@@ -41,5 +47,11 @@ describe('SeasonResetService', () => {
   it('returns the archived season id', async () => {
     const result = await service.resetSeason(new Date('2026-08-01T03:00:00'));
     expect(result).toEqual({ archivedSeason: '2025-2026' });
+  });
+
+  it('archives the current season when forced before August', async () => {
+    const result = await service.resetSeason(new Date('2026-07-31T22:00:00'));
+    expect(result).toEqual({ archivedSeason: '2025-2026' });
+    expect(fs.existsSync(path.join(dataDir, 'archive', '2025-2026'))).toBe(true);
   });
 });

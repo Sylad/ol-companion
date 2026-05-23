@@ -2,19 +2,26 @@ import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getPreviousSeason } from './season.util';
+import { getCurrentSeason, getPreviousSeason, type Season } from './season.util';
 
 export const SEASON_RESET_DATA_DIR = 'SEASON_RESET_DATA_DIR';
 
 const CACHES_TO_ARCHIVE = [
   'cups-cache.json',
   'fixtures-cache.json',
+  'season-matches-cache.json',
+  'player-stats-cache.json',
   'standings-cache.json',
   'news-cache.json',
   'lineup-cache.json',
   'standings-history.json',
   'season-rankings.json',
 ];
+
+function getSeasonToArchive(now: Date): Season {
+  const month = now.getMonth() + 1;
+  return month >= 8 ? getPreviousSeason(now) : getCurrentSeason(now);
+}
 
 @Injectable()
 export class SeasonResetService {
@@ -32,7 +39,7 @@ export class SeasonResetService {
   }
 
   async resetSeason(now: Date = new Date()): Promise<{ archivedSeason: string }> {
-    const season = getPreviousSeason(now);
+    const season = getSeasonToArchive(now);
     const archiveDir = path.join(this.dataDir, 'archive', season.id);
     fs.mkdirSync(archiveDir, { recursive: true });
 
