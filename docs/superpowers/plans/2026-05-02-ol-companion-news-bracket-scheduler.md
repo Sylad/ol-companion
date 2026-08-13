@@ -1578,7 +1578,7 @@ Expected: all suites pass.
 
 ```bash
 rsync -avz --delete --exclude node_modules --exclude dist --exclude .git \
-  -e 'ssh -p 22' \
+  -e ssh \
   /home/sylvain_ladoire/projects/developpeur/ol-companion/ \
   nas:/volume2/docker/developpeur/ol-companion/
 ```
@@ -1588,7 +1588,7 @@ Expected: rsync output lists modified files only.
 - [ ] **Step 2: Rebuild backend container**
 
 ```bash
-ssh -p 22 nas "docker compose -f /volume2/docker/developpeur/ol-companion/docker-compose.yml up -d --build --force-recreate --no-deps ol-backend"
+ssh nas "docker compose -f /volume2/docker/developpeur/ol-companion/docker-compose.yml up -d --build --force-recreate --no-deps ol-backend"
 ```
 
 Expected: image rebuilt, container recreated. `docker compose ... logs --tail 20 ol-backend` should show:
@@ -1599,7 +1599,7 @@ Expected: image rebuilt, container recreated. `docker compose ... logs --tail 20
 - [ ] **Step 3: Rebuild frontend container**
 
 ```bash
-ssh -p 22 nas "docker compose -f /volume2/docker/developpeur/ol-companion/docker-compose.yml up -d --build --force-recreate --no-deps ol-frontend"
+ssh nas "docker compose -f /volume2/docker/developpeur/ol-companion/docker-compose.yml up -d --build --force-recreate --no-deps ol-frontend"
 ```
 
 Expected: rebuild successful.
@@ -1619,7 +1619,7 @@ If you want to force-test without OL reaching the threshold, you can temporarily
 - [ ] **Step 3: Scheduler logs**
 
 ```bash
-ssh -p 22 nas "docker compose -f /volume2/docker/developpeur/ol-companion/docker-compose.yml logs --tail 100 ol-backend | grep -E 'scheduledRefresh|fixtures-refresh|standings-refresh|cups-refresh|news-refresh|lineup-refresh'"
+ssh nas "docker compose -f /volume2/docker/developpeur/ol-companion/docker-compose.yml logs --tail 100 ol-backend | grep -E 'scheduledRefresh|fixtures-refresh|standings-refresh|cups-refresh|news-refresh|lineup-refresh'"
 ```
 
 Expected: log lines confirm scheduled jobs registered/firing.
@@ -1634,7 +1634,7 @@ curl -X POST http://nas:3002/api/admin/reset-season
 Expected response: `{"archivedSeason":"2024-2025"}` (in May 2026). Verify on the NAS:
 
 ```bash
-ssh -p 22 nas "ls /volume2/docker/developpeur/data/ol/archive/2024-2025/"
+ssh nas "ls /volume2/docker/developpeur/data/ol/archive/2024-2025/"
 ```
 
 Expected: archived JSON files present. Run the cron crons should regenerate fresh caches at their next tick — check `ls /volume2/docker/developpeur/data/ol/` after a few minutes.
