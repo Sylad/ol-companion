@@ -138,6 +138,11 @@ export class CupsService implements OnModuleInit {
 
     try {
       const results = await this.fetchCupsFrom365Scores();
+      const previous = this.readCache();
+      if (results.length === 0 && previous && previous.length > 0) {
+        this.logger.warn('365scores a rendu 0 coupe — cache existant conservé');
+        return previous;
+      }
       this.writeCache(results);
       return results;
     } catch (err) {

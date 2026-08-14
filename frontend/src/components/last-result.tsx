@@ -22,8 +22,11 @@ export function LastResult() {
   if (!lastFinished) return null;
 
   const olIsHome = lastFinished.homeTeamId === OL_TEAM_ID;
-  const olScore = olIsHome ? lastFinished.homeScore! : lastFinished.awayScore!;
-  const oppScore = olIsHome ? lastFinished.awayScore! : lastFinished.homeScore!;
+  const olScore = olIsHome ? lastFinished.homeScore : lastFinished.awayScore;
+  const oppScore = olIsHome ? lastFinished.awayScore : lastFinished.homeScore;
+  // Un FINISHED sans scores (match arrêté, trou API) rendait « Match nul »
+  // sur un score vide. Review 2026-08-14.
+  if (olScore === null || oppScore === null) return null;
   const opponentName = olIsHome ? lastFinished.awayTeam : lastFinished.homeTeam;
   const opponentId = olIsHome ? lastFinished.awayTeamId : lastFinished.homeTeamId;
 

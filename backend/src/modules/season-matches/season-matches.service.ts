@@ -108,6 +108,13 @@ export class SeasonMatchesService implements OnModuleInit {
     try {
       const matches = await this.fetchFrom365Scores();
       const previous = this.readCacheRaw();
+      // Garde anti-outage : fetchFrom365Scores avale ses erreurs et peut
+      // rendre [] — ne jamais écraser une saison complète par du vide
+      // (même garde que news.service). Review 2026-08-14.
+      if (matches.length === 0 && previous && previous.length > 0) {
+        this.logger.warn('365scores a rendu 0 match — cache existant conservé');
+        return previous;
+      }
       this.writeCache(matches);
       if (this.matchesChanged(previous, matches)) {
         this.bus.emit('season-matches-changed', { count: matches.length });

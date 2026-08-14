@@ -109,6 +109,17 @@ export function MatchPage() {
   );
   const burst = useMatchEventBurst(data);
 
+  if (!matchupId) {
+    // Le backend exige matchupId (format homeId-awayId-gameId) : sans lui la
+    // query est désactivée et la page affichait « Match introuvable » pour un
+    // match valide (lien partagé sans query param). Review 2026-08-14.
+    return (
+      <div className="py-20 text-center text-fg-dim text-sm">
+        Lien incomplet — ouvre ce match depuis le tableau de bord ou le calendrier.
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20 text-fg-dim">

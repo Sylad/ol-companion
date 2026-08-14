@@ -60,20 +60,21 @@ export class NewsService implements OnModuleInit {
 
     const allItems: NewsItem[] = [];
 
-    for (const source of RSS_SOURCES) {
-      try {
-        const res = await fetch(source.url, {
-          headers: { 'User-Agent': 'OL-Companion/1.0' },
-          signal: AbortSignal.timeout(8000),
-        });
-        if (!res.ok) { this.logger.warn(`RSS ${source.source} HTTP ${res.status}`); continue; }
-        const xml = await res.text();
-        const items = this.parseRss(xml, source.source).filter(i => source.filterFn(i.title));
-        allItems.push(...items);
-      } catch (err) {
-        this.logger.warn(`RSS ${source.source} indisponible: ${(err as Error).message}`);
-      }
-    }
+    // Les 3 flux sont indépendants : en parallèle, la latence = le plus lent
+    // (séquentiel = jusqu'à 24 s avec les timeouts 8 s). Review 2026-08-14.
+    const fetched = await Promise.allSettled(RSS_SOURCES.map(async (source) => {
+      const res = await fetch(source.url, {
+        headers: { 'User-Agent': 'OL-Companion/1.0' },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const xml = await res.text();
+      return this.parseRss(xml, source.source).filter(i => source.filterFn(i.title));
+    }));
+    fetched.forEach((r, i) => {
+      if (r.status === 'fulfilled') allItems.push(...r.value);
+      else this.logger.warn(`RSS ${RSS_SOURCES[i].source} indisponible: ${(r.reason as Error).message}`);
+    });
 
     const sorted = allItems
       .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
@@ -128,7 +129,7 @@ export class NewsService implements OnModuleInit {
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/&nbsp;/g, ' ')
-      .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));
+      .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n, 10)));
   }
 
   private extractTag(xml: string, tag: string): string {

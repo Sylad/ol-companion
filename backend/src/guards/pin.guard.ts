@@ -64,10 +64,12 @@ export class PinGuard implements CanActivate {
     // timingSafeEqual prévient les attaques timing (théorique en local mais
     // gratuit). Buffers doivent avoir la même longueur sinon throw → on
     // pad/skip le comparison si tailles différentes (= échec direct).
-    if (token.length !== this.pin.length) {
+    const tokenBuf = Buffer.from(token);
+    const pinBuf = Buffer.from(this.pin);
+    if (tokenBuf.length !== pinBuf.length) {
       throw new UnauthorizedException('PIN invalide');
     }
-    const ok = timingSafeEqual(Buffer.from(token), Buffer.from(this.pin));
+    const ok = timingSafeEqual(tokenBuf, pinBuf);
     if (ok) return true;
     throw new UnauthorizedException('PIN invalide');
   }

@@ -7,7 +7,7 @@ export default () => ({
   // these substrings is forced into demo mode: writes are blocked, the badge
   // "Mode démo verrouillée" is shown, and PIN auth is bypassed.
   // Default covers Cloudflare quick tunnels.
-  demoForcedHosts: (process.env['DEMO_FORCED_HOSTS'] ?? 'trycloudflare.com')
+  demoForcedHosts: (process.env['DEMO_FORCED_HOSTS'] ?? 'trycloudflare.com,cfargotunnel.com')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),

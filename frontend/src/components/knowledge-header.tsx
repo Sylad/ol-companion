@@ -2,11 +2,9 @@ import { useWikiImage } from '@/hooks/use-wiki-image';
 import { useStandings } from '@/hooks/use-standings';
 import { OL_TEAM_ID } from '@/types/api';
 
-const POSITION_SUFFIX = ['e', 'er', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'];
-
 function ordinal(pos: number): string {
-  if (pos === 1) return '1er';
-  return `${pos}${POSITION_SUFFIX[pos % 10] ?? 'e'}`;
+  // Français : seul 1 prend « er » — l'indexation pos % 10 produisait « 11er ».
+  return pos === 1 ? '1er' : `${pos}e`;
 }
 
 export function KnowledgeHeader() {

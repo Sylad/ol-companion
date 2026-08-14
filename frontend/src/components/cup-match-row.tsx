@@ -1,3 +1,4 @@
+import { isOlTeamName } from '@/lib/ol-name';
 import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type CupMatch } from '@/types/api';
 import { cn } from '@/lib/utils';
@@ -26,10 +27,12 @@ export function CupMatchRow({ match }: { match: CupMatch }) {
   const homeWon = hasScore && match.homeScore! > match.awayScore!;
   const awayWon = hasScore && match.awayScore! > match.homeScore!;
 
-  const homeIsOL = match.homeTeam.toLowerCase() === 'lyon';
-  const awayIsOL = match.awayTeam.toLowerCase() === 'lyon';
+  const homeIsOL = isOlTeamName(match.homeTeam);
+  const awayIsOL = isOlTeamName(match.awayTeam);
 
-  const olWon = (homeIsOL && homeWon) || (awayIsOL && awayWon);
+  // isFinished : sans lui le badge « Victoire » s'affichait dès la 10e minute
+  // d'un match en cours où OL menait. Review 2026-08-14.
+  const olWon = isFinished && ((homeIsOL && homeWon) || (awayIsOL && awayWon));
   const olLost = isFinished && !olWon && hasScore && match.homeScore !== match.awayScore;
   const olDrew = isFinished && hasScore && match.homeScore === match.awayScore;
 

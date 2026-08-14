@@ -10,6 +10,14 @@ export interface WikiImageResult {
 
 const BASE = 'https://fr.wikipedia.org/w/api.php';
 const CACHE = new Map<string, WikiImageResult>();
+const CACHE_MAX = 2000; // endpoint public (tunnel démo) : sans cap, OOM possible
+function cacheSet(key: string, value: WikiImageResult): void {
+  if (CACHE.size >= CACHE_MAX) {
+    const oldest = CACHE.keys().next().value;
+    if (oldest !== undefined) CACHE.delete(oldest);
+  }
+  CACHE.set(key, value);
+}
 const HEADERS = { 'User-Agent': 'OLCompanion/2.0 (https://github.com/Sylad/ol-companion)' };
 
 const PageSchema = z.object({
@@ -39,7 +47,7 @@ export class WikiImageService {
     try {
       const direct = await this.fetchPageImage(query);
       if (direct.imageUrl) {
-        CACHE.set(key, direct);
+        cacheSet(key, direct);
         return direct;
       }
 
@@ -51,18 +59,18 @@ export class WikiImageService {
       for (const r of results) {
         const result = await this.fetchPageImage(r.title);
         if (result.imageUrl) {
-          CACHE.set(key, result);
+          cacheSet(key, result);
           return result;
         }
       }
 
       const empty: WikiImageResult = { imageUrl: null, pageTitle: null, pageUrl: null };
-      CACHE.set(key, empty);
+      cacheSet(key, empty);
       return empty;
     } catch (err: unknown) {
       this.logger.warn(`Wiki image lookup failed for "${query}": ${(err as Error)?.message ?? err}`);
       const empty: WikiImageResult = { imageUrl: null, pageTitle: null, pageUrl: null };
-      CACHE.set(key, empty);
+      // échec transitoire : ne pas cacher (image morte à vie sinon)
       return empty;
     }
   }

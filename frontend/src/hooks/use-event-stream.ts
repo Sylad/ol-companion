@@ -14,7 +14,15 @@ export function useEventStream(): EventStreamStatus {
   useEffect(() => {
     const es = new EventSource('/api/events');
 
-    es.onopen = () => setStatus('connected');
+    let hadDrop = false;
+    es.onopen = () => {
+      setStatus('connected');
+      // Reconnexion après une coupure : les events émis pendant le trou sont
+      // perdus → invalider les caches dérivés pour resynchroniser.
+      if (hadDrop) {
+        qc.invalidateQueries();
+      }
+    };
 
     es.onmessage = (e) => {
       try {
@@ -51,6 +59,7 @@ export function useEventStream(): EventStreamStatus {
     };
 
     es.onerror = () => {
+      hadDrop = true;
       // EventSource auto-reconnects; surface the state without adding manual retry logic.
       setStatus('reconnecting');
     };

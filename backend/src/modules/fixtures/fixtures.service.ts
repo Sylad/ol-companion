@@ -77,6 +77,10 @@ export class FixturesService implements OnModuleInit {
       );
 
       const previous = this.readCacheRaw();
+      if (matches.length === 0 && previous && previous.length > 0) {
+        this.logger.warn('football-data a rendu 0 match — cache existant conservé');
+        return previous;
+      }
       this.writeCache(matches);
       if (this.fixturesChanged(previous, matches)) {
         this.bus.emit('fixtures-changed', { count: matches.length });
@@ -97,7 +101,9 @@ export class FixturesService implements OnModuleInit {
       const standingsCachePath = path.resolve(process.cwd(), 'data', 'standings-cache.json');
       if (fs.existsSync(standingsCachePath)) {
         const { data } = JSON.parse(fs.readFileSync(standingsCachePath, 'utf-8'));
-        startMatchday = (data?.currentMatchday ?? 30) + 1;
+        // Le prochain match d'OL vit le plus souvent DANS le matchday courant
+        // (démarrer à +1 le sautait). Review 2026-08-14.
+        startMatchday = data?.currentMatchday ?? 30;
       }
     } catch (err: unknown) {
       this.logger.warn(`Failed to read standings cache for matchday hint: ${(err as Error)?.message ?? err}`);

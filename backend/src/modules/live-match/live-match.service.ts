@@ -44,6 +44,12 @@ export class LiveMatchService implements OnModuleInit {
     if (!force && Date.now() - this.cachedCurrentAt < 30_000) {
       return this.cachedCurrent;
     }
+    // Le throttle ne gardait que le cron : le poll 60 s du frontend re-fetchait
+    // 365scores à chaque requête, même la nuit sans match (~180 appels/h par
+    // onglet ouvert). Hors fenêtre utile, on sert le cache. Review 2026-08-14.
+    if (!force && this.shouldSkipPoll()) {
+      return this.cachedCurrent;
+    }
     return this.refreshCurrent();
   }
 

@@ -8,6 +8,14 @@ jest.mock('@nestjs/schedule', () => ({
   Cron: () => () => undefined,
 }));
 
+// Horloge figée en saison 2025-26 : les fixtures sont datées relativement à
+// cette saison — sans fake timers, le spec pourrissait au changement de
+// saison (cassé le 2026-08-01, découvert en review 2026-08-14).
+beforeAll(() => {
+  jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask', 'setUTCHours'] as never, now: new Date('2026-04-15T12:00:00Z') });
+});
+afterAll(() => jest.useRealTimers());
+
 const seasonStartIso = '2025-08-15T19:00:00Z';
 const inSeasonIso = '2026-04-10T19:00:00Z';
 const outOfSeasonIso = '2025-04-10T19:00:00Z';

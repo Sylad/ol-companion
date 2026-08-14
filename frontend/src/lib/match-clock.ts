@@ -37,17 +37,19 @@ export function deriveClock(s: Pick<LiveMatchSummary, 'gameTimeDisplay' | 'statu
   }
   // statusGroup === 3 (live) — refine via statusText
   // Order matters: check active-play phrases FIRST (they may contain "mi-temps" inside e.g. "Deuxième mi-temps").
-  if (txt.includes('deuxième') || txt.includes('seconde') || txt.includes('2nd')) {
-    return { phase: 'second-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
-  }
-  if (txt.includes('première') || txt.includes('1st')) {
-    return { phase: 'first-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
-  }
+  // Prolongations/TAB AVANT première/deuxième : « Deuxième prolongation »
+  // contient « deuxième » et se faisait classer second-half. Review 2026-08-14.
   if (txt.includes('tirs au but') || txt.includes('séance de penalty') || txt.includes('penalty shootout')) {
     return { phase: 'shootout', label: 'TAB', isActive: true };
   }
   if (txt.includes('prolongation') || txt.includes('extra time')) {
     return { phase: 'extra-time', label: s.gameTimeDisplay || 'PROLONGATIONS', isActive: true };
+  }
+  if (txt.includes('deuxième') || txt.includes('seconde') || txt.includes('2nd')) {
+    return { phase: 'second-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
+  }
+  if (txt.includes('première') || txt.includes('1st')) {
+    return { phase: 'first-half', label: s.gameTimeDisplay || s.statusText, isActive: true };
   }
   // Bare "Mi-temps" / "Halftime" pause label (only fires when not in 1st/2nd half block above).
   if (txt.includes('mi-temps') || txt === 'halftime') {

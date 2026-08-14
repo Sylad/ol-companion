@@ -1,3 +1,4 @@
+import { isOlTeamName } from '@/lib/ol-name';
 import { useMemo, useState } from 'react';
 import { Loader2, Trophy, ShieldAlert } from 'lucide-react';
 import { useCups } from '@/hooks/use-cups';
@@ -192,8 +193,8 @@ function countResults(cup: CupInfo): { wins: number; draws: number; losses: numb
     losses = 0;
   for (const m of cup.matches) {
     if (m.status !== 'FINISHED' || m.homeScore === null || m.awayScore === null) continue;
-    const olIsHome = m.homeTeam.toLowerCase() === 'lyon';
-    const olIsAway = m.awayTeam.toLowerCase() === 'lyon';
+    const olIsHome = isOlTeamName(m.homeTeam);
+    const olIsAway = isOlTeamName(m.awayTeam);
     if (!olIsHome && !olIsAway) continue;
     const olScore = olIsHome ? m.homeScore : m.awayScore;
     const oppScore = olIsHome ? m.awayScore : m.homeScore;

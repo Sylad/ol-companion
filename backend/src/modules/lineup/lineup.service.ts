@@ -168,8 +168,11 @@ export class LineupService implements OnModuleInit {
       awayScore: g.awayCompetitor?.score ?? null,
       formation: olLineup.formation ?? '',
       starters,
-      bench: benchOnly,
-      injured: [],
+      // bench = remplaçants réels (filtre yardLine), injured = le reste des
+      // non-titulaires — le filtre était calculé mais jamais utilisé et les
+      // blessés partaient dans bench. Review 2026-08-14.
+      bench,
+      injured: benchOnly.filter((p) => !bench.includes(p)),
     };
   }
 

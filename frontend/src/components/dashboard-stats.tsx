@@ -19,8 +19,8 @@ export function DashboardStats() {
       <StatCard
         label="Position"
         value={ol ? `${ol.position}` : '—'}
-        suffix={ol?.position === 1 ? 'er' : 'e'}
-        sub={`Ligue 1 · J${matchday}`}
+        suffix={ol ? (ol.position === 1 ? 'er' : 'e') : ''}
+        sub={matchday > 0 ? `Ligue 1 · J${matchday}` : 'Ligue 1'}
         icon={Award}
         trend={positionTrend}
       />
