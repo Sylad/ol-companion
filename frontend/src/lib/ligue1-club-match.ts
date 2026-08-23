@@ -51,8 +51,11 @@ export function resolveOpponentClub(fixture: Fixture): Ligue1Club | undefined {
     'le havre ac': 485,
     'ogc nice': 470,
     'aj auxerre': 476,
-    'fc nantes': 486,
-    'fc metz': 484,
+    'fc nantes': -1, // relégué 2026-27, slot gardé
+    'fc metz': -1, // relégué 2026-27, slot gardé
+    'le mans fc': 468,
+    'es troyes ac': 488,
+    'estac troyes': 488,
     'paris fc': 6075,
   };
   for (const [alias, id365] of Object.entries(aliases)) {

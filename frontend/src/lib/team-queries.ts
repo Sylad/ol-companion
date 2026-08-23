@@ -1,4 +1,4 @@
-// Map: 365scores teamId OR football-data teamId → wiki page name (clubs Ligue 1 2025-26)
+// Map: 365scores teamId OR football-data teamId → wiki page name (clubs Ligue 1 2026-27)
 // IDs football-data audités contre /api/fixtures live (2026-05-06).
 // Avant : la table avait des IDs football-data inventés (511 → Le Havre alors que
 // 511 = Toulouse côté football-data) → mauvaises résolutions wiki sur tout
@@ -20,8 +20,10 @@ const TEAM_WIKI_BY_ID: Record<number, string> = {
   485: 'Havre Athletic Club',
   470: 'Olympique gymnaste club Nice',
   476: 'Association de la jeunesse auxerroise',
-  486: 'Football Club de Nantes',
-  484: 'Football Club de Metz',
+  486: 'Football Club de Nantes', // relégué 2026-27, gardé pour les archives
+  484: 'Football Club de Metz', // relégué 2026-27, gardé pour les archives
+  468: 'Le Mans Football Club',
+  488: 'Espérance sportive Troyes Aube Champagne',
 
   // === football-data IDs (utilisés par /api/fixtures) — OL=523 est partagé via remap ===
   // Source : curl http://nas:3002/api/fixtures (audit 2026-05-06).
@@ -37,8 +39,10 @@ const TEAM_WIKI_BY_ID: Record<number, string> = {
   529: 'Stade rennais Football Club',
   532: "Angers Sporting Club de l'Ouest",
   533: 'Havre Athletic Club',
-  543: 'Football Club de Nantes',
-  545: 'Football Club de Metz',
+  543: 'Football Club de Nantes', // relégué 2026-27, gardé pour les archives
+  545: 'Football Club de Metz', // relégué 2026-27, gardé pour les archives
+  535: 'Le Mans Football Club',
+  531: 'Espérance sportive Troyes Aube Champagne',
   546: 'Racing Club de Lens',
   548: 'Association sportive de Monaco Football Club',
   576: 'Racing Club de Strasbourg Alsace',
