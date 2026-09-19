@@ -228,6 +228,12 @@ export interface LiveMatchShot {
   side: number;
 }
 
+export interface LiveMatchMomentumPoint {
+  minute: number;
+  /** −100 (pression extérieur) … +100 (pression domicile). */
+  value: number;
+}
+
 export interface LiveMatchStats extends LiveMatchSummary {
   teamStats: {
     home: Record<string, number>;
@@ -236,6 +242,7 @@ export interface LiveMatchStats extends LiveMatchSummary {
   events: LiveMatchTimelineEvent[];
   topPerformers: LiveMatchTopPerformer[];
   shots: LiveMatchShot[];
+  momentum?: LiveMatchMomentumPoint[];
   updatedAt: string;
 }
 

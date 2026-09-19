@@ -3,6 +3,7 @@ import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
 import { useMatchEventBurst } from '@/hooks/use-match-event-burst';
 import { ShotMap } from '@/components/shot-map';
+import { MomentumChart } from '@/components/momentum-chart';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
@@ -143,6 +144,13 @@ export function MatchPage() {
   const clock = deriveClock(data);
   const isPaused = clock.phase === 'half-time';
 
+  // Buts pour marquer le momentum : un csc profite à l'adversaire.
+  const goalMinutes = data.events
+    .filter((e) => e.type === 'goal' || e.type === 'penalty_goal' || e.type === 'own_goal')
+    .map((e) => ({
+      minute: Math.max(1, Math.floor(e.gameTime)),
+      home: (e.competitorId === data.home.id) !== (e.type === 'own_goal'),
+    }));
   const statRows = STAT_DISPLAY.filter((s) => (data.teamStats.home[s.key] ?? 0) !== 0 || (data.teamStats.away[s.key] ?? 0) !== 0);
 
   return (
@@ -260,8 +268,16 @@ export function MatchPage() {
       )}
       </div>
 
-      {/* Shot map */}
-      <div className="min-w-0">
+      {/* Shot map + momentum */}
+      <div className="min-w-0 space-y-4">
+      {data.momentum && data.momentum.length > 0 && (
+        <MomentumChart
+          points={data.momentum}
+          homeName={data.home.name}
+          awayName={data.away.name}
+          goalMinutes={goalMinutes}
+        />
+      )}
       {data.shots.length > 0 && (
         <ShotMap
           shots={data.shots}
