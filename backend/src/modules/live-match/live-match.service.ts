@@ -11,6 +11,9 @@ import {
 } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { computeMomentum, parsePlayByPlay, type MomentumPoint } from './live-match.momentum';
+import { extractStandingsAround, type LiveStandingRow } from './live-match.standings';
+import { Scores365StandingsResponseSchema } from '../standings/standings.schema';
+import { LIGUE1_365SCORES_ID } from '../../config/constants';
 
 const SCORES365_HEADERS = scores365Headers();
 
@@ -25,6 +28,9 @@ const POST_MATCH_WINDOW_MS = 2 * 3600_000; // expose stats up to 2h after final 
 const KICKOFF_WINDOW_BEFORE_MS = 15 * 60_000;
 const KICKOFF_WINDOW_AFTER_MS = 3 * 3600_000;
 const RETRY_AFTER_FAILURE_MS = 60_000;
+/** Le classement 365scores est live (résultats provisoires comptés) : 60 s suffisent. */
+const STANDINGS_TTL_MS = 60_000;
+const STANDINGS_AROUND = 2;
 
 type Fetcher = typeof fetch;
 
@@ -44,6 +50,7 @@ export class LiveMatchService implements OnModuleInit {
   private lastRefreshFailedAt = 0;
   private readonly cachedStatsByGame = new Map<number, CachedStats>();
   private lastDiffSignature = '';
+  private cachedStandings: { rows: LiveStandingRow[]; fetchedAt: number } | null = null;
 
   /** Injectable pour les tests (cf. season-matches). */
   fetcher: Fetcher = (input, init) => fetch(input, init);
@@ -102,8 +109,35 @@ export class LiveMatchService implements OnModuleInit {
     if (momentum) payload.momentum = momentum;
     else if (cached?.payload.momentum) payload.momentum = cached.payload.momentum;
 
+    const standings = await this.fetchStandingsAroundOl();
+    if (standings) payload.standings = standings;
+    else if (cached?.payload.standings) payload.standings = cached.payload.standings;
+
     this.cachedStatsByGame.set(gameId, { payload, fetchedAt: Date.now() });
     return payload;
+  }
+
+  /** Mini-classement Ligue 1 autour de l'OL, cache 60 s, meilleur effort. */
+  private async fetchStandingsAroundOl(): Promise<LiveStandingRow[] | undefined> {
+    if (this.cachedStandings && Date.now() - this.cachedStandings.fetchedAt < STANDINGS_TTL_MS) {
+      return this.cachedStandings.rows;
+    }
+    const url = `https://data.365scores.com/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
+    try {
+      const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
+      if (!res.ok) {
+        this.logger.warn(`standings HTTP ${res.status}`);
+        return undefined;
+      }
+      const data = parseExternal(Scores365StandingsResponseSchema, await res.json(), '365scores standings (live)');
+      const rows = extractStandingsAround(data, LIVE_MATCH_OL_ID, STANDINGS_AROUND);
+      if (rows.length === 0) return undefined;
+      this.cachedStandings = { rows, fetchedAt: Date.now() };
+      return rows;
+    } catch (err) {
+      this.logger.warn(`standings (live) failed: ${(err as Error).message}`);
+      return undefined;
+    }
   }
 
   /**

@@ -251,6 +251,17 @@ export interface LiveMatchLineup {
   bench: LiveMatchLineupPlayer[];
 }
 
+export interface LiveStandingRow {
+  position: number;
+  teamId: number;
+  name: string;
+  played: number;
+  points: number;
+  goalDifference: number;
+  isLive: boolean;
+  isOl: boolean;
+}
+
 export interface LiveMatchStats extends LiveMatchSummary {
   teamStats: {
     home: Record<string, number>;
@@ -261,6 +272,7 @@ export interface LiveMatchStats extends LiveMatchSummary {
   shots: LiveMatchShot[];
   momentum?: LiveMatchMomentumPoint[];
   lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
+  standings?: LiveStandingRow[];
   updatedAt: string;
 }
 

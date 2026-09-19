@@ -5,6 +5,7 @@ import { useMatchEventBurst } from '@/hooks/use-match-event-burst';
 import { ShotMap } from '@/components/shot-map';
 import { MomentumChart } from '@/components/momentum-chart';
 import { LineupCard } from '@/components/lineup-card';
+import { MiniStandings } from '@/components/mini-standings';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
@@ -273,6 +274,7 @@ export function MatchPage() {
         </section>
       )}
       {olLineup && <LineupCard lineup={olLineup} teamName={olSide.name} accent="red" />}
+      {data.standings && <MiniStandings rows={data.standings} />}
       </div>
 
       {/* Shot map + momentum */}

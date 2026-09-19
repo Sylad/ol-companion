@@ -1,3 +1,5 @@
+import type { LiveStandingRow } from './live-match.standings';
+
 export type LiveMatchStatus = 'upcoming' | 'live' | 'ended';
 
 export interface LiveMatchSide {
@@ -95,6 +97,8 @@ export interface LiveMatchStats extends LiveMatchSummary {
   momentum?: LiveMatchMomentumPoint[];
   /** Compositions confirmées des deux équipes ; absent tant que 365scores ne les publie pas. */
   lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
+  /** Classement Ligue 1 live autour de l'OL (± 2), absent si 365scores ne répond pas. */
+  standings?: LiveStandingRow[];
   updatedAt: string;             // ISO when payload was assembled
 }
 

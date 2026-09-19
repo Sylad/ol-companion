@@ -31,6 +31,8 @@ const rowSchema = z.object({
   points: z.number().optional(),
   recentForm: z.array(z.number()).optional(),
   trend: z.number().optional(),
+  /** Présent quand l'équipe joue en ce moment : le classement 365scores est live. */
+  liveGameId: z.number().optional(),
 });
 
 const stageSchema = z.object({
