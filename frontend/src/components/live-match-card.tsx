@@ -88,8 +88,8 @@ export function LiveMatchCard() {
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 text-fg-muted text-[10px] font-bold uppercase tracking-wider">
-              <Trophy className="h-3 w-3" strokeWidth={2.5} />
-              Terminé
+              {clock.phase === 'suspended' ? <Pause className="h-3 w-3" strokeWidth={2.5} /> : <Trophy className="h-3 w-3" strokeWidth={2.5} />}
+              {clock.phase === 'suspended' ? clock.label : 'Terminé'}
             </span>
           )}
           <span className="text-xs text-fg-muted">{current.competitionName}</span>

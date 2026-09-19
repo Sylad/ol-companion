@@ -7,6 +7,7 @@ export type MatchPhase =
   | 'second-half'
   | 'extra-time'
   | 'shootout'
+  | 'suspended'
   | 'ended';
 
 export interface MatchClock {
@@ -27,6 +28,11 @@ export function deriveClock(s: Pick<LiveMatchSummary, 'gameTimeDisplay' | 'statu
     return { phase: 'upcoming', label: 'À VENIR', isActive: false };
   }
   if (s.statusGroup === 4) {
+    // 365scores range aussi les matchs interrompus dans le groupe « terminé »
+    // (Lyon-Rennes 19/09/2026, « Suspendu » à la 42e). Ne pas afficher « Terminé ».
+    if (txt.includes('susp')) return { phase: 'suspended', label: 'SUSPENDU', isActive: false };
+    if (txt.includes('report')) return { phase: 'suspended', label: 'REPORTÉ', isActive: false };
+    if (txt.includes('abandon') || txt.includes('annul')) return { phase: 'suspended', label: 'ABANDONNÉ', isActive: false };
     if (txt.includes('tirs au but') || txt.includes('séance') || txt.includes('penalty')) {
       return { phase: 'ended', label: 'TERMINÉ (TAB)', isActive: false };
     }
