@@ -63,11 +63,19 @@ export interface LiveMatchSummary {
   away: LiveMatchSide;
 }
 
+export interface LiveMatchMomentumPoint {
+  minute: number;
+  /** −100 (pression extérieur) … +100 (pression domicile). */
+  value: number;
+}
+
 export interface LiveMatchStats extends LiveMatchSummary {
   teamStats: { home: LiveMatchTeamStats; away: LiveMatchTeamStats };
   events: LiveMatchTimelineEvent[];
   topPerformers: LiveMatchTopPerformer[];
   shots: LiveMatchShot[];
+  /** Momentum minute par minute dérivé du play-by-play ; absent si le feed est indisponible. */
+  momentum?: LiveMatchMomentumPoint[];
   updatedAt: string;             // ISO when payload was assembled
 }
 

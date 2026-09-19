@@ -230,6 +230,8 @@ export const Scores365GameDetailedSchema = Scores365GameSchema.extend({
   chartEvents: Scores365ChartEventsSchema.optional(),
   topPerformers: topPerformersSchema.optional(),
   members: z.array(topLevelMemberSchema).optional(),
+  /** Feed de commentaires typés (Opta) — source du momentum. */
+  playByPlay: z.object({ feedURL: z.string().optional() }).passthrough().optional(),
 }).passthrough();
 
 export type Scores365GameDetailed = z.infer<typeof Scores365GameDetailedSchema>;

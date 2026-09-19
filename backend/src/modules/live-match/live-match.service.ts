@@ -10,6 +10,7 @@ import {
   type Scores365GameDetailResponse,
 } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
+import { computeMomentum, parsePlayByPlay, type MomentumPoint } from './live-match.momentum';
 
 const SCORES365_HEADERS = scores365Headers();
 
@@ -97,8 +98,40 @@ export class LiveMatchService implements OnModuleInit {
       return cached?.payload ?? null;
     }
 
+    const momentum = await this.fetchMomentum(raw, payload);
+    if (momentum) payload.momentum = momentum;
+    else if (cached?.payload.momentum) payload.momentum = cached.payload.momentum;
+
     this.cachedStatsByGame.set(gameId, { payload, fetchedAt: Date.now() });
     return payload;
+  }
+
+  /**
+   * Momentum depuis le play-by-play 365scores (URL fournie dans le détail du
+   * match). Meilleur effort : toute erreur → undefined, la page vit sans.
+   */
+  private async fetchMomentum(
+    raw: Scores365GameDetailResponse,
+    payload: LiveMatchStats,
+  ): Promise<MomentumPoint[] | undefined> {
+    const feedUrl = raw.game?.playByPlay?.feedURL;
+    if (!feedUrl || payload.status === 'upcoming') return undefined;
+    try {
+      const res = await this.fetcher(feedUrl, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
+      if (!res.ok) {
+        this.logger.warn(`play-by-play HTTP ${res.status} for ${payload.gameId}`);
+        return undefined;
+      }
+      const messages = parsePlayByPlay(await res.json());
+      if (messages.length === 0) return undefined;
+      const lastMinute = payload.status === 'ended'
+        ? Math.max(90, ...messages.map((m) => m.minute))
+        : Math.max(1, Math.floor(payload.gameTime));
+      return computeMomentum(messages, { homeName: payload.home.name, awayName: payload.away.name }, lastMinute);
+    } catch (err) {
+      this.logger.warn(`play-by-play failed for ${payload.gameId}: ${(err as Error).message}`);
+      return undefined;
+    }
   }
 
   @Cron('*/30 * * * * *', { name: 'live-match-poll', timeZone: 'Europe/Paris' })
