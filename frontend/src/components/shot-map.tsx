@@ -23,9 +23,11 @@ interface Props {
   awayName: string;
   homeSymbol: string;
   awaySymbol: string;
+  /** id joueur → nom court (depuis les compos) pour le tooltip des tirs. */
+  playerNames?: Record<number, string>;
 }
 
-export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySymbol }: Props) {
+export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySymbol, playerNames = {} }: Props) {
   if (!shots.length) return null;
 
   return (
@@ -64,6 +66,7 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
                   isHome={isHome}
                   outcome={s.outcome}
                   shot={s}
+                  playerName={playerNames[s.playerId]}
                 />
               );
             })}
@@ -115,6 +118,7 @@ function ShotMarker({
   isHome,
   outcome,
   shot,
+  playerName,
 }: {
   x: number;
   y: number;
@@ -122,6 +126,7 @@ function ShotMarker({
   isHome: boolean;
   outcome: string;
   shot: LiveMatchShot;
+  playerName?: string;
 }) {
   const fill = isHome ? 'hsl(var(--ol-red))' : 'hsl(var(--ol-blue))';
   const stroke = isHome ? 'hsl(var(--ol-red-bright))' : '#62a8e3';
@@ -129,7 +134,13 @@ function ShotMarker({
   const isBlocked = outcome === 'Bloqué' || outcome === 'Blocked';
   const isMissed = outcome === 'Manqué' || outcome === 'Missed' || outcome === 'Hors cadre';
 
-  const title = `${shot.time} · ${outcome} · xG ${shot.xg.toFixed(2)} · ${shot.bodyPart}`;
+  const title = [
+    shot.time,
+    playerName,
+    outcome,
+    `xG ${shot.xg.toFixed(2)}${shot.xgot > 0 ? ` · xGOT ${shot.xgot.toFixed(2)}` : ''}`,
+    shot.bodyPart,
+  ].filter(Boolean).join(' · ');
 
   if (isBlocked) {
     const half = Math.max(r, 3);

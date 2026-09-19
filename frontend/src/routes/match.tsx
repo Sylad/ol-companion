@@ -192,6 +192,13 @@ export function MatchPage() {
       minute: Math.max(1, Math.floor(e.gameTime)),
       home: (e.competitorId === data.home.id) !== (e.type === 'own_goal'),
     }));
+  // Noms courts pour le tooltip de la carte des tirs.
+  const playerNames: Record<number, string> = {};
+  if (data.lineups) {
+    for (const l of [data.lineups.home, data.lineups.away]) {
+      for (const p of [...l.starters, ...l.bench]) playerNames[p.id] = p.shortName;
+    }
+  }
   const homeScorers = scorersFor(data.events, data.home.id, data.away.id);
   const awayScorers = scorersFor(data.events, data.away.id, data.home.id);
   // Compos : OL à gauche (sous « Joueurs en vue »), adversaire à droite (sous les stats).
@@ -343,6 +350,7 @@ export function MatchPage() {
           awayName={data.away.name}
           homeSymbol={data.home.symbolicName}
           awaySymbol={data.away.symbolicName}
+          playerNames={playerNames}
         />
       )}
       </div>
