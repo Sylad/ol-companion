@@ -192,3 +192,37 @@ describe('schéma détail de match — tolérance aux pseudo-membres 365scores',
     expect(payload.events.some((e) => e.type === 'goal')).toBe(true);
   });
 });
+
+describe('toLineups — compositions des deux équipes depuis le détail live', () => {
+  const payload = aggregate(fixture);
+
+  it('expose formation, 11 titulaires triés gardien → attaque, et le banc, pour chaque équipe', () => {
+    expect(payload.lineups?.home.formation).toBe('4-2-3-1');
+    expect(payload.lineups?.away.formation).toBe('4-4-2');
+    for (const side of ['home', 'away'] as const) {
+      const l = payload.lineups![side];
+      expect(l.starters).toHaveLength(11);
+      expect(l.starters[0].yardLine).toBe(1);
+      expect(l.starters.every((p, i, a) => i === 0 || a[i - 1].yardLine <= p.yardLine)).toBe(true);
+      expect(l.bench.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('résout nom, nom court et numéro depuis game.members[]', () => {
+    const gk = payload.lineups!.home.starters[0];
+    expect(gk).toMatchObject({ id: 844534, name: 'Dominik Greif', shortName: 'Greif', jerseyNumber: 1, positionShort: 'GK' });
+  });
+
+  it('exclut absents (status 3) et staff (status 4)', () => {
+    const all = [...payload.lineups!.home.starters, ...payload.lineups!.home.bench];
+    expect(all.length).toBeLessThan(24);
+    expect(all.some((p) => p.name === 'Dominik Greif')).toBe(true);
+  });
+
+  it('sans lineups dans le payload → undefined, pas d\'erreur', () => {
+    const stripped = JSON.parse(JSON.stringify(fixture));
+    delete stripped.game.homeCompetitor.lineups;
+    delete stripped.game.awayCompetitor.lineups;
+    expect(aggregate(stripped).lineups).toBeUndefined();
+  });
+});

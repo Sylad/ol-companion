@@ -1,4 +1,6 @@
 import type {
+  LiveMatchLineup,
+  LiveMatchLineupPlayer,
   LiveMatchStats,
   LiveMatchSummary,
   LiveMatchTeamStats,
@@ -271,8 +273,81 @@ export function aggregate(raw365Response: Scores365GameDetailResponse): LiveMatc
     events: toTimelineEvents(game),
     topPerformers: toTopPerformers(game),
     shots: toShots(game),
+    lineups: toLineups(game),
     updatedAt: new Date().toISOString(),
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* Compositions                                                        */
+/* ------------------------------------------------------------------ */
+
+/** `formation.shortName` 365scores est un libellé anglais, pas une abréviation. */
+const POSITION_ABBR: Record<string, string> = {
+  Goalkeeper: 'GK',
+  'Centre Back': 'CB',
+  'Centre-Back': 'CB',
+  'Left Back': 'LB',
+  'Right Back': 'RB',
+  'Left Wing Back': 'LWB',
+  'Right Wing Back': 'RWB',
+  'Defensive Midfield': 'DM',
+  'Central Midfield': 'CM',
+  'Attacking Midfield': 'AM',
+  'Left Midfield': 'LM',
+  'Right Midfield': 'RM',
+  'Left Forward': 'LW',
+  'Right Forward': 'RW',
+  'Left Winger': 'LW',
+  'Right Winger': 'RW',
+  'Centre Forward': 'CF',
+  'Second Striker': 'SS',
+  Striker: 'ST',
+};
+
+function abbreviatePosition(name: string | undefined): string {
+  if (!name) return '';
+  return POSITION_ABBR[name] ?? name.split(/[\s-]+/).map((w) => w[0]?.toUpperCase() ?? '').join('').slice(0, 3);
+}
+
+export function toLineups(game: Scores365GameDetailed): LiveMatchStats['lineups'] {
+  const home = game.homeCompetitor?.lineups;
+  const away = game.awayCompetitor?.lineups;
+  if (!home?.members?.length || !away?.members?.length) return undefined;
+
+  const meta = new Map<number, NonNullable<typeof game.members>[number]>();
+  for (const m of game.members ?? []) if (m.id !== undefined) meta.set(m.id, m);
+
+  const build = (lineup: typeof home): LiveMatchLineup => {
+    const players = (lineup.members ?? [])
+      // 1 = titulaire, 2 = remplaçant ; 3 = absent, 4 = staff — exclus.
+      .filter((m) => m.status === 1 || m.status === 2)
+      .map((m) => {
+        const info = meta.get(m.id);
+        return {
+          player: {
+            id: m.id,
+            name: info?.name ?? `Joueur #${m.id}`,
+            shortName: info?.shortName ?? info?.name ?? `#${m.id}`,
+            jerseyNumber: typeof info?.jerseyNumber === 'number' ? info.jerseyNumber : null,
+            positionShort: abbreviatePosition(m.formation?.shortName ?? m.position?.shortName),
+            yardLine: m.yardFormation?.line ?? 0,
+            yardSide: m.yardFormation?.fieldSide ?? 50,
+            ranking: typeof m.ranking === 'number' ? m.ranking : null,
+          } satisfies LiveMatchLineupPlayer,
+          starting: m.status === 1,
+        };
+      });
+    const byLineThenSide = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) =>
+      a.yardLine - b.yardLine || a.yardSide - b.yardSide;
+    return {
+      formation: lineup.formation ?? '',
+      starters: players.filter((p) => p.starting).map((p) => p.player).sort(byLineThenSide),
+      bench: players.filter((p) => !p.starting).map((p) => p.player),
+    };
+  };
+
+  return { home: build(home), away: build(away) };
 }
 
 export const LIVE_MATCH_OL_ID = OL_365_ID;

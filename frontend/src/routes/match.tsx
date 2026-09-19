@@ -4,6 +4,7 @@ import { useLiveMatchStats } from '@/hooks/use-live-match';
 import { useMatchEventBurst } from '@/hooks/use-match-event-burst';
 import { ShotMap } from '@/components/shot-map';
 import { MomentumChart } from '@/components/momentum-chart';
+import { LineupCard } from '@/components/lineup-card';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
@@ -151,6 +152,11 @@ export function MatchPage() {
       minute: Math.max(1, Math.floor(e.gameTime)),
       home: (e.competitorId === data.home.id) !== (e.type === 'own_goal'),
     }));
+  // Compos : OL à gauche (sous « Joueurs en vue »), adversaire à droite (sous les stats).
+  const olLineup = data.lineups ? (olIsHome ? data.lineups.home : data.lineups.away) : null;
+  const oppLineup = data.lineups ? (olIsHome ? data.lineups.away : data.lineups.home) : null;
+  const olSide = olIsHome ? data.home : data.away;
+  const oppSide = olIsHome ? data.away : data.home;
   const statRows = STAT_DISPLAY.filter((s) => (data.teamStats.home[s.key] ?? 0) !== 0 || (data.teamStats.away[s.key] ?? 0) !== 0);
 
   return (
@@ -181,8 +187,8 @@ export function MatchPage() {
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 text-fg-muted text-[10px] font-bold uppercase tracking-wider">
-                <Trophy className="h-3 w-3" strokeWidth={2.5} />
-                Terminé
+                {clock.phase === 'suspended' ? <Pause className="h-3 w-3" strokeWidth={2.5} /> : <Trophy className="h-3 w-3" strokeWidth={2.5} />}
+                {clock.phase === 'suspended' ? clock.label : 'Terminé'}
               </span>
             )}
             <span className="text-xs text-fg-muted">{data.competitionName}</span>
@@ -266,6 +272,7 @@ export function MatchPage() {
           </div>
         </section>
       )}
+      {olLineup && <LineupCard lineup={olLineup} teamName={olSide.name} accent="red" />}
       </div>
 
       {/* Shot map + momentum */}
@@ -290,8 +297,9 @@ export function MatchPage() {
       )}
       </div>
 
-      {/* Stats */}
-      <section className="rounded-md bg-surface border border-border overflow-hidden min-w-0">
+      {/* Stats + compo adverse */}
+      <div className="space-y-4 min-w-0">
+      <section className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-3 border-b border-border">
           <div className="eyebrow">Statistiques</div>
         </header>
@@ -308,6 +316,8 @@ export function MatchPage() {
           {statRows.length === 0 && <p className="text-xs text-fg-dim py-4 text-center">Pas encore de statistiques.</p>}
         </div>
       </section>
+      {oppLineup && <LineupCard lineup={oppLineup} teamName={oppSide.name} accent="blue" />}
+      </div>
       </div>
     </div>
   );

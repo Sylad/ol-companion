@@ -69,6 +69,23 @@ export interface LiveMatchMomentumPoint {
   value: number;
 }
 
+export interface LiveMatchLineupPlayer {
+  id: number;
+  name: string;
+  shortName: string;
+  jerseyNumber: number | null;
+  positionShort: string;     // 'GK', 'CB', 'DM', 'CF'…
+  yardLine: number;          // 1=GK, 2=DEF, 3=MID, 4+=ATK (0 = inconnu)
+  yardSide: number;          // 0..100, 50 = axe
+  ranking: number | null;    // note 365scores
+}
+
+export interface LiveMatchLineup {
+  formation: string;         // '4-2-3-1'
+  starters: LiveMatchLineupPlayer[];  // triés gardien → attaque
+  bench: LiveMatchLineupPlayer[];
+}
+
 export interface LiveMatchStats extends LiveMatchSummary {
   teamStats: { home: LiveMatchTeamStats; away: LiveMatchTeamStats };
   events: LiveMatchTimelineEvent[];
@@ -76,6 +93,8 @@ export interface LiveMatchStats extends LiveMatchSummary {
   shots: LiveMatchShot[];
   /** Momentum minute par minute dérivé du play-by-play ; absent si le feed est indisponible. */
   momentum?: LiveMatchMomentumPoint[];
+  /** Compositions confirmées des deux équipes ; absent tant que 365scores ne les publie pas. */
+  lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
   updatedAt: string;             // ISO when payload was assembled
 }
 

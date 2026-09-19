@@ -234,6 +234,23 @@ export interface LiveMatchMomentumPoint {
   value: number;
 }
 
+export interface LiveMatchLineupPlayer {
+  id: number;
+  name: string;
+  shortName: string;
+  jerseyNumber: number | null;
+  positionShort: string;
+  yardLine: number;
+  yardSide: number;
+  ranking: number | null;
+}
+
+export interface LiveMatchLineup {
+  formation: string;
+  starters: LiveMatchLineupPlayer[];
+  bench: LiveMatchLineupPlayer[];
+}
+
 export interface LiveMatchStats extends LiveMatchSummary {
   teamStats: {
     home: Record<string, number>;
@@ -243,6 +260,7 @@ export interface LiveMatchStats extends LiveMatchSummary {
   topPerformers: LiveMatchTopPerformer[];
   shots: LiveMatchShot[];
   momentum?: LiveMatchMomentumPoint[];
+  lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
   updatedAt: string;
 }
 
