@@ -203,9 +203,13 @@ const topPerformersSchema = z
 
 export type Scores365TopPerformerCategory = z.infer<typeof Scores365TopPerformerCategorySchema>;
 
+/** 365scores glisse des pseudo-membres sans `id` dans `game.members[]`
+ *  (ex. `{ competitorId, name: 'But annulé' }`, Anderlecht-Lyon 16/09/2026).
+ *  `id` optionnel : les consommateurs ignorent ces entrées au lieu de rejeter
+ *  tout le payload. */
 const topLevelMemberSchema = z
   .object({
-    id: z.number(),
+    id: z.number().optional(),
     competitorId: z.number().optional(),
     athleteId: z.number().optional(),
     name: z.string().optional(),

@@ -222,7 +222,7 @@ export function accumulateGame(
   if (!members?.length) return;
 
   const metaById = new Map<number, TopLevelMember>();
-  for (const m of game.members ?? []) metaById.set(m.id, m);
+  for (const m of game.members ?? []) if (m.id !== undefined) metaById.set(m.id, { ...m, id: m.id });
 
   for (const m of members) {
     const meta = metaById.get(m.id) ?? { id: m.id };

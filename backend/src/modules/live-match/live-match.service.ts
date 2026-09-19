@@ -15,6 +15,20 @@ const SCORES365_HEADERS = scores365Headers();
 
 const POST_MATCH_WINDOW_MS = 2 * 3600_000; // expose stats up to 2h after final whistle
 
+/**
+ * Autour du coup d'envoi, on ne lâche jamais un match connu : 365scores le sort
+ * de `fixtures` quelques secondes avant de le passer en live, et un timeout sur
+ * une réponse de 50 Ko arrive régulièrement. Sans cette fenêtre, un `null`
+ * transitoire coûtait 15 min de blackout (16/09 Anderlecht, 19/09 Rennes).
+ */
+const KICKOFF_WINDOW_BEFORE_MS = 15 * 60_000;
+const KICKOFF_WINDOW_AFTER_MS = 3 * 3600_000;
+const RETRY_AFTER_FAILURE_MS = 60_000;
+
+type Fetcher = typeof fetch;
+
+type CandidateResult = { ok: true; summary: LiveMatchSummary | null } | { ok: false };
+
 interface CachedStats {
   payload: LiveMatchStats;
   fetchedAt: number;
@@ -25,8 +39,13 @@ export class LiveMatchService implements OnModuleInit {
   private readonly logger = new Logger(LiveMatchService.name);
   private cachedCurrent: LiveMatchSummary | null = null;
   private cachedCurrentAt = 0;
+  /** Horodatage du dernier refresh dégradé (timeout / HTTP non-2xx), 0 sinon. */
+  private lastRefreshFailedAt = 0;
   private readonly cachedStatsByGame = new Map<number, CachedStats>();
   private lastDiffSignature = '';
+
+  /** Injectable pour les tests (cf. season-matches). */
+  fetcher: Fetcher = (input, init) => fetch(input, init);
 
   constructor(private readonly bus: EventBusService) {}
 
@@ -124,6 +143,14 @@ export class LiveMatchService implements OnModuleInit {
     const sinceLastRefresh = Date.now() - this.cachedCurrentAt;
     const current = this.cachedCurrent;
 
+    // Dernier refresh dégradé → on réessaie vite, jamais 15 min.
+    if (this.lastRefreshFailedAt > 0) {
+      return Date.now() - this.lastRefreshFailedAt < RETRY_AFTER_FAILURE_MS;
+    }
+
+    // Autour du coup d'envoi d'un match connu → cadence pleine, quoi qu'il arrive.
+    if (current && this.withinKickoffWindow(current)) return false;
+
     // No current/upcoming match known → throttle to 15 min between full refreshes.
     if (!current) {
       return sinceLastRefresh < 15 * 60_000;
@@ -151,50 +178,100 @@ export class LiveMatchService implements OnModuleInit {
   }
 
   private async refreshCurrent(): Promise<LiveMatchSummary | null> {
-    const summary = await this.findCurrentOlMatch();
-    this.cachedCurrent = summary;
-    this.cachedCurrentAt = Date.now();
-    return summary;
+    const { summary, degraded } = await this.findCurrentOlMatch();
+    const previous = this.cachedCurrent;
+    const now = Date.now();
+
+    if (summary) {
+      this.cachedCurrent = summary;
+      this.cachedCurrentAt = now;
+      this.lastRefreshFailedAt = 0;
+      return summary;
+    }
+
+    // Rien trouvé. On ne lâche le match connu que si l'on est sûr qu'il est
+    // hors fenêtre ET que les trois listes ont répondu proprement.
+    const keepPrevious = previous !== null && (degraded || this.withinKickoffWindow(previous));
+    if (keepPrevious) {
+      if (degraded) {
+        this.lastRefreshFailedAt = now;
+      } else {
+        this.cachedCurrentAt = now;
+        this.lastRefreshFailedAt = 0;
+      }
+      return previous;
+    }
+
+    this.cachedCurrent = null;
+    this.cachedCurrentAt = now;
+    this.lastRefreshFailedAt = degraded ? now : 0;
+    return null;
   }
 
-  private async findCurrentOlMatch(): Promise<LiveMatchSummary | null> {
+  private async findCurrentOlMatch(): Promise<{ summary: LiveMatchSummary | null; degraded: boolean }> {
+    let degraded = false;
+    const step = async (url: string, groups: number[], opts?: { onlyRecent?: boolean; onlyUpcoming?: boolean }) => {
+      const r = await this.findCandidate(url, groups, opts);
+      if (!r.ok) {
+        degraded = true;
+        return null;
+      }
+      return r.summary;
+    };
+
     // 1) Live OL match (results endpoint includes only finished, not ideal — use the date-based one).
     // 365scores exposes live games filtered by competitor; fallback to allscores otherwise.
     const liveUrl = `https://data.365scores.com/web/games/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&onlyLiveGames=true&competitors=${LIVE_MATCH_OL_ID}`;
-    let candidate = await this.findCandidate(liveUrl, [3]);
-    if (candidate) return candidate;
+    let candidate = await step(liveUrl, [3]);
+    if (candidate) return { summary: candidate, degraded };
 
     // 2) Recently ended OL match (last result, only keep if < 2h since kick-off).
     const recentUrl = `https://data.365scores.com/web/games/results/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitors=${LIVE_MATCH_OL_ID}&limit=1`;
-    candidate = await this.findCandidate(recentUrl, [4], { onlyRecent: true });
-    if (candidate) return candidate;
+    candidate = await step(recentUrl, [4], { onlyRecent: true });
+    if (candidate) return { summary: candidate, degraded };
 
     // 3) Next upcoming OL match (within 24h).
     const upcomingUrl = `https://data.365scores.com/web/games/fixtures/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitors=${LIVE_MATCH_OL_ID}&limit=1`;
-    candidate = await this.findCandidate(upcomingUrl, [1, 2], { onlyUpcoming: true });
-    return candidate;
+    candidate = await step(upcomingUrl, [1, 2], { onlyUpcoming: true });
+    return { summary: candidate, degraded };
   }
 
+  /**
+   * `ok: false` = échec transitoire (timeout, HTTP non-2xx, payload invalide) ;
+   * `ok: true, summary: null` = 365scores a répondu et il n'y a vraiment rien.
+   */
   private async findCandidate(
     url: string,
     statusGroups: number[],
     opts: { onlyRecent?: boolean; onlyUpcoming?: boolean } = {},
-  ): Promise<LiveMatchSummary | null> {
+  ): Promise<CandidateResult> {
     try {
-      const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
-      if (!res.ok) return null;
+      const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
+      if (!res.ok) {
+        this.logger.warn(`findCandidate ${url} HTTP ${res.status}`);
+        return { ok: false };
+      }
       const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores live-match candidate');
       for (const g of d.games ?? []) {
         if (g.statusGroup === undefined || !statusGroups.includes(g.statusGroup)) continue;
         const summary = summarize(g);
         if (opts.onlyRecent && !this.withinPostMatchWindow(summary)) continue;
         if (opts.onlyUpcoming && !this.withinUpcomingWindow(summary)) continue;
-        return summary;
+        return { ok: true, summary };
       }
+      return { ok: true, summary: null };
     } catch (err) {
       this.logger.warn(`findCandidate ${url} failed: ${(err as Error).message}`);
+      return { ok: false };
     }
-    return null;
+  }
+
+  /** [coup d'envoi − 15 min ; coup d'envoi + 3 h] — le match ne peut pas avoir disparu. */
+  private withinKickoffWindow(summary: LiveMatchSummary): boolean {
+    const start = new Date(summary.startTime).getTime();
+    if (!Number.isFinite(start)) return false;
+    const delta = Date.now() - start;
+    return delta > -KICKOFF_WINDOW_BEFORE_MS && delta < KICKOFF_WINDOW_AFTER_MS;
   }
 
   private withinPostMatchWindow(summary: LiveMatchSummary): boolean {

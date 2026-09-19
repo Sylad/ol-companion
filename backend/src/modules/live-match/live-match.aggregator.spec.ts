@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { aggregate, deriveSecondYellowReds, parseStatValue, summarize } from './live-match.aggregator';
 import type { LiveMatchTimelineEvent } from './live-match.types';
+import { Scores365GameDetailResponseSchema } from '../../config/scores365-game.schema';
+import { parseExternal } from '../../common/zod-validation.pipe';
 
 const fixture = JSON.parse(
   fs.readFileSync(
@@ -167,5 +169,26 @@ describe('deriveSecondYellowReds (FIFA rule: 2 yellows → red)', () => {
     const derived = out.filter((e) => e.derived);
     expect(derived).toHaveLength(1);
     expect(derived[0].gameTime).toBe(50);
+  });
+});
+
+describe('schéma détail de match — tolérance aux pseudo-membres 365scores', () => {
+  // 16/09/2026 Anderlecht-Lyon : `game.members[54] = { competitorId, name: 'But annulé' }`
+  // sans `id`. Le schéma strict rejetait tout le payload → page /match vide
+  // pendant 6 min en 2e mi-temps puis 1 h après le match (335 erreurs).
+  const raw = JSON.parse(
+    fs.readFileSync(
+      path.resolve(__dirname, '../../../test/fixtures/365_game_anderlecht_lyon_ended_member_without_id.json'),
+      'utf-8',
+    ),
+  );
+
+  it('accepte le payload et agrège les stats malgré un membre sans id', () => {
+    const parsed = parseExternal(Scores365GameDetailResponseSchema, raw, 'test');
+    const payload = aggregate(parsed);
+    expect(payload.status).toBe('ended');
+    expect(payload.home.score).toBe(1);
+    expect(payload.away.score).toBe(2);
+    expect(payload.events.some((e) => e.type === 'goal')).toBe(true);
   });
 });

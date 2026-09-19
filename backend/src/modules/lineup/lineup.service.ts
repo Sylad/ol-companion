@@ -128,7 +128,7 @@ export class LineupService implements OnModuleInit {
      *  the meta map by id then merge per lineup row. */
     type TopLevelMember = NonNullable<typeof g.members>[number];
     const memberById = new Map<number, TopLevelMember>();
-    for (const m of g.members ?? []) memberById.set(m.id, m);
+    for (const m of g.members ?? []) if (m.id !== undefined) memberById.set(m.id, m);
 
     const allPlayers: LineupPlayer[] = olLineup.members.map((m: Scores365LineupMember): LineupPlayer => {
       const meta = memberById.get(m.id);
