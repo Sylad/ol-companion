@@ -147,6 +147,7 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
+        <circle cx={x} cy={y} r={Math.max(half, 6)} fill="transparent" />
         <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={1.75} strokeLinecap="round" />
         <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={1.75} strokeLinecap="round" />
       </g>
@@ -156,6 +157,7 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
+        <circle cx={x} cy={y} r={Math.max(r, 6)} fill="transparent" />
         <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={2} />
       </g>
     );
