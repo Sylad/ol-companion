@@ -104,6 +104,9 @@ Centralisés dans `SCORES365_HEADERS`.
 - Cron `*/30 * * * * *` (30 sec) sur `live-match.service`, mais **diff signature** avant emit SSE — pas de spam.
 - Frontend : `useLiveMatchStats` poll **30s seulement en live**, jamais sinon.
 - Détection match courant = live > recent <2h > upcoming <24h.
+- **Fenêtre coup d'envoi** (fix 2026-09-19) : dans [kickoff − 15 min ; + 3 h] on ne lâche JAMAIS le match connu, même si les 3 listes 365scores sont vides (le match sort de `fixtures` quelques secondes avant de passer en `statusGroup 3`) ou si un appel échoue (timeout 8 s sur 50 Ko, HTTP non-2xx). Échec → retry 60 s, jamais le throttle 15 min. Specs `live-match.service.spec.ts`.
+- **Momentum** = dérivé du play-by-play 365scores (`game.playByPlay.feedURL`, `pbpgenerator.365scores.com`, TTL 10 s), pondéré/lissé dans `live-match.momentum.ts`. Le widget SportRadar (`momentumsrcf.365scores.com`) est un iframe dont le feed est verrouillé ; Sofascore 403. Ne pas rechercher une autre source sans nouvelle info.
+- `game.members[]` peut contenir des pseudo-membres sans `id` (`'But annulé'`) : `id` optionnel dans le schéma, les consommateurs filtrent.
 
 ### Brackets de coupe
 - CdF affichée dès stageNum **6** (1/4), EL dès stageNum **3** (1/8). En dessous, ne pas afficher (round trop tôt).
