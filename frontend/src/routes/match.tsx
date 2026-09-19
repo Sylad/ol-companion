@@ -143,8 +143,10 @@ export function MatchPage() {
   const clock = deriveClock(data);
   const isPaused = clock.phase === 'half-time';
 
+  const statRows = STAT_DISPLAY.filter((s) => (data.teamStats.home[s.key] ?? 0) !== 0 || (data.teamStats.away[s.key] ?? 0) !== 0);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {burst && <MatchEventBurst key={burst.id} type={burst.type} />}
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
         <ArrowLeft className="h-4 w-4" /> Accueil
@@ -182,7 +184,7 @@ export function MatchPage() {
             clock.isActive ? 'text-fg-bright' : 'text-fg-muted',
           )}>{clock.label}</span>
         </header>
-        <div className="px-5 py-8 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div className="px-5 py-4 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="text-right">
             <div className={cn('font-display font-bold text-2xl leading-none', olIsHome && 'text-ol-red-bright')}>
               {data.home.name}
@@ -199,13 +201,17 @@ export function MatchPage() {
         </div>
       </section>
 
+      {/* Grille tableau de bord : faits + joueurs | carte des tirs | stats.
+          En dessous de xl, empilement dans l'ordre de lecture. */}
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,4fr)_minmax(0,5fr)_minmax(0,4fr)] 2xl:grid-cols-[minmax(0,3fr)_minmax(0,5fr)_minmax(0,4fr)] xl:items-start">
+      <div className="space-y-4 min-w-0">
       {/* Timeline */}
       {data.events.length > 0 && (
         <section className="rounded-md bg-surface border border-border overflow-hidden">
           <header className="px-5 py-3 border-b border-border">
             <div className="eyebrow">Faits du match</div>
           </header>
-          <div className="px-5 py-3 divide-y divide-border">
+          <div className="px-5 py-2 divide-y divide-border">
             {data.events.map((e, i) => (
               <TimelineRow
                 key={`${e.gameTime}-${i}`}
@@ -219,7 +225,43 @@ export function MatchPage() {
         </section>
       )}
 
+      {/* Top performers */}
+      {data.topPerformers.length > 0 && (
+        <section className="rounded-md bg-surface border border-border overflow-hidden">
+          <header className="px-5 py-3 border-b border-border">
+            <div className="eyebrow">Joueurs en vue</div>
+          </header>
+          <div className="px-5 py-2 divide-y divide-border">
+            {data.topPerformers.map((tp, i) => (
+              <div key={i} className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 py-2">
+                <div className="text-right min-w-0">
+                  {tp.homePlayer ? (
+                    <>
+                      <div className="font-semibold text-fg text-sm truncate">{tp.homePlayer.name}</div>
+                      <div className="text-xs text-fg-muted">{tp.homePlayer.statName}: <span className="num tabular-nums font-semibold text-fg">{tp.homePlayer.statValue}</span></div>
+                    </>
+                  ) : <span className="text-fg-dim text-xs">—</span>}
+                </div>
+                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center px-2 whitespace-nowrap">
+                  {tp.role}
+                </div>
+                <div className="text-left min-w-0">
+                  {tp.awayPlayer ? (
+                    <>
+                      <div className="font-semibold text-fg text-sm truncate">{tp.awayPlayer.name}</div>
+                      <div className="text-xs text-fg-muted">{tp.awayPlayer.statName}: <span className="num tabular-nums font-semibold text-fg">{tp.awayPlayer.statValue}</span></div>
+                    </>
+                  ) : <span className="text-fg-dim text-xs">—</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+      </div>
+
       {/* Shot map */}
+      <div className="min-w-0">
       {data.shots.length > 0 && (
         <ShotMap
           shots={data.shots}
@@ -230,55 +272,27 @@ export function MatchPage() {
           awaySymbol={data.away.symbolicName}
         />
       )}
+      </div>
 
       {/* Stats */}
-      <section className="rounded-md bg-surface border border-border overflow-hidden">
+      <section className="rounded-md bg-surface border border-border overflow-hidden min-w-0">
         <header className="px-5 py-3 border-b border-border">
           <div className="eyebrow">Statistiques</div>
         </header>
-        <div className="px-5 py-5 space-y-4">
-          {STAT_DISPLAY.map((s) => {
-            const home = data.teamStats.home[s.key] ?? 0;
-            const away = data.teamStats.away[s.key] ?? 0;
-            if (home === 0 && away === 0) return null;
-            return <StatRow key={s.key} label={s.label} home={home} away={away} fmt={s.fmt} />;
-          })}
+        <div className="px-5 py-3 space-y-2">
+          {statRows.map((s) => (
+            <StatRow
+              key={s.key}
+              label={s.label}
+              home={data.teamStats.home[s.key] ?? 0}
+              away={data.teamStats.away[s.key] ?? 0}
+              fmt={s.fmt}
+            />
+          ))}
+          {statRows.length === 0 && <p className="text-xs text-fg-dim py-4 text-center">Pas encore de statistiques.</p>}
         </div>
       </section>
-
-      {/* Top performers */}
-      {data.topPerformers.length > 0 && (
-        <section className="rounded-md bg-surface border border-border overflow-hidden">
-          <header className="px-5 py-3 border-b border-border">
-            <div className="eyebrow">Joueurs en vue</div>
-          </header>
-          <div className="px-5 py-3 divide-y divide-border">
-            {data.topPerformers.map((tp, i) => (
-              <div key={i} className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2.5">
-                <div className="text-right">
-                  {tp.homePlayer ? (
-                    <>
-                      <div className="font-semibold text-fg">{tp.homePlayer.name}</div>
-                      <div className="text-xs text-fg-muted">{tp.homePlayer.statName}: <span className="num tabular-nums font-semibold text-fg">{tp.homePlayer.statValue}</span></div>
-                    </>
-                  ) : <span className="text-fg-dim text-xs">—</span>}
-                </div>
-                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center px-3 whitespace-nowrap">
-                  {tp.role}
-                </div>
-                <div className="text-left">
-                  {tp.awayPlayer ? (
-                    <>
-                      <div className="font-semibold text-fg">{tp.awayPlayer.name}</div>
-                      <div className="text-xs text-fg-muted">{tp.awayPlayer.statName}: <span className="num tabular-nums font-semibold text-fg">{tp.awayPlayer.statValue}</span></div>
-                    </>
-                  ) : <span className="text-fg-dim text-xs">—</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      </div>
     </div>
   );
 }
