@@ -111,18 +111,32 @@ function eventTypeKey(e: Scores365Event): string {
 
 function toTimelineEvents(g: Scores365GameDetailed): LiveMatchTimelineEvent[] {
   const events = g.events ?? [];
+  const nameById = new Map<number, string>();
+  const shortById = new Map<number, string>();
+  for (const m of g.members ?? []) {
+    if (m.id === undefined) continue;
+    if (m.name) nameById.set(m.id, m.name);
+    if (m.shortName ?? m.name) shortById.set(m.id, (m.shortName ?? m.name)!);
+  }
   const mapped: LiveMatchTimelineEvent[] = events
-    .map((e) => ({
-      competitorId: e.competitorId ?? 0,
-      gameTime: typeof e.gameTime === 'number' ? e.gameTime : 0,
-      gameTimeDisplay: e.gameTimeDisplay ?? '',
-      type: eventTypeKey(e),
-      isMajor: !!e.isMajor,
-      playerId: typeof e.playerId === 'number' ? e.playerId : null,
-      extraPlayerId:
-        Array.isArray(e.extraPlayers) && e.extraPlayers.length > 0 ? e.extraPlayers[0] : null,
-      description: describeEvent(e),
-    }))
+    .map((e) => {
+      const playerId = typeof e.playerId === 'number' ? e.playerId : null;
+      const extraPlayerId =
+        Array.isArray(e.extraPlayers) && e.extraPlayers.length > 0 ? e.extraPlayers[0] : null;
+      return {
+        competitorId: e.competitorId ?? 0,
+        gameTime: typeof e.gameTime === 'number' ? e.gameTime : 0,
+        gameTimeDisplay: e.gameTimeDisplay ?? '',
+        type: eventTypeKey(e),
+        isMajor: !!e.isMajor,
+        playerId,
+        extraPlayerId,
+        playerName: playerId !== null ? (nameById.get(playerId) ?? null) : null,
+        playerShortName: playerId !== null ? (shortById.get(playerId) ?? null) : null,
+        extraPlayerName: extraPlayerId !== null ? (nameById.get(extraPlayerId) ?? null) : null,
+        description: describeEvent(e),
+      };
+    })
     .sort((a, b) => a.gameTime - b.gameTime);
   return deriveSecondYellowReds(mapped);
 }
@@ -165,6 +179,9 @@ export function deriveSecondYellowReds(
             isMajor: true,
             playerId: e.playerId,
             extraPlayerId: null,
+            playerName: e.playerName,
+            playerShortName: e.playerShortName,
+            extraPlayerName: null,
             description: '2e carton jaune — Expulsion',
             derived: true,
           });

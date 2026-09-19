@@ -205,6 +205,9 @@ export interface LiveMatchTimelineEvent {
   isMajor: boolean;
   playerId: number | null;
   extraPlayerId: number | null;
+  playerName: string | null;
+  playerShortName: string | null;
+  extraPlayerName: string | null;
   description: string;
   /** True if synthesized client/server-side (e.g. 2nd-yellow → red derivation). */
   derived?: boolean;

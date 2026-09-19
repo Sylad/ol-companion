@@ -81,20 +81,59 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
   event: LiveMatchTimelineEvent; homeId: number; homeSymbol: string; awaySymbol: string;
 }) {
   const isHome = event.competitorId === homeId;
-  const label = EVENT_LABEL[event.type] ?? event.description;
+  const base = EVENT_LABEL[event.type] ?? event.description;
+  const who = event.playerShortName ?? event.playerName;
+  const label = who ? `${base} · ${who}` : base;
+  // Tooltip : nom complet, et passeur / entrant selon l'événement.
+  const extra = event.extraPlayerName
+    ? ` — ${event.type === 'substitution' ? 'entrant' : 'passe'} : ${event.extraPlayerName}`
+    : '';
+  const tooltip = event.playerName ? `${event.playerName}${extra}` : undefined;
   return (
-    <div className="grid grid-cols-[1fr_60px_1fr] items-center gap-3 py-1.5">
+    <div className="grid grid-cols-[1fr_60px_1fr] items-center gap-3 py-1">
       <div className={cn('text-right text-sm', !isHome && 'text-fg-dim')}>
-        {isHome && <span className="font-medium">{label}</span>}
+        {isHome && <span className="font-medium" title={tooltip}>{label}</span>}
       </div>
       <div className="text-center">
         <span className="num tabular-nums text-xs font-bold text-fg-bright">{event.gameTimeDisplay}</span>
         <div className="text-[10px] uppercase tracking-wider text-fg-dim">{isHome ? homeSymbol : awaySymbol}</div>
       </div>
       <div className={cn('text-left text-sm', isHome && 'text-fg-dim')}>
-        {!isHome && <span className="font-medium">{label}</span>}
+        {!isHome && <span className="font-medium" title={tooltip}>{label}</span>}
       </div>
     </div>
+  );
+}
+
+const GOAL_TYPES = new Set(['goal', 'penalty_goal', 'own_goal']);
+
+/** « Nuamah 7', 30' (pen.) » — buts crédités à `teamId`, groupés par joueur. Un csc profite à l'adversaire. */
+function scorersFor(events: LiveMatchTimelineEvent[], teamId: number, opponentId: number): { name: string; marks: string }[] {
+  const byPlayer = new Map<string, string[]>();
+  for (const e of events) {
+    if (!GOAL_TYPES.has(e.type)) continue;
+    const creditedTo = e.type === 'own_goal' ? (e.competitorId === teamId ? opponentId : teamId) : e.competitorId;
+    if (creditedTo !== teamId) continue;
+    const name = e.playerName ?? 'Inconnu';
+    const suffix = e.type === 'penalty_goal' ? ' (pen.)' : e.type === 'own_goal' ? ' (csc)' : '';
+    const arr = byPlayer.get(name) ?? [];
+    arr.push(`${e.gameTimeDisplay}${suffix}`);
+    byPlayer.set(name, arr);
+  }
+  return [...byPlayer.entries()].map(([name, marks]) => ({ name, marks: marks.join(', ') }));
+}
+
+function Scorers({ items, align }: { items: { name: string; marks: string }[]; align: 'right' | 'left' }) {
+  if (!items.length) return <div />;
+  return (
+    <ul className={cn('space-y-0.5 text-xs text-fg-muted', align === 'right' ? 'text-right' : 'text-left')}>
+      {items.map((s) => (
+        <li key={s.name}>
+          <span className="text-fg">{s.name}</span>{' '}
+          <span className="num tabular-nums text-fg-dim">{s.marks}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -153,6 +192,8 @@ export function MatchPage() {
       minute: Math.max(1, Math.floor(e.gameTime)),
       home: (e.competitorId === data.home.id) !== (e.type === 'own_goal'),
     }));
+  const homeScorers = scorersFor(data.events, data.home.id, data.away.id);
+  const awayScorers = scorersFor(data.events, data.away.id, data.home.id);
   // Compos : OL à gauche (sous « Joueurs en vue »), adversaire à droite (sous les stats).
   const olLineup = data.lineups ? (olIsHome ? data.lineups.home : data.lineups.away) : null;
   const oppLineup = data.lineups ? (olIsHome ? data.lineups.away : data.lineups.home) : null;
@@ -199,7 +240,7 @@ export function MatchPage() {
             clock.isActive ? 'text-fg-bright' : 'text-fg-muted',
           )}>{clock.label}</span>
         </header>
-        <div className="px-5 py-4 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div className="px-5 py-3 grid grid-cols-[1fr_auto_1fr] items-center gap-x-4 gap-y-1">
           <div className="text-right">
             <div className={cn('font-display font-bold text-2xl leading-none', olIsHome && 'text-ol-red-bright')}>
               {data.home.name}
@@ -213,6 +254,13 @@ export function MatchPage() {
               {data.away.name}
             </div>
           </div>
+          {(homeScorers.length > 0 || awayScorers.length > 0) && (
+            <>
+              <Scorers items={homeScorers} align="right" />
+              <div className="text-center text-fg-dim">⚽</div>
+              <Scorers items={awayScorers} align="left" />
+            </>
+          )}
         </div>
       </section>
 

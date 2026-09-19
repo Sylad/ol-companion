@@ -102,6 +102,9 @@ describe('deriveSecondYellowReds (FIFA rule: 2 yellows → red)', () => {
     isMajor: true,
     playerId,
     extraPlayerId: null,
+    playerName: null,
+    playerShortName: null,
+    extraPlayerName: null,
     description: 'Carton jaune',
   });
 
@@ -139,6 +142,9 @@ describe('deriveSecondYellowReds (FIFA rule: 2 yellows → red)', () => {
         isMajor: true,
         playerId: 1001,
         extraPlayerId: null,
+        playerName: null,
+        playerShortName: null,
+        extraPlayerName: null,
         description: '2e jaune',
       },
     ];
@@ -224,5 +230,24 @@ describe('toLineups — compositions des deux équipes depuis le détail live', 
     delete stripped.game.homeCompetitor.lineups;
     delete stripped.game.awayCompetitor.lineups;
     expect(aggregate(stripped).lineups).toBeUndefined();
+  });
+});
+
+describe('événements — noms des joueurs résolus depuis game.members[]', () => {
+  const payload = aggregate(fixture);
+
+  it('le but de Rennes à la 6e porte le nom du buteur', () => {
+    const goal = payload.events.find((e) => e.type === 'goal')!;
+    expect(goal.gameTimeDisplay).toBe("6'");
+    expect(goal.playerName).toBeTruthy();
+    expect(goal.playerName).not.toMatch(/^Joueur/);
+    expect(goal.playerShortName).toBe('Tamari');
+  });
+
+  it('un événement dont le joueur est inconnu garde playerName null', () => {
+    const stripped = JSON.parse(JSON.stringify(fixture));
+    stripped.game.members = [];
+    const goal = aggregate(stripped).events.find((e) => e.type === 'goal')!;
+    expect(goal.playerName).toBeNull();
   });
 });

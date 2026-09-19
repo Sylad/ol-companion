@@ -18,6 +18,10 @@ export interface LiveMatchTimelineEvent {
   isMajor: boolean;
   playerId: number | null;
   extraPlayerId: number | null;  // assist player or sub-in
+  /** Noms résolus depuis game.members[] (null si inconnus). */
+  playerName: string | null;
+  playerShortName: string | null;
+  extraPlayerName: string | null;
   description: string;            // human-readable label
   /**
    * True when this event was synthesized by the aggregator (not present in the
