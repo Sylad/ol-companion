@@ -6,9 +6,11 @@ import { RequestContextService } from './request-context.service';
 /**
  * Demo-mode plumbing for OL Companion.
  *
- * Pattern: forced demo mode based on Host header (Cloudflare quick tunnel,
- * public showcase domain, …). When forced=true:
- *   - PinGuard is bypassed (DEMO_FORCED_HOSTS is checked there too).
+ * Pattern: forced demo mode based on the Host header only — never
+ * X-Forwarded-Host (Cloudflare quick tunnel, public showcase domain, …) — or
+ * on DEMO_FORCED=true for the whole instance; single decision in
+ * forced-demo.ts (L14). When forced=true:
+ *   - PinGuard is bypassed (same isForcedDemoRequest decision).
  *   - Write endpoints throw 403 (see DemoWriteGuard).
  *   - Frontend shows a "Mode démo verrouillée" badge.
  *

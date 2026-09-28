@@ -133,7 +133,7 @@ Centralisés dans `SCORES365_HEADERS`.
 
 ### PIN guard + mode démo verrouillé (Cloudflare)
 - `APP_PIN` (vide → permissif) protège les endpoints write : `PUT /api/claude/balance`, `POST /api/admin/reset-season`. SSE `/api/events` toujours bypass.
-- `DEMO_FORCED_HOSTS` (default `trycloudflare.com,cfargotunnel.com`) : si le `Host`/`X-Forwarded-Host` matche, le PIN est bypassé MAIS les écritures retournent 403 (`DemoWriteGuard`). Le frontend affiche le badge "Mode démo verrouillée" via `/api/demo/status` (hook `useDemoStatus` + `DemoBanner`).
+- `DEMO_FORCED_HOSTS` (default `trycloudflare.com,cfargotunnel.com`) : si le `Host` (jamais `X-Forwarded-Host`, forgeable par le client — L14) est l'un de ces noms ou un sous-domaine (égalité exacte ou suffixe précédé d'un point, jamais une sous-chaîne ; décision unique dans `modules/demo/forced-demo.ts`, partagée par le middleware et le `PinGuard`), le PIN est bypassé MAIS les écritures retournent 403 (`DemoWriteGuard`). Le frontend affiche le badge "Mode démo verrouillée" via `/api/demo/status` (hook `useDemoStatus` + `DemoBanner`). `DEMO_FORCED=true` (off par défaut) verrouille toute l'instance côté serveur, sans en-tête.
 - Pour exposer une démo publique : `ssh nas "cloudflared tunnel --url http://localhost:4202"` → URL random `https://*.trycloudflare.com` automatiquement en mode démo verrouillée.
 - Voir `forced_demo_host_pattern.md` (mémoire user) pour le pattern complet, partagé avec finance-tracker.
 
