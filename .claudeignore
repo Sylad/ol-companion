@@ -45,3 +45,4 @@ backend/data/fixtures-cache.json
 
 # --- Lockfiles ---
 package-lock.json
+.token-savior-cache.json
