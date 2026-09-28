@@ -75,3 +75,18 @@ lots:
     estimate: 0.5
     visible: true
     created: 2026-09-28
+  - id: L14
+    title: "Sécurité : PIN absent en prod (ALLOW_NO_PIN=true) + démo décidée sur X-Forwarded-Host forgeable — même correctif que warhammer40k L22"
+    status: todo
+    estimate: 0.5
+    quickwin: true
+    created: 2026-09-28
+    notes:
+      - { date: 2026-09-28, text: "constat 28-09 : ol-companion-secrets sans APP_PIN, values ALLOW_NO_PIN=true, demo-mode.middleware lit x-forwarded-host et apparie en sous-chaîne. Modèle : warhammer40k L22 (forced-demo.ts, appariement exact/suffixe pointé) + PIN aléatoire dans le Secret + retrait ALLOW_NO_PIN" }
+  - id: L15
+    title: Supprimer le suivi d'usage / solde Claude (module claude-usage, /api/claude/*, badge), comme warhammer40k L22
+    status: todo
+    estimate: 0.25
+    created: 2026-09-28
+    notes:
+      - { date: 2026-09-28, text: "Sylvain 28-09 : « on n'utilise plus cet usage de Claude, on peut le supprimer » (dit pour warhammer ; étendu ici par cohérence — confirmer avant de lancer)" }
