@@ -75,6 +75,8 @@ lots:
     estimate: 0.5
     visible: true
     created: 2026-09-28
+    notes:
+      - { date: 2026-09-28, text: "Sylvain 28-09 : ordre DÉCROISSANT, la nouveauté la plus récente en haut (départage à date égale corrigé dans cadence news)" }
   - id: L14
     title: "Sécurité : PIN absent en prod (ALLOW_NO_PIN=true) + démo décidée sur X-Forwarded-Host forgeable — même correctif que warhammer40k L22"
     status: todo
