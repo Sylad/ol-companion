@@ -2,13 +2,16 @@ import { ConfigService } from '@nestjs/config';
 import { DemoModeMiddleware } from './demo-mode.middleware';
 import { RequestContextService } from './request-context.service';
 
-type ReqLike = { header: (name: string) => string | undefined };
+type ReqLike = {
+  headers: Record<string, string>;
+  header: (name: string) => string | undefined;
+};
 
 function makeReq(headers: Record<string, string>): ReqLike {
   const lower = Object.fromEntries(
     Object.entries(headers).map(([k, v]) => [k.toLowerCase(), v]),
   );
-  return { header: (name: string) => lower[name.toLowerCase()] };
+  return { headers: lower, header: (name: string) => lower[name.toLowerCase()] };
 }
 
 describe('DemoModeMiddleware', () => {
@@ -33,7 +36,7 @@ describe('DemoModeMiddleware', () => {
     expect(captured).toEqual({ demoMode: false, forced: false });
   });
 
-  it('forces demo when Host header matches a configured substring', () => {
+  it('forces demo when the Host header is a subdomain of a configured host', () => {
     build(['trycloudflare.com']);
     const req = makeReq({ host: 'random-name-1234.trycloudflare.com' });
     let captured: { demoMode: boolean; forced: boolean } | null = null;
@@ -43,7 +46,7 @@ describe('DemoModeMiddleware', () => {
     expect(captured).toEqual({ demoMode: true, forced: true });
   });
 
-  it('forces demo when X-Forwarded-Host matches (reverse proxy)', () => {
+  it('ignores X-Forwarded-Host: client-controlled, never forces demo (L14)', () => {
     build(['demo.example.com']);
     const req = makeReq({
       host: 'localhost:3002',
@@ -53,7 +56,7 @@ describe('DemoModeMiddleware', () => {
     middleware.use(req as never, {} as never, () => {
       captured = { demoMode: ctx.isDemoMode(), forced: ctx.isForced() };
     });
-    expect(captured).toEqual({ demoMode: true, forced: true });
+    expect(captured).toEqual({ demoMode: false, forced: false });
   });
 
   it('matches case-insensitively', () => {
