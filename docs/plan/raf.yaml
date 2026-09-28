@@ -79,12 +79,16 @@ lots:
       - { date: 2026-09-28, text: "Sylvain 28-09 : ordre DÉCROISSANT, la nouveauté la plus récente en haut (départage à date égale corrigé dans cadence news)" }
   - id: L14
     title: "Sécurité : PIN absent en prod (ALLOW_NO_PIN=true) + démo décidée sur X-Forwarded-Host forgeable — même correctif que warhammer40k L22"
-    status: todo
+    status: done
     estimate: 0.5
     quickwin: true
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: "constat 28-09 : ol-companion-secrets sans APP_PIN, values ALLOW_NO_PIN=true, demo-mode.middleware lit x-forwarded-host et apparie en sous-chaîne. Modèle : warhammer40k L22 (forced-demo.ts, appariement exact/suffixe pointé) + PIN aléatoire dans le Secret + retrait ALLOW_NO_PIN" }
+      - { date: 2026-09-28, text: "prod 28-09 : PIN aléatoire 8 chiffres posé dans ol-companion-secrets (hors git), ALLOW_NO_PIN retiré (gitops 69cdbb6), 401 sans PIN vérifié en prod. Reste : le code (démo sur Host seul)." }
+      - { date: 2026-09-28, text: "Décision alignée sur warhammer (Sylvain 28-09) : PIN seul, pas de démo verrouillée sur ol.sladoire.dev, DEMO_FORCED désactivé." }
+    started: 2026-09-28
+    finished: 2026-09-28
   - id: L15
     title: Supprimer le suivi d'usage / solde Claude (module claude-usage, /api/claude/*, badge), comme warhammer40k L22
     status: todo
@@ -92,3 +96,10 @@ lots:
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: "Sylvain 28-09 : « on n'utilise plus cet usage de Claude, on peut le supprimer » (dit pour warhammer ; étendu ici par cohérence — confirmer avant de lancer)" }
+  - id: L16
+    title: "ThrottlerGuard : clients identifiés par req.ip = IP du nginx → quota 10/s-60/min partagé par TOUS les visiteurs (429 collectifs) ; tracker sur CF-Connecting-IP recopié par nginx"
+    status: todo
+    estimate: 0.5
+    created: 2026-09-28
+    notes:
+      - { date: 2026-09-28, text: relevé par l'agent L14 le 28-09 ; ne pas activer trust proxy (X-Forwarded-For forgeable) }
