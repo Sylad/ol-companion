@@ -48,9 +48,6 @@ export function useEventStream(): EventStreamStatus {
             qc.invalidateQueries({ queryKey: ['player-stats'] });
             qc.invalidateQueries({ queryKey: ['season-matches', 'team-stats'] });
             break;
-          case 'claude-balance-changed':
-            qc.invalidateQueries({ queryKey: ['claude-usage'] });
-            break;
           // 'heartbeat' is ignored on purpose
         }
       } catch {
