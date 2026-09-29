@@ -101,11 +101,12 @@ lots:
     finished: 2026-09-29
   - id: L16
     title: "ThrottlerGuard : clients identifiés par req.ip = IP du nginx → quota 10/s-60/min partagé par TOUS les visiteurs (429 collectifs) ; tracker sur CF-Connecting-IP recopié par nginx"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: relevé par l'agent L14 le 28-09 ; ne pas activer trust proxy (X-Forwarded-For forgeable) }
+    started: 2026-09-29
   - id: L17
     title: Retirer l'outillage Anthropic inutilisé (SDK, anthropicApiKey, ANTHROPIC_API_KEY, secret ol-secrets) et corriger About + README qui annoncent claude-sonnet-4-6
     status: todo
