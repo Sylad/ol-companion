@@ -1,8 +1,14 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ClientIpThrottlerGuard } from './guards/client-ip-throttler.guard';
 import configuration from './config/configuration';
 import { DemoModule } from './modules/demo/demo.module';
 import { DemoModeMiddleware } from './modules/demo/demo-mode.middleware';
@@ -49,7 +55,9 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     PlayersModule,
   ],
   providers: [
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    // L16 : un quota par visiteur (CF-Connecting-IP recopié par nginx),
+    // pas un quota partagé par tous derrière l'IP du nginx.
+    { provide: APP_GUARD, useClass: ClientIpThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {
