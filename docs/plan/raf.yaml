@@ -106,3 +106,12 @@ lots:
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: relevé par l'agent L14 le 28-09 ; ne pas activer trust proxy (X-Forwarded-For forgeable) }
+  - id: L17
+    title: Retirer l'outillage Anthropic inutilisé (SDK, anthropicApiKey, ANTHROPIC_API_KEY, secret ol-secrets) et corriger About + README qui annoncent claude-sonnet-4-6
+    status: todo
+    estimate: 0.25
+    visible: true
+    after: [ L16 ]
+    created: 2026-09-29
+    notes:
+      - { date: 2026-09-29, text: "Sylvain 29-09 : validé ; l'app n'appelle jamais Claude (constat de l'agent L15)" }
