@@ -7,7 +7,6 @@ import configuration from './config/configuration';
 import { DemoModule } from './modules/demo/demo.module';
 import { DemoModeMiddleware } from './modules/demo/demo-mode.middleware';
 import { HealthModule } from './modules/health/health.module';
-import { ClaudeUsageModule } from './modules/claude-usage/claude-usage.module';
 import { FixturesModule } from './modules/fixtures/fixtures.module';
 import { SeasonMatchesModule } from './modules/season-matches/season-matches.module';
 import { StandingsModule } from './modules/standings/standings.module';
@@ -37,7 +36,6 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     DemoModule,
     SchedulerModule,
     EventsModule,
-    ClaudeUsageModule,
     HealthModule,
     FixturesModule,
     SeasonMatchesModule,
