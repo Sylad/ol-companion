@@ -8,13 +8,13 @@ App perso pour suivre l'Olympique Lyonnais (Ligue 1). Frontend React + TanStack,
 |---|---|
 | Backend | NestJS 11 sur port `3002`, préfixe `/api` |
 | Frontend | React 18 + Vite + TanStack Router/Query sur port `4202` (nginx) |
-| Stockage | Caches JSON dans `data/` (fixtures, standings, news, cups, season-rankings, claude-usage) |
-| Live | SSE `/api/events` (fixtures-changed, standings-changed, season-rankings-changed, claude-balance-changed) |
+| Stockage | Caches JSON dans `data/` (fixtures, standings, news, cups, season-rankings) |
+| Live | SSE `/api/events` (fixtures-changed, standings-changed, season-rankings-changed) |
 | Sources | 365scores (classement, forme), football-data.org (calendrier officiel), RSS (news), Wikipedia FR (logos) |
 
 ## Modules backend
 
-`fixtures`, `standings`, `news`, `cups`, `players`, `wiki-image`, `channels`, `lineup`, `claude-usage`, `events`, `health`.
+`fixtures`, `standings`, `news`, `cups`, `players`, `wiki-image`, `channels`, `lineup`, `events`, `health`.
 
 Endpoints clés :
 - `GET /api/fixtures` — calendrier (cache 1h, refresh 5 min)
@@ -43,7 +43,7 @@ ssh nas "cd /volume2/docker/developpeur/ol-companion && docker compose up -d --b
 
 ```
 FOOTBALL_API_KEY=...          # token football-data.org
-ANTHROPIC_API_KEY=sk-ant-...  # pour le claude usage badge partagé
+ANTHROPIC_API_KEY=sk-ant-...  # aucun appel Claude au runtime (badge de solde retiré en L15)
 CORS_ORIGIN=http://localhost:4202
 PORT=3002
 ```
@@ -132,7 +132,7 @@ Centralisés dans `SCORES365_HEADERS`.
 - Cron 1er août 03:00 Europe/Paris archive `data/<cache>.json` → `data/archive/<season>/`. Endpoint manuel `POST /api/admin/reset-season` derrière `PinGuard` + `DemoWriteGuard`.
 
 ### PIN guard + mode démo verrouillé (Cloudflare)
-- `APP_PIN` (vide → permissif) protège les endpoints write : `PUT /api/claude/balance`, `POST /api/admin/reset-season`. SSE `/api/events` toujours bypass.
+- `APP_PIN` (vide → permissif) protège les endpoints write : `POST /api/admin/reset-season`. SSE `/api/events` toujours bypass.
 - `DEMO_FORCED_HOSTS` (default `trycloudflare.com,cfargotunnel.com`) : si le `Host` (jamais `X-Forwarded-Host`, forgeable par le client — L14) est l'un de ces noms ou un sous-domaine (égalité exacte ou suffixe précédé d'un point, jamais une sous-chaîne ; décision unique dans `modules/demo/forced-demo.ts`, partagée par le middleware et le `PinGuard`), le PIN est bypassé MAIS les écritures retournent 403 (`DemoWriteGuard`). Le frontend affiche le badge "Mode démo verrouillée" via `/api/demo/status` (hook `useDemoStatus` + `DemoBanner`). `DEMO_FORCED=true` (off par défaut) verrouille toute l'instance côté serveur, sans en-tête.
 - Pour exposer une démo publique : `ssh nas "cloudflared tunnel --url http://localhost:4202"` → URL random `https://*.trycloudflare.com` automatiquement en mode démo verrouillée.
 - Voir `forced_demo_host_pattern.md` (mémoire user) pour le pattern complet, partagé avec finance-tracker.
