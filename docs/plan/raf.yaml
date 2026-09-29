@@ -101,12 +101,14 @@ lots:
     finished: 2026-09-29
   - id: L16
     title: "ThrottlerGuard : clients identifiés par req.ip = IP du nginx → quota 10/s-60/min partagé par TOUS les visiteurs (429 collectifs) ; tracker sur CF-Connecting-IP recopié par nginx"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: relevé par l'agent L14 le 28-09 ; ne pas activer trust proxy (X-Forwarded-For forgeable) }
+      - { date: 2026-09-29, text: "Relecture sécurité 29-09 : aucun défaut bloquant ; réserves = Ingress LAN /api → backend direct (corrigé côté gitops), IPv6 par adresse complète (lot séparé)" }
     started: 2026-09-29
+    finished: 2026-09-29
   - id: L17
     title: Retirer l'outillage Anthropic inutilisé (SDK, anthropicApiKey, ANTHROPIC_API_KEY, secret ol-secrets) et corriger About + README qui annoncent claude-sonnet-4-6
     status: todo
@@ -116,3 +118,14 @@ lots:
     created: 2026-09-29
     notes:
       - { date: 2026-09-29, text: "Sylvain 29-09 : validé ; l'app n'appelle jamais Claude (constat de l'agent L15)" }
+  - id: L18
+    title: "Tests e2e backend : jest-e2e.json sans mapper des imports .js relatifs (Cannot find module './wiki-image.controller.js') → e2e cassés"
+    status: todo
+    estimate: 0.25
+    quickwin: true
+    created: 2026-09-29
+  - id: L19
+    title: "Limite de débit IPv6 : tracker sur le préfixe /64 plutôt que l'adresse complète (un visiteur IPv6 change d'adresse à volonté)"
+    status: todo
+    estimate: 0.25
+    created: 2026-09-29

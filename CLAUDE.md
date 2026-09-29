@@ -65,6 +65,7 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 - **365scores départage** : pour le classement Ligue 1, utiliser 365scores (qui respecte les règles LFP : différence de buts, buts marqués) et pas football-data.org (qui ne fait pas le départage correctement).
 - **Wikipedia FR** : noms de villes / mots génériques tombent en faux positifs → mapping statique ID→full wiki name dans `wiki-image.service.ts` quand nécessaire.
 - **Cache JSON** : invalidation manuelle si schéma cache change avant rebuild backend (sinon vieux objets servis).
+- **Limite de débit par visiteur** : `ClientIpThrottlerGuard` (APP_GUARD) identifie le client par l'en-tête `CF-Connecting-IP`, que le nginx frontend pose lui-même (map + `proxy_set_header`, jamais la valeur du client), repli `req.ip`. Ne JAMAIS activer `trust proxy` (X-Forwarded-For forgeable). Tester la conf nginx avec `DOCKER_API_VERSION=1.44 scripts/test-nginx-conf.sh`. L'Ingress LAN `ol.dark-blue.lan` qui envoie `/api` directement au backend contourne ce nginx.
 
 ## Stack précise
 
