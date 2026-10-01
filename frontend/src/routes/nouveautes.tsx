@@ -49,6 +49,7 @@ const formatDate = (day: string) =>
 interface Capture {
   src: string;
   alt: string;
+  size?: [number, number];
 }
 
 export function NouveautesPage() {
@@ -116,6 +117,7 @@ export function NouveautesPage() {
                 <div className="mt-5 flex flex-wrap items-start gap-4">
                   {e.captures.map((c, i) => {
                     const capture: Capture = {
+                      size: sizes[c],
                       src: `${BASE}/${c}`,
                       alt:
                         e.captures.length > 1
@@ -187,6 +189,7 @@ export function NouveautesPage() {
 
 function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => void }) {
   const closeButton = useRef<HTMLButtonElement>(null);
+  const zone = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     closeButton.current?.focus();
@@ -197,6 +200,11 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
     };
   }, []);
 
+  // Sous 640 px : largeur naturelle de la capture, au plus 2 largeurs d'écran, dans une
+  // zone qui défile (une capture de bureau 1136×354 n'était agrandie que ×1,19 à 390 px).
+  // Au-delà : capture entière à l'écran, comme avant.
+  const imgStyle = capture.size ? ({ '--cap-w': `${capture.size[0]}px` } as CSSProperties) : undefined;
+
   // Portail sous <body> : <main> est un contexte d'empilement (relative z-10), un z-index
   // posé à l'intérieur ne passerait jamais au-dessus de la barre du bas ni de la pastille LIVE.
   return createPortal(
@@ -205,15 +213,15 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
       role="dialog"
       aria-modal="true"
       aria-label={capture.alt}
-      className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6"
+      className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-3 sm:p-6"
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
           e.stopPropagation();
           onClose();
         } else if (e.key === 'Tab') {
-          // Seul élément focalisable : le focus reste sur « Fermer ».
+          // Deux éléments focalisables : « Fermer » et la zone de défilement ; le focus boucle.
           e.preventDefault();
-          closeButton.current?.focus();
+          (document.activeElement === closeButton.current ? zone.current : closeButton.current)?.focus();
         }
       }}
     >
@@ -223,20 +231,32 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
         className="absolute inset-0 bg-bg/90 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative flex max-h-full max-w-full flex-col items-end gap-2">
-        <button
-          ref={closeButton}
-          type="button"
-          onClick={onClose}
-          className="flex h-11 items-center gap-1.5 rounded-md border border-border-strong bg-surface px-3 text-sm font-medium text-fg-bright hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright"
-        >
-          <X className="h-4 w-4" aria-hidden />
-          Fermer
-        </button>
+      {/* « Fermer » hors de la zone qui défile : toujours visible et atteignable. */}
+      <button
+        ref={closeButton}
+        type="button"
+        onClick={onClose}
+        className="relative mb-2 flex h-11 shrink-0 items-center gap-1.5 self-end rounded-md border border-border-strong bg-surface px-3 text-sm font-medium text-fg-bright hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright sm:self-center"
+      >
+        <X className="h-4 w-4" aria-hidden />
+        Fermer
+      </button>
+      <div
+        ref={zone}
+        role="region"
+        tabIndex={0}
+        aria-label="Capture agrandie, faire défiler pour voir la suite"
+        className="relative min-h-0 max-w-full overflow-auto overscroll-contain rounded-md border border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright"
+      >
         <img
           src={capture.src}
           alt={capture.alt}
-          className="block max-w-full max-h-[calc(100dvh-6rem)] w-auto h-auto rounded-md border border-border-strong"
+          style={imgStyle}
+          className={
+            capture.size
+              ? 'block h-auto max-w-none w-[min(var(--cap-w),200vw)] sm:w-auto sm:max-w-full sm:max-h-[calc(100dvh-6rem)]'
+              : 'block h-auto max-w-none w-auto sm:max-w-full sm:max-h-[calc(100dvh-6rem)]'
+          }
         />
       </div>
     </div>,

@@ -112,13 +112,41 @@ describe('<NouveautesPage />', () => {
     expect(within(dialog).getByRole('img')).toHaveAttribute('src', '/nouveautes-data/captures/L13-page.png');
     expect(within(dialog).getByRole('button', { name: 'Fermer' })).toHaveFocus();
 
-    // Le focus reste dans la visionneuse (aria-modal).
+    // Le focus reste dans la visionneuse (aria-modal) : « Fermer » ↔ zone de défilement.
+    const close = within(dialog).getByRole('button', { name: 'Fermer' });
+    const zone = within(dialog).getByRole('region', { name: /faire défiler/ });
     await user.tab();
-    expect(within(dialog).getByRole('button', { name: 'Fermer' })).toHaveFocus();
+    expect(zone).toHaveFocus();
+    await user.tab();
+    expect(close).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(zone).toHaveFocus();
+    expect(document.body.style.overflow).toBe('hidden');
 
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(link).toHaveFocus();
+  });
+
+  // Revue UX L13 : au téléphone, une capture large (1136×354) n'était agrandie que ×1,19.
+  // Sous 640 px l'image prend sa largeur naturelle (au plus 2 largeurs d'écran) dans une
+  // zone qui défile ; « Fermer » reste hors de cette zone, donc toujours visible.
+  it('visionneuse : image à sa largeur naturelle (≤ 200vw) dans une zone qui défile, « Fermer » hors zone', async () => {
+    stubFetch();
+    const user = userEvent.setup();
+    renderPage();
+    await user.click(await screen.findByRole('img', { name: "Capture d'écran 1 sur 2 : Une nouveauté plus ancienne" }));
+    const dialog = screen.getByRole('dialog');
+    const zone = within(dialog).getByRole('region', { name: /faire défiler/ });
+    expect(zone).toHaveAttribute('tabindex', '0');
+    expect(zone.className).toMatch(/overflow-auto/);
+    const img = within(zone).getByRole('img');
+    expect(img.style.getPropertyValue('--cap-w')).toBe('1136px');
+    expect(img.className).toMatch(/w-\[min\(var\(--cap-w\),200vw\)\]/);
+    expect(img.className).toMatch(/max-w-none/);
+    expect(zone).not.toContainElement(within(dialog).getByRole('button', { name: 'Fermer' }));
+    await user.keyboard('{Escape}');
+    expect(document.body.style.overflow).toBe('');
   });
 
   it('clic sur une capture : visionneuse ; bouton Fermer et clic sur le voile la referment', async () => {
