@@ -41,7 +41,7 @@ Workflow type pour chaque feature :
 
 1. Je décris en français ce que je veux : *« ajoute une page match dédiée avec timeline buts/cartons/subs + shot map type Sofascore + 14 stats équipe avec barres comparatives »*
 2. Claude pose le squelette : composant route, types, hook TanStack Query, parsing 365scores
-3. Je valide visuellement dans le navigateur (`http://nas:4202`), je redirige sur ce qui ne va pas (« le shot map est en orientation portrait, faut paysage », « tu rates les penalty goals, regarde le subTypeName »)
+3. Je valide visuellement dans le navigateur (`http://localhost:5173`), je redirige sur ce qui ne va pas (« le shot map est en orientation portrait, faut paysage », « tu rates les penalty goals, regarde le subTypeName »)
 4. Claude itère par diff précis, ajoute des specs unitaires si la logique est non triviale (ex: `live-match.aggregator.spec.ts`)
 5. Quand c'est bon, on commit (avec trailer `Co-Authored-By: Claude` pour la traçabilité)
 

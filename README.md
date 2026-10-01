@@ -78,7 +78,7 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 | Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
 | Sources externes | [365scores](https://www.365scores.com/) (classement, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier, fixtures), Wikipedia FR (logos) |
 | Build | Docker multi-stage (node:20-alpine → nginx:alpine) |
-| Déploiement | docker-compose (testé Synology NAS DSM) |
+| Déploiement | Images sur GHCR (CI GitHub), chart Helm sur k3s via ArgoCD (GitOps), exposé par un tunnel Cloudflare |
 
 ## Setup local
 
