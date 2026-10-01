@@ -23,13 +23,20 @@ async function renderAt(path: string, Component: () => JSX.Element) {
 }
 
 describe('barre latérale (bureau)', () => {
-  it('« Nouveautés » juste au-dessus d’« À propos », marqué comme page courante sur /nouveautes', async () => {
+  // Revue UX L13 : Nouveautés et À propos ne sont pas des « Ressources » (liens externes).
+  it('groupe « Application » (Nouveautés puis À propos) avant « Ressources », qui ne garde que les liens externes', async () => {
     await renderAt('/nouveautes', () => <SidebarLinks />);
-    const labels = screen.getAllByRole('link').map((a) => a.textContent?.trim());
-    expect(labels.slice(-2)).toEqual(['Nouveautés', 'À propos']);
-    expect(screen.getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('href', '/nouveautes');
-    expect(screen.getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('link', { name: 'À propos' })).not.toHaveAttribute('aria-current');
+    const app = screen.getByRole('group', { name: 'Application' });
+    const res = screen.getByRole('group', { name: 'Ressources' });
+    expect(within(app).getAllByRole('link').map((a) => a.textContent?.trim())).toEqual(['Nouveautés', 'À propos']);
+    const external = within(res).getAllByRole('link');
+    expect(external.length).toBeGreaterThan(0);
+    for (const a of external) expect(a).toHaveAttribute('target', '_blank');
+    expect(app.compareDocumentPosition(res) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    expect(within(app).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('href', '/nouveautes');
+    expect(within(app).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('aria-current', 'page');
+    expect(within(app).getByRole('link', { name: 'À propos' })).not.toHaveAttribute('aria-current');
   });
 });
 

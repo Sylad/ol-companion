@@ -33,55 +33,65 @@ export const SECONDARY_ITEMS = [
   { to: '/about', label: 'À propos', icon: Sparkles },
 ] as const;
 
+const GROUP_TITLE = 'px-3 pb-2 text-[10px] uppercase tracking-[0.14em] text-fg-dim font-semibold';
+
 export function SidebarLinks() {
   const { location } = useRouterState();
 
   return (
     <div className="px-3 pb-2 space-y-0.5">
-      <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.14em] text-fg-dim font-semibold">
-        Ressources
+      {/* Pages de l'application elle-même (L13) : séparées des « Ressources », liens externes. */}
+      <div role="group" aria-labelledby="sidebar-group-application" className="space-y-0.5">
+        <div id="sidebar-group-application" className={GROUP_TITLE}>
+          Application
+        </div>
+        {SECONDARY_ITEMS.map(({ to, label, icon: Icon }) => {
+          const active = location.pathname.startsWith(to);
+          return (
+            <Link
+              key={to}
+              to={to}
+              aria-current={active ? 'page' : undefined}
+              className={cn(
+                'group flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors',
+                active
+                  ? 'bg-surface-2 text-fg-bright'
+                  : 'text-fg-muted hover:bg-surface-2/60 hover:text-fg',
+              )}
+            >
+              <Icon
+                className={cn('h-[14px] w-[14px] shrink-0', active && 'text-ol-red-bright')}
+                strokeWidth={1.75}
+              />
+              <span className="flex-1 truncate">{label}</span>
+            </Link>
+          );
+        })}
       </div>
-      {SOURCES.map((s) => (
-        <a
-          key={s.href}
-          href={s.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-3 rounded-md px-3 py-2 text-xs text-fg-muted hover:bg-surface-2/60 hover:text-fg transition-colors"
-        >
-          <s.icon className="h-[14px] w-[14px] shrink-0" strokeWidth={1.75} />
-          <span className="flex-1 truncate">{s.label}</span>
-          <ExternalLink
-            className="h-[11px] w-[11px] opacity-0 group-hover:opacity-60 transition-opacity"
-            strokeWidth={2}
-          />
-        </a>
-      ))}
 
       <div className="my-2 mx-3 h-px bg-border" />
 
-      {SECONDARY_ITEMS.map(({ to, label, icon: Icon }) => {
-        const active = location.pathname.startsWith(to);
-        return (
-          <Link
-            key={to}
-            to={to}
-            aria-current={active ? 'page' : undefined}
-            className={cn(
-              'group flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors',
-              active
-                ? 'bg-surface-2 text-fg-bright'
-                : 'text-fg-muted hover:bg-surface-2/60 hover:text-fg',
-            )}
+      <div role="group" aria-labelledby="sidebar-group-ressources" className="space-y-0.5">
+        <div id="sidebar-group-ressources" className={GROUP_TITLE}>
+          Ressources
+        </div>
+        {SOURCES.map((s) => (
+          <a
+            key={s.href}
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 rounded-md px-3 py-2 text-xs text-fg-muted hover:bg-surface-2/60 hover:text-fg transition-colors"
           >
-            <Icon
-              className={cn('h-[14px] w-[14px] shrink-0', active && 'text-ol-red-bright')}
-              strokeWidth={1.75}
+            <s.icon className="h-[14px] w-[14px] shrink-0" strokeWidth={1.75} />
+            <span className="flex-1 truncate">{s.label}</span>
+            <ExternalLink
+              className="h-[11px] w-[11px] opacity-0 group-hover:opacity-60 transition-opacity"
+              strokeWidth={2}
             />
-            <span className="flex-1 truncate">{label}</span>
-          </Link>
-        );
-      })}
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
