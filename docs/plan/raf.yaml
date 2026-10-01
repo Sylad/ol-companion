@@ -19,6 +19,8 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-09-28
+    notes:
+      - { date: 2026-10-01, text: "Revue UX L17 (390 px) : libellés de la barre de navigation du bas coupés (« nboard », « FC No… »), pastille LIVE RECONNECTE qui chevauche le contenu — à mesurer" }
   - id: L3
     title: Revue UX — Calendrier et résultats (/fixtures)
     status: todo
@@ -111,13 +113,17 @@ lots:
     finished: 2026-09-29
   - id: L17
     title: Retirer l'outillage Anthropic inutilisé (SDK, anthropicApiKey, ANTHROPIC_API_KEY, secret ol-secrets) et corriger About + README qui annoncent claude-sonnet-4-6
-    status: todo
+    status: done
     estimate: 0.25
     visible: true
     after: [ L16 ]
     created: 2026-09-29
     notes:
       - { date: 2026-09-29, text: "Sylvain 29-09 : validé ; l'app n'appelle jamais Claude (constat de l'agent L15)" }
+      - { date: 2026-10-01, text: "Reste hors dépôt : clé ANTHROPIC_API_KEY du Secret ol-companion-secrets (ns preprod) + commentaire values.yaml l.21 dans developpeur-gitops ; ignorée par le backend → lot gitops à ouvrir avec accord de Sylvain" }
+    started: 2026-10-01
+    ux: { date: 2026-10-01, verdict: "OK — pile technique propre à 1440/390/320 px (3 cartes, aucune liste vide), pas de débordement, texte conforme à package.json" }
+    finished: 2026-10-01
   - id: L18
     title: "Tests e2e backend : jest-e2e.json sans mapper des imports .js relatifs (Cannot find module './wiki-image.controller.js') → e2e cassés"
     status: done
