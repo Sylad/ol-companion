@@ -1,7 +1,19 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-01 22:02",
+  "generated": "2026-10-01 22:08",
   "entries": [
+    {
+      "slug": "2026-10-01-une-page-nouveautes-pour-suivre-ce-qui-change-dans-l-applica",
+      "title": "Une page Nouveautés pour suivre ce qui change dans l'application",
+      "date": "2026-10-01",
+      "lots": [
+        "L13"
+      ],
+      "captures": [
+        "captures/L13-page-nouveautes-telephone.png"
+      ],
+      "html": "<p>Une nouvelle page, <strong>Nouveautés</strong>, raconte ce qui change dans OL Companion, la nouveauté la plus récente en haut.</p>\n<ul><li>Sur ordinateur, elle se trouve en bas du menu, juste au-dessus d'<strong>À propos</strong>.</li><li>Au téléphone, la dernière case de la barre du bas devient <strong>Plus</strong> : elle ouvre <strong>FC Noobz</strong>, <strong>Nouveautés</strong> et <strong>À propos</strong>, qui n'était jusqu'ici pas accessible au téléphone.</li><li>Chaque nouveauté porte sa date, un court texte et une ou plusieurs captures d'écran. Touchez ou cliquez une capture pour la voir en grand, ou ouvrez-la au clavier avec Entrée ; Échap la referme.</li></ul>"
+    },
     {
       "slug": "2026-10-01-la-page-a-propos-dit-vrai-sur-la-pile",
       "title": "La page À propos dit vrai sur la pile technique",
