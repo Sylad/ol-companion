@@ -34,6 +34,17 @@ export function BottomNav() {
     }
   }, [open]);
 
+  // Panneau aria-modal : la page derrière ne défile pas tant qu'il est ouvert (comme la
+  // visionneuse des Nouveautés) ; valeur d'origine restaurée à toute fermeture.
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
   // Piège à focus (aria-modal) : Tab / Maj+Tab bouclent dans le panneau.
   const onSheetKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') {

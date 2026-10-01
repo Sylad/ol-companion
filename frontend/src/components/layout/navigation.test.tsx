@@ -71,6 +71,24 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'true');
   });
 
+  // Revue UX L13 : panneau aria-modal, la page derrière ne doit pas défiler.
+  it('bloque le défilement de la page tant que le panneau est ouvert, le restaure à la fermeture', async () => {
+    const user = userEvent.setup();
+    document.body.style.overflow = 'scroll';
+    await renderAt('/', () => <BottomNav />);
+    await user.click(screen.getByRole('button', { name: 'Plus' }));
+    expect(document.body.style.overflow).toBe('hidden');
+    await user.keyboard('{Escape}');
+    expect(document.body.style.overflow).toBe('scroll');
+
+    // Fermeture par le choix d'une page : restauré aussi.
+    await user.click(screen.getByRole('button', { name: 'Plus' }));
+    expect(document.body.style.overflow).toBe('hidden');
+    await user.click(within(screen.getByRole('dialog')).getByRole('link', { name: 'À propos' }));
+    expect(document.body.style.overflow).toBe('scroll');
+    document.body.style.overflow = '';
+  });
+
   it('le focus reste dans le panneau (Tab et Maj+Tab bouclent)', async () => {
     const user = userEvent.setup();
     await renderAt('/', () => <BottomNav />);
