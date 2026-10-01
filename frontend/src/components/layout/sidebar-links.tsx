@@ -1,4 +1,4 @@
-import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles } from 'lucide-react';
+import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Megaphone } from 'lucide-react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 
@@ -27,9 +27,14 @@ const SOURCES: ExternalSource[] = [
   },
 ];
 
+// Pages internes du bas de la barre latérale ; au téléphone, dans « Plus » (bottom-nav).
+export const SECONDARY_ITEMS = [
+  { to: '/nouveautes', label: 'Nouveautés', icon: Megaphone },
+  { to: '/about', label: 'À propos', icon: Sparkles },
+] as const;
+
 export function SidebarLinks() {
   const { location } = useRouterState();
-  const aboutActive = location.pathname.startsWith('/about');
 
   return (
     <div className="px-3 pb-2 space-y-0.5">
@@ -55,21 +60,28 @@ export function SidebarLinks() {
 
       <div className="my-2 mx-3 h-px bg-border" />
 
-      <Link
-        to="/about"
-        className={cn(
-          'group flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors',
-          aboutActive
-            ? 'bg-surface-2 text-fg-bright'
-            : 'text-fg-muted hover:bg-surface-2/60 hover:text-fg',
-        )}
-      >
-        <Sparkles
-          className={cn('h-[14px] w-[14px] shrink-0', aboutActive && 'text-ol-red-bright')}
-          strokeWidth={1.75}
-        />
-        <span className="flex-1 truncate">À propos</span>
-      </Link>
+      {SECONDARY_ITEMS.map(({ to, label, icon: Icon }) => {
+        const active = location.pathname.startsWith(to);
+        return (
+          <Link
+            key={to}
+            to={to}
+            aria-current={active ? 'page' : undefined}
+            className={cn(
+              'group flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors',
+              active
+                ? 'bg-surface-2 text-fg-bright'
+                : 'text-fg-muted hover:bg-surface-2/60 hover:text-fg',
+            )}
+          >
+            <Icon
+              className={cn('h-[14px] w-[14px] shrink-0', active && 'text-ol-red-bright')}
+              strokeWidth={1.75}
+            />
+            <span className="flex-1 truncate">{label}</span>
+          </Link>
+        );
+      })}
     </div>
   );
 }
