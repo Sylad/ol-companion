@@ -162,3 +162,16 @@ lots:
     notes:
       - { date: 2026-10-01, text: Correctif deploy.sh porté de warhammer/finance (diff = noms seuls) ; test-deploy.sh 26/26 en CI. }
     finished: 2026-10-01
+  - id: L22
+    title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
+    status: todo
+    estimate: 0.25
+    quickwin: true
+    visible: true
+    created: 2026-10-01
+  - id: L23
+    title: "Page « Plan de travail » : ce qui est prévu, en cours et récemment livré, généré au build depuis docs/plan/raf.yaml (titres et états seulement, jamais les notes) — inspirée de la page « À venir » d'AetherWX"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-01
