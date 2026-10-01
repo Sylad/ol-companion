@@ -88,6 +88,20 @@ describe('<NouveautesPage />', () => {
     expect(img.closest('a')!.style.width).toMatch(/^min\(100%, 390px, (calc\(32rem \* 390 \/ 844\)|14\.78\d*rem)\)$/);
   });
 
+  // Revue UX L13 : à 320 px la pastille « LIVE RECONNECTE » (fixe, en haut à droite, 170 px)
+  // recouvrait la fin du sur-titre de 8 px. Mesuré avec /api/events coupé ; ici, les classes
+  // qui le garantissent : marge droite de la pastille (pr-44) et icône décorative masquée < 640 px.
+  it('au téléphone, le sur-titre laisse la place de la pastille LIVE la plus longue', async () => {
+    stubFetch();
+    renderPage();
+    const eyebrow = (await screen.findByTestId('nouveautes-entete')).querySelector('p')!;
+    expect(eyebrow.className).toMatch(/(^| )pr-44( |$)/);
+    expect(eyebrow.className).toMatch(/lg:pr-0/);
+    const icon = eyebrow.querySelector('svg')!;
+    expect(icon.getAttribute('class')).toMatch(/(^| )hidden( |$)/);
+    expect(icon.getAttribute('class')).toMatch(/sm:block/);
+  });
+
   it('sans tailles.json, les captures restent affichées (taille naturelle)', async () => {
     stubFetch({ sizesOk: false });
     renderPage();
