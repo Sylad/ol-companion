@@ -65,10 +65,13 @@ export function NouveautesPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col gap-1.5 mb-2">
-        <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
-          <Megaphone className="h-3.5 w-3.5 text-ol-red-bright" strokeWidth={2} aria-hidden />
-          Nouveautés · OL Companion
+      <header data-testid="nouveautes-entete" className="flex flex-col gap-1.5 mb-2">
+        {/* pr-40 au téléphone : la pastille LIVE (fixe, en haut à droite) ne recouvre pas le sur-titre. */}
+        <p className="flex items-center gap-2 pr-40 lg:pr-0 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
+          <Megaphone className="h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
+          <span>
+            Nouveautés<span className="hidden sm:inline"> · OL Companion</span>
+          </span>
         </p>
         <h1 className="font-display text-3xl lg:text-4xl font-bold text-fg-bright">Ce qui a changé</h1>
         <p className="text-fg max-w-2xl">
