@@ -17,6 +17,7 @@ const PlayersPage = lazyNamed(() => import('./routes/players'), 'PlayersPage');
 const PlayerDetailPage = lazyNamed(() => import('./routes/player.$athleteId'), 'PlayerDetailPage');
 const FcNoobzPage = lazyNamed(() => import('./routes/fcnoobz'), 'FcNoobzPage');
 const AboutPage = lazyNamed(() => import('./routes/about'), 'AboutPage');
+const NouveautesPage = lazyNamed(() => import('./routes/nouveautes'), 'NouveautesPage');
 const MatchPage = lazyNamed(() => import('./routes/match'), 'MatchPage');
 const MapPage = lazyNamed(() => import('./routes/map'), 'MapPage');
 
@@ -107,6 +108,12 @@ const aboutRoute = createRoute({
   component: withSuspense(AboutPage),
 });
 
+const nouveautesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/nouveautes',
+  component: withSuspense(NouveautesPage),
+});
+
 const matchRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/match/$gameId',
@@ -132,6 +139,7 @@ const routeTree = rootRoute.addChildren([
   playerDetailRoute,
   fcnoobzRoute,
   aboutRoute,
+  nouveautesRoute,
   matchRoute,
   mapRoute,
 ]);
