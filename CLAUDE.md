@@ -54,7 +54,6 @@ ArgoCD synchronise) puis `scripts/verify-rollout.sh` et les URL de santé.
 
 ```
 FOOTBALL_API_KEY=...          # token football-data.org
-ANTHROPIC_API_KEY=sk-ant-...  # aucun appel Claude au runtime (badge de solde retiré en L15)
 CORS_ORIGIN=http://localhost:4202
 PORT=3002
 ```
@@ -82,7 +81,7 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 ## Stack précise
 
 - React 18.3 · Vite 5.4 · TanStack Router 1.78 · TanStack Query 5.59 · Recharts 2.13 · Tailwind 3.4 · class-variance-authority · Lucide
-- NestJS 11 · Anthropic SDK 0.91
+- NestJS 11 (aucun SDK LLM : l'app n'appelle jamais Claude, SDK Anthropic retiré en L17)
 - Docker multi-stage (`node:20-alpine` → `nginx:alpine`)
 
 ## Règles projet (durables)

@@ -29,7 +29,7 @@ Si tu débarques sur ce repo et que tu te demandes ce que Claude a vraiment fait
 
 - Tout ce qui s'affiche (classement, fixtures, match live, shot map, news, bracket) provient de **sources tierces déterministes** : 365scores, football-data.org, RSS multi-sources, Wikipedia FR.
 - Le backend NestJS scrape, parse, agrège, met en cache. Aucune phase d'analyse LLM.
-- Le suivi d'usage / solde Claude partagé (`claude-shared.json`, `/api/claude/*`) a été retiré le 2026-09-29 (L15). L'Anthropic SDK reste déclaré dans `package.json`, sans aucun appel.
+- Le suivi d'usage / solde Claude partagé (`claude-shared.json`, `/api/claude/*`) a été retiré le 2026-09-29 (L15). Le SDK Anthropic, inutilisé, a été retiré des dépendances le 2026-10-01 (L17).
 
 **Coût d'usage runtime : 0 €.** Tu peux faire tourner l'app sans clé Anthropic, sans clé OpenAI, sans aucune dépendance LLM. Seules clés requises : `FOOTBALL_API_KEY` (free tier 10 req/min, suffit pour Ligue 1).
 

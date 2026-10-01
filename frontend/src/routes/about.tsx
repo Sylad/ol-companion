@@ -21,7 +21,6 @@ const STACK = [
     icon: Server,
     items: [
       'NestJS 11 + TypeScript 5',
-      'Anthropic SDK 0.91 · modèle claude-sonnet-4-6',
       'Stockage JSON local (cache fixtures)',
       'Proxy 365scores (classement live + forme)',
       'Proxy football-data.org (calendrier officiel)',

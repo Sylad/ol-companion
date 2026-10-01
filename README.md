@@ -73,7 +73,7 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 | Couche | Tech |
 |---|---|
 | Frontend | React 18 + TypeScript 5 + Vite 5 + Tailwind 3 + TanStack Router/Query + Recharts + Leaflet 1.9 + Lucide |
-| Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) + Anthropic SDK (`claude-sonnet-4-6`) |
+| Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) |
 | Live updates | SSE (`@nestjs/common` `@Sse` + `EventSource` côté client + `invalidateQueries` TanStack) |
 | Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
 | Sources externes | [365scores](https://www.365scores.com/) (classement, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier, fixtures), Wikipedia FR (logos) |
@@ -85,7 +85,6 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 ### Prérequis
 - Docker 24+
 - Une clé [football-data.org](https://www.football-data.org/client/register) (free tier suffit pour Ligue 1)
-- Optionnel : clé Anthropic pour les enrichissements lore/résumés
 
 ### Lancement
 ```bash
@@ -93,7 +92,7 @@ git clone <ce-repo> ol-companion
 cd ol-companion
 
 cp backend/.env.example backend/.env
-# Édite FOOTBALL_API_KEY (obligatoire) + ANTHROPIC_API_KEY (optionnel)
+# Édite FOOTBALL_API_KEY (obligatoire)
 
 mkdir -p data
 docker compose up -d --build
@@ -115,7 +114,7 @@ Les caches API (fixtures, standings, etc.) se peuplent au premier appel.
 
 - **API 365scores non officielle** — ce projet appelle les endpoints web de 365scores avec des headers réalistes. Ils peuvent changer de structure ou bloquer du jour au lendemain. Si tu forks pour un autre club, regarde `backend/src/modules/standings/`, `live-match/`, `cups/bracket.service.ts`, `lineup/` pour le pattern (User-Agent + headers + parsing).
 - **football-data.org** : API publique avec free tier (10 req/min, suffit pour Ligue 1).
-- **Anthropic SDK** : optionnel, sert pour quelques résumés. Sans clé, l'app fonctionne et masque proprement les sections concernées.
+- **Aucun appel Claude au runtime** : pas de SDK Anthropic ni de clé Anthropic ; tout le contenu vient des sources ci-dessus.
 - **Reverse-engineering raisonnable** : un seul utilisateur, polling 30 s max sur les matchs live, 1 h sur le classement. Pas de proxy commercial, pas de scraping massif.
 - Le module wiki-image est porté du projet warhammer40k (FR cette fois).
 
