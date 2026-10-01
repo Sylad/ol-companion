@@ -2,7 +2,7 @@
  * Tiny PWA helper. Two responsibilities:
  *  1. Register `/sw.js` once at app boot (only if the browser supports SW
  *     and we're served over HTTPS or localhost — Firefox / iOS WebView
- *     will silently ignore registration on http://nas:4202 anyway).
+ *     will silently ignore registration on a plain-HTTP LAN host anyway).
  *  2. Expose `postNotification(...)` which forwards a payload to the SW
  *     so it can call `showNotification`. Falls back to a direct
  *     Notification ctor when no SW is available (e.g. dev without a

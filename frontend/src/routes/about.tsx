@@ -34,11 +34,11 @@ const STACK = [
     icon: Code2,
     items: [
       'Docker multi-stage (node:20-alpine → nginx:alpine)',
-      'docker-compose Synology NAS',
-      'Volumes persistants /volume2/docker',
+      'Images publiées sur GHCR par la CI GitHub Actions',
+      'Kubernetes k3s, déployé par ArgoCD (GitOps, chart Helm)',
+      'Volume persistant Kubernetes pour les caches JSON',
       'nginx proxy /api → backend NestJS',
-      'env_file .env (FOOTBALL_API_KEY + ANTHROPIC_API_KEY)',
-      'Hostname réseau : nas:4202',
+      'Exposé via un tunnel Cloudflare (aucun port ouvert)',
     ],
   },
 ];
@@ -158,7 +158,7 @@ export function AboutPage() {
             </p>
             <div className="mt-4 flex items-center gap-1.5 text-xs text-fg-dim">
               <Sparkles className="h-3 w-3 text-ol-red-bright" />
-              <span>Données live via 365scores · Logos via Wikipedia FR · Hébergé sur NAS Synology.</span>
+              <span>Données live via 365scores · Logos via Wikipedia FR · Hébergé sur Kubernetes (k3s).</span>
             </div>
           </div>
         </div>
