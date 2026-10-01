@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Megaphone, X, ZoomIn } from 'lucide-react';
 
@@ -196,7 +197,9 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
     };
   }, []);
 
-  return (
+  // Portail sous <body> : <main> est un contexte d'empilement (relative z-10), un z-index
+  // posé à l'intérieur ne passerait jamais au-dessus de la barre du bas ni de la pastille LIVE.
+  return createPortal(
     // z-[60] : au-dessus de la barre du bas (z-40) et de la pastille de connexion (z-50).
     <div
       role="dialog"
@@ -236,6 +239,7 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
           className="block max-w-full max-h-[calc(100dvh-6rem)] w-auto h-auto rounded-md border border-border-strong"
         />
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

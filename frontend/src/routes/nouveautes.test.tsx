@@ -106,6 +106,9 @@ describe('<NouveautesPage />', () => {
     link.focus();
     await user.keyboard('{Enter}');
     const dialog = screen.getByRole('dialog', { name: "Capture d'écran : Une page Nouveautés" });
+    // Rendue sous <body> (portail) : hors du contexte d'empilement de <main> (z-10),
+    // sinon la barre du bas et la pastille LIVE passent par-dessus la visionneuse.
+    expect(dialog.parentElement).toBe(document.body);
     expect(within(dialog).getByRole('img')).toHaveAttribute('src', '/nouveautes-data/captures/L13-page.png');
     expect(within(dialog).getByRole('button', { name: 'Fermer' })).toHaveFocus();
 
