@@ -1,6 +1,5 @@
 export default () => ({
   footballApiKey: process.env['FOOTBALL_API_KEY'] ?? '',
-  anthropicApiKey: process.env['ANTHROPIC_API_KEY'] ?? '',
   appPin: process.env['APP_PIN'] ?? '',
   // DEMO_FORCED=true : l'instance ENTIÈRE est verrouillée en démo, sans
   // dépendre d'aucun en-tête HTTP (cf. modules/demo/forced-demo.ts, L14).
