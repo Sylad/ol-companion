@@ -164,11 +164,15 @@ describe('AppModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app?.close();
-    restoreNetwork();
-    jest.restoreAllMocks();
-    process.chdir(previousCwd);
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    try {
+      await app?.close();
+    } finally {
+      // restauration garantie même si close() rejette (cwd et réseau patchés)
+      restoreNetwork();
+      jest.restoreAllMocks();
+      process.chdir(previousCwd);
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 
   it('GET /api/health → 200 { status: "ok" }', async () => {
