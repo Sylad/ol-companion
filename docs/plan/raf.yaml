@@ -120,11 +120,12 @@ lots:
       - { date: 2026-09-29, text: "Sylvain 29-09 : validé ; l'app n'appelle jamais Claude (constat de l'agent L15)" }
   - id: L18
     title: "Tests e2e backend : jest-e2e.json sans mapper des imports .js relatifs (Cannot find module './wiki-image.controller.js') → e2e cassés"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     created: 2026-09-29
     started: 2026-10-01
+    finished: 2026-10-01
   - id: L19
     title: "Limite de débit IPv6 : tracker sur le préfixe /64 plutôt que l'adresse complète (un visiteur IPv6 change d'adresse à volonté)"
     status: todo
