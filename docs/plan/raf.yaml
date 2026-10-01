@@ -21,6 +21,7 @@ lots:
     created: 2026-09-28
     notes:
       - { date: 2026-10-01, text: "Revue UX L17 (390 px) : libellés de la barre de navigation du bas coupés (« nboard », « FC No… »), pastille LIVE RECONNECTE qui chevauche le contenu — à mesurer" }
+      - { date: 2026-10-01, text: "Revue UX L13 : passer Carte L1 (puis Coupes) dans « Plus » → 6 cases + Plus, 55,7 px par case à 390 px, Classement (52 px) et Dashboard (49 px) ne sont plus coupés ; onglet actif rouge 9 px à 4,4:1 sur pixels" }
   - id: L3
     title: Revue UX — Calendrier et résultats (/fixtures)
     status: todo
@@ -71,14 +72,19 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-09-28
+    notes:
+      - { date: 2026-10-01, text: "Revue UX L13 : à 1440×768 la barre latérale est coupée de 26 px en bas (« v2.0 »), préexistant" }
   - id: L13
     title: Page Nouveautés branchée sur cadence news (raf news → page), signature commune des apps
-    status: todo
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: "Sylvain 28-09 : ordre DÉCROISSANT, la nouveauté la plus récente en haut (départage à date égale corrigé dans cadence news)" }
+    started: 2026-10-01
+    ux: { date: 2026-10-01, verdict: "OK avec réserves levées — contraste ≥ 7:1, visionneuse ×2,14 à 390 px avec défilement horizontal, pastille sans chevauchement à 320 px, panneau Plus bloque le défilement, Nouveautés/À propos sous « Application » ; FC Noobz dans « Plus » validé (HIG, fréquence d'usage)" }
+    finished: 2026-10-01
   - id: L14
     title: "Sécurité : PIN absent en prod (ALLOW_NO_PIN=true) + démo décidée sur X-Forwarded-Host forgeable — même correctif que warhammer40k L22"
     status: done
