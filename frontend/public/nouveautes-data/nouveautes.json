@@ -1,0 +1,18 @@
+{
+  "project": "ol-companion",
+  "generated": "2026-10-01 22:02",
+  "entries": [
+    {
+      "slug": "2026-10-01-la-page-a-propos-dit-vrai-sur-la-pile",
+      "title": "La page À propos dit vrai sur la pile technique",
+      "date": "2026-10-01",
+      "lots": [
+        "L17"
+      ],
+      "captures": [
+        "captures/L17-a-propos-pile.png"
+      ],
+      "html": "<p>La page À propos annonçait encore un modèle d'IA (claude-sonnet-4-6) que l'application n'utilise pas.</p>\n<ul><li>La pile <strong>Backend</strong> ne liste plus que ce qui tourne réellement : NestJS, TypeScript et le flux en direct.</li><li>L'application n'appelle <strong>aucune IA</strong> pendant son fonctionnement : tout vient des sources de données football citées sur la page.</li></ul>"
+    }
+  ]
+}
