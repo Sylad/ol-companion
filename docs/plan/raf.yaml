@@ -181,3 +181,5 @@ lots:
     visible: true
     created: 2026-10-01
     started: 2026-10-01
+    notes:
+      - { date: 2026-10-02, text: "02-10 : modèle finance-tracker repris (lots visibles seulement, titre public: sinon titre de la Nouveauté sinon masqué, liste noire sécurité) ; public: ajoutés à la main à L22/L23 (libellés de finance-tracker) ; L17 masqué par la liste noire (« secret » dans son titre brut) ; fuite vérifiée sur plan.json (test) et dist/ (npm run build)" }
