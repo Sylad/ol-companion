@@ -70,6 +70,8 @@ export function markAllSeen(
   storage: StorageLike | null,
   entries: readonly DatedEntry[],
   now: Date = new Date(),
+  /** visit: false — ligne de base d'un nouveau venu : pas d'instant de visite (pas de « Déjà vu lors de votre visite du … »). */
+  { visit = true }: { visit?: boolean } = {},
 ): NewsSeen | null {
   if (!entries.length) return null;
   const date = entries.reduce((max, e) => (instant(e.date) > instant(max) ? e.date : max), entries[0].date);
@@ -80,7 +82,7 @@ export function markAllSeen(
       .map((e) => e.slug)
       .sort(),
     seen: entries.map((e) => e.slug).sort(),
-    at: now.toISOString(),
+    ...(visit ? { at: now.toISOString() } : {}),
   };
   try {
     storage?.setItem(NEWS_SEEN_KEY, JSON.stringify(seen));

@@ -45,7 +45,9 @@ export function NouveautesPage() {
   const fresh = entries.map((e) => isUnseen(e, previousVisit));
   const freshCount = fresh.filter(Boolean).length;
   // Séparateur seulement entre des entrées nouvelles (toutes au-dessus) et des déjà vues.
-  const firstSeenIndex = previousVisit ? seenSeparatorIndex(fresh) : -1;
+  // Ligne de base d'un nouveau venu (pas d'instant de visite) : pas de séparateur
+  // « Déjà vu lors de votre visite » pour une visite qui n'a pas eu lieu.
+  const firstSeenIndex = previousVisit?.at ? seenSeparatorIndex(fresh) : -1;
 
   // L22 — lien permanent /nouveautes#<slug> : le journal arrive après le chargement de la
   // page, le défilement natif vers l'ancre ne trouve rien ; la page vise l'entrée ensuite.
@@ -145,9 +147,7 @@ export function NouveautesPage() {
                 aria-hidden="true"
                 className="flex items-center gap-3 text-xs text-fg-muted before:h-px before:flex-1 before:bg-border-strong after:h-px after:flex-1 after:bg-border-strong"
               >
-                {previousVisit?.at
-                  ? `Déjà vu lors de votre visite du ${new Date(previousVisit.at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}`
-                  : "Déjà vu lors d'une visite précédente"}
+                {`Déjà vu lors de votre visite du ${new Date(previousVisit!.at!).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}`}
               </div>
             )}
             <article

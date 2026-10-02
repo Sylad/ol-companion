@@ -158,4 +158,12 @@ describe('news-badge', () => {
     expect(seenSeparatorIndex([true, false, true, false])).toBe(-1);
     expect(seenSeparatorIndex([false, true, false])).toBe(-1);
   });
+
+  it('ligne de base d’un nouveau venu (sans visite de la page) : tout est vu, sans instant de visite', () => {
+    const st = new MemoryStorage();
+    const base = markAllSeen(st, entries, new Date('2026-10-02T08:00:00Z'), { visit: false });
+    expect(base).toEqual({ date: '2026-09-10', slugs: ['b', 'c'], seen: ['a', 'b', 'c'] });
+    expect(readSeen(st)).toEqual(base);
+    expect(countUnseen([{ slug: 'nouvelle', date: '2026-10-02' }, ...entries], readSeen(st))).toBe(1);
+  });
 });

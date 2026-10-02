@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, render, screen, within } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
 import {
@@ -91,6 +91,26 @@ describe('pastille « nouveau » (L22)', () => {
     await new Promise((r) => setTimeout(r, 20));
     expect(document.querySelectorAll('[data-news-badge]')).toHaveLength(0);
     expect(screen.getByRole('button', { name: 'Plus' })).toBeInTheDocument();
+  });
+
+  // Revue UX L22 : un nouveau venu qui n'ouvre jamais /nouveautes n'avait jamais de
+  // pastille (aucune mémoire → rien n'est nouveau, pour toujours).
+  it('nouveau venu : aucune pastille, mais une ligne de base est mémorisée ; une entrée publiée ensuite → pastille 1', async () => {
+    await renderAt('/', () => <SidebarLinks />);
+    await waitFor(() => expect(localStorage.getItem(NEWS_SEEN_KEY)).not.toBeNull());
+    const base = JSON.parse(localStorage.getItem(NEWS_SEEN_KEY)!);
+    expect(base.seen).toEqual(['a', 'b', 'c']);
+    expect(base.at).toBeUndefined();
+    expect(document.querySelectorAll('[data-news-badge]')).toHaveLength(0);
+    cleanup();
+
+    NEWS.entries.unshift({ slug: 'd', title: 'D', date: '2026-10-02', lots: [], captures: [], html: '' });
+    try {
+      await renderAt('/', () => <SidebarLinks />);
+      expect(await screen.findByRole('link', { name: 'Nouveautés (1 nouveauté non vue)' })).toBeInTheDocument();
+    } finally {
+      NEWS.entries.shift();
+    }
   });
 
   it('bureau : le lien Nouveautés porte le nombre d’entrées non vues, dit en toutes lettres au lecteur d’écran', async () => {

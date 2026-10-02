@@ -348,4 +348,14 @@ describe('<NouveautesPage />', () => {
     expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('1 nouveauté depuis votre dernière visite');
     expect(screen.queryByTestId('nouveautes-deja-vu')).toBeNull();
   });
+
+  it('ligne de base d’un nouveau venu (sans instant de visite) : « Nouveau » sur l’entrée publiée depuis, pas de séparateur « Déjà vu »', async () => {
+    stubFetch();
+    remember({ date: '2026-09-28', slugs: ['2026-09-28-ancienne'], seen: ['2026-09-28-ancienne'] });
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une page Nouveautés/ });
+    expect(within(document.getElementById('2026-10-01-page')!).getByText('Nouveau')).toBeInTheDocument();
+    expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('1 nouveauté depuis votre dernière visite');
+    expect(screen.queryByTestId('nouveautes-deja-vu')).toBeNull();
+  });
 });
