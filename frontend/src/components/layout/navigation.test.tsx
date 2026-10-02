@@ -236,7 +236,35 @@ describe('<BottomNav /> (téléphone)', () => {
 
   it('« Plus » est l’onglet actif sur /plan', async () => {
     await renderAt('/plan', () => <BottomNav />);
-    expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'true');
+    expect(screen.getByRole('button', { name: 'Plus, page actuelle : Plan de travail' })).toHaveAttribute('data-active', 'true');
+  });
+
+  // Revue UX L24 (WCAG 1.3.1) : la couleur rouge n'est pas le seul signe que la page
+  // courante est derrière « Plus » ; le nom accessible le dit (pas d'aria-current sur un bouton).
+  it.each([
+    ['/players', 'Joueurs'],
+    ['/cups', 'Coupes'],
+    ['/map', 'Carte L1'],
+    ['/fcnoobz', 'FC Noobz'],
+    ['/nouveautes', 'Nouveautés'],
+    ['/about', 'À propos'],
+  ])('sur %s, le nom accessible de « Plus » dit « page actuelle : %s »', async (path, label) => {
+    await renderAt(path, () => <BottomNav />);
+    const plus = screen.getByRole('button', { name: `Plus, page actuelle : ${label}` });
+    expect(plus).not.toHaveAttribute('aria-current');
+  });
+
+  it('le nom accessible garde le nombre de nouveautés non vues après la page actuelle', async () => {
+    seenOnlyOldest();
+    await renderAt('/players', () => <BottomNav />);
+    expect(
+      await screen.findByRole('button', { name: 'Plus, page actuelle : Joueurs (2 nouveautés non vues)' }),
+    ).toBeInTheDocument();
+  });
+
+  it('sur une page de la barre, « Plus » ne parle pas de page actuelle', async () => {
+    await renderAt('/standings', () => <BottomNav />);
+    expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'false');
   });
 
   it.each([
@@ -246,7 +274,7 @@ describe('<BottomNav /> (téléphone)', () => {
   ])('sur %s (page passée dans « Plus »), « Plus » est l’onglet actif et le panneau marque %s', async (path, label) => {
     const user = userEvent.setup();
     await renderAt(path, () => <BottomNav />);
-    const plus = screen.getByRole('button', { name: 'Plus' });
+    const plus = screen.getByRole('button', { name: `Plus, page actuelle : ${label}` });
     expect(plus).toHaveAttribute('data-active', 'true');
     await user.click(plus);
     const dialog = screen.getByRole('dialog');
@@ -275,7 +303,7 @@ describe('<BottomNav /> (téléphone)', () => {
     await user.click(within(screen.getByRole('dialog')).getByRole('link', { name: 'Nouveautés' }));
     expect(router.state.location.pathname).toBe('/nouveautes');
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'true');
+    expect(screen.getByRole('button', { name: 'Plus, page actuelle : Nouveautés' })).toHaveAttribute('data-active', 'true');
   });
 
   // Revue UX L13 : panneau aria-modal, la page derrière ne doit pas défiler.

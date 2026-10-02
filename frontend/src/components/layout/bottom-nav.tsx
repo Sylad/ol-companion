@@ -15,7 +15,13 @@ import { useNewsBadge } from '@/hooks/use-news-badge';
 const BAR_PATHS: readonly string[] = ['/', '/fixtures', '/standings', '/news'];
 const BAR_ITEMS = NAV_ITEMS.filter((i) => BAR_PATHS.includes(i.to));
 const MOVED_ITEMS = NAV_ITEMS.filter((i) => !BAR_PATHS.includes(i.to));
-const MORE_PATHS = [...MOVED_ITEMS.map((i) => i.to), '/fcnoobz', ...SECONDARY_ITEMS.map((i) => i.to)];
+// Pages derrière « Plus », avec leur libellé : le nom accessible du bouton dit laquelle
+// est la page actuelle (revue UX L24, WCAG 1.3.1 : la couleur seule ne suffit pas).
+const MORE_PAGES: readonly { to: string; label: string }[] = [
+  ...MOVED_ITEMS,
+  { to: '/fcnoobz', label: 'FC Noobz' },
+  ...SECONDARY_ITEMS,
+];
 
 export function BottomNav() {
   const { location } = useRouterState();
@@ -74,7 +80,14 @@ export function BottomNav() {
     }
   };
 
-  const plusActive = open || MORE_PATHS.some((p) => path.startsWith(p));
+  const currentMore = MORE_PAGES.find((p) => path.startsWith(p.to));
+  const plusActive = open || currentMore !== undefined;
+  // Nom accessible complet : les cases de la barre sont des éléments flex, un lecteur
+  // d'écran insérerait une espace entre « Plus » et un texte masqué accolé (« Plus , … »).
+  const plusName =
+    'Plus' +
+    (currentMore ? `, page actuelle : ${currentMore.label}` : '') +
+    (!open && news.badge ? ` (${news.label})` : '');
   const sheetLink = (active: boolean) =>
     cn(
       'flex items-center gap-3 rounded-md px-3 min-h-11 text-sm transition-colors',
@@ -204,6 +217,7 @@ export function BottomNav() {
           <button
             ref={plusButton}
             type="button"
+            aria-label={plusName}
             aria-expanded={open}
             aria-controls="more-pages-sheet"
             data-active={plusActive}
@@ -222,7 +236,6 @@ export function BottomNav() {
               )}
             </span>
             <span className="text-[10px] font-medium tracking-wide">Plus</span>
-            {!open && news.badge && <span className="sr-only"> ({news.label})</span>}
           </button>
         </div>
       </nav>
