@@ -80,7 +80,9 @@ describe('<PlanPage />', () => {
     expect(card).toHaveAttribute('id', 'L23');
     expect(within(card).getByText('En cours')).toBeInTheDocument();
     expect(within(card).getByText('Démarré le 1 octobre 2026')).toBeInTheDocument();
-    expect(within(card).getByText('L23')).toBeInTheDocument();
+    // Revue UX : l'identifiant de lot n'est pas montré aux visiteurs (il reste l'ancre /plan#L23).
+    expect(within(card).queryByText('L23')).toBeNull();
+    expect(card.textContent).not.toMatch(/\bL\d+\b/);
     const bar = within(card).getByRole('progressbar', { name: 'Avancement : Une page Plan de travail' });
     expect(bar).toHaveAttribute('aria-valuetext', '1 étape faite sur 2');
     expect(within(card).getByText('1/2 étapes')).toBeInTheDocument();
