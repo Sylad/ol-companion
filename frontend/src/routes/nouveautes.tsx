@@ -1,47 +1,14 @@
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { Fragment, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Megaphone, X, ZoomIn } from 'lucide-react';
+import { NEWS_BASE as BASE, NEWS_QUERY_KEY, fetchNews } from '@/lib/nouveautes';
+import { NEWS_SEEN_EVENT, browserStorage, isUnseen, markAllSeen, readSeen, sinceLabel } from '@/lib/news-badge';
+import { entryForFragment, permalink } from '@/lib/news-anchor';
+import { cn } from '@/lib/utils';
 
-// Journal généré par `cadence news build` (cd frontend && npm run news) : les
-// entrées vivent dans docs/nouveautes/, le résultat est versionné dans
-// public/nouveautes-data/ (la CI n'a pas cadence) et servi en statique par nginx.
-// L'ordre (la plus récente en haut, départage sur `created`) est celui du JSON.
-const BASE = '/nouveautes-data';
-
-interface NewsEntry {
-  slug: string;
-  title: string;
-  date: string;
-  lots: string[];
-  captures: string[];
-  html: string;
-}
-
-interface NewsData {
-  project: string;
-  generated: string;
-  entries: NewsEntry[];
-}
-
-type Sizes = Record<string, [number, number]>;
-
-async function getJson<T>(url: string): Promise<T | null> {
-  try {
-    const res = await fetch(url, { cache: 'no-cache' });
-    return res.ok ? ((await res.json()) as T) : null;
-  } catch {
-    return null;
-  }
-}
-
-async function fetchNews(): Promise<{ news: NewsData | null; sizes: Sizes }> {
-  const [news, sizes] = await Promise.all([
-    getJson<NewsData>(`${BASE}/nouveautes.json`),
-    getJson<Sizes>(`${BASE}/tailles.json`),
-  ]);
-  return { news, sizes: sizes ?? {} };
-}
+// Journal généré par `cadence news build` (cd frontend && npm run news), servi en
+// statique depuis public/nouveautes-data/ (voir lib/nouveautes.ts).
 
 const formatDate = (day: string) =>
   new Date(`${day}T12:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -53,10 +20,63 @@ interface Capture {
 }
 
 export function NouveautesPage() {
-  const query = useQuery({ queryKey: ['nouveautes'], queryFn: fetchNews, staleTime: 5 * 60_000 });
+  const query = useQuery({ queryKey: NEWS_QUERY_KEY, queryFn: fetchNews, staleTime: 5 * 60_000 });
   const [viewing, setViewing] = useState<{ capture: Capture; trigger: HTMLElement } | null>(null);
   const entries = query.data?.news?.entries ?? [];
   const sizes = query.data?.sizes ?? {};
+
+  // L22 — dernière visite : lue UNE fois à l'arrivée (avant que la visite ne soit
+  // mémorisée), pour marquer « Nouveau » et poser le séparateur « Déjà vu ». Dès que le
+  // journal est là, tout est marqué vu et la pastille de la navigation s'éteint.
+  const [previousVisit] = useState(() => readSeen(browserStorage()));
+  useEffect(() => {
+    if (entries.length === 0) return;
+    markAllSeen(browserStorage(), entries);
+    window.dispatchEvent(new Event(NEWS_SEEN_EVENT));
+  }, [entries]);
+  const fresh = entries.map((e) => isUnseen(e, previousVisit));
+  const freshCount = fresh.filter(Boolean).length;
+  const lastFresh = fresh.lastIndexOf(true);
+  // Séparateur seulement entre des entrées nouvelles et des entrées déjà vues.
+  const firstSeenIndex = previousVisit && lastFresh >= 0 && lastFresh + 1 < entries.length ? lastFresh + 1 : -1;
+
+  // L22 — lien permanent /nouveautes#<slug> : le journal arrive après le chargement de la
+  // page, le défilement natif vers l'ancre ne trouve rien ; la page vise l'entrée ensuite.
+  const [target, setTarget] = useState<string | null>(null);
+  useEffect(() => {
+    if (entries.length === 0) return;
+    const reveal = (focus: boolean) => {
+      const slug = entryForFragment(window.location.hash, entries);
+      setTarget(slug);
+      const el = slug ? document.getElementById(slug) : null;
+      if (el && focus) {
+        el.scrollIntoView?.({ block: 'start' });
+        el.focus({ preventScroll: true });
+      }
+    };
+    reveal(true);
+    const onHash = () => reveal(false);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, [entries]);
+
+  // Annonce par entrée après un clic sur son titre (copie du lien), effacée après 4 s.
+  const [linkStatus, setLinkStatus] = useState<{ slug: string; text: string } | null>(null);
+  useEffect(() => {
+    if (!linkStatus) return;
+    const t = setTimeout(() => setLinkStatus(null), 4000);
+    return () => clearTimeout(t);
+  }, [linkStatus]);
+  const copyLink = (slug: string) => async () => {
+    // Le lien met lui-même l'ancre dans l'URL (comportement natif) ; on copie l'URL complète.
+    setTarget(slug);
+    try {
+      await navigator.clipboard.writeText(permalink(window.location.origin, slug));
+      setLinkStatus({ slug, text: 'Lien copié dans le presse-papiers' });
+    } catch {
+      setLinkStatus({ slug, text: "Lien affiché dans la barre d'adresse" });
+    }
+  };
 
   const open = (capture: Capture) => (e: MouseEvent<HTMLAnchorElement>) => {
     // Clic ou Entrée (qui déclenche un clic sur le lien) : la visionneuse, pas le PNG brut.
@@ -81,6 +101,13 @@ export function NouveautesPage() {
         <p className="text-fg max-w-2xl">
           Le journal des évolutions visibles de l'application, la plus récente en haut.
         </p>
+        <p
+          data-testid="nouveautes-depuis"
+          role="status"
+          className="text-sm font-semibold text-fg-bright empty:hidden"
+        >
+          {sinceLabel(freshCount)}
+        </p>
       </header>
 
       {query.isLoading ? (
@@ -94,22 +121,56 @@ export function NouveautesPage() {
         </p>
       ) : (
         <div className="space-y-5">
-          {entries.map((e) => (
+          {entries.map((e, index) => (
+            <Fragment key={e.slug}>
+            {index === firstSeenIndex && (
+              // Repère visuel ; l'annonce « N nouveautés depuis… » le dit aux lecteurs d'écran.
+              <div
+                data-testid="nouveautes-deja-vu"
+                aria-hidden="true"
+                className="flex items-center gap-3 text-xs text-fg-muted before:h-px before:flex-1 before:bg-border-strong after:h-px after:flex-1 after:bg-border-strong"
+              >
+                {previousVisit?.at
+                  ? `Déjà vu lors de votre visite du ${new Date(previousVisit.at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}`
+                  : "Déjà vu lors d'une visite précédente"}
+              </div>
+            )}
             <article
-              key={e.slug}
               id={e.slug}
+              tabIndex={-1}
+              data-target={target === e.slug ? 'true' : undefined}
               aria-labelledby={`${e.slug}-titre`}
-              className="rounded-md border border-border bg-surface p-5 lg:p-6"
+              className={cn(
+                'scroll-mt-20 lg:scroll-mt-6 rounded-md border bg-surface p-5 lg:p-6 focus:outline-none',
+                target === e.slug ? 'border-ol-red-bright ring-1 ring-ol-red-bright' : 'border-border',
+              )}
             >
-              <p className="text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold mb-1.5">
+              <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold mb-1.5">
                 <time dateTime={e.date}>{formatDate(e.date)}</time>
+                {fresh[index] && (
+                  <span className="rounded-full bg-ol-red px-2 py-0.5 text-[10px] font-bold tracking-[0.08em] text-fg-bright">
+                    Nouveau
+                  </span>
+                )}
               </p>
               <h2
                 id={`${e.slug}-titre`}
                 className="font-display text-lg lg:text-xl font-bold text-fg-bright mb-3 [overflow-wrap:anywhere]"
               >
-                {e.title}
+                <a
+                  href={`#${e.slug}`}
+                  onClick={copyLink(e.slug)}
+                  title="Lien vers cette nouveauté (copié au clic)"
+                  // « # » en pseudo-élément au survol et au focus : repère visuel du lien
+                  // permanent, hors du texte du titre (et de son nom accessible).
+                  className="rounded-sm hover:underline hover:decoration-ol-red-bright hover:underline-offset-4 after:ml-1.5 after:text-ol-red-bright after:opacity-0 after:content-['#'] hover:after:opacity-100 focus-visible:after:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                >
+                  {e.title}
+                </a>
               </h2>
+              <p role="status" className="-mt-2 mb-3 text-xs font-medium text-fg-muted empty:hidden">
+                {linkStatus?.slug === e.slug ? linkStatus.text : ''}
+              </p>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
               <div
                 className="max-w-3xl text-fg leading-relaxed space-y-3 [overflow-wrap:anywhere] [&_strong]:text-fg-bright [&_a]:text-ol-red-bright [&_a]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_code]:text-sm [&_code]:bg-surface-2 [&_code]:px-1 [&_code]:rounded"
@@ -171,6 +232,7 @@ export function NouveautesPage() {
                 </div>
               )}
             </article>
+            </Fragment>
           ))}
         </div>
       )}

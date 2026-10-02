@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NouveautesPage } from './nouveautes';
+import { NEWS_SEEN_EVENT, NEWS_SEEN_KEY } from '@/lib/news-badge';
 
 const NEWS = {
   project: 'ol-companion',
@@ -52,7 +53,15 @@ function renderPage() {
 }
 
 describe('<NouveautesPage />', () => {
-  afterEach(() => vi.unstubAllGlobals());
+  beforeEach(() => {
+    localStorage.clear();
+    window.history.replaceState(null, '', '/nouveautes');
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+    window.history.replaceState(null, '', '/');
+  });
 
   it('affiche les entrées du JSON cadence dans son ordre (la plus récente en haut), avec date et captures', async () => {
     const fetchMock = stubFetch();
@@ -181,5 +190,120 @@ describe('<NouveautesPage />', () => {
     stubFetch({ newsOk: false });
     renderPage();
     expect(await screen.findByText(/Aucune nouveauté publiée/)).toBeInTheDocument();
+  });
+
+  // ── L22 : pastille « nouveau » (dernière visite, localStorage) ──────────────
+  const remember = (v: unknown) => localStorage.setItem(NEWS_SEEN_KEY, JSON.stringify(v));
+  const stored = () => JSON.parse(localStorage.getItem(NEWS_SEEN_KEY) ?? 'null');
+
+  it('premier visiteur : aucune marque « Nouveau », aucune annonce ; la visite est mémorisée et annoncée à la navigation', async () => {
+    stubFetch();
+    const seenEvent = vi.fn();
+    window.addEventListener(NEWS_SEEN_EVENT, seenEvent);
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une page Nouveautés/ });
+    await waitFor(() => expect(stored()).toMatchObject({ date: '2026-10-01', slugs: ['2026-10-01-page'] }));
+    expect(seenEvent).toHaveBeenCalled();
+    window.removeEventListener(NEWS_SEEN_EVENT, seenEvent);
+    expect(screen.queryByText('Nouveau')).toBeNull();
+    expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('');
+    expect(screen.queryByTestId('nouveautes-deja-vu')).toBeNull();
+  });
+
+  it('après une visite ancienne : « Nouveau » en toutes lettres sur chaque entrée non vue et annonce role=status', async () => {
+    stubFetch();
+    remember({ date: '2026-01-01', slugs: [], at: '2026-01-01T10:00:00.000Z' });
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une page Nouveautés/ });
+    expect(screen.getAllByText('Nouveau')).toHaveLength(2);
+    const since = screen.getByTestId('nouveautes-depuis');
+    expect(since).toHaveAttribute('role', 'status');
+    expect(since).toHaveTextContent('2 nouveautés depuis votre dernière visite');
+    // Toutes les entrées sont non vues : pas de séparateur « Déjà vu ».
+    expect(screen.queryByTestId('nouveautes-deja-vu')).toBeNull();
+    // La marque reste affichée pendant la visite, même une fois tout mémorisé comme vu.
+    await waitFor(() => expect(stored().date).toBe('2026-10-01'));
+    expect(screen.getAllByText('Nouveau')).toHaveLength(2);
+  });
+
+  it('séparateur « Déjà vu lors de votre visite du … » avant la première entrée déjà vue', async () => {
+    stubFetch();
+    const at = '2026-09-29T08:30:00.000Z';
+    remember({ date: '2026-09-28', slugs: ['2026-09-28-ancienne'], at });
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une page Nouveautés/ });
+    expect(screen.getAllByText('Nouveau')).toHaveLength(1);
+    expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('1 nouveauté depuis votre dernière visite');
+    const sep = screen.getByTestId('nouveautes-deja-vu');
+    const when = new Date(at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+    expect(sep).toHaveTextContent(`Déjà vu lors de votre visite du ${when}`);
+    expect(sep.nextElementSibling).toHaveAttribute('id', '2026-09-28-ancienne');
+    const first = document.getElementById('2026-10-01-page')!;
+    expect(within(first).getByText('Nouveau')).toBeInTheDocument();
+  });
+
+  // ── L22 : lien permanent /nouveautes#<slug> ─────────────────────────────────
+  it('le titre de chaque entrée est un lien vers son ancre, atteignable au clavier, avec un anneau de focus visible', async () => {
+    stubFetch();
+    const user = userEvent.setup();
+    renderPage();
+    const link = await screen.findByRole('link', { name: 'Une page Nouveautés' });
+    expect(link).toHaveAttribute('href', '#2026-10-01-page');
+    expect(link.closest('h2')).toHaveAttribute('id', '2026-10-01-page-titre');
+    expect(link.className).toMatch(/focus-visible:ring-2/);
+    await user.tab();
+    expect(link).toHaveFocus();
+  });
+
+  it('clic sur le titre : l’URL complète est copiée et annoncée ; sans presse-papiers, l’annonce le dit', async () => {
+    stubFetch();
+    const writeText = vi.fn(async () => {});
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    const user = userEvent.setup();
+    renderPage();
+    const link = await screen.findByRole('link', { name: 'Une page Nouveautés' });
+    // userEvent installe son propre presse-papiers : on remet le nôtre après setup.
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    await user.click(link);
+    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/nouveautes#2026-10-01-page`);
+    const article = document.getElementById('2026-10-01-page')!;
+    expect(await within(article).findByRole('status')).toHaveTextContent('Lien copié dans le presse-papiers');
+
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn(async () => Promise.reject(new Error('refusé'))) },
+      configurable: true,
+    });
+    const other = screen.getByRole('link', { name: 'Une nouveauté plus ancienne' });
+    await user.click(other);
+    const second = document.getElementById('2026-09-28-ancienne')!;
+    expect(await within(second).findByRole('status')).toHaveTextContent("Lien affiché dans la barre d'adresse");
+  });
+
+  it('arrivée sur /nouveautes#<slug> : l’entrée visée est signalée et reçoit le focus une fois le journal chargé', async () => {
+    stubFetch();
+    window.history.replaceState(null, '', '/nouveautes#2026-09-28-ancienne');
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une nouveauté plus ancienne/ });
+    const target = document.getElementById('2026-09-28-ancienne')!;
+    await waitFor(() => expect(target).toHaveFocus());
+    expect(target).toHaveAttribute('data-target', 'true');
+    expect(target).toHaveAttribute('tabindex', '-1');
+    expect(document.getElementById('2026-10-01-page')).not.toHaveAttribute('data-target');
+  });
+
+  it('changement d’ancre (hashchange) : la nouvelle entrée est signalée ; ancre inconnue : aucune', async () => {
+    stubFetch();
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une page Nouveautés/ });
+    act(() => {
+      window.history.replaceState(null, '', '/nouveautes#2026-10-01-page');
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    expect(document.getElementById('2026-10-01-page')).toHaveAttribute('data-target', 'true');
+    act(() => {
+      window.history.replaceState(null, '', '/nouveautes#inconnu');
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    expect(document.querySelector('[data-target]')).toBeNull();
   });
 });
