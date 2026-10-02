@@ -222,6 +222,14 @@ export function BottomNav() {
             aria-controls="more-pages-sheet"
             data-active={plusActive}
             onClick={() => setOpen((o) => !o)}
+            // Revue UX L24 : panneau ouvert et focus sur « Plus » (après un clic souris), Échap
+            // ferme aussi ; l'effet de fermeture laisse le focus sur « Plus ».
+            onKeyDown={(e) => {
+              if (e.key === 'Escape' && open) {
+                e.preventDefault();
+                setOpen(false);
+              }
+            }}
             className={cn(
               'flex flex-col items-center justify-center gap-1 py-2.5 transition-colors border-l border-border',
               plusActive ? (fcActive && !open ? 'text-[#3aa0ff]' : 'text-ol-red-bright') : 'text-fg-muted',

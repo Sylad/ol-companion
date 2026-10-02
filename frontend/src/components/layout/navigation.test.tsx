@@ -234,6 +234,20 @@ describe('<BottomNav /> (téléphone)', () => {
     for (const d of dialog.querySelectorAll('[data-divider]')) expect(d.className).toBe(DIVIDER);
   });
 
+  // Revue UX L24 : panneau ouvert, focus revenu sur « Plus » (clic souris) → Échap ferme aussi.
+  it('Échap ferme le panneau quand le focus est sur « Plus », qui garde le focus', async () => {
+    const user = userEvent.setup();
+    await renderAt('/', () => <BottomNav />);
+    const plus = screen.getByRole('button', { name: 'Plus' });
+    await user.click(plus);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    plus.focus();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(plus).toHaveAttribute('aria-expanded', 'false');
+    expect(plus).toHaveFocus();
+  });
+
   it('« Plus » est l’onglet actif sur /plan', async () => {
     await renderAt('/plan', () => <BottomNav />);
     expect(screen.getByRole('button', { name: 'Plus, page actuelle : Plan de travail' })).toHaveAttribute('data-active', 'true');
