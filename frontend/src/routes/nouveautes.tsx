@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2, Megaphone, X, ZoomIn } from 'lucide-react';
+import { Link2, Loader2, Megaphone, X, ZoomIn } from 'lucide-react';
 import { NEWS_BASE as BASE, NEWS_QUERY_KEY, fetchNews } from '@/lib/nouveautes';
 import {
   NEWS_SEEN_EVENT,
@@ -77,23 +77,31 @@ export function NouveautesPage() {
     return () => window.removeEventListener('hashchange', onHash);
   }, [entries]);
 
-  // Annonce par entrée après un clic sur son titre (copie du lien), effacée après 4 s.
-  const [linkStatus, setLinkStatus] = useState<{ slug: string; text: string } | null>(null);
+  // Retour après une copie du lien (titre ou bouton « Copier le lien »), effacé après
+  // 4 s : dans le libellé du bouton (largeur réservée) et pour lecteur d'écran — jamais
+  // une ligne insérée dans la carte (elle poussait le texte de 20 px).
+  const [linkStatus, setLinkStatus] = useState<{ slug: string; ok: boolean } | null>(null);
   useEffect(() => {
     if (!linkStatus) return;
     const t = setTimeout(() => setLinkStatus(null), 4000);
     return () => clearTimeout(t);
   }, [linkStatus]);
-  const copyLink = (slug: string) => async () => {
-    // Le lien met lui-même l'ancre dans l'URL (comportement natif) ; on copie l'URL complète.
-    setTarget(slug);
+  const copyLink = async (slug: string) => {
     try {
       await navigator.clipboard.writeText(permalink(window.location.origin, slug));
-      setLinkStatus({ slug, text: 'Lien copié dans le presse-papiers' });
+      setLinkStatus({ slug, ok: true });
     } catch {
-      setLinkStatus({ slug, text: "Lien affiché dans la barre d'adresse" });
+      setLinkStatus({ slug, ok: false });
     }
   };
+  // Titre : le lien met lui-même l'ancre dans l'URL (comportement natif) ; l'entrée est signalée.
+  const onTitleClick = (slug: string) => () => {
+    setTarget(slug);
+    void copyLink(slug);
+  };
+  // Bouton : copie seulement — l'URL n'est pas touchée (le routeur ferait défiler la page
+  // vers l'ancre : mesuré, 81 à 133 px de saut).
+  const onCopyButton = (slug: string) => () => void copyLink(slug);
 
   const open = (capture: Capture) => (e: MouseEvent<HTMLAnchorElement>) => {
     // Clic ou Entrée (qui déclenche un clic sur le lien) : la visionneuse, pas le PNG brut.
@@ -160,21 +168,49 @@ export function NouveautesPage() {
                 target === e.slug ? 'border-ol-red-bright ring-1 ring-ol-red-bright' : 'border-border',
               )}
             >
-              <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold mb-1.5">
-                <time dateTime={e.date}>{formatDate(e.date)}</time>
-                {fresh[index] && (
-                  <span className="rounded-full bg-ol-red px-2 py-0.5 text-[10px] font-bold tracking-[0.08em] text-fg-bright">
-                    Nouveau
+              <div className="flex items-start justify-between gap-3 mb-1.5">
+                <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 pt-0.5 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
+                  <time dateTime={e.date}>{formatDate(e.date)}</time>
+                  {fresh[index] && (
+                    <span className="rounded-full bg-ol-red px-2 py-0.5 text-[10px] font-bold tracking-[0.08em] text-fg-bright">
+                      Nouveau
+                    </span>
+                  )}
+                </p>
+                {/* Lien permanent visible sans survol (toucher) : cible 44 px au téléphone,
+                    24 px au bureau. Les trois libellés partagent la même case de grille, la
+                    largeur du plus long est donc réservée : le retour ne décale rien. */}
+                <button
+                  type="button"
+                  onClick={onCopyButton(e.slug)}
+                  className="-my-3 lg:-my-0.5 inline-flex min-h-11 lg:min-h-6 shrink-0 items-center gap-1.5 rounded-sm px-1 text-xs font-medium text-ol-red-bright hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright"
+                >
+                  <Link2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  <span aria-hidden="true" className="grid text-left">
+                    {(['idle', 'ok', 'ko'] as const).map((k) => {
+                      const shown =
+                        linkStatus?.slug === e.slug ? (linkStatus.ok ? 'ok' : 'ko') : 'idle';
+                      return (
+                        <span
+                          key={k}
+                          data-label
+                          className={cn('col-start-1 row-start-1 whitespace-nowrap', shown !== k && 'invisible')}
+                        >
+                          {k === 'idle' ? 'Copier le lien' : k === 'ok' ? 'Lien copié' : 'Copie impossible'}
+                        </span>
+                      );
+                    })}
                   </span>
-                )}
-              </p>
+                  <span className="sr-only">Copier le lien : {e.title}</span>
+                </button>
+              </div>
               <h2
                 id={`${e.slug}-titre`}
                 className="font-display text-lg lg:text-xl font-bold text-fg-bright mb-3 [overflow-wrap:anywhere]"
               >
                 <a
                   href={`#${e.slug}`}
-                  onClick={copyLink(e.slug)}
+                  onClick={onTitleClick(e.slug)}
                   title="Lien vers cette nouveauté (copié au clic)"
                   // « # » en pseudo-élément au survol et au focus : repère visuel du lien
                   // permanent, hors du texte du titre (et de son nom accessible).
@@ -183,8 +219,12 @@ export function NouveautesPage() {
                   {e.title}
                 </a>
               </h2>
-              <p role="status" className="-mt-2 mb-3 text-xs font-medium text-fg-muted empty:hidden">
-                {linkStatus?.slug === e.slug ? linkStatus.text : ''}
+              <p role="status" className="sr-only">
+                {linkStatus?.slug === e.slug
+                  ? linkStatus.ok
+                    ? 'Lien copié dans le presse-papiers'
+                    : "Lien affiché dans la barre d'adresse"
+                  : ''}
               </p>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
               <div

@@ -250,6 +250,9 @@ describe('<NouveautesPage />', () => {
     expect(link).toHaveAttribute('href', '#2026-10-01-page');
     expect(link.closest('h2')).toHaveAttribute('id', '2026-10-01-page-titre');
     expect(link.className).toMatch(/focus-visible:ring-2/);
+    // Ordre visuel = ordre du clavier : « Copier le lien » (en haut à droite), puis le titre.
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Copier le lien : Une page Nouveautés' })).toHaveFocus();
     await user.tab();
     expect(link).toHaveFocus();
   });
@@ -357,5 +360,42 @@ describe('<NouveautesPage />', () => {
     expect(within(document.getElementById('2026-10-01-page')!).getByText('Nouveau')).toBeInTheDocument();
     expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('1 nouveauté depuis votre dernière visite');
     expect(screen.queryByTestId('nouveautes-deja-vu')).toBeNull();
+  });
+
+  // Revue UX L22 : au toucher, le « # » n'apparaît qu'au survol et le titre ne ressemble
+  // pas à un lien ; l'annonce « Lien copié » poussait le texte de 20 px pendant 4 s.
+  it('bouton « Copier le lien » toujours visible (cible 44 px au téléphone), retour dans son libellé, sans décalage', async () => {
+    stubFetch();
+    const writeText = vi.fn(async () => {});
+    const user = userEvent.setup();
+    renderPage();
+    const button = await screen.findByRole('button', { name: 'Copier le lien : Une page Nouveautés' });
+    expect(button.className).toMatch(/(^| )min-h-11( |$)/);
+    expect(button.className).toMatch(/lg:min-h-6/);
+    // Les trois libellés occupent la même case : la largeur est réservée d'avance.
+    const labels = [...button.querySelectorAll('[data-label]')].map((n) => n.textContent);
+    expect(labels).toEqual(['Copier le lien', 'Lien copié', 'Copie impossible']);
+    const visible = () => [...button.querySelectorAll('[data-label]')].filter((n) => !n.className.includes('invisible')).map((n) => n.textContent);
+    expect(visible()).toEqual(['Copier le lien']);
+
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    await user.click(button);
+    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/nouveautes#2026-10-01-page`);
+    // Copie seulement : ni ancre dans l'URL (le routeur ferait défiler), ni entrée signalée.
+    expect(window.location.hash).toBe('');
+    expect(visible()).toEqual(['Lien copié']);
+    // Annonce pour lecteur d'écran seulement : aucune ligne visible insérée dans la carte.
+    const status = within(document.getElementById('2026-10-01-page')!).getByRole('status');
+    expect(status).toHaveTextContent('Lien copié dans le presse-papiers');
+    expect(status.className).toMatch(/(^| )sr-only( |$)/);
+    expect(document.getElementById('2026-10-01-page')).not.toHaveAttribute('data-target');
+
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn(async () => Promise.reject(new Error('refusé'))) },
+      configurable: true,
+    });
+    const other = screen.getByRole('button', { name: 'Copier le lien : Une nouveauté plus ancienne' });
+    await user.click(other);
+    expect([...other.querySelectorAll('[data-label]')].filter((n) => !n.className.includes('invisible')).map((n) => n.textContent)).toEqual(['Copie impossible']);
   });
 });
