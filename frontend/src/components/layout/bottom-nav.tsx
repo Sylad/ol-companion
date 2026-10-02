@@ -8,7 +8,7 @@ import { NewsBadge } from '@/components/news-badge';
 import { useNewsBadge } from '@/hooks/use-news-badge';
 
 // 7 pages principales + « Plus » (L13) : la barre garde ses 8 cases (en ajouter une
-// couperait davantage les libellés, cf. L2). FC Noobz, Nouveautés et À propos passent
+// couperait davantage les libellés, cf. L2). FC Noobz et les pages « Application » passent
 // dans le panneau « Plus », comme le « Plus » de finance-tracker.
 const MORE_PATHS = ['/fcnoobz', ...SECONDARY_ITEMS.map((i) => i.to)];
 

@@ -66,7 +66,9 @@ describe('barre latérale (bureau)', () => {
     await renderAt('/nouveautes', () => <SidebarLinks />);
     const app = screen.getByRole('group', { name: 'Application' });
     const res = screen.getByRole('group', { name: 'Ressources' });
-    expect(within(app).getAllByRole('link').map((a) => a.textContent?.trim())).toEqual(['Nouveautés', 'À propos']);
+    // L23 : « Plan de travail » entre Nouveautés et À propos, dans le même groupe.
+    expect(within(app).getAllByRole('link').map((a) => a.textContent?.trim())).toEqual(['Nouveautés', 'Plan de travail', 'À propos']);
+    expect(within(app).getByRole('link', { name: 'Plan de travail' })).toHaveAttribute('href', '/plan');
     const external = within(res).getAllByRole('link');
     expect(external.length).toBeGreaterThan(0);
     for (const a of external) expect(a).toHaveAttribute('target', '_blank');
@@ -140,14 +142,15 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(nav.querySelector('.grid')!.children).toHaveLength(8);
   });
 
-  it('« Plus » ouvre FC Noobz, Nouveautés et À propos ; Échap ferme et rend le focus à « Plus »', async () => {
+  it('« Plus » ouvre FC Noobz, Nouveautés, Plan de travail et À propos ; Échap ferme et rend le focus à « Plus »', async () => {
     const user = userEvent.setup();
     await renderAt('/', () => <BottomNav />);
     const plus = screen.getByRole('button', { name: 'Plus' });
     await user.click(plus);
     const dialog = screen.getByRole('dialog', { name: 'Plus de pages' });
     const labels = within(dialog).getAllByRole('link').map((a) => a.textContent?.trim());
-    expect(labels).toEqual(['FC Noobz', 'Nouveautés', 'À propos']);
+    expect(labels).toEqual(['FC Noobz', 'Nouveautés', 'Plan de travail', 'À propos']);
+    expect(within(dialog).getByRole('link', { name: 'Plan de travail' })).toHaveAttribute('href', '/plan');
     expect(within(dialog).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('href', '/nouveautes');
     expect(within(dialog).getAllByRole('link')[0]).toHaveFocus();
     expect(plus).toHaveAttribute('aria-expanded', 'true');
@@ -155,6 +158,11 @@ describe('<BottomNav /> (téléphone)', () => {
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(plus).toHaveFocus();
+  });
+
+  it('« Plus » est l’onglet actif sur /plan', async () => {
+    await renderAt('/plan', () => <BottomNav />);
+    expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'true');
   });
 
   it('choisir une page navigue et ferme le panneau ; « Plus » est alors l’onglet actif', async () => {

@@ -233,7 +233,10 @@ describe('plan publié (docs/plan/raf.yaml → public/plan-data/plan.json)', () 
         const p = join(d, f);
         return statSync(p).isDirectory() ? walk(p) : [p];
       });
-    const offenders = walk(`${root}/frontend/src`).filter((f) => /raf\.ya?ml|docs\/plan/.test(readFileSync(f, 'utf8')) && !/\.test\.[jt]sx?$/.test(f));
+    // Une chaîne (import, fetch, ?raw…) qui vise le plan brut ; les commentaires peuvent le citer.
+    const offenders = walk(`${root}/frontend/src`).filter(
+      (f) => /['"`][^'"`\n]*(raf\.ya?ml|docs\/plan)[^'"`\n]*['"`]/.test(readFileSync(f, 'utf8')) && !/\.test\.[jt]sx?$/.test(f),
+    );
     expect(offenders).toEqual([]);
   });
 

@@ -1,4 +1,4 @@
-import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Megaphone } from 'lucide-react';
+import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Megaphone, ListTodo } from 'lucide-react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 import { NewsBadge } from '@/components/news-badge';
@@ -32,6 +32,7 @@ const SOURCES: ExternalSource[] = [
 // Pages internes du bas de la barre latérale ; au téléphone, dans « Plus » (bottom-nav).
 export const SECONDARY_ITEMS = [
   { to: '/nouveautes', label: 'Nouveautés', icon: Megaphone },
+  { to: '/plan', label: 'Plan de travail', icon: ListTodo },
   { to: '/about', label: 'À propos', icon: Sparkles },
 ] as const;
 
