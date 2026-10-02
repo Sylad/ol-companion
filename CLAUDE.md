@@ -157,6 +157,14 @@ message (`fix(L4): …`, `L2/t1`), `raf now` dit la suite, `raf check` repère l
 écarts. Début et fin de session : skills `/cadence:session-start` et
 `/cadence:session-close`.
 
+**Plan de travail public** (`/plan`, L23) : après TOUT `raf` qui modifie le plan
+(start, done, add, drop…) ou toute nouvelle entrée Nouveautés, lancer `cd frontend && npm run plan`
+et commiter `frontend/public/plan-data/plan.json` (versionné : le build Docker n'a pas `docs/`) ;
+le test `scripts/plan-data.test.mjs` échoue sinon. Seuls les lots `visible: true` sont publiés, sous
+leur titre public (`public:` du lot, sinon titre de sa Nouveauté, sinon masqués) ; jamais les notes.
+`npm run build` se termine par `plan-data.mjs --leaks dist` (code 1 si une note, un verdict UX ou un
+titre brut du plan se retrouve dans le bundle).
+
 **Revue UX obligatoire** (règle de Sylvain du 2026-09-28, tous les projets perso) : toute nouvelle
 page ou modification d'écran est un lot `--visible`, revu par l'agent `cadence:ux-reviewer` (captures
 1440 et 390 px, écarts fondés sur une règle nommée ou une mesure) avant `raf done`. Le verdict
