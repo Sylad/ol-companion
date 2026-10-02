@@ -51,6 +51,8 @@ function LotCard({ lot, newsSlug }: { lot: PlanLot; newsSlug?: string }) {
   const badge = STATUS_BADGE[lot.status];
   const date = dateLine(lot);
   const steps = liveTasks(lot).filter((t) => t.title);
+  // Étapes sans titre public : comptées dans n/m (l'avancement réel), annoncées dans la liste.
+  const untitled = liveTasks(lot).length - steps.length;
   const stepsId = `${lot.id}-etapes`;
   return (
     <li id={lot.id} className={cn(CARD, 'p-5 lg:p-6 scroll-mt-20 lg:scroll-mt-6')}>
@@ -118,6 +120,11 @@ function LotCard({ lot, newsSlug }: { lot: PlanLot; newsSlug?: string }) {
               </span>
             </li>
           ))}
+          {untitled > 0 && (
+            <li className="text-fg-muted">
+              + {untitled} {plural(untitled, 'étape non détaillée', 'étapes non détaillées')}
+            </li>
+          )}
         </ul>
       )}
     </li>

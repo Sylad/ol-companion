@@ -191,4 +191,32 @@ describe('<PlanPage />', () => {
     expect(meta.textContent).not.toContain('·');
     expect(meta.className).toMatch(/gap-x-/);
   });
+
+  // Revue UX L23 : « 1/3 étapes » mais 2 étapes listées. Le décompte reste celui de
+  // toutes les étapes (l'avancement réel) ; la liste dit combien ne sont pas détaillées.
+  it('étapes sans titre public : comptées dans n/m et annoncées « + N étape(s) non détaillée(s) » dans la liste', async () => {
+    const mixed = { ...plan, lots: [{ id: 'L31', title: 'Mixte', status: 'doing', started: '2026-10-01',
+      tasks: [{ title: 'Étape A', status: 'done' }, { status: 'todo' }, { title: 'Étape C', status: 'todo' }, { status: 'done' }] }] };
+    vi.stubGlobal('fetch', serve(okJson(mixed)));
+    renderPage();
+    const card = (await screen.findByRole('heading', { level: 3, name: 'Mixte' })).closest('li')!;
+    expect(within(card).getByText('2/4 étapes')).toBeInTheDocument();
+    await userEvent.click(within(card).getByRole('button', { name: /Voir les étapes/ }));
+    const list = card.querySelector('#L31-etapes')!;
+    expect([...list.children].map((li) => li.textContent?.replace(/\s+/g, ' ').trim())).toEqual([
+      '✓Étape A (faite)',
+      '○Étape C (à faire)',
+      '+ 2 étapes non détaillées',
+    ]);
+  });
+
+  it('une seule étape non détaillée : accord au singulier', async () => {
+    const one = { ...plan, lots: [{ id: 'L32', title: 'Une', status: 'doing', started: '2026-10-01',
+      tasks: [{ title: 'Étape A', status: 'done' }, { status: 'todo' }] }] };
+    vi.stubGlobal('fetch', serve(okJson(one)));
+    renderPage();
+    const card = (await screen.findByRole('heading', { level: 3, name: 'Une' })).closest('li')!;
+    await userEvent.click(within(card).getByRole('button', { name: /Voir les étapes/ }));
+    expect(within(card).getByText('+ 1 étape non détaillée')).toBeInTheDocument();
+  });
 });
