@@ -55,17 +55,13 @@ function LotCard({ lot, newsSlug }: { lot: PlanLot; newsSlug?: string }) {
   return (
     <li id={lot.id} className={cn(CARD, 'p-5 lg:p-6 scroll-mt-20 lg:scroll-mt-6')}>
       <div className="flex items-start justify-between gap-3 mb-2">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
           <span className={cn('rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-[0.08em]', badge.className)}>
             {badge.label}
           </span>
-          {date && (
-            // Le point reste collé à la date : jamais orphelin en fin de ligne (320 px).
-            <span>
-              <span aria-hidden="true">· </span>
-              <time dateTime={date.day}>{date.text}</time>
-            </span>
-          )}
+          {/* Écart porté par le gap flex, sans « · » : rien d'orphelin quand la date passe
+              à la ligne (390 / 320 px). */}
+          {date && <time dateTime={date.day}>{date.text}</time>}
         </div>
         <span className="text-xs text-fg-muted shrink-0 pt-0.5">{lot.id}</span>
       </div>

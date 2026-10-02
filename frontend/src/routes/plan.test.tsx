@@ -178,4 +178,15 @@ describe('<PlanPage />', () => {
     expect(within(card).queryByText('Étape abandonnée')).toBeNull();
     expect(within(card).getByText('Étape faite')).toBeInTheDocument();
   });
+
+  // Revue UX L23 : à 390/320 la ligne état + date passait à la ligne avec un « · »
+  // orphelin en tête ; l'écart entre les deux vient désormais du gap flex.
+  it('ligne état + date sans séparateur « · » (écart porté par le gap, pas d’orphelin au retour à la ligne)', async () => {
+    vi.stubGlobal('fetch', serve(okJson(plan)));
+    renderPage();
+    const card = (await screen.findByRole('heading', { level: 3, name: 'Une page Plan de travail' })).closest('li')!;
+    const meta = within(card).getByText('Démarré le 1 octobre 2026').closest('div')!;
+    expect(meta.textContent).not.toContain('·');
+    expect(meta.className).toMatch(/gap-x-/);
+  });
 });
