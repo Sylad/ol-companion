@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/plan-data.mjs --leaks dist",
     "preview": "vite preview --host",
     "test": "vitest run",
+    "plan": "node scripts/plan-data.mjs",
     "news": "rm -rf public/nouveautes-data && cadence news build -o public/nouveautes-data && rm -f public/nouveautes-data/index.html && node scripts/nouveautes-tailles.mjs"
   },
   "dependencies": {
@@ -40,6 +41,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.2",
     "vite": "^5.4.8",
-    "vitest": "^2.1.9"
+    "vitest": "^2.1.9",
+    "yaml": "^2.9.1"
   }
 }

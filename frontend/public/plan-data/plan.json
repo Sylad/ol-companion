@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "project": "ol-companion",
+  "lots": [
+    {
+      "id": "L13",
+      "title": "Une page Nouveautés pour suivre ce qui change dans l'application",
+      "status": "done",
+      "started": "2026-10-01",
+      "finished": "2026-10-01"
+    },
+    {
+      "id": "L22",
+      "title": "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée",
+      "status": "doing",
+      "started": "2026-10-01"
+    },
+    {
+      "id": "L23",
+      "title": "Une page Plan de travail : ce qui se prépare",
+      "status": "doing",
+      "started": "2026-10-01"
+    }
+  ]
+}
