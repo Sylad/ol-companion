@@ -248,6 +248,23 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(plus).toHaveFocus();
   });
 
+  // Revue UX L24, mesure à 320×568 : le panneau (537 px de contenu) défile ; la dernière
+  // page recevait le focus SOUS la barre du bas (WCAG 2.4.11) et « Fermer » sortait de
+  // l'écran en défilant. Marge de défilement = hauteur réservée à la barre, en-tête collant.
+  it('le panneau défile sans cacher la page focalisée sous la barre, « Fermer » reste en haut', async () => {
+    const user = userEvent.setup();
+    await renderAt('/', () => <BottomNav />);
+    await user.click(screen.getByRole('button', { name: 'Plus' }));
+    const sheet = screen.getByRole('dialog');
+    expect(sheet.style.scrollPaddingBottom).toBe(sheet.style.paddingBottom);
+    expect(sheet.style.paddingBottom).not.toBe('');
+    const header = within(sheet).getByRole('button', { name: 'Fermer' }).parentElement!;
+    expect(header.className).toMatch(/(^| )sticky( |$)/);
+    // -top-4 : collé au bord du panneau malgré son pt-4 (le collant se cale sur la zone de contenu).
+    expect(header.className).toMatch(/(^| )-top-4( |$)/);
+    expect(header.className).toMatch(/(^| )bg-surface( |$)/);
+  });
+
   it('« Plus » est l’onglet actif sur /plan', async () => {
     await renderAt('/plan', () => <BottomNav />);
     expect(screen.getByRole('button', { name: 'Plus, page actuelle : Plan de travail' })).toHaveAttribute('data-active', 'true');

@@ -23,6 +23,8 @@ const MORE_PAGES: readonly { to: string; label: string }[] = [
   ...SECONDARY_ITEMS,
 ];
 
+const SHEET_BOTTOM = 'calc(4.5rem + env(safe-area-inset-bottom))';
+
 export function BottomNav() {
   const { location } = useRouterState();
   const path = location.pathname;
@@ -111,9 +113,12 @@ export function BottomNav() {
             aria-labelledby="more-pages-title"
             onKeyDown={onSheetKeyDown}
             className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-lg border-t border-border bg-surface px-4 pt-4"
-            style={{ paddingBottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
+            // Le panneau descend sous la barre du bas : la marge de défilement égale à la place
+            // réservée à la barre garde la page focalisée au-dessus d'elle (L24, WCAG 2.4.11).
+            style={{ paddingBottom: SHEET_BOTTOM, scrollPaddingBottom: SHEET_BOTTOM }}
           >
-            <div className="flex items-center justify-between mb-2">
+            {/* En-tête collant : « Fermer » reste visible quand le panneau défile (petits écrans). */}
+            <div className="sticky -top-4 z-10 -mx-4 -mt-4 mb-2 flex items-center justify-between bg-surface px-4 pt-4">
               <h2
                 id="more-pages-title"
                 className="text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold"
