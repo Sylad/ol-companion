@@ -43,19 +43,27 @@ export function NouveautesPage() {
   // L22 — lien permanent /nouveautes#<slug> : le journal arrive après le chargement de la
   // page, le défilement natif vers l'ancre ne trouve rien ; la page vise l'entrée ensuite.
   const [target, setTarget] = useState<string | null>(null);
+  // Ancre déjà amenée à l'écran : un rechargement du journal en arrière-plan (staleTime,
+  // retour sur l'onglet, nouvelle entrée) ne refait ni défilement ni focus — seulement
+  // l'arrivée (premier chargement où l'entrée existe) et un vrai changement d'ancre.
+  const revealedHash = useRef<string | null>(null);
   useEffect(() => {
     if (entries.length === 0) return;
-    const reveal = (focus: boolean) => {
-      const slug = entryForFragment(window.location.hash, entries);
-      setTarget(slug);
-      const el = slug ? document.getElementById(slug) : null;
-      if (el && focus) {
-        el.scrollIntoView?.({ block: 'start' });
-        el.focus({ preventScroll: true });
-      }
+    const hash = window.location.hash;
+    const slug = entryForFragment(hash, entries);
+    setTarget(slug);
+    const el = slug ? document.getElementById(slug) : null;
+    if (el && revealedHash.current !== hash) {
+      revealedHash.current = hash;
+      el.scrollIntoView?.({ block: 'start' });
+      el.focus({ preventScroll: true });
+    }
+    // Changement d'ancre (clic sur un titre, retour arrière) : le navigateur défile
+    // lui-même ; on signale l'entrée sans prendre le focus au lien cliqué.
+    const onHash = () => {
+      revealedHash.current = window.location.hash;
+      setTarget(entryForFragment(window.location.hash, entries));
     };
-    reveal(true);
-    const onHash = () => reveal(false);
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, [entries]);

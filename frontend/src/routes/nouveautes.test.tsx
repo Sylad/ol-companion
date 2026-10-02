@@ -43,8 +43,7 @@ function stubFetch({ news = NEWS as unknown, sizes = SIZES as unknown, newsOk = 
   return fetchMock;
 }
 
-function renderPage() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+function renderPage(client = new QueryClient({ defaultOptions: { queries: { retry: false } } })) {
   return render(
     <QueryClientProvider client={client}>
       <NouveautesPage />
@@ -305,5 +304,36 @@ describe('<NouveautesPage />', () => {
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     });
     expect(document.querySelector('[data-target]')).toBeNull();
+  });
+
+  // Revue L22 : un rechargement du journal en arrière-plan (staleTime, retour sur
+  // l'onglet) ne doit pas ramener la page à l'ancre ni voler le focus.
+  it('un rechargement du journal ne refait ni défilement ni focus vers l’ancre déjà visée', async () => {
+    const fetchMock = stubFetch();
+    const scroll = vi.fn();
+    Element.prototype.scrollIntoView = scroll;
+    window.history.replaceState(null, '', '/nouveautes#2026-09-28-ancienne');
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    renderPage(client);
+    await screen.findByRole('heading', { level: 2, name: /plus ancienne/ });
+    await waitFor(() => expect(document.getElementById('2026-09-28-ancienne')).toHaveFocus());
+    expect(scroll).toHaveBeenCalledTimes(1);
+
+    // Le lecteur est ailleurs ; le journal revient avec une entrée de plus (données
+    // réellement changées : le partage structurel de TanStack ne garde pas l'ancienne
+    // référence).
+    const elsewhere = screen.getByRole('link', { name: 'Une page Nouveautés' });
+    elsewhere.focus();
+    const calls = fetchMock.mock.calls.length;
+    const extra = { ...NEWS.entries[0], slug: '2026-10-02-plus-recente', title: 'Plus récente', captures: [] };
+    stubFetch({ news: { ...NEWS, entries: [extra, ...NEWS.entries] } });
+    await act(async () => {
+      await client.refetchQueries();
+    });
+    expect(fetchMock.mock.calls.length).toBe(calls);
+    expect(await screen.findByRole('heading', { level: 2, name: 'Plus récente' })).toBeInTheDocument();
+    expect(elsewhere).toHaveFocus();
+    expect(scroll).toHaveBeenCalledTimes(1);
+    expect(document.getElementById('2026-09-28-ancienne')).toHaveAttribute('data-target', 'true');
   });
 });
