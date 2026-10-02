@@ -120,6 +120,11 @@ describe('pastille « nouveau » (L22)', () => {
     const badge = link.querySelector('[data-news-badge]')!;
     expect(badge).toHaveTextContent('2');
     expect(badge).toHaveAttribute('aria-hidden', 'true');
+    // Revue UX : la ligne fait 32 px (py-2 + 16 px de texte) ; une pastille de 18 px la
+    // portait à 34 px et décalait les lignes suivantes de 2 px → pastille de 16 px.
+    expect(badge.className).toMatch(/(^| )h-4( |$)/);
+    expect(badge.className).toMatch(/(^| )min-w-4( |$)/);
+    expect(badge.className).not.toMatch(/h-\[1\.125rem\]/);
   });
 
   it('téléphone : « Plus » et le lien Nouveautés du panneau portent la pastille', async () => {

@@ -68,7 +68,7 @@ export function SidebarLinks() {
                 strokeWidth={1.75}
               />
               <span className="flex-1 truncate">{label}</span>
-              {to === '/nouveautes' && <NewsBadge badge={news.badge} label={news.label} className="shrink-0" />}
+              {to === '/nouveautes' && <NewsBadge badge={news.badge} label={news.label} className="h-4 min-w-4 shrink-0" />}
             </Link>
           );
         })}
