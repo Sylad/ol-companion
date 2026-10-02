@@ -10,6 +10,7 @@ import {
   formatDay,
   groupPlan,
   isEmpty,
+  liveTasks,
   newsSlugByLot,
   progress,
   summary,
@@ -49,7 +50,7 @@ function LotCard({ lot, newsSlug }: { lot: PlanLot; newsSlug?: string }) {
   const p = progress(lot);
   const badge = STATUS_BADGE[lot.status];
   const date = dateLine(lot);
-  const steps = (lot.tasks ?? []).filter((t) => t.title);
+  const steps = liveTasks(lot).filter((t) => t.title);
   const stepsId = `${lot.id}-etapes`;
   return (
     <li id={lot.id} className={cn(CARD, 'p-5 lg:p-6 scroll-mt-20 lg:scroll-mt-6')}>

@@ -54,9 +54,13 @@ export function groupPlan(lots: PlanLot[], today: Date, recentDays = RECENT_DAYS
   return { doing, todo, done, olderDone: allDone.length - done.length };
 }
 
+/** Sous-tâches retenues : les abandonnées (dropped) ne comptent pas (le générateur les écarte déjà). */
+export const liveTasks = (lot: PlanLot): PlanTask[] => (lot.tasks ?? []).filter((t) => t.status !== 'dropped');
+
 export function progress(lot: PlanLot): { done: number; total: number } | null {
-  if (!lot.tasks || lot.tasks.length === 0) return null;
-  return { done: lot.tasks.filter((t) => t.status === 'done').length, total: lot.tasks.length };
+  const tasks = liveTasks(lot);
+  if (tasks.length === 0) return null;
+  return { done: tasks.filter((t) => t.status === 'done').length, total: tasks.length };
 }
 
 export const formatDay = (day: string) =>

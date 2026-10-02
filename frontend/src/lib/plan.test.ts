@@ -35,6 +35,10 @@ describe('progress', () => {
   it('compte les sous-tâches terminées', () => {
     expect(progress(lots[3])).toEqual({ done: 1, total: 3 });
   });
+  it('ignore les sous-tâches abandonnées (dropped), même si un ancien plan.json en contient', () => {
+    expect(progress({ ...lots[2], tasks: [{ status: 'dropped' }, { status: 'done' }] })).toEqual({ done: 1, total: 1 });
+    expect(progress({ ...lots[2], tasks: [{ status: 'dropped' }] })).toBeNull();
+  });
   it('null sans sous-tâche', () => {
     expect(progress(lots[2])).toBeNull();
     expect(progress({ ...lots[2], tasks: [] })).toBeNull();

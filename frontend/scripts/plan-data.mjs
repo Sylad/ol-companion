@@ -102,7 +102,10 @@ export function buildPlan(raf, { newsTitles = new Map() } = {}) {
     const finished = lot.status === 'done' ? day(lot.finished) : undefined;
     if (started) out.started = started;
     if (finished) out.finished = finished;
-    const tasks = (Array.isArray(lot.tasks) ? lot.tasks : []).filter((t) => t && !isDenied(t.title ?? ''));
+    // Sous-tâches abandonnées écartées : hors du décompte n/m, jamais affichées « à faire ».
+    const tasks = (Array.isArray(lot.tasks) ? lot.tasks : []).filter(
+      (t) => t && t.status !== 'dropped' && !isDenied(t.title ?? ''),
+    );
     if (tasks.length > 0) {
       out.tasks = tasks.map((t) =>
         t.public != null

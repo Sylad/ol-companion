@@ -166,4 +166,16 @@ describe('<PlanPage />', () => {
     expect(within(document.getElementById('L22')!).getByText('Prévu')).toBeInTheDocument();
     expect(within(document.getElementById('L21')!).getByText('Livré')).toBeInTheDocument();
   });
+
+  it('une étape abandonnée n’est ni comptée ni listée « à faire »', async () => {
+    const withDropped = { ...plan, lots: [{ id: 'L30', title: 'Avec abandon', status: 'doing', started: '2026-10-01',
+      tasks: [{ title: 'Étape abandonnée', status: 'dropped' }, { title: 'Étape faite', status: 'done' }] }] };
+    vi.stubGlobal('fetch', serve(okJson(withDropped)));
+    renderPage();
+    const card = (await screen.findByRole('heading', { level: 3, name: 'Avec abandon' })).closest('li')!;
+    expect(within(card).getByRole('progressbar')).toHaveAttribute('aria-valuetext', '1 étape faite sur 1');
+    await userEvent.click(within(card).getByRole('button', { name: /Voir les étapes/ }));
+    expect(within(card).queryByText('Étape abandonnée')).toBeNull();
+    expect(within(card).getByText('Étape faite')).toBeInTheDocument();
+  });
 });

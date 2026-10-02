@@ -91,6 +91,25 @@ describe('buildPlan', () => {
     });
   });
 
+  it('écarte les sous-tâches abandonnées (dropped) : ni dans le décompte n/m, ni affichées « à faire »', () => {
+    const p = buildPlan({
+      project: 'x',
+      lots: [{
+        id: 'L1', title: 'A', public: 'A', status: 'doing', visible: true,
+        tasks: [
+          { id: 't1', title: 'Abandonnée', public: 'Étape abandonnée', status: 'dropped' },
+          { id: 't2', title: 'Faite', public: 'Étape faite', status: 'done' },
+          { id: 't3', title: 'Abandonnée sans titre', status: 'dropped' },
+        ],
+      }, {
+        id: 'L2', title: 'B', public: 'B', status: 'todo', visible: true,
+        tasks: [{ id: 't1', title: 'Seule, abandonnée', status: 'dropped' }],
+      }],
+    });
+    expect(p.lots[0].tasks).toEqual([{ title: 'Étape faite', status: 'done' }]);
+    expect(p.lots[1].tasks).toBeUndefined();
+  });
+
   it('refuse un titre public non conforme (chemin, technique, identifiant, > 80 caractères)', () => {
     const one = (pub) => ({ project: 'x', lots: [{ id: 'L1', title: 'A', public: pub, status: 'todo', visible: true }] });
     for (const bad of ['Route /plan', 'Plan depuis raf.yaml', 'Pastille en localStorage', 'Suite de L12', 'x'.repeat(81)]) {
