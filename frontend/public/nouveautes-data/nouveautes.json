@@ -1,7 +1,31 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-01 22:08",
+  "generated": "2026-10-02 08:29",
   "entries": [
+    {
+      "slug": "2026-10-02-une-page-plan-de-travail-montre-ce-qui-se-prepare",
+      "title": "Une page Plan de travail montre ce qui se prépare",
+      "date": "2026-10-02",
+      "lots": [
+        "L23"
+      ],
+      "captures": [
+        "captures/L23-plan-de-travail-telephone.png"
+      ],
+      "html": "<p>Une nouvelle page, <strong>Plan de travail</strong>, montre où en est l'application : ce qui est en cours, ce qui est prévu et ce qui vient d'être livré.</p>\n<ul><li>Sur ordinateur, elle se trouve dans le menu, entre <strong>Nouveautés</strong> et <strong>À propos</strong>. Au téléphone, elle s'ouvre depuis la case <strong>Plus</strong>.</li><li>Chaque évolution indique son état en toutes lettres et sa date de démarrage ou de livraison.</li><li>Une évolution livrée renvoie à sa nouveauté par le lien <strong>Voir la nouveauté</strong>.</li></ul>"
+    },
+    {
+      "slug": "2026-10-02-une-pastille-signale-les-nouveautes-et-chaque-nouveaute-a-so",
+      "title": "Une pastille signale les nouveautés, et chaque nouveauté a son lien",
+      "date": "2026-10-02",
+      "lots": [
+        "L22"
+      ],
+      "captures": [
+        "captures/L22-lien-copie-telephone.png"
+      ],
+      "html": "<p>Vous voyez maintenant d'un coup d'œil s'il y a du nouveau depuis votre dernière visite, et vous pouvez partager une nouveauté précise.</p>\n<ul><li>Une <strong>pastille</strong> avec le nombre de nouveautés non vues apparaît sur le lien <strong>Nouveautés</strong> du menu, et sur la case <strong>Plus</strong> au téléphone. Elle disparaît dès que vous ouvrez la page.</li><li>Sur la page, les entrées que vous n'avez pas encore vues portent la mention <strong>Nouveau</strong>, et une ligne « Déjà vu lors de votre visite du… » marque l'endroit où vous vous étiez arrêté.</li><li>Chaque nouveauté a un bouton <strong>Copier le lien</strong> : le lien ouvre la page directement sur cette nouveauté.</li><li>Rien n'est envoyé à un serveur : la date de votre dernière visite reste dans votre navigateur.</li></ul>"
+    },
     {
       "slug": "2026-10-01-une-page-nouveautes-pour-suivre-ce-qui-change-dans-l-applica",
       "title": "Une page Nouveautés pour suivre ce qui change dans l'application",

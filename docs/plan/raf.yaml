@@ -165,7 +165,7 @@ lots:
   - id: L22
     title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
     public: "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     visible: true
@@ -173,13 +173,24 @@ lots:
     started: 2026-10-01
     notes:
       - { date: 2026-10-02, text: "02-10 : session lead plantée ; travail partiel NON commité laissé en place (frontend/src/lib/news-anchor.ts + test) — à reprendre" }
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (1440/390/320, Chromium) : non conforme au 1er passage (nouveau venu sans pastille), puis réserves levées — base de référence à la 1re visite, bouton Copier le lien visible au toucher (124×44 px), retour sans décalage (0 px), ligne de la barre latérale stable à 32 px. Contraste pastille 4,85:1. Non vérifié : lecteur d'écran réel, appareil tactile réel." }
+    finished: 2026-10-02
   - id: L23
     title: "Page « Plan de travail » : ce qui est prévu, en cours et récemment livré, généré au build depuis docs/plan/raf.yaml (titres et états seulement, jamais les notes) — inspirée de la page « À venir » d'AetherWX"
     public: "Une page Plan de travail : ce qui se prépare"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-01
     started: 2026-10-01
     notes:
       - { date: 2026-10-02, text: "02-10 : modèle finance-tracker repris (lots visibles seulement, titre public: sinon titre de la Nouveauté sinon masqué, liste noire sécurité) ; public: ajoutés à la main à L22/L23 (libellés de finance-tracker) ; L17 masqué par la liste noire (« secret » dans son titre brut) ; fuite vérifiée sur plan.json (test) et dist/ (npm run build)" }
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (1440/390/320, Chromium) : conforme avec réserves, toutes levées — point orphelin, identifiants de lot masqués, étapes non détaillées annoncées, focus à l'arrivée sur /plan#id. Liens Nouveautés et Plan à 1 clic (ordinateur) / 2 touchers (téléphone) de l'accueil ; pas de débordement à 320 px. Non vérifié : lecteur d'écran réel." }
+    finished: 2026-10-02
+  - id: L24
+    title: "Barre du bas à 320 px : libellés qui se chevauchent (49–52 px dans des cases de 40 px), pastille de Plus au ras du bord — réduire plutôt que serrer (revue UX L22)"
+    status: todo
+    estimate: 0.25
+    quickwin: true
+    visible: true
+    created: 2026-10-02
