@@ -17,6 +17,12 @@ export interface NewsSeen {
   date: string;
   /** Slugs vus portant cette date. */
   slugs: string[];
+  /**
+   * Tous les slugs vus lors de cette visite (depuis la revue L22). Présent : une entrée
+   * est nouvelle si son slug n'y est pas, même antidatée. Absent (mémoire plus
+   * ancienne) : règle par date.
+   */
+  seen?: string[];
   /** Instant de la visite (ISO), pour le séparateur « Déjà vu lors de votre visite du … ». */
   at?: string;
 }
@@ -46,11 +52,12 @@ export function readSeen(storage: StorageLike | null): NewsSeen | null {
     if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
     if (typeof parsed !== 'object' || parsed === null) return null;
-    const { date, slugs, at } = parsed as { date?: unknown; slugs?: unknown; at?: unknown };
+    const { date, slugs, seen, at } = parsed as { date?: unknown; slugs?: unknown; seen?: unknown; at?: unknown };
     if (typeof date !== 'string' || Number.isNaN(instant(date)) || !Array.isArray(slugs)) return null;
     return {
       date,
       slugs: slugs.filter((s): s is string => typeof s === 'string'),
+      ...(Array.isArray(seen) ? { seen: seen.filter((s): s is string => typeof s === 'string') } : {}),
       ...(typeof at === 'string' && !Number.isNaN(Date.parse(at)) ? { at } : {}),
     };
   } catch {
@@ -72,6 +79,7 @@ export function markAllSeen(
       .filter((e) => instant(e.date) === instant(date))
       .map((e) => e.slug)
       .sort(),
+    seen: entries.map((e) => e.slug).sort(),
     at: now.toISOString(),
   };
   try {
@@ -85,11 +93,24 @@ export function markAllSeen(
 /** Entrée non vue lors de la visite `seen` ; premier visiteur (null) : rien n'est nouveau. */
 export function isUnseen(entry: DatedEntry, seen: NewsSeen | null): boolean {
   if (!seen) return false;
+  // Slugs vus mémorisés : une entrée antidatée publiée depuis compte comme nouvelle.
+  if (seen.seen) return !seen.seen.includes(entry.slug);
   return !seen.slugs.includes(entry.slug) && instant(entry.date) >= instant(seen.date);
 }
 
 export function countUnseen(entries: readonly DatedEntry[], seen: NewsSeen | null): number {
   return entries.filter((e) => isUnseen(e, seen)).length;
+}
+
+/**
+ * Place du séparateur « Déjà vu lors de votre visite du … » : avant la première entrée
+ * déjà vue, seulement si TOUTES les nouvelles sont au-dessus (une entrée antidatée
+ * peut être nouvelle plus bas : un séparateur mentirait). -1 : pas de séparateur.
+ */
+export function seenSeparatorIndex(fresh: readonly boolean[]): number {
+  const firstSeen = fresh.indexOf(false);
+  if (firstSeen <= 0) return -1;
+  return fresh.indexOf(true, firstSeen) === -1 ? firstSeen : -1;
 }
 
 /** Libellé de la pastille : vide à zéro, « 9+ » au-delà de neuf. */

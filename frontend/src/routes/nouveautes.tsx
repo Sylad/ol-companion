@@ -3,7 +3,15 @@ import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Megaphone, X, ZoomIn } from 'lucide-react';
 import { NEWS_BASE as BASE, NEWS_QUERY_KEY, fetchNews } from '@/lib/nouveautes';
-import { NEWS_SEEN_EVENT, browserStorage, isUnseen, markAllSeen, readSeen, sinceLabel } from '@/lib/news-badge';
+import {
+  NEWS_SEEN_EVENT,
+  browserStorage,
+  isUnseen,
+  markAllSeen,
+  readSeen,
+  seenSeparatorIndex,
+  sinceLabel,
+} from '@/lib/news-badge';
 import { entryForFragment, permalink } from '@/lib/news-anchor';
 import { cn } from '@/lib/utils';
 
@@ -36,9 +44,8 @@ export function NouveautesPage() {
   }, [entries]);
   const fresh = entries.map((e) => isUnseen(e, previousVisit));
   const freshCount = fresh.filter(Boolean).length;
-  const lastFresh = fresh.lastIndexOf(true);
-  // Séparateur seulement entre des entrées nouvelles et des entrées déjà vues.
-  const firstSeenIndex = previousVisit && lastFresh >= 0 && lastFresh + 1 < entries.length ? lastFresh + 1 : -1;
+  // Séparateur seulement entre des entrées nouvelles (toutes au-dessus) et des déjà vues.
+  const firstSeenIndex = previousVisit ? seenSeparatorIndex(fresh) : -1;
 
   // L22 — lien permanent /nouveautes#<slug> : le journal arrive après le chargement de la
   // page, le défilement natif vers l'ancre ne trouve rien ; la page vise l'entrée ensuite.

@@ -336,4 +336,16 @@ describe('<NouveautesPage />', () => {
     expect(scroll).toHaveBeenCalledTimes(1);
     expect(document.getElementById('2026-09-28-ancienne')).toHaveAttribute('data-target', 'true');
   });
+
+  it('nouvelle entrée antidatée sous une entrée déjà vue : marquée « Nouveau », sans séparateur trompeur', async () => {
+    stubFetch();
+    // Visite qui a vu l'entrée du 1er octobre, pas celle (antidatée) du 28 septembre.
+    remember({ date: '2026-10-01', slugs: ['2026-10-01-page'], seen: ['2026-10-01-page'], at: '2026-10-01T20:00:00.000Z' });
+    renderPage();
+    await screen.findByRole('heading', { level: 2, name: /Une page Nouveautés/ });
+    expect(within(document.getElementById('2026-09-28-ancienne')!).getByText('Nouveau')).toBeInTheDocument();
+    expect(within(document.getElementById('2026-10-01-page')!).queryByText('Nouveau')).toBeNull();
+    expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('1 nouveauté depuis votre dernière visite');
+    expect(screen.queryByTestId('nouveautes-deja-vu')).toBeNull();
+  });
 });

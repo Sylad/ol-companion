@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   NEWS_SEEN_KEY,
+  seenSeparatorIndex,
   badgeLabel,
   countUnseen,
   isUnseen,
@@ -49,7 +50,7 @@ describe('news-badge', () => {
   it('visiter marque tout vu ; la pastille tombe à zéro', () => {
     const st = new MemoryStorage();
     const seen = markAllSeen(st, entries, new Date('2026-09-25T11:57:30Z'));
-    expect(seen).toEqual({ date: '2026-09-10', slugs: ['b', 'c'], at: '2026-09-25T11:57:30.000Z' });
+    expect(seen).toEqual({ date: '2026-09-10', slugs: ['b', 'c'], seen: ['a', 'b', 'c'], at: '2026-09-25T11:57:30.000Z' });
     expect(readSeen(st)).toEqual(seen);
     expect(countUnseen(entries, readSeen(st))).toBe(0);
   });
@@ -89,6 +90,8 @@ describe('news-badge', () => {
     expect(readSeen(st)).toBeNull();
     st.setItem(NEWS_SEEN_KEY, JSON.stringify({ date: '2026-09-10', slugs: ['b', 3], at: 42 }));
     expect(readSeen(st)).toEqual({ date: '2026-09-10', slugs: ['b'] });
+    st.setItem(NEWS_SEEN_KEY, JSON.stringify({ date: '2026-09-10', slugs: ['b'], seen: 'pas une liste' }));
+    expect(readSeen(st)).toEqual({ date: '2026-09-10', slugs: ['b'] });
     const broken: StorageLike = {
       getItem: () => {
         throw new Error('quota');
@@ -122,5 +125,37 @@ describe('news-badge', () => {
     expect(sinceLabel(0)).toBe('');
     expect(sinceLabel(1)).toBe('1 nouveauté depuis votre dernière visite');
     expect(sinceLabel(3)).toBe('3 nouveautés depuis votre dernière visite');
+  });
+
+  // Revue L22 : une entrée publiée aujourd'hui mais datée d'avant la dernière visite
+  // (rédigée en retard, antidatée) doit compter comme nouvelle.
+  it('entrée antidatée publiée après la visite : nouvelle (slugs vus mémorisés)', () => {
+    const st = new MemoryStorage();
+    markAllSeen(st, entries);
+    const withBackdated = [...entries.slice(0, 2), { slug: 'antidatee', date: '2026-09-09' }, entries[2]];
+    expect(withBackdated.map((e) => isUnseen(e, readSeen(st)))).toEqual([false, false, true, false]);
+    expect(countUnseen(withBackdated, readSeen(st))).toBe(1);
+    markAllSeen(st, withBackdated);
+    expect(countUnseen(withBackdated, readSeen(st))).toBe(0);
+  });
+
+  it('mémoire d’avant cette version (sans liste des vus) : règle par date conservée', () => {
+    const st = new MemoryStorage();
+    st.setItem(NEWS_SEEN_KEY, JSON.stringify({ date: '2026-09-10', slugs: ['b', 'c'] }));
+    expect(countUnseen(entries, readSeen(st))).toBe(0);
+    expect(countUnseen([{ slug: 'd', date: '2026-09-10' }, ...entries], readSeen(st))).toBe(1);
+  });
+
+  it('premier visiteur : toujours rien de nouveau, même avec une entrée antidatée', () => {
+    expect(countUnseen([{ slug: 'antidatee', date: '2020-01-01' }, ...entries], null)).toBe(0);
+  });
+
+  it('séparateur « Déjà vu » : avant la première entrée vue, seulement si toutes les nouvelles sont au-dessus', () => {
+    expect(seenSeparatorIndex([true, true, false, false])).toBe(2);
+    expect(seenSeparatorIndex([false, false])).toBe(-1); // rien de nouveau
+    expect(seenSeparatorIndex([true, true])).toBe(-1); // tout est nouveau
+    // Nouvelle entrée antidatée plus bas : aucun séparateur (une « Nouveau » sous « Déjà vu » mentirait).
+    expect(seenSeparatorIndex([true, false, true, false])).toBe(-1);
+    expect(seenSeparatorIndex([false, true, false])).toBe(-1);
   });
 });
