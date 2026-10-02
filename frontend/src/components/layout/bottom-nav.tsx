@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { NAV_ITEMS } from './sidebar';
-import { SECONDARY_ITEMS } from './sidebar-links';
+import { DIVIDER, NAV_ITEMS } from './sidebar';
+import { GROUP_TITLE, SECONDARY_ITEMS } from './sidebar-links';
 import { NewsBadge } from '@/components/news-badge';
 import { useNewsBadge } from '@/hooks/use-news-badge';
 
@@ -134,6 +134,9 @@ export function BottomNav() {
                   </li>
                 );
               })}
+            </ul>
+            <div data-divider aria-hidden="true" className={DIVIDER} />
+            <ul className="space-y-1">
               <li>
                 <Link
                   to="/fcnoobz"
@@ -145,24 +148,33 @@ export function BottomNav() {
                   <span className="font-bold tracking-wide">FC Noobz</span>
                 </Link>
               </li>
-              {SECONDARY_ITEMS.map(({ to, label, icon: Icon }) => {
-                const active = path.startsWith(to);
-                return (
-                  <li key={to}>
-                    <Link
-                      to={to}
-                      onClick={() => setOpen(false)}
-                      aria-current={active ? 'page' : undefined}
-                      className={sheetLink(active)}
-                    >
-                      <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
-                      <span className="font-medium">{label}</span>
-                      {to === '/nouveautes' && <NewsBadge badge={news.badge} label={news.label} className="ml-auto" />}
-                    </Link>
-                  </li>
-                );
-              })}
             </ul>
+            <div data-divider aria-hidden="true" className={DIVIDER} />
+            {/* Même groupe nommé que la barre latérale (L13) : titre « Application » lu par le lecteur d'écran. */}
+            <div role="group" aria-labelledby="more-group-application">
+              <div id="more-group-application" className={GROUP_TITLE}>
+                Application
+              </div>
+              <ul className="space-y-1">
+                {SECONDARY_ITEMS.map(({ to, label, icon: Icon }) => {
+                  const active = path.startsWith(to);
+                  return (
+                    <li key={to}>
+                      <Link
+                        to={to}
+                        onClick={() => setOpen(false)}
+                        aria-current={active ? 'page' : undefined}
+                        className={sheetLink(active)}
+                      >
+                        <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
+                        <span className="font-medium">{label}</span>
+                        {to === '/nouveautes' && <NewsBadge badge={news.badge} label={news.label} className="ml-auto" />}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </div>
       )}

@@ -5,6 +5,9 @@ import { SidebarLinks } from './sidebar-links';
 import { LiveConnectionBadge } from '@/components/live-connection-badge';
 import type { EventStreamStatus } from '@/hooks/use-event-stream';
 
+/** Trait entre les groupes de pages, repris par le panneau « Plus » du téléphone (L24). */
+export const DIVIDER = 'my-3 mx-3 h-px bg-border';
+
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: Home, exact: true },
   { to: '/fixtures', label: 'Calendrier', icon: CalendarDays, exact: false },
@@ -94,7 +97,7 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
         })}
 
         {/* Divider then FC Noobz */}
-        <div className="my-3 mx-3 h-px bg-border" />
+        <div className={DIVIDER} />
         <FcNoobzLink active={path.startsWith('/fcnoobz')} />
       </nav>
 

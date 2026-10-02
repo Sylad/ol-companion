@@ -9,8 +9,8 @@ import {
   createRouter,
 } from '@tanstack/react-router';
 import { BottomNav } from './bottom-nav';
-import { SidebarLinks } from './sidebar-links';
-import { NAV_ITEMS, Sidebar } from './sidebar';
+import { GROUP_TITLE, SidebarLinks } from './sidebar-links';
+import { DIVIDER, NAV_ITEMS, Sidebar } from './sidebar';
 import { NEWS_SEEN_EVENT, NEWS_SEEN_KEY } from '@/lib/news-badge';
 
 // Journal des Nouveautés servi à la pastille « nouveau » (L22).
@@ -211,6 +211,27 @@ describe('<BottomNav /> (téléphone)', () => {
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(plus).toHaveFocus();
+  });
+
+  // Revue UX L24 (Nielsen #4) : même découpage que la barre latérale — pages, trait,
+  // FC Noobz, trait, groupe « Application » titré (groupe nommé pour le lecteur d'écran).
+  it('le panneau reprend les groupes de la barre latérale : pages | FC Noobz | « Application »', async () => {
+    const user = userEvent.setup();
+    await renderAt('/', () => <BottomNav />);
+    await user.click(screen.getByRole('button', { name: 'Plus' }));
+    const dialog = screen.getByRole('dialog', { name: 'Plus de pages' });
+    const app = within(dialog).getByRole('group', { name: 'Application' });
+    expect(within(app).getAllByRole('link').map((a) => a.textContent?.trim())).toEqual(['Nouveautés', 'Plan de travail', 'À propos']);
+    const title = document.getElementById(app.getAttribute('aria-labelledby')!)!;
+    expect(title.className).toBe(GROUP_TITLE);
+    const lists = within(dialog).getAllByRole('list');
+    expect(lists.map((l) => within(l).getAllByRole('link').map((a) => a.textContent?.trim()))).toEqual([
+      ['Joueurs', 'Coupes', 'Carte L1'],
+      ['FC Noobz'],
+      ['Nouveautés', 'Plan de travail', 'À propos'],
+    ]);
+    expect(dialog.querySelectorAll('[data-divider]')).toHaveLength(2);
+    for (const d of dialog.querySelectorAll('[data-divider]')) expect(d.className).toBe(DIVIDER);
   });
 
   it('« Plus » est l’onglet actif sur /plan', async () => {
