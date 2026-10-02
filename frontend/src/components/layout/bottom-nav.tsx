@@ -4,6 +4,8 @@ import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { NAV_ITEMS } from './sidebar';
 import { SECONDARY_ITEMS } from './sidebar-links';
+import { NewsBadge } from '@/components/news-badge';
+import { useNewsBadge } from '@/hooks/use-news-badge';
 
 // 7 pages principales + « Plus » (L13) : la barre garde ses 8 cases (en ajouter une
 // couperait davantage les libellés, cf. L2). FC Noobz, Nouveautés et À propos passent
@@ -15,6 +17,7 @@ export function BottomNav() {
   const path = location.pathname;
   const fcActive = path.startsWith('/fcnoobz');
   const [open, setOpen] = useState(false);
+  const news = useNewsBadge();
   const firstLink = useRef<HTMLAnchorElement>(null);
   const plusButton = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
@@ -133,6 +136,7 @@ export function BottomNav() {
                     >
                       <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
                       <span className="font-medium">{label}</span>
+                      {to === '/nouveautes' && <NewsBadge badge={news.badge} label={news.label} className="ml-auto" />}
                     </Link>
                   </li>
                 );
@@ -176,8 +180,15 @@ export function BottomNav() {
               plusActive ? (fcActive && !open ? 'text-[#3aa0ff]' : 'text-ol-red-bright') : 'text-fg-muted',
             )}
           >
-            <Menu className="h-[18px] w-[18px]" strokeWidth={plusActive ? 2.25 : 1.75} aria-hidden />
+            {/* Pastille posée sur le coin de l'icône : la case garde sa largeur. */}
+            <span className="relative">
+              <Menu className="h-[18px] w-[18px]" strokeWidth={plusActive ? 2.25 : 1.75} aria-hidden />
+              {!open && (
+                <NewsBadge badge={news.badge} label="" className="absolute -right-2.5 -top-2 ring-2 ring-surface" />
+              )}
+            </span>
             <span className="text-[9px] font-medium tracking-wide">Plus</span>
+            {!open && news.badge && <span className="sr-only"> ({news.label})</span>}
           </button>
         </div>
       </nav>

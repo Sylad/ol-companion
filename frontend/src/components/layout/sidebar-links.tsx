@@ -1,6 +1,8 @@
 import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Megaphone } from 'lucide-react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
+import { NewsBadge } from '@/components/news-badge';
+import { useNewsBadge } from '@/hooks/use-news-badge';
 
 interface ExternalSource {
   href: string;
@@ -37,6 +39,7 @@ const GROUP_TITLE = 'px-3 pb-2 text-[10px] uppercase tracking-[0.14em] text-fg-d
 
 export function SidebarLinks() {
   const { location } = useRouterState();
+  const news = useNewsBadge();
 
   return (
     <div className="px-3 pb-2 space-y-0.5">
@@ -64,6 +67,7 @@ export function SidebarLinks() {
                 strokeWidth={1.75}
               />
               <span className="flex-1 truncate">{label}</span>
+              {to === '/nouveautes' && <NewsBadge badge={news.badge} label={news.label} className="shrink-0" />}
             </Link>
           );
         })}

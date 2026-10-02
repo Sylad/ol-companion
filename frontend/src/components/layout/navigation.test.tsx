@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, render, screen, within } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
 import {
   RouterProvider,
@@ -10,6 +11,38 @@ import {
 import { BottomNav } from './bottom-nav';
 import { SidebarLinks } from './sidebar-links';
 import { NAV_ITEMS } from './sidebar';
+import { NEWS_SEEN_EVENT, NEWS_SEEN_KEY } from '@/lib/news-badge';
+
+// Journal des Nouveautés servi à la pastille « nouveau » (L22).
+const NEWS = {
+  project: 'ol-companion',
+  generated: '2026-10-01 22:00',
+  entries: [
+    { slug: 'c', title: 'C', date: '2026-10-01', lots: [], captures: [], html: '' },
+    { slug: 'b', title: 'B', date: '2026-09-30', lots: [], captures: [], html: '' },
+    { slug: 'a', title: 'A', date: '2026-09-28', lots: [], captures: [], html: '' },
+  ],
+};
+
+beforeEach(() => {
+  localStorage.clear();
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (url: string) =>
+      url.endsWith('/nouveautes.json')
+        ? { ok: true, status: 200, json: async () => NEWS }
+        : { ok: false, status: 404, json: async () => null },
+    ),
+  );
+});
+afterEach(() => {
+  vi.unstubAllGlobals();
+  localStorage.clear();
+});
+
+/** Visite ancienne qui n'a vu que l'entrée « a » : deux nouveautés non vues. */
+const seenOnlyOldest = () =>
+  localStorage.setItem(NEWS_SEEN_KEY, JSON.stringify({ date: '2026-09-28', slugs: ['a'], at: '2026-09-28T08:00:00.000Z' }));
 
 async function renderAt(path: string, Component: () => JSX.Element) {
   const rootRoute = createRootRoute({ component: Component });
@@ -17,7 +50,12 @@ async function renderAt(path: string, Component: () => JSX.Element) {
     routeTree: rootRoute,
     history: createMemoryHistory({ initialEntries: [path] }),
   });
-  render(<RouterProvider router={router} />);
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={client}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>,
+  );
   await screen.findAllByRole('link');
   return router;
 }
@@ -37,6 +75,57 @@ describe('barre latérale (bureau)', () => {
     expect(within(app).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('href', '/nouveautes');
     expect(within(app).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('aria-current', 'page');
     expect(within(app).getByRole('link', { name: 'À propos' })).not.toHaveAttribute('aria-current');
+  });
+});
+
+describe('pastille « nouveau » (L22)', () => {
+  it('premier visiteur : aucune pastille, ni au bureau ni au téléphone', async () => {
+    await renderAt('/', () => (
+      <>
+        <SidebarLinks />
+        <BottomNav />
+      </>
+    ));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(document.querySelectorAll('[data-news-badge]')).toHaveLength(0);
+    expect(screen.getByRole('button', { name: 'Plus' })).toBeInTheDocument();
+  });
+
+  it('bureau : le lien Nouveautés porte le nombre d’entrées non vues, dit en toutes lettres au lecteur d’écran', async () => {
+    seenOnlyOldest();
+    await renderAt('/', () => <SidebarLinks />);
+    const link = await screen.findByRole('link', { name: 'Nouveautés (2 nouveautés non vues)' });
+    const badge = link.querySelector('[data-news-badge]')!;
+    expect(badge).toHaveTextContent('2');
+    expect(badge).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('téléphone : « Plus » et le lien Nouveautés du panneau portent la pastille', async () => {
+    seenOnlyOldest();
+    const user = userEvent.setup();
+    await renderAt('/', () => <BottomNav />);
+    const plus = await screen.findByRole('button', { name: 'Plus (2 nouveautés non vues)' });
+    expect(plus.querySelector('[data-news-badge]')).toHaveTextContent('2');
+    await user.click(plus);
+    const dialog = screen.getByRole('dialog', { name: 'Plus de pages' });
+    const link = within(dialog).getByRole('link', { name: 'Nouveautés (2 nouveautés non vues)' });
+    expect(link.querySelector('[data-news-badge]')).toHaveTextContent('2');
+  });
+
+  it('la pastille s’éteint dès que la page Nouveautés a marqué tout vu (événement), et entre onglets (storage)', async () => {
+    seenOnlyOldest();
+    await renderAt('/', () => <SidebarLinks />);
+    await screen.findByRole('link', { name: 'Nouveautés (2 nouveautés non vues)' });
+    act(() => {
+      localStorage.setItem(NEWS_SEEN_KEY, JSON.stringify({ date: '2026-10-01', slugs: ['c'] }));
+      window.dispatchEvent(new Event(NEWS_SEEN_EVENT));
+    });
+    expect(screen.getByRole('link', { name: 'Nouveautés' })).not.toContainHTML('data-news-badge');
+    act(() => {
+      localStorage.setItem(NEWS_SEEN_KEY, JSON.stringify({ date: '2026-09-30', slugs: ['b'] }));
+      window.dispatchEvent(new StorageEvent('storage', { key: NEWS_SEEN_KEY }));
+    });
+    expect(screen.getByRole('link', { name: 'Nouveautés (1 nouveauté non vue)' })).toBeInTheDocument();
   });
 });
 
