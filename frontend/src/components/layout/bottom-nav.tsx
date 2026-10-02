@@ -7,10 +7,15 @@ import { SECONDARY_ITEMS } from './sidebar-links';
 import { NewsBadge } from '@/components/news-badge';
 import { useNewsBadge } from '@/hooks/use-news-badge';
 
-// 7 pages principales + « Plus » (L13) : la barre garde ses 8 cases (en ajouter une
-// couperait davantage les libellés, cf. L2). FC Noobz et les pages « Application » passent
-// dans le panneau « Plus », comme le « Plus » de finance-tracker.
-const MORE_PATHS = ['/fcnoobz', ...SECONDARY_ITEMS.map((i) => i.to)];
+// L24 (décision de Sylvain, option A, 02-10) : 4 pages + « Plus », soit 5 cases de 64 px
+// à 320 px. Avec 8 cases de 40 px, « Dashboard », « Calendrier » et « Classement »
+// débordaient (49 à 52 px). Joueurs, Coupes et Carte L1 passent dans le panneau « Plus »,
+// avec FC Noobz et les pages « Application », comme le « Plus » de finance-tracker.
+// La barre latérale (bureau) garde ses 7 pages.
+const BAR_PATHS: readonly string[] = ['/', '/fixtures', '/standings', '/news'];
+const BAR_ITEMS = NAV_ITEMS.filter((i) => BAR_PATHS.includes(i.to));
+const MOVED_ITEMS = NAV_ITEMS.filter((i) => !BAR_PATHS.includes(i.to));
+const MORE_PATHS = [...MOVED_ITEMS.map((i) => i.to), '/fcnoobz', ...SECONDARY_ITEMS.map((i) => i.to)];
 
 export function BottomNav() {
   const { location } = useRouterState();
@@ -112,9 +117,25 @@ export function BottomNav() {
               </button>
             </div>
             <ul className="space-y-1">
+              {MOVED_ITEMS.map(({ to, label, icon: Icon }, i) => {
+                const active = path.startsWith(to);
+                return (
+                  <li key={to}>
+                    <Link
+                      ref={i === 0 ? firstLink : undefined}
+                      to={to}
+                      onClick={() => setOpen(false)}
+                      aria-current={active ? 'page' : undefined}
+                      className={sheetLink(active)}
+                    >
+                      <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
+                      <span className="font-medium">{label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
               <li>
                 <Link
-                  ref={firstLink}
                   to="/fcnoobz"
                   onClick={() => setOpen(false)}
                   aria-current={fcActive ? 'page' : undefined}
@@ -150,8 +171,8 @@ export function BottomNav() {
         className="lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="grid grid-cols-8">
-          {NAV_ITEMS.map((item) => {
+        <div className="grid grid-cols-5">
+          {BAR_ITEMS.map((item) => {
             const active = !open && (item.exact ? path === item.to : path.startsWith(item.to));
             const Icon = item.icon;
             return (
@@ -164,7 +185,7 @@ export function BottomNav() {
                 )}
               >
                 <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.25 : 1.75} />
-                <span className="text-[9px] font-medium tracking-wide">{item.label}</span>
+                <span className="text-[10px] font-medium tracking-wide">{item.label}</span>
               </Link>
             );
           })}
@@ -180,14 +201,15 @@ export function BottomNav() {
               plusActive ? (fcActive && !open ? 'text-[#3aa0ff]' : 'text-ol-red-bright') : 'text-fg-muted',
             )}
           >
-            {/* Pastille posée sur le coin de l'icône : la case garde sa largeur. */}
+            {/* Pastille de 16 px (comme la barre latérale) posée sur le coin de l'icône, rentrée
+                vers elle : la case garde sa largeur et la pastille ne touche plus le bord (L24). */}
             <span className="relative">
               <Menu className="h-[18px] w-[18px]" strokeWidth={plusActive ? 2.25 : 1.75} aria-hidden />
               {!open && (
-                <NewsBadge badge={news.badge} label="" className="absolute -right-2.5 -top-2 ring-2 ring-surface" />
+                <NewsBadge badge={news.badge} label="" className="absolute -right-2 -top-1.5 h-4 min-w-4 ring-2 ring-surface" />
               )}
             </span>
-            <span className="text-[9px] font-medium tracking-wide">Plus</span>
+            <span className="text-[10px] font-medium tracking-wide">Plus</span>
             {!open && news.badge && <span className="sr-only"> ({news.label})</span>}
           </button>
         </div>

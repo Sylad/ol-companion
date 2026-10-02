@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-router';
 import { BottomNav } from './bottom-nav';
 import { SidebarLinks } from './sidebar-links';
-import { NAV_ITEMS } from './sidebar';
+import { NAV_ITEMS, Sidebar } from './sidebar';
 import { NEWS_SEEN_EVENT, NEWS_SEEN_KEY } from '@/lib/news-badge';
 
 // Journal des Nouveautés servi à la pastille « nouveau » (L22).
@@ -77,6 +77,14 @@ describe('barre latérale (bureau)', () => {
     expect(within(app).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('href', '/nouveautes');
     expect(within(app).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('aria-current', 'page');
     expect(within(app).getByRole('link', { name: 'À propos' })).not.toHaveAttribute('aria-current');
+  });
+
+  // L24 : seule la barre du bas (téléphone) passe à 4 pages + « Plus » ; le bureau garde ses 7 pages.
+  it('garde les 7 pages principales, Joueurs, Coupes et Carte L1 compris', async () => {
+    await renderAt('/', () => <Sidebar eventStreamStatus="connected" />);
+    const labels = NAV_ITEMS.map((i) => i.label);
+    expect(labels).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Joueurs', 'Actu', 'Coupes', 'Carte L1']);
+    for (const label of labels) expect(screen.getByRole('link', { name: label })).toBeInTheDocument();
   });
 });
 
@@ -157,24 +165,44 @@ describe('pastille « nouveau » (L22)', () => {
 });
 
 describe('<BottomNav /> (téléphone)', () => {
-  it('garde 8 cases (pas une de plus) : les 7 pages principales puis « Plus »', async () => {
+  // L24 (décision de Sylvain, option A, 02-10) : à 320 px, 8 cases de 40 px coupaient
+  // « Dashboard », « Calendrier », « Classement » → 5 cases de 64 px, libellés en 10 px.
+  it('garde 5 cases : Dashboard, Calendrier, Classement, Actu puis « Plus »', async () => {
     await renderAt('/', () => <BottomNav />);
     const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
     const links = within(nav).getAllByRole('link').map((a) => a.textContent?.trim());
-    expect(links).toEqual(NAV_ITEMS.map((i) => i.label));
+    expect(links).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Actu']);
     const plus = within(nav).getByRole('button', { name: 'Plus' });
     expect(plus).toHaveAttribute('aria-expanded', 'false');
-    expect(nav.querySelector('.grid')!.children).toHaveLength(8);
+    const grid = nav.querySelector('.grid')!;
+    expect(grid.className).toMatch(/(^| )grid-cols-5( |$)/);
+    expect(grid.children).toHaveLength(5);
+    for (const label of within(nav).getAllByText(/^(Dashboard|Calendrier|Classement|Actu|Plus)$/)) {
+      expect(label.className).toMatch(/(^| )text-\[10px\]( |$)/);
+    }
   });
 
-  it('« Plus » ouvre FC Noobz, Nouveautés, Plan de travail et À propos ; Échap ferme et rend le focus à « Plus »', async () => {
+  it('la pastille de « Plus » fait 16 px et rentre vers l’icône (plus au ras du bord)', async () => {
+    seenOnlyOldest();
+    await renderAt('/', () => <BottomNav />);
+    const plus = await screen.findByRole('button', { name: 'Plus (2 nouveautés non vues)' });
+    const badge = plus.querySelector('[data-news-badge]')!;
+    expect(badge.className).toMatch(/(^| )h-4( |$)/);
+    expect(badge.className).toMatch(/(^| )min-w-4( |$)/);
+    expect(badge.className).not.toMatch(/-right-2\.5/);
+  });
+
+  it('« Plus » ouvre Joueurs, Coupes, Carte L1, FC Noobz, Nouveautés, Plan de travail et À propos ; Échap ferme et rend le focus à « Plus »', async () => {
     const user = userEvent.setup();
     await renderAt('/', () => <BottomNav />);
     const plus = screen.getByRole('button', { name: 'Plus' });
     await user.click(plus);
     const dialog = screen.getByRole('dialog', { name: 'Plus de pages' });
     const labels = within(dialog).getAllByRole('link').map((a) => a.textContent?.trim());
-    expect(labels).toEqual(['FC Noobz', 'Nouveautés', 'Plan de travail', 'À propos']);
+    expect(labels).toEqual(['Joueurs', 'Coupes', 'Carte L1', 'FC Noobz', 'Nouveautés', 'Plan de travail', 'À propos']);
+    expect(within(dialog).getByRole('link', { name: 'Joueurs' })).toHaveAttribute('href', '/players');
+    expect(within(dialog).getByRole('link', { name: 'Coupes' })).toHaveAttribute('href', '/cups');
+    expect(within(dialog).getByRole('link', { name: 'Carte L1' })).toHaveAttribute('href', '/map');
     expect(within(dialog).getByRole('link', { name: 'Plan de travail' })).toHaveAttribute('href', '/plan');
     expect(within(dialog).getByRole('link', { name: 'Nouveautés' })).toHaveAttribute('href', '/nouveautes');
     expect(within(dialog).getAllByRole('link')[0]).toHaveFocus();
@@ -188,6 +216,35 @@ describe('<BottomNav /> (téléphone)', () => {
   it('« Plus » est l’onglet actif sur /plan', async () => {
     await renderAt('/plan', () => <BottomNav />);
     expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'true');
+  });
+
+  it.each([
+    ['/players', 'Joueurs'],
+    ['/cups', 'Coupes'],
+    ['/map', 'Carte L1'],
+  ])('sur %s (page passée dans « Plus »), « Plus » est l’onglet actif et le panneau marque %s', async (path, label) => {
+    const user = userEvent.setup();
+    await renderAt(path, () => <BottomNav />);
+    const plus = screen.getByRole('button', { name: 'Plus' });
+    expect(plus).toHaveAttribute('data-active', 'true');
+    await user.click(plus);
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByRole('link', { name: label })).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('au clavier, les pages passées dans « Plus » s’atteignent et s’ouvrent', async () => {
+    const user = userEvent.setup();
+    const router = await renderAt('/', () => <BottomNav />);
+    screen.getByRole('button', { name: 'Plus' }).focus();
+    await user.keyboard('{Enter}');
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByRole('link', { name: 'Joueurs' })).toHaveFocus();
+    await user.tab();
+    await user.tab();
+    expect(within(dialog).getByRole('link', { name: 'Carte L1' })).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(router.state.location.pathname).toBe('/map');
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 
   it('choisir une page navigue et ferme le panneau ; « Plus » est alors l’onglet actif', async () => {
