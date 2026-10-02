@@ -190,11 +190,14 @@ lots:
   - id: L24
     title: "Barre du bas à 320 px : libellés qui se chevauchent (49–52 px dans des cases de 40 px), pastille de Plus au ras du bord — réduire plutôt que serrer (revue UX L22)"
     public: "Petits téléphones : une barre du bas aux libellés lisibles"
-    status: todo
+    status: done
     estimate: 0.25
     quickwin: true
     visible: true
     created: 2026-10-02
+    started: 2026-10-02
+    ux: { date: 2026-10-02, verdict: "OK avec réserves, levées (cadence:ux-reviewer, 02-10). Mesures à 320/360/390 px : libellés dans leur case (Classement 58,5 px dans 64 px à 320), contrastes 7,32:1 inactif et 4,96:1 actif, cibles ≥ 64×57 px, pastille 16 px à 14,5 px du bord, pas de défilement horizontal, bureau inchangé. Réserves levées : panneau Plus groupé comme la barre latérale (4302997), page actuelle annoncée par Plus (2bae880) ; en plus Échap depuis Plus (3c13faf) et focus jamais sous la barre à 320×568 (a10335d). Les quatre commits de levée n'ont pas été revus une seconde fois par l'agent UX : capture regardée par le lead, tests 29/29. Non vérifié : vrai lecteur d'écran, vrai téléphone, agrandissement de police système, encoches iOS. Constats hors lot → L28 à L31." }
+    finished: 2026-10-02
   - id: L25
     title: "Page « Jeux vidéo » au niveau de FC Noobz, dédiée à Football Manager : présentation de la série et surtout infos sur les sorties à venir (dates, nouveautés annoncées) — infos à vérifier sur des sources en ligne au moment de coder, pas de mémoire"
     public: "Une page Jeux vidéo dédiée à Football Manager et à ses prochaines sorties"
@@ -206,4 +209,38 @@ lots:
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé (captures, scripts de mesure, builds de démonstration), documents périmés (specs et plans de lots livrés, audits dépassés), scripts jetables, captures non référencées, dépendances et fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé, garder ce que les Nouveautés ou la doc référencent ; à refaire à chaque clôture de vague, rouvrir ce lot ou en créer un nouveau"
     status: todo
     estimate: 0.25
+    created: 2026-10-02
+  - id: L27
+    title: Page dédiée à l'équipe de France
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-02
+  - id: L28
+    title: "Navigation : le lien Dashboard (/) porte peut-être aria-current=page sur toutes les routes (correspondance floue de TanStack Link) — à vérifier à l'exécution puis corriger, barre du bas et barre latérale (relecture L24)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-02
+  - id: L29
+    title: "Fiche joueur (/player/<id>) : aucune entrée de navigation active, ni Joueurs en barre latérale ni Plus au téléphone (relecture L24)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-02
+  - id: L30
+    title: "En-tête à 320 et 390 px : la pastille LIVE RECONNECTE chevauche le titre Olympique Lyonnais (revue UX L24)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-02
+  - id: L31
+    title: "Barre du bas : case active distinguée surtout par la teinte (1,47:1 entre actif et inactif, WCAG 1.4.1) — ajouter un repère non coloré (revue UX L24)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
     created: 2026-10-02

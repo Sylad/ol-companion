@@ -1,7 +1,19 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-02 08:29",
+  "generated": "2026-10-02 21:57",
   "entries": [
+    {
+      "slug": "2026-10-02-au-telephone-une-barre-du-bas-plus-lisible",
+      "title": "Au téléphone, une barre du bas plus lisible",
+      "date": "2026-10-02",
+      "lots": [
+        "L24"
+      ],
+      "captures": [
+        "captures/L24-barre-5-cases-telephone.png"
+      ],
+      "html": "<p>Sur un petit écran, les libellés de la barre du bas se chevauchaient. La barre a été allégée pour que tout tienne, même sur les téléphones les plus étroits.</p>\n<ul><li>La barre garde <strong>cinq cases</strong> : Dashboard, Calendrier, Classement, Actu et Plus. Le texte est un peu plus grand qu'avant.</li><li><strong>Joueurs</strong>, <strong>Coupes</strong> et <strong>Carte L1</strong> se trouvent maintenant dans le panneau <strong>Plus</strong>, en tête de liste. Le panneau est rangé comme le menu de l'ordinateur : les pages, FC Noobz, puis la rubrique Application.</li><li>Quand vous êtes sur une page rangée dans <strong>Plus</strong>, la case s'allume et un lecteur d'écran annonce la page en cours.</li><li>La pastille des nouveautés ne touche plus le bord de l'écran, et la touche Échap ferme toujours le panneau.</li></ul>"
+    },
     {
       "slug": "2026-10-02-une-page-plan-de-travail-montre-ce-qui-se-prepare",
       "title": "Une page Plan de travail montre ce qui se prépare",
