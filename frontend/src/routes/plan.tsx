@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { ListTodo, Loader2, RotateCw } from 'lucide-react';
@@ -45,7 +45,7 @@ function dateLine(lot: PlanLot): { day: string; text: string } | null {
   return null;
 }
 
-function LotCard({ lot, newsSlug }: { lot: PlanLot; newsSlug?: string }) {
+function LotCard({ lot, newsSlug, target }: { lot: PlanLot; newsSlug?: string; target: boolean }) {
   const [open, setOpen] = useState(false);
   const p = progress(lot);
   const badge = STATUS_BADGE[lot.status];
@@ -55,7 +55,18 @@ function LotCard({ lot, newsSlug }: { lot: PlanLot; newsSlug?: string }) {
   const untitled = liveTasks(lot).length - steps.length;
   const stepsId = `${lot.id}-etapes`;
   return (
-    <li id={lot.id} className={cn(CARD, 'p-5 lg:p-6 scroll-mt-20 lg:scroll-mt-6')}>
+    // tabIndex -1 : la carte visée par /plan#<id> reçoit le focus à l'arrivée ; bord rouge
+    // OL quand elle est visée, comme une entrée des Nouveautés.
+    <li
+      id={lot.id}
+      tabIndex={-1}
+      data-target={target ? 'true' : undefined}
+      className={cn(
+        CARD,
+        'p-5 lg:p-6 scroll-mt-20 lg:scroll-mt-6 focus:outline-none',
+        target && 'border-ol-red-bright ring-1 ring-ol-red-bright',
+      )}
+    >
       {/* L'identifiant du lot n'est pas montré aux visiteurs : il reste l'ancre /plan#<id>. */}
       <div className="mb-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
         <span className={cn('rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-[0.08em]', badge.className)}>
@@ -138,6 +149,7 @@ function Group({
   lots,
   empty,
   slugs,
+  target,
   footer,
 }: {
   id: string;
@@ -146,6 +158,7 @@ function Group({
   lots: PlanLot[];
   empty: string;
   slugs: Map<string, string>;
+  target: string | null;
   footer?: ReactNode;
 }) {
   return (
@@ -161,7 +174,7 @@ function Group({
       ) : (
         <ul className="space-y-3">
           {lots.map((l) => (
-            <LotCard key={l.id} lot={l} newsSlug={slugs.get(l.id)} />
+            <LotCard key={l.id} lot={l} newsSlug={slugs.get(l.id)} target={target === l.id} />
           ))}
         </ul>
       )}
@@ -181,11 +194,34 @@ export function PlanPage() {
   const news = useQuery({ queryKey: NEWS_QUERY_KEY, queryFn: fetchNews, staleTime: 5 * 60_000 });
   const slugs = newsSlugByLot(news.data?.news?.entries ?? []);
 
-  // Lien permanent /plan#<id> : la carte n'existe qu'une fois le plan chargé.
+  // Lien permanent /plan#<id> : la carte n'existe qu'une fois le plan chargé. Défilement
+  // et focus une seule fois par arrivée (premier chargement, vrai changement d'ancre) :
+  // un rechargement du plan en arrière-plan ne ramène pas la page ni ne vole le focus.
+  const [target, setTarget] = useState<string | null>(null);
+  const revealedHash = useRef<string | null>(null);
   useEffect(() => {
-    if (!plan.data) return;
-    const id = decodeURIComponent(window.location.hash.slice(1));
-    if (id) document.getElementById(id)?.scrollIntoView?.({ block: 'start' });
+    const lots = plan.data?.lots;
+    if (!lots) return;
+    const reveal = (force: boolean) => {
+      const hash = window.location.hash;
+      let id = '';
+      try {
+        id = decodeURIComponent(hash.slice(1));
+      } catch {
+        /* ancre mal encodée : aucune carte visée */
+      }
+      const el = lots.some((l) => l.id === id) ? document.getElementById(id) : null;
+      setTarget(el ? id : null);
+      if (el && (force || revealedHash.current !== hash)) {
+        revealedHash.current = hash;
+        el.scrollIntoView?.({ block: 'start' });
+        el.focus({ preventScroll: true });
+      }
+    };
+    reveal(false);
+    const onHash = () => reveal(true);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, [plan.data]);
 
   let body: ReactNode;
@@ -234,6 +270,7 @@ export function PlanPage() {
         </p>
         <Group
           id="plan-doing"
+          target={target}
           title="En cours"
           hint="Le travail commencé, pas encore livré."
           lots={g.doing}
@@ -242,6 +279,7 @@ export function PlanPage() {
         />
         <Group
           id="plan-todo"
+          target={target}
           title="Prévu"
           hint="La suite, dans l'ordre du plan."
           lots={g.todo}
@@ -250,6 +288,7 @@ export function PlanPage() {
         />
         <Group
           id="plan-done"
+          target={target}
           title="Récemment livré"
           hint={`Livré ces ${RECENT_DAYS} derniers jours, le plus récent en premier.`}
           lots={g.done}

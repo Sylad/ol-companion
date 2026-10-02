@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PlanPage } from './plan';
@@ -28,8 +28,7 @@ const plan = {
 };
 const news = { project: 'ol-companion', generated: 'x', entries: [{ slug: '2026-09-28-tableau', title: 'T', date: '2026-09-28', lots: ['L21'], captures: [], html: '' }] };
 
-function renderPage() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+function renderPage(client = new QueryClient({ defaultOptions: { queries: { retry: false } } })) {
   return render(
     <QueryClientProvider client={client}>
       <PlanPage />
@@ -118,6 +117,44 @@ describe('<PlanPage />', () => {
     await screen.findByRole('heading', { level: 3, name: 'Un tableau de bord plus lisible' });
     expect(scroll).toHaveBeenCalled();
     expect(scroll.mock.contexts[0]).toBe(document.getElementById('L21'));
+    // Revue UX : le focus suit l'ancre (activeElement restait BODY).
+    const card = document.getElementById('L21')!;
+    expect(card).toHaveAttribute('tabindex', '-1');
+    await waitFor(() => expect(card).toHaveFocus());
+    expect(card).toHaveAttribute('data-target', 'true');
+  });
+
+  it('un rechargement du plan ne refait ni défilement ni focus vers l’ancre déjà visée', async () => {
+    const scroll = vi.fn();
+    Element.prototype.scrollIntoView = scroll;
+    window.location.hash = '#L21';
+    vi.stubGlobal('fetch', serve(okJson(plan)));
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    renderPage(client);
+    await waitFor(() => expect(document.getElementById('L21')).toHaveFocus());
+    expect(scroll).toHaveBeenCalledTimes(1);
+    const elsewhere = screen.getByRole('button', { name: /Voir les étapes/ });
+    elsewhere.focus();
+    // Plan réellement changé (nouveau lot) : nouvelle référence de données.
+    vi.stubGlobal('fetch', serve(okJson({ ...plan, lots: [...plan.lots, { id: 'L40', title: 'Nouveau lot', status: 'todo' }] })));
+    await act(async () => {
+      await client.refetchQueries();
+    });
+    expect(await screen.findByRole('heading', { level: 3, name: 'Nouveau lot' })).toBeInTheDocument();
+    expect(elsewhere).toHaveFocus();
+    expect(scroll).toHaveBeenCalledTimes(1);
+  });
+
+  it('changement d’ancre (retour arrière, adresse modifiée) : la nouvelle carte est amenée à l’écran et reçoit le focus', async () => {
+    Element.prototype.scrollIntoView = vi.fn();
+    vi.stubGlobal('fetch', serve(okJson(plan)));
+    renderPage();
+    await screen.findByRole('heading', { level: 3, name: 'Une page Plan de travail' });
+    act(() => {
+      window.history.replaceState(null, '', '#L22');
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    await waitFor(() => expect(document.getElementById('L22')).toHaveFocus());
   });
 
   it('404 : « Aucun plan publié »', async () => {
