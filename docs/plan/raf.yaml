@@ -189,8 +189,16 @@ lots:
     finished: 2026-10-02
   - id: L24
     title: "Barre du bas à 320 px : libellés qui se chevauchent (49–52 px dans des cases de 40 px), pastille de Plus au ras du bord — réduire plutôt que serrer (revue UX L22)"
+    public: "Petits téléphones : une barre du bas aux libellés lisibles"
     status: todo
     estimate: 0.25
     quickwin: true
+    visible: true
+    created: 2026-10-02
+  - id: L25
+    title: "Page « Jeux vidéo » au niveau de FC Noobz, dédiée à Football Manager : présentation de la série et surtout infos sur les sorties à venir (dates, nouveautés annoncées) — infos à vérifier sur des sources en ligne au moment de coder, pas de mémoire"
+    public: "Une page Jeux vidéo dédiée à Football Manager et à ses prochaines sorties"
+    status: todo
+    estimate: 1
     visible: true
     created: 2026-10-02

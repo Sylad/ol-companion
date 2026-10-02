@@ -22,6 +22,16 @@
       "status": "done",
       "started": "2026-10-01",
       "finished": "2026-10-02"
+    },
+    {
+      "id": "L24",
+      "title": "Petits téléphones : une barre du bas aux libellés lisibles",
+      "status": "todo"
+    },
+    {
+      "id": "L25",
+      "title": "Une page Jeux vidéo dédiée à Football Manager et à ses prochaines sorties",
+      "status": "todo"
     }
   ]
 }
