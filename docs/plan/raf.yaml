@@ -270,10 +270,19 @@ lots:
     created: 2026-10-03
   - id: L35
     title: "Classement vide : 365scores renvoie 18 lignes dont 2 sans objet « competitor » (positions 3 et 16 le 03-10 avec les en-têtes actuels ; aucune sans l'en-tête Origin ou avec langId=15&userCountryId=5), le schéma rejette toute la réponse et /api/standings rend null — chercher dans la charge utile une source déterministe du club (identifiant de ligne, liste de premier niveau) avant toute heuristique ; ne pas rendre un classement à 16 équipes ; même défaut silencieux dans le mini-classement du direct"
-    status: doing
+    status: done
     estimate: 0.5
     quickwin: true
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "03-10 : deux mesures à réconcilier avant de coder. Implémenteur de L33 (fetch Node, donc Accept-Encoding) : 18 lignes dont 2 sans competitor ; il note qu'un curl SANS Accept-Encoding reçoit une enveloppe de 121 octets sans clé standings. Relecteur de L33 : HTTP 200, enveloppe vide de 121 octets (CloudFront max-age 1800), rendue null SANS aucun log (standings.service.ts:138, live-match.service.ts:125) — probablement le même effet d'encodage, à vérifier. Couvrir les deux cas et journaliser le rendu null." }
+      - { date: 2026-10-03, text: "03-10, après enquête (11 requêtes) : les deux mesures étaient justes — rendus dégradés de l'origine, figés 30 min par CloudFront sous une clé (URL, Origin, variante d'encodage). Les lignes touchées changent à chaque rendu ; « aucune ligne manquante sans Origin ou avec langId=15 » dans le titre était une coïncidence de cache, aucun changement d'en-tête ne règle le défaut." }
     started: 2026-10-03
+    review: { date: 2026-10-03, verdict: "conforme — relecture indépendante des 5 commits : 0 bloquant, 0 majeur, 3 mineurs reportés dans un lot de suite ; règle de restauration du club confirmée sur 3 captures réelles (49 lignes) et 7 cas limites, 5 mutations tuées par les tests ; revérifié par le lead : 216 tests unitaires, 5 e2e, build. Le contrôle d'effet ajouté à cadence.yaml (commit suivant) est du lead, non relu.", commit: 5dc8de9120f8fa507e0a8779eaf58177045af91f }
+    finished: 2026-10-03
+  - id: L36
+    title: "Classement, suites de la relecture du 03-10 : ne résoudre le club d'une ligne qu'à partir d'au moins 2 matchs portant leurs deux clubs (un seul match à un seul côté peut désigner l'adversaire) ; tests de la résolution par 1 match récent + prochain match (début de saison) et du refus d'un club retrouvé sans nom ; refuser un classement dont les positions ne sont pas 1..N (lignes entières manquantes)"
+    status: todo
+    estimate: 0.5
+    quickwin: true
+    created: 2026-10-03
