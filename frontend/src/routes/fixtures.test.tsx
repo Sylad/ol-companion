@@ -134,6 +134,25 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.queryByText('01:00')).not.toBeInTheDocument();
   });
 
+  it('prend les écussons au CDN de 365scores, par identifiant de club, sans appel /api/wiki-image par ligne', async () => {
+    const fetchMock = serve();
+    vi.stubGlobal('fetch', fetchMock);
+    renderPage();
+    await screen.findAllByRole('article');
+
+    const palace = within(block('UEFA Europa League · J2')).getByRole('article');
+    const logos = within(palace).getAllByRole('img');
+    expect(logos.map((img) => img.getAttribute('src'))).toEqual([
+      // L'OL porte l'identifiant football-data (523) dans l'API : repris en 465.
+      expect.stringMatching(/imagecache\.365scores\.com\/.*\/Competitors\/465$/),
+      expect.stringMatching(/imagecache\.365scores\.com\/.*\/Competitors\/10$/),
+    ]);
+    // 84 écussons affichés ; seul l'en-tête de page interroge encore wiki-image.
+    expect(screen.getAllByRole('article').flatMap((a) => within(a).getAllByRole('img'))).toHaveLength(84);
+    const wikiCalls = fetchMock.mock.calls.filter(([url]) => url.startsWith('/api/wiki-image'));
+    expect(wikiCalls.length).toBeLessThanOrEqual(1);
+  });
+
   it('les onglets de statut filtrent toujours la liste', async () => {
     vi.stubGlobal('fetch', serve());
     const user = userEvent.setup();

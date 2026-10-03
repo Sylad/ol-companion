@@ -15,6 +15,7 @@ import {
   countResults,
   groupMatches,
   isUpcoming,
+  seasonTeamLogoUrl,
   statusCounts,
   type CompetitionFilter,
   type StatusTab,
@@ -246,7 +247,12 @@ function SummaryMatch({
         {label}
       </div>
       <div className="mt-3 flex items-center gap-3">
-        <TeamLogo teamId={olIsHome ? fixture.awayTeamId : fixture.homeTeamId} name={opponent} size={30} />
+        <TeamLogo
+          teamId={olIsHome ? fixture.awayTeamId : fixture.homeTeamId}
+          name={opponent}
+          size={30}
+          src={seasonTeamLogoUrl(olIsHome ? fixture.awayTeamId : fixture.homeTeamId)}
+        />
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold text-fg-bright">{teamShortName(opponent)}</div>
           <div className="text-xs text-fg-dim">{day}/{month} · {fixture.competition}</div>
@@ -332,7 +338,7 @@ function CompactTeamLine({
   const isOL = id === OL_TEAM_ID;
   return (
     <div className={cn('flex min-w-0 items-center gap-2', dim && 'opacity-55')}>
-      <TeamLogo teamId={id} name={name} size={18} />
+      <TeamLogo teamId={id} name={name} size={18} src={seasonTeamLogoUrl(id)} />
       <span className={cn('min-w-0 flex-1 truncate text-sm', isOL ? 'font-semibold text-fg-bright' : 'text-fg')}>
         {teamShortName(name)}
       </span>

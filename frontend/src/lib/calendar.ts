@@ -1,4 +1,5 @@
-import { OL_TEAM_ID, type SeasonMatch } from '@/types/api';
+import { OL_365SCORES_ID, OL_TEAM_ID, type SeasonMatch } from '@/types/api';
+import { clubLogoUrl } from '@/lib/ligue1-clubs-coords';
 
 /**
  * Logique de la page Calendrier (L39) : la saison de l'OL toutes compétitions,
@@ -108,4 +109,16 @@ export function countResults(matches: SeasonMatch[]): { wins: number; draws: num
     else draws++;
   }
   return { wins, draws, losses };
+}
+
+/**
+ * Écusson d'un club de /api/season-matches : les identifiants y sont ceux de
+ * 365scores (sauf l'OL, servi sous son identifiant football-data), donc l'image
+ * se prend directement au CDN de 365scores — deuxième source d'images du projet,
+ * déjà utilisée par la carte. Pas d'appel /api/wiki-image par club : la saison
+ * compte une trentaine de clubs, dont des clubs européens que la recherche
+ * Wikipédia par nom résout mal (une photo de ville pour « Anderlecht »).
+ */
+export function seasonTeamLogoUrl(teamId: number): string {
+  return clubLogoUrl(teamId === OL_TEAM_ID ? OL_365SCORES_ID : teamId);
 }
