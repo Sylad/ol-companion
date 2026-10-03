@@ -6,6 +6,7 @@ project: "ol-companion"
 prefix: L
 since: 2026-09-28 # raf check ignore les commits antérieurs à l'adoption
 uxSince: 2026-09-28
+reviewSince: 2026-10-03
 lots:
   - id: L1
     title: "Adoption de cadence : plan, rituels de session, revue UX"
@@ -264,4 +265,10 @@ lots:
     title: "Résilience : quand 365scores est en panne, servir le dernier cache connu (composition, classement) avec son âge au lieu de null une fois le TTL expiré — le 03-10 l'effectif a disparu 6 h après le dernier appel réussi"
     status: todo
     estimate: 1
+    created: 2026-10-03
+  - id: L35
+    title: "Classement vide : 365scores renvoie 18 lignes dont 2 sans objet « competitor » (positions 3 et 16 le 03-10 avec les en-têtes actuels ; aucune sans l'en-tête Origin ou avec langId=15&userCountryId=5), le schéma rejette toute la réponse et /api/standings rend null — chercher dans la charge utile une source déterministe du club (identifiant de ligne, liste de premier niveau) avant toute heuristique ; ne pas rendre un classement à 16 équipes ; même défaut silencieux dans le mini-classement du direct"
+    status: todo
+    estimate: 0.5
+    quickwin: true
     created: 2026-10-03
