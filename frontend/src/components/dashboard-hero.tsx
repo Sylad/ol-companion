@@ -6,14 +6,7 @@ import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type Fixture } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
-
-const WEEKDAY_LONG = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-const MONTH = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-
-function formatLong(iso: string): string {
-  const d = new Date(iso);
-  return `${WEEKDAY_LONG[d.getDay()]} ${d.getDate()} ${MONTH[d.getMonth()]} · ${d.getHours().toString().padStart(2, '0')}h${d.getMinutes().toString().padStart(2, '0')}`;
-}
+import { formatKickoffLong } from '@/lib/kickoff';
 
 function countdown(iso: string): string {
   const diff = new Date(iso).getTime() - Date.now();
@@ -139,7 +132,7 @@ export function DashboardHero() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-fg-muted">
             <span className="inline-flex items-center gap-1.5">
               <CalendarDays className="h-3.5 w-3.5" strokeWidth={2} />
-              {formatLong(nextMatch.date)}
+              {formatKickoffLong(nextMatch)}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5" strokeWidth={2} />

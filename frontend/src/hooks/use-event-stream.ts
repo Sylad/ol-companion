@@ -33,6 +33,10 @@ export function useEventStream(): EventStreamStatus {
             break;
           case 'fixtures-changed':
             qc.invalidateQueries({ queryKey: ['fixtures'] });
+            // L'heure fixée ou non des matchs de la saison (timeConfirmed) est
+            // dérivée de ce calendrier — `exact` : les statistiques d'équipe,
+            // rangées sous la même clé, n'en dépendent pas.
+            qc.invalidateQueries({ queryKey: ['season-matches'], exact: true });
             qc.invalidateQueries({ queryKey: ['live-match', 'current'] });
             break;
           case 'standings-changed':
