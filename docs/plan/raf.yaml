@@ -429,11 +429,13 @@ lots:
       - { date: 2026-10-03, text: "03-10, second passage QA : « Passes D. » totalise au moins 95 sur 22 lignes pour 18 buts marqués (Abner 13, Tolisso 12 ; 4 passes créditées à Tolisso sur le 3-1 contre Auxerre)." }
   - id: L54
     title: "Livraison : index.html servi sans Cache-Control — un visiteur revenu garde l'ancienne appli (mesuré le 03-10 : calendrier d'avant L39 encore affiché 1 h 25 après la livraison) ; un fichier /assets/ absent répond 200 text/html max-age=14400 et Cloudflare le met en cache (page blanche possible) — no-cache sur index.html, 404 sur un /assets/ manquant, cache long sur les fichiers à empreinte, contrôle d'effet dans cadence.yaml"
-    status: doing
+    status: done
     estimate: 0.5
     quickwin: true
     created: 2026-10-03
     started: 2026-10-03
+    review: { date: 2026-10-03, verdict: "conforme après 1 correction — relecture indépendante : nginx.conf correct et prouvé (40 cas curl de plus, rien de perdu, API intacte) ; 1 majeur : verify-cache.sh passait avec tout /assets/ en 404 → contrôle positif sur le bundle réel ajouté, 3 contrôles négatifs ; 4 mineurs dont 1 corrigé (branche « injoignable ») et 3 reportés (404 testé au statut seul, 416 en immutable, motif d'empreinte trop large). Correction écrite par le lead, tests rouges puis verts, non relue par un agent. À mesurer après livraison : ce que Cloudflare fait de no-cache sur sw.js et les icônes.", commit: f4595751a8e477dd80cd83599951fab195d801aa }
+    finished: 2026-10-03
   - id: L55
     title: "À propos : lien Eywa mort (eywa-eywa.pages.dev ne résout pas ; le site répond sur avatar-pandora-12q.pages.dev)"
     public: "À propos : le lien vers Eywa réparé"
@@ -454,4 +456,9 @@ lots:
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
     status: todo
     estimate: 1
+    created: 2026-10-03
+  - id: L58
+    title: "Cache HTTP, suites de la relecture du 03-10 : motif d'empreinte du test trop large (foo-settings.js accepté) ; 416 sur un actif servi en immutable (map sur $status évaluée avant le filtre Range) ; exiger no-store sur le 404 d'un actif absent ; jouer test-nginx-cache.sh en CI ; recharger la page quand un morceau d'une ancienne version répond 404 (onglet resté ouvert pendant une livraison)"
+    status: todo
+    estimate: 0.5
     created: 2026-10-03
