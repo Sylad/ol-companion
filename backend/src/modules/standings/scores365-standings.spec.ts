@@ -44,7 +44,8 @@ function ok(reading: Scores365StandingsReading): Ok {
 }
 
 function ko(reading: Scores365StandingsReading): Ko {
-  if (reading.ok) throw new Error('lecture acceptée alors qu’un refus était attendu');
+  if (reading.ok)
+    throw new Error('lecture acceptée alors qu’un refus était attendu');
   return reading;
 }
 

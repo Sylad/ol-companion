@@ -119,7 +119,13 @@ export function readScores365Standings(
     };
   }
 
-  return { ok: true, data, seasonNum: stage.seasonNum, rows, resolvedFromGames };
+  return {
+    ok: true,
+    data,
+    seasonNum: stage.seasonNum,
+    rows,
+    resolvedFromGames,
+  };
 }
 
 /** `3 → Paris FC (#6075), 16 → Troyes (#488)` — for the callers' log line. */

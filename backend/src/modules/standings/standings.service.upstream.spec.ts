@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -58,7 +59,10 @@ describe('StandingsService — rendus dégradés de 365scores (L35)', () => {
   const service = () => new StandingsService({ emit: jest.fn() } as never);
   const cacheFile = () => path.join(tmpDir, 'data', 'standings-cache.json');
   const logged = () =>
-    [...warn.mock.calls, ...error.mock.calls].map((c) => String(c[0]));
+    [
+      ...(warn.mock.calls as unknown[][]),
+      ...(error.mock.calls as unknown[][]),
+    ].map((c) => String(c[0]));
 
   beforeAll(() => {
     previousCwd = process.cwd();
@@ -81,10 +85,10 @@ describe('StandingsService — rendus dégradés de 365scores (L35)', () => {
     warn.mockClear();
     error.mockClear();
     fs.rmSync(cacheFile(), { force: true });
-    globalThis.fetch = ((input: unknown) => {
+    globalThis.fetch = (input: unknown) => {
       calls.push(String(input));
       return Promise.resolve(answer());
-    }) as typeof fetch;
+    };
   });
 
   afterEach(() => {
