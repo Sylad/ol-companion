@@ -303,12 +303,13 @@ lots:
     created: 2026-10-03
   - id: L39
     title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "Décision de Sylvain le 03-10 : le calendrier doit lister TOUTES les compétitions où l'OL joue (Ligue 1, Europa League, coupes), pas la Ligue 1 seule. Source disponible : /api/season-matches (36 matchs le 03-10). Attendu QA : le total de /fixtures égale celui de la saison toutes compétitions." }
+    started: 2026-10-03
   - id: L40
     title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
     status: todo

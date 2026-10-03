@@ -1,0 +1,356 @@
+{
+  "_source": "football-data.org v4, /v4/teams/523/matches — NOT a raw capture: rebuilt on 2026-10-03 from the 15 matches served by https://ol.sladoire.dev/api/fixtures (FixturesService.toMatch maps these fields one to one), split the way the service asks for them (status=FINISHED, status=SCHEDULED). J13 and J15 are the two matches whose kick-off time is not set: status SCHEDULED, utcDate at 00:00:00Z.",
+  "finished": {
+    "matches": [
+      {
+        "id": 559718,
+        "utcDate": "2026-08-22T18:45:00Z",
+        "status": "FINISHED",
+        "matchday": 1,
+        "homeTeam": {
+          "id": 511,
+          "name": "Toulouse FC"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": 0,
+            "away": 2
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559706,
+        "utcDate": "2026-08-29T18:45:00Z",
+        "status": "FINISHED",
+        "matchday": 2,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 533,
+          "name": "Le Havre AC"
+        },
+        "score": {
+          "fullTime": {
+            "home": 1,
+            "away": 1
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559699,
+        "utcDate": "2026-09-04T17:00:00Z",
+        "status": "FINISHED",
+        "matchday": 3,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 519,
+          "name": "AJ Auxerre"
+        },
+        "score": {
+          "fullTime": {
+            "home": 3,
+            "away": 1
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559692,
+        "utcDate": "2026-09-12T18:45:00Z",
+        "status": "FINISHED",
+        "matchday": 4,
+        "homeTeam": {
+          "id": 1045,
+          "name": "Paris FC"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": 0,
+            "away": 0
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559683,
+        "utcDate": "2026-09-19T18:45:00Z",
+        "status": "FINISHED",
+        "matchday": 5,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 529,
+          "name": "Stade Rennais FC 1901"
+        },
+        "score": {
+          "fullTime": {
+            "home": 4,
+            "away": 0
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      }
+    ]
+  },
+  "scheduled": {
+    "matches": [
+      {
+        "id": 559669,
+        "utcDate": "2026-10-09T18:45:00Z",
+        "status": "TIMED",
+        "matchday": 6,
+        "homeTeam": {
+          "id": 546,
+          "name": "Racing Club de Lens"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559665,
+        "utcDate": "2026-10-18T18:45:00Z",
+        "status": "TIMED",
+        "matchday": 7,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 522,
+          "name": "OGC Nice"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559648,
+        "utcDate": "2026-10-25T19:45:00Z",
+        "status": "TIMED",
+        "matchday": 8,
+        "homeTeam": {
+          "id": 524,
+          "name": "Paris Saint-Germain FC"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559640,
+        "utcDate": "2026-10-31T19:45:00Z",
+        "status": "TIMED",
+        "matchday": 9,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 532,
+          "name": "Angers SCO"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559632,
+        "utcDate": "2026-11-08T16:15:00Z",
+        "status": "TIMED",
+        "matchday": 10,
+        "homeTeam": {
+          "id": 512,
+          "name": "Stade Brestois 29"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559624,
+        "utcDate": "2026-11-21T19:45:00Z",
+        "status": "TIMED",
+        "matchday": 11,
+        "homeTeam": {
+          "id": 521,
+          "name": "Lille OSC"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559615,
+        "utcDate": "2026-11-29T19:45:00Z",
+        "status": "TIMED",
+        "matchday": 12,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 548,
+          "name": "AS Monaco FC"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559603,
+        "utcDate": "2026-12-05T00:00:00Z",
+        "status": "SCHEDULED",
+        "matchday": 13,
+        "homeTeam": {
+          "id": 531,
+          "name": "ES Troyes AC"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559594,
+        "utcDate": "2026-12-13T19:45:00Z",
+        "status": "TIMED",
+        "matchday": 14,
+        "homeTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "awayTeam": {
+          "id": 516,
+          "name": "Olympique de Marseille"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      },
+      {
+        "id": 559586,
+        "utcDate": "2027-01-02T00:00:00Z",
+        "status": "SCHEDULED",
+        "matchday": 15,
+        "homeTeam": {
+          "id": 535,
+          "name": "Le Mans FC"
+        },
+        "awayTeam": {
+          "id": 523,
+          "name": "Olympique Lyonnais"
+        },
+        "score": {
+          "fullTime": {
+            "home": null,
+            "away": null
+          }
+        },
+        "competition": {
+          "name": "Ligue 1"
+        }
+      }
+    ]
+  }
+}

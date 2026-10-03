@@ -11,8 +11,10 @@ import {
   type FootballDataMatch,
 } from '../../config/football-data.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
+import { footballDataTimeConfirmed } from './kickoff-time';
 
-export interface Match {
+/** Un match tel qu'il est écrit dans le cache — sans champ dérivé. */
+interface StoredMatch {
   id: number;
   date: string;
   homeTeam: string;
@@ -24,6 +26,23 @@ export interface Match {
   competition: string;
   status: 'SCHEDULED' | 'TIMED' | 'IN_PLAY' | 'FINISHED' | 'POSTPONED';
   matchday: number | null;
+}
+
+export interface Match extends StoredMatch {
+  /**
+   * `false` quand football-data dit que l'heure du coup d'envoi n'est pas
+   * fixée (cf. `footballDataTimeConfirmed`). Dérivé du statut et de la date à
+   * chaque lecture, jamais écrit dans le cache : un cache antérieur à ce champ
+   * est servi correctement.
+   */
+  timeConfirmed: boolean;
+}
+
+function withTimeConfirmed(matches: StoredMatch[]): Match[] {
+  return matches.map((m) => ({
+    ...m,
+    timeConfirmed: footballDataTimeConfirmed(m.status, m.date),
+  }));
 }
 
 const CACHE_TTL_MS = 3600_000;
@@ -52,6 +71,20 @@ export class FixturesService implements OnModuleInit {
   }
 
   async getFixtures(opts: { force?: boolean } = {}): Promise<Match[]> {
+    return withTimeConfirmed(await this.loadFixtures(opts));
+  }
+
+  /**
+   * Le dernier calendrier connu, lu dans le cache quel que soit son âge et
+   * SANS appel à football-data. Pour les services qui veulent seulement savoir
+   * ce que football-data a dit d'un match (heure fixée ou non) sans déclencher
+   * de rafraîchissement.
+   */
+  peekFixtures(): Match[] {
+    return withTimeConfirmed(this.readCacheRaw() ?? []);
+  }
+
+  private async loadFixtures(opts: { force?: boolean }): Promise<StoredMatch[]> {
     if (!opts.force) {
       const cached = this.readCache();
       if (cached) return cached;
@@ -92,7 +125,7 @@ export class FixturesService implements OnModuleInit {
     }
   }
 
-  private async fetchUpcomingFromCompetition(apiKey: string): Promise<Match[]> {
+  private async fetchUpcomingFromCompetition(apiKey: string): Promise<StoredMatch[]> {
     // Try the next 3 matchdays starting from an estimate
     const now = new Date();
     // Fetch current matchday from standings cache if available
@@ -137,7 +170,7 @@ export class FixturesService implements OnModuleInit {
     return [];
   }
 
-  private async fetchMatches(apiKey: string, status: string, limit: number): Promise<Match[]> {
+  private async fetchMatches(apiKey: string, status: string, limit: number): Promise<StoredMatch[]> {
     const url = `https://api.football-data.org/v4/teams/${OL_TEAM_ID}/matches?status=${status}&limit=${limit}`;
     const res = await fetch(url, {
       headers: { 'X-Auth-Token': apiKey },
@@ -161,10 +194,10 @@ export class FixturesService implements OnModuleInit {
    * match when the team endpoint returns no SCHEDULED matches on the
    * free tier) emit the exact same shape.
    */
-  private toMatch(m: FootballDataMatch, fallbackMatchday?: number): Match {
-    const allowed: Match['status'][] = ['SCHEDULED', 'TIMED', 'IN_PLAY', 'FINISHED', 'POSTPONED'];
+  private toMatch(m: FootballDataMatch, fallbackMatchday?: number): StoredMatch {
+    const allowed: StoredMatch['status'][] = ['SCHEDULED', 'TIMED', 'IN_PLAY', 'FINISHED', 'POSTPONED'];
     const status = (allowed as string[]).includes(m.status)
-      ? (m.status as Match['status'])
+      ? (m.status as StoredMatch['status'])
       : 'SCHEDULED';
     return {
       id: m.id,
@@ -181,7 +214,7 @@ export class FixturesService implements OnModuleInit {
     };
   }
 
-  private readCache(): Match[] | null {
+  private readCache(): StoredMatch[] | null {
     if (!fs.existsSync(this.cacheFile)) return null;
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
@@ -192,7 +225,7 @@ export class FixturesService implements OnModuleInit {
     return null;
   }
 
-  private readCacheRaw(): Match[] | null {
+  private readCacheRaw(): StoredMatch[] | null {
     if (!fs.existsSync(this.cacheFile)) return null;
     try {
       const { data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
@@ -203,12 +236,12 @@ export class FixturesService implements OnModuleInit {
     }
   }
 
-  private writeCache(data: Match[]): void {
+  private writeCache(data: StoredMatch[]): void {
     fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
     atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
   }
 
-  private fixturesChanged(prev: Match[] | null, next: Match[]): boolean {
+  private fixturesChanged(prev: StoredMatch[] | null, next: StoredMatch[]): boolean {
     if (!prev || prev.length !== next.length) return true;
     for (let i = 0; i < next.length; i++) {
       const p = prev[i], n = next[i];
