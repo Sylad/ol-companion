@@ -376,7 +376,7 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
   });
 
   describe('heure du coup d’envoi fixée ou non', () => {
-    it('Ligue 1 à venir : fixée seulement quand football-data le dit pour la même journée', async () => {
+    it('Ligue 1 à venir, football-data connu : il décide pour ses journées, et au-delà de J15 rien n’est dans les 14 jours', async () => {
       await withCwd(async () => {
         const { svc } = buildService();
 
@@ -392,7 +392,8 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
           .filter((m) => !m.timeConfirmed)
           .map((m) => m.matchday);
         // football-data du 03-10 : J6 à J12 et J14 en TIMED ; J13 et J15 en
-        // SCHEDULED à 00:00:00Z ; au-delà de J15, il ne dit rien.
+        // SCHEDULED à 00:00:00Z ; au-delà de J15, il ne dit rien et J16 est
+        // le 2027-01-16, bien après la fenêtre de 14 jours.
         expect(confirmed).toEqual([6, 7, 8, 9, 10, 11, 12, 14]);
         expect(unconfirmed).toEqual([
           13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -420,7 +421,7 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       });
     });
 
-    it('sans calendrier football-data (clé absente, panne) : aucune heure de Ligue 1 à venir n’est affirmée', async () => {
+    it('sans calendrier football-data (clé absente, panne) : seul le match des 14 prochains jours garde son heure', async () => {
       await withCwd(async () => {
         const { svc } = buildService([]);
 
@@ -430,7 +431,52 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
           (m) => m.competitionCode === 'L1' && m.status === 'SCHEDULED',
         );
         expect(upcomingL1).toHaveLength(29);
-        expect(upcomingL1.some((m) => m.timeConfirmed)).toBe(false);
+        // Vu du 03-10 à 12:00Z : J6 (09-10) est à 6 jours ; J7 (18-10 à
+        // 18:45Z) à 15 jours et 7 heures, hors fenêtre.
+        expect(
+          upcomingL1.filter((m) => m.timeConfirmed).map((m) => m.matchday),
+        ).toEqual([6]);
+      });
+    });
+
+    it('cache football-data réduit aux 5 matchs joués (appel des matchs à venir refusé) : le match du 09-10 garde son heure', async () => {
+      await withCwd(async () => {
+        const playedOnly = footballDataMatches().filter(
+          (m) => m.status === 'FINISHED',
+        );
+        expect(playedOnly).toHaveLength(5);
+        const { svc } = buildService(playedOnly);
+
+        const matches = await svc.getMatches({ force: true });
+
+        const lens = matches.find(
+          (m) => m.competitionCode === 'L1' && m.matchday === 6,
+        );
+        expect(lens).toMatchObject({
+          date: '2026-10-09T18:45:00.000Z',
+          status: 'SCHEDULED',
+          timeConfirmed: true,
+        });
+      });
+    });
+
+    it('l’horloge avance : une journée entre dans la fenêtre de 14 jours sans nouvelle réponse de football-data', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService([]);
+        await svc.getMatches({ force: true });
+        const j7 = async () =>
+          (await svc.getMatches()).find(
+            (m) => m.competitionCode === 'L1' && m.matchday === 7,
+          )?.timeConfirmed;
+
+        expect(await j7()).toBe(false);
+        // J7 : 2026-10-18T18:45Z. Le 04-10 à 19:00Z, il reste moins de 14 jours.
+        jest.setSystemTime(new Date('2026-10-04T19:00:00Z'));
+        try {
+          expect(await j7()).toBe(true);
+        } finally {
+          jest.setSystemTime(new Date('2026-10-03T12:00:00Z'));
+        }
       });
     });
 
@@ -452,14 +498,15 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
         expect(cached.data).toHaveLength(46);
         expect(cached.data.some((m) => 'timeConfirmed' in m)).toBe(false);
 
-        // football-data apprend l'heure de J6 : la lecture suivante (cache) le reflète.
+        // football-data apprend l'heure de J7 (à plus de 14 jours) : la lecture
+        // suivante (cache) le reflète.
         const before = await svc.getMatches();
         fixtures = footballDataMatches();
         const after = await svc.getMatches();
-        const j6 = (list: typeof before) =>
-          list.find((m) => m.competitionCode === 'L1' && m.matchday === 6);
-        expect(j6(before)?.timeConfirmed).toBe(false);
-        expect(j6(after)?.timeConfirmed).toBe(true);
+        const j7 = (list: typeof before) =>
+          list.find((m) => m.competitionCode === 'L1' && m.matchday === 7);
+        expect(j7(before)?.timeConfirmed).toBe(false);
+        expect(j7(after)?.timeConfirmed).toBe(true);
       });
     });
   });
