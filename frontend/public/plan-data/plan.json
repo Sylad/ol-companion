@@ -38,8 +38,9 @@
     {
       "id": "L39",
       "title": "Le calendrier montre toute la saison, Ligue Europa comprise",
-      "status": "doing",
-      "started": "2026-10-03"
+      "status": "done",
+      "started": "2026-10-03",
+      "finished": "2026-10-03"
     }
   ]
 }
