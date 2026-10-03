@@ -12,7 +12,7 @@ import {
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { computeMomentum, parsePlayByPlay, type MomentumPoint } from './live-match.momentum';
 import { extractStandingsAround, type LiveStandingRow } from './live-match.standings';
-import { Scores365StandingsResponseSchema } from '../standings/standings.schema';
+import { readScores365Standings } from '../standings/scores365-standings';
 import { LIGUE1_365SCORES_ID } from '../../config/constants';
 
 const SCORES365_HEADERS = scores365Headers();
@@ -129,8 +129,10 @@ export class LiveMatchService implements OnModuleInit {
         this.logger.warn(`standings HTTP ${res.status}`);
         return undefined;
       }
-      const data = parseExternal(Scores365StandingsResponseSchema, await res.json(), '365scores standings (live)');
-      const rows = extractStandingsAround(data, LIVE_MATCH_OL_ID, STANDINGS_AROUND);
+      // Même lecture que StandingsService : club de chaque ligne garanti, ou rien.
+      const reading = readScores365Standings(await res.json(), '365scores standings (live)');
+      if (!reading.ok) return undefined;
+      const rows = extractStandingsAround(reading.rows, LIVE_MATCH_OL_ID, STANDINGS_AROUND);
       if (rows.length === 0) return undefined;
       this.cachedStandings = { rows, fetchedAt: Date.now() };
       return rows;

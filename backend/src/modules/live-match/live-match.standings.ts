@@ -1,4 +1,4 @@
-import type { Scores365StandingsResponse } from '../standings/standings.schema';
+import type { ResolvedStandingsRow } from '../standings/scores365-standings';
 
 /** Ligne du mini-classement affiché sur la page live (OL ± N). */
 export interface LiveStandingRow {
@@ -16,16 +16,17 @@ export interface LiveStandingRow {
 /**
  * Extrait la fenêtre du classement autour d'une équipe : `around` lignes de
  * chaque côté, décalée en bord de tableau pour garder 2·around + 1 lignes.
+ * `standingsRows` = les lignes rendues par `readScores365Standings` (club
+ * toujours renseigné, même quand 365scores l'a omis sur la ligne).
  * `forcePosition` sert aux tests (simuler OL en tête / en queue).
  */
 export function extractStandingsAround(
-  data: Scores365StandingsResponse,
+  standingsRows: ResolvedStandingsRow[],
   teamId: number,
   around: number,
   opts: { forcePosition?: number } = {},
 ): LiveStandingRow[] {
-  const stage = data.standings?.find((s) => s.isCurrentStage) ?? data.standings?.[0];
-  const rows = [...(stage?.rows ?? [])].sort((a, b) => a.position - b.position);
+  const rows = [...standingsRows].sort((a, b) => a.position - b.position);
   if (rows.length === 0) return [];
 
   let idx = rows.findIndex((r) => r.competitor.id === teamId);

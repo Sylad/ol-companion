@@ -1,16 +1,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { extractStandingsAround } from './live-match.standings';
-import { Scores365StandingsResponseSchema } from '../../modules/standings/standings.schema';
-import { parseExternal } from '../../common/zod-validation.pipe';
+import { readScores365Standings } from '../standings/scores365-standings';
 
 // Capturé le 19/09/2026 pendant Lyon-Rennes (2-0 en cours) : Lyon 2e avec 11 pts,
 // le match en cours déjà compté, lignes Lyon/Rennes/Angers/Le Mans en live.
-const raw = parseExternal(
-  Scores365StandingsResponseSchema,
-  JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../test/fixtures/365_standings_ligue1_live_lyon_2nd.json'), 'utf-8')),
-  'test',
-);
+const rowsOf = (name: string) => {
+  const reading = readScores365Standings(
+    JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../test/fixtures', name), 'utf-8')),
+    'test',
+  );
+  if (!reading.ok) throw new Error(reading.reason);
+  return reading.rows;
+};
+const raw = rowsOf('365_standings_ligue1_live_lyon_2nd.json');
 
 describe('extractStandingsAround', () => {
   it('renvoie OL et ses 2 voisins de chaque côté (5 lignes), dans l\'ordre du classement', () => {
@@ -34,5 +37,16 @@ describe('extractStandingsAround', () => {
 
   it('renvoie vide si OL est absent du classement', () => {
     expect(extractStandingsAround(raw, 999999, 2)).toEqual([]);
+  });
+
+  it('L35 — nomme le voisin dont la ligne est arrivée sans « competitor » (charge réelle du 03/10/2026)', () => {
+    const rows = extractStandingsAround(rowsOf('365_standings_ligue1_rows_without_competitor.json'), 465, 2);
+    expect(rows.map((r) => [r.position, r.teamId, r.name])).toEqual([
+      [1, 471, 'Monaco'],
+      [2, 465, 'Lyon'],
+      [3, 6075, 'Paris FC'],
+      [4, 478, 'Lille'],
+      [5, 477, 'Rennes'],
+    ]);
   });
 });

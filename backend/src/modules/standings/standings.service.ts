@@ -6,8 +6,7 @@ import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
-import { parseExternal } from '../../common/zod-validation.pipe';
-import { Scores365StandingsResponseSchema } from './standings.schema';
+import { readScores365Standings } from './scores365-standings';
 
 export type FormOutcome = 'W' | 'D' | 'L';
 
@@ -133,18 +132,20 @@ export class StandingsService implements OnModuleInit {
         this.logger.warn(`365scores standings → HTTP ${res.status}`);
         return null;
       }
-      const data = parseExternal(Scores365StandingsResponseSchema, await res.json(), '365scores standings');
-      const block = data.standings?.find((s) => s.isCurrentStage) ?? data.standings?.[0];
-      if (!block?.rows?.length) return null;
+      // Lecture partagée avec le mini-classement du direct : les lignes en
+      // sortent toutes avec leur club, ou pas de classement du tout.
+      const reading = readScores365Standings(await res.json(), '365scores standings');
+      if (!reading.ok) return null;
+      const { data, rows } = reading;
 
       const seasonName = data.competitions?.[0]?.seasons
-        ?.find((s) => s.num === block.seasonNum)?.name;
+        ?.find((s) => s.num === reading.seasonNum)?.name;
       const season = seasonName?.split('/')[0] ?? new Date().getFullYear().toString();
-      const playedCounts = block.rows.map((r) => r.gamePlayed ?? 0);
+      const playedCounts = rows.map((r) => r.gamePlayed ?? 0);
       const currentMatchday = computeCurrentMatchday(playedCounts);
       const roundComplete = isRoundComplete(playedCounts, currentMatchday);
 
-      const mappedRows: StandingEntry[] = block.rows.map((r) => {
+      const mappedRows: StandingEntry[] = rows.map((r) => {
         const c = r.competitor;
         const gf = r.for ?? 0;
         const ga = r.against ?? 0;

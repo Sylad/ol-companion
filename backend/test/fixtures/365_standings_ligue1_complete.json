@@ -1,0 +1,1834 @@
+{
+ "lastUpdateId": 5777313165,
+ "requestedUpdateId": -1,
+ "ttl": 300,
+ "standings": [
+  {
+   "competitionId": 35,
+   "seasonNum": 94,
+   "stageNum": 1,
+   "isCurrentStage": true,
+   "displayName": "Ligue 1",
+   "rows": [
+    {
+     "competitor": {
+      "id": 471,
+      "name": "Monaco",
+      "symbolicName": "Mon"
+     },
+     "position": 1,
+     "gamePlayed": 5,
+     "gamesWon": 4,
+     "gamesLost": 0,
+     "gamesEven": 1,
+     "for": 8,
+     "against": 3,
+     "ratio": 5,
+     "points": 13,
+     "trend": 0,
+     "recentForm": [
+      1,
+      2,
+      1,
+      1,
+      1
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735258,
+       "startTime": "2026-09-18T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       },
+       "awayCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       }
+      },
+      {
+       "id": 4735263,
+       "startTime": "2026-09-12T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       },
+       "awayCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       }
+      },
+      {
+       "id": 4735273,
+       "startTime": "2026-09-04T21:05:00+02:00",
+       "homeCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       },
+       "awayCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       }
+      },
+      {
+       "id": 4735285,
+       "startTime": "2026-08-30T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       },
+       "awayCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       }
+      },
+      {
+       "id": 4735297,
+       "startTime": "2026-08-23T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       },
+       "awayCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735249,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 471,
+       "name": "Monaco",
+       "symbolicName": "Mon"
+      },
+      "awayCompetitor": {
+       "id": 482,
+       "name": "Toulouse",
+       "symbolicName": "TFC"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 465,
+      "name": "Lyon",
+      "symbolicName": "OL"
+     },
+     "position": 2,
+     "gamePlayed": 5,
+     "gamesWon": 3,
+     "gamesLost": 0,
+     "gamesEven": 2,
+     "for": 10,
+     "against": 2,
+     "ratio": 8,
+     "points": 11,
+     "trend": 0,
+     "recentForm": [
+      1,
+      2,
+      1,
+      2,
+      1
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735259,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       },
+       "awayCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       }
+      },
+      {
+       "id": 4735265,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       },
+       "awayCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       }
+      },
+      {
+       "id": 4735277,
+       "startTime": "2026-09-04T19:00:00+02:00",
+       "homeCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       },
+       "awayCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       }
+      },
+      {
+       "id": 4735286,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       },
+       "awayCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       }
+      },
+      {
+       "id": 4735291,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       },
+       "awayCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735252,
+      "startTime": "2026-10-09T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 481,
+       "name": "Lens",
+       "symbolicName": "RCL"
+      },
+      "awayCompetitor": {
+       "id": 465,
+       "name": "Lyon",
+       "symbolicName": "OL"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 6075,
+      "name": "Paris FC",
+      "symbolicName": "PAR"
+     },
+     "position": 3,
+     "gamePlayed": 5,
+     "gamesWon": 3,
+     "gamesLost": 0,
+     "gamesEven": 2,
+     "for": 8,
+     "against": 3,
+     "ratio": 5,
+     "points": 11,
+     "trend": 0,
+     "recentForm": [
+      1,
+      2,
+      1,
+      1,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735256,
+       "startTime": "2026-09-19T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       },
+       "awayCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       }
+      },
+      {
+       "id": 4735265,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       },
+       "awayCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       }
+      },
+      {
+       "id": 4735276,
+       "startTime": "2026-09-06T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       },
+       "awayCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       }
+      },
+      {
+       "id": 4735284,
+       "startTime": "2026-08-30T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       },
+       "awayCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       }
+      },
+      {
+       "id": 4735290,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       },
+       "awayCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735250,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 472,
+       "name": "Lorient",
+       "symbolicName": "FCL"
+      },
+      "awayCompetitor": {
+       "id": 6075,
+       "name": "Paris FC",
+       "symbolicName": "PAR"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 478,
+      "name": "Lille",
+      "symbolicName": "LIL"
+     },
+     "position": 4,
+     "gamePlayed": 5,
+     "gamesWon": 3,
+     "gamesLost": 1,
+     "gamesEven": 1,
+     "for": 8,
+     "against": 4,
+     "ratio": 4,
+     "points": 10,
+     "trend": 0,
+     "recentForm": [
+      0,
+      1,
+      1,
+      2,
+      1
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735257,
+       "startTime": "2026-09-20T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       },
+       "awayCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       }
+      },
+      {
+       "id": 4735267,
+       "startTime": "2026-09-13T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       },
+       "awayCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       }
+      },
+      {
+       "id": 4735274,
+       "startTime": "2026-09-03T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       },
+       "awayCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       }
+      },
+      {
+       "id": 4735281,
+       "startTime": "2026-08-28T21:00:00+02:00",
+       "homeCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      },
+      {
+       "id": 4735298,
+       "startTime": "2026-08-23T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       },
+       "awayCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735251,
+      "startTime": "2026-10-10T17:15:00+02:00",
+      "homeCompetitor": {
+       "id": 478,
+       "name": "Lille",
+       "symbolicName": "LIL"
+      },
+      "awayCompetitor": {
+       "id": 485,
+       "name": "Le Havre",
+       "symbolicName": "HAC"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 477,
+      "name": "Rennes",
+      "symbolicName": "REN"
+     },
+     "position": 5,
+     "gamePlayed": 5,
+     "gamesWon": 3,
+     "gamesLost": 1,
+     "gamesEven": 1,
+     "for": 8,
+     "against": 9,
+     "ratio": -1,
+     "points": 10,
+     "trend": 0,
+     "recentForm": [
+      0,
+      1,
+      1,
+      1,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735259,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       },
+       "awayCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       }
+      },
+      {
+       "id": 4735264,
+       "startTime": "2026-09-11T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       },
+       "awayCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       }
+      },
+      {
+       "id": 4735280,
+       "startTime": "2026-09-06T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       },
+       "awayCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       }
+      },
+      {
+       "id": 4735283,
+       "startTime": "2026-08-30T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       },
+       "awayCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       }
+      },
+      {
+       "id": 4735292,
+       "startTime": "2026-08-23T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735246,
+      "startTime": "2026-10-11T17:15:00+02:00",
+      "homeCompetitor": {
+       "id": 477,
+       "name": "Rennes",
+       "symbolicName": "REN"
+      },
+      "awayCompetitor": {
+       "id": 476,
+       "name": "Auxerre",
+       "symbolicName": "AJA"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 480,
+      "name": "PSG",
+      "symbolicName": "PSG"
+     },
+     "position": 6,
+     "gamePlayed": 5,
+     "gamesWon": 2,
+     "gamesLost": 1,
+     "gamesEven": 2,
+     "for": 8,
+     "against": 7,
+     "ratio": 1,
+     "points": 8,
+     "trend": 0,
+     "recentForm": [
+      1,
+      1,
+      0,
+      2,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735254,
+       "startTime": "2026-09-20T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      },
+      {
+       "id": 4735270,
+       "startTime": "2026-09-13T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      },
+      {
+       "id": 4735273,
+       "startTime": "2026-09-04T21:05:00+02:00",
+       "homeCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       },
+       "awayCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       }
+      },
+      {
+       "id": 4735281,
+       "startTime": "2026-08-28T21:00:00+02:00",
+       "homeCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      },
+      {
+       "id": 4735292,
+       "startTime": "2026-08-23T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735248,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 480,
+       "name": "PSG",
+       "symbolicName": "PSG"
+      },
+      "awayCompetitor": {
+       "id": 468,
+       "name": "Le Mans",
+       "symbolicName": "LEM"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 493,
+      "name": "Angers",
+      "symbolicName": "SCO"
+     },
+     "position": 7,
+     "gamePlayed": 5,
+     "gamesWon": 2,
+     "gamesLost": 2,
+     "gamesEven": 1,
+     "for": 6,
+     "against": 5,
+     "ratio": 1,
+     "points": 7,
+     "trend": 0,
+     "recentForm": [
+      1,
+      2,
+      0,
+      1,
+      0
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735262,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       },
+       "awayCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       }
+      },
+      {
+       "id": 4735269,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       },
+       "awayCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       }
+      },
+      {
+       "id": 4735280,
+       "startTime": "2026-09-06T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       },
+       "awayCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       }
+      },
+      {
+       "id": 4735289,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       },
+       "awayCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       }
+      },
+      {
+       "id": 4735298,
+       "startTime": "2026-08-23T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       },
+       "awayCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735253,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 534,
+       "name": "Brest",
+       "symbolicName": "BRE"
+      },
+      "awayCompetitor": {
+       "id": 493,
+       "name": "Angers",
+       "symbolicName": "SCO"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 479,
+      "name": "Strasbourg",
+      "symbolicName": "STR"
+     },
+     "position": 8,
+     "gamePlayed": 5,
+     "gamesWon": 2,
+     "gamesLost": 2,
+     "gamesEven": 1,
+     "for": 10,
+     "against": 10,
+     "ratio": 0,
+     "points": 7,
+     "trend": 0,
+     "recentForm": [
+      0,
+      2,
+      1,
+      1,
+      0
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735256,
+       "startTime": "2026-09-19T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       },
+       "awayCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       }
+      },
+      {
+       "id": 4735263,
+       "startTime": "2026-09-12T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       },
+       "awayCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       }
+      },
+      {
+       "id": 4735272,
+       "startTime": "2026-09-06T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       },
+       "awayCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       }
+      },
+      {
+       "id": 4735282,
+       "startTime": "2026-08-29T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       },
+       "awayCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       }
+      },
+      {
+       "id": 4735294,
+       "startTime": "2026-08-21T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       },
+       "awayCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735247,
+      "startTime": "2026-10-11T15:00:00+02:00",
+      "homeCompetitor": {
+       "id": 470,
+       "name": "OGC Nice",
+       "symbolicName": "NCE"
+      },
+      "awayCompetitor": {
+       "id": 479,
+       "name": "Strasbourg",
+       "symbolicName": "STR"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 468,
+      "name": "Le Mans",
+      "symbolicName": "LEM"
+     },
+     "position": 9,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 1,
+     "gamesEven": 3,
+     "for": 9,
+     "against": 9,
+     "ratio": 0,
+     "points": 6,
+     "trend": 0,
+     "recentForm": [
+      1,
+      2,
+      2,
+      0,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735260,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       },
+       "awayCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       }
+      },
+      {
+       "id": 4735268,
+       "startTime": "2026-09-13T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       },
+       "awayCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       }
+      },
+      {
+       "id": 4735275,
+       "startTime": "2026-09-05T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       },
+       "awayCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       }
+      },
+      {
+       "id": 4735283,
+       "startTime": "2026-08-30T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       },
+       "awayCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       }
+      },
+      {
+       "id": 4735296,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       },
+       "awayCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735248,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 480,
+       "name": "PSG",
+       "symbolicName": "PSG"
+      },
+      "awayCompetitor": {
+       "id": 468,
+       "name": "Le Mans",
+       "symbolicName": "LEM"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 476,
+      "name": "Auxerre",
+      "symbolicName": "AJA"
+     },
+     "position": 10,
+     "gamePlayed": 5,
+     "gamesWon": 2,
+     "gamesLost": 3,
+     "gamesEven": 0,
+     "for": 7,
+     "against": 12,
+     "ratio": -5,
+     "points": 6,
+     "trend": 0,
+     "recentForm": [
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735261,
+       "startTime": "2026-09-20T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       },
+       "awayCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       }
+      },
+      {
+       "id": 4735271,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       },
+       "awayCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       }
+      },
+      {
+       "id": 4735277,
+       "startTime": "2026-09-04T19:00:00+02:00",
+       "homeCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       },
+       "awayCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       }
+      },
+      {
+       "id": 4735289,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       },
+       "awayCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       }
+      },
+      {
+       "id": 4735295,
+       "startTime": "2026-08-22T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       },
+       "awayCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735246,
+      "startTime": "2026-10-11T17:15:00+02:00",
+      "homeCompetitor": {
+       "id": 477,
+       "name": "Rennes",
+       "symbolicName": "REN"
+      },
+      "awayCompetitor": {
+       "id": 476,
+       "name": "Auxerre",
+       "symbolicName": "AJA"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 534,
+      "name": "Brest",
+      "symbolicName": "BRE"
+     },
+     "position": 11,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 2,
+     "gamesEven": 2,
+     "for": 7,
+     "against": 8,
+     "ratio": -1,
+     "points": 5,
+     "trend": 0,
+     "recentForm": [
+      0,
+      0,
+      1,
+      2,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735261,
+       "startTime": "2026-09-20T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       },
+       "awayCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       }
+      },
+      {
+       "id": 4735270,
+       "startTime": "2026-09-13T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      },
+      {
+       "id": 4735279,
+       "startTime": "2026-09-05T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       },
+       "awayCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       }
+      },
+      {
+       "id": 4735288,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       },
+       "awayCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       }
+      },
+      {
+       "id": 4735296,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       },
+       "awayCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735253,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 534,
+       "name": "Brest",
+       "symbolicName": "BRE"
+      },
+      "awayCompetitor": {
+       "id": 493,
+       "name": "Angers",
+       "symbolicName": "SCO"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 472,
+      "name": "Lorient",
+      "symbolicName": "FCL"
+     },
+     "position": 12,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 2,
+     "gamesEven": 2,
+     "for": 5,
+     "against": 6,
+     "ratio": -1,
+     "points": 5,
+     "trend": 0,
+     "recentForm": [
+      0,
+      2,
+      1,
+      0,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735260,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       },
+       "awayCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       }
+      },
+      {
+       "id": 4735266,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       },
+       "awayCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       }
+      },
+      {
+       "id": 4735278,
+       "startTime": "2026-09-05T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       },
+       "awayCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       }
+      },
+      {
+       "id": 4735287,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       },
+       "awayCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       }
+      },
+      {
+       "id": 4735293,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       },
+       "awayCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735250,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 472,
+       "name": "Lorient",
+       "symbolicName": "FCL"
+      },
+      "awayCompetitor": {
+       "id": 6075,
+       "name": "Paris FC",
+       "symbolicName": "PAR"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 482,
+      "name": "Toulouse",
+      "symbolicName": "TFC"
+     },
+     "position": 13,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 2,
+     "gamesEven": 2,
+     "for": 7,
+     "against": 9,
+     "ratio": -2,
+     "points": 5,
+     "trend": 0,
+     "recentForm": [
+      1,
+      2,
+      0,
+      2,
+      0
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735255,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       },
+       "awayCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       }
+      },
+      {
+       "id": 4735266,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       },
+       "awayCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       }
+      },
+      {
+       "id": 4735274,
+       "startTime": "2026-09-03T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       },
+       "awayCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       }
+      },
+      {
+       "id": 4735288,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       },
+       "awayCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       }
+      },
+      {
+       "id": 4735291,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       },
+       "awayCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735249,
+      "startTime": "2026-10-10T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 471,
+       "name": "Monaco",
+       "symbolicName": "Mon"
+      },
+      "awayCompetitor": {
+       "id": 482,
+       "name": "Toulouse",
+       "symbolicName": "TFC"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 470,
+      "name": "OGC Nice",
+      "symbolicName": "NCE"
+     },
+     "position": 14,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 2,
+     "gamesEven": 2,
+     "for": 3,
+     "against": 6,
+     "ratio": -3,
+     "points": 5,
+     "trend": 0,
+     "recentForm": [
+      1,
+      0,
+      2,
+      0,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735257,
+       "startTime": "2026-09-20T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       },
+       "awayCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       }
+      },
+      {
+       "id": 4735271,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       },
+       "awayCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       }
+      },
+      {
+       "id": 4735275,
+       "startTime": "2026-09-05T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       },
+       "awayCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       }
+      },
+      {
+       "id": 4735284,
+       "startTime": "2026-08-30T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       },
+       "awayCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       }
+      },
+      {
+       "id": 4735293,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 470,
+        "name": "OGC Nice"
+       },
+       "awayCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735247,
+      "startTime": "2026-10-11T15:00:00+02:00",
+      "homeCompetitor": {
+       "id": 470,
+       "name": "OGC Nice",
+       "symbolicName": "NCE"
+      },
+      "awayCompetitor": {
+       "id": 479,
+       "name": "Strasbourg",
+       "symbolicName": "STR"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 481,
+      "name": "Lens",
+      "symbolicName": "RCL"
+     },
+     "position": 15,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 3,
+     "gamesEven": 1,
+     "for": 9,
+     "against": 9,
+     "ratio": 0,
+     "points": 4,
+     "trend": 0,
+     "recentForm": [
+      0,
+      2,
+      0,
+      0,
+      1
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735258,
+       "startTime": "2026-09-18T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       },
+       "awayCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       }
+      },
+      {
+       "id": 4735268,
+       "startTime": "2026-09-13T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 468,
+        "name": "Le Mans"
+       },
+       "awayCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       }
+      },
+      {
+       "id": 4735278,
+       "startTime": "2026-09-05T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       },
+       "awayCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       }
+      },
+      {
+       "id": 4735282,
+       "startTime": "2026-08-29T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       },
+       "awayCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       }
+      },
+      {
+       "id": 4735295,
+       "startTime": "2026-08-22T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 481,
+        "name": "Lens"
+       },
+       "awayCompetitor": {
+        "id": 476,
+        "name": "Auxerre"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735252,
+      "startTime": "2026-10-09T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 481,
+       "name": "Lens",
+       "symbolicName": "RCL"
+      },
+      "awayCompetitor": {
+       "id": 465,
+       "name": "Lyon",
+       "symbolicName": "OL"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 488,
+      "name": "Troyes",
+      "symbolicName": "TRO"
+     },
+     "position": 16,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 3,
+     "gamesEven": 1,
+     "for": 4,
+     "against": 11,
+     "ratio": -7,
+     "points": 4,
+     "trend": 0,
+     "recentForm": [
+      0,
+      0,
+      0,
+      1,
+      2
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735262,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       },
+       "awayCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       }
+      },
+      {
+       "id": 4735267,
+       "startTime": "2026-09-13T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 478,
+        "name": "Lille"
+       },
+       "awayCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       }
+      },
+      {
+       "id": 4735272,
+       "startTime": "2026-09-06T15:00:00+02:00",
+       "homeCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       },
+       "awayCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       }
+      },
+      {
+       "id": 4735287,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 472,
+        "name": "Lorient"
+       },
+       "awayCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       }
+      },
+      {
+       "id": 4735290,
+       "startTime": "2026-08-22T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 488,
+        "name": "Troyes"
+       },
+       "awayCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735245,
+      "startTime": "2026-10-11T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 488,
+       "name": "Troyes",
+       "symbolicName": "TRO"
+      },
+      "awayCompetitor": {
+       "id": 469,
+       "name": "Olympique de Marseille",
+       "symbolicName": "OM"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 469,
+      "name": "Olympique de Marseille",
+      "symbolicName": "OM"
+     },
+     "position": 17,
+     "gamePlayed": 5,
+     "gamesWon": 1,
+     "gamesLost": 4,
+     "gamesEven": 0,
+     "for": 7,
+     "against": 8,
+     "ratio": -1,
+     "points": 3,
+     "trend": 0,
+     "recentForm": [
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735254,
+       "startTime": "2026-09-20T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       },
+       "awayCompetitor": {
+        "id": 480,
+        "name": "PSG"
+       }
+      },
+      {
+       "id": 4735264,
+       "startTime": "2026-09-11T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 477,
+        "name": "Rennes"
+       },
+       "awayCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       }
+      },
+      {
+       "id": 4735276,
+       "startTime": "2026-09-06T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       },
+       "awayCompetitor": {
+        "id": 6075,
+        "name": "Paris FC"
+       }
+      },
+      {
+       "id": 4735285,
+       "startTime": "2026-08-30T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       },
+       "awayCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       }
+      },
+      {
+       "id": 4735294,
+       "startTime": "2026-08-21T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 469,
+        "name": "Olympique de Marseille"
+       },
+       "awayCompetitor": {
+        "id": 479,
+        "name": "Strasbourg"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735245,
+      "startTime": "2026-10-11T20:45:00+02:00",
+      "homeCompetitor": {
+       "id": 488,
+       "name": "Troyes",
+       "symbolicName": "TRO"
+      },
+      "awayCompetitor": {
+       "id": 469,
+       "name": "Olympique de Marseille",
+       "symbolicName": "OM"
+      }
+     }
+    },
+    {
+     "competitor": {
+      "id": 485,
+      "name": "Le Havre",
+      "symbolicName": "HAC"
+     },
+     "position": 18,
+     "gamePlayed": 5,
+     "gamesWon": 0,
+     "gamesLost": 3,
+     "gamesEven": 2,
+     "for": 4,
+     "against": 7,
+     "ratio": -3,
+     "points": 2,
+     "trend": 0,
+     "recentForm": [
+      0,
+      2,
+      0,
+      2,
+      0
+     ],
+     "detailedRecentForm": [
+      {
+       "id": 4735255,
+       "startTime": "2026-09-19T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 482,
+        "name": "Toulouse"
+       },
+       "awayCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       }
+      },
+      {
+       "id": 4735269,
+       "startTime": "2026-09-12T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       },
+       "awayCompetitor": {
+        "id": 493,
+        "name": "Angers"
+       }
+      },
+      {
+       "id": 4735279,
+       "startTime": "2026-09-05T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       },
+       "awayCompetitor": {
+        "id": 534,
+        "name": "Brest"
+       }
+      },
+      {
+       "id": 4735286,
+       "startTime": "2026-08-29T20:45:00+02:00",
+       "homeCompetitor": {
+        "id": 465,
+        "name": "Lyon"
+       },
+       "awayCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       }
+      },
+      {
+       "id": 4735297,
+       "startTime": "2026-08-23T17:15:00+02:00",
+       "homeCompetitor": {
+        "id": 485,
+        "name": "Le Havre"
+       },
+       "awayCompetitor": {
+        "id": 471,
+        "name": "Monaco"
+       }
+      }
+     ],
+     "nextMatch": {
+      "id": 4735251,
+      "startTime": "2026-10-10T17:15:00+02:00",
+      "homeCompetitor": {
+       "id": 478,
+       "name": "Lille",
+       "symbolicName": "LIL"
+      },
+      "awayCompetitor": {
+       "id": 485,
+       "name": "Le Havre",
+       "symbolicName": "HAC"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "countries": [
+  {
+   "id": 5,
+   "name": "France"
+  }
+ ],
+ "competitions": [
+  {
+   "id": 35,
+   "name": "Ligue 1",
+   "seasons": [
+    {
+     "num": 94,
+     "name": "2026/2027"
+    }
+   ]
+  }
+ ]
+}

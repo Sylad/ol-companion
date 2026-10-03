@@ -270,9 +270,10 @@ lots:
     created: 2026-10-03
   - id: L35
     title: "Classement vide : 365scores renvoie 18 lignes dont 2 sans objet « competitor » (positions 3 et 16 le 03-10 avec les en-têtes actuels ; aucune sans l'en-tête Origin ou avec langId=15&userCountryId=5), le schéma rejette toute la réponse et /api/standings rend null — chercher dans la charge utile une source déterministe du club (identifiant de ligne, liste de premier niveau) avant toute heuristique ; ne pas rendre un classement à 16 équipes ; même défaut silencieux dans le mini-classement du direct"
-    status: todo
+    status: doing
     estimate: 0.5
     quickwin: true
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "03-10 : deux mesures à réconcilier avant de coder. Implémenteur de L33 (fetch Node, donc Accept-Encoding) : 18 lignes dont 2 sans competitor ; il note qu'un curl SANS Accept-Encoding reçoit une enveloppe de 121 octets sans clé standings. Relecteur de L33 : HTTP 200, enveloppe vide de 121 octets (CloudFront max-age 1800), rendue null SANS aucun log (standings.service.ts:138, live-match.service.ts:125) — probablement le même effet d'encodage, à vérifier. Couvrir les deux cas et journaliser le rendu null." }
+    started: 2026-10-03
