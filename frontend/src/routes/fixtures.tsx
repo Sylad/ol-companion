@@ -154,7 +154,10 @@ function FilterPills<K extends string>({
   onChange: (key: K) => void;
 }) {
   return (
-    <div role="group" aria-label={label} className="flex items-center gap-1 rounded-full border border-border p-1">
+    // rounded-[17px] = la demi-hauteur d'une rangée (34 px) : même capsule que
+    // rounded-full sur une ligne, et un bloc arrondi propre si les pastilles
+    // passent sur deux lignes (4 compétitions sur un téléphone de 390 px).
+    <div role="group" aria-label={label} className="flex flex-wrap items-center gap-1 rounded-[17px] border border-border p-1">
       {options.map((o) => (
         <button
           key={o.key}
@@ -163,7 +166,7 @@ function FilterPills<K extends string>({
           aria-label={o.name ? `${o.name} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}` : undefined}
           onClick={() => onChange(o.key)}
           className={cn(
-            'px-3 py-1 text-xs font-semibold rounded-full transition-colors',
+            'whitespace-nowrap px-3 py-1 text-xs font-semibold rounded-full transition-colors',
             value === o.key
               ? 'bg-surface-2 text-fg-bright'
               : 'text-fg-muted hover:text-fg',
