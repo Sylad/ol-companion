@@ -8,6 +8,7 @@ captures: [captures/L39-calendrier-toutes-competitions-telephone.png]
 Le calendrier ne montrait que quinze matchs de Ligue 1. Il liste maintenant tous les matchs de la saison, toutes compétitions confondues, dans l'ordre des dates.
 
 - Les matchs de **Ligue Europa** apparaissent entre les journées de **Ligue 1**, et la Ligue 1 va jusqu'à la 34ᵉ journée. Chaque match indique sa compétition et sa journée.
+- Les **qualifications de Ligue des champions** du mois d'août y figurent aussi, avec leur tour et leur manche aller ou retour. Elles comptent désormais dans les statistiques de l'équipe et des joueurs.
 - Une nouvelle rangée de filtres permet de ne garder qu'**une compétition**. Les compteurs **Tout**, **À venir** et **Joués** et la vue rapide suivent ce choix.
 - Quand l'heure d'un match n'est pas encore fixée, le calendrier écrit **Horaire à confirmer** au lieu d'afficher une heure fausse. Le tableau de bord fait de même pour le prochain rendez-vous.
 - Chaque club de la liste a son écusson, clubs européens compris.

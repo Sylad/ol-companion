@@ -17,7 +17,7 @@ App perso pour suivre l'Olympique Lyonnais (Ligue 1). Frontend React + TanStack,
 `fixtures`, `standings`, `news`, `cups`, `players`, `wiki-image`, `channels`, `lineup`, `events`, `health`.
 
 Endpoints clés :
-- `GET /api/fixtures` — Ligue 1 selon football-data : matchs joués + les 10 prochains (cache 1h, refresh 30 min) ; sert le tableau de bord (prochain rendez-vous, dernier résultat)
+- `GET /api/fixtures` — Ligue 1 selon football-data : matchs joués + toute la fin de saison (`limit=100`, cache 1h, refresh 30 min) ; sert le tableau de bord (prochain rendez-vous, dernier résultat) et dit au calendrier si l'heure d'une journée est fixée
 - `GET /api/season-matches` — toute la saison, toutes compétitions suivies (365scores, cache 30 min) ; sert la page Calendrier, la carte, les statistiques d'équipe et de joueurs
 - `GET /api/standings`, `/api/standings/history`, `/api/standings/season-rankings` (365scores)
 - `GET /api/news` — flux RSS multi-sources (cache 15 min)
@@ -29,6 +29,7 @@ Endpoints clés :
 
 - **OL** : `teamId=523` (football-data) / `competitorId=465` (365scores) / `1649` (sofascore)
 - **Ligue 1** : `competitionId=2015` (football-data) / `35` (365scores)
+- **Autres compétitions suivies (365scores)** : Coupe de France `37`, Ligue Europa `573`, Ligue des champions `572` et ses qualifications `332` (une compétition à part chez 365scores)
 
 ## 365scores
 
@@ -106,9 +107,12 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 - ✅ Journées historiques pré-2026-04-28 peuvent être incorrectes — dette acceptée par user, pas de reconstruction.
 
 ### Calendrier — une source par match, jamais d'heure inventée (L39)
-- ✅ La page `/fixtures` lit **`/api/season-matches`** (365scores) : Ligue 1, Ligue Europa, Coupe de France, dans l'ordre des dates. Elle ne lit plus `/api/fixtures`, qui reste la source du tableau de bord.
+- ✅ La page `/fixtures` lit **`/api/season-matches`** (365scores) : Ligue 1, Ligue des champions (qualifications comprises), Ligue Europa, Coupe de France, dans l'ordre des dates. Elle ne lit plus `/api/fixtures`, qui reste la source du tableau de bord.
+- ✅ **Une seule liste des compétitions suivies** : `TRACKED_COMPETITIONS` (`season-matches.service.ts`, identifiant 365scores → code + nom). Tout ce qui lit `getMatches()` en dépend : calendrier, carte (Ligue 1 seule, filtre `L1`), statistiques d'équipe et de joueurs. Une compétition de la saison absente de la liste est journalisée (`compétition non suivie`) à chaque rafraîchissement — les 4 qualifications de Ligue des champions d'août 2026 (`332`) avaient été écartées en silence. Les matchs amicaux (`321`) ne sont pas suivis. La page Coupes a sa propre liste (`cups.service.ts` : `37` et `573`).
+- ✅ **Match sans journée** (`roundNum` absent : qualifications, tours à élimination) : `matchday: null` et `round` = tour + manche, lus dans `stageName` et `legNum` (« 3e tour de qualification · aller », « Barrages · retour »). Un tour sans nom français connu n'est pas affiché. Le score est celui du match, pas le cumul aller-retour (`aggregateText` non repris).
 - ✅ **Toute la saison** : `SeasonMatchesService` demande `/web/games/results/` (matchs joués), puis `/web/games/fixtures/` (≈ 27 matchs à venir d'un coup) et suit `paging.nextPage` jusqu'à l'enveloppe sans `games` (plafond `FORWARD_PAGES`, journalisé s'il est atteint). Avant, 8 pages de 3 à 5 matchs s'arrêtaient à J28. La journée vient de `roundNum`.
-- ✅ **`timeConfirmed`** (sur les deux endpoints) : 365scores ne signale PAS une heure non fixée — il met une heure de remplissage (17:00 UTC le samedi) que rien ne distingue d'une vraie. football-data le dit : statut `SCHEDULED` + `utcDate` à 00:00:00Z (contre `TIMED`). Règle (`season-matches/kickoff-confirmation.ts`) : un match de Ligue 1 à venir n'a une heure fixée que si football-data la donne pour la **même journée** ; sans réponse de football-data (au-delà de ses 10 prochains matchs, clé absente, panne) → non fixée. Autres compétitions : heure de 365scores tenue pour fixée, faute de signal.
+- ✅ **`timeConfirmed`** (sur les deux endpoints) : 365scores ne signale PAS une heure non fixée — il met une heure de remplissage (17:00 UTC le samedi) que rien ne distingue d'une vraie. football-data le dit : statut `SCHEDULED` + `utcDate` à 00:00:00Z (contre `TIMED`). Règle (`season-matches/kickoff-confirmation.ts`, spec directe `kickoff-confirmation.spec.ts`) pour un match de Ligue 1 à venir : football-data **parle** de la même journée → il décide (`TIMED` = fixée, `SCHEDULED` à minuit UTC = à confirmer) ; football-data n'en dit **rien** (clé absente, pas de cache, appel en échec, journée au-delà de sa réponse, match sans journée) → l'heure de 365scores est affichée si le match est dans les **14 prochains jours**, « à confirmer » au-delà. Match joué ou en cours, et autres compétitions : heure de 365scores tenue pour fixée, faute de signal.
+- ✅ **Un appel football-data refusé ne retire rien** (`FixturesService`) : `fetchMatches` rend `null` sur un 429, une erreur réseau ou une charge illisible (jamais `[]`, qui veut dire « aucun match ») ; la partie en échec (matchs joués ou à venir) est reprise du dernier cache, la réponse fraîche l'emporte sur un match gardé, et si les deux appels échouent le cache n'est pas réécrit. Avant, un 429 sur les matchs à venir réécrivait le cache avec les seuls matchs joués et le match du lendemain passait en « Horaire à confirmer ».
 - ✅ Le champ est **dérivé à chaque lecture** (`FixturesService.peekFixtures()`, sans appel réseau), jamais écrit dans les caches JSON. Côté écran, une seule règle : `lib/kickoff.ts` (« Horaire à confirmer »).
 - ✅ Écussons du calendrier : CDN 365scores par identifiant (`seasonTeamLogoUrl`, `TeamLogo src=`), pas `/api/wiki-image` — une trentaine de clubs d'un coup dépassait la limite de débit, et la recherche par nom rendait une photo de ville pour des clubs européens.
 - ❌ Ne pas déduire « heure non fixée » de l'heure elle-même : 17:00 UTC est aussi une vraie heure de coup d'envoi (19:00 l'été).
