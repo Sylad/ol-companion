@@ -218,12 +218,15 @@ lots:
     created: 2026-10-02
   - id: L28
     title: "Navigation : le lien Dashboard (/) porte peut-être aria-current=page sur toutes les routes (correspondance floue de TanStack Link) — à vérifier à l'exécution puis corriger, barre du bas et barre latérale (relecture L24)"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
-    visible: true
+    visible: false
     created: 2026-10-02
     started: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "03-10 : défaut NON reproduit — routeur installé 1.169.2, le lien « / » n'est courant que sur « / » (70 tests de garde lus sur l'arbre de routes réel, 60 rouges sous mutation du routeur en préfixe pur ; vérifié en navigateur sur la prod à 1440 et 390 px). Aucun code de production changé, donc rien de visible à annoncer. Relevés hors lot : sur « / » le logo porte aussi aria-current ; panneau Plus ouvert sur une route de la barre : la case garde aria-current mais perd sa teinte au profit de Plus." }
+    finished: 2026-10-03
   - id: L29
     title: "Fiche joueur (/player/<id>) : aucune entrée de navigation active, ni Joueurs en barre latérale ni Plus au téléphone (relecture L24)"
     status: todo
@@ -245,3 +248,8 @@ lots:
     quickwin: true
     visible: true
     created: 2026-10-02
+  - id: L32
+    title: "API : /api/wiki-image répond 429 en navigation ordinaire (9 appels refusés en passant de / à /fixtures, deux fois, le 03-10) — la limite par visiteur se déclenche sur les logos de clubs ; mesurer puis relever la limite ou regrouper/mettre en cache les appels"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-03
