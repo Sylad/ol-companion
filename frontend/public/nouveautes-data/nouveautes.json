@@ -1,7 +1,19 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-02 21:57",
+  "generated": "2026-10-03 14:18",
   "entries": [
+    {
+      "slug": "2026-10-03-le-calendrier-montre-toute-la-saison-ligue-europa-comprise",
+      "title": "Le calendrier montre toute la saison, Ligue Europa comprise",
+      "date": "2026-10-03",
+      "lots": [
+        "L39"
+      ],
+      "captures": [
+        "captures/L39-calendrier-toutes-competitions-telephone.png"
+      ],
+      "html": "<p>Le calendrier ne montrait que quinze matchs de Ligue 1. Il liste maintenant tous les matchs de la saison, toutes compétitions confondues, dans l'ordre des dates.</p>\n<ul><li>Les matchs de <strong>Ligue Europa</strong> apparaissent entre les journées de <strong>Ligue 1</strong>, et la Ligue 1 va jusqu'à la 34ᵉ journée. Chaque match indique sa compétition et sa journée.</li><li>Une nouvelle rangée de filtres permet de ne garder qu'<strong>une compétition</strong>. Les compteurs <strong>Tout</strong>, <strong>À venir</strong> et <strong>Joués</strong> et la vue rapide suivent ce choix.</li><li>Quand l'heure d'un match n'est pas encore fixée, le calendrier écrit <strong>Horaire à confirmer</strong> au lieu d'afficher une heure fausse. Le tableau de bord fait de même pour le prochain rendez-vous.</li><li>Chaque club de la liste a son écusson, clubs européens compris.</li></ul>"
+    },
     {
       "slug": "2026-10-02-au-telephone-une-barre-du-bas-plus-lisible",
       "title": "Au téléphone, une barre du bas plus lisible",
