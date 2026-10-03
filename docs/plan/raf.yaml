@@ -254,6 +254,8 @@ lots:
     status: todo
     estimate: 0.5
     created: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "03-10, passage QA : premier chargement à froid de /standings = 26 appels /api en 250 ms, 12 × 429 sur wiki-image, 1 logo jamais chargé (Lorient ou Le Havre selon le chargement, une seule relance à ~1 s) ; /fixtures : 9 × 429, tous rattrapés. Reproduit après une minute de calme : un visiteur ordinaire le subit." }
   - id: L33
     title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
     status: done
@@ -285,4 +287,54 @@ lots:
     status: todo
     estimate: 0.5
     quickwin: true
+    created: 2026-10-03
+  - id: L37
+    title: "Classement à 390 px : la colonne Pts est hors de la zone visible du tableau (x 369–406, zone visible 25–357) — la garder visible sans défilement horizontal"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L38
+    title: "Coupes : Europa League affichée ÉLIMINÉ après une seule journée de phase de ligue gagnée (isEliminated = matchs joués > 0 et aucun à venir) — ne pas conclure à l'élimination quand la phase de ligue est en cours"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-03
+  - id: L39
+    title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-03
+  - id: L40
+    title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L41
+    title: "/api/live-match/current répond 200 avec un corps vide hors fenêtre de match : la requête échoue à l'analyse JSON et repart une fois à chaque page — renvoyer null en JSON (ou 204 géré côté client)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    created: 2026-10-03
+  - id: L42
+    title: "Effectif : l'entraîneur (position Management) est compté dans « Banc · 11 joueurs » — le sortir du banc ou l'afficher à part"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L43
+    title: "Page match : les blocs Composition ne suivent pas la formation annoncée (4-2-3-1 dessiné en 6 rangées, 4-1-4-1 en 7) — regrouper les lignes comme le terrain de /players"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-03
+  - id: L44
+    title: Écrire docs/qa/expectations.md à partir du brouillon du passage QA du 03-10 (13 routes), au format de cadence 0.6.0 ; trancher les lignes « à décider » (calendrier, coupes vides, live-match vide)
+    status: todo
+    estimate: 0.5
     created: 2026-10-03
