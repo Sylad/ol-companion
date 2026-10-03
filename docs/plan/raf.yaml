@@ -342,9 +342,10 @@ lots:
     created: 2026-10-03
   - id: L44
     title: Écrire docs/qa/expectations.md à partir du brouillon du passage QA du 03-10 (13 routes), au format de cadence 0.6.0 ; trancher les lignes « à décider » (calendrier, coupes vides, live-match vide)
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-10-03
+    started: 2026-10-03
   - id: L45
     title: "Tableau de bord : « prochain rendez-vous » toutes compétitions (aujourd'hui Ligue 1 seule : après Lens le 09/10 il annoncera Nice le 18/10 et sautera Lyon – Crystal Palace du 15/10, alors que le calendrier dit l'inverse)"
     status: todo
