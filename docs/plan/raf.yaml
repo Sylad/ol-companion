@@ -307,6 +307,8 @@ lots:
     estimate: 1
     visible: true
     created: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "Décision de Sylvain le 03-10 : le calendrier doit lister TOUTES les compétitions où l'OL joue (Ligue 1, Europa League, coupes), pas la Ligue 1 seule. Source disponible : /api/season-matches (36 matchs le 03-10). Attendu QA : le total de /fixtures égale celui de la saison toutes compétitions." }
   - id: L40
     title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
     status: todo
