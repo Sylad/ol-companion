@@ -179,3 +179,213 @@ describe('FixturesService — heure de coup d’envoi fixée ou non (L39)', () =
     });
   });
 });
+
+/**
+ * L39 — un appel football-data refusé ou en échec ne retire rien du cache.
+ * Mesuré le 03-10 : après un bon rafraîchissement (15 matchs, J6 du 09-10 en
+ * `TIMED`), l'appel `status=SCHEDULED` répond 429 ; `fetchMatches` rendait
+ * alors `[]`, le cache était réécrit avec les 5 matchs joués, et J6 perdait
+ * son heure au calendrier (« Horaire à confirmer »), poussé aux pages ouvertes.
+ */
+describe('FixturesService — appel football-data refusé ou en échec (L39)', () => {
+  const realFetch = globalThis.fetch;
+  type Answer = unknown | number | Error;
+  let requested: string[] = [];
+  /** Réponse par partie : une charge (200), un code HTTP, ou une erreur réseau. */
+  let answers: { finished: Answer; scheduled: Answer; competition: Answer };
+
+  const respond = (answer: Answer): Promise<Response> => {
+    if (answer instanceof Error) return Promise.reject(answer);
+    if (typeof answer === 'number')
+      return Promise.resolve(new Response('', { status: answer }));
+    return Promise.resolve(
+      new Response(JSON.stringify(answer), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
+  };
+
+  beforeEach(() => {
+    requested = [];
+    answers = {
+      finished: fixture.finished,
+      scheduled: fixture.scheduled,
+      competition: { matches: [] },
+    };
+    globalThis.fetch = (input: unknown) => {
+      const url = String(input);
+      requested.push(url);
+      if (url.includes('/competitions/')) return respond(answers.competition);
+      return respond(
+        url.includes('status=FINISHED') ? answers.finished : answers.scheduled,
+      );
+    };
+  });
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  function readCache(dir: string): { id: number; matchday: number; status: string }[] {
+    return (
+      JSON.parse(
+        fs.readFileSync(path.join(dir, 'data', 'fixtures-cache.json'), 'utf-8'),
+      ) as { data: { id: number; matchday: number; status: string }[] }
+    ).data;
+  }
+
+  function buildWithBus(): { svc: FixturesService; events: string[] } {
+    const bus = new EventBusService();
+    const events: string[] = [];
+    bus.events$.subscribe((e) => events.push(e.type));
+    const config = { get: () => 'test-key' } as unknown as ConfigService;
+    return { svc: new FixturesService(config, bus), events };
+  }
+
+  it('demande toute la fin de saison à football-data : limit=100 sur les matchs à venir', async () => {
+    await withCwd(async () => {
+      await buildWithBus().svc.getFixtures({ force: true });
+
+      expect(requested).toContain(
+        'https://api.football-data.org/v4/teams/523/matches?status=SCHEDULED&limit=100',
+      );
+      expect(requested).toContain(
+        'https://api.football-data.org/v4/teams/523/matches?status=FINISHED&limit=20',
+      );
+    });
+  });
+
+  it('matchs à venir refusés (429), repli par journée refusé aussi : le cache garde ses 15 matchs et J6 son heure', async () => {
+    await withCwd(async (dir) => {
+      const { svc, events } = buildWithBus();
+      await svc.getFixtures({ force: true });
+      expect(readCache(dir)).toHaveLength(15);
+      events.length = 0;
+
+      answers.scheduled = 429;
+      answers.competition = 429;
+      const matches = await svc.getFixtures({ force: true });
+
+      expect(matches).toHaveLength(15);
+      expect(readCache(dir)).toHaveLength(15);
+      const j6 = svc.peekFixtures().find((m) => m.matchday === 6);
+      expect(j6).toMatchObject({ status: 'TIMED', timeConfirmed: true });
+      // Rien n'a changé : rien n'est poussé aux pages ouvertes.
+      expect(events).toEqual([]);
+    });
+  });
+
+  it('matchs à venir refusés : aucun appel de repli par journée quand le cache a déjà la réponse', async () => {
+    await withCwd(async () => {
+      const { svc } = buildWithBus();
+      await svc.getFixtures({ force: true });
+      requested = [];
+
+      answers.scheduled = 429;
+      await svc.getFixtures({ force: true });
+
+      expect(requested.filter((u) => u.includes('/competitions/'))).toEqual([]);
+    });
+  });
+
+  it('matchs à venir en erreur réseau : même garde, et la liste rendue n’est pas vide', async () => {
+    await withCwd(async (dir) => {
+      const { svc } = buildWithBus();
+      await svc.getFixtures({ force: true });
+
+      answers.scheduled = new Error('The operation was aborted due to timeout');
+      const matches = await svc.getFixtures({ force: true });
+
+      expect(matches).toHaveLength(15);
+      expect(readCache(dir)).toHaveLength(15);
+    });
+  });
+
+  it('matchs joués refusés : les 5 résultats du cache restent, les matchs à venir sont ceux de la réponse', async () => {
+    await withCwd(async (dir) => {
+      const { svc } = buildWithBus();
+      await svc.getFixtures({ force: true });
+
+      answers.finished = 503;
+      const matches = await svc.getFixtures({ force: true });
+
+      expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(5);
+      expect(readCache(dir)).toHaveLength(15);
+    });
+  });
+
+  it('les deux appels refusés : le cache n’est pas réécrit (ni son horodatage) et reste servi', async () => {
+    await withCwd(async (dir) => {
+      const { svc, events } = buildWithBus();
+      await svc.getFixtures({ force: true });
+      const cacheFile = path.join(dir, 'data', 'fixtures-cache.json');
+      const before = fs.readFileSync(cacheFile, 'utf-8');
+      events.length = 0;
+
+      answers.finished = 429;
+      answers.scheduled = 429;
+      const matches = await svc.getFixtures({ force: true });
+
+      expect(matches).toHaveLength(15);
+      expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
+      expect(events).toEqual([]);
+    });
+  });
+
+  it('un match gardé du cache et rendu joué par la réponse n’apparaît qu’une fois, joué', async () => {
+    await withCwd(async (dir) => {
+      const { svc } = buildWithBus();
+      await svc.getFixtures({ force: true });
+
+      // J6 vient d'être joué : il est dans les résultats ; les matchs à venir sont refusés.
+      const scheduled = (fixture.scheduled as { matches: Record<string, unknown>[] })
+        .matches;
+      const j6Played = {
+        ...scheduled[0],
+        status: 'FINISHED',
+        score: { fullTime: { home: 0, away: 1 } },
+      };
+      answers.finished = {
+        matches: [
+          ...(fixture.finished as { matches: unknown[] }).matches,
+          j6Played,
+        ],
+      };
+      answers.scheduled = 429;
+      await svc.getFixtures({ force: true });
+
+      const cache = readCache(dir);
+      expect(cache).toHaveLength(15);
+      expect(cache.filter((m) => m.matchday === 6)).toEqual([
+        expect.objectContaining({ status: 'FINISHED' }),
+      ]);
+      expect(cache.filter((m) => m.status === 'FINISHED')).toHaveLength(6);
+    });
+  });
+
+  it('réponse 200 sans match à venir (fin de saison) : ce n’est pas un échec, le cache suit la réponse', async () => {
+    await withCwd(async (dir) => {
+      const { svc } = buildWithBus();
+      await svc.getFixtures({ force: true });
+
+      answers.scheduled = { matches: [] };
+      answers.competition = { matches: [] };
+      await svc.getFixtures({ force: true });
+
+      expect(readCache(dir)).toHaveLength(5);
+    });
+  });
+
+  it('sans cache : un appel refusé laisse écrire la partie obtenue', async () => {
+    await withCwd(async (dir) => {
+      answers.scheduled = 429;
+      answers.competition = 429;
+
+      const matches = await buildWithBus().svc.getFixtures({ force: true });
+
+      expect(matches).toHaveLength(5);
+      expect(readCache(dir)).toHaveLength(5);
+    });
+  });
+});

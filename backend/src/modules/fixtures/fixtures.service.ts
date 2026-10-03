@@ -47,6 +47,19 @@ function withTimeConfirmed(matches: StoredMatch[]): Match[] {
 
 const CACHE_TTL_MS = 3600_000;
 
+/** Les 20 derniers résultats suffisent au tableau de bord (dernier résultat). */
+const FINISHED_LIMIT = 20;
+/**
+ * Toute la fin de saison, pas les 10 prochains matchs : le calendrier a besoin
+ * de savoir, journée par journée, si l'heure est fixée. `limit` va de 1 à 500
+ * sur `/v4/teams/{id}/matches` et vaut 100 par défaut (documentation publique
+ * de football-data, pages « Team » et « Lookup Tables », lues le 2026-10-03) ;
+ * une saison compte au plus 34 journées de Ligue 1 plus les coupes couvertes.
+ */
+const UPCOMING_LIMIT = 100;
+
+const isFinished = (m: StoredMatch): boolean => m.status === 'FINISHED';
+
 @Injectable()
 export class FixturesService implements OnModuleInit {
   private readonly logger = new Logger(FixturesService.name);
@@ -93,23 +106,50 @@ export class FixturesService implements OnModuleInit {
     const apiKey = this.config.get<string>('footballApiKey');
     if (!apiKey) return [];
 
+    const previous = this.readCacheRaw();
     try {
-      // Two separate calls — football-data v4 only accepts one status at a time
+      // Two separate calls — football-data v4 only accepts one status at a time.
+      // `null` = appel refusé ou en échec, à ne pas confondre avec « 0 match ».
       const [finished, scheduled] = await Promise.all([
-        this.fetchMatches(apiKey, 'FINISHED', 20),
-        this.fetchMatches(apiKey, 'SCHEDULED', 10),
+        this.fetchMatches(apiKey, 'FINISHED', FINISHED_LIMIT),
+        this.fetchMatches(apiKey, 'SCHEDULED', UPCOMING_LIMIT),
       ]);
 
       // Free tier doesn't return scheduled team matches — fallback via competition endpoint
-      const scheduledMatches = scheduled.length > 0
-        ? scheduled
-        : await this.fetchUpcomingFromCompetition(apiKey);
+      const upcoming =
+        scheduled !== null && scheduled.length === 0
+          ? await this.fetchUpcomingFromCompetition(apiKey)
+          : scheduled;
 
-      const matches = [...finished, ...scheduledMatches].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      // Rien d'obtenu : le cache reste tel quel, horodatage compris.
+      if (finished === null && upcoming === null) {
+        this.logger.warn(
+          'football-data : les deux appels ont échoué — cache existant conservé',
+        );
+        return previous ?? [];
+      }
+
+      // Partie en échec : la dernière bonne réponse du cache la remplace. Un
+      // appel refusé (429) ne retire donc jamais les matchs à venir, ni l'heure
+      // qu'ils donnent au calendrier. La réponse fraîche l'emporte sur un match
+      // gardé (un match à venir du cache, joué depuis, n'apparaît qu'une fois).
+      const fresh = [...(finished ?? []), ...(upcoming ?? [])];
+      const freshIds = new Set(fresh.map((m) => m.id));
+      const kept = (previous ?? []).filter(
+        (m) =>
+          (isFinished(m) ? finished === null : upcoming === null) &&
+          !freshIds.has(m.id),
+      );
+      if (kept.length > 0) {
+        this.logger.warn(
+          `football-data : ${finished === null ? 'matchs joués' : 'matchs à venir'} en échec — ${kept.length} match(s) gardé(s) du cache`,
+        );
+      }
+
+      const matches = [...fresh, ...kept].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       );
 
-      const previous = this.readCacheRaw();
       if (matches.length === 0 && previous && previous.length > 0) {
         this.logger.warn('football-data a rendu 0 match — cache existant conservé');
         return previous;
@@ -121,11 +161,16 @@ export class FixturesService implements OnModuleInit {
       return matches;
     } catch (err) {
       this.logger.error('Erreur fetch fixtures', err);
-      return [];
+      return previous ?? [];
     }
   }
 
-  private async fetchUpcomingFromCompetition(apiKey: string): Promise<StoredMatch[]> {
+  /**
+   * Le prochain match de l'OL cherché journée par journée. `null` quand rien
+   * n'a été trouvé ET qu'un appel au moins a été refusé ou a échoué : l'absence
+   * de match à venir n'est alors pas une réponse de football-data.
+   */
+  private async fetchUpcomingFromCompetition(apiKey: string): Promise<StoredMatch[] | null> {
     // Try the next 3 matchdays starting from an estimate
     const now = new Date();
     // Fetch current matchday from standings cache if available
@@ -143,6 +188,7 @@ export class FixturesService implements OnModuleInit {
     }
 
     const matchdays = [startMatchday, startMatchday + 1, startMatchday + 2];
+    let failed = false;
     for (const md of matchdays) {
       try {
         const url = `https://api.football-data.org/v4/competitions/${LIGUE1_FOOTBALL_DATA_ID}/matches?matchday=${md}`;
@@ -150,7 +196,11 @@ export class FixturesService implements OnModuleInit {
           headers: { 'X-Auth-Token': apiKey },
           signal: AbortSignal.timeout(10_000),
         });
-        if (!res.ok) continue;
+        if (!res.ok) {
+          this.logger.warn(`competition J${md} → HTTP ${res.status}`);
+          failed = true;
+          continue;
+        }
         const data = parseExternal(
           FootballDataMatchesResponseSchema,
           await res.json(),
@@ -165,27 +215,38 @@ export class FixturesService implements OnModuleInit {
         }
       } catch (err) {
         this.logger.warn(`Competition matchday ${md} fetch failed: ${(err as Error).message}`);
+        failed = true;
       }
     }
-    return [];
+    return failed ? null : [];
   }
 
-  private async fetchMatches(apiKey: string, status: string, limit: number): Promise<StoredMatch[]> {
+  /**
+   * Les matchs d'un statut. `null` quand l'appel est refusé (429, 403…) ou
+   * échoue (réseau, délai, charge illisible) — jamais `[]`, qui veut dire
+   * « football-data n'a aucun match de ce statut ».
+   */
+  private async fetchMatches(apiKey: string, status: string, limit: number): Promise<StoredMatch[] | null> {
     const url = `https://api.football-data.org/v4/teams/${OL_TEAM_ID}/matches?status=${status}&limit=${limit}`;
-    const res = await fetch(url, {
-      headers: { 'X-Auth-Token': apiKey },
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!res.ok) {
-      this.logger.warn(`fixtures?status=${status} → HTTP ${res.status}`);
-      return [];
+    try {
+      const res = await fetch(url, {
+        headers: { 'X-Auth-Token': apiKey },
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (!res.ok) {
+        this.logger.warn(`fixtures?status=${status} → HTTP ${res.status}`);
+        return null;
+      }
+      const data = parseExternal(
+        FootballDataMatchesResponseSchema,
+        await res.json(),
+        `football-data fixtures status=${status}`,
+      );
+      return (data.matches ?? []).map((m) => this.toMatch(m));
+    } catch (err) {
+      this.logger.warn(`fixtures?status=${status} failed: ${(err as Error)?.message ?? err}`);
+      return null;
     }
-    const data = parseExternal(
-      FootballDataMatchesResponseSchema,
-      await res.json(),
-      `football-data fixtures status=${status}`,
-    );
-    return (data.matches ?? []).map((m) => this.toMatch(m));
   }
 
   /**
