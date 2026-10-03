@@ -213,6 +213,7 @@ lots:
     created: 2026-10-02
   - id: L27
     title: Page dédiée à l'équipe de France
+    public: "Une page dédiée à l'équipe de France"
     status: todo
     estimate: 1
     visible: true
@@ -230,6 +231,7 @@ lots:
     finished: 2026-10-03
   - id: L29
     title: "Fiche joueur (/player/<id>) : aucune entrée de navigation active, ni Joueurs en barre latérale ni Plus au téléphone (relecture L24)"
+    public: "Fiche joueur : la navigation indique où l'on se trouve"
     status: todo
     estimate: 1
     quickwin: true
@@ -237,6 +239,7 @@ lots:
     created: 2026-10-02
   - id: L30
     title: "En-tête à 320 et 390 px : la pastille LIVE RECONNECTE chevauche le titre Olympique Lyonnais (revue UX L24)"
+    public: "En-tête sur téléphone : la pastille du direct ne recouvre plus le titre"
     status: todo
     estimate: 1
     quickwin: true
@@ -244,6 +247,7 @@ lots:
     created: 2026-10-02
   - id: L31
     title: "Barre du bas : case active distinguée surtout par la teinte (1,47:1 entre actif et inactif, WCAG 1.4.1) — ajouter un repère non coloré (revue UX L24)"
+    public: "Barre du bas : la page active mieux signalée"
     status: todo
     estimate: 1
     quickwin: true
@@ -291,6 +295,7 @@ lots:
     created: 2026-10-03
   - id: L37
     title: "Classement à 390 px : la colonne Pts est hors de la zone visible du tableau (x 369–406, zone visible 25–357) — la garder visible sans défilement horizontal"
+    public: "Classement sur téléphone : la colonne des points toujours visible"
     status: todo
     estimate: 1
     quickwin: true
@@ -298,6 +303,7 @@ lots:
     created: 2026-10-03
   - id: L38
     title: "Coupes : Europa League affichée ÉLIMINÉ après une seule journée de phase de ligue gagnée (isEliminated = matchs joués > 0 et aucun à venir) — ne pas conclure à l'élimination quand la phase de ligue est en cours"
+    public: "Coupes : un statut juste tant que l'OL est en lice"
     status: todo
     estimate: 1
     visible: true
@@ -319,6 +325,7 @@ lots:
     finished: 2026-10-03
   - id: L40
     title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
+    public: "Le libellé de la saison suit la saison en cours"
     status: todo
     estimate: 1
     quickwin: true
@@ -332,6 +339,7 @@ lots:
     created: 2026-10-03
   - id: L42
     title: "Effectif : l'entraîneur (position Management) est compté dans « Banc · 11 joueurs » — le sortir du banc ou l'afficher à part"
+    public: "Effectif : le banc ne compte que les remplaçants du match"
     status: todo
     estimate: 1
     quickwin: true
@@ -341,6 +349,7 @@ lots:
       - { date: 2026-10-03, text: "03-10, second passage QA : Tagliafico (yardLine 0, hors du groupe, absent du banc de la page match) est aussi compté dans « Banc · 11 joueurs » ; et le lien de l'entraîneur dans l'onglet Effectif mène à /player/50746 (API 404, « Aucune statistique trouvée », sans titre) — ne pas lier un membre sans statistiques." }
   - id: L43
     title: "Page match : les blocs Composition ne suivent pas la formation annoncée (4-2-3-1 dessiné en 6 rangées, 4-1-4-1 en 7) — regrouper les lignes comme le terrain de /players"
+    public: "Page match : des compositions dessinées selon la formation"
     status: todo
     estimate: 1
     visible: true
@@ -355,6 +364,7 @@ lots:
     finished: 2026-10-03
   - id: L45
     title: "Tableau de bord : « prochain rendez-vous » toutes compétitions (aujourd'hui Ligue 1 seule : après Lens le 09/10 il annoncera Nice le 18/10 et sautera Lyon – Crystal Palace du 15/10, alors que le calendrier dit l'inverse)"
+    public: "Tableau de bord : le prochain rendez-vous, toutes compétitions confondues"
     status: todo
     estimate: 0.5
     visible: true
@@ -366,6 +376,7 @@ lots:
     created: 2026-10-03
   - id: L47
     title: "Calendrier : jour non fixé affiché comme ferme (18 des 21 lignes « à confirmer » sont un samedi de remplissage) — « Date et horaire à confirmer » ou « Week-end du … », aussi sur le tableau de bord"
+    public: "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée"
     status: todo
     estimate: 1
     quickwin: true
@@ -373,6 +384,7 @@ lots:
     created: 2026-10-03
   - id: L48
     title: "Calendrier téléphone : noms de clubs tronqués (15/92 à 390 px, tous à 320 px) — grille 56px / 1fr / auto, nom court pour Marseille"
+    public: "Calendrier sur téléphone : des noms de clubs lisibles"
     status: todo
     estimate: 1
     quickwin: true
@@ -380,6 +392,7 @@ lots:
     created: 2026-10-03
   - id: L49
     title: "Noms des compétitions : un seul glossaire — Ligue des champions / Ligue Europa en long, C1 / C3 / CdF en court avec le nom long accessible — calendrier, bilan de saison, page joueur, Nouveautés"
+    public: "Des noms de compétitions identiques partout"
     status: todo
     estimate: 1
     quickwin: true
@@ -387,18 +400,21 @@ lots:
     created: 2026-10-03
   - id: L50
     title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
+    public: "Calendrier : une liste plus compacte, regroupée par mois"
     status: todo
     estimate: 1
     visible: true
     created: 2026-10-03
   - id: L51
     title: "Calendrier : état vide actionnable et annoncé, pastilles sans « 0 » pendant le chargement, erreur avec Réessayer ; score cumulé sur le match retour des qualifications ; qualifications sur la page Coupes (à décider)"
+    public: "Calendrier : des messages plus clairs quand il n'y a rien à afficher"
     status: todo
     estimate: 1
     visible: true
     created: 2026-10-03
   - id: L52
     title: Contraste du jeton fg-dim sur toute l'app (3,84–3,98:1 à 10–11 px) — viser rgb(115,131,153) ; carte du tableau de bord rognée à 390 px avec un nom long
+    public: "Des textes secondaires plus lisibles"
     status: todo
     estimate: 1
     quickwin: true
@@ -420,6 +436,7 @@ lots:
     started: 2026-10-03
   - id: L55
     title: "À propos : lien Eywa mort (eywa-eywa.pages.dev ne résout pas ; le site répond sur avatar-pandora-12q.pages.dev)"
+    public: "À propos : le lien vers Eywa réparé"
     status: todo
     estimate: 1
     quickwin: true
@@ -427,6 +444,7 @@ lots:
     created: 2026-10-03
   - id: L56
     title: "Page match : aucun h1 ; tableau de bord : lieu du prochain match « Stade Racing Club de Lens » (« Stade » + nom du club) — le vrai stade ou rien ; positions en anglais (GOALKEEPER, CENTRE BACK, COACH)"
+    public: "Page match : un vrai titre, et le bon stade pour le prochain match"
     status: todo
     estimate: 1
     quickwin: true

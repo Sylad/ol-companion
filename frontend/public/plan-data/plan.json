@@ -36,11 +36,96 @@
       "status": "todo"
     },
     {
+      "id": "L27",
+      "title": "Une page dédiée à l'équipe de France",
+      "status": "todo"
+    },
+    {
+      "id": "L29",
+      "title": "Fiche joueur : la navigation indique où l'on se trouve",
+      "status": "todo"
+    },
+    {
+      "id": "L30",
+      "title": "En-tête sur téléphone : la pastille du direct ne recouvre plus le titre",
+      "status": "todo"
+    },
+    {
+      "id": "L31",
+      "title": "Barre du bas : la page active mieux signalée",
+      "status": "todo"
+    },
+    {
+      "id": "L37",
+      "title": "Classement sur téléphone : la colonne des points toujours visible",
+      "status": "todo"
+    },
+    {
+      "id": "L38",
+      "title": "Coupes : un statut juste tant que l'OL est en lice",
+      "status": "todo"
+    },
+    {
       "id": "L39",
       "title": "Le calendrier montre toute la saison, Ligue Europa comprise",
       "status": "done",
       "started": "2026-10-03",
       "finished": "2026-10-03"
+    },
+    {
+      "id": "L40",
+      "title": "Le libellé de la saison suit la saison en cours",
+      "status": "todo"
+    },
+    {
+      "id": "L42",
+      "title": "Effectif : le banc ne compte que les remplaçants du match",
+      "status": "todo"
+    },
+    {
+      "id": "L43",
+      "title": "Page match : des compositions dessinées selon la formation",
+      "status": "todo"
+    },
+    {
+      "id": "L45",
+      "title": "Tableau de bord : le prochain rendez-vous, toutes compétitions confondues",
+      "status": "todo"
+    },
+    {
+      "id": "L47",
+      "title": "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée",
+      "status": "todo"
+    },
+    {
+      "id": "L48",
+      "title": "Calendrier sur téléphone : des noms de clubs lisibles",
+      "status": "todo"
+    },
+    {
+      "id": "L49",
+      "title": "Des noms de compétitions identiques partout",
+      "status": "todo"
+    },
+    {
+      "id": "L50",
+      "title": "Calendrier : une liste plus compacte, regroupée par mois",
+      "status": "todo"
+    },
+    {
+      "id": "L51",
+      "title": "Calendrier : des messages plus clairs quand il n'y a rien à afficher",
+      "status": "todo"
+    },
+    {
+      "id": "L55",
+      "title": "À propos : le lien vers Eywa réparé",
+      "status": "todo"
+    },
+    {
+      "id": "L56",
+      "title": "Page match : un vrai titre, et le bon stade pour le prochain match",
+      "status": "todo"
     }
   ]
 }
