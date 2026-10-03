@@ -256,6 +256,7 @@ lots:
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "03-10, passage QA : premier chargement à froid de /standings = 26 appels /api en 250 ms, 12 × 429 sur wiki-image, 1 logo jamais chargé (Lorient ou Le Havre selon le chargement, une seule relance à ~1 s) ; /fixtures : 9 × 429, tous rattrapés. Reproduit après une minute de calme : un visiteur ordinaire le subit." }
+      - { date: 2026-10-03, text: "03-10, second passage QA : toujours 12 × 429 au premier chargement de /standings, un écusson différent manquant à chaque chargement (PSG, Marseille, Brest, Troyes)." }
   - id: L33
     title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
     status: done
@@ -301,6 +302,8 @@ lots:
     estimate: 1
     visible: true
     created: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "03-10, après L39 : l'app se contredit — /fixtures liste 8 matchs de Ligue Europa dont 7 à venir pendant que /cups dit ÉLIMINÉ." }
   - id: L39
     title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
     status: done
@@ -334,6 +337,8 @@ lots:
     quickwin: true
     visible: true
     created: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "03-10, second passage QA : Tagliafico (yardLine 0, hors du groupe, absent du banc de la page match) est aussi compté dans « Banc · 11 joueurs » ; et le lien de l'entraîneur dans l'onglet Effectif mène à /player/50746 (API 404, « Aucune statistique trouvée », sans titre) — ne pas lier un membre sans statistiques." }
   - id: L43
     title: "Page match : les blocs Composition ne suivent pas la formation annoncée (4-2-3-1 dessiné en 6 rangées, 4-1-4-1 en 7) — regrouper les lignes comme le terrain de /players"
     status: todo
@@ -401,4 +406,31 @@ lots:
     title: "Statistiques joueurs : un détail de match 365scores en timeout est sauté en silence (stats bâties sur 9 matchs sur 10 et gardées 1 h) ; vérifier les passes décisives (Tolisso 12 en 10 matchs)"
     status: todo
     estimate: 0.5
+    created: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "03-10, second passage QA : « Passes D. » totalise au moins 95 sur 22 lignes pour 18 buts marqués (Abner 13, Tolisso 12 ; 4 passes créditées à Tolisso sur le 3-1 contre Auxerre)." }
+  - id: L54
+    title: "Livraison : index.html servi sans Cache-Control — un visiteur revenu garde l'ancienne appli (mesuré le 03-10 : calendrier d'avant L39 encore affiché 1 h 25 après la livraison) ; un fichier /assets/ absent répond 200 text/html max-age=14400 et Cloudflare le met en cache (page blanche possible) — no-cache sur index.html, 404 sur un /assets/ manquant, cache long sur les fichiers à empreinte, contrôle d'effet dans cadence.yaml"
+    status: todo
+    estimate: 0.5
+    quickwin: true
+    created: 2026-10-03
+  - id: L55
+    title: "À propos : lien Eywa mort (eywa-eywa.pages.dev ne résout pas ; le site répond sur avatar-pandora-12q.pages.dev)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L56
+    title: "Page match : aucun h1 ; tableau de bord : lieu du prochain match « Stade Racing Club de Lens » (« Stade » + nom du club) — le vrai stade ou rien ; positions en anglais (GOALKEEPER, CENTRE BACK, COACH)"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L57
+    title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
+    status: todo
+    estimate: 1
     created: 2026-10-03

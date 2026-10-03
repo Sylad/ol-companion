@@ -2,18 +2,20 @@
 
 Ce que l'utilisateur doit trouver sur chaque page de https://ol.sladoire.dev. Lu par l'agent
 `qa-reviewer` de cadence après chaque livraison. Les comptes datent du 03-10-2026 ; une ligne suivie
-de « à décider » attend une décision de Sylvain.
+de « à décider » attend une décision de Sylvain. Les textes se comparent sans tenir compte de la casse
+(l'écran met certains libellés en capitales).
 
 ## *
-- shows: un titre de page (h1) non vide ; la navigation — barre latérale à 1440, barre du bas à 5 entrées à 390
-- never: « Erreur de chargement », « Too Many Requests », un indicateur de chargement encore là après 8 s
+- shows: un h1 non vide — le bandeau du club ou le titre propre de la page ; la navigation — barre latérale à 1440, barre du bas à 5 entrées (4 liens + bouton « Plus ») à 390
+- shows: le bundle chargé par la page (script[src]) est celui que référence /index.html relu sans cache
+- never: « Erreur de chargement », « Too Many Requests », un élément .animate-spin ou .animate-pulse visible, ou un texte « Chargement », 8 s après le chargement
 - api: /api/demo/status
 - api: /api/events — flux SSE, sans taille
 - api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche
 
 ## /
-- shows: « Prochain rendez-vous » avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec un point par journée jouée
-- never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 »
+- shows: « Prochain rendez-vous » avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (5 le 03-10) ; le lieu du prochain match est un nom de stade, ou rien
+- never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 » ou « 02h00 » (minuit UTC)
 - api: /api/standings
 - api: /api/fixtures
 - api: /api/standings/season-rankings
@@ -28,7 +30,7 @@ de « à décider » attend une décision de Sylvain.
 - api: /api/wiki-image — 200 pour chaque club, aucun 429
 
 ## /players
-- shows: « Dernier match » avec un score ; 11 titulaires sur le terrain ; un banc non vide ; onglet Effectif : au moins 18 liens vers une fiche joueur ; onglet Stats saison : au moins 18 lignes
+- shows: « Dernier match » avec un score ; 11 titulaires sur le terrain ; un banc non vide, qui compte autant de joueurs que le banc de la page du même match ; onglet Effectif : au moins 18 liens vers une fiche joueur ; onglet Stats saison : au moins 18 lignes
 - never: « Aucune compo récente trouvée. » ; « Erreur de chargement des stats. »
 - api: /api/lineup — `starters` de 11
 - api: /api/players/season-stats — sur l'onglet Stats saison
@@ -41,7 +43,8 @@ Visiter 2185, ou n'importe quel lien de l'onglet Effectif de /players.
 
 ## /match/$gameId
 Visiter le lien de la carte du direct sur / quand elle existe ; sinon
-/match/<gameId de /api/lineup>?matchupId=<homeId>-<awayId>-<gameId> (OL = 465).
+/match/<gameId de /api/lineup>?matchupId=<homeId>-<awayId>-<gameId> : 465 (l'OL) et opponentId de /api/lineup,
+dans l'ordre que donne isHome.
 - shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; « Classement en direct » avec 5 lignes dont Lyon
 - never: « Match introuvable » ; « Lien incomplet »
 - api: /api/live-match/<gameId>/stats
@@ -49,9 +52,8 @@ Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 ## /fixtures
 - shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal à ce total ; les pastilles par compétition, dont la somme égale « Toutes »
 - shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux
-- never: « Aucun match dans cette catégorie. » sur le filtre Tout ; une heure « 01:00 »
+- never: « Aucun match dans cette catégorie. » quand la pastille choisie annonce au moins 1 match ; une heure « 01:00 » ou « 02:00 » (minuit UTC)
 - api: /api/season-matches
-- api: /api/fixtures
 
 ## /news
 - shows: « Chaînes YouTube recommandées » avec au moins une carte ; « À la une » avec au moins 10 liens d'articles
@@ -60,8 +62,8 @@ Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 - api: /api/youtube-channels
 
 ## /cups
-- shows: un bloc par coupe que l'OL joue cette saison, avec ses matchs et un statut fidèle à la compétition
-- never: « Erreur de chargement des données coupes. » ; « ÉLIMINÉ » tant que la compétition continue pour l'OL
+- shows: un bloc par compétition hors Ligue 1 de /api/season-matches (Ligue Europa le 03-10 ; qualifications de Ligue des champions : à décider) ; chaque bloc liste ses matchs joués
+- never: « Erreur de chargement des données coupes. » ; « éliminé » tant que /api/season-matches a un match à venir dans cette compétition
 - api: /api/cups — may be empty when aucune coupe n'a commencé (à décider)
 
 ## /map
@@ -69,10 +71,10 @@ Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 - never: « Chargement de la carte… » après 8 s
 
 ## /fcnoobz
-- shows: le titre « FC NOOBZ » ; 3 cartes ; l'image du club
+- shows: le titre « FC NOOBZ » ; 3 cartes (Lecteur de sauvegarde FM, Histoire du club, Palmarès virtuel) ; l'image du club
 
 ## /about
-- shows: le titre « Vibe coded with Claude Code » ; les sections de la pile technique
+- shows: le titre « Vibe coded with Claude Code » ; les sections Frontend, Backend, Infra, chacune non vide ; chaque lien de « Mes autres sites » répond 2xx
 
 ## /nouveautes
 - shows: le titre « Ce qui a changé » ; au moins 5 entrées, chacune avec une date, un titre et sa capture chargée
