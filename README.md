@@ -28,7 +28,7 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
 - **Live match** — quand l'OL joue (ou vient de jouer) : carte sur l'accueil + page dédiée `/match/:gameId` avec timeline (buts, cartons, subs), shot map (xG par tir + outcome), 14 stats agrégées par équipe avec barres comparatives, top performers par rôle. Updates via **SSE push** (cron 30 s qui diffe la signature et émet un event si quelque chose change).
 - **Classement Ligue 1** avec règles LFP (différence générale, buts marqués, etc.) — données 365scores
 - **Trajectoire saison** : tracker de position (chart Recharts, line OL bleu + dot OL rouge sur la journée courante)
-- **Calendrier** — fixtures passés + à venir avec adversaires, scores, compositions
+- **Calendrier** — toute la saison, toutes compétitions (Ligue 1, Ligue Europa, Coupe de France) dans l'ordre des dates, filtre par compétition, « Horaire à confirmer » tant que l'heure n'est pas fixée
 - **Effectif** — composition (formation field SVG dynamique) + liste des joueurs avec photos 365scores CDN
 - **Coupes** — Coupe de France + Coupes d'Europe le cas échéant. **Bracket schématique** affiché à partir des 1/4 (CdF) ou 1/8 (EL), avec confrontations aller/retour groupées et équipe qualifiée en gras.
 - **News** — agrégat RSS multi-sources (OL officiel, Olympique-et-Lyonnais, L'Équipe, Google News)
@@ -76,7 +76,7 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 | Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) |
 | Live updates | SSE (`@nestjs/common` `@Sse` + `EventSource` côté client + `invalidateQueries` TanStack) |
 | Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
-| Sources externes | [365scores](https://www.365scores.com/) (classement, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier, fixtures), Wikipedia FR (logos) |
+| Sources externes | [365scores](https://www.365scores.com/) (classement, calendrier de la saison, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier : prochain match, heure des coups d'envoi fixée ou non), Wikipedia FR (logos) |
 | Build | Docker multi-stage (node:20-alpine → nginx:alpine) |
 | Déploiement | Images sur GHCR (CI GitHub), chart Helm sur k3s via ArgoCD (GitOps), exposé par un tunnel Cloudflare |
 

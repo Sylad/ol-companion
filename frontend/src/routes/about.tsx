@@ -22,8 +22,8 @@ const STACK = [
     items: [
       'NestJS 11 + TypeScript 5',
       'Stockage JSON local (cache fixtures)',
-      'Proxy 365scores (classement live + forme)',
-      'Proxy football-data.org (calendrier officiel)',
+      'Proxy 365scores (classement live, forme, calendrier de la saison)',
+      'Proxy football-data.org (prochain match, heures de coup d’envoi)',
       'Proxy Wikipedia FR (logos / images)',
       'Server-Sent Events (live updates)',
     ],
