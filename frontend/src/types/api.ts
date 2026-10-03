@@ -55,13 +55,19 @@ export interface Fixture {
   competition: string;
   status: MatchStatus;
   matchday: number | null;
+  /**
+   * `false` quand l'heure du coup d'envoi n'est pas fixée : la date porte alors
+   * une heure à ne pas afficher (voir `lib/kickoff.ts`). Absent d'un backend
+   * antérieur à L39.
+   */
+  timeConfirmed?: boolean;
 }
 
 /**
  * Extended fixture coming from /api/season-matches (365scores-backed,
- * full season). Same wire shape as `Fixture` plus a `competitionCode`
- * discriminator so the UI can switch on a stable code instead of
- * parsing free-form competition names.
+ * full season, every competition — source of the Calendrier page). Same wire
+ * shape as `Fixture` plus a `competitionCode` discriminator so the UI can
+ * switch on a stable code instead of parsing free-form competition names.
  */
 export interface SeasonMatch extends Fixture {
   competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
