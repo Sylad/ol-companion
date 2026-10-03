@@ -415,6 +415,26 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expectSelected(competitions, /^UEFA Europa League ·/);
     });
 
+    it('la vue rapide reste collante : aucun ancêtre en overflow-hidden (qui annule sticky), la section coupe en overflow-clip', async () => {
+      vi.stubGlobal('fetch', serve());
+      const { container } = renderPage();
+      await screen.findAllByRole('article');
+
+      const panel = screen.getByText('Vue rapide').closest('aside') as HTMLElement;
+      expect(panel).toHaveClass('lg:sticky', 'lg:top-6', 'lg:self-start');
+
+      // overflow: hidden fait de l'ancêtre le conteneur de défilement du sticky ;
+      // overflow: clip coupe pareil (coins arrondis) sans le devenir.
+      const ancestors: HTMLElement[] = [];
+      for (let el = panel.parentElement; el && el !== container; el = el.parentElement) ancestors.push(el);
+      expect(ancestors.length).toBeGreaterThan(0);
+      for (const el of ancestors) {
+        expect(el.className).not.toMatch(/\boverflow-(hidden|auto|scroll)\b/);
+      }
+      const section = panel.closest('section') as HTMLElement;
+      expect(section).toHaveClass('overflow-clip', 'rounded-md');
+    });
+
     it('compteurs des pastilles en fg-muted (≥ 4,5:1), choisie ou non, jamais en fg-dim', async () => {
       vi.stubGlobal('fetch', serve());
       renderPage();

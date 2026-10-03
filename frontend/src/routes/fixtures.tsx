@@ -62,7 +62,10 @@ export function FixturesPage() {
     <div className="space-y-8">
       <KnowledgeHeader />
 
-      <section className="rounded-md bg-surface border border-border overflow-hidden">
+      {/* overflow-clip, pas overflow-hidden : même coupe aux coins arrondis, mais
+          la section ne devient pas le conteneur de défilement de la vue rapide
+          (lg:sticky), qui sinon ne colle plus. */}
+      <section className="rounded-md bg-surface border border-border overflow-clip">
         <header className="px-5 py-4 flex flex-col gap-4 border-b border-border md:flex-row md:items-center md:justify-between">
           <div>
             <div className="eyebrow mb-1">Saison 2025-26</div>
