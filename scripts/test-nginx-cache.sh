@@ -50,10 +50,34 @@ server {
         return 200 "stub\n";
     }
 }
+# faux frontaux pour les contrôles négatifs de verify-cache.sh
+# 3003 : document en no-cache, mais TOUT /assets/ en 404 (le bundle aussi)
+server {
+    listen 3003;
+    location /assets/ { return 404; }
+    location / {
+        default_type text/html;
+        add_header Cache-Control "no-cache";
+        return 200 '<script type="module" src="/assets/index-AbCd1234.js"></script>';
+    }
+}
+# 3004 : document en no-cache, bundle servi, mais repli HTML en 200 sur un absent
+server {
+    listen 3004;
+    location = /assets/index-AbCd1234.js {
+        default_type application/javascript;
+        return 200 "export {}";
+    }
+    location / {
+        default_type text/html;
+        add_header Cache-Control "no-cache";
+        return 200 '<script type="module" src="/assets/index-AbCd1234.js"></script>';
+    }
+}
 EOF
 
 docker network create "$NET" >/dev/null
-docker run -d --name "$BACK-$$" --network "$NET" --network-alias "$BACK" -p 127.0.0.1::3002 \
+docker run -d --name "$BACK-$$" --network "$NET" --network-alias "$BACK" -p 127.0.0.1::3002 -p 127.0.0.1::3003 -p 127.0.0.1::3004 \
   -v "$TMP/backend.conf:/etc/nginx/conf.d/default.conf:ro" "$IMAGE" >/dev/null
 docker run --rm --network "$NET" \
   -v "$CONF:/etc/nginx/conf.d/default.conf:ro" "$IMAGE" nginx -t
@@ -167,6 +191,25 @@ if OL_URL="$stub_url" scripts/verify-cache.sh 2>/dev/null; then
 else
   echo "OK   verify-cache.sh échoue sur un serveur sans Cache-Control qui répond 200 à tout"
 fi
+no_assets_url="http://$(docker port "$BACK-$$" 3003/tcp | head -n 1)"
+if OL_URL="$no_assets_url" scripts/verify-cache.sh 2>/dev/null; then
+  echo "FAIL verify-cache.sh passe alors que le bundle du document répond 404"
+  fail=1
+else
+  echo "OK   verify-cache.sh échoue quand le bundle du document répond 404"
+fi
+fallback_url="http://$(docker port "$BACK-$$" 3004/tcp | head -n 1)"
+if OL_URL="$fallback_url" scripts/verify-cache.sh 2>/dev/null; then
+  echo "FAIL verify-cache.sh passe alors qu'un /assets/ absent répond le repli HTML en 200"
+  fail=1
+else
+  echo "OK   verify-cache.sh échoue quand un /assets/ absent répond le repli HTML en 200"
+fi
+unreachable=$(OL_URL="http://127.0.0.1:9" scripts/verify-cache.sh 2>&1 || true)
+case "$unreachable" in
+  *injoignable*) echo "OK   verify-cache.sh dit « injoignable » quand le serveur ne répond pas" ;;
+  *) echo "FAIL verify-cache.sh ne dit pas « injoignable » quand le serveur ne répond pas"; fail=1 ;;
+esac
 
 if [ "$fail" = 0 ]; then echo "test-nginx-cache: tout est conforme"; else echo "test-nginx-cache: ÉCHEC"; fi
 exit "$fail"
