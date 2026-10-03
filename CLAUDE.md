@@ -50,7 +50,16 @@ frontend sur :4202, données dans `./data`).
 Livraison : commit + push sur `main` → la CI (`.github/workflows/build.yml`) construit et pousse
 `ghcr.io/sylad/ol-companion-{backend,frontend}:sha-<7>` → `cadence deliver` (voir `cadence.yaml`)
 lance `scripts/deploy.sh` (bump du tag dans `developpeur-gitops/charts/ol-companion/values.yaml`,
-ArgoCD synchronise) puis `scripts/verify-rollout.sh` et les URL de santé.
+ArgoCD synchronise) puis `scripts/verify-rollout.sh`, les URL de santé et `scripts/verify-cache.sh`.
+
+**Cache HTTP du frontend (L54)** — `frontend/nginx.conf` : `index.html` (`/`, `/index.html`, repli des
+routes) et les fichiers de `public/`, aux noms fixes (`sw.js`, manifeste, icônes, `plan-data/`,
+`nouveautes-data/`), partent en `Cache-Control: no-cache` (revalidés à chaque visite, 304 possible) ;
+`/assets/` (noms à empreinte de Vite) en `public, max-age=31536000, immutable`, et un fichier absent y
+répond 404 `no-store`, jamais le repli HTML. Ne rien servir sous `/assets/` sans empreinte dans le nom.
+Le service worker (`public/sw.js`) n'intercepte ni les navigations ni `/assets/` : il ne garde que
+l'icône, le manifeste et le favicon (cache `olc-shell-v1`, à renommer si l'un d'eux change). Preuve
+rejouable : `cd frontend && npm run build`, puis `DOCKER_API_VERSION=1.44 scripts/test-nginx-cache.sh`.
 
 ## Variables d'env requises (`backend/.env`)
 

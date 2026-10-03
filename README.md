@@ -79,6 +79,7 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 | Sources externes | [365scores](https://www.365scores.com/) (classement, calendrier de la saison, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier : prochain match, heure des coups d'envoi fixée ou non), Wikipedia FR (logos) |
 | Build | Docker multi-stage (node:20-alpine → nginx:alpine) |
 | Déploiement | Images sur GHCR (CI GitHub), chart Helm sur k3s via ArgoCD (GitOps), exposé par un tunnel Cloudflare |
+| Cache HTTP | nginx sert `index.html` et les fichiers aux noms fixes en `no-cache` (revalidés à chaque visite), `/assets/` (noms à empreinte) en cache d'un an ; un fichier absent de `/assets/` répond 404, jamais la page |
 
 ## Setup local
 
