@@ -8,7 +8,9 @@
 #      absent = 404 `no-store`, jamais le repli HTML ;
 #   4. tout autre fichier du build (sw.js, manifeste, icônes, JSON, captures) :
 #      `no-cache` ;
-#   5. /api/ et /api/events : relayés, aucun Cache-Control ajouté.
+#   5. /api/ et /api/events : relayés, aucun Cache-Control ajouté ;
+#   6. scripts/verify-cache.sh (le contrôle d'effet de `cadence deliver`) passe
+#      sur ce nginx, et échoue sur un serveur qui répond 200 sans en-tête à tout.
 #
 # Prérequis : `cd frontend && npm run build` (le script sert frontend/dist tel
 # quel, monté comme le Dockerfile le copie). Le backend n'existe pas ici : il
@@ -51,11 +53,11 @@ server {
 EOF
 
 docker network create "$NET" >/dev/null
-docker run -d --name "$BACK-$$" --network "$NET" --network-alias "$BACK" \
+docker run -d --name "$BACK-$$" --network "$NET" --network-alias "$BACK" -p 127.0.0.1::3002 \
   -v "$TMP/backend.conf:/etc/nginx/conf.d/default.conf:ro" "$IMAGE" >/dev/null
 docker run --rm --network "$NET" \
   -v "$CONF:/etc/nginx/conf.d/default.conf:ro" "$IMAGE" nginx -t
-docker run -d --name "$FRONT" --network "$NET" \
+docker run -d --name "$FRONT" --network "$NET" -p 127.0.0.1::80 \
   -v "$CONF:/etc/nginx/conf.d/default.conf:ro" \
   -v "$DIST:/usr/share/nginx/html:ro" "$IMAGE" >/dev/null
 docker run -d --name "$CURL" --network "$NET" --entrypoint sleep curlimages/curl:latest 600 >/dev/null
@@ -149,6 +151,22 @@ expect '/sw.js (type JavaScript)'    /sw.js          200 application/javascript 
 # 5. l'API est relayée telle quelle : aucun Cache-Control ajouté
 expect '/api/fixtures (relais)'      /api/fixtures   200 text/plain -
 expect '/api/events (relais)'        /api/events     200 text/plain -
+
+# 6. le contrôle d'effet de la livraison, rejoué depuis l'hôte sur les ports publiés
+front_url="http://$(docker port "$FRONT" 80/tcp | head -n 1)"
+stub_url="http://$(docker port "$BACK-$$" 3002/tcp | head -n 1)"
+if OL_URL="$front_url" scripts/verify-cache.sh; then
+  echo "OK   verify-cache.sh passe sur ce nginx"
+else
+  echo "FAIL verify-cache.sh échoue sur ce nginx"
+  fail=1
+fi
+if OL_URL="$stub_url" scripts/verify-cache.sh 2>/dev/null; then
+  echo "FAIL verify-cache.sh passe sur un serveur sans Cache-Control qui répond 200 à tout"
+  fail=1
+else
+  echo "OK   verify-cache.sh échoue sur un serveur sans Cache-Control qui répond 200 à tout"
+fi
 
 if [ "$fail" = 0 ]; then echo "test-nginx-cache: tout est conforme"; else echo "test-nginx-cache: ÉCHEC"; fi
 exit "$fail"

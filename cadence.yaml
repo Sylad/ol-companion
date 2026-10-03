@@ -17,4 +17,8 @@ deliver:
     - url: https://ol.sladoire.dev/api/season-matches
       contains: 'UEFA Champions League'
     - url: https://ol.sladoire.dev/
+    # ce que reçoit un visiteur revenu après une livraison : le document en no-cache
+    # (sinon l'ancienne appli reste affichée — 1 h 25 mesurée le 03-10) et 404, pas le
+    # repli HTML, pour un fichier absent de /assets/
+    - command: ./scripts/verify-cache.sh
   verifyTimeout: 600
