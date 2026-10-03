@@ -6,7 +6,7 @@ import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
-import { readScores365Standings } from './scores365-standings';
+import { describeClubsResolvedFromGames, readScores365Standings } from './scores365-standings';
 
 export type FormOutcome = 'W' | 'D' | 'L';
 
@@ -135,8 +135,19 @@ export class StandingsService implements OnModuleInit {
       // Lecture partagée avec le mini-classement du direct : les lignes en
       // sortent toutes avec leur club, ou pas de classement du tout.
       const reading = readScores365Standings(await res.json(), '365scores standings');
-      if (!reading.ok) return null;
+      if (!reading.ok) {
+        // 200 sans classement exploitable (enveloppe vide, ligne sans club
+        // qu'on ne sait pas attribuer) : on le dit, ce cas était muet.
+        this.logger.warn(`365scores standings → no table: ${reading.reason}`);
+        return null;
+      }
       const { data, rows } = reading;
+      if (reading.resolvedFromGames.length > 0) {
+        this.logger.warn(
+          `365scores standings: ${reading.resolvedFromGames.length} of ${rows.length} rows came without competitor, ` +
+            `club restored from the row's games (${describeClubsResolvedFromGames(reading.resolvedFromGames)})`,
+        );
+      }
 
       const seasonName = data.competitions?.[0]?.seasons
         ?.find((s) => s.num === reading.seasonNum)?.name;
