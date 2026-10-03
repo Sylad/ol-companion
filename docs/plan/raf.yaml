@@ -256,11 +256,13 @@ lots:
     created: 2026-10-03
   - id: L33
     title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
-    status: doing
+    status: done
     estimate: 0.5
     quickwin: true
     created: 2026-10-03
     started: 2026-10-03
+    review: { date: 2026-10-03, verdict: "conforme — relecture indépendante de 6211803 : 0 bloquant, 0 majeur ; bascule d'hôte mécanique sur les 7 services, garde de test rouge avant / verte après et sensible à un seul hôte égaré, composition prouvée sur les charges réelles de webws ; revérifié par le lead : 183 tests unitaires, 5 e2e, build. Le contrôle d'effet ajouté à cadence.yaml (commit suivant) est du lead, non relu. Le classement reste null après livraison : porté par L35.", commit: 054c1e577a6f1e89720b68d8965bc9788a14cee4 }
+    finished: 2026-10-03
   - id: L34
     title: "Résilience : quand 365scores est en panne, servir le dernier cache connu (composition, classement) avec son âge au lieu de null une fois le TTL expiré — le 03-10 l'effectif a disparu 6 h après le dernier appel réussi"
     status: todo
@@ -272,3 +274,5 @@ lots:
     estimate: 0.5
     quickwin: true
     created: 2026-10-03
+    notes:
+      - { date: 2026-10-03, text: "03-10 : deux mesures à réconcilier avant de coder. Implémenteur de L33 (fetch Node, donc Accept-Encoding) : 18 lignes dont 2 sans competitor ; il note qu'un curl SANS Accept-Encoding reçoit une enveloppe de 121 octets sans clé standings. Relecteur de L33 : HTTP 200, enveloppe vide de 121 octets (CloudFront max-age 1800), rendue null SANS aucun log (standings.service.ts:138, live-match.service.ts:125) — probablement le même effet d'encodage, à vérifier. Couvrir les deux cas et journaliser le rendu null." }
