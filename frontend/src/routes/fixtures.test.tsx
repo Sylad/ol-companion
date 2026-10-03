@@ -7,7 +7,8 @@ import { FixturesPage } from './fixtures';
 
 // L39 — le calendrier liste toutes les compétitions où l'OL joue, depuis
 // /api/season-matches, et n'affiche jamais une heure qui n'est pas fixée.
-// Charge : la saison que 365scores servait le 03-10-2026 (42 matchs).
+// Charge : la saison que 365scores servait le 03-10-2026 (46 matchs, dont les
+// 4 qualifications de Ligue des champions d'août).
 
 const okJson = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
 const notFound = { ok: false, status: 404, json: async () => ({}) };
@@ -47,19 +48,19 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     vi.unstubAllGlobals();
   });
 
-  it('liste les 42 matchs de la saison et les compte : Tout 42, À venir 36, Joués 6', async () => {
+  it('liste les 46 matchs de la saison et les compte : Tout 46, À venir 36, Joués 10', async () => {
     const fetchMock = serve();
     vi.stubGlobal('fetch', fetchMock);
     renderPage();
 
-    expect(await screen.findAllByRole('article')).toHaveLength(42);
+    expect(await screen.findAllByRole('article')).toHaveLength(46);
     const status = screen.getByRole('group', { name: 'Filtrer par statut' });
     expect(within(status).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      'Tout42',
+      'Tout46',
       'À venir36',
-      'Joués6',
+      'Joués10',
     ]);
-    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('42');
+    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('46');
     // Une seule source pour un match : la page ne lit plus /api/fixtures.
     const urls = fetchMock.mock.calls.map(([url]) => url);
     expect(urls).toContain('/api/season-matches');
@@ -80,6 +81,42 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     const anderlecht = within(block('UEFA Europa League · J1')).getByRole('article');
     expect(anderlecht).toHaveTextContent('Anderlecht');
     expect(anderlecht).toHaveTextContent('Terminé');
+  });
+
+  it('montre les 4 qualifications de Ligue des champions d’août à leur date, avec leur tour, leur manche et leur score', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+
+    const row = (label: string) => within(block(label)).getByRole('article');
+
+    const spartaAway = row('UEFA Champions League · 3e tour de qualification · aller');
+    expect(spartaAway).toHaveTextContent('Mar. 04');
+    expect(spartaAway).toHaveTextContent('08');
+    expect(spartaAway).toHaveTextContent('Sparta Praha2');
+    expect(spartaAway).toHaveTextContent('Lyon1');
+
+    const spartaHome = row('UEFA Champions League · 3e tour de qualification · retour');
+    expect(spartaHome).toHaveTextContent('Mar. 11');
+    expect(spartaHome).toHaveTextContent('Lyon3');
+    expect(spartaHome).toHaveTextContent('Sparta Praha0');
+
+    const fenerAway = row('UEFA Champions League · Barrages · aller');
+    expect(fenerAway).toHaveTextContent('Mar. 18');
+    expect(fenerAway).toHaveTextContent('Fenerbahçe SK1');
+    expect(fenerAway).toHaveTextContent('Lyon1');
+
+    const fenerHome = row('UEFA Champions League · Barrages · retour');
+    expect(fenerHome).toHaveTextContent('Mer. 26');
+    expect(fenerHome).toHaveTextContent('Lyon1');
+    expect(fenerHome).toHaveTextContent('Fenerbahçe SK2');
+
+    for (const article of [spartaAway, spartaHome, fenerAway, fenerHome]) {
+      expect(article).toHaveTextContent('Terminé');
+    }
+    // Bilan toutes compétitions : 5 V, 3 N, 2 D.
+    const quick = screen.getByText('Vue rapide').parentElement as HTMLElement;
+    expect(quick).toHaveTextContent('5V3N2D');
   });
 
   it('garde la journée, le score et l’heure des matchs de Ligue 1', async () => {
@@ -103,8 +140,12 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     await screen.findAllByRole('article');
 
     const labels = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent);
-    expect(labels.slice(0, 8)).toEqual([
+    expect(labels.slice(0, 12)).toEqual([
+      'UEFA Champions League · 3e tour de qualification · aller',
+      'UEFA Champions League · 3e tour de qualification · retour',
+      'UEFA Champions League · Barrages · aller',
       'Ligue 1 · J1',
+      'UEFA Champions League · Barrages · retour',
       'Ligue 1 · J2',
       'Ligue 1 · J3',
       'Ligue 1 · J4',
@@ -147,8 +188,8 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect.stringMatching(/imagecache\.365scores\.com\/.*\/Competitors\/465$/),
       expect.stringMatching(/imagecache\.365scores\.com\/.*\/Competitors\/10$/),
     ]);
-    // 84 écussons affichés ; seul l'en-tête de page interroge encore wiki-image.
-    expect(screen.getAllByRole('article').flatMap((a) => within(a).getAllByRole('img'))).toHaveLength(84);
+    // 92 écussons affichés ; seul l'en-tête de page interroge encore wiki-image.
+    expect(screen.getAllByRole('article').flatMap((a) => within(a).getAllByRole('img'))).toHaveLength(92);
     const wikiCalls = fetchMock.mock.calls.filter(([url]) => url.startsWith('/api/wiki-image'));
     expect(wikiCalls.length).toBeLessThanOrEqual(1);
   });
@@ -161,7 +202,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     const status = screen.getByRole('group', { name: 'Filtrer par statut' });
 
     await user.click(within(status).getByRole('button', { name: /Joués/ }));
-    expect(screen.getAllByRole('article')).toHaveLength(6);
+    expect(screen.getAllByRole('article')).toHaveLength(10);
     expect(within(status).getByRole('button', { name: /Joués/ })).toHaveAttribute('aria-pressed', 'true');
 
     await user.click(within(status).getByRole('button', { name: /À venir/ }));
@@ -175,10 +216,16 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     await screen.findAllByRole('article');
     const competitions = screen.getByRole('group', { name: 'Filtrer par compétition' });
     expect(within(competitions).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      'Toutes42',
+      'Toutes46',
       'Ligue 134',
+      'Champions4',
       'Europa8',
     ]);
+    // La somme des pastilles égale « Toutes » : aucun match hors pastille.
+    const [all, ...perCompetition] = within(competitions)
+      .getAllByRole('button')
+      .map((b) => Number(b.querySelector('span')?.textContent));
+    expect(perCompetition.reduce((sum, n) => sum + n, 0)).toBe(all);
 
     await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
 
@@ -192,8 +239,17 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('8');
     expect(screen.queryByRole('heading', { level: 3, name: /Ligue 1/ })).not.toBeInTheDocument();
 
+    await user.click(within(competitions).getByRole('button', { name: /Champions League/ }));
+    expect(screen.getAllByRole('article')).toHaveLength(4);
+    expect(within(status).getAllByRole('button').map((b) => b.textContent)).toEqual([
+      'Tout4',
+      'À venir0',
+      'Joués4',
+    ]);
+    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('4');
+
     await user.click(within(competitions).getByRole('button', { name: /Toutes/ }));
-    expect(screen.getAllByRole('article')).toHaveLength(42);
+    expect(screen.getAllByRole('article')).toHaveLength(46);
   });
 
   it('une seule compétition dans la saison : pas de filtre par compétition', async () => {

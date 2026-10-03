@@ -70,8 +70,14 @@ export interface Fixture {
  * switch on a stable code instead of parsing free-form competition names.
  */
 export interface SeasonMatch extends Fixture {
-  competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
+  competitionCode: CompetitionCode;
   competitionId: number;
+  /**
+   * Tour et manche d'un match sans journée (« 3e tour de qualification ·
+   * aller », « Barrages · retour ») ; `null` sinon. Absent d'un backend
+   * antérieur au champ.
+   */
+  round?: string | null;
 }
 
 export interface NewsItem {
@@ -291,7 +297,11 @@ export interface LiveMatchStats extends LiveMatchSummary {
 /* so reads cost ~0 and refresh tracks the cron there.                */
 /* ------------------------------------------------------------------ */
 
-export type CompetitionCode = 'L1' | 'CDF' | 'UEL' | 'OTHER';
+/**
+ * Les compétitions suivies par /api/season-matches (liste tenue côté backend,
+ * `TRACKED_COMPETITIONS`). `UCL` = Ligue des champions, qualifications comprises.
+ */
+export type CompetitionCode = 'L1' | 'CDF' | 'UEL' | 'UCL';
 
 export interface PerCompetitionTeamStats {
   competitionCode: CompetitionCode;
@@ -345,7 +355,7 @@ export interface PlayerByMatch {
   olScore: number | null;
   opponentScore: number | null;
   result: 'W' | 'D' | 'L' | null;
-  competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
+  competitionCode: CompetitionCode;
   minutes: number;
   goals: number;
   assists: number;

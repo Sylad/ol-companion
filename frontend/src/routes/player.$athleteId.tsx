@@ -35,7 +35,7 @@ const COMP_LABEL: Record<PlayerByMatch['competitionCode'], string> = {
   L1: 'L1',
   CDF: 'CdF',
   UEL: 'C3',
-  OTHER: '—',
+  UCL: 'C1',
 };
 
 function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {

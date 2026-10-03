@@ -17,7 +17,7 @@ const COMP_LABEL: Record<PerCompetitionTeamStats['competitionCode'], string> = {
   L1: 'Ligue 1',
   CDF: 'Coupe de France',
   UEL: 'Europa League',
-  OTHER: 'Autres',
+  UCL: 'Champions League',
 };
 
 // Cumulative goal-difference sparkline → bleu OL (trajectoire neutre, pas

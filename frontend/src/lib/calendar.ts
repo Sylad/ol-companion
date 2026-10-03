@@ -45,12 +45,12 @@ export interface CompetitionOption {
   count: number;
 }
 
-const COMPETITION_ORDER: CompetitionCode[] = ['L1', 'UEL', 'CDF', 'OTHER'];
+const COMPETITION_ORDER: CompetitionCode[] = ['L1', 'UCL', 'UEL', 'CDF'];
 const SHORT_LABEL: Record<CompetitionCode, string> = {
   L1: 'Ligue 1',
+  UCL: 'Champions',
   UEL: 'Europa',
   CDF: 'Coupe',
-  OTHER: 'Autres',
 };
 
 /** Les compétitions présentes dans la saison, avec leur nombre de matchs. */
@@ -61,16 +61,20 @@ export function competitionOptions(matches: SeasonMatch[]): CompetitionOption[] 
     return [{
       code,
       label: SHORT_LABEL[code],
-      name: code === 'OTHER' ? 'Autres compétitions' : own[0].competition,
+      name: own[0].competition,
       count: own.length,
     }];
   });
 }
 
-/** « Ligue 1 · J6 », « UEFA Europa League · J2 », « Coupe de France ». */
+/**
+ * « Ligue 1 · J6 », « UEFA Europa League · J2 », « UEFA Champions League ·
+ * Barrages · retour » (sans journée : le tour et la manche quand l'API les
+ * donne), « Coupe de France ».
+ */
 export function matchLabel(m: SeasonMatch): string {
-  const competition = m.competition || 'Autres';
-  return m.matchday ? `${competition} · J${m.matchday}` : competition;
+  if (m.matchday) return `${m.competition} · J${m.matchday}`;
+  return m.round ? `${m.competition} · ${m.round}` : m.competition;
 }
 
 export interface MatchGroup {
