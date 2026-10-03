@@ -124,7 +124,11 @@ function json(body: unknown): Response {
  */
 function buildService(
   fixtures: Match[] = footballDataMatches(),
-  pages: { fixtures?: Page | 'http-503' } = {},
+  pages: {
+    fixtures?: Page | 'http-503';
+    /** Pages servies en suivant le curseur de la page des RÉSULTATS. */
+    afterResults?: Page[];
+  } = {},
 ): { svc: SeasonMatchesService; requested: string[] } {
   const requested: string[] = [];
   const forwardByCursor = new Map<string, Page>();
@@ -134,6 +138,14 @@ function buildService(
   // demandées quand la page des matchs à venir répond.
   let previous: Page = season.fixtures;
   for (const page of season.forward) {
+    const cursor = new URL(
+      `https://x${previous.paging?.nextPage ?? ''}`,
+    ).searchParams.get('aftergame');
+    if (cursor) forwardByCursor.set(cursor, page);
+    previous = page;
+  }
+  previous = season.results;
+  for (const page of pages.afterResults ?? []) {
     const cursor = new URL(
       `https://x${previous.paging?.nextPage ?? ''}`,
     ).searchParams.get('aftergame');
@@ -372,6 +384,90 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       // curseur des résultats (page non capturée ici → 404 → arrêt propre).
       expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(10);
       expect(requested[2]).toBe(season.results.paging?.nextPage);
+    });
+  });
+
+  describe('page des matchs à venir en HTTP 200 mais SANS match', () => {
+    /**
+     * Les matchs à venir de la capture, redécoupés en pages de 4 chaînées par
+     * `aftergame` comme le fait 365scores depuis le curseur des résultats (il
+     * y sert 3 à 5 matchs par page). Le découpage est reconstruit, les matchs
+     * sont ceux de la capture ; la dernière page est l'enveloppe vide.
+     */
+    function pagesAfterResults(): Page[] {
+      const upcoming = [
+        ...(season.fixtures.games ?? []),
+        ...season.forward.flatMap((p) => p.games ?? []),
+      ] as { id: number }[];
+      const pages: Page[] = [];
+      for (let i = 0; i < upcoming.length; i += 4) {
+        const games = upcoming.slice(i, i + 4);
+        pages.push({
+          games,
+          paging: {
+            nextPage: `/web/games/?langId=1&timezoneId=6&userCountryId=75&apptype=5&competitors=465&games=1&aftergame=${games[games.length - 1].id}&direction=1`,
+          },
+        });
+      }
+      return [...pages, {}];
+    }
+
+    it.each<[string, Page]>([
+      ['enveloppe sans clé `games`', {}],
+      ['liste `games` vide', { games: [] }],
+      [
+        'liste vide avec un curseur à elle',
+        {
+          games: [],
+          paging: {
+            nextPage:
+              '/web/games/?langId=1&timezoneId=6&userCountryId=75&apptype=5&competitors=465&games=1&aftergame=999&direction=1',
+          },
+        },
+      ],
+    ])(
+      '%s : la marche avant repart du curseur des résultats et rend toute la saison',
+      async (_label, emptyFixtures) => {
+        await withCwd(async () => {
+          const afterResults = pagesAfterResults();
+          expect(afterResults).toHaveLength(10); // 36 matchs à venir : 9 pages + la vide
+          const { svc, requested } = buildService(footballDataMatches(), {
+            fixtures: emptyFixtures,
+            afterResults,
+          });
+
+          const matches = await svc.getMatches({ force: true });
+
+          expect(requested[2]).toBe(season.results.paging?.nextPage);
+          // Jamais le curseur d'une page sans match.
+          expect(requested.some((u) => u.includes('aftergame=999'))).toBe(false);
+          // 2 appels + les 10 pages : la saison est complète, jusqu'à J34.
+          expect(requested).toHaveLength(12);
+          expect(matches).toHaveLength(46);
+          expect(
+            matches.filter((m) => m.status === 'SCHEDULED'),
+          ).toHaveLength(36);
+          expect(matches[matches.length - 1]).toMatchObject({
+            date: '2027-05-29T17:00:00.000Z',
+            matchday: 34,
+          });
+        });
+      },
+    );
+
+    it('et sans page suivante côté résultats non plus : les matchs joués seuls, sans erreur', async () => {
+      await withCwd(async () => {
+        const { svc, requested } = buildService(footballDataMatches(), {
+          fixtures: {},
+        });
+
+        const matches = await svc.getMatches({ force: true });
+
+        // Le curseur des résultats est tenté (page non servie ici → 404).
+        expect(requested).toHaveLength(3);
+        expect(matches).toHaveLength(10);
+        expect(matches.every((m) => m.status === 'FINISHED')).toBe(true);
+      });
     });
   });
 

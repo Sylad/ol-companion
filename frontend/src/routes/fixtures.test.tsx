@@ -252,6 +252,85 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.getAllByRole('article')).toHaveLength(46);
   });
 
+  describe('vue rapide — cartes « Prochain » et « Dernier résultat »', () => {
+    /** La carte de la vue rapide qui porte ce titre. */
+    function card(title: string): HTMLElement {
+      return screen.getByText(title).parentElement as HTMLElement;
+    }
+
+    /** La saison, avec le prochain match (J6 Lens–Lyon du 09-10) sans heure fixée. */
+    const nextUnconfirmed = season.map((m) =>
+      m.competitionCode === 'L1' && m.matchday === 6 ? { ...m, timeConfirmed: false } : m,
+    );
+
+    it('« Prochain » : l’adversaire, la date, la compétition et l’heure fixée du prochain match', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const next = card('Prochain');
+      expect(next).toHaveTextContent('Lens');
+      expect(next).toHaveTextContent('Ven. 09/10 · Ligue 1');
+      expect(next).toHaveTextContent('20:45');
+      expect(next).not.toHaveTextContent('Horaire à confirmer');
+    });
+
+    it('« Prochain » avec une heure non fixée : « Horaire à confirmer », aucune heure', async () => {
+      vi.stubGlobal('fetch', serve(nextUnconfirmed));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const next = card('Prochain');
+      expect(next).toHaveTextContent('Lens');
+      expect(next).toHaveTextContent('Ven. 09/10 · Ligue 1');
+      expect(next).toHaveTextContent('Horaire à confirmer');
+      // Ni l'heure de 365scores (20:45), ni aucune autre.
+      expect(next).not.toHaveTextContent(/\d{2}:\d{2}/);
+      expect(next).not.toHaveTextContent(/\d{2}h\d{2}/);
+    });
+
+    it('« Prochain » suit le filtre par compétition : Crystal Palace en Ligue Europa, rien en Ligue des champions', async () => {
+      vi.stubGlobal('fetch', serve(nextUnconfirmed));
+      const user = userEvent.setup();
+      renderPage();
+      await screen.findAllByRole('article');
+      const competitions = screen.getByRole('group', { name: 'Filtrer par compétition' });
+
+      await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+      const europa = card('Prochain');
+      expect(europa).toHaveTextContent('Crystal Palace');
+      expect(europa).toHaveTextContent('Jeu. 15/10 · UEFA Europa League');
+      expect(europa).toHaveTextContent('18:45');
+      expect(europa).not.toHaveTextContent('Lens');
+      expect(card('Dernier résultat')).toHaveTextContent('Anderlecht');
+      expect(card('Dernier résultat')).toHaveTextContent('1-2');
+
+      // Ligue des champions : 4 matchs joués, aucun à venir → pas de carte « Prochain ».
+      await user.click(within(competitions).getByRole('button', { name: /Champions League/ }));
+      expect(screen.queryByText('Prochain')).not.toBeInTheDocument();
+      const last = card('Dernier résultat');
+      expect(last).toHaveTextContent('Fenerbahçe SK');
+      expect(last).toHaveTextContent('Mer. 26/08 · UEFA Champions League');
+      expect(last).toHaveTextContent('1-2');
+
+      await user.click(within(competitions).getByRole('button', { name: /^Ligue 1/ }));
+      expect(card('Prochain')).toHaveTextContent('Lens');
+      expect(card('Prochain')).toHaveTextContent('Horaire à confirmer');
+    });
+
+    it('« Dernier résultat » affiche le score, jamais « Horaire à confirmer », même si le champ est faux sur un match joué', async () => {
+      const played = season.map((m) => (m.status === 'FINISHED' ? { ...m, timeConfirmed: false } : m));
+      vi.stubGlobal('fetch', serve(played));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const last = card('Dernier résultat');
+      expect(last).toHaveTextContent('Rennes');
+      expect(last).toHaveTextContent('4-0');
+      expect(last).not.toHaveTextContent('Horaire à confirmer');
+    });
+  });
+
   it('une seule compétition dans la saison : pas de filtre par compétition', async () => {
     const ligue1Only = season.filter((m) => m.competitionCode === 'L1');
     vi.stubGlobal('fetch', serve(ligue1Only));
