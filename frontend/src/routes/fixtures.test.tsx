@@ -331,6 +331,33 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     });
   });
 
+  describe('lisibilité — revue UX du calendrier', () => {
+    /** Le bloc « Horaire à confirmer » (deux lignes) contenu dans cet élément. */
+    function tbd(container: HTMLElement): HTMLElement {
+      return within(container).getByText('Horaire').parentElement as HTMLElement;
+    }
+
+    it('« Horaire à confirmer » est écrit en fg-muted (≥ 4,5:1 sur le fond), jamais en fg-dim, et reste plus discret qu’une heure', async () => {
+      const nextUnconfirmed = season.map((m) =>
+        m.competitionCode === 'L1' && m.matchday === 6 ? { ...m, timeConfirmed: false } : m,
+      );
+      vi.stubGlobal('fetch', serve(nextUnconfirmed));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const inRow = tbd(within(block('Ligue 1 · J13')).getByRole('article'));
+      const inNextCard = tbd(screen.getByText('Prochain').parentElement as HTMLElement);
+      for (const el of [inRow, inNextCard]) {
+        expect(el).toHaveTextContent('Horaire à confirmer');
+        expect(el).toHaveClass('text-fg-muted');
+        expect(el).not.toHaveClass('text-fg-dim');
+        // 10 px en capitales, sans graisse : plus discret qu'une heure (14 px, gras).
+        expect(el).toHaveClass('text-[10px]', 'uppercase');
+        expect(el.className).not.toMatch(/font-(semi)?bold/);
+      }
+    });
+  });
+
   it('une seule compétition dans la saison : pas de filtre par compétition', async () => {
     const ligue1Only = season.filter((m) => m.competitionCode === 'L1');
     vi.stubGlobal('fetch', serve(ligue1Only));

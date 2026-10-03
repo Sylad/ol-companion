@@ -270,11 +270,15 @@ function SummaryMatch({
   );
 }
 
-/** À la place de l'heure quand elle n'est pas fixée — même style que « Terminé ». */
+/**
+ * À la place de l'heure quand elle n'est pas fixée. 10 px en capitales, donc
+ * `fg-muted` (≥ 4,5:1 sur le fond, WCAG 1.4.3) et non `fg-dim` (3,9:1) ; reste
+ * plus discret qu'une heure (14 px, gras).
+ */
 function KickoffTbd() {
   const [first, ...rest] = KICKOFF_TBD.split(' ');
   return (
-    <div className="text-right text-[10px] uppercase leading-tight tracking-wider text-fg-dim">
+    <div className="text-right text-[10px] uppercase leading-tight tracking-wider text-fg-muted">
       <span className="block whitespace-nowrap">{first}</span>{' '}
       <span className="block whitespace-nowrap">{rest.join(' ')}</span>
     </div>
