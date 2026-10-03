@@ -8,5 +8,8 @@ deliver:
     - command: ./scripts/verify-rollout.sh
     - url: https://ol.sladoire.dev/api/health
       contains: '"status":"ok"'
+    # l'effet, pas seulement la santé : le 03-10, /api/health répondait ok avec un effectif vide
+    - url: https://ol.sladoire.dev/api/lineup
+      contains: '"starters"'
     - url: https://ol.sladoire.dev/
   verifyTimeout: 600
