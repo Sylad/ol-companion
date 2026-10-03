@@ -131,9 +131,17 @@ export class LiveMatchService implements OnModuleInit {
       }
       // Même lecture que StandingsService : club de chaque ligne garanti, ou rien.
       const reading = readScores365Standings(await res.json(), '365scores standings (live)');
-      if (!reading.ok) return undefined;
+      if (!reading.ok) {
+        this.logger.warn(`standings (live) → no table: ${reading.reason}`);
+        return undefined;
+      }
       const rows = extractStandingsAround(reading.rows, LIVE_MATCH_OL_ID, STANDINGS_AROUND);
-      if (rows.length === 0) return undefined;
+      if (rows.length === 0) {
+        this.logger.warn(
+          `standings (live) → OL (competitor ${LIVE_MATCH_OL_ID}) not found among the ${reading.rows.length} rows`,
+        );
+        return undefined;
+      }
       this.cachedStandings = { rows, fetchedAt: Date.now() };
       return rows;
     } catch (err) {
