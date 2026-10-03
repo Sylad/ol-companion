@@ -303,7 +303,7 @@ lots:
     created: 2026-10-03
   - id: L39
     title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-03
@@ -311,6 +311,9 @@ lots:
       - { date: 2026-10-03, text: "Décision de Sylvain le 03-10 : le calendrier doit lister TOUTES les compétitions où l'OL joue (Ligue 1, Europa League, coupes), pas la Ligue 1 seule. Source disponible : /api/season-matches (36 matchs le 03-10). Attendu QA : le total de /fixtures égale celui de la saison toutes compétitions." }
       - { date: 2026-10-03, text: "Décision de Sylvain le 03-10 (suite) : les 4 matchs de qualification de Ligue des champions d'août 2026 (365scores compétition 332) entrent dans le calendrier ET dans les statistiques d'équipe et de joueurs ; la Ligue des champions (572) est suivie aussi. Relecture du 03-10 : 3 majeurs à corriger avant done — ces qualifications absentes ; un appel football-data refusé réécrit le cache sans les matchs à venir et le match du lendemain perd son heure ; branches de la règle d'heure sans test capable d'échouer." }
     started: 2026-10-03
+    ux: { date: 2026-10-03, verdict: "conforme après corrections — revue UX à 1440, 390 et 320 px sur l'app servie en local : 2 corrections demandées et faites (« Horaire à confirmer » 3,94:1 → 7,19:1 ; pastilles : anneau sur la sélection 7,3:1, compteurs ≥ 6,85:1, noms accessibles « À venir · 36 matchs ») + panneau Prochain collant (haut à 24 px à tout défilement) ; mesures de l'implémenteur sous Chromium seul, non remesurées par l'agent UX ; 7 lots de suite (jour non fixé affiché ferme, noms tronqués au téléphone, glossaire des compétitions, densité, état vide, fg-dim, badge Live)" }
+    review: { date: 2026-10-03, verdict: "conforme — deux relectures indépendantes : 1re passe 3 majeurs (qualifications de Ligue des champions absentes, heure du lendemain perdue sur un 429 football-data, règle d'heure sans test) tous corrigés ; 2de passe sur les corrections : 0 bloquant, 0 majeur, 6 mineurs reportés dans un lot de suite, 33/41 mutations tuées ; revérifié par le lead : 285 tests backend, 5 e2e, 265 tests frontend, builds. Les 4 derniers commits (contraste, pastilles, panneau collant, capture) et le contrôle d'effet de cadence.yaml n'ont pas été relus par un agent de code.", commit: b15f776b6a4bb776697df0162c2283c9470c3954 }
+    finished: 2026-10-03
   - id: L40
     title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
     status: todo
@@ -347,4 +350,54 @@ lots:
     status: todo
     estimate: 0.5
     visible: true
+    created: 2026-10-03
+  - id: L46
+    title: "Calendrier, suites de la relecture de code du 03-10 : test du repli par journée refusé quand SCHEDULED répond 200 sans match ; test « aucun match à venir » du tableau de bord qui passe sur l'état de chargement ; tests du tour (journée + manche, « 1er tour ») ; tests des libellés C1 du bilan et de la page joueur ; borner l'âge des matchs gardés du cache football-data ou rendre l'échec durable visible ; comparer l'heure 365scores à celle de football-data avant de l'afficher comme fixée"
+    status: todo
+    estimate: 1
+    created: 2026-10-03
+  - id: L47
+    title: "Calendrier : jour non fixé affiché comme ferme (18 des 21 lignes « à confirmer » sont un samedi de remplissage) — « Date et horaire à confirmer » ou « Week-end du … », aussi sur le tableau de bord"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L48
+    title: "Calendrier téléphone : noms de clubs tronqués (15/92 à 390 px, tous à 320 px) — grille 56px / 1fr / auto, nom court pour Marseille"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L49
+    title: "Noms des compétitions : un seul glossaire — Ligue des champions / Ligue Europa en long, C1 / C3 / CdF en court avec le nom long accessible — calendrier, bilan de saison, page joueur, Nouveautés"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L50
+    title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-03
+  - id: L51
+    title: "Calendrier : état vide actionnable et annoncé, pastilles sans « 0 » pendant le chargement, erreur avec Réessayer ; score cumulé sur le match retour des qualifications ; qualifications sur la page Coupes (à décider)"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-03
+  - id: L52
+    title: Contraste du jeton fg-dim sur toute l'app (3,84–3,98:1 à 10–11 px) — viser rgb(115,131,153) ; carte du tableau de bord rognée à 390 px avec un nom long
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-03
+  - id: L53
+    title: "Statistiques joueurs : un détail de match 365scores en timeout est sauté en silence (stats bâties sur 9 matchs sur 10 et gardées 1 h) ; vérifier les passes décisives (Tolisso 12 en 10 matchs)"
+    status: todo
+    estimate: 0.5
     created: 2026-10-03
