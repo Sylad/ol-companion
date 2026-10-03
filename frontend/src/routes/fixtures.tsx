@@ -1,16 +1,26 @@
 import { useMemo, useState } from 'react';
-import { useFixtures } from '@/hooks/use-fixtures';
+import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { TeamLogo } from '@/components/team-logo';
 import { CalendarDays, Loader2, Trophy } from 'lucide-react';
-import type { Fixture } from '@/types/api';
+import type { SeasonMatch } from '@/types/api';
 import { OL_TEAM_ID } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
+import { KICKOFF_TBD, kickoffTime } from '@/lib/kickoff';
+import {
+  byCompetition,
+  byStatus,
+  competitionOptions,
+  countResults,
+  groupMatches,
+  isUpcoming,
+  statusCounts,
+  type CompetitionFilter,
+  type StatusTab,
+} from '@/lib/calendar';
 
-type FilterTab = 'all' | 'upcoming' | 'past';
-
-const TABS: { key: FilterTab; label: string }[] = [
+const TABS: { key: StatusTab; label: string }[] = [
   { key: 'all', label: 'Tout' },
   { key: 'upcoming', label: 'À venir' },
   { key: 'past', label: 'Joués' },
@@ -18,77 +28,34 @@ const TABS: { key: FilterTab; label: string }[] = [
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
-function formatDateParts(iso: string): { day: string; month: string; time: string } {
-  const d = new Date(iso);
+/** Jour, mois et heure ; `time` est `null` quand l'heure n'est pas fixée. */
+function formatDateParts(match: SeasonMatch): { day: string; month: string; time: string | null } {
+  const d = new Date(match.date);
   return {
     day: `${WEEKDAY[d.getDay()]} ${d.getDate().toString().padStart(2, '0')}`,
     month: `${(d.getMonth() + 1).toString().padStart(2, '0')}`,
-    time: `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`,
+    time: kickoffTime(match),
   };
 }
 
-function isPast(f: Fixture): boolean {
-  return f.status === 'FINISHED' || f.status === 'POSTPONED';
-}
-
-function isUpcoming(f: Fixture): boolean {
-  return f.status === 'SCHEDULED' || f.status === 'TIMED' || f.status === 'IN_PLAY';
-}
-
-function groupByMatchday(fixtures: Fixture[]): Map<string, Fixture[]> {
-  const groups = new Map<string, Fixture[]>();
-  for (const f of fixtures) {
-    const md = f.matchday ?? 0;
-    const comp = f.competition ?? 'Autres';
-    const key = `${comp} · J${md}`;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(f);
-  }
-  return groups;
-}
-
-function countResults(fixtures: Fixture[]): { wins: number; draws: number; losses: number } {
-  let wins = 0;
-  let draws = 0;
-  let losses = 0;
-  for (const f of fixtures) {
-    if (f.status !== 'FINISHED' || f.homeScore === null || f.awayScore === null) continue;
-    const olIsHome = f.homeTeamId === OL_TEAM_ID;
-    const olScore = olIsHome ? f.homeScore : f.awayScore;
-    const oppScore = olIsHome ? f.awayScore : f.homeScore;
-    if (olScore > oppScore) wins++;
-    else if (olScore < oppScore) losses++;
-    else draws++;
-  }
-  return { wins, draws, losses };
-}
-
 export function FixturesPage() {
-  const { data, isLoading, isError } = useFixtures();
-  const [tab, setTab] = useState<FilterTab>('all');
+  // Toute la saison, toutes compétitions : /api/season-matches (L39).
+  const { data, isLoading, isError } = useSeasonMatches();
+  const [tab, setTab] = useState<StatusTab>('all');
+  const [competition, setCompetition] = useState<CompetitionFilter>('all');
 
-  const filtered = useMemo(() => {
-    if (!data) return [];
-    if (tab === 'upcoming') return data.filter(isUpcoming);
-    if (tab === 'past') return data.filter(isPast);
-    return data;
-  }, [data, tab]);
-
-  const grouped = useMemo(() => groupByMatchday(filtered), [filtered]);
-  const counts = useMemo(() => ({
-    all: data?.length ?? 0,
-    upcoming: data?.filter(isUpcoming).length ?? 0,
-    past: data?.filter(isPast).length ?? 0,
-  }), [data]);
-  const nextMatch = useMemo(() => {
-    const upcoming = data?.filter(isUpcoming) ?? [];
-    return upcoming[0] ?? null;
-  }, [data]);
+  const competitions = useMemo(() => competitionOptions(data ?? []), [data]);
+  // La compétition choisie borne tout le reste : compteurs, vue rapide, liste.
+  const scoped = useMemo(() => byCompetition(data ?? [], competition), [data, competition]);
+  const filtered = useMemo(() => byStatus(scoped, tab), [scoped, tab]);
+  const grouped = useMemo(() => groupMatches(filtered), [filtered]);
+  const counts = useMemo(() => statusCounts(scoped), [scoped]);
+  const nextMatch = useMemo(() => scoped.filter(isUpcoming)[0] ?? null, [scoped]);
   const lastMatch = useMemo(() => {
-    const past = data?.filter((f) => f.status === 'FINISHED') ?? [];
+    const past = scoped.filter((f) => f.status === 'FINISHED');
     return past[past.length - 1] ?? null;
-  }, [data]);
-  const record = useMemo(() => countResults(data ?? []), [data]);
+  }, [scoped]);
+  const record = useMemo(() => countResults(scoped), [scoped]);
 
   return (
     <div className="space-y-8">
@@ -102,24 +69,24 @@ export function FixturesPage() {
               Calendrier
             </h2>
           </div>
-          <div className="flex items-center gap-1 rounded-full border border-border p-1">
-            {TABS.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={cn(
-                  'px-3 py-1 text-xs font-semibold rounded-full transition-colors',
-                  tab === t.key
-                    ? 'bg-surface-2 text-fg-bright'
-                    : 'text-fg-muted hover:text-fg',
-                )}
-              >
-                {t.label}
-                <span className="ml-1.5 text-[10px] text-fg-dim">
-                  {counts[t.key]}
-                </span>
-              </button>
-            ))}
+          <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-end">
+            {competitions.length > 1 && (
+              <FilterPills
+                label="Filtrer par compétition"
+                value={competition}
+                onChange={setCompetition}
+                options={[
+                  { key: 'all', label: 'Toutes', count: data?.length ?? 0, name: 'Toutes les compétitions' },
+                  ...competitions.map((c) => ({ key: c.code, label: c.label, count: c.count, name: c.name })),
+                ]}
+              />
+            )}
+            <FilterPills
+              label="Filtrer par statut"
+              value={tab}
+              onChange={setTab}
+              options={TABS.map((t) => ({ key: t.key, label: t.label, count: counts[t.key] }))}
+            />
           </div>
         </header>
 
@@ -139,19 +106,19 @@ export function FixturesPage() {
           {data && filtered.length > 0 && (
             <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
               <FixtureSummary
-                total={data.length}
+                total={scoped.length}
                 record={record}
                 nextMatch={nextMatch}
                 lastMatch={lastMatch}
               />
               <div className="space-y-5">
-                {Array.from(grouped.entries()).map(([groupKey, fixtures]) => (
-                  <div key={groupKey} className="rounded-md border border-border bg-surface-2/25 overflow-hidden">
+                {grouped.map((group) => (
+                  <div key={group.key} className="rounded-md border border-border bg-surface-2/25 overflow-hidden">
                     <h3 className="eyebrow px-4 py-2.5 border-b border-border bg-surface-2/50">
-                      {groupKey}
+                      {group.label}
                     </h3>
                     <div className="divide-y divide-border">
-                      {fixtures.map((f) => (
+                      {group.matches.map((f) => (
                         <CompactFixtureRow key={f.id} fixture={f} />
                       ))}
                     </div>
@@ -166,6 +133,51 @@ export function FixturesPage() {
   );
 }
 
+interface PillOption<K extends string> {
+  key: K;
+  label: string;
+  count: number;
+  /** Nom complet annoncé quand le libellé affiché est abrégé. */
+  name?: string;
+}
+
+function FilterPills<K extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: PillOption<K>[];
+  value: K;
+  onChange: (key: K) => void;
+}) {
+  return (
+    <div role="group" aria-label={label} className="flex items-center gap-1 rounded-full border border-border p-1">
+      {options.map((o) => (
+        <button
+          key={o.key}
+          type="button"
+          aria-pressed={value === o.key}
+          aria-label={o.name ? `${o.name} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}` : undefined}
+          onClick={() => onChange(o.key)}
+          className={cn(
+            'px-3 py-1 text-xs font-semibold rounded-full transition-colors',
+            value === o.key
+              ? 'bg-surface-2 text-fg-bright'
+              : 'text-fg-muted hover:text-fg',
+          )}
+        >
+          {o.label}
+          <span className="ml-1.5 text-[10px] text-fg-dim">
+            {o.count}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function FixtureSummary({
   total,
   record,
@@ -174,8 +186,8 @@ function FixtureSummary({
 }: {
   total: number;
   record: { wins: number; draws: number; losses: number };
-  nextMatch: Fixture | null;
-  lastMatch: Fixture | null;
+  nextMatch: SeasonMatch | null;
+  lastMatch: SeasonMatch | null;
 }) {
   return (
     <aside className="space-y-3 lg:sticky lg:top-6 lg:self-start">
@@ -218,11 +230,11 @@ function SummaryMatch({
 }: {
   icon: typeof CalendarDays;
   label: string;
-  fixture: Fixture;
+  fixture: SeasonMatch;
 }) {
   const olIsHome = fixture.homeTeamId === OL_TEAM_ID;
   const opponent = olIsHome ? fixture.awayTeam : fixture.homeTeam;
-  const { day, month, time } = formatDateParts(fixture.date);
+  const { day, month, time } = formatDateParts(fixture);
   const score = fixture.homeScore !== null && fixture.awayScore !== null
     ? `${fixture.homeScore}-${fixture.awayScore}`
     : time;
@@ -239,14 +251,29 @@ function SummaryMatch({
           <div className="truncate text-sm font-semibold text-fg-bright">{teamShortName(opponent)}</div>
           <div className="text-xs text-fg-dim">{day}/{month} · {fixture.competition}</div>
         </div>
-        <div className="num text-lg font-bold text-fg-bright">{score}</div>
+        {score ? (
+          <div className="num text-lg font-bold text-fg-bright">{score}</div>
+        ) : (
+          <KickoffTbd />
+        )}
       </div>
     </div>
   );
 }
 
-function CompactFixtureRow({ fixture }: { fixture: Fixture }) {
-  const { day, month, time } = formatDateParts(fixture.date);
+/** À la place de l'heure quand elle n'est pas fixée — même style que « Terminé ». */
+function KickoffTbd() {
+  const [first, ...rest] = KICKOFF_TBD.split(' ');
+  return (
+    <div className="text-right text-[10px] uppercase leading-tight tracking-wider text-fg-dim">
+      <span className="block whitespace-nowrap">{first}</span>{' '}
+      <span className="block whitespace-nowrap">{rest.join(' ')}</span>
+    </div>
+  );
+}
+
+function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
+  const { day, month, time } = formatDateParts(fixture);
   const hasScore = fixture.homeScore !== null && fixture.awayScore !== null;
   const isLive = fixture.status === 'IN_PLAY';
   const homeWon = hasScore && fixture.homeScore! > fixture.awayScore!;
@@ -279,8 +306,10 @@ function CompactFixtureRow({ fixture }: { fixture: Fixture }) {
           <div className="text-xs font-bold text-live animate-pulse-live">LIVE</div>
         ) : hasScore ? (
           <div className="text-[10px] uppercase tracking-wider text-fg-dim">Terminé</div>
-        ) : (
+        ) : time ? (
           <div className="num text-sm font-semibold text-fg">{time}</div>
+        ) : (
+          <KickoffTbd />
         )}
       </div>
     </article>
