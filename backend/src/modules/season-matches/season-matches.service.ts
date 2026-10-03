@@ -11,6 +11,8 @@ import {
   LIGUE1_365SCORES_ID,
   COUPE_DE_FRANCE_365SCORES_ID,
   EUROPA_LEAGUE_365SCORES_ID,
+  CHAMPIONS_LEAGUE_365SCORES_ID,
+  CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID,
 } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
@@ -24,6 +26,12 @@ import { isKickoffTimeConfirmed } from './kickoff-confirmation';
  * and adds a stable `competitionCode` discriminator the UI can switch on
  * without parsing free-form competition names.
  */
+/**
+ * Code stable d'une compétition suivie. `UCL` couvre la Ligue des champions et
+ * ses qualifications.
+ */
+export type CompetitionCode = 'L1' | 'CDF' | 'UEL' | 'UCL';
+
 /** Un match tel qu'il est écrit dans le cache — sans champ dérivé. */
 interface StoredSeasonMatch {
   id: number;
@@ -36,7 +44,7 @@ interface StoredSeasonMatch {
   awayScore: number | null;
   competition: string;
   /** Stable code for the consumer (map markers L1, popup CdF section, …). */
-  competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
+  competitionCode: CompetitionCode;
   competitionId: number;
   status: 'SCHEDULED' | 'IN_PLAY' | 'FINISHED';
   /**
@@ -45,6 +53,12 @@ interface StoredSeasonMatch {
    * élimination directe).
    */
   matchday: number | null;
+  /**
+   * Tour et manche d'un match SANS journée, quand 365scores les donne :
+   * « 3e tour de qualification · aller », « Barrages · retour ». `null` pour un
+   * match à journée, et pour un tour dont on n'a pas le nom français.
+   */
+  round: string | null;
 }
 
 export interface SeasonMatch extends StoredSeasonMatch {
@@ -57,23 +71,54 @@ export interface SeasonMatch extends StoredSeasonMatch {
   timeConfirmed: boolean;
 }
 
-const COMP_NAME: Record<number, string> = {
-  [LIGUE1_365SCORES_ID]: 'Ligue 1',
-  [COUPE_DE_FRANCE_365SCORES_ID]: 'Coupe de France',
-  [EUROPA_LEAGUE_365SCORES_ID]: 'UEFA Europa League',
+/**
+ * Les compétitions suivies — LA liste : ce qui n'y est pas n'entre ni dans le
+ * calendrier, ni dans la carte, ni dans les statistiques d'équipe et de
+ * joueurs, qui lisent tous `getMatches()`. Une compétition de la saison qui
+ * n'y figure pas est journalisée à chaque rafraîchissement, jamais écartée en
+ * silence (les 4 qualifications de Ligue des champions d'août 2026 l'ont été).
+ *
+ * Les qualifications de Ligue des champions sont chez 365scores une compétition
+ * à part (332) : même code et même nom que la Ligue des champions (572), le
+ * tour les distingue (`round`).
+ */
+const TRACKED_COMPETITIONS: Record<
+  number,
+  { code: CompetitionCode; name: string }
+> = {
+  [LIGUE1_365SCORES_ID]: { code: 'L1', name: 'Ligue 1' },
+  [COUPE_DE_FRANCE_365SCORES_ID]: { code: 'CDF', name: 'Coupe de France' },
+  [EUROPA_LEAGUE_365SCORES_ID]: { code: 'UEL', name: 'UEFA Europa League' },
+  [CHAMPIONS_LEAGUE_365SCORES_ID]: {
+    code: 'UCL',
+    name: 'UEFA Champions League',
+  },
+  [CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID]: {
+    code: 'UCL',
+    name: 'UEFA Champions League',
+  },
 };
 
-const COMP_CODE: Record<number, SeasonMatch['competitionCode']> = {
-  [LIGUE1_365SCORES_ID]: 'L1',
-  [COUPE_DE_FRANCE_365SCORES_ID]: 'CDF',
-  [EUROPA_LEAGUE_365SCORES_ID]: 'UEL',
-};
+/**
+ * Nom français des tours que 365scores nomme en anglais (`stageName`, langId=1).
+ * Mesuré sur la saison du 2026-10-03 : « 3rd Round » et « Playoffs » pour les
+ * qualifications de Ligue des champions. Un tour absent d'ici n'est pas
+ * affiché — jamais de libellé anglais à l'écran.
+ */
+function stageLabel(competitionId: number, stageName?: string): string | null {
+  if (!stageName) return null;
+  if (competitionId === CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID) {
+    const nth = /^(\d)(?:st|nd|rd|th) Round$/.exec(stageName);
+    if (nth) return `${nth[1]}${nth[1] === '1' ? 'er' : 'e'} tour de qualification`;
+    if (stageName === 'Playoffs') return 'Barrages';
+  }
+  return null;
+}
 
-const TRACKED_COMP_IDS = new Set([
-  LIGUE1_365SCORES_ID,
-  COUPE_DE_FRANCE_365SCORES_ID,
-  EUROPA_LEAGUE_365SCORES_ID,
-]);
+/** Manche d'une confrontation aller-retour (`legNum` 1 ou 2). */
+function legLabel(legNum?: number): string | null {
+  return legNum === 1 ? 'aller' : legNum === 2 ? 'retour' : null;
+}
 
 const CACHE_TTL_MS = 1800_000; // 30 min — FINISHED never changes, SCHEDULED rarely shifts
 /**
@@ -255,10 +300,15 @@ export class SeasonMatchesService implements OnModuleInit {
     const all = Array.from(games.values());
     this.logger.log(`365scores: ${all.length} événements OL (toutes compétitions, brut)`);
 
-    const filtered = all.filter((g) => {
-      if (g.competitionId === undefined || !TRACKED_COMP_IDS.has(g.competitionId)) return false;
-      return new Date(g.startTime).getTime() >= seasonStart;
-    });
+    const inSeason = all.filter(
+      (g) => new Date(g.startTime).getTime() >= seasonStart,
+    );
+    const filtered = inSeason.filter(
+      (g) =>
+        g.competitionId !== undefined &&
+        g.competitionId in TRACKED_COMPETITIONS,
+    );
+    this.warnUntracked(inSeason);
 
     const matches = filtered
       .map((g) => this.toSeasonMatch(g))
@@ -283,8 +333,17 @@ export class SeasonMatchesService implements OnModuleInit {
     const status: SeasonMatch['status'] =
       sg === 4 ? 'FINISHED' : sg === 3 ? 'IN_PLAY' : 'SCHEDULED';
     const compId = g.competitionId!;
-    const competition = COMP_NAME[compId] ?? `Compétition #${compId}`;
-    const competitionCode = COMP_CODE[compId] ?? 'OTHER';
+    const { name: competition, code: competitionCode } =
+      TRACKED_COMPETITIONS[compId];
+    const matchday = g.roundNum ?? null;
+    // Le score de 365scores est celui du match (pas le cumul aller-retour) ;
+    // aucune prolongation ni tir au but dans la saison mesurée le 2026-10-03.
+    const round =
+      matchday === null
+        ? [stageLabel(compId, g.stageName), legLabel(g.legNum)]
+            .filter((part): part is string => part !== null)
+            .join(' · ') || null
+        : null;
 
     const home = g.homeCompetitor;
     const away = g.awayCompetitor;
@@ -312,8 +371,31 @@ export class SeasonMatchesService implements OnModuleInit {
       competitionCode,
       competitionId: compId,
       status,
-      matchday: g.roundNum ?? null,
+      matchday,
+      round,
     };
+  }
+
+  /** Les compétitions de la saison absentes de `TRACKED_COMPETITIONS`, nommées. */
+  private warnUntracked(inSeason: Scores365Game[]): void {
+    const untracked = new Map<string, number>();
+    for (const g of inSeason) {
+      if (
+        g.competitionId !== undefined &&
+        g.competitionId in TRACKED_COMPETITIONS
+      )
+        continue;
+      const key = `#${g.competitionId ?? '?'} ${g.competitionDisplayName ?? ''}`.trim();
+      untracked.set(key, (untracked.get(key) ?? 0) + 1);
+    }
+    if (untracked.size === 0) return;
+    this.logger.warn(
+      `365scores : compétition non suivie, absente du calendrier et des statistiques — ${[
+        ...untracked,
+      ]
+        .map(([key, n]) => `${key} (${n} match${n > 1 ? 's' : ''})`)
+        .join(', ')}`,
+    );
   }
 
   private readCache(): StoredSeasonMatch[] | null {

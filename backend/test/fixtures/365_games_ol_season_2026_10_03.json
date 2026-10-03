@@ -1,5 +1,5 @@
 {
-  "_source": "365scores, captured 2026-10-03 (webws.365scores.com, competitors=465, langId=1, timezoneName=Europe/Paris). Games reduced to the fields the schema reads; paging links verbatim. forward[] = the pages reached by following paging.nextPage from the fixtures page; the last one is the verbatim envelope without games that ends the season.",
+  "_source": "365scores, captured 2026-10-03 (webws.365scores.com, competitors=465, langId=1, timezoneName=Europe/Paris). Games reduced to the fields the schema reads (plus legNum and aggregateText of the two-legged Champions League qualifiers, verbatim); paging links verbatim. forward[] = the pages reached by following paging.nextPage from the fixtures page; the last one is the verbatim envelope without games that ends the season.",
   "results": {
     "games": [
       {
@@ -112,11 +112,13 @@
         "competitionId": 332,
         "competitionDisplayName": "UEFA Champions League Qualifiers - Playoffs",
         "stageNum": 4,
+        "legNum": 2,
         "roundName": "Round",
         "stageName": "Playoffs",
         "startTime": "2026-08-26T21:00:00+02:00",
         "statusGroup": 4,
         "statusText": "Ended",
+        "aggregateText": "Aggregate 2 - 3",
         "homeCompetitor": {
           "id": 465,
           "name": "Lyon",
@@ -154,6 +156,7 @@
         "competitionId": 332,
         "competitionDisplayName": "UEFA Champions League Qualifiers - Playoffs",
         "stageNum": 4,
+        "legNum": 1,
         "roundName": "Round",
         "stageName": "Playoffs",
         "startTime": "2026-08-18T21:00:00+02:00",
@@ -175,11 +178,13 @@
         "competitionId": 332,
         "competitionDisplayName": "UEFA Champions League Qualifiers - 3rd Round",
         "stageNum": 3,
+        "legNum": 2,
         "roundName": "Round",
         "stageName": "3rd Round",
         "startTime": "2026-08-11T21:00:00+02:00",
         "statusGroup": 4,
         "statusText": "Ended",
+        "aggregateText": "Aggregate 4 - 2",
         "homeCompetitor": {
           "id": 465,
           "name": "Lyon",
@@ -196,6 +201,7 @@
         "competitionId": 332,
         "competitionDisplayName": "UEFA Champions League Qualifiers - 3rd Round",
         "stageNum": 3,
+        "legNum": 1,
         "roundName": "Round",
         "stageName": "3rd Round",
         "startTime": "2026-08-04T20:00:00+02:00",

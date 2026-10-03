@@ -20,6 +20,11 @@ export const Scores365GameSchema = z
     statusGroup: z.number().optional(),
     stageNum: z.number().optional(),
     roundNum: z.number().optional(),
+    /** Tour d'une compétition à élimination (« 3rd Round », « Playoffs ») — absent en championnat. */
+    stageName: z.string().optional(),
+    /** Manche d'une confrontation aller-retour : 1 ou 2. */
+    legNum: z.number().optional(),
+    competitionDisplayName: z.string().optional(),
     /** Some endpoints expose this on the list payload to flag whether
      *  lineup-detail endpoints will return useful data. Used by lineup. */
     hasLineups: z.boolean().optional(),

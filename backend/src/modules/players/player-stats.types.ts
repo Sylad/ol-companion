@@ -20,8 +20,8 @@ export interface PlayerByMatch {
   opponentScore: number | null;
   /** Match result from OL's perspective. null when not finished. */
   result: 'W' | 'D' | 'L' | null;
-  /** Stable competition code (L1, CDF, UEL). */
-  competitionCode: 'L1' | 'CDF' | 'UEL' | 'OTHER';
+  /** Stable competition code (L1, CDF, UEL, UCL — qualifiers included). */
+  competitionCode: 'L1' | 'CDF' | 'UEL' | 'UCL';
 
   // Per-match player stats
   minutes: number;

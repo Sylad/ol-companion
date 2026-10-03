@@ -5,6 +5,7 @@ import { SeasonMatchesService } from './season-matches.service';
 import { EventBusService } from '../events/event-bus.service';
 import type { FixturesService, Match } from '../fixtures/fixtures.service';
 import { footballDataTimeConfirmed } from '../fixtures/kickoff-time';
+import { computeTeamSeasonStats } from './team-stats';
 
 jest.mock('@nestjs/schedule', () => ({
   Cron: () => () => undefined,
@@ -13,7 +14,8 @@ jest.mock('@nestjs/schedule', () => ({
 /**
  * L39 — la saison telle que 365scores la servait le 2026-10-03 (charges
  * réelles réduites, `test/fixtures/365_games_ol_season_2026_10_03.json`) :
- * 34 journées de Ligue 1 et 8 matchs de Ligue Europa, 6 joués.
+ * 34 journées de Ligue 1, 8 matchs de Ligue Europa et les 4 matchs de
+ * qualification de Ligue des champions d'août (compétition 332), 10 joués.
  *
  * Avant ce lot, la marche avant s'arrêtait après 8 pages de 3 à 5 matchs :
  * 36 matchs, dernier le 17-04-2027 (J28) — J29 à J34 manquaient. Et la
@@ -166,7 +168,7 @@ function buildService(
 }
 
 describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
-  it('rend toute la saison : 34 journées de Ligue 1 et 8 matchs de Ligue Europa, jusqu’au 29-05-2027', async () => {
+  it('rend toute la saison : 34 journées de Ligue 1, 8 matchs de Ligue Europa et 4 de qualification de Ligue des champions, du 04-08-2026 au 29-05-2027', async () => {
     await withCwd(async () => {
       const { svc } = buildService();
 
@@ -174,11 +176,12 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
       const byCode = (code: string) =>
         matches.filter((m) => m.competitionCode === code);
-      expect(matches).toHaveLength(42);
+      expect(matches).toHaveLength(46);
       expect(byCode('L1')).toHaveLength(34);
       expect(byCode('UEL')).toHaveLength(8);
-      expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(6);
-      expect(matches[0].date).toBe('2026-08-22T18:45:00.000Z');
+      expect(byCode('UCL')).toHaveLength(4);
+      expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(10);
+      expect(matches[0].date).toBe('2026-08-04T18:00:00.000Z');
       expect(matches[matches.length - 1].date).toBe('2027-05-29T17:00:00.000Z');
       // Triés par date.
       const dates = matches.map((m) => m.date);
@@ -230,6 +233,133 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
     });
   });
 
+  it('qualifications de Ligue des champions (332) : les 4 matchs d’août à leur date, sans journée, avec leur tour et leur manche', async () => {
+    await withCwd(async () => {
+      const { svc } = buildService();
+
+      const matches = await svc.getMatches({ force: true });
+
+      const qualifiers = matches.filter((m) => m.competitionCode === 'UCL');
+      expect(
+        qualifiers.map((m) => [
+          m.id,
+          m.date,
+          `${m.homeTeam} ${m.homeScore}-${m.awayScore} ${m.awayTeam}`,
+          m.round,
+        ]),
+      ).toEqual([
+        [
+          4779514,
+          '2026-08-04T18:00:00.000Z',
+          'Sparta Praha 2-1 Lyon',
+          '3e tour de qualification · aller',
+        ],
+        [
+          4779515,
+          '2026-08-11T19:00:00.000Z',
+          'Lyon 3-0 Sparta Praha',
+          '3e tour de qualification · retour',
+        ],
+        [
+          4809607,
+          '2026-08-18T19:00:00.000Z',
+          'Fenerbahçe SK 1-1 Lyon',
+          'Barrages · aller',
+        ],
+        [
+          4809611,
+          '2026-08-26T19:00:00.000Z',
+          'Lyon 1-2 Fenerbahçe SK',
+          'Barrages · retour',
+        ],
+      ]);
+      for (const m of qualifiers) {
+        expect(m).toMatchObject({
+          competition: 'UEFA Champions League',
+          competitionId: 332,
+          status: 'FINISHED',
+          matchday: null,
+          timeConfirmed: true,
+        });
+      }
+      // L'OL y garde son identifiant canonique (523), comme partout ailleurs.
+      expect(qualifiers[1].homeTeamId).toBe(523);
+      expect(qualifiers[0].awayTeamId).toBe(523);
+    });
+  });
+
+  it('les matchs à journée (Ligue 1, phase de ligue européenne) n’ont pas de tour', async () => {
+    await withCwd(async () => {
+      const { svc } = buildService();
+
+      const matches = await svc.getMatches({ force: true });
+
+      expect(
+        matches
+          .filter((m) => m.competitionCode !== 'UCL')
+          .every((m) => m.round === null),
+      ).toBe(true);
+    });
+  });
+
+  it('ne retient ni les matchs amicaux (321) ni un match d’avant le 1er août', async () => {
+    await withCwd(async () => {
+      const { svc } = buildService();
+
+      const matches = await svc.getMatches({ force: true });
+
+      expect(matches.some((m) => m.competitionId === 321)).toBe(false);
+      expect([...new Set(matches.map((m) => m.competitionId))].sort()).toEqual([
+        332, 35, 573,
+      ]);
+    });
+  });
+
+  it('statistiques d’équipe : les 4 qualifications comptent — 10 joués (5 V, 3 N, 2 D), 18 buts pour, 8 contre', async () => {
+    await withCwd(async () => {
+      const { svc } = buildService();
+
+      const stats = computeTeamSeasonStats(
+        await svc.getMatches({ force: true }),
+      );
+
+      // Sans les qualifications (avant) : 6 joués, 4 V, 2 N, 0 D, 12-3.
+      expect(stats).toMatchObject({
+        played: 10,
+        won: 5,
+        draw: 3,
+        lost: 2,
+        goalsFor: 18,
+        goalsAgainst: 8,
+        cleanSheets: 4,
+      });
+      expect(
+        stats.perCompetition.map((c) => [
+          c.competitionCode,
+          c.played,
+          c.won,
+          c.draw,
+          c.lost,
+          c.goalsFor,
+          c.goalsAgainst,
+          c.points,
+        ]),
+      ).toEqual([
+        ['L1', 5, 3, 2, 0, 10, 2, 11],
+        ['UCL', 4, 1, 1, 2, 6, 5, 0],
+        ['UEL', 1, 1, 0, 0, 2, 1, 0],
+      ]);
+      // Les points de Ligue 1 ne bougent pas : 11 après J5.
+      expect(stats.chart).toHaveLength(10);
+      expect(stats.chart[stats.chart.length - 1].points).toBe(11);
+      expect(stats.chart[0]).toMatchObject({
+        competitionCode: 'UCL',
+        result: 'L',
+        points: null,
+      });
+    });
+  });
+
   it('page des matchs à venir en échec : repart du curseur de la page des résultats', async () => {
     await withCwd(async () => {
       const { svc, requested } = buildService(footballDataMatches(), {
@@ -238,9 +368,9 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
       const matches = await svc.getMatches({ force: true });
 
-      // Les 6 matchs joués sont là ; la marche avant a été tentée depuis le
+      // Les 10 matchs joués sont là ; la marche avant a été tentée depuis le
       // curseur des résultats (page non capturée ici → 404 → arrêt propre).
-      expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(6);
+      expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(10);
       expect(requested[2]).toBe(season.results.paging?.nextPage);
     });
   });
@@ -319,7 +449,7 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
             'utf-8',
           ),
         ) as { data: Record<string, unknown>[] };
-        expect(cached.data).toHaveLength(42);
+        expect(cached.data).toHaveLength(46);
         expect(cached.data.some((m) => 'timeConfirmed' in m)).toBe(false);
 
         // football-data apprend l'heure de J6 : la lecture suivante (cache) le reflète.

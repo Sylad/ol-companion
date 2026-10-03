@@ -71,7 +71,7 @@ describe('SeasonMatchesService', () => {
     });
   });
 
-  it('keeps Ligue 1 + Coupe de France + Europa League and tags competitionCode', async () => {
+  it('keeps Ligue 1 + Coupe de France + Europa League + Champions League (proper and qualifiers) and tags competitionCode', async () => {
     await withCwd(async () => {
       const svc = buildService([
         [
@@ -79,12 +79,71 @@ describe('SeasonMatchesService', () => {
           game({ id: 2, competitionId: 37, startTime: inSeasonIso }),
           game({ id: 3, competitionId: 573, startTime: inSeasonIso }),
           game({ id: 4, competitionId: 99, startTime: inSeasonIso }), // unknown comp → dropped
+          game({ id: 5, competitionId: 572, startTime: inSeasonIso, roundNum: 3 }),
+          game({ id: 6, competitionId: 332, startTime: inSeasonIso }),
         ],
         [], // upcoming page
       ]);
       const result = await svc.getMatches({ force: true });
-      const codes = result.map((m) => m.competitionCode).sort();
-      expect(codes).toEqual(['CDF', 'L1', 'UEL']);
+      expect(
+        result.map((m) => [m.id, m.competitionCode, m.competition]).sort(),
+      ).toEqual([
+        [1, 'L1', 'Ligue 1'],
+        [2, 'CDF', 'Coupe de France'],
+        [3, 'UEL', 'UEFA Europa League'],
+        [5, 'UCL', 'UEFA Champions League'],
+        [6, 'UCL', 'UEFA Champions League'],
+      ]);
+    });
+  });
+
+  it('round : seulement sans journée, à partir du tour (stageName) et de la manche (legNum) ; un tour inconnu n’est pas affiché en anglais', async () => {
+    await withCwd(async () => {
+      const svc = buildService([
+        [
+          // Journée connue : pas de tour, même si un tour est donné.
+          game({ id: 1, competitionId: 572, startTime: inSeasonIso, roundNum: 3, stageName: 'League Phase' }),
+          game({ id: 2, competitionId: 332, startTime: inSeasonIso, stageName: '2nd Round', legNum: 1 }),
+          game({ id: 3, competitionId: 332, startTime: inSeasonIso, stageName: 'Playoffs', legNum: 2 }),
+          // Tour sans traduction connue : la manche seule.
+          game({ id: 4, competitionId: 572, startTime: inSeasonIso, stageName: 'Round of 16', legNum: 2 }),
+          // Coupe de France : ni tour traduit ni manche → rien.
+          game({ id: 5, competitionId: 37, startTime: inSeasonIso, stageName: 'Round of 64' }),
+        ],
+        [],
+      ]);
+      const result = await svc.getMatches({ force: true });
+      expect(result.map((m) => [m.id, m.matchday, m.round]).sort()).toEqual([
+        [1, 3, null],
+        [2, null, '2e tour de qualification · aller'],
+        [3, null, 'Barrages · retour'],
+        [4, null, 'retour'],
+        [5, null, null],
+      ]);
+    });
+  });
+
+  it('journalise les compétitions non suivies de la saison au lieu de les écarter en silence', async () => {
+    await withCwd(async () => {
+      const svc = buildService([
+        [
+          game({ id: 1, competitionId: 35, startTime: inSeasonIso }),
+          game({ id: 2, competitionId: 99, competitionDisplayName: 'Trophée X', startTime: inSeasonIso }),
+          game({ id: 3, competitionId: 99, competitionDisplayName: 'Trophée X', startTime: inSeasonIso }),
+          game({ id: 4, competitionId: 98, startTime: outOfSeasonIso }), // hors saison : pas signalé
+        ],
+        [],
+      ]);
+      const warn = jest
+        .spyOn((svc as unknown as { logger: { warn: (m: string) => void } }).logger, 'warn')
+        .mockImplementation(() => undefined);
+      await svc.getMatches({ force: true });
+      const untracked = warn.mock.calls.map(([m]) => m).filter((m) => m.includes('non suivie'));
+      expect(untracked).toHaveLength(1);
+      expect(untracked[0]).toContain('#99');
+      expect(untracked[0]).toContain('Trophée X');
+      expect(untracked[0]).toContain('2 match');
+      expect(untracked[0]).not.toContain('#98');
     });
   });
 

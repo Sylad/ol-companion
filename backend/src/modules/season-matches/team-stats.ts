@@ -40,7 +40,7 @@ export interface TeamSeasonChartPoint {
 }
 
 export interface TeamSeasonStats {
-  /** Total matches played across L1 + Coupe de France + Europa. */
+  /** Total matches played across every tracked competition (L1, cups, Europe incl. qualifiers). */
   played: number;
   won: number;
   draw: number;
@@ -72,7 +72,7 @@ function emptyPerComp(code: CompetitionCode): PerCompetitionStats {
   };
 }
 
-const COMP_ORDER: CompetitionCode[] = ['L1', 'CDF', 'UEL', 'OTHER'];
+const COMP_ORDER: CompetitionCode[] = ['L1', 'CDF', 'UCL', 'UEL'];
 
 /**
  * Pure helper, easy to unit-test. Walks `matches` in date order and folds

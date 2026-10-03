@@ -23,3 +23,13 @@ export const COUPE_DE_FRANCE_365SCORES_ID = 37;
 
 /** 365scores competition id for Europa League. */
 export const EUROPA_LEAGUE_365SCORES_ID = 573;
+
+/** 365scores competition id for the Champions League (league phase onwards). */
+export const CHAMPIONS_LEAGUE_365SCORES_ID = 572;
+
+/**
+ * 365scores competition id for the Champions League qualifiers — a competition
+ * of its own there (« UEFA Champions League Qualifiers », 3rd round and
+ * play-offs of August), not a stage of 572.
+ */
+export const CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID = 332;
