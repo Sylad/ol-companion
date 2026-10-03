@@ -163,17 +163,22 @@ function FilterPills<K extends string>({
           key={o.key}
           type="button"
           aria-pressed={value === o.key}
-          aria-label={o.name ? `${o.name} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}` : undefined}
+          // Sans nom explicite, le libellé et le compteur sont lus collés (« À venir36 »).
+          aria-label={`${o.name ?? o.label} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}`}
           onClick={() => onChange(o.key)}
           className={cn(
             'whitespace-nowrap px-3 py-1 text-xs font-semibold rounded-full transition-colors',
+            // Pastille choisie : le fond seul fait 1,07:1 sur le groupe et le texte
+            // ne change que de clarté — l'anneau fg-muted porte l'état (≥ 3:1,
+            // WCAG 1.4.1 / 1.4.11).
             value === o.key
-              ? 'bg-surface-2 text-fg-bright'
+              ? 'bg-surface-2 text-fg-bright ring-1 ring-fg-muted'
               : 'text-fg-muted hover:text-fg',
           )}
         >
           {o.label}
-          <span className="ml-1.5 text-[10px] text-fg-dim">
+          {/* 10 px : fg-muted (≥ 4,5:1 dans les deux états), fg-dim restait sous le seuil. */}
+          <span className="ml-1.5 text-[10px] text-fg-muted">
             {o.count}
           </span>
         </button>

@@ -356,6 +356,81 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
         expect(el.className).not.toMatch(/font-(semi)?bold/);
       }
     });
+
+    const names = (group: HTMLElement) =>
+      within(group).getAllByRole('button').map((b) => b.getAttribute('aria-label'));
+
+    it('pastilles de statut : nom accessible « libellé · n matchs », comme les pastilles de compétition', async () => {
+      vi.stubGlobal('fetch', serve());
+      const user = userEvent.setup();
+      renderPage();
+      await screen.findAllByRole('article');
+      const status = screen.getByRole('group', { name: 'Filtrer par statut' });
+      const competitions = screen.getByRole('group', { name: 'Filtrer par compétition' });
+
+      expect(names(status)).toEqual(['Tout · 46 matchs', 'À venir · 36 matchs', 'Joués · 10 matchs']);
+      // Le nom est celui que lit un lecteur d'écran, pas « À venir36 ».
+      expect(within(status).getByRole('button', { name: 'À venir · 36 matchs' })).toBeInTheDocument();
+      expect(names(competitions)).toEqual([
+        'Toutes les compétitions · 46 matchs',
+        'Ligue 1 · 34 matchs',
+        'UEFA Champions League · 4 matchs',
+        'UEFA Europa League · 8 matchs',
+      ]);
+
+      // Singulier jusqu'à 1, comme les pastilles de compétition.
+      await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+      expect(names(status)).toEqual(['Tout · 8 matchs', 'À venir · 7 matchs', 'Joués · 1 match']);
+      await user.click(within(competitions).getByRole('button', { name: /Champions League/ }));
+      expect(names(status)).toEqual(['Tout · 4 matchs', 'À venir · 0 match', 'Joués · 4 matchs']);
+    });
+
+    it('pastille choisie : aria-pressed et un anneau fg-muted (≥ 3:1 sur le groupe), pas la seule clarté du texte', async () => {
+      vi.stubGlobal('fetch', serve());
+      const user = userEvent.setup();
+      renderPage();
+      await screen.findAllByRole('article');
+      const status = screen.getByRole('group', { name: 'Filtrer par statut' });
+      const competitions = screen.getByRole('group', { name: 'Filtrer par compétition' });
+
+      /** Dans chaque groupe, la seule pastille choisie porte l'état et l'anneau. */
+      const expectSelected = (group: HTMLElement, name: RegExp) => {
+        const buttons = within(group).getAllByRole('button');
+        const pressed = buttons.filter((b) => b.getAttribute('aria-pressed') === 'true');
+        expect(pressed).toHaveLength(1);
+        expect(pressed[0]).toHaveAccessibleName(name);
+        for (const b of buttons) {
+          expect(b).toHaveAttribute('aria-pressed', b === pressed[0] ? 'true' : 'false');
+          if (b === pressed[0]) expect(b).toHaveClass('ring-1', 'ring-fg-muted');
+          else expect(b.className).not.toMatch(/\bring-/);
+        }
+      };
+
+      expectSelected(status, /^Tout ·/);
+      expectSelected(competitions, /^Toutes les compétitions ·/);
+
+      await user.click(within(status).getByRole('button', { name: /À venir/ }));
+      await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+      expectSelected(status, /^À venir ·/);
+      expectSelected(competitions, /^UEFA Europa League ·/);
+    });
+
+    it('compteurs des pastilles en fg-muted (≥ 4,5:1), choisie ou non, jamais en fg-dim', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const counters = ['Filtrer par statut', 'Filtrer par compétition'].flatMap((label) =>
+        within(screen.getByRole('group', { name: label }))
+          .getAllByRole('button')
+          .map((b) => b.querySelector('span') as HTMLElement),
+      );
+      expect(counters).toHaveLength(7);
+      for (const counter of counters) {
+        expect(counter).toHaveClass('text-fg-muted');
+        expect(counter).not.toHaveClass('text-fg-dim');
+      }
+    });
   });
 
   it('une seule compétition dans la saison : pas de filtre par compétition', async () => {
