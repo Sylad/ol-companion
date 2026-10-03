@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { BracketInfo, BracketMatch, BracketStage } from './cups.service';
 import { OL_365SCORES_ID } from '../../config/constants';
-import { scores365Headers } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
@@ -32,7 +32,7 @@ export class BracketService {
   async fetchBracket(competitionId: number, fromStageNum: number, seasonStart: Date): Promise<BracketInfo | null> {
     // 365scores splits its game list across two endpoints: /results/ for finished
     // matches, /fixtures/ for upcoming. Merge both for a complete bracket view.
-    const base = `https://data.365scores.com/web/games`;
+    const base = `${SCORES365_API_BASE}/web/games`;
     const params = `appTypeId=5&langId=1&timezoneName=Europe/Paris&competitions=${competitionId}&limit=200`;
     const urls = [`${base}/results/?${params}`, `${base}/fixtures/?${params}`];
 

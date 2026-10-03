@@ -253,3 +253,15 @@ lots:
     status: todo
     estimate: 0.5
     created: 2026-10-03
+  - id: L33
+    title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
+    status: doing
+    estimate: 0.5
+    quickwin: true
+    created: 2026-10-03
+    started: 2026-10-03
+  - id: L34
+    title: "Résilience : quand 365scores est en panne, servir le dernier cache connu (composition, classement) avec son âge au lieu de null une fois le TTL expiré — le 03-10 l'effectif a disparu 6 h après le dernier appel réussi"
+    status: todo
+    estimate: 1
+    created: 2026-10-03

@@ -3,7 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { EventBusService } from '../events/event-bus.service';
 import { aggregate, summarize, LIVE_MATCH_OL_ID } from './live-match.aggregator';
 import type { LiveMatchSummary, LiveMatchStats, LiveMatchChangedPayload } from './live-match.types';
-import { scores365Headers } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 import {
   Scores365GameDetailResponseSchema,
   Scores365GamesResponseSchema,
@@ -122,7 +122,7 @@ export class LiveMatchService implements OnModuleInit {
     if (this.cachedStandings && Date.now() - this.cachedStandings.fetchedAt < STANDINGS_TTL_MS) {
       return this.cachedStandings.rows;
     }
-    const url = `https://data.365scores.com/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
+    const url = `${SCORES365_API_BASE}/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
     try {
       const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
       if (!res.ok) {
@@ -288,17 +288,17 @@ export class LiveMatchService implements OnModuleInit {
 
     // 1) Live OL match (results endpoint includes only finished, not ideal — use the date-based one).
     // 365scores exposes live games filtered by competitor; fallback to allscores otherwise.
-    const liveUrl = `https://data.365scores.com/web/games/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&onlyLiveGames=true&competitors=${LIVE_MATCH_OL_ID}`;
+    const liveUrl = `${SCORES365_API_BASE}/web/games/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&onlyLiveGames=true&competitors=${LIVE_MATCH_OL_ID}`;
     let candidate = await step(liveUrl, [3]);
     if (candidate) return { summary: candidate, degraded };
 
     // 2) Recently ended OL match (last result, only keep if < 2h since kick-off).
-    const recentUrl = `https://data.365scores.com/web/games/results/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitors=${LIVE_MATCH_OL_ID}&limit=1`;
+    const recentUrl = `${SCORES365_API_BASE}/web/games/results/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitors=${LIVE_MATCH_OL_ID}&limit=1`;
     candidate = await step(recentUrl, [4], { onlyRecent: true });
     if (candidate) return { summary: candidate, degraded };
 
     // 3) Next upcoming OL match (within 24h).
-    const upcomingUrl = `https://data.365scores.com/web/games/fixtures/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitors=${LIVE_MATCH_OL_ID}&limit=1`;
+    const upcomingUrl = `${SCORES365_API_BASE}/web/games/fixtures/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitors=${LIVE_MATCH_OL_ID}&limit=1`;
     candidate = await step(upcomingUrl, [1, 2], { onlyUpcoming: true });
     return { summary: candidate, degraded };
   }
@@ -360,7 +360,7 @@ export class LiveMatchService implements OnModuleInit {
     gameId: number,
     matchupId: string,
   ): Promise<Scores365GameDetailResponse | null> {
-    const url = `https://webws.365scores.com/web/game/?appTypeId=5&langId=15&gameId=${gameId}&matchupId=${matchupId}&timezoneName=Europe/Paris&userCountryId=5`;
+    const url = `${SCORES365_API_BASE}/web/game/?appTypeId=5&langId=15&gameId=${gameId}&matchupId=${matchupId}&timezoneName=Europe/Paris&userCountryId=5`;
     const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
     if (!res.ok) {
       this.logger.warn(`365 game HTTP ${res.status} for ${gameId}`);

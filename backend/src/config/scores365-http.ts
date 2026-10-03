@@ -6,6 +6,18 @@
 
 const BASE = 'https://www.365scores.com/fr/football';
 
+/**
+ * Base URL of the 365scores JSON API (`/web/games/`, `/web/standings/`,
+ * `/web/game/`, …) — scheme + host, no trailing slash. Every service builds its
+ * URLs from it, including the relative `paging.previousPage` / `nextPage`
+ * links, which carry no host.
+ *
+ * The host is written here and nowhere else in `backend/src` (guarded by
+ * `scores365-host.spec.ts`): the former `data.` host stopped answering on
+ * 2026-10-01 (timeouts, then HTTP 503) and it was copied in six services.
+ */
+export const SCORES365_API_BASE = 'https://webws.365scores.com';
+
 export const SCORES365_REFERER = {
   default: BASE,
   team: `${BASE}/team/lyon-465`,
@@ -15,7 +27,7 @@ export const SCORES365_REFERER = {
 export type Scores365Referer = (typeof SCORES365_REFERER)[keyof typeof SCORES365_REFERER];
 
 /**
- * Build the headers required by data.365scores.com endpoints.
+ * Build the headers required by the 365scores API (`SCORES365_API_BASE`).
  * @param referer one of `SCORES365_REFERER.*` — defaults to the generic football page.
  */
 export function scores365Headers(referer: Scores365Referer = SCORES365_REFERER.default): Record<string, string> {

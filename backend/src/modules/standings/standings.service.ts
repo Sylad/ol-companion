@@ -5,7 +5,7 @@ import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
-import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { Scores365StandingsResponseSchema } from './standings.schema';
 
@@ -127,7 +127,7 @@ export class StandingsService implements OnModuleInit {
     }
 
     try {
-      const url = `https://data.365scores.com/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
+      const url = `${SCORES365_API_BASE}/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
       const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
       if (!res.ok) {
         this.logger.warn(`365scores standings → HTTP ${res.status}`);

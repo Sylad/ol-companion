@@ -11,6 +11,7 @@ import {
 import { OL_TEAM_ID } from '../../config/constants';
 import {
   scores365Headers,
+  SCORES365_API_BASE,
   SCORES365_REFERER,
 } from '../../config/scores365-http';
 import {
@@ -161,7 +162,7 @@ export class PlayerStatsService implements OnModuleInit {
   private async fetchGameDetail(
     gameId: number,
   ): Promise<Scores365GameDetailed | null> {
-    const url = `https://webws.365scores.com/web/game/?appTypeId=5&langId=15&gameId=${gameId}&timezoneName=Europe/Paris&userCountryId=5&withLineups=true`;
+    const url = `${SCORES365_API_BASE}/web/game/?appTypeId=5&langId=15&gameId=${gameId}&timezoneName=Europe/Paris&userCountryId=5&withLineups=true`;
     const res = await this.fetcher(url, {
       headers: SCORES365_HEADERS,
       signal: AbortSignal.timeout(10_000),

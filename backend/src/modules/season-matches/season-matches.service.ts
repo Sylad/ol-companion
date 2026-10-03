@@ -12,7 +12,7 @@ import {
   COUPE_DE_FRANCE_365SCORES_ID,
   EUROPA_LEAGUE_365SCORES_ID,
 } from '../../config/constants';
-import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
@@ -136,7 +136,7 @@ export class SeasonMatchesService implements OnModuleInit {
     // mysteriously returns 0 events even when fixtures are scheduled, so we
     // walk `nextPage` as well to catch end-of-season L1 matches (Toulouse,
     // Lens, …) that haven't been played yet.
-    const baseUrl = 'https://data.365scores.com/web/games';
+    const baseUrl = `${SCORES365_API_BASE}/web/games`;
     let url: string | null = `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`;
     let nextPageHref: string | null = null;
 
@@ -162,7 +162,7 @@ export class SeasonMatchesService implements OnModuleInit {
         if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
 
         const prev: string | undefined = d.paging?.previousPage;
-        url = prev ? `https://data.365scores.com${prev}` : null;
+        url = prev ? `${SCORES365_API_BASE}${prev}` : null;
       } catch (err) {
         this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
         break;
@@ -187,7 +187,7 @@ export class SeasonMatchesService implements OnModuleInit {
 
     // 3. Walk the forward cursor — pulls SCHEDULED matches the upcoming
     // endpoint silently drops.
-    let forwardUrl: string | null = nextPageHref ? `https://data.365scores.com${nextPageHref}` : null;
+    let forwardUrl: string | null = nextPageHref ? `${SCORES365_API_BASE}${nextPageHref}` : null;
     for (let page = 0; page < PAGES && forwardUrl; page++) {
       try {
         const res = await this.fetcher(forwardUrl, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
@@ -200,7 +200,7 @@ export class SeasonMatchesService implements OnModuleInit {
         if (list.length === 0) break;
         for (const g of list) games.set(g.id, g);
         const next = d.paging?.nextPage;
-        forwardUrl = next ? `https://data.365scores.com${next}` : null;
+        forwardUrl = next ? `${SCORES365_API_BASE}${next}` : null;
       } catch (err) {
         this.logger.warn(`365scores forward pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
         break;

@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { OL_365SCORES_ID } from '../../config/constants';
-import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import {
   Scores365GameDetailResponseSchema,
   Scores365GamesResponseSchema,
@@ -88,7 +88,7 @@ export class LineupService implements OnModuleInit {
   }
 
   private async findLatestGameId(): Promise<number | null> {
-    const url = `https://data.365scores.com/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=10`;
+    const url = `${SCORES365_API_BASE}/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=10`;
     const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
     if (!res.ok) {
       this.logger.warn(`results endpoint HTTP ${res.status}`);
@@ -101,7 +101,7 @@ export class LineupService implements OnModuleInit {
   }
 
   private async fetchAndParseGame(gameId: number): Promise<LineupResponse | null> {
-    const url = `https://webws.365scores.com/web/game/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&gameId=${gameId}&withLineups=true`;
+    const url = `${SCORES365_API_BASE}/web/game/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&gameId=${gameId}&withLineups=true`;
     const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(15_000) });
     if (!res.ok) {
       this.logger.warn(`game ${gameId} HTTP ${res.status}`);

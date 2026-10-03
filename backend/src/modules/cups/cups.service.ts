@@ -7,7 +7,7 @@ import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { getCurrentSeason } from '../scheduler/season.util';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
-import { scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
@@ -153,7 +153,7 @@ export class CupsService implements OnModuleInit {
 
   private async fetchCupsFrom365Scores(): Promise<CupInfo[]> {
     const allGames: Scores365Game[] = [];
-    const baseUrl = 'https://data.365scores.com/web/games';
+    const baseUrl = `${SCORES365_API_BASE}/web/games`;
     const seasonStart = getCurrentSeason().startDate.getTime();
 
     // Fetch paginated results (follow previousPage up to 3 pages to cover full season)
@@ -171,7 +171,7 @@ export class CupsService implements OnModuleInit {
         if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
 
         const prev: string | undefined = d.paging?.previousPage;
-        url = prev ? `https://data.365scores.com${prev}` : null;
+        url = prev ? `${SCORES365_API_BASE}${prev}` : null;
       } catch (err: unknown) {
         this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
         break;
