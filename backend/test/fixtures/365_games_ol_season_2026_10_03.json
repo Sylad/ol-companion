@@ -1,0 +1,1258 @@
+{
+  "_source": "365scores, captured 2026-10-03 (webws.365scores.com, competitors=465, langId=1, timezoneName=Europe/Paris). Games reduced to the fields the schema reads; paging links verbatim. forward[] = the pages reached by following paging.nextPage from the fixtures page; the last one is the verbatim envelope without games that ends the season.",
+  "results": {
+    "games": [
+      {
+        "id": 4735259,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 5,
+        "roundName": "Round",
+        "startTime": "2026-09-19T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 4.0
+        },
+        "awayCompetitor": {
+          "id": 477,
+          "name": "Rennes",
+          "score": 0.0
+        }
+      },
+      {
+        "id": 4828762,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 1,
+        "roundName": "Round",
+        "startTime": "2026-09-16T21:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 1173,
+          "name": "Anderlecht",
+          "score": 1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4735265,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 4,
+        "roundName": "Round",
+        "startTime": "2026-09-12T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 6075,
+          "name": "Paris FC",
+          "score": 0.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 0.0
+        }
+      },
+      {
+        "id": 4735277,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 3,
+        "roundName": "Round",
+        "startTime": "2026-09-04T19:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 3.0
+        },
+        "awayCompetitor": {
+          "id": 476,
+          "name": "Auxerre",
+          "score": 1.0
+        }
+      },
+      {
+        "id": 4735286,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 2,
+        "roundName": "Round",
+        "startTime": "2026-08-29T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 1.0
+        },
+        "awayCompetitor": {
+          "id": 485,
+          "name": "Le Havre",
+          "score": 1.0
+        }
+      },
+      {
+        "id": 4809611,
+        "competitionId": 332,
+        "competitionDisplayName": "UEFA Champions League Qualifiers - Playoffs",
+        "stageNum": 4,
+        "roundName": "Round",
+        "stageName": "Playoffs",
+        "startTime": "2026-08-26T21:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 1.0
+        },
+        "awayCompetitor": {
+          "id": 946,
+          "name": "Fenerbahçe SK",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4735291,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 1,
+        "roundName": "Round",
+        "startTime": "2026-08-22T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 482,
+          "name": "Toulouse",
+          "score": 0.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4809607,
+        "competitionId": 332,
+        "competitionDisplayName": "UEFA Champions League Qualifiers - Playoffs",
+        "stageNum": 4,
+        "roundName": "Round",
+        "stageName": "Playoffs",
+        "startTime": "2026-08-18T21:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 946,
+          "name": "Fenerbahçe SK",
+          "score": 1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 1.0
+        }
+      },
+      {
+        "id": 4779515,
+        "competitionId": 332,
+        "competitionDisplayName": "UEFA Champions League Qualifiers - 3rd Round",
+        "stageNum": 3,
+        "roundName": "Round",
+        "stageName": "3rd Round",
+        "startTime": "2026-08-11T21:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 3.0
+        },
+        "awayCompetitor": {
+          "id": 1788,
+          "name": "Sparta Praha",
+          "score": 0.0
+        }
+      },
+      {
+        "id": 4779514,
+        "competitionId": 332,
+        "competitionDisplayName": "UEFA Champions League Qualifiers - 3rd Round",
+        "stageNum": 3,
+        "roundName": "Round",
+        "stageName": "3rd Round",
+        "startTime": "2026-08-04T20:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 1788,
+          "name": "Sparta Praha",
+          "score": 2.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 1.0
+        }
+      },
+      {
+        "id": 4767463,
+        "competitionId": 321,
+        "competitionDisplayName": "Club Friendlies",
+        "roundName": "Round",
+        "startTime": "2026-07-29T20:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 146,
+          "name": "Real Betis",
+          "score": 4.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 0.0
+        }
+      },
+      {
+        "id": 4769421,
+        "competitionId": 321,
+        "competitionDisplayName": "Club Friendlies",
+        "roundName": "Round",
+        "startTime": "2026-07-24T14:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 339,
+          "name": "Wolfsburg",
+          "score": 0.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4769424,
+        "competitionId": 321,
+        "competitionDisplayName": "Club Friendlies",
+        "roundName": "Round",
+        "startTime": "2026-07-18T19:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 0.0
+        },
+        "awayCompetitor": {
+          "id": 1789,
+          "name": "Slavia Praha",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4768051,
+        "competitionId": 321,
+        "competitionDisplayName": "Club Friendlies",
+        "roundName": "Round",
+        "startTime": "2026-07-15T18:30:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 2.0
+        },
+        "awayCompetitor": {
+          "id": 1154,
+          "name": "Servette FC",
+          "score": 1.0
+        }
+      },
+      {
+        "id": 4767362,
+        "competitionId": 321,
+        "competitionDisplayName": "Club Friendlies",
+        "roundName": "Round",
+        "startTime": "2026-07-11T10:30:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 6.0
+        },
+        "awayCompetitor": {
+          "id": 1146,
+          "name": "FC St. Gallen",
+          "score": 3.0
+        }
+      },
+      {
+        "id": 4463845,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 34,
+        "roundName": "Round",
+        "startTime": "2026-05-17T21:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 0.0
+        },
+        "awayCompetitor": {
+          "id": 481,
+          "name": "Lens",
+          "score": 4.0
+        }
+      },
+      {
+        "id": 4463855,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 33,
+        "roundName": "Round",
+        "startTime": "2026-05-10T21:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 482,
+          "name": "Toulouse",
+          "score": 2.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 1.0
+        }
+      },
+      {
+        "id": 4463860,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 32,
+        "roundName": "Round",
+        "startTime": "2026-05-03T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 4.0
+        },
+        "awayCompetitor": {
+          "id": 477,
+          "name": "Rennes",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4463868,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 31,
+        "roundName": "Round",
+        "startTime": "2026-04-25T15:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 3.0
+        },
+        "awayCompetitor": {
+          "id": 476,
+          "name": "Auxerre",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4463872,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 30,
+        "roundName": "Round",
+        "startTime": "2026-04-19T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 480,
+          "name": "PSG",
+          "score": 1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 2.0
+        }
+      },
+      {
+        "id": 4464220,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 29,
+        "roundName": "Round",
+        "startTime": "2026-04-12T20:45:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 2.0
+        },
+        "awayCompetitor": {
+          "id": 472,
+          "name": "Lorient",
+          "score": 0.0
+        }
+      },
+      {
+        "id": 4463891,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 28,
+        "roundName": "Round",
+        "startTime": "2026-04-05T15:00:00+02:00",
+        "statusGroup": 4,
+        "statusText": "Ended",
+        "homeCompetitor": {
+          "id": 493,
+          "name": "Angers",
+          "score": 0.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": 0.0
+        }
+      }
+    ],
+    "paging": {
+      "previousPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&apptype=5&competitors=465&games=1&aftergame=4463891&direction=-1",
+      "nextPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&apptype=5&competitors=465&games=1&aftergame=4735259&direction=1"
+    }
+  },
+  "fixtures": {
+    "games": [
+      {
+        "id": 4735252,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 6,
+        "roundName": "Round",
+        "startTime": "2026-10-09T20:45:00+02:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 481,
+          "name": "Lens",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828743,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 2,
+        "roundName": "Round",
+        "startTime": "2026-10-15T18:45:00+02:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 10,
+          "name": "Crystal Palace",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735239,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 7,
+        "roundName": "Round",
+        "startTime": "2026-10-18T20:45:00+02:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 470,
+          "name": "OGC Nice",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828717,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 3,
+        "roundName": "Round",
+        "startTime": "2026-10-22T21:00:00+02:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 351,
+          "name": "Hoffenheim",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735227,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 8,
+        "roundName": "Round",
+        "startTime": "2026-10-25T20:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 480,
+          "name": "PSG",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735223,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 9,
+        "roundName": "Round",
+        "startTime": "2026-10-31T20:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 493,
+          "name": "Angers",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828708,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 4,
+        "roundName": "Round",
+        "startTime": "2026-11-05T18:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 154,
+          "name": "Real Sociedad",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735215,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 10,
+        "roundName": "Round",
+        "startTime": "2026-11-08T17:15:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 534,
+          "name": "Brest",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735207,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 11,
+        "roundName": "Round",
+        "startTime": "2026-11-21T20:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 478,
+          "name": "Lille",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828675,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 5,
+        "roundName": "Round",
+        "startTime": "2026-11-26T21:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 1985,
+          "name": "Lillestrom",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735194,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 12,
+        "roundName": "Round",
+        "startTime": "2026-11-29T20:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 471,
+          "name": "Monaco",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735182,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 13,
+        "roundName": "Round",
+        "startTime": "2026-12-05T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 488,
+          "name": "Troyes",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828657,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 6,
+        "roundName": "Round",
+        "startTime": "2026-12-10T21:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 1204,
+          "name": "Union St. Gilloise",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735173,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 14,
+        "roundName": "Round",
+        "startTime": "2026-12-13T20:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 469,
+          "name": "Olympique de Marseille",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735171,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 15,
+        "roundName": "Round",
+        "startTime": "2027-01-02T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 468,
+          "name": "Le Mans",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735161,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 16,
+        "roundName": "Round",
+        "startTime": "2027-01-16T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 472,
+          "name": "Lorient",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828651,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 7,
+        "roundName": "Round",
+        "startTime": "2027-01-21T18:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 2220,
+          "name": "Jagiellonia",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735148,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 17,
+        "roundName": "Round",
+        "startTime": "2027-01-23T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 479,
+          "name": "Strasbourg",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4828627,
+        "competitionId": 573,
+        "competitionDisplayName": "UEFA Europa League",
+        "stageNum": 1,
+        "roundNum": 8,
+        "roundName": "Round",
+        "startTime": "2027-01-28T21:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 333,
+          "name": "Bayer Leverkusen",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735142,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 18,
+        "roundName": "Round",
+        "startTime": "2027-01-30T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 478,
+          "name": "Lille",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735131,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 19,
+        "roundName": "Round",
+        "startTime": "2027-02-06T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 477,
+          "name": "Rennes",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735122,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 20,
+        "roundName": "Round",
+        "startTime": "2027-02-13T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 481,
+          "name": "Lens",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735117,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 21,
+        "roundName": "Round",
+        "startTime": "2027-02-20T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 485,
+          "name": "Le Havre",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735105,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 22,
+        "roundName": "Round",
+        "startTime": "2027-02-27T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 482,
+          "name": "Toulouse",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735096,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 23,
+        "roundName": "Round",
+        "startTime": "2027-03-06T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 471,
+          "name": "Monaco",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735087,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 24,
+        "roundName": "Round",
+        "startTime": "2027-03-13T18:00:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 488,
+          "name": "Troyes",
+          "score": -1.0
+        }
+      },
+      {
+        "id": 4735074,
+        "competitionId": 35,
+        "competitionDisplayName": "Ligue 1",
+        "stageNum": 1,
+        "roundNum": 25,
+        "roundName": "Round",
+        "startTime": "2027-03-21T20:45:00+01:00",
+        "statusGroup": 2,
+        "statusText": "Scheduled",
+        "homeCompetitor": {
+          "id": 469,
+          "name": "Olympique de Marseille",
+          "score": -1.0
+        },
+        "awayCompetitor": {
+          "id": 465,
+          "name": "Lyon",
+          "score": -1.0
+        }
+      }
+    ],
+    "paging": {
+      "previousPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&apptype=5&competitors=465&games=1&aftergame=4735252&direction=-1",
+      "nextPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&apptype=5&competitors=465&games=1&aftergame=4735074&direction=1"
+    }
+  },
+  "forward": [
+    {
+      "games": [
+        {
+          "id": 4735067,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 26,
+          "roundName": "Round",
+          "startTime": "2027-04-03T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 470,
+            "name": "OGC Nice",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          }
+        },
+        {
+          "id": 4735061,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 27,
+          "roundName": "Round",
+          "startTime": "2027-04-10T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 479,
+            "name": "Strasbourg",
+            "score": -1.0
+          }
+        },
+        {
+          "id": 4735055,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 28,
+          "roundName": "Round",
+          "startTime": "2027-04-17T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 493,
+            "name": "Angers",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          }
+        }
+      ],
+      "paging": {
+        "nextPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&competitors=465&games=1&aftergame=4735055&direction=1"
+      }
+    },
+    {
+      "games": [
+        {
+          "id": 4735043,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 29,
+          "roundName": "Round",
+          "startTime": "2027-04-24T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 534,
+            "name": "Brest",
+            "score": -1.0
+          }
+        },
+        {
+          "id": 4735037,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 30,
+          "roundName": "Round",
+          "startTime": "2027-05-01T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 476,
+            "name": "Auxerre",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          }
+        },
+        {
+          "id": 4735020,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 31,
+          "roundName": "Round",
+          "startTime": "2027-05-09T20:45:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 480,
+            "name": "PSG",
+            "score": -1.0
+          }
+        },
+        {
+          "id": 4735017,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 32,
+          "roundName": "Round",
+          "startTime": "2027-05-16T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 468,
+            "name": "Le Mans",
+            "score": -1.0
+          }
+        }
+      ],
+      "paging": {
+        "nextPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&competitors=465&games=1&aftergame=4735017&direction=1"
+      }
+    },
+    {
+      "games": [
+        {
+          "id": 4735007,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 33,
+          "roundName": "Round",
+          "startTime": "2027-05-22T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 472,
+            "name": "Lorient",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          }
+        },
+        {
+          "id": 4734999,
+          "competitionId": 35,
+          "competitionDisplayName": "Ligue 1",
+          "stageNum": 1,
+          "roundNum": 34,
+          "roundName": "Round",
+          "startTime": "2027-05-29T19:00:00+02:00",
+          "statusGroup": 2,
+          "statusText": "Scheduled",
+          "homeCompetitor": {
+            "id": 465,
+            "name": "Lyon",
+            "score": -1.0
+          },
+          "awayCompetitor": {
+            "id": 6075,
+            "name": "Paris FC",
+            "score": -1.0
+          }
+        }
+      ],
+      "paging": {
+        "nextPage": "/web/games/?langId=1&timezoneId=6&userCountryId=75&competitors=465&games=1&aftergame=4734999&direction=1"
+      }
+    },
+    {
+      "lastUpdateId": 5777373061,
+      "requestedUpdateId": -1,
+      "ttl": 5,
+      "summary": {},
+      "countries": [],
+      "competitions": []
+    }
+  ]
+}

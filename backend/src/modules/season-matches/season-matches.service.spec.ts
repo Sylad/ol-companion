@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { SeasonMatchesService } from './season-matches.service';
 import { EventBusService } from '../events/event-bus.service';
+import type { FixturesService } from '../fixtures/fixtures.service';
 
 jest.mock('@nestjs/schedule', () => ({
   Cron: () => () => undefined,
@@ -44,7 +45,9 @@ function withCwd<T>(fn: (dir: string) => Promise<T> | T): Promise<T> {
 
 function buildService(games: any[][], statuses: number[] = [200, 200]): SeasonMatchesService {
   const bus = new EventBusService();
-  const svc = new SeasonMatchesService(bus);
+  // football-data muet : ces specs portent sur la lecture de 365scores.
+  const fixtures = { peekFixtures: () => [] } as unknown as FixturesService;
+  const svc = new SeasonMatchesService(bus, fixtures);
   let call = 0;
   svc.fetcher = jest.fn(async () => {
     const idx = Math.min(call, games.length - 1);

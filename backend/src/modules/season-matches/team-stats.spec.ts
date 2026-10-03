@@ -16,6 +16,7 @@ function fixture(partial: Partial<SeasonMatch> & { date: string }): SeasonMatch 
     competitionId: 35,
     status: 'FINISHED',
     matchday: null,
+    timeConfirmed: true,
     ...partial,
   };
 }

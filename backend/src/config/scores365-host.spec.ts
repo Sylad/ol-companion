@@ -304,16 +304,25 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
       const { SeasonMatchesService } =
         require('../modules/season-matches/season-matches.service') as typeof import('../modules/season-matches/season-matches.service');
 
-      const matches = await new SeasonMatchesService(bus()).getMatches({
+      // football-data muet : seul l'hôte des appels 365scores est observé ici.
+      const fixtures = {
+        peekFixtures: () => [],
+      } as unknown as import('../modules/fixtures/fixtures.service').FixturesService;
+      const matches = await new SeasonMatchesService(
+        bus(),
+        fixtures,
+      ).getMatches({
         force: true,
       });
 
       expect(matches.length).toBeGreaterThan(0);
+      // Matchs à venir : la page `/fixtures/` puis ses pages suivantes, jusqu'au
+      // plafond de 12 (la page servie ici annonce toujours une suite).
       expect(pathsAndQueries()).toEqual([
         '/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=465&limit=50',
         ...Array.from({ length: 7 }, () => PREV),
-        '/web/games/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=465&limit=20',
-        ...Array.from({ length: 8 }, () => NEXT),
+        '/web/games/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=465&limit=50',
+        ...Array.from({ length: 12 }, () => NEXT),
       ]);
       expectAllOnApiBase();
     });
