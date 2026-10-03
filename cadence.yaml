@@ -13,5 +13,8 @@ deliver:
       contains: '"starters"'
     - url: https://ol.sladoire.dev/api/standings
       contains: '"table"'
+    # le calendrier lit la saison toutes compétitions (qualifications de Ligue des champions comprises)
+    - url: https://ol.sladoire.dev/api/season-matches
+      contains: 'UEFA Champions League'
     - url: https://ol.sladoire.dev/
   verifyTimeout: 600
