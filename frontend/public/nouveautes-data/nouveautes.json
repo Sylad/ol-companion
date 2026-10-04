@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-03 15:23",
+  "generated": "2026-10-04 22:37",
   "entries": [
+    {
+      "slug": "2026-10-04-sur-la-fiche-d-un-joueur-la-navigation-indique-ou-l-on-se-tr",
+      "title": "Sur la fiche d'un joueur, la navigation indique où l'on se trouve",
+      "date": "2026-10-04",
+      "lots": [
+        "L29"
+      ],
+      "captures": [
+        "captures/L29-fiche-joueur-navigation-telephone.png"
+      ],
+      "alts": [
+        "Fiche d'un joueur au téléphone, panneau Plus ouvert : l'entrée Joueurs est mise en évidence et la case Plus est allumée"
+      ],
+      "html": "<p>Quand vous ouvriez la fiche d'un joueur, aucune entrée du menu n'était allumée : on ne voyait plus où l'on était.</p>\n<ul><li>Sur ordinateur, <strong>Joueurs</strong> reste allumé dans la barre latérale tant que vous êtes sur une fiche joueur.</li><li>Sur téléphone, la case <strong>Plus</strong> s'allume et indique « Joueurs » comme page en cours ; dans le panneau, <strong>Joueurs</strong> est mis en évidence.</li></ul>"
+    },
     {
       "slug": "2026-10-03-le-calendrier-montre-toute-la-saison-ligue-europa-comprise",
       "title": "Le calendrier montre toute la saison, Ligue Europa comprise",
