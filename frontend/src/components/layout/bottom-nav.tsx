@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { DIVIDER, NAV_ITEMS } from './sidebar';
+import { DIVIDER, NAV_ITEMS, isNavActive } from './sidebar';
 import { GROUP_TITLE, SECONDARY_ITEMS } from './sidebar-links';
 import { NewsBadge } from '@/components/news-badge';
 import { useNewsBadge } from '@/hooks/use-news-badge';
@@ -82,7 +82,7 @@ export function BottomNav() {
     }
   };
 
-  const currentMore = MORE_PAGES.find((p) => path.startsWith(p.to));
+  const currentMore = MORE_PAGES.find((p) => isNavActive(p, path));
   const plusActive = open || currentMore !== undefined;
   // Nom accessible complet : les cases de la barre sont des éléments flex, un lecteur
   // d'écran insérerait une espace entre « Plus » et un texte masqué accolé (« Plus , … »).
@@ -136,7 +136,7 @@ export function BottomNav() {
             </div>
             <ul className="space-y-1">
               {MOVED_ITEMS.map(({ to, label, icon: Icon }, i) => {
-                const active = path.startsWith(to);
+                const active = isNavActive({ to }, path);
                 return (
                   <li key={to}>
                     <Link
@@ -175,7 +175,7 @@ export function BottomNav() {
               </div>
               <ul className="space-y-1">
                 {SECONDARY_ITEMS.map(({ to, label, icon: Icon }) => {
-                  const active = path.startsWith(to);
+                  const active = isNavActive({ to }, path);
                   return (
                     <li key={to}>
                       <Link
@@ -203,7 +203,7 @@ export function BottomNav() {
       >
         <div className="grid grid-cols-5">
           {BAR_ITEMS.map((item) => {
-            const active = !open && (item.exact ? path === item.to : path.startsWith(item.to));
+            const active = !open && isNavActive(item, path);
             const Icon = item.icon;
             return (
               <Link

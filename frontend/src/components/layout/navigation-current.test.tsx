@@ -231,3 +231,36 @@ describe('page actuelle — panneau « Plus » (téléphone)', () => {
     expect(currentLabels(barLinks())).toEqual([expected]);
   });
 });
+
+// L29 — la fiche joueur (/player/<id>) est une sous-page de « Joueurs » (/players) : le
+// préfixe « /players » ne la couvre pas (« /player/1 » ne commence pas par « /players »).
+describe('fiche joueur (/player/<id>) — « Joueurs » reste la page actuelle', () => {
+  it('barre latérale : seule « Joueurs » porte aria-current="page" et le style actif', async () => {
+    await renderAt('/player/1', sidebar);
+    expect(currentLabels(sidebarEntries())).toEqual(['Joueurs']);
+    expectStyleAgrees(sidebarEntries(), hasActiveBackground);
+  });
+
+  it('barre du bas : aucune case n’est actuelle, et « Plus » nomme « Joueurs »', async () => {
+    await renderAt('/player/1', () => <BottomNav />);
+    expect(currentLabels(barLinks())).toEqual([]);
+    const plus = screen.getByRole('button', { name: /^Plus/ });
+    expect(plus).toHaveAttribute('aria-label', 'Plus, page actuelle : Joueurs');
+    expect(plus).toHaveAttribute('data-active', 'true');
+    expect(plus.className).toContain('text-ol-red-bright');
+  });
+
+  it('panneau « Plus » : seule « Joueurs » est la page actuelle', async () => {
+    const user = userEvent.setup();
+    await renderAt('/player/1', () => <BottomNav />);
+    await user.click(screen.getByRole('button', { name: /^Plus/ }));
+    const links = internalLinks(screen.getByRole('dialog', { name: 'Plus de pages' }));
+    expect(currentLabels(links)).toEqual(['Joueurs']);
+    expectStyleAgrees(links, hasActiveBackground);
+  });
+
+  it('sur /players, « Joueurs » reste la page actuelle (une seule entrée)', async () => {
+    await renderAt('/players', sidebar);
+    expect(currentLabels(sidebarEntries())).toEqual(['Joueurs']);
+  });
+});

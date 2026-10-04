@@ -18,6 +18,15 @@ export const NAV_ITEMS = [
   { to: '/map', label: 'Carte L1', icon: MapPin, exact: false },
 ] as const;
 
+/** Sous-pages qui n'ont pas le chemin de leur entrée pour préfixe : la fiche joueur dépend de « Joueurs » (L29). */
+const SUB_PAGE_PREFIXES: Record<string, readonly string[]> = { '/players': ['/player/'] };
+
+/** Vrai si `path` est la page de l'entrée ou l'une de ses sous-pages (« / » n'est que « / »). */
+export function isNavActive(item: { to: string; exact?: boolean }, path: string): boolean {
+  if (item.exact) return path === item.to;
+  return path.startsWith(item.to) || (SUB_PAGE_PREFIXES[item.to] ?? []).some((p) => path.startsWith(p));
+}
+
 export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamStatus }) {
   const { location } = useRouterState();
   const path = location.pathname;
@@ -67,12 +76,13 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
 
       <nav className="flex-1 px-3 space-y-1">
         {NAV_ITEMS.map((item) => {
-          const active = item.exact ? path === item.to : path.startsWith(item.to);
+          const active = isNavActive(item, path);
           const Icon = item.icon;
           return (
             <Link
               key={item.to}
               to={item.to}
+              aria-current={active ? 'page' : undefined}
               className={cn(
                 'group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors',
                 active
