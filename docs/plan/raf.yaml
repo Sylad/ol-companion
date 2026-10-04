@@ -232,11 +232,12 @@ lots:
   - id: L29
     title: "Fiche joueur (/player/<id>) : aucune entrée de navigation active, ni Joueurs en barre latérale ni Plus au téléphone (relecture L24)"
     public: "Fiche joueur : la navigation indique où l'on se trouve"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-02
+    started: 2026-10-04
   - id: L30
     title: "En-tête à 320 et 390 px : la pastille LIVE RECONNECTE chevauche le titre Olympique Lyonnais (revue UX L24)"
     public: "En-tête sur téléphone : la pastille du direct ne recouvre plus le titre"
