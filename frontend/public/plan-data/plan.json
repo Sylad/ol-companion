@@ -50,8 +50,9 @@
     {
       "id": "L30",
       "title": "En-tête sur téléphone : la pastille du direct ne recouvre plus le titre",
-      "status": "doing",
-      "started": "2026-10-05"
+      "status": "done",
+      "started": "2026-10-05",
+      "finished": "2026-10-05"
     },
     {
       "id": "L31",
