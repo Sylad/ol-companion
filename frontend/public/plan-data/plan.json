@@ -43,8 +43,9 @@
     {
       "id": "L29",
       "title": "Fiche joueur : la navigation indique où l'on se trouve",
-      "status": "doing",
-      "started": "2026-10-04"
+      "status": "done",
+      "started": "2026-10-04",
+      "finished": "2026-10-05"
     },
     {
       "id": "L30",
