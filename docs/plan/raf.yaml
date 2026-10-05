@@ -265,6 +265,7 @@ lots:
     notes:
       - { date: 2026-10-03, text: "03-10, passage QA : premier chargement à froid de /standings = 26 appels /api en 250 ms, 12 × 429 sur wiki-image, 1 logo jamais chargé (Lorient ou Le Havre selon le chargement, une seule relance à ~1 s) ; /fixtures : 9 × 429, tous rattrapés. Reproduit après une minute de calme : un visiteur ordinaire le subit." }
       - { date: 2026-10-03, text: "03-10, second passage QA : toujours 12 × 429 au premier chargement de /standings, un écusson différent manquant à chaque chargement (PSG, Marseille, Brest, Troyes)." }
+      - { date: 2026-10-05, text: "QA prod 05-10 : /standings 12 (1440) à 17 (390) réponses 429 wiki-image, 15 écussons sur 18 à 1440 ; /fixtures et /news 8/8 en 429 pour les logos du bandeau" }
   - id: L33
     title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
     status: done
@@ -473,6 +474,16 @@ lots:
     created: 2026-10-05
   - id: L60
     title: "Fiche joueur : état d'erreur distinguant réseau / joueur inconnu, avec bouton Réessayer (Nielsen 9) — relevé en revue UX L29"
+    status: todo
+    estimate: 1
+    created: 2026-10-05
+  - id: L61
+    title: "Banc incohérent : /players affiche 11 entrées (10 joueurs + entraîneur, Tagliafico inclus), /match/4735259 en affiche 9 sans Tagliafico — aligner les deux sources (complète L42) — QA prod 05-10"
+    status: todo
+    estimate: 1
+    created: 2026-10-05
+  - id: L62
+    title: "/about : sections Frontend, Backend, Infra introuvables en h2 (un seul h2 « L'histoire courte » mesuré) — vérifier la page ou corriger docs/qa/expectations.md — QA prod 05-10"
     status: todo
     estimate: 1
     created: 2026-10-05
