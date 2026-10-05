@@ -250,6 +250,7 @@ lots:
     visible: true
     created: 2026-10-02
     started: 2026-10-05
+    review: { date: 2026-10-05, verdict: "conforme après 2 corrections mineures — orchestré (vague 2026-10-05-2058, 0 passe(s) de correction + passe des mineurs)", commit: f0d72d9caca2449e7482159d16cf27580d6779b6 }
   - id: L31
     title: "Barre du bas : case active distinguée surtout par la teinte (1,47:1 entre actif et inactif, WCAG 1.4.1) — ajouter un repère non coloré (revue UX L24)"
     public: "Barre du bas : la page active mieux signalée"
