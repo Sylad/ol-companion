@@ -244,13 +244,15 @@ lots:
   - id: L30
     title: "En-tête à 320 et 390 px : la pastille LIVE RECONNECTE chevauche le titre Olympique Lyonnais (revue UX L24)"
     public: "En-tête sur téléphone : la pastille du direct ne recouvre plus le titre"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-02
     started: 2026-10-05
     review: { date: 2026-10-05, verdict: "conforme après 2 corrections mineures — orchestré (vague 2026-10-05-2058, 0 passe(s) de correction + passe des mineurs)", commit: f0d72d9caca2449e7482159d16cf27580d6779b6 }
+    ux: { date: 2026-10-05, verdict: "conforme après 2 corrections mineures (ux-reviewer, vague orchestrate 2026-10-05-2058)" }
+    finished: 2026-10-05
   - id: L31
     title: "Barre du bas : case active distinguée surtout par la teinte (1,47:1 entre actif et inactif, WCAG 1.4.1) — ajouter un repère non coloré (revue UX L24)"
     public: "Barre du bas : la page active mieux signalée"
@@ -488,4 +490,16 @@ lots:
     title: "/about : sections Frontend, Backend, Infra introuvables en h2 (un seul h2 « L'histoire courte » mesuré) — vérifier la page ou corriger docs/qa/expectations.md — QA prod 05-10"
     status: todo
     estimate: 1
+    created: 2026-10-05
+  - id: L63
+    title: "nouveautes.tsx:325 : le commentaire du portail cite encore « la pastille de connexion », qui est maintenant dans <main> — remplacer par le bandeau démo (revue de code L30)"
+    status: todo
+    estimate: 0.1
+    quickwin: true
+    created: 2026-10-05
+  - id: L64
+    title: "Téléphone : l'état du direct sort de l'écran quand on fait défiler la page (Nielsen H1) — décider entre une ligne de pastille sticky et une réserve de hauteur sous une pastille fixe, au moins sur /match/<id> (revue L30)"
+    status: todo
+    estimate: 1
+    visible: true
     created: 2026-10-05
