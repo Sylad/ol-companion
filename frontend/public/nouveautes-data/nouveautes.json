@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-04 22:40",
+  "generated": "2026-10-05 21:00",
   "entries": [
+    {
+      "slug": "2026-10-05-en-tete-sur-telephone-la-pastille-du-direct-ne-recouvre-pl",
+      "title": "En-tête sur téléphone, la pastille du direct ne recouvre plus le titre",
+      "date": "2026-10-05",
+      "lots": [
+        "L30"
+      ],
+      "captures": [
+        "captures/L30-en-tete-telephone.png"
+      ],
+      "alts": [
+        "Accueil au téléphone (390 px) : la pastille du direct est sur sa propre ligne, au-dessus du titre"
+      ],
+      "html": "<p>Sur un téléphone, la pastille « Live reconnecte » flottait en haut à droite et venait se poser sur le titre « Olympique Lyonnais ».</p>\n<ul><li>Elle a maintenant sa propre ligne, au-dessus du contenu de la page : plus rien n'est recouvert, quelle que soit la largeur de l'écran (320 ou 390 px).</li><li>Sur ordinateur, rien ne change : l'état du direct reste affiché dans la barre latérale.</li></ul>"
+    },
     {
       "slug": "2026-10-04-sur-la-fiche-d-un-joueur-la-navigation-indique-ou-l-on-se-tr",
       "title": "Sur la fiche d'un joueur, la navigation indique où l'on se trouve",
