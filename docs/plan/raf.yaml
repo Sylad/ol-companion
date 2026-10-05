@@ -244,11 +244,12 @@ lots:
   - id: L30
     title: "En-tête à 320 et 390 px : la pastille LIVE RECONNECTE chevauche le titre Olympique Lyonnais (revue UX L24)"
     public: "En-tête sur téléphone : la pastille du direct ne recouvre plus le titre"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-02
+    started: 2026-10-05
   - id: L31
     title: "Barre du bas : case active distinguée surtout par la teinte (1,47:1 entre actif et inactif, WCAG 1.4.1) — ajouter un repère non coloré (revue UX L24)"
     public: "Barre du bas : la page active mieux signalée"
