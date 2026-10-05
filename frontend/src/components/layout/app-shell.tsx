@@ -21,9 +21,12 @@ export function AppShell() {
       <PageBackdrop />
       <DemoBanner />
       <Sidebar eventStreamStatus={eventStreamStatus} />
-      <LiveConnectionBadge status={eventStreamStatus} className="fixed right-4 top-4 z-50 lg:hidden" />
       <main className="relative z-10 lg:pl-[240px] pb-20 lg:pb-0">
         <div className={cn('mx-auto w-full px-5 lg:px-8', wide ? 'max-w-none py-5 lg:py-6' : 'max-w-[1440px] py-6 lg:py-10')}>
+          {/* L30 : sur téléphone la pastille a sa propre ligne, dans le flux — flottante, elle recouvrait le titre. */}
+          <div className="mb-3 flex justify-end lg:hidden">
+            <LiveConnectionBadge status={eventStreamStatus} />
+          </div>
           <Outlet />
         </div>
       </main>
