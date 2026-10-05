@@ -503,3 +503,15 @@ lots:
     estimate: 1
     visible: true
     created: 2026-10-05
+  - id: L65
+    title: "Match /match à 320 px : le nom du club visiteur est tronqué dans l'en-tête du score (« Rennes » x 234–321 dans une carte coupée à 300) — réduire la police ou autoriser le retour à la ligne (QA prod 05-10)"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-05
+  - id: L66
+    title: "Match /match : aucun h1 sur la page (attendu par docs/qa/expectations.md section *) — ajouter un h1 masqué visuellement ou ajuster la ligne (QA prod 05-10)"
+    status: todo
+    estimate: 0.2
+    quickwin: true
+    created: 2026-10-05
