@@ -113,11 +113,8 @@ export function NouveautesPage() {
   return (
     <div className="space-y-6">
       <header data-testid="nouveautes-entete" className="flex flex-col gap-1.5 mb-2">
-        {/* Au téléphone, la pastille LIVE (fixe, en haut à droite) ne recouvre pas le sur-titre :
-            pr-44 réserve la largeur de son libellé le plus long (« LIVE RECONNECTE », 170 px à
-            320 px), l'icône décorative est masquée sous 640 px (sinon 8 px de chevauchement à 320). */}
-        <p className="flex items-center gap-2 pr-44 lg:pr-0 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
-          <Megaphone className="hidden sm:block h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
+        <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
+          <Megaphone className="h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
           <span>
             Nouveautés<span className="hidden sm:inline"> · OL Companion</span>
           </span>
@@ -325,9 +322,9 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
   const imgStyle = capture.size ? ({ '--cap-w': `${capture.size[0]}px` } as CSSProperties) : undefined;
 
   // Portail sous <body> : <main> est un contexte d'empilement (relative z-10), un z-index
-  // posé à l'intérieur ne passerait jamais au-dessus de la barre du bas ni de la pastille LIVE.
+  // posé à l'intérieur ne passerait jamais au-dessus de la barre du bas ni de la pastille de connexion.
   return createPortal(
-    // z-[60] : au-dessus de la barre du bas (z-40) et de la pastille de connexion (z-50).
+    // z-[60] : au-dessus de la barre du bas (z-40) et du bandeau démo (z-50).
     <div
       role="dialog"
       aria-modal="true"

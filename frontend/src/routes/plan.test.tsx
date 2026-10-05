@@ -198,6 +198,14 @@ describe('<PlanPage />', () => {
     expect(screen.getByTestId('plan-entete')).toHaveTextContent(/Plan de travail/);
   });
 
+  it('le sur-titre ne réserve plus de place à la pastille LIVE (elle a sa ligne, L30) et garde son icône', async () => {
+    vi.stubGlobal('fetch', serve(okJson(plan)));
+    renderPage();
+    const eyebrow = (await screen.findByTestId('plan-entete')).querySelector('p')!;
+    expect(eyebrow.className).not.toMatch(/pr-44/);
+    expect(eyebrow.querySelector('svg')!.getAttribute('class')).not.toMatch(/(^| )hidden( |$)/);
+  });
+
   it('l’état d’un lot est dit en toutes lettres (jamais par la seule couleur)', async () => {
     vi.stubGlobal('fetch', serve(okJson(plan)));
     renderPage();

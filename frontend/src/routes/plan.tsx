@@ -310,9 +310,8 @@ export function PlanPage() {
   return (
     <div className="space-y-6">
       <header data-testid="plan-entete" className="flex flex-col gap-1.5 mb-2">
-        {/* Même en-tête que les Nouveautés : pr-44 laisse la place de la pastille LIVE au téléphone. */}
-        <p className="flex items-center gap-2 pr-44 lg:pr-0 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
-          <ListTodo className="hidden sm:block h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
+        <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
+          <ListTodo className="h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
           <span>
             Plan de travail<span className="hidden sm:inline"> · OL Companion</span>
           </span>
