@@ -33,7 +33,7 @@ describe('<StandingsTable /> — mobile (L37)', () => {
   it('la cellule du club peut rétrécir : max-w-0 sans w-full (colonnes fixes préservées), nom tronqué', () => {
     renderTable();
     const name = screen.getByText('Paris Saint-Germain Football Club');
-    expect(name).toHaveClass('truncate');
+    expect(name).toHaveClass('md:truncate');
     const cell = name.closest('td')!;
     expect(cell).toHaveClass('max-w-0');
     expect(cell).not.toHaveClass('w-full');
@@ -56,5 +56,13 @@ describe('<StandingsTable /> — mobile (L37)', () => {
       .map((m) => Number(m[1]) * 4);
     const fixed = widths.reduce((a, b) => a + b, 0);
     expect(332 - fixed).toBeGreaterThanOrEqual(100);
+  });
+
+  it('le nom long se lit en entier sur téléphone : retour à la ligne (2 lignes), titre natif, troncature réservée à l’ordinateur', () => {
+    renderTable();
+    const name = screen.getByText('Paris Saint-Germain Football Club');
+    expect(name).toHaveAttribute('title', 'Paris Saint-Germain Football Club');
+    expect(name).toHaveClass('line-clamp-2', 'break-words', 'md:truncate');
+    expect(name).not.toHaveClass('truncate');
   });
 });

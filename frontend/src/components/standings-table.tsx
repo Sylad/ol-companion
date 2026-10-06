@@ -120,11 +120,12 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                   <span className="align-middle">{row.position}</span>
                 </td>
                 <td className="px-2 py-3 max-w-0">
-                  <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                  <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
                     <TeamLogo teamId={row.teamId} name={row.team} size={22} />
                     <span
+                      title={row.team}
                       className={cn(
-                        'truncate',
+                        'line-clamp-2 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
                         isOL ? 'text-fg-bright font-semibold' : 'text-fg',
                       )}
                     >
