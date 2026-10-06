@@ -1,7 +1,17 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-06 09:19",
+  "generated": "2026-10-06 18:07",
   "entries": [
+    {
+      "slug": "2026-10-06-classement-sur-telephone-la-colonne-des-points-toujours",
+      "title": "Classement sur téléphone, la colonne des points toujours visible",
+      "date": "2026-10-06",
+      "lots": [
+        "L37"
+      ],
+      "captures": [],
+      "html": "<p>Sur téléphone, la colonne des points du classement sortait de l'écran : il fallait faire défiler le tableau pour la voir.</p>\n<ul><li>Les colonnes de chiffres sont <strong>resserrées</strong> sur petit écran et le <strong>nom du club</strong> se tronque au lieu d'élargir le tableau.</li><li>Les <strong>points</strong> restent visibles d'un coup d'œil, sans défilement horizontal.</li></ul>"
+    },
     {
       "slug": "2026-10-06-barre-du-bas-la-page-active-mieux-signalee",
       "title": "Barre du bas, la page active mieux signalée",
