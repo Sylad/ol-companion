@@ -448,6 +448,35 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       });
     });
 
+    it('après le déclenchement de la garde, une lecture non forcée sert l’ancienne saison sans relancer le parcours de 365scores', async () => {
+      await withCwd(async (dir) => {
+        const first = buildService();
+        first.svc.retryDelayMs = 0;
+        await first.svc.getMatches({ force: true });
+        // Cache plus vieux que le TTL de 30 min : une lecture non forcée doit rafraîchir.
+        const cacheFile = path.join(dir, 'data', 'season-matches-cache.json');
+        const stored = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        stored.ts = Date.now() - 31 * 60_000;
+        fs.writeFileSync(cacheFile, JSON.stringify(stored));
+
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        const f = failing(svc, isSecondForward, 99);
+        const calls = jest.fn(svc.fetcher);
+        svc.fetcher = calls as typeof svc.fetcher;
+
+        expect(await svc.getMatches({ force: true })).toHaveLength(46); // garde déclenchée
+        const callsAfterGuard = calls.mock.calls.length;
+        const failuresAfterGuard = f.failures();
+
+        expect(await svc.getMatches()).toHaveLength(46);
+        expect(await svc.getMatches()).toHaveLength(46);
+        expect(calls.mock.calls.length).toBe(callsAfterGuard);
+        expect(f.failures()).toBe(failuresAfterGuard);
+      });
+    });
+
     it('sans cache précédent, la saison tronquée est tout de même rendue (mieux que rien)', async () => {
       await withCwd(async () => {
         const { svc } = buildService();

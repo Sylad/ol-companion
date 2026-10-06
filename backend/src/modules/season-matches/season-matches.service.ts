@@ -158,6 +158,15 @@ export class SeasonMatchesService implements OnModuleInit {
   /** Attente avant le nouvel essai d'une page en échec — remise à 0 par les specs. */
   retryDelayMs = 1_000;
 
+  /**
+   * Instant où la garde « marche avant incomplète » a gardé l'ancienne saison.
+   * Le cache n'est alors pas réécrit (son `ts` reste ancien) : sans ce repère,
+   * chaque lecture non forcée relancerait un parcours complet de 365scores
+   * (≥ 21 s de timeouts) pendant toute la panne. Seuls le cron et le forçage
+   * retentent ; une lecture ordinaire sert l'ancienne saison pendant un TTL.
+   */
+  private degradedAt: number | null = null;
+
   constructor(
     private readonly bus: EventBusService,
     private readonly fixtures: FixturesService,
@@ -188,6 +197,10 @@ export class SeasonMatchesService implements OnModuleInit {
     if (!opts.force) {
       const cached = this.readCache();
       if (cached) return cached;
+      if (this.degradedAt !== null && Date.now() - this.degradedAt < CACHE_TTL_MS) {
+        const previous = this.readCacheRaw();
+        if (previous) return previous;
+      }
     }
 
     try {
@@ -210,8 +223,10 @@ export class SeasonMatchesService implements OnModuleInit {
         this.logger.warn(
           `365scores : marche avant incomplète, ${matches.length} matchs contre ${known.length} connus — cache existant conservé`,
         );
+        this.degradedAt = Date.now();
         return previous!;
       }
+      this.degradedAt = null;
       this.writeCache(matches);
       if (this.matchesChanged(previous, matches)) {
         this.bus.emit('season-matches-changed', { count: matches.length });
