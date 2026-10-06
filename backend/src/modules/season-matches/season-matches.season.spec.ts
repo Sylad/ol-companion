@@ -504,6 +504,70 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
     });
   });
 
+  describe('échec hors marche avant (L67 — décision du lead du 06-10)', () => {
+    const isResults = (u: URL) => u.pathname === '/web/games/results/';
+
+    /** Fait échouer (timeout) toute requête dont l'URL satisfait `pred`. */
+    function failAll(svc: SeasonMatchesService, pred: (url: URL) => boolean): { calls: () => number } {
+      const real = svc.fetcher;
+      let calls = 0;
+      svc.fetcher = (input: unknown, init?: RequestInit) => {
+        calls++;
+        if (pred(new URL(String(input)))) return Promise.reject(new Error('The operation was aborted due to timeout'));
+        return real(input as string, init);
+      };
+      return { calls: () => calls };
+    }
+
+    it('une page de résultats en échec après son nouvel essai : le cache complet est conservé, sans réécriture', async () => {
+      await withCwd(async (dir) => {
+        const first = buildService();
+        first.svc.retryDelayMs = 0;
+        expect(await first.svc.getMatches({ force: true })).toHaveLength(46);
+        const cacheFile = path.join(dir, 'data', 'season-matches-cache.json');
+        const before = fs.readFileSync(cacheFile, 'utf-8');
+
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const warn = jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        failAll(svc, isResults);
+
+        expect(await svc.getMatches({ force: true })).toHaveLength(46);
+        expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+      });
+    });
+
+    it('panne totale (0 match) : cache conservé, puis les lectures non forcées ne relancent pas de parcours', async () => {
+      await withCwd(async (dir) => {
+        const first = buildService();
+        first.svc.retryDelayMs = 0;
+        await first.svc.getMatches({ force: true });
+        const cacheFile = path.join(dir, 'data', 'season-matches-cache.json');
+        const stored = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        stored.ts = Date.now() - 31 * 60_000;
+        fs.writeFileSync(cacheFile, JSON.stringify(stored));
+
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        const f = failAll(svc, () => true);
+
+        expect(await svc.getMatches({ force: true })).toHaveLength(46);
+        const callsAfterOutage = f.calls();
+        expect(callsAfterOutage).toBeGreaterThan(0);
+
+        expect(await svc.getMatches()).toHaveLength(46);
+        expect(await svc.getMatches()).toHaveLength(46);
+        expect(f.calls()).toBe(callsAfterOutage);
+
+        // Le forçage (cron) retente bien.
+        await svc.getMatches({ force: true });
+        expect(f.calls()).toBeGreaterThan(callsAfterOutage);
+      });
+    });
+  });
+
   describe('nouvel essai selon le statut HTTP (L67)', () => {
     const isFixtures = (u: URL) => u.pathname === '/web/games/fixtures/';
 

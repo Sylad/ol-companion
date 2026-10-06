@@ -159,7 +159,7 @@ export class SeasonMatchesService implements OnModuleInit {
   retryDelayMs = 1_000;
 
   /**
-   * Instant où la garde « marche avant incomplète » a gardé l'ancienne saison.
+   * Instant où la garde « parcours incomplet ou vide » a gardé l'ancienne saison.
    * Le cache n'est alors pas réécrit (son `ts` reste ancien) : sans ce repère,
    * chaque lecture non forcée relancerait un parcours complet de 365scores
    * (≥ 21 s de timeouts) pendant toute la panne. Seuls le cron et le forçage
@@ -204,27 +204,20 @@ export class SeasonMatchesService implements OnModuleInit {
     }
 
     try {
-      const { matches, forwardComplete } = await this.fetchFrom365Scores();
+      const { matches, complete } = await this.fetchFrom365Scores();
       const previous = this.readCacheRaw();
-      // Garde anti-outage : fetchFrom365Scores avale ses erreurs et peut
-      // rendre [] — ne jamais écraser une saison complète par du vide
-      // (même garde que news.service). Review 2026-08-14.
-      if (matches.length === 0 && previous && previous.length > 0) {
-        this.logger.warn('365scores a rendu 0 match — cache existant conservé');
-        return previous;
-      }
-      // Garde marche avant : une page des matchs à venir en échec (timeout du
-      // 2026-10-06 : 38 matchs au lieu de 46, J27–J34 perdues) rend une saison
-      // plus courte que celle déjà connue — on garde l'ancienne, sans la
-      // réécrire, et le prochain rafraîchissement retente.
-      const seasonStart = getCurrentSeason().startDate.getTime();
-      const known = (previous ?? []).filter((m) => new Date(m.date).getTime() >= seasonStart);
-      if (!forwardComplete && matches.length < known.length) {
+      // Garde : une saison incomplète (une page de résultats, des matchs à
+      // venir ou de la marche avant en échec après son nouvel essai — timeout
+      // du 2026-10-06 : 38 matchs au lieu de 46, J27–J34 perdues) ou vide
+      // (panne totale ; fetchFrom365Scores avale ses erreurs, review
+      // 2026-08-14) ne remplace jamais une saison déjà connue : on garde
+      // l'ancienne sans la réécrire, et le cron ou le forçage retentent.
+      if ((!complete || matches.length === 0) && previous && previous.length > 0) {
         this.logger.warn(
-          `365scores : marche avant incomplète, ${matches.length} matchs contre ${known.length} connus — cache existant conservé`,
+          `365scores : parcours incomplet (${matches.length} matchs contre ${previous.length} en cache) — cache existant conservé`,
         );
         this.degradedAt = Date.now();
-        return previous!;
+        return previous;
       }
       this.degradedAt = null;
       this.writeCache(matches);
@@ -258,7 +251,7 @@ export class SeasonMatchesService implements OnModuleInit {
     return null;
   }
 
-  private async fetchFrom365Scores(): Promise<{ matches: StoredSeasonMatch[]; forwardComplete: boolean }> {
+  private async fetchFrom365Scores(): Promise<{ matches: StoredSeasonMatch[]; complete: boolean }> {
     const seasonStart = getCurrentSeason().startDate.getTime();
     const games = new Map<number, Scores365Game>();
 
@@ -269,12 +262,15 @@ export class SeasonMatchesService implements OnModuleInit {
     const baseUrl = `${SCORES365_API_BASE}/web/games`;
     let url: string | null = `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`;
     let nextPageHref: string | null = null;
-    // Faux dès qu'une page des matchs à venir échoue : la fin de saison manque.
-    let forwardComplete = true;
+    // Faux dès qu'une page échoue (après son nouvel essai) : la saison peut manquer de matchs.
+    let complete = true;
 
     for (let page = 0; page < PAGES && url; page++) {
       const d = await this.fetchPage(url, `results page ${page}`);
-      if (!d) break;
+      if (!d) {
+        complete = false;
+        break;
+      }
       const list = d.games ?? [];
       for (const g of list) games.set(g.id, g);
 
@@ -305,7 +301,7 @@ export class SeasonMatchesService implements OnModuleInit {
       // Continue from the end of this page rather than from the last result.
       if (list.length > 0) nextPageHref = up.paging?.nextPage ?? null;
     } else {
-      forwardComplete = false;
+      complete = false;
     }
 
     // 3. Walk the forward cursor down to the empty page that ends the season.
@@ -319,7 +315,7 @@ export class SeasonMatchesService implements OnModuleInit {
       }
       const d = await this.fetchPage(forwardUrl, `forward page ${page}`);
       if (!d) {
-        forwardComplete = false;
+        complete = false;
         break;
       }
       const list = d.games ?? [];
@@ -354,7 +350,7 @@ export class SeasonMatchesService implements OnModuleInit {
       `season-matches: ${matches.length} retenus — ${Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(', ')}`,
     );
 
-    return { matches, forwardComplete };
+    return { matches, complete };
   }
 
   private toSeasonMatch(g: Scores365Game): StoredSeasonMatch {
