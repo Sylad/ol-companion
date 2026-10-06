@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-06 18:07",
+  "generated": "2026-10-06 18:08",
   "entries": [
     {
       "slug": "2026-10-06-classement-sur-telephone-la-colonne-des-points-toujours",
@@ -9,7 +9,12 @@
       "lots": [
         "L37"
       ],
-      "captures": [],
+      "captures": [
+        "captures/L37-classement-points-visibles-telephone.png"
+      ],
+      "alts": [
+        "Classement au téléphone (390 px) : la colonne Pts, la dernière, est entièrement dans l'écran"
+      ],
       "html": "<p>Sur téléphone, la colonne des points du classement sortait de l'écran : il fallait faire défiler le tableau pour la voir.</p>\n<ul><li>Les colonnes de chiffres sont <strong>resserrées</strong> sur petit écran et le <strong>nom du club</strong> se tronque au lieu d'élargir le tableau.</li><li>Les <strong>points</strong> restent visibles d'un coup d'œil, sans défilement horizontal.</li></ul>"
     },
     {
