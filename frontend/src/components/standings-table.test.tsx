@@ -6,7 +6,8 @@ import type { StandingEntry } from '@/types/api';
 
 // L37 — à 390 px, la colonne Pts sortait de la zone visible : la cellule du club,
 // à largeur libre, poussait le tableau au-delà de son conteneur. Le club doit
-// pouvoir rétrécir (max-w-0 + truncate) pour que Pts reste visible sans défilement.
+// pouvoir rétrécir (max-w-0) pour que Pts reste visible sans défilement ; son nom passe à la
+// ligne sur téléphone (line-clamp-3, break-words) et n’est tronqué que sur ordinateur (md:truncate).
 
 const rows: StandingEntry[] = [
   {
@@ -30,10 +31,11 @@ function renderTable() {
 }
 
 describe('<StandingsTable /> — mobile (L37)', () => {
-  it('la cellule du club peut rétrécir : max-w-0 sans w-full (colonnes fixes préservées), nom tronqué', () => {
+  it('la cellule du club peut rétrécir : max-w-0 sans w-full (colonnes fixes préservées), nom tronqué seulement sur ordinateur', () => {
     renderTable();
     const name = screen.getByText('Paris Saint-Germain Football Club');
     expect(name).toHaveClass('md:truncate');
+    expect(name).not.toHaveClass('truncate');
     const cell = name.closest('td')!;
     expect(cell).toHaveClass('max-w-0');
     expect(cell).not.toHaveClass('w-full');
