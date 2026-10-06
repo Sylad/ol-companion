@@ -302,7 +302,7 @@ lots:
     finished: 2026-10-03
   - id: L36
     title: "Classement, suites de la relecture du 03-10 : ne résoudre le club d'une ligne qu'à partir d'au moins 2 matchs portant leurs deux clubs (un seul match à un seul côté peut désigner l'adversaire) ; tests de la résolution par 1 match récent + prochain match (début de saison) et du refus d'un club retrouvé sans nom ; refuser un classement dont les positions ne sont pas 1..N (lignes entières manquantes)"
-    status: doing
+    status: done
     estimate: 0.5
     quickwin: true
     created: 2026-10-03
@@ -365,6 +365,7 @@ lots:
           \   - Commits regroupés : sans incidence sur le code. — orchestré (vague 2026-10-06-1801, 0 passe(s) de correction + passe des mineurs)",
         commit: 44c3d9356f08dfe9a11c38483efdfbca2e4f39ab
       }
+    finished: 2026-10-06
   - id: L37
     title: "Classement à 390 px : la colonne Pts est hors de la zone visible du tableau (x 369–406, zone visible 25–357) — la garder visible sans défilement horizontal"
     public: "Classement sur téléphone : la colonne des points toujours visible"
@@ -374,6 +375,8 @@ lots:
     visible: true
     created: 2026-10-03
     started: 2026-10-06
+    notes:
+      - { date: 2026-10-06, text: "Décision Sylvain 06-10 : largeur minimale du nom du club (min-w ~4.5rem sur le span du nom), le tableau ne défile qu'en dessous d'environ 360 px ; pas de masquage de G/N/P. Reprendre aussi les mineurs de revue : test des largeurs qui mesure la largeur réelle du nom (marge, logo, écart soustraits), capture Nouveautés reprise après le correctif, texte « passe à la ligne » au lieu de « se tronque » + npm run news." }
   - id: L38
     title: "Coupes : Europa League affichée ÉLIMINÉ après une seule journée de phase de ligue gagnée (isEliminated = matchs joués > 0 et aucun à venir) — ne pas conclure à l'élimination quand la phase de ligue est en cours"
     public: "Coupes : un statut juste tant que l'OL est en lice"
