@@ -7,16 +7,16 @@ interface StandingsTableProps {
 }
 
 const COLUMNS = [
-  { key: 'position', label: '#', align: 'center' as const, w: 'w-8 md:w-10' },
+  { key: 'position', label: '#', align: 'center' as const, w: 'w-7 md:w-10' },
   { key: 'team', label: 'Club', align: 'left' as const },
   { key: 'played', label: 'MJ', align: 'center' as const, w: 'w-12', mobile: false },
-  { key: 'won', label: 'G', align: 'center' as const, w: 'w-8 md:w-10' },
-  { key: 'draw', label: 'N', align: 'center' as const, w: 'w-8 md:w-10' },
-  { key: 'lost', label: 'P', align: 'center' as const, w: 'w-8 md:w-10' },
+  { key: 'won', label: 'G', align: 'center' as const, w: 'w-7 md:w-10' },
+  { key: 'draw', label: 'N', align: 'center' as const, w: 'w-7 md:w-10' },
+  { key: 'lost', label: 'P', align: 'center' as const, w: 'w-7 md:w-10' },
   { key: 'goalsFor', label: 'BP', align: 'center' as const, w: 'w-12', mobile: false },
   { key: 'goalsAgainst', label: 'BC', align: 'center' as const, w: 'w-12', mobile: false },
-  { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-10 md:w-12' },
-  { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-12 md:w-14' },
+  { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-9 md:w-12' },
+  { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-10 md:w-14' },
   { key: 'form', label: '5 derniers', align: 'left' as const, w: 'w-[120px]', mobile: false },
 ];
 

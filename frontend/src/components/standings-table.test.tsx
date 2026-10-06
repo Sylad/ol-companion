@@ -56,7 +56,7 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(screen.getByText('22').closest('td')!.className).not.toMatch(/hidden/);
   });
 
-  it('le nom du club garde 4,5 rem au moins une fois colonnes, marges de cellule, logo et écart soustraits', () => {
+  it('à 360 px, le nom du club garde 4,5 rem au moins une fois colonnes, marges de cellule, logo et écart soustraits', () => {
     renderTable();
     const widths = Array.from(document.querySelectorAll('thead th'))
       .filter((th) => !/\bhidden\b/.test(th.className))
@@ -68,7 +68,8 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     // cellule du club : px-2 (2 × 8 px) ; contenu : logo 22 px + gap-1.5 (6 px)
     expect(name.closest('td')).toHaveClass('px-2');
     expect(name.parentElement).toHaveClass('gap-1.5');
-    const available = 332 - fixed - 16 - 22 - 6;
+    // conteneur à 360 px : écran − 50 px (px-5 ×2, bordure ×2, p-2 ×2, moins -mx-1 ×2)
+    const available = 360 - 50 - fixed - 16 - 22 - 6;
     expect(available).toBeGreaterThanOrEqual(72);
     // largeur minimale du nom (4,5 rem = 72 px) : en dessous, le tableau défile
     expect(name).toHaveClass('min-w-[4.5rem]');
