@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-06 18:08",
+  "generated": "2026-10-06 18:24",
   "entries": [
+    {
+      "slug": "2026-10-06-le-libelle-de-la-saison-suit-la-saison-en-cours",
+      "title": "Le libellé de la saison suit la saison en cours",
+      "date": "2026-10-06",
+      "lots": [
+        "L40"
+      ],
+      "captures": [
+        "captures/L40-libelle-saison-calendrier-telephone.png"
+      ],
+      "alts": [
+        "Calendrier au téléphone (390 px) : l'en-tête indique Saison 2026-27"
+      ],
+      "html": "<p>Les pages Calendrier et Carte affichaient « Saison 2025-26 » alors que les matchs servis sont ceux de la saison 2026-27.</p>\n<ul><li>Le libellé est maintenant <strong>lu dans les matchs affichés</strong> : il passera seul à la saison suivante en août.</li><li>Sans données (chargement, erreur), il reprend la saison de la date du jour.</li></ul>"
+    },
     {
       "slug": "2026-10-06-classement-sur-telephone-la-colonne-des-points-toujours",
       "title": "Classement sur téléphone, la colonne des points toujours visible",
