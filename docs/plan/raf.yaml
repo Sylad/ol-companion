@@ -519,3 +519,8 @@ lots:
     estimate: 0.2
     quickwin: true
     created: 2026-10-05
+  - id: L67
+    title: "Calendrier : un timeout de la marche avant 365scores tronque la saison (06-10 08:00 UTC : 38 matchs au lieu de 46, L1 J27–J34 perdues) et écrase le cache complet — ne pas remplacer une saison par une plus courte en matchs à venir (garder l'ancienne et journaliser), réessayer la page en échec ; /fixtures et /map affichaient 38 — QA prod 06-10"
+    status: todo
+    estimate: 1
+    created: 2026-10-06
