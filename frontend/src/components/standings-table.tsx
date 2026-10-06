@@ -7,15 +7,15 @@ interface StandingsTableProps {
 }
 
 const COLUMNS = [
-  { key: 'position', label: '#', align: 'center' as const, w: 'w-10' },
+  { key: 'position', label: '#', align: 'center' as const, w: 'w-8 md:w-10' },
   { key: 'team', label: 'Club', align: 'left' as const },
   { key: 'played', label: 'MJ', align: 'center' as const, w: 'w-12', mobile: false },
-  { key: 'won', label: 'G', align: 'center' as const, w: 'w-10' },
-  { key: 'draw', label: 'N', align: 'center' as const, w: 'w-10' },
-  { key: 'lost', label: 'P', align: 'center' as const, w: 'w-10' },
+  { key: 'won', label: 'G', align: 'center' as const, w: 'w-8 md:w-10' },
+  { key: 'draw', label: 'N', align: 'center' as const, w: 'w-8 md:w-10' },
+  { key: 'lost', label: 'P', align: 'center' as const, w: 'w-8 md:w-10' },
   { key: 'goalsFor', label: 'BP', align: 'center' as const, w: 'w-12', mobile: false },
   { key: 'goalsAgainst', label: 'BC', align: 'center' as const, w: 'w-12', mobile: false },
-  { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-12' },
+  { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-10 md:w-12' },
   { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-14' },
   { key: 'form', label: '5 derniers', align: 'left' as const, w: 'w-[120px]', mobile: false },
 ];
@@ -79,7 +79,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
               <th
                 key={col.key}
                 className={cn(
-                  'sticky top-0 z-10 bg-surface px-2 py-3 font-semibold uppercase tracking-wider text-[10px]',
+                  'sticky top-0 z-10 bg-surface px-1 md:px-2 py-3 font-semibold uppercase tracking-wider text-[10px]',
                   col.w,
                   col.align === 'center' ? 'text-center' : 'text-left',
                   col.mobile === false && 'hidden md:table-cell',
@@ -119,8 +119,8 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                   <PositionDot position={row.position} />
                   <span className="align-middle">{row.position}</span>
                 </td>
-                <td className="px-2 py-3">
-                  <div className="flex items-center gap-3 min-w-0">
+                <td className="px-2 py-3 w-full max-w-0">
+                  <div className="flex items-center gap-2 md:gap-3 min-w-0">
                     <TeamLogo teamId={row.teamId} name={row.team} size={22} />
                     <span
                       className={cn(
@@ -135,9 +135,9 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 <td className="hidden md:table-cell px-2 py-3 text-center num text-fg-muted">
                   {row.played}
                 </td>
-                <td className="px-2 py-3 text-center num text-fg-muted">{row.won}</td>
-                <td className="px-2 py-3 text-center num text-fg-muted">{row.draw}</td>
-                <td className="px-2 py-3 text-center num text-fg-muted">{row.lost}</td>
+                <td className="px-1 md:px-2 py-3 text-center num text-fg-muted">{row.won}</td>
+                <td className="px-1 md:px-2 py-3 text-center num text-fg-muted">{row.draw}</td>
+                <td className="px-1 md:px-2 py-3 text-center num text-fg-muted">{row.lost}</td>
                 <td className="hidden md:table-cell px-2 py-3 text-center num text-fg-muted">
                   {row.goalsFor}
                 </td>
@@ -146,7 +146,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 </td>
                 <td
                   className={cn(
-                    'px-2 py-3 text-center num',
+                    'px-1 md:px-2 py-3 text-center num',
                     row.goalDifference > 0
                       ? 'text-win'
                       : row.goalDifference < 0
@@ -159,7 +159,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 </td>
                 <td
                   className={cn(
-                    'px-2 py-3 text-center num font-bold',
+                    'px-1 md:px-2 py-3 text-center num font-bold',
                     isOL ? 'text-fg-bright' : 'text-fg',
                   )}
                 >
