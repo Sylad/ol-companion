@@ -461,4 +461,17 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(await screen.findAllByRole('article')).toHaveLength(34);
     expect(screen.queryByRole('group', { name: 'Filtrer par compétition' })).not.toBeInTheDocument();
   });
+
+  it("l'eyebrow « Saison … » suit la saison des matchs servis, pas la date du jour (L40)", async () => {
+    // Saison décalée d'un an : 2027-28, que ni un libellé en dur ni `now` (2026-27) ne donnent.
+    const shifted = season.map((m) => ({
+      ...m,
+      date: m.date.replace(/^(\d{4})/, (y) => String(Number(y) + 1)),
+    }));
+    vi.stubGlobal('fetch', serve(shifted));
+    renderPage();
+
+    await screen.findAllByRole('article');
+    expect(screen.getByText('Saison 2027-28')).toBeInTheDocument();
+  });
 });
