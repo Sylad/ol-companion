@@ -39,6 +39,14 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(cell).not.toHaveClass('w-full');
   });
 
+  it('max-w-0 n’annule pas le minimum du nom : la cellule du club garde logo + écart + nom + marges (116 px = 7,25 rem)', () => {
+    renderTable();
+    const cell = screen.getByText('Paris Saint-Germain Football Club').closest('td')!;
+    // 16 (px-2 ×2) + 22 (logo) + 6 (gap) + 72 (nom 4,5 rem) : sans ce plancher, max-w-0
+    // ramène la cellule sous 100 px sous ~370 px de viewport et le nom chevauche la colonne G
+    expect(cell).toHaveClass('min-w-[7.25rem]');
+  });
+
   it('la colonne Pts reste affichée sur mobile (jamais masquée ni hors flux)', () => {
     renderTable();
     const pts = screen.getByText('Pts');

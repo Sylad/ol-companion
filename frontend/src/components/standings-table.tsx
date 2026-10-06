@@ -119,7 +119,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                   <PositionDot position={row.position} />
                   <span className="align-middle">{row.position}</span>
                 </td>
-                <td className="px-2 py-3 max-w-0">
+                <td className="px-2 py-3 max-w-0 min-w-[7.25rem]">
                   <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
                     <TeamLogo teamId={row.teamId} name={row.team} size={22} />
                     <span
