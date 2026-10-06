@@ -504,6 +504,61 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
     });
   });
 
+  describe('nouvel essai selon le statut HTTP (L67)', () => {
+    const isFixtures = (u: URL) => u.pathname === '/web/games/fixtures/';
+
+    /** Répond `status` aux `times` premières requêtes de la page des matchs à venir ; compte ses appels. */
+    function httpStatus(svc: SeasonMatchesService, status: number, times: number): { calls: () => number } {
+      const real = svc.fetcher;
+      let calls = 0;
+      svc.fetcher = (input: unknown, init?: RequestInit) => {
+        if (isFixtures(new URL(String(input)))) {
+          calls++;
+          if (calls <= times) return Promise.resolve(new Response('', { status }));
+        }
+        return real(input as string, init);
+      };
+      return { calls: () => calls };
+    }
+
+    it.each([503, 429])('HTTP %i sur la page des matchs à venir : réessayé une fois, saison complète', async (status) => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const h = httpStatus(svc, status, 1);
+
+        const matches = await svc.getMatches({ force: true });
+
+        expect(h.calls()).toBe(2);
+        expect(matches).toHaveLength(46);
+      });
+    });
+
+    it('HTTP 503 persistant : deux essais, pas plus', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const h = httpStatus(svc, 503, 99);
+
+        await svc.getMatches({ force: true });
+
+        expect(h.calls()).toBe(2);
+      });
+    });
+
+    it.each([404, 403])('HTTP %i : pas de nouvel essai', async (status) => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const h = httpStatus(svc, status, 99);
+
+        await svc.getMatches({ force: true });
+
+        expect(h.calls()).toBe(1);
+      });
+    });
+  });
+
   describe('page des matchs à venir en HTTP 200 mais SANS match', () => {
     /**
      * Les matchs à venir de la capture, redécoupés en pages de 4 chaînées par
