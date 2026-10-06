@@ -120,6 +120,10 @@ function legLabel(legNum?: number): string | null {
   return legNum === 1 ? 'aller' : legNum === 2 ? 'retour' : null;
 }
 
+// Durée maximale pendant laquelle la garde tient une saison plus courte ou
+// incomplète : au-delà, la panne est tenue pour déterministe (404, schéma
+// refusé) et la saison lue est écrite — jamais une saison vide.
+const GUARD_MAX_MS = 6 * 3_600_000;
 const CACHE_TTL_MS = 1800_000; // 30 min — FINISHED never changes, SCHEDULED rarely shifts
 /**
  * Pagination depth — page 1 returns ~50 events but `paging.previousPage`
@@ -166,6 +170,8 @@ export class SeasonMatchesService implements OnModuleInit {
    * retentent ; une lecture ordinaire sert l'ancienne saison pendant un TTL.
    */
   private degradedAt: number | null = null;
+  /** Début de la série de gardes en cours (remis à zéro par une écriture). */
+  private degradedSince: number | null = null;
 
   constructor(
     private readonly bus: EventBusService,
@@ -212,13 +218,27 @@ export class SeasonMatchesService implements OnModuleInit {
       // (panne totale ; fetchFrom365Scores avale ses erreurs, review
       // 2026-08-14) ne remplace jamais une saison déjà connue : on garde
       // l'ancienne sans la réécrire, et le cron ou le forçage retentent.
-      if ((!complete || matches.length === 0) && previous && previous.length > 0) {
+      // Une enveloppe sans `games` en HTTP 200 ou le plafond FORWARD_PAGES
+      // laissent `complete` vrai : une saison plus courte en matchs que celle
+      // du cache (un match ne disparaît pas en cours de saison) est refusée
+      // de même. Borne d'âge : après GUARD_MAX_MS de garde, on écrit.
+      const shorter = !!previous && matches.length < previous.length;
+      const expired =
+        this.degradedSince !== null && Date.now() - this.degradedSince > GUARD_MAX_MS && matches.length > 0;
+      if ((!complete || shorter || matches.length === 0) && previous && previous.length > 0 && !expired) {
         this.logger.warn(
           `365scores : parcours incomplet (${matches.length} matchs contre ${previous.length} en cache) — cache existant conservé`,
         );
+        this.degradedSince ??= Date.now();
         this.degradedAt = Date.now();
         return previous;
       }
+      if (expired) {
+        this.logger.warn(
+          `365scores : parcours à ${matches.length} matchs contre ${previous?.length ?? 0} en cache, garde tenue plus de 6 h — saison lue écrite`,
+        );
+      }
+      this.degradedSince = null;
       this.degradedAt = null;
       this.writeCache(matches);
       if (this.matchesChanged(previous, matches)) {
@@ -239,7 +259,7 @@ export class SeasonMatchesService implements OnModuleInit {
   private async fetchPage(url: string, what: string): Promise<Scores365GamesResponse | null> {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+        const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
         if (res.ok) return parseExternal(Scores365GamesResponseSchema, await res.json(), `365scores season ${what}`);
         this.logger.warn(`365scores ${what} → HTTP ${res.status} (essai ${attempt}/2)`);
         if (res.status < 500 && res.status !== 429) return null;

@@ -617,6 +617,90 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
     });
   });
 
+  describe('saison plus courte, borne d’âge, budget de temps (L67 — passe des constats mineurs)', () => {
+    const forwardCursor = new URL(
+      `https://x${season.forward[0].paging?.nextPage ?? ''}`,
+    ).searchParams.get('aftergame');
+    const isSecondForward = (u: URL) =>
+      u.pathname === '/web/games/' && u.searchParams.get('aftergame') === forwardCursor;
+
+    function interceptEmpty(svc: SeasonMatchesService, pred: (u: URL) => boolean) {
+      const real = svc.fetcher;
+      svc.fetcher = (input: unknown, init?: RequestInit) =>
+        pred(new URL(String(input)))
+          ? Promise.resolve(new Response('{}', { status: 200 }))
+          : real(input as string, init);
+    }
+
+    async function seedFullCache(dir: string) {
+      const first = buildService();
+      first.svc.retryDelayMs = 0;
+      expect(await first.svc.getMatches({ force: true })).toHaveLength(46);
+      return path.join(dir, 'data', 'season-matches-cache.json');
+    }
+
+    it('page avant en HTTP 200 sans `games` : la saison tronquée (38) ne remplace pas le cache complet (46)', async () => {
+      await withCwd(async (dir) => {
+        const cacheFile = await seedFullCache(dir);
+        const before = fs.readFileSync(cacheFile, 'utf-8');
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const warn = jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        interceptEmpty(svc, isSecondForward);
+
+        expect(await svc.getMatches({ force: true })).toHaveLength(46);
+        expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+      });
+    });
+
+    it('une garde qui dure plus de 6 h n’est plus tenue : la saison lue est écrite (panne déterministe)', async () => {
+      await withCwd(async (dir) => {
+        const cacheFile = await seedFullCache(dir);
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        interceptEmpty(svc, isSecondForward);
+        const t0 = Date.now();
+        const now = jest.spyOn(Date, 'now').mockReturnValue(t0);
+
+        let n = 0;
+        try {
+          expect(await svc.getMatches({ force: true })).toHaveLength(46);
+          now.mockReturnValue(t0 + 5 * 3_600_000);
+          expect(await svc.getMatches({ force: true })).toHaveLength(46);
+          now.mockReturnValue(t0 + 7 * 3_600_000);
+          n = (await svc.getMatches({ force: true })).length;
+        } finally {
+          now.mockRestore();
+        }
+
+        expect(n).toBeLessThan(46);
+        expect(JSON.parse(fs.readFileSync(cacheFile, 'utf-8')).data).toHaveLength(n);
+      });
+    });
+
+    it('budget : trois pages en échec au pire cas tiennent sous le proxy_read_timeout de 60 s de nginx', async () => {
+      const svc = buildService().svc;
+      const delay = svc.retryDelayMs;
+      svc.retryDelayMs = 0;
+      const timeouts: number[] = [];
+      const spy = jest.spyOn(AbortSignal, 'timeout').mockImplementation((ms: number) => {
+        timeouts.push(ms);
+        return new AbortController().signal;
+      });
+      svc.fetcher = (() => Promise.reject(new Error('timeout'))) as typeof svc.fetcher;
+      jest.spyOn(svc['logger'], 'warn').mockImplementation();
+      try {
+        await svc['fetchPage']('https://x/y', 'test');
+      } finally {
+        spy.mockRestore();
+      }
+      expect(timeouts).toHaveLength(2);
+      expect(3 * (timeouts[0] + delay + timeouts[1])).toBeLessThan(60_000);
+    });
+  });
+
   describe('nouvel essai selon le statut HTTP (L67)', () => {
     const isFixtures = (u: URL) => u.pathname === '/web/games/fixtures/';
 
