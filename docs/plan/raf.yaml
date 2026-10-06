@@ -307,6 +307,64 @@ lots:
     quickwin: true
     created: 2026-10-03
     started: 2026-10-06
+    review:
+      {
+        date: 2026-10-06,
+        verdict: "conforme : 1 constat mineur (une ligne de test hors format Prettier). Les trois constats mineurs de la revue complète sont corrigés et rien n'a été cassé.
+
+
+          **Commits relus** (`raf commits L36`) :
+
+          - `9763b0e` fix(L36): club d'une ligne résolu à partir d'au moins 2 matchs à deux clubs ; refus des positions hors 1..N
+
+          - `44c3d93` fix(L36): classement refusé s'il n'a pas 18 lignes (dernière ligne absente), motif de refus exact pour une position en double, assertions précises
+
+
+          **Commandes lancées** (dans `backend/`) :
+
+
+          | Commande | Résultat |
+
+          |---|---|
+
+          | `npx jest` | 30 suites, 309 tests réussis |
+
+          | `npm run test:e2e` | 5 tests réussis |
+
+          | `npx tsc --noEmit` | 0 erreur |
+
+          | `eslint` (sans `--fix`) sur les 4 fichiers du lot | 1 erreur `prettier/prettier`, introduite par le lot |
+
+
+          L'arbre de travail est propre.
+
+
+          **Contrôles** (code relu dans `scores365-standings.ts` tel qu'il est aujourd'hui, lignes 115–128 et 156–187) :
+
+
+          1. **Constats corrigés :**
+
+          \   - Un classement de 17 lignes numérotées 1..17 était accepté. Il est maintenant refusé par `positions.length !== LIGUE1_CLUB_COUNT`. Un classement de 19 lignes l'est aussi.
+
+          \   - Une position en double donne le motif exact `expected 6, found 5`. Le test vérifie aussi que l'ancien libellé « whole rows are missing » n'apparaît plus.
+
+          \   - Les assertions de test sont précises (`expected 7`, `18` / `17`).
+
+          2. **Résolution du club d'une ligne :** seuls les matchs qui portent leurs deux clubs comptent, et il en faut au moins 2. La ligne est refusée si un autre nombre de clubs que un reste, ou si le club retrouvé n'a pas de nom.
+
+          3. **Choix de l'auteur relus, aucun n'est faux et aucun ne change le périmètre :**
+
+          \   - Constante 18 : le service et le direct lisent tous deux `competitions=35`, la Ligue 1 seule.
+
+          \   - Positions contrôlées après la résolution des clubs : une ligne irrésoluble est signalée en premier, ce qui est cohérent.
+
+          \   - Message de refus en anglais, comme les autres motifs du fichier.
+
+          \   - Test « OL absent » : il ne renumérote plus les positions. Il remplace l'identifiant de Lyon par 99999 sur une table de 18 lignes, donc le cas « OL absent » est conservé et les positions restent valides.
+
+          \   - Commits regroupés : sans incidence sur le code. — orchestré (vague 2026-10-06-1801, 0 passe(s) de correction + passe des mineurs)",
+        commit: 44c3d9356f08dfe9a11c38483efdfbca2e4f39ab
+      }
   - id: L37
     title: "Classement à 390 px : la colonne Pts est hors de la zone visible du tableau (x 369–406, zone visible 25–357) — la garder visible sans défilement horizontal"
     public: "Classement sur téléphone : la colonne des points toujours visible"
