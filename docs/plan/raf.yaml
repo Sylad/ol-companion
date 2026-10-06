@@ -521,10 +521,16 @@ lots:
     created: 2026-10-05
   - id: L67
     title: "Calendrier : un timeout de la marche avant 365scores tronque la saison (06-10 08:00 UTC : 38 matchs au lieu de 46, L1 J27–J34 perdues) et écrase le cache complet — ne pas remplacer une saison par une plus courte en matchs à venir (garder l'ancienne et journaliser), réessayer la page en échec ; /fixtures et /map affichaient 38 — QA prod 06-10"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-06
     started: 2026-10-06
     notes:
       - { date: 2026-10-06, text: "Décision lead 06-10 après revue non conforme (2 passes) : le périmètre couvre TOUT le parcours 365scores, pas seulement la marche avant. 1) Toute page en échec après le nouvel essai (résultats k≥0, matchs à venir, marche avant) marque la saison incomplète → on garde le cache existant et on journalise, jamais writeCache. 2) Panne totale (0 match) : poser aussi degradedAt, pour que les lectures non forcées servent le cache sans relancer le parcours ; seuls le cron et le forçage retentent. 3) Specs : échec d'une page de résultats avec cache existant (cache conservé), panne totale (pas de second parcours sur lecture non forcée), et compter les appels (2 pour 429/503, 1 pour 4xx) au lieu de toContain. Comparer des ids plutôt que des totaux n'est PAS demandé si 1) est tenu." }
     review: { date: 2026-10-06, verdict: "conforme : les constats mineurs sont corrigés et testés (81/81 season-matches, 302/302 au total, tsc sans erreur) ; 3 nouveaux constats mineurs (expiration de 6 h après une panne à 0 match, budget nginx surestimé, formatage prettier) — orchestré (vague 2026-10-06-1203, 2 passe(s) de correction + passe des mineurs)", commit: 56ee880533b4535bf5ce0d446964619647a24a8d }
+    finished: 2026-10-06
+  - id: L68
+    title: "Lint : season-matches.service.ts et season-matches.season.spec.ts — 59 erreurs prettier (31 avant L67), reformater dans un commit dédié — revue de code L67"
+    status: todo
+    estimate: 1
+    created: 2026-10-06
