@@ -377,13 +377,101 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       const { svc, requested } = buildService(footballDataMatches(), {
         fixtures: 'http-503',
       });
+      svc.retryDelayMs = 0;
 
       const matches = await svc.getMatches({ force: true });
 
       // Les 10 matchs joués sont là ; la marche avant a été tentée depuis le
       // curseur des résultats (page non capturée ici → 404 → arrêt propre).
       expect(matches.filter((m) => m.status === 'FINISHED')).toHaveLength(10);
-      expect(requested[2]).toBe(season.results.paging?.nextPage);
+      expect(requested).toContain(season.results.paging?.nextPage);
+    });
+  });
+
+  describe('marche avant en échec (L67 — QA prod du 06-10 : 38 matchs au lieu de 46)', () => {
+    /** Fait échouer (timeout) toute requête dont le chemin/curseur satisfait `pred`, `times` fois. */
+    function failing(
+      svc: SeasonMatchesService,
+      pred: (url: URL) => boolean,
+      times: number,
+    ): { failures: () => number } {
+      const real = svc.fetcher;
+      let n = 0;
+      svc.fetcher = (input: unknown, init?: RequestInit) => {
+        if (pred(new URL(String(input))) && n < times) {
+          n++;
+          return Promise.reject(new Error('The operation was aborted due to timeout'));
+        }
+        return real(input as string, init);
+      };
+      return { failures: () => n };
+    }
+    const secondForwardCursor = new URL(
+      `https://x${season.forward[0].paging?.nextPage ?? ''}`,
+    ).searchParams.get('aftergame');
+    const isSecondForward = (u: URL) =>
+      u.pathname === '/web/games/' && u.searchParams.get('aftergame') === secondForwardCursor;
+
+    it('un timeout sur une page de la marche avant est réessayé : la saison reste complète (46 matchs)', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const f = failing(svc, isSecondForward, 1);
+
+        const matches = await svc.getMatches({ force: true });
+
+        expect(f.failures()).toBe(1);
+        expect(matches).toHaveLength(46);
+      });
+    });
+
+    it('une page qui échoue encore au 2e essai ne remplace pas une saison complète du cache par une plus courte', async () => {
+      await withCwd(async (dir) => {
+        const first = buildService();
+        first.svc.retryDelayMs = 0;
+        expect(await first.svc.getMatches({ force: true })).toHaveLength(46);
+        const cacheFile = path.join(dir, 'data', 'season-matches-cache.json');
+        const before = fs.readFileSync(cacheFile, 'utf-8');
+
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const warn = jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        failing(svc, isSecondForward, 99);
+
+        const matches = await svc.getMatches({ force: true });
+
+        expect(matches).toHaveLength(46);
+        expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('cache existant conservé'),
+        );
+      });
+    });
+
+    it('sans cache précédent, la saison tronquée est tout de même rendue (mieux que rien)', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        failing(svc, isSecondForward, 99);
+
+        const matches = await svc.getMatches({ force: true });
+
+        expect(matches.length).toBeGreaterThan(10);
+        expect(matches.length).toBeLessThan(46);
+      });
+    });
+
+    it('page des matchs à venir en timeout : réessayée aussi', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const f = failing(svc, (u) => u.pathname === '/web/games/fixtures/', 1);
+
+        const matches = await svc.getMatches({ force: true });
+
+        expect(f.failures()).toBe(1);
+        expect(matches).toHaveLength(46);
+      });
     });
   });
 
@@ -438,7 +526,7 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
           const matches = await svc.getMatches({ force: true });
 
-          expect(requested[2]).toBe(season.results.paging?.nextPage);
+          expect(requested).toContain(season.results.paging?.nextPage);
           // Jamais le curseur d'une page sans match.
           expect(requested.some((u) => u.includes('aftergame=999'))).toBe(false);
           // 2 appels + les 10 pages : la saison est complète, jusqu'à J34.

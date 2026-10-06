@@ -155,6 +155,9 @@ export class SeasonMatchesService implements OnModuleInit {
   /** Test seam — overriden via spec, defaults to global fetch. */
   fetcher: Fetcher = (input, init) => fetch(input, init);
 
+  /** Attente avant le nouvel essai d'une page en échec — remise à 0 par les specs. */
+  retryDelayMs = 1_000;
+
   constructor(
     private readonly bus: EventBusService,
     private readonly fixtures: FixturesService,
@@ -188,7 +191,7 @@ export class SeasonMatchesService implements OnModuleInit {
     }
 
     try {
-      const matches = await this.fetchFrom365Scores();
+      const { matches, forwardComplete } = await this.fetchFrom365Scores();
       const previous = this.readCacheRaw();
       // Garde anti-outage : fetchFrom365Scores avale ses erreurs et peut
       // rendre [] — ne jamais écraser une saison complète par du vide
@@ -196,6 +199,18 @@ export class SeasonMatchesService implements OnModuleInit {
       if (matches.length === 0 && previous && previous.length > 0) {
         this.logger.warn('365scores a rendu 0 match — cache existant conservé');
         return previous;
+      }
+      // Garde marche avant : une page des matchs à venir en échec (timeout du
+      // 2026-10-06 : 38 matchs au lieu de 46, J27–J34 perdues) rend une saison
+      // plus courte que celle déjà connue — on garde l'ancienne, sans la
+      // réécrire, et le prochain rafraîchissement retente.
+      const seasonStart = getCurrentSeason().startDate.getTime();
+      const known = (previous ?? []).filter((m) => new Date(m.date).getTime() >= seasonStart);
+      if (!forwardComplete && matches.length < known.length) {
+        this.logger.warn(
+          `365scores : marche avant incomplète, ${matches.length} matchs contre ${known.length} connus — cache existant conservé`,
+        );
+        return previous!;
       }
       this.writeCache(matches);
       if (this.matchesChanged(previous, matches)) {
@@ -208,7 +223,27 @@ export class SeasonMatchesService implements OnModuleInit {
     }
   }
 
-  private async fetchFrom365Scores(): Promise<StoredSeasonMatch[]> {
+  /**
+   * Une page 365scores, réessayée une fois sur un timeout, une erreur réseau ou
+   * un HTTP 5xx/429. `null` : la page a échoué (journalisé) ; une page lue mais
+   * vide n'est PAS un échec.
+   */
+  private async fetchPage(url: string, what: string): Promise<Scores365GamesResponse | null> {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+        if (res.ok) return parseExternal(Scores365GamesResponseSchema, await res.json(), `365scores season ${what}`);
+        this.logger.warn(`365scores ${what} → HTTP ${res.status} (essai ${attempt}/2)`);
+        if (res.status < 500 && res.status !== 429) return null;
+      } catch (err) {
+        this.logger.warn(`365scores ${what} en échec (essai ${attempt}/2) : ${(err as Error)?.message ?? err}`);
+      }
+      if (attempt < 2 && this.retryDelayMs > 0) await new Promise((r) => setTimeout(r, this.retryDelayMs));
+    }
+    return null;
+  }
+
+  private async fetchFrom365Scores(): Promise<{ matches: StoredSeasonMatch[]; forwardComplete: boolean }> {
     const seasonStart = getCurrentSeason().startDate.getTime();
     const games = new Map<number, Scores365Game>();
 
@@ -219,55 +254,43 @@ export class SeasonMatchesService implements OnModuleInit {
     const baseUrl = `${SCORES365_API_BASE}/web/games`;
     let url: string | null = `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`;
     let nextPageHref: string | null = null;
+    // Faux dès qu'une page des matchs à venir échoue : la fin de saison manque.
+    let forwardComplete = true;
 
     for (let page = 0; page < PAGES && url; page++) {
-      try {
-        const res: Response = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
-        if (!res.ok) {
-          this.logger.warn(`365scores results page ${page} → HTTP ${res.status}`);
-          break;
-        }
-        const d: Scores365GamesResponse = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores season results');
-        const list = d.games ?? [];
-        for (const g of list) games.set(g.id, g);
+      const d = await this.fetchPage(url, `results page ${page}`);
+      if (!d) break;
+      const list = d.games ?? [];
+      for (const g of list) games.set(g.id, g);
 
-        // Capture forward cursor on the very first page only (subsequent
-        // pages' nextPage points back into already-known events).
-        if (page === 0 && d.paging?.nextPage) {
-          nextPageHref = d.paging.nextPage;
-        }
-
-        // Stop paginating once we crossed the season boundary
-        const oldest = list[list.length - 1];
-        if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
-
-        const prev: string | undefined = d.paging?.previousPage;
-        url = prev ? `${SCORES365_API_BASE}${prev}` : null;
-      } catch (err) {
-        this.logger.warn(`365scores results pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
-        break;
+      // Capture forward cursor on the very first page only (subsequent
+      // pages' nextPage points back into already-known events).
+      if (page === 0 && d.paging?.nextPage) {
+        nextPageHref = d.paging.nextPage;
       }
+
+      // Stop paginating once we crossed the season boundary
+      const oldest = list[list.length - 1];
+      if (!oldest || new Date(oldest.startTime).getTime() < seasonStart) break;
+
+      const prev: string | undefined = d.paging?.previousPage;
+      url = prev ? `${SCORES365_API_BASE}${prev}` : null;
     }
 
     // 2. Upcoming — the fixtures page returns the next ~27 matches in one call
     // (`/web/games/?…competitors=465`, used here before, returns 0 game), and
     // its `paging.nextPage` continues after the last of them.
-    try {
-      const upRes = await this.fetcher(
-        `${baseUrl}/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`,
-        { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) },
-      );
-      if (upRes.ok) {
-        const d = parseExternal(Scores365GamesResponseSchema, await upRes.json(), '365scores season upcoming');
-        const list = d.games ?? [];
-        for (const g of list) games.set(g.id, g);
-        // Continue from the end of this page rather than from the last result.
-        if (list.length > 0) nextPageHref = d.paging?.nextPage ?? null;
-      } else {
-        this.logger.warn(`365scores upcoming → HTTP ${upRes.status}`);
-      }
-    } catch (err) {
-      this.logger.warn(`365scores upcoming fetch failed: ${(err as Error)?.message ?? err}`);
+    const up = await this.fetchPage(
+      `${baseUrl}/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`,
+      'upcoming',
+    );
+    if (up) {
+      const list = up.games ?? [];
+      for (const g of list) games.set(g.id, g);
+      // Continue from the end of this page rather than from the last result.
+      if (list.length > 0) nextPageHref = up.paging?.nextPage ?? null;
+    } else {
+      forwardComplete = false;
     }
 
     // 3. Walk the forward cursor down to the empty page that ends the season.
@@ -279,22 +302,16 @@ export class SeasonMatchesService implements OnModuleInit {
         );
         break;
       }
-      try {
-        const res = await this.fetcher(forwardUrl, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
-        if (!res.ok) {
-          this.logger.warn(`365scores forward page ${page} → HTTP ${res.status}`);
-          break;
-        }
-        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores season forward');
-        const list = d.games ?? [];
-        if (list.length === 0) break;
-        for (const g of list) games.set(g.id, g);
-        const next = d.paging?.nextPage;
-        forwardUrl = next ? `${SCORES365_API_BASE}${next}` : null;
-      } catch (err) {
-        this.logger.warn(`365scores forward pagination failed at page ${page}: ${(err as Error)?.message ?? err}`);
+      const d = await this.fetchPage(forwardUrl, `forward page ${page}`);
+      if (!d) {
+        forwardComplete = false;
         break;
       }
+      const list = d.games ?? [];
+      if (list.length === 0) break;
+      for (const g of list) games.set(g.id, g);
+      const next = d.paging?.nextPage;
+      forwardUrl = next ? `${SCORES365_API_BASE}${next}` : null;
     }
 
     const all = Array.from(games.values());
@@ -322,7 +339,7 @@ export class SeasonMatchesService implements OnModuleInit {
       `season-matches: ${matches.length} retenus — ${Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(', ')}`,
     );
 
-    return matches;
+    return { matches, forwardComplete };
   }
 
   private toSeasonMatch(g: Scores365Game): StoredSeasonMatch {
