@@ -566,6 +566,33 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
         expect(f.calls()).toBeGreaterThan(callsAfterOutage);
       });
     });
+
+    it('enveloppe sans `games` en HTTP 200 (parcours complet, 0 match) : cache conservé sans réécriture, puis lectures non forcées sans nouveau parcours', async () => {
+      await withCwd(async (dir) => {
+        const first = buildService();
+        first.svc.retryDelayMs = 0;
+        await first.svc.getMatches({ force: true });
+        const cacheFile = path.join(dir, 'data', 'season-matches-cache.json');
+        const stored = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        stored.ts = Date.now() - 31 * 60_000;
+        const aged = JSON.stringify(stored);
+        fs.writeFileSync(cacheFile, aged);
+
+        const { svc } = buildService();
+        svc.retryDelayMs = 0;
+        const warn = jest.spyOn(svc['logger'], 'warn').mockImplementation();
+        const fetcher = jest.fn(async () => new Response('{}', { status: 200 }));
+        svc.fetcher = fetcher as unknown as typeof svc.fetcher;
+
+        expect(await svc.getMatches({ force: true })).toHaveLength(46);
+        expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(aged);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+
+        const callsAfterGuard = fetcher.mock.calls.length;
+        expect(await svc.getMatches()).toHaveLength(46);
+        expect(fetcher.mock.calls.length).toBe(callsAfterGuard);
+      });
+    });
   });
 
   describe('nouvel essai selon le statut HTTP (L67)', () => {
