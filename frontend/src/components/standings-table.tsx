@@ -66,7 +66,7 @@ function PositionDot({ position }: { position: number }) {
   else if (position === 16) bg = 'bg-draw';
   else if (position >= 17) bg = 'bg-loss';
 
-  return <span className={cn('inline-block w-1 h-5 rounded-sm mr-2 align-middle', bg)} />;
+  return <span className={cn('inline-block w-1 h-5 rounded-sm mr-1 md:mr-2 align-middle', bg)} />;
 }
 
 export function StandingsTable({ rows }: StandingsTableProps) {
@@ -109,7 +109,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
               >
                 <td
                   className={cn(
-                    'px-2 py-3 text-center num text-fg-muted relative',
+                    'px-1 md:px-2 py-3 text-center num text-fg-muted relative whitespace-nowrap',
                     isOL && 'text-ol-red-bright font-semibold',
                   )}
                 >

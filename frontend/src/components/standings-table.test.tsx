@@ -65,4 +65,11 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(name).toHaveClass('line-clamp-3', 'break-words', 'md:truncate');
     expect(name).not.toHaveClass('truncate');
   });
+
+  it('le rang reste sur la ligne de son repère de couleur : marges resserrées et pas de retour à la ligne sur mobile', () => {
+    renderTable();
+    const cell = screen.getAllByText('1')[0].closest('td')!;
+    expect(cell).toHaveClass('px-1', 'md:px-2', 'whitespace-nowrap');
+    expect(cell.querySelector('span.inline-block')).toHaveClass('mr-1', 'md:mr-2');
+  });
 });
