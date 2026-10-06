@@ -7,6 +7,7 @@ import type { SeasonMatch } from '@/types/api';
 import { OL_TEAM_ID } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
+import { seasonLabel } from '@/lib/season-label';
 import { KICKOFF_TBD, kickoffTime } from '@/lib/kickoff';
 import {
   byCompetition,
@@ -68,7 +69,7 @@ export function FixturesPage() {
       <section className="rounded-md bg-surface border border-border overflow-clip">
         <header className="px-5 py-4 flex flex-col gap-4 border-b border-border md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="eyebrow mb-1">Saison 2025-26</div>
+            <div className="eyebrow mb-1">Saison {seasonLabel(data)}</div>
             <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
               Calendrier
             </h2>

@@ -1,5 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useSeasonMatches } from '@/hooks/use-season-matches';
+import { seasonLabel } from '@/lib/season-label';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 
 // Lazy-load Leaflet — keeps it out of the main bundle. Saves ~150 kB minified
@@ -9,13 +11,14 @@ const Ligue1Map = lazy(() =>
 );
 
 export function MapPage() {
+  const { data } = useSeasonMatches();
   return (
     <div className="space-y-8">
       <KnowledgeHeader />
 
       <section className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-4 border-b border-border">
-          <div className="eyebrow mb-1">Saison 2025-26</div>
+          <div className="eyebrow mb-1">Saison {seasonLabel(data)}</div>
           <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
             Carte Ligue 1
           </h2>
