@@ -525,3 +525,5 @@ lots:
     estimate: 1
     created: 2026-10-06
     started: 2026-10-06
+    notes:
+      - { date: 2026-10-06, text: "Décision lead 06-10 après revue non conforme (2 passes) : le périmètre couvre TOUT le parcours 365scores, pas seulement la marche avant. 1) Toute page en échec après le nouvel essai (résultats k≥0, matchs à venir, marche avant) marque la saison incomplète → on garde le cache existant et on journalise, jamais writeCache. 2) Panne totale (0 match) : poser aussi degradedAt, pour que les lectures non forcées servent le cache sans relancer le parcours ; seuls le cron et le forçage retentent. 3) Specs : échec d'une page de résultats avec cache existant (cache conservé), panne totale (pas de second parcours sur lecture non forcée), et compter les appels (2 pour 429/503, 1 pour 4xx) au lieu de toContain. Comparer des ids plutôt que des totaux n'est PAS demandé si 1) est tenu." }
