@@ -30,13 +30,13 @@ function renderTable() {
 }
 
 describe('<StandingsTable /> — mobile (L37)', () => {
-  it('la cellule du club peut rétrécir : max-w-0 sur la cellule, nom tronqué', () => {
+  it('la cellule du club peut rétrécir : max-w-0 sans w-full (colonnes fixes préservées), nom tronqué', () => {
     renderTable();
     const name = screen.getByText('Paris Saint-Germain Football Club');
     expect(name).toHaveClass('truncate');
     const cell = name.closest('td')!;
     expect(cell).toHaveClass('max-w-0');
-    expect(cell).toHaveClass('w-full');
+    expect(cell).not.toHaveClass('w-full');
   });
 
   it('la colonne Pts reste affichée sur mobile (jamais masquée ni hors flux)', () => {
