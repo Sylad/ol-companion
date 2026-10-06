@@ -7,5 +7,5 @@ captures: [{ file: captures/L37-classement-points-visibles-telephone.png, alt: "
 ---
 Sur téléphone, la colonne des points du classement sortait de l'écran : il fallait faire défiler le tableau pour la voir.
 
-- Les colonnes de chiffres sont **resserrées** sur petit écran et le **nom du club** se tronque au lieu d'élargir le tableau.
+- Les colonnes de chiffres sont **resserrées** sur petit écran et le **nom du club** passe à la ligne au lieu d’élargir le tableau.
 - Les **points** restent visibles d'un coup d'œil, sans défilement horizontal.
