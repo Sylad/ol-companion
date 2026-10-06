@@ -256,11 +256,12 @@ lots:
   - id: L31
     title: "Barre du bas : case active distinguée surtout par la teinte (1,47:1 entre actif et inactif, WCAG 1.4.1) — ajouter un repère non coloré (revue UX L24)"
     public: "Barre du bas : la page active mieux signalée"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-02
+    started: 2026-10-06
   - id: L32
     title: "API : /api/wiki-image répond 429 en navigation ordinaire (9 appels refusés en passant de / à /fixtures, deux fois, le 03-10) — la limite par visiteur se déclenche sur les logos de clubs ; mesurer puis relever la limite ou regrouper/mettre en cache les appels"
     status: todo
