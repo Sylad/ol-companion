@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-05 21:00",
+  "generated": "2026-10-06 09:19",
   "entries": [
+    {
+      "slug": "2026-10-06-barre-du-bas-la-page-active-mieux-signalee",
+      "title": "Barre du bas, la page active mieux signalée",
+      "date": "2026-10-06",
+      "lots": [
+        "L31"
+      ],
+      "captures": [
+        "captures/L31-barre-du-bas-filet-actif.png"
+      ],
+      "alts": [
+        "Barre du bas au téléphone (390 px) : un filet rouge en haut de la case Classement, la page active"
+      ],
+      "html": "<p>Sur téléphone, la page en cours dans la barre du bas ne se distinguait des autres que par une teinte rouge, difficile à repérer pour qui voit mal les couleurs.</p>\n<ul><li>La case active porte maintenant un <strong>filet en haut</strong>, en plus de la couleur et de l'icône plus épaisse : on la reconnaît même sans voir la teinte.</li><li>Sur une page rangée dans <strong>Plus</strong>, ou quand le panneau est ouvert, le filet est sur la case « Plus ».</li></ul>"
+    },
     {
       "slug": "2026-10-05-en-tete-sur-telephone-la-pastille-du-direct-ne-recouvre-pl",
       "title": "En-tête sur téléphone, la pastille du direct ne recouvre plus le titre",
