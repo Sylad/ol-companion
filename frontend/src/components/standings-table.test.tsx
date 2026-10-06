@@ -58,11 +58,11 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(332 - fixed).toBeGreaterThanOrEqual(100);
   });
 
-  it('le nom long se lit en entier sur téléphone : retour à la ligne (2 lignes), titre natif, troncature réservée à l’ordinateur', () => {
+  it('le nom long se lit en entier sur téléphone : retour à la ligne (3 lignes au plus), titre natif, troncature réservée à l’ordinateur', () => {
     renderTable();
     const name = screen.getByText('Paris Saint-Germain Football Club');
     expect(name).toHaveAttribute('title', 'Paris Saint-Germain Football Club');
-    expect(name).toHaveClass('line-clamp-2', 'break-words', 'md:truncate');
+    expect(name).toHaveClass('line-clamp-3', 'break-words', 'md:truncate');
     expect(name).not.toHaveClass('truncate');
   });
 });

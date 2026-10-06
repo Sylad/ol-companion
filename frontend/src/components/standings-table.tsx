@@ -125,7 +125,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                     <span
                       title={row.team}
                       className={cn(
-                        'line-clamp-2 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
+                        'line-clamp-3 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
                         isOL ? 'text-fg-bright font-semibold' : 'text-fg',
                       )}
                     >
