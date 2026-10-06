@@ -138,6 +138,86 @@ describe('readScores365Standings — jamais de classement incomplet (L35)', () =
     expect(reading.reason).toContain('position 16');
   });
 
+  it('refuse quand un seul match à un seul côté reste : il peut désigner l’adversaire', () => {
+    const payload = degraded();
+    const row = payload.standings[0].rows[15];
+    const [game] = row.detailedRecentForm as Array<Record<string, unknown>>;
+    // Le seul match gardé ne porte que Angers (l’adversaire de la ligne 16).
+    row.detailedRecentForm = [{ ...game, awayCompetitor: undefined }];
+    delete row.nextMatch;
+
+    const reading = ko(readScores365Standings(payload, 'test'));
+
+    expect(reading.reason).toContain('position 16');
+  });
+
+  it('refuse quand les matchs à deux clubs sont moins de deux, même si d’autres n’en portent qu’un', () => {
+    const payload = degraded();
+    const row = payload.standings[0].rows[15];
+    const games = row.detailedRecentForm as Array<Record<string, unknown>>;
+    row.detailedRecentForm = [
+      games[0],
+      { ...games[1], awayCompetitor: undefined },
+      { ...games[2], awayCompetitor: undefined },
+    ];
+    delete row.nextMatch;
+
+    const reading = ko(readScores365Standings(payload, 'test'));
+
+    expect(reading.reason).toContain('position 16');
+  });
+
+  it('résout le club avec un seul match récent et le prochain match (début de saison)', () => {
+    const payload = degraded();
+    const row = payload.standings[0].rows[15];
+    row.detailedRecentForm = (
+      row.detailedRecentForm as Array<Record<string, unknown>>
+    ).slice(0, 1);
+
+    const reading = ok(readScores365Standings(payload, 'test'));
+
+    expect(clubs(reading)[15]).toEqual([16, 488, 'Troyes']);
+  });
+
+  it('refuse un club retrouvé par ses matchs mais sans nom', () => {
+    const payload = degraded();
+    const row = payload.standings[0].rows[15];
+    const strip = (g: Record<string, unknown>) => {
+      for (const side of ['homeCompetitor', 'awayCompetitor']) {
+        const c = g[side] as { id: number } | undefined;
+        if (c?.id === 488) g[side] = { id: 488 };
+      }
+      return g;
+    };
+    row.detailedRecentForm = (
+      row.detailedRecentForm as Array<Record<string, unknown>>
+    ).map(strip);
+    strip(row.nextMatch as Record<string, unknown>);
+
+    const reading = ko(readScores365Standings(payload, 'test'));
+
+    expect(reading.reason).toContain('position 16');
+  });
+
+  it('refuse un classement dont les positions ne sont pas 1..N (ligne entière manquante)', () => {
+    const payload = complete();
+    payload.standings[0].rows.splice(6, 1);
+
+    const reading = ko(readScores365Standings(payload, 'test'));
+
+    expect(reading.reason).toMatch(/position/i);
+    expect(reading.reason).toContain('7');
+  });
+
+  it('refuse un classement dont une position est en double', () => {
+    const payload = complete();
+    payload.standings[0].rows[5].position = 5;
+
+    const reading = ko(readScores365Standings(payload, 'test'));
+
+    expect(reading.reason).toMatch(/position/i);
+  });
+
   it('refuse quand les matchs désignent un club déjà porté par une autre ligne', () => {
     const payload = degraded();
     const rows = payload.standings[0].rows;

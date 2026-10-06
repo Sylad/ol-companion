@@ -109,6 +109,17 @@ export function readScores365Standings(
     };
   }
 
+  const positions = rows.map((r) => r.position).sort((a, b) => a - b);
+  const gap = positions.findIndex((p, i) => p !== i + 1);
+  if (gap !== -1) {
+    return {
+      ok: false,
+      reason:
+        `positions are not 1..${rows.length} (expected ${gap + 1}, found ${positions[gap]}; ` +
+        `received ${positions.join(', ')}) — whole rows are missing, table refused`,
+    };
+  }
+
   const duplicate = firstClubOnSeveralRows(rows);
   if (duplicate) {
     return {
@@ -135,18 +146,24 @@ export function describeClubsResolvedFromGames(
   return clubs.map((c) => `${c.position} → ${c.name} (#${c.id})`).join(', ');
 }
 
+const MIN_GAMES_TO_RESOLVE_CLUB = 2;
+
 /**
  * The club of a row = the only competitor present in every game the row lists.
- * One game names two clubs, so at least two games (against different
- * opponents) are needed; anything else than exactly one named club → undefined.
+ * One game names two clubs, so at least two games carrying both clubs (against
+ * different opponents) are needed; anything else than exactly one named club
+ * → undefined.
  */
 function clubFromRowGames(
   row: Scores365StandingsRow,
 ): (Scores365StandingsCompetitor & { name: string }) | undefined {
+  // Only games carrying BOTH clubs count: a game with a single side named may
+  // name the opponent, and would then designate the wrong club.
   const games = [
     ...(row.detailedRecentForm ?? []),
     ...(row.nextMatch ? [row.nextMatch] : []),
-  ];
+  ].filter((game) => game.homeCompetitor && game.awayCompetitor);
+  if (games.length < MIN_GAMES_TO_RESOLVE_CLUB) return undefined;
   let inEveryGame: Map<number, Scores365StandingsCompetitor> | undefined;
   for (const game of games) {
     const sides = new Map<number, Scores365StandingsCompetitor>();

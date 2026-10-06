@@ -127,7 +127,9 @@ describe('LiveMatchService — mini-classement et rendus dégradés de 365scores
     const body = JSON.parse(
       fixture('365_standings_ligue1_complete.json'),
     ) as Payload;
-    body.standings[0].rows.splice(1, 1); // retire la ligne de Lyon
+    body.standings[0].rows.splice(1, 1); // retire la ligne de Lyon…
+    // …et renumérote : des positions non 1..N seraient refusées avant (L36).
+    body.standings[0].rows.forEach((row, i) => (row.position = i + 1));
     standingsBody = JSON.stringify(body);
 
     const payload = await stats();
