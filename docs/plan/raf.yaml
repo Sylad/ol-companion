@@ -405,6 +405,7 @@ lots:
     visible: true
     created: 2026-10-03
     started: 2026-10-06
+    review: { date: 2026-10-06, verdict: "compliant — orchestré (vague 2026-10-06-1801, 0 passe(s) de correction + passe des mineurs)", commit: d49997076123b1fe796c984253ae8eedbb87b6e6 }
   - id: L41
     title: "/api/live-match/current répond 200 avec un corps vide hors fenêtre de match : la requête échoue à l'analyse JSON et repart une fois à chaque page — renvoyer null en JSON (ou 204 géré côté client)"
     status: todo
