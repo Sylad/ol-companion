@@ -95,6 +95,13 @@ function standingsPayload(): unknown {
             gamePlayed: 7,
             points: 12,
           },
+          // Un classement de moins de 18 lignes est refusé (L36).
+          ...Array.from({ length: 16 }, (_, i) => ({
+            position: i + 3,
+            competitor: { id: 1000 + i, name: `Club ${i + 3}` },
+            gamePlayed: 7,
+            points: 10 - Math.floor(i / 2),
+          })),
         ],
       },
     ],
@@ -269,7 +276,7 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
         force: true,
       });
 
-      expect(standings?.table).toHaveLength(2);
+      expect(standings?.table).toHaveLength(18);
       expect(pathsAndQueries()).toEqual([
         '/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=35',
       ]);

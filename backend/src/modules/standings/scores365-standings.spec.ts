@@ -206,7 +206,17 @@ describe('readScores365Standings — jamais de classement incomplet (L35)', () =
     const reading = ko(readScores365Standings(payload, 'test'));
 
     expect(reading.reason).toMatch(/position/i);
-    expect(reading.reason).toContain('7');
+    expect(reading.reason).toContain('expected 7');
+  });
+
+  it('refuse un classement amputé de sa dernière ligne (18 clubs attendus)', () => {
+    const payload = complete();
+    payload.standings[0].rows.pop();
+
+    const reading = ko(readScores365Standings(payload, 'test'));
+
+    expect(reading.reason).toContain('18');
+    expect(reading.reason).toContain('17');
   });
 
   it('refuse un classement dont une position est en double', () => {
@@ -216,6 +226,8 @@ describe('readScores365Standings — jamais de classement incomplet (L35)', () =
     const reading = ko(readScores365Standings(payload, 'test'));
 
     expect(reading.reason).toMatch(/position/i);
+    expect(reading.reason).toContain('expected 6, found 5');
+    expect(reading.reason).not.toContain('whole rows are missing');
   });
 
   it('refuse quand les matchs désignent un club déjà porté par une autre ligne', () => {

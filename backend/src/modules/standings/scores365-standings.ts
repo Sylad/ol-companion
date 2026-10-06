@@ -28,6 +28,9 @@ import {
  * returned.
  */
 
+/** Clubs in the Ligue 1 table (the only competition read here): a table with fewer rows lost some. */
+const LIGUE1_CLUB_COUNT = 18;
+
 /** A standings row whose club is known (given by 365scores or restored). */
 export type ResolvedStandingsRow = Omit<Scores365StandingsRow, 'competitor'> & {
   competitor: Scores365StandingsCompetitor;
@@ -111,12 +114,16 @@ export function readScores365Standings(
 
   const positions = rows.map((r) => r.position).sort((a, b) => a - b);
   const gap = positions.findIndex((p, i) => p !== i + 1);
-  if (gap !== -1) {
+  if (gap !== -1 || positions.length !== LIGUE1_CLUB_COUNT) {
+    const detail =
+      gap !== -1
+        ? `expected ${gap + 1}, found ${positions[gap]}`
+        : `${positions.length} rows received, expected ${LIGUE1_CLUB_COUNT}`;
     return {
       ok: false,
       reason:
-        `positions are not 1..${rows.length} (expected ${gap + 1}, found ${positions[gap]}; ` +
-        `received ${positions.join(', ')}) — whole rows are missing, table refused`,
+        `positions are not 1..${LIGUE1_CLUB_COUNT} (${detail}; ` +
+        `received ${positions.join(', ')}) — rows are missing or numbered twice, table refused`,
     };
   }
 
