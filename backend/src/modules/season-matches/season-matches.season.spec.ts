@@ -538,6 +538,28 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       });
     });
 
+    it('page des matchs à venir seule en échec (marche avant depuis le curseur des résultats sans erreur) : le cache complet est conservé, sans réécriture', async () => {
+      await withCwd(async (dir) => {
+        const first = buildService();
+        first.svc.retryDelayMs = 0;
+        expect(await first.svc.getMatches({ force: true })).toHaveLength(46);
+        const cacheFile = path.join(dir, 'data', 'season-matches-cache.json');
+        const before = fs.readFileSync(cacheFile, 'utf-8');
+
+        // Le curseur des résultats mène à une page vide : seule la page des matchs à venir échoue.
+        const { svc } = buildService(footballDataMatches(), {
+          fixtures: 'http-503',
+          afterResults: [{ games: [] }],
+        });
+        svc.retryDelayMs = 0;
+        const warn = jest.spyOn(svc['logger'], 'warn').mockImplementation();
+
+        expect(await svc.getMatches({ force: true })).toHaveLength(46);
+        expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+      });
+    });
+
     it('panne totale (0 match) : cache conservé, puis les lectures non forcées ne relancent pas de parcours', async () => {
       await withCwd(async (dir) => {
         const first = buildService();
