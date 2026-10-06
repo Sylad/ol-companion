@@ -369,7 +369,7 @@ lots:
   - id: L37
     title: "Classement à 390 px : la colonne Pts est hors de la zone visible du tableau (x 369–406, zone visible 25–357) — la garder visible sans défilement horizontal"
     public: "Classement sur téléphone : la colonne des points toujours visible"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
@@ -378,6 +378,8 @@ lots:
     notes:
       - { date: 2026-10-06, text: "Décision Sylvain 06-10 : largeur minimale du nom du club (min-w ~4.5rem sur le span du nom), le tableau ne défile qu'en dessous d'environ 360 px ; pas de masquage de G/N/P. Reprendre aussi les mineurs de revue : test des largeurs qui mesure la largeur réelle du nom (marge, logo, écart soustraits), capture Nouveautés reprise après le correctif, texte « passe à la ligne » au lieu de « se tronque » + npm run news." }
     review: { date: 2026-10-06, verdict: "conforme après 2 corrections mineures — orchestré (vague 2026-10-06-2138, 1 passe(s) de correction + passe des mineurs)", commit: 8715bd788d318fbf7b17da4f9fdb3c0a43e4bcf9 }
+    ux: { date: 2026-10-06, verdict: "conforme après 2 corrections mineures (ux-reviewer via orchestrate 06-10 ; capture 390 px relue par le lead : Pts et noms visibles)" }
+    finished: 2026-10-06
   - id: L38
     title: "Coupes : Europa League affichée ÉLIMINÉ après une seule journée de phase de ligue gagnée (isEliminated = matchs joués > 0 et aucun à venir) — ne pas conclure à l'élimination quand la phase de ligue est en cours"
     public: "Coupes : un statut juste tant que l'OL est en lice"
@@ -403,13 +405,15 @@ lots:
   - id: L40
     title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
     public: "Le libellé de la saison suit la saison en cours"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
     started: 2026-10-06
     review: { date: 2026-10-06, verdict: "compliant — orchestré (vague 2026-10-06-1801, 0 passe(s) de correction + passe des mineurs)", commit: d49997076123b1fe796c984253ae8eedbb87b6e6 }
+    ux: { date: 2026-10-06, verdict: conforme (ux-reviewer via orchestrate 06-10) }
+    finished: 2026-10-06
   - id: L41
     title: "/api/live-match/current répond 200 avec un corps vide hors fenêtre de match : la requête échoue à l'analyse JSON et repart une fois à chaque page — renvoyer null en JSON (ou 204 géré côté client)"
     status: todo
