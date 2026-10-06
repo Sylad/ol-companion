@@ -293,6 +293,35 @@ describe('<BottomNav /> (téléphone)', () => {
     ).toBeInTheDocument();
   });
 
+  // L31 (revue UX L24, WCAG 1.4.1) : la teinte seule (1,47:1 entre actif et inactif) ne
+  // suffit pas ; un filet en haut de la case active, présent ou absent, dit la même chose.
+  it('la case active de la barre porte un repère non coloré (filet), les autres non', async () => {
+    await renderAt('/standings', () => <BottomNav />);
+    const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
+    const markers = nav.querySelectorAll('[data-active-marker]');
+    expect(markers).toHaveLength(1);
+    expect(markers[0].closest('a')).toHaveAttribute('href', '/standings');
+    expect(markers[0]).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('sur une page rangée dans « Plus », le repère est sur « Plus » seul', async () => {
+    await renderAt('/players', () => <BottomNav />);
+    const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
+    const markers = nav.querySelectorAll('[data-active-marker]');
+    expect(markers).toHaveLength(1);
+    expect(markers[0].closest('button')).toHaveAttribute('data-active', 'true');
+  });
+
+  it('panneau « Plus » ouvert : le repère passe de la page de la barre à « Plus »', async () => {
+    const user = userEvent.setup();
+    await renderAt('/standings', () => <BottomNav />);
+    await user.click(screen.getByRole('button', { name: 'Plus' }));
+    const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
+    const markers = nav.querySelectorAll('[data-active-marker]');
+    expect(markers).toHaveLength(1);
+    expect(markers[0].closest('button')).not.toBeNull();
+  });
+
   it('sur une page de la barre, « Plus » ne parle pas de page actuelle', async () => {
     await renderAt('/standings', () => <BottomNav />);
     expect(screen.getByRole('button', { name: 'Plus' })).toHaveAttribute('data-active', 'false');

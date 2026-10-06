@@ -23,6 +23,11 @@ const MORE_PAGES: readonly { to: string; label: string }[] = [
   ...SECONDARY_ITEMS,
 ];
 
+// L31 (revue UX L24, WCAG 1.4.1) : repère non coloré de la case active — un filet de 3 px
+// en haut de la case, en plus de la teinte et de l'icône plus épaisse (l'écart de teinte
+// entre actif et inactif n'est que de 1,47:1). Sa présence, pas sa couleur, dit « ici ».
+const ACTIVE_MARKER = 'absolute inset-x-3 top-0 h-[3px] rounded-b-full bg-current';
+
 const SHEET_BOTTOM = 'calc(4.5rem + env(safe-area-inset-bottom))';
 
 export function BottomNav() {
@@ -210,10 +215,11 @@ export function BottomNav() {
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  'flex flex-col items-center justify-center gap-1 py-2.5 transition-colors',
+                  'relative flex flex-col items-center justify-center gap-1 py-2.5 transition-colors',
                   active ? 'text-ol-red-bright' : 'text-fg-muted',
                 )}
               >
+                {active && <span data-active-marker aria-hidden="true" className={ACTIVE_MARKER} />}
                 <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.25 : 1.75} />
                 <span className="text-[10px] font-medium tracking-wide">{item.label}</span>
               </Link>
@@ -236,10 +242,11 @@ export function BottomNav() {
               }
             }}
             className={cn(
-              'flex flex-col items-center justify-center gap-1 py-2.5 transition-colors border-l border-border',
+              'relative flex flex-col items-center justify-center gap-1 py-2.5 transition-colors border-l border-border',
               plusActive ? (fcActive && !open ? 'text-[#3aa0ff]' : 'text-ol-red-bright') : 'text-fg-muted',
             )}
           >
+            {plusActive && <span data-active-marker aria-hidden="true" className={ACTIVE_MARKER} />}
             {/* Pastille de 16 px (comme la barre latérale) posée sur le coin de l'icône, rentrée
                 vers elle : la case garde sa largeur et la pastille ne touche plus le bord (L24). */}
             <span className="relative">
