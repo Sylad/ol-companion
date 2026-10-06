@@ -399,11 +399,12 @@ lots:
   - id: L40
     title: Libellé « Saison 2025-26 » écrit en dur sur /fixtures et /map alors que la saison servie est 2026-27 — le dériver des données
     public: "Le libellé de la saison suit la saison en cours"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
+    started: 2026-10-06
   - id: L41
     title: "/api/live-match/current répond 200 avec un corps vide hors fenêtre de match : la requête échoue à l'analyse JSON et repart une fois à chaque page — renvoyer null en JSON (ou 204 géré côté client)"
     status: todo
