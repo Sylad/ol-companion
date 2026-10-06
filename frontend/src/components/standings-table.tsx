@@ -16,7 +16,7 @@ const COLUMNS = [
   { key: 'goalsFor', label: 'BP', align: 'center' as const, w: 'w-12', mobile: false },
   { key: 'goalsAgainst', label: 'BC', align: 'center' as const, w: 'w-12', mobile: false },
   { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-10 md:w-12' },
-  { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-14' },
+  { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-12 md:w-14' },
   { key: 'form', label: '5 derniers', align: 'left' as const, w: 'w-[120px]', mobile: false },
 ];
 
@@ -125,7 +125,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                     <span
                       title={row.team}
                       className={cn(
-                        'line-clamp-3 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
+                        'min-w-[4.5rem] line-clamp-3 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
                         isOL ? 'text-fg-bright font-semibold' : 'text-fg',
                       )}
                     >

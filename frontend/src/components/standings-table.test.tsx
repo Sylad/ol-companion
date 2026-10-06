@@ -46,16 +46,22 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(screen.getByText('22').closest('td')!.className).not.toMatch(/hidden/);
   });
 
-  it('les colonnes fixes d’un téléphone tiennent dans 332 px avec un club de 100 px au moins', () => {
+  it('le nom du club garde 4,5 rem au moins une fois colonnes, marges de cellule, logo et écart soustraits', () => {
     renderTable();
-    // largeurs déclarées des colonnes visibles sur mobile (classes w-N = N*4 px)
     const widths = Array.from(document.querySelectorAll('thead th'))
       .filter((th) => !/\bhidden\b/.test(th.className))
       .map((th) => /\bw-(\d+)\b/.exec(th.className))
       .filter((m): m is RegExpExecArray => !!m)
       .map((m) => Number(m[1]) * 4);
     const fixed = widths.reduce((a, b) => a + b, 0);
-    expect(332 - fixed).toBeGreaterThanOrEqual(100);
+    const name = screen.getByText('Paris Saint-Germain Football Club');
+    // cellule du club : px-2 (2 × 8 px) ; contenu : logo 22 px + gap-1.5 (6 px)
+    expect(name.closest('td')).toHaveClass('px-2');
+    expect(name.parentElement).toHaveClass('gap-1.5');
+    const available = 332 - fixed - 16 - 22 - 6;
+    expect(available).toBeGreaterThanOrEqual(72);
+    // largeur minimale du nom (4,5 rem = 72 px) : en dessous, le tableau défile
+    expect(name).toHaveClass('min-w-[4.5rem]');
   });
 
   it('le nom long se lit en entier sur téléphone : retour à la ligne (3 lignes au plus), titre natif, troncature réservée à l’ordinateur', () => {
