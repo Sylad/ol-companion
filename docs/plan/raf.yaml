@@ -604,3 +604,9 @@ lots:
     status: todo
     estimate: 1
     created: 2026-10-06
+  - id: L69
+    title: orchestrate.ux déclaré (port 5174) pour la revue UX automatique des vagues — suite de cadence L95
+    status: doing
+    estimate: 1
+    created: 2026-10-07
+    started: 2026-10-07

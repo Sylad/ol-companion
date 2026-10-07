@@ -26,3 +26,11 @@ deliver:
     # repli HTML, pour un fichier absent de /assets/
     - command: ./scripts/verify-cache.sh
   verifyTimeout: 600
+
+# Revue UX automatique des vagues (cadence orchestrate) : backend NestJS (3002) + frontend Vite (5174)
+# dans UN groupe de processus, tués ensemble par le programme.
+orchestrate:
+  ux:
+    command: '(cd backend && npm run start:dev) & (cd frontend && npm run dev -- --port 5174 --strictPort) & wait'
+    url: http://localhost:5174
+    timeout: 300
