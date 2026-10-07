@@ -606,7 +606,9 @@ lots:
     created: 2026-10-06
   - id: L69
     title: orchestrate.ux déclaré (port 5174) pour la revue UX automatique des vagues — suite de cadence L95
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-07
     started: 2026-10-07
+    review: { date: 2026-10-07, verdict: "conforme (lead) : cadence.yaml seul, orchestrate.ux au format lu par readOrchestrateConfig, commande POSIX essayée sous groupe de processus → HTTP 200, ports libérés après kill", commit: 93fb7507d0eb6086dfad0588ee31ce517814ce8c }
+    finished: 2026-10-07
