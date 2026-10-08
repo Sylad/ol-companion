@@ -97,8 +97,8 @@ export function DashboardHero() {
         />
       )}
 
-      <div className="relative z-10 p-6 lg:p-8 grid lg:grid-cols-[1.4fr_auto] gap-6 items-center">
-        <div className="space-y-4">
+      <div className="relative z-10 p-6 lg:p-8 grid grid-cols-1 min-w-0 lg:grid-cols-[1.4fr_auto] gap-6 items-center">
+        <div className="space-y-4 min-w-0">
           <div className="flex items-center gap-3">
             <span className={cn(
               'eyebrow',
@@ -144,7 +144,7 @@ export function DashboardHero() {
           </div>
         </div>
 
-        <div className="rounded-md border border-border bg-surface/70 p-4 backdrop-blur-md lg:min-w-[260px]">
+        <div className="rounded-md border border-border bg-surface/70 p-4 backdrop-blur-md min-w-0 lg:min-w-[260px]">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-fg-dim font-semibold">
             {isLive ? (
               <Radio className="h-3.5 w-3.5 text-ol-red-bright animate-pulse" strokeWidth={2} />
@@ -161,8 +161,8 @@ export function DashboardHero() {
               <span className="font-semibold text-fg-bright">{status}</span>
             </div>
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="text-fg-muted">Adversaire</span>
-              <span className="font-semibold text-fg-bright text-right">{opponent.name}</span>
+              <span className="shrink-0 text-fg-muted">Adversaire</span>
+              <span className="min-w-0 font-semibold text-fg-bright text-right break-words">{opponent.name}</span>
             </div>
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="text-fg-muted">Lieu</span>

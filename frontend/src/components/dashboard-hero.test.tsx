@@ -157,4 +157,19 @@ describe('<DashboardHero /> — prochain rendez-vous (L39)', () => {
 
     expect(await screen.findByText('Aucun match programmé.')).toBeInTheDocument();
   });
+
+  // L52 — à 390 px, un nom d'adversaire long rognait la carte « Tableau de bord match » :
+  // la cellule de la grille et la ligne « Adversaire » ne pouvaient pas rétrécir.
+  it('nom d’adversaire long : la carte peut rétrécir et le nom passe à la ligne', async () => {
+    const LONG = 'Association Sportive de Saint-Étienne Loire Métropole';
+    vi.stubGlobal('fetch', serve([match({ id: 1, date: '2026-10-09T18:45:00Z', awayTeam: LONG, awayTeamId: 527 })]));
+    renderHero();
+
+    const nom = (await screen.findAllByText(LONG)).find((el) => el.className.includes('text-right'));
+    expect(nom).toBeDefined();
+    expect(nom).toHaveClass('min-w-0', 'break-words');
+    const carte = nom!.closest('.backdrop-blur-md');
+    expect(carte).toHaveClass('min-w-0');
+    expect(carte!.parentElement).toHaveClass('grid-cols-1', 'min-w-0');
+  });
 });
