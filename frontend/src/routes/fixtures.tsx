@@ -112,7 +112,7 @@ export function FixturesPage() {
           </div>
         </header>
 
-        <div className="p-5">
+        <div className="p-3 sm:p-5">
           {isLoading && (
             <div className="flex items-center justify-center py-20 text-fg-dim">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -319,7 +319,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   const awayWon = hasScore && fixture.awayScore! > fixture.homeScore!;
 
   return (
-    <article className={cn('grid grid-cols-[56px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-2/45 transition-colors', isLive && 'border-l-[3px] border-l-live')}>
+    <article className={cn('grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors', isLive && 'border-l-[3px] border-l-live')}>
       <div className="text-center">
         <div className="text-xs font-semibold text-fg">{day}</div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted">{month}</div>
@@ -370,7 +370,7 @@ function CompactTeamLine({
 }) {
   const isOL = id === OL_TEAM_ID;
   return (
-    <div className={cn('flex min-w-0 items-center gap-2', dim && 'opacity-55')}>
+    <div className={cn('flex min-w-0 items-center gap-1.5 sm:gap-2', dim && 'opacity-55')}>
       <TeamLogo teamId={id} name={name} size={18} src={seasonTeamLogoUrl(id)} />
       <span className={cn('min-w-0 flex-1 truncate text-sm', isOL ? 'font-semibold text-fg-bright' : 'text-fg')}>
         {teamShortName(name)}

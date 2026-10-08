@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-08 12:39",
+  "generated": "2026-10-08 12:58",
   "entries": [
+    {
+      "slug": "2026-10-08-calendrier-sur-telephone-des-noms-de-clubs-lisibles",
+      "title": "Calendrier sur téléphone : des noms de clubs lisibles",
+      "date": "2026-10-08",
+      "lots": [
+        "L48"
+      ],
+      "captures": [
+        "captures/L48-calendrier-390.png"
+      ],
+      "alts": [
+        "Calendrier à 390 px : les noms des clubs, dont Marseille, s'affichent en entier"
+      ],
+      "html": "<p>Sur un téléphone, le calendrier coupait les noms de clubs (« Sparta Pra… », « Olympique de Mar… ») : la colonne de la date et celle de l'état du match prenaient trop de place.</p>\n<ul><li>À 390 px, les noms de clubs s'affichent en entier (15 sur 92 étaient coupés).</li><li>Les marges de la liste sont resserrées sur petit écran, ce qui libère de la place pour les noms.</li><li>Marseille s'affiche « Marseille » et non « Olympique de Marseille ».</li><li>À 320 px, la plupart des noms tiennent ; quelques noms longs (« Union St. Gilloise », « Crystal Palace ») restent encore coupés.</li></ul>"
+    },
     {
       "slug": "2026-10-08-calendrier-la-date-marquee-a-confirmer-quand-elle-n-est-pas",
       "title": "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée",
