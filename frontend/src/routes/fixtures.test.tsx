@@ -167,6 +167,12 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(troyes).toHaveTextContent('Horaire à confirmer');
     expect(troyes).not.toHaveTextContent(/\d{2}:\d{2}/);
 
+    // Le jour n'est pas plus fixé que l'heure : le samedi de remplissage (5 déc.)
+    // ne s'affiche pas comme une date ferme (L47).
+    expect(troyes).toHaveTextContent('Week-end');
+    expect(troyes).toHaveTextContent('du 05/12');
+    expect(troyes).not.toHaveTextContent('Sam. 05');
+
     // 21 matchs de Ligue 1 sans heure fixée ce jour-là ; aucun n'affiche d'heure.
     const unconfirmed = articles.filter((a) => a.textContent?.includes('Horaire à confirmer'));
     expect(unconfirmed).toHaveLength(21);
@@ -282,7 +288,9 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
       const next = card('Prochain');
       expect(next).toHaveTextContent('Lens');
-      expect(next).toHaveTextContent('Ven. 09/10 · Ligue 1');
+      // Vendredi 09/10 est une date de remplissage : le week-end, pas un jour ferme.
+      expect(next).toHaveTextContent('Week-end du 10/10 · Ligue 1');
+      expect(next).not.toHaveTextContent('Ven. 09/10');
       expect(next).toHaveTextContent('Horaire à confirmer');
       // Ni l'heure de 365scores (20:45), ni aucune autre.
       expect(next).not.toHaveTextContent(/\d{2}:\d{2}/);

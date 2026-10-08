@@ -1,5 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { KICKOFF_TBD, formatKickoffLong, hasKickoffTime, kickoffTime } from './kickoff';
+import {
+  DATE_AND_KICKOFF_TBD,
+  KICKOFF_TBD,
+  formatKickoffLong,
+  hasKickoffTime,
+  kickoffTime,
+  unconfirmedDay,
+} from './kickoff';
 
 // L39 — une heure de coup d'envoi non fixée ne s'affiche plus comme une heure.
 // Mesuré en prod le 03-10 : J13 (2026-12-05T00:00:00Z) affiché « 01:00 ».
@@ -41,8 +48,42 @@ describe('heure du coup d’envoi', () => {
       'vendredi 9 octobre · 20h45',
     );
     expect(formatKickoffLong({ date: '2026-12-05T00:00:00Z', timeConfirmed: false })).toBe(
-      `samedi 5 décembre · ${KICKOFF_TBD.toLowerCase()}`,
+      `week-end du 5 décembre · ${KICKOFF_TBD.toLowerCase()}`,
     );
+    // Un jour de semaine non fixé : on ne nomme aucun jour.
+    expect(formatKickoffLong({ date: '2026-12-02T00:00:00Z', timeConfirmed: false })).toBe(
+      DATE_AND_KICKOFF_TBD,
+    );
+  });
+
+  // L47 — un horaire non fixé veut dire un jour non fixé : le samedi de
+  // remplissage (18 des 21 lignes « à confirmer ») ne s'affiche plus comme ferme.
+  it('jour non fixé : le week-end (vendredi, samedi ou dimanche) est nommé par son samedi', () => {
+    expect(unconfirmedDay({ date: '2026-12-05T17:00:00Z', timeConfirmed: false })).toEqual({
+      kind: 'weekend',
+      saturday: new Date(2026, 11, 5),
+    });
+    // vendredi et dimanche : le même week-end
+    expect(unconfirmedDay({ date: '2026-12-04T12:00:00Z', timeConfirmed: false })).toMatchObject({
+      kind: 'weekend',
+      saturday: new Date(2026, 11, 5),
+    });
+    expect(unconfirmedDay({ date: '2026-12-06T12:00:00Z', timeConfirmed: false })).toMatchObject({
+      kind: 'weekend',
+      saturday: new Date(2026, 11, 5),
+    });
+  });
+
+  it('jour non fixé en semaine : « inconnu » ; jour fixé ou champ absent : null', () => {
+    expect(unconfirmedDay({ date: '2026-12-02T12:00:00Z', timeConfirmed: false })).toEqual({
+      kind: 'unknown',
+    });
+    expect(unconfirmedDay({ date: '2026-12-05T17:00:00Z', timeConfirmed: true })).toBeNull();
+    expect(unconfirmedDay({ date: '2026-12-05T17:00:00Z' })).toBeNull();
+  });
+
+  it('le libellé complet dit « Date et horaire à confirmer »', () => {
+    expect(DATE_AND_KICKOFF_TBD).toBe('Date et horaire à confirmer');
   });
 
   it('le libellé dit « Horaire à confirmer »', () => {

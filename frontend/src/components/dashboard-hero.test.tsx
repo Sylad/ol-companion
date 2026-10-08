@@ -109,11 +109,11 @@ describe('<DashboardHero /> — prochain rendez-vous (L39)', () => {
     expect(screen.queryByText(/horaire à confirmer/i)).not.toBeInTheDocument();
   });
 
-  it('heure non fixée : « horaire à confirmer » après la date, jamais « 01h00 »', async () => {
+  it('heure non fixée : « week-end du … · horaire à confirmer », jamais « 01h00 » ni un jour ferme', async () => {
     vi.stubGlobal('fetch', serve([RENNES_PLAYED, TROYES_UNCONFIRMED, MARSEILLE_TIMED]));
     const { container } = renderHero();
 
-    expect(await screen.findByText('samedi 5 décembre · horaire à confirmer')).toBeInTheDocument();
+    expect(await screen.findByText('week-end du 5 décembre · horaire à confirmer')).toBeInTheDocument();
     expect(screen.getByText(/Ligue 1 · J13/)).toBeInTheDocument();
     expect(screen.getAllByText('ES Troyes AC').length).toBeGreaterThan(0);
     // Aucune heure dans toute la carte : ni minuit UTC lu à Paris, ni une autre.
@@ -128,7 +128,7 @@ describe('<DashboardHero /> — prochain rendez-vous (L39)', () => {
     vi.stubGlobal('fetch', serve([MARSEILLE_TIMED, TROYES_UNCONFIRMED, RENNES_PLAYED]));
     renderHero();
 
-    expect(await screen.findByText('samedi 5 décembre · horaire à confirmer')).toBeInTheDocument();
+    expect(await screen.findByText('week-end du 5 décembre · horaire à confirmer')).toBeInTheDocument();
     expect(screen.queryByText(/13 décembre/)).not.toBeInTheDocument();
   });
 

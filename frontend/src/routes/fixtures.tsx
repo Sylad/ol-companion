@@ -8,7 +8,7 @@ import { OL_TEAM_ID } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { seasonLabel } from '@/lib/season-label';
-import { KICKOFF_TBD, kickoffTime } from '@/lib/kickoff';
+import { KICKOFF_TBD, kickoffTime, unconfirmedDay } from '@/lib/kickoff';
 import {
   byCompetition,
   byStatus,
@@ -30,14 +30,31 @@ const TABS: { key: StatusTab; label: string }[] = [
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
-/** Jour, mois et heure ; `time` est `null` quand l'heure n'est pas fixée. */
-function formatDateParts(match: SeasonMatch): { day: string; month: string; time: string | null } {
+const pad2 = (n: number): string => n.toString().padStart(2, '0');
+
+/**
+ * Jour, mois, heure et libellé court de la date ; `time` est `null` quand
+ * l'heure n'est pas fixée. Un horaire non fixé veut dire un jour non fixé (L47) :
+ * « Week-end du 05/12 » (vendredi, samedi ou dimanche), sinon « Date à confirmer ».
+ */
+function formatDateParts(match: SeasonMatch): {
+  day: string;
+  month: string;
+  time: string | null;
+  label: string;
+} {
   const d = new Date(match.date);
-  return {
-    day: `${WEEKDAY[d.getDay()]} ${d.getDate().toString().padStart(2, '0')}`,
-    month: `${(d.getMonth() + 1).toString().padStart(2, '0')}`,
-    time: kickoffTime(match),
-  };
+  const unconfirmed = match.status === 'SCHEDULED' || match.status === 'TIMED' ? unconfirmedDay(match) : null;
+  if (unconfirmed?.kind === 'weekend') {
+    const sat = `${pad2(unconfirmed.saturday.getDate())}/${pad2(unconfirmed.saturday.getMonth() + 1)}`;
+    return { day: 'Week-end', month: `du ${sat}`, time: null, label: `Week-end du ${sat}` };
+  }
+  if (unconfirmed) {
+    return { day: 'Date', month: 'à confirmer', time: null, label: 'Date à confirmer' };
+  }
+  const day = `${WEEKDAY[d.getDay()]} ${pad2(d.getDate())}`;
+  const month = pad2(d.getMonth() + 1);
+  return { day, month, time: kickoffTime(match), label: `${day}/${month}` };
 }
 
 export function FixturesPage() {
@@ -247,7 +264,7 @@ function SummaryMatch({
 }) {
   const olIsHome = fixture.homeTeamId === OL_TEAM_ID;
   const opponent = olIsHome ? fixture.awayTeam : fixture.homeTeam;
-  const { day, month, time } = formatDateParts(fixture);
+  const { label: dateLabel, time } = formatDateParts(fixture);
   const score = fixture.homeScore !== null && fixture.awayScore !== null
     ? `${fixture.homeScore}-${fixture.awayScore}`
     : time;
@@ -267,7 +284,7 @@ function SummaryMatch({
         />
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold text-fg-bright">{teamShortName(opponent)}</div>
-          <div className="text-xs text-fg-dim">{day}/{month} · {fixture.competition}</div>
+          <div className="text-xs text-fg-dim">{dateLabel} · {fixture.competition}</div>
         </div>
         {score ? (
           <div className="num text-lg font-bold text-fg-bright">{score}</div>
