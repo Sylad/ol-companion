@@ -107,8 +107,17 @@
     {
       "id": "L47",
       "title": "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée",
-      "status": "doing",
-      "started": "2026-10-08"
+      "status": "done",
+      "started": "2026-10-08",
+      "finished": "2026-10-08",
+      "tasks": [
+        {
+          "status": "todo"
+        },
+        {
+          "status": "todo"
+        }
+      ]
     },
     {
       "id": "L48",

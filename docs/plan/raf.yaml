@@ -467,12 +467,18 @@ lots:
   - id: L47
     title: "Calendrier : jour non fixé affiché comme ferme (18 des 21 lignes « à confirmer » sont un samedi de remplissage) — « Date et horaire à confirmer » ou « Week-end du … », aussi sur le tableau de bord"
     public: "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
     started: 2026-10-08
+    tasks:
+      - { id: t1, title: "Carte Ligue 1 : la bulle « À venir » (ligue1-map.tsx) affiche la date de remplissage comme ferme quand l'horaire n'est pas fixé — passer par unconfirmedDay() de lib/kickoff.ts (revue UX 08-10)", status: todo }
+      - { id: t2, title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX 08-10)", status: todo }
+    review: { date: 2026-10-08, verdict: "conforme — revue neuve 08-10 après correction c893a51 : doc CLAUDE.md/README/Nouveauté en accord avec le code et les tests ; 301 tests verts, build OK", commit: c893a513ecef19f34a3d795f23821b94125927ff }
+    ux: { date: 2026-10-08, verdict: "conforme — tableau de bord vérifié en navigateur dans les 4 états (fixé, week-end, semaine, jour même), « Week-end du … » lisible à 320/360/390 px ; popup carte L1 et contraste en sous-tâches" }
+    finished: 2026-10-08
   - id: L48
     title: "Calendrier téléphone : noms de clubs tronqués (15/92 à 390 px, tous à 320 px) — grille 56px / 1fr / auto, nom court pour Marseille"
     public: "Calendrier sur téléphone : des noms de clubs lisibles"
