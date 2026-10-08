@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-06 19:31",
+  "generated": "2026-10-08 12:34",
   "entries": [
+    {
+      "slug": "2026-10-08-effectif-le-banc-ne-compte-que-les-remplacants-du-match",
+      "title": "Effectif : le banc ne compte que les remplaçants du match",
+      "date": "2026-10-08",
+      "lots": [
+        "L42"
+      ],
+      "captures": [
+        "captures/L42-banc-effectif.png"
+      ],
+      "alts": [
+        "Page Effectif : le bloc Banc liste 9 remplaçants, sans l'entraîneur"
+      ],
+      "html": "<p>Sur la page Effectif, le bloc « Banc · N joueurs » comptait l'entraîneur et un joueur hors du groupe en plus des remplaçants (11 entrées au lieu de 9).</p>\n<ul><li>Le banc ne liste plus que les <strong>remplaçants du match</strong>, comme la page du match.</li><li>L'entraîneur n'apparaît plus parmi les joueurs, et l'onglet Effectif ne propose plus son lien (qui menait à une page sans statistiques).</li></ul>"
+    },
     {
       "slug": "2026-10-06-le-libelle-de-la-saison-suit-la-saison-en-cours",
       "title": "Le libellé de la saison suit la saison en cours",

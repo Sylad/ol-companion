@@ -90,7 +90,8 @@
     {
       "id": "L42",
       "title": "Effectif : le banc ne compte que les remplaçants du match",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-08"
     },
     {
       "id": "L43",
@@ -135,6 +136,16 @@
     {
       "id": "L56",
       "title": "Page match : un vrai titre, et le bon stade pour le prochain match",
+      "status": "todo"
+    },
+    {
+      "id": "L64",
+      "title": "Téléphone : l'état du direct reste visible quand on fait défiler la page",
+      "status": "todo"
+    },
+    {
+      "id": "L65",
+      "title": "Match à 320 px : le nom du club visiteur n'est plus tronqué",
       "status": "todo"
     }
   ]

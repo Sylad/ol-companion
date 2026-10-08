@@ -60,7 +60,7 @@ Différence de buts, buts marqués, départage selon les règles LFP (et pas l'o
 
 ![Composition du dernier match](./docs/screenshots/players.png)
 
-SVG dynamique du terrain avec position de chaque titulaire selon la formation 365scores, photos joueurs depuis le CDN 365scores (pas Wikipedia, plus fiable pour les noms ambigus), banc à droite avec poste + numéro.
+SVG dynamique du terrain avec position de chaque titulaire selon la formation 365scores, photos joueurs depuis le CDN 365scores (pas Wikipedia, plus fiable pour les noms ambigus), banc à droite avec poste + numéro (uniquement les remplaçants du match : ni l'entraîneur, ni les joueurs hors du groupe).
 
 ### News multi-sources
 
