@@ -374,7 +374,11 @@ function CompactTeamLine({
       <TeamLogo teamId={id} name={name} size={18} src={seasonTeamLogoUrl(id)} />
       <span
         title={name}
-        className={cn('min-w-0 flex-1 break-words text-sm leading-tight sm:truncate', isOL ? 'font-semibold text-fg-bright' : 'text-fg')}
+        className={cn(
+          'min-w-0 flex-1 text-sm leading-tight',
+          /\s/.test(teamShortName(name)) ? 'overflow-hidden sm:truncate' : 'truncate',
+          isOL ? 'font-semibold text-fg-bright' : 'text-fg',
+        )}
       >
         {teamShortName(name)}
       </span>

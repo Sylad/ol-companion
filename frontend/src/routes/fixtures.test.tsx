@@ -561,17 +561,21 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
     for (const r of rows) expect(r).not.toHaveTextContent('Olympique de Marseille');
   });
 
-  it('ne coupe aucun nom à 320 px : retour à la ligne sous 640 px, troncature seulement au-delà, nom entier en title', async () => {
+  it("ne coupe jamais un mot en deux : nom d'un seul mot tronqué par une ellipse, noms de plusieurs mots à la ligne, nom entier en title", async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
-    const [row] = await screen.findAllByRole('article');
-    const names = Array.from(row.querySelectorAll('span.min-w-0.flex-1')) as HTMLElement[];
-    expect(names.length).toBe(2);
+    const rows = await screen.findAllByRole('article');
+    const names = rows.flatMap((r) => Array.from(r.querySelectorAll('span.min-w-0.flex-1')) as HTMLElement[]);
+    expect(names.length).toBeGreaterThan(2);
     for (const n of names) {
-      expect(n.className.split(' ')).not.toContain('truncate');
-      expect(n.className).toContain('sm:truncate');
-      expect(n.className).toContain('break-words');
+      expect(n.className).not.toContain('break-words');
       expect(n.getAttribute('title')).toBeTruthy();
+      if (/\s/.test(n.textContent ?? '')) {
+        expect(n.className.split(' ')).not.toContain('truncate');
+        expect(n.className).toContain('sm:truncate');
+      } else {
+        expect(n.className.split(' ')).toContain('truncate');
+      }
     }
   });
 });
