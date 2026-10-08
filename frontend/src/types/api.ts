@@ -149,6 +149,7 @@ export interface LineupPlayer {
   yardSide: number;
   ranking: number | null;
   isStarting: boolean;
+  status?: number;
   imageVersion?: number;
 }
 

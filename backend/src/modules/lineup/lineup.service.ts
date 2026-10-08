@@ -10,6 +10,7 @@ import {
   Scores365GamesResponseSchema,
   type Scores365LineupMember,
 } from '../../config/scores365-game.schema';
+import { splitLineupRoles } from './lineup-roles';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
 export interface LineupPlayer {
@@ -24,6 +25,8 @@ export interface LineupPlayer {
   yardSide: number;          // 0..100, 50=center
   ranking: number | null;
   isStarting: boolean;
+  /** Statut 365scores : 1 titulaire, 2 remplaçant, 3 hors du groupe, 4 staff. */
+  status?: number;
   imageVersion?: number;
 }
 
@@ -146,15 +149,12 @@ export class LineupService implements OnModuleInit {
         yardSide: m.yardFormation?.fieldSide ?? 50,
         ranking: typeof m.ranking === 'number' ? m.ranking : null,
         isStarting: m.status === 1,
+        status: m.status,
         imageVersion: meta?.imageVersion,
       };
     });
 
-    const starters = allPlayers
-      .filter((p) => p.isStarting)
-      .sort((a, b) => a.yardLine - b.yardLine);
-    const bench = allPlayers.filter((p) => !p.isStarting && (p.yardLine === 0 || p.yardLine > 4));
-    const benchOnly = allPlayers.filter((p) => !p.isStarting);
+    const { starters, bench, unavailable } = splitLineupRoles(allPlayers);
 
     return {
       gameId: g.id,
@@ -168,11 +168,10 @@ export class LineupService implements OnModuleInit {
       awayScore: g.awayCompetitor?.score ?? null,
       formation: olLineup.formation ?? '',
       starters,
-      // bench = remplaçants réels (filtre yardLine), injured = le reste des
-      // non-titulaires — le filtre était calculé mais jamais utilisé et les
-      // blessés partaient dans bench. Review 2026-08-14.
+      // bench = remplaçants du match (statut 2) ; ni l'entraîneur (Management, staff)
+      // ni un joueur hors du groupe n'y figurent (L42).
       bench,
-      injured: benchOnly.filter((p) => !bench.includes(p)),
+      injured: unavailable,
     };
   }
 
