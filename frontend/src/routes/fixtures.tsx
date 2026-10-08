@@ -372,7 +372,10 @@ function CompactTeamLine({
   return (
     <div className={cn('flex min-w-0 items-center gap-1.5 sm:gap-2', dim && 'opacity-55')}>
       <TeamLogo teamId={id} name={name} size={18} src={seasonTeamLogoUrl(id)} />
-      <span className={cn('min-w-0 flex-1 truncate text-sm', isOL ? 'font-semibold text-fg-bright' : 'text-fg')}>
+      <span
+        title={name}
+        className={cn('min-w-0 flex-1 break-words text-sm leading-tight sm:truncate', isOL ? 'font-semibold text-fg-bright' : 'text-fg')}
+      >
         {teamShortName(name)}
       </span>
       {score !== null && (

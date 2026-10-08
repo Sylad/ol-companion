@@ -560,4 +560,18 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
     expect(rows.length).toBeGreaterThan(0);
     for (const r of rows) expect(r).not.toHaveTextContent('Olympique de Marseille');
   });
+
+  it('ne coupe aucun nom à 320 px : retour à la ligne sous 640 px, troncature seulement au-delà, nom entier en title', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    const [row] = await screen.findAllByRole('article');
+    const names = Array.from(row.querySelectorAll('span.min-w-0.flex-1')) as HTMLElement[];
+    expect(names.length).toBe(2);
+    for (const n of names) {
+      expect(n.className.split(' ')).not.toContain('truncate');
+      expect(n.className).toContain('sm:truncate');
+      expect(n.className).toContain('break-words');
+      expect(n.getAttribute('title')).toBeTruthy();
+    }
+  });
 });
