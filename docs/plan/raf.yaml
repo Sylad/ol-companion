@@ -677,6 +677,14 @@ lots:
     status: todo
     estimate: 1
     created: 2026-10-08
+  - id: L74
+    title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
+    public: Textes secondaires lisibles sur les photos et les panneaux
+    status: todo
+    estimate: 0.5
+    quickwin: true
+    visible: true
+    created: 2026-10-08
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

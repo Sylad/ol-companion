@@ -12,6 +12,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - api: /api/demo/status
 - api: /api/events — flux SSE, sans taille
 - api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche
+- shows: les textes secondaires (jeton fg-dim) posés sur une photo, un halo ou un panneau semi-transparent (bandeau de /, légende de /map, surtitre de /about) à ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390
 
 ## /
 - shows: « Prochain rendez-vous » avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (5 le 03-10) ; le lieu du prochain match est un nom de stade, ou rien
