@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-08 17:23",
+  "generated": "2026-10-08 19:23",
   "entries": [
+    {
+      "slug": "2026-10-08-textes-secondaires-lisibles-sur-les-photos-et-les-panneaux",
+      "title": "Textes secondaires lisibles sur les photos et les panneaux",
+      "date": "2026-10-08",
+      "lots": [
+        "L74"
+      ],
+      "captures": [
+        "captures/L74-a-propos-390.png"
+      ],
+      "alts": [
+        "Page À propos sur mobile : le surtitre « À propos · OL Companion » est plus clair sur le halo rouge"
+      ],
+      "html": "<p>Sur mobile, le détail « Ligue 1 · J6 » et le statut du bandeau d'accueil, la légende « Aller / Retour » de la carte et le surtitre « À propos · OL Companion » sont écrits dans un gris plus clair. Ils restent lisibles sur la photo du stade, sur le panneau translucide et sur le halo rouge.</p>"
+    },
     {
       "slug": "2026-10-08-des-textes-secondaires-plus-lisibles",
       "title": "Des textes secondaires plus lisibles",
