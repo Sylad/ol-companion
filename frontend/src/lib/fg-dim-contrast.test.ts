@@ -56,3 +56,17 @@ describe('fg-dim sur fond teinté (L52)', () => {
     expect(badge![1]).not.toMatch(/bg-fg-dim\/\d+/);
   });
 });
+
+// Repli « OL » du logo de l'en-tête : 16 px gras posé sur bg-white/5 au-dessus
+// du halo rouge de la page (mesuré rgb(50,25,30)) → fg-dim y faisait 4,26:1.
+describe('repli « OL » de l’en-tête (L52)', () => {
+  it('n’utilise pas fg-dim, et fg-muted tient 4,5:1 sur le halo mesuré', () => {
+    const src = readFileSync(resolve(__dirname, '../components/knowledge-header.tsx'), 'utf8');
+    const fallback = src.match(/<span className="([^"]*)">OL<\/span>/);
+    expect(fallback).not.toBeNull();
+    expect(fallback![1]).not.toContain('text-fg-dim');
+    expect(fallback![1]).toContain('text-fg-muted');
+    const halo = [50 / 255, 25 / 255, 30 / 255];
+    expect(contrast(toRgb(token('fg-muted')), halo)).toBeGreaterThanOrEqual(4.5);
+  });
+});

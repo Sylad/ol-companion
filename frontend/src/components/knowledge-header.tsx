@@ -22,7 +22,7 @@ export function KnowledgeHeader() {
         {logo?.imageUrl ? (
           <img src={logo.imageUrl} alt="OL" className="w-full h-full object-contain p-1.5" />
         ) : (
-          <span className="font-display font-bold text-fg-dim">OL</span>
+          <span className="font-display font-bold text-fg-muted">OL</span>
         )}
       </div>
       <div className="min-w-0 flex-1">
