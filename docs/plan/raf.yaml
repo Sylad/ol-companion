@@ -416,12 +416,13 @@ lots:
     finished: 2026-10-06
   - id: L41
     title: "/api/live-match/current répond 200 avec un corps vide hors fenêtre de match : la requête échoue à l'analyse JSON et repart une fois à chaque page — renvoyer null en JSON (ou 204 géré côté client)"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     created: 2026-10-03
     started: 2026-10-08
     review: { date: 2026-10-08, verdict: "conforme — orchestré (vague 2026-10-08-0639, 0 passe(s) de correction)", commit: 245f84942b255ee2fd2583397b8d53db6b59d5fc }
+    finished: 2026-10-08
   - id: L42
     title: "Effectif : l'entraîneur (position Management) est compté dans « Banc · 11 joueurs » — le sortir du banc ou l'afficher à part"
     public: "Effectif : le banc ne compte que les remplaçants du match"
