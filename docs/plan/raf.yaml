@@ -695,6 +695,12 @@ lots:
     review: { date: 2026-10-08, verdict: "conforme — orchestré (vague 2026-10-09-0900, 0 passe(s) de correction)", commit: 64b14fb3357697a053b748c3644dfe7553edfc25 }
     ux: { date: 2026-10-08, verdict: "conforme — contrastes mesurés sur pixels réels à 390 px en fg-muted : « · Ligue 1 · J6 » 5,66:1, statut sous VS 7,08:1, surtitre panneau 7,31:1, Aller/Retour de /map 5,75:1, surtitre /about 6,05:1 ; tous ≥ 4,5:1 (WCAG 1.4.3), à 1440 px ≥ 5,8:1 (vague 2026-10-09-0900)" }
     finished: 2026-10-08
+  - id: L75
+    title: "QA : docs/qa/expectations.md — la ligne never « Chargement » de ## * matche la prose de /about (« chargement progressif des routes ») et un titre de /nouveautes ; la restreindre au texte d'état (« Chargement… », « Chargement de … ») — QA prod 08-10"
+    status: todo
+    estimate: 0.1
+    quickwin: true
+    created: 2026-10-08
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
