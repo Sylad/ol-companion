@@ -232,7 +232,7 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       expect(days('UEL')).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
       const palace = matches.find((m) => m.id === 4828743);
       expect(palace).toMatchObject({
-        competition: 'UEFA Europa League',
+        competition: 'Ligue Europa',
         competitionCode: 'UEL',
         matchday: 2,
         date: '2026-10-15T16:45:00.000Z',
@@ -287,7 +287,7 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       ]);
       for (const m of qualifiers) {
         expect(m).toMatchObject({
-          competition: 'UEFA Champions League',
+          competition: 'Ligue des champions',
           competitionId: 332,
           status: 'FINISHED',
           matchday: null,

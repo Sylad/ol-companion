@@ -88,14 +88,14 @@ const TRACKED_COMPETITIONS: Record<
 > = {
   [LIGUE1_365SCORES_ID]: { code: 'L1', name: 'Ligue 1' },
   [COUPE_DE_FRANCE_365SCORES_ID]: { code: 'CDF', name: 'Coupe de France' },
-  [EUROPA_LEAGUE_365SCORES_ID]: { code: 'UEL', name: 'UEFA Europa League' },
+  [EUROPA_LEAGUE_365SCORES_ID]: { code: 'UEL', name: 'Ligue Europa' },
   [CHAMPIONS_LEAGUE_365SCORES_ID]: {
     code: 'UCL',
-    name: 'UEFA Champions League',
+    name: 'Ligue des champions',
   },
   [CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID]: {
     code: 'UCL',
-    name: 'UEFA Champions League',
+    name: 'Ligue des champions',
   },
 };
 

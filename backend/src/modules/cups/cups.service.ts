@@ -60,7 +60,7 @@ export interface BracketInfo {
 
 const COMP_NAMES: Record<number, string> = {
   37: 'Coupe de France',
-  573: 'UEFA Europa League',
+  573: 'Ligue Europa',
 };
 
 // Coupe de France: stageNum → French name
@@ -75,7 +75,7 @@ const CDF_STAGES: Record<number, string> = {
   8: 'Finale',
 };
 
-// Europa League: stageNum → French name
+// Ligue Europa: stageNum → French name
 const EL_STAGES: Record<number, string> = {
   1: 'Phase de ligue',
   2: 'Barrages',

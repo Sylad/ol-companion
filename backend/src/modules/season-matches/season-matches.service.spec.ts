@@ -90,9 +90,9 @@ describe('SeasonMatchesService', () => {
       ).toEqual([
         [1, 'L1', 'Ligue 1'],
         [2, 'CDF', 'Coupe de France'],
-        [3, 'UEL', 'UEFA Europa League'],
-        [5, 'UCL', 'UEFA Champions League'],
-        [6, 'UCL', 'UEFA Champions League'],
+        [3, 'UEL', 'Ligue Europa'],
+        [5, 'UCL', 'Ligue des champions'],
+        [6, 'UCL', 'Ligue des champions'],
       ]);
     });
   });
