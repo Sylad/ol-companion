@@ -576,14 +576,14 @@ lots:
     created: 2026-10-05
   - id: L64
     title: "Téléphone : l'état du direct sort de l'écran quand on fait défiler la page (Nielsen H1) — décider entre une ligne de pastille sticky et une réserve de hauteur sous une pastille fixe, au moins sur /match/<id> (revue L30)"
-    public: "Téléphone : l'état du direct reste visible quand on fait défiler"
+    public: "Téléphone : l'état du direct reste visible quand on fait défiler la page"
     status: todo
     estimate: 1
     visible: true
     created: 2026-10-05
   - id: L65
     title: "Match /match à 320 px : le nom du club visiteur est tronqué dans l'en-tête du score (« Rennes » x 234–321 dans une carte coupée à 300) — réduire la police ou autoriser le retour à la ligne (QA prod 05-10)"
-    public: "Match à 320 px : nom du club visiteur complet dans l'en-tête"
+    public: "Match à 320 px : le nom du club visiteur n'est plus tronqué"
     status: todo
     estimate: 1
     visible: true
