@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
 import { TeamLogo } from '@/components/team-logo';
+import { CompetitionAbbr } from '@/components/competition-abbr';
 import { cn } from '@/lib/utils';
 import type { PlayerByMatch, PlayerSeasonStats } from '@/types/api';
 
@@ -31,12 +32,6 @@ function formatDate(iso: string): string {
   return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
 }
 
-const COMP_LABEL: Record<PlayerByMatch['competitionCode'], string> = {
-  L1: 'L1',
-  CDF: 'CdF',
-  UEL: 'C3',
-  UCL: 'C1',
-};
 
 function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {
   if (!result) return <span className="text-fg-dim">—</span>;
@@ -71,7 +66,7 @@ function SparkTooltip({ active, payload, unit }: TooltipProps<number, string> & 
     <div className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs shadow-lg">
       <div className="text-fg-dim mb-1">
         {formatDate(m.date)} · vs {m.opponent}{' '}
-        <span className="text-fg-dim">({COMP_LABEL[m.competitionCode]})</span>
+        <span className="text-fg-dim">(<CompetitionAbbr code={m.competitionCode} />)</span>
       </div>
       <div className="text-fg-bright font-semibold tabular-nums">
         {p.value} {unit}
@@ -357,7 +352,7 @@ export function PlayerDetailPage() {
                     <ResultBadge result={m.result} />
                   </td>
                   <td className="px-2 py-2 text-center text-fg-muted text-xs font-semibold">
-                    {COMP_LABEL[m.competitionCode]}
+                    <CompetitionAbbr code={m.competitionCode} />
                   </td>
                   <td className="px-2 py-2 text-right tabular-nums text-fg">{m.minutes}</td>
                   <td className={cn(

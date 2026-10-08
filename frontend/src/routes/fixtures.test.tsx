@@ -72,13 +72,13 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     await screen.findAllByRole('article');
 
-    const palace = within(block('UEFA Europa League · J2')).getByRole('article');
+    const palace = within(block('Ligue Europa · J2')).getByRole('article');
     expect(palace).toHaveTextContent('Lyon');
     expect(palace).toHaveTextContent('Crystal Palace');
     expect(palace).toHaveTextContent('Jeu. 15');
     expect(palace).toHaveTextContent('18:45');
 
-    const anderlecht = within(block('UEFA Europa League · J1')).getByRole('article');
+    const anderlecht = within(block('Ligue Europa · J1')).getByRole('article');
     expect(anderlecht).toHaveTextContent('Anderlecht');
     expect(anderlecht).toHaveTextContent('Terminé');
   });
@@ -90,23 +90,23 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
     const row = (label: string) => within(block(label)).getByRole('article');
 
-    const spartaAway = row('UEFA Champions League · 3e tour de qualification · aller');
+    const spartaAway = row('Ligue des champions · 3e tour de qualification · aller');
     expect(spartaAway).toHaveTextContent('Mar. 04');
     expect(spartaAway).toHaveTextContent('08');
     expect(spartaAway).toHaveTextContent('Sparta Praha2');
     expect(spartaAway).toHaveTextContent('Lyon1');
 
-    const spartaHome = row('UEFA Champions League · 3e tour de qualification · retour');
+    const spartaHome = row('Ligue des champions · 3e tour de qualification · retour');
     expect(spartaHome).toHaveTextContent('Mar. 11');
     expect(spartaHome).toHaveTextContent('Lyon3');
     expect(spartaHome).toHaveTextContent('Sparta Praha0');
 
-    const fenerAway = row('UEFA Champions League · Barrages · aller');
+    const fenerAway = row('Ligue des champions · Barrages · aller');
     expect(fenerAway).toHaveTextContent('Mar. 18');
     expect(fenerAway).toHaveTextContent('Fenerbahçe SK1');
     expect(fenerAway).toHaveTextContent('Lyon1');
 
-    const fenerHome = row('UEFA Champions League · Barrages · retour');
+    const fenerHome = row('Ligue des champions · Barrages · retour');
     expect(fenerHome).toHaveTextContent('Mer. 26');
     expect(fenerHome).toHaveTextContent('Lyon1');
     expect(fenerHome).toHaveTextContent('Fenerbahçe SK2');
@@ -141,18 +141,18 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
     const labels = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent);
     expect(labels.slice(0, 12)).toEqual([
-      'UEFA Champions League · 3e tour de qualification · aller',
-      'UEFA Champions League · 3e tour de qualification · retour',
-      'UEFA Champions League · Barrages · aller',
+      'Ligue des champions · 3e tour de qualification · aller',
+      'Ligue des champions · 3e tour de qualification · retour',
+      'Ligue des champions · Barrages · aller',
       'Ligue 1 · J1',
-      'UEFA Champions League · Barrages · retour',
+      'Ligue des champions · Barrages · retour',
       'Ligue 1 · J2',
       'Ligue 1 · J3',
       'Ligue 1 · J4',
-      'UEFA Europa League · J1',
+      'Ligue Europa · J1',
       'Ligue 1 · J5',
       'Ligue 1 · J6',
-      'UEFA Europa League · J2',
+      'Ligue Europa · J2',
     ]);
     expect(labels[labels.length - 1]).toBe('Ligue 1 · J34');
   });
@@ -187,7 +187,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     await screen.findAllByRole('article');
 
-    const palace = within(block('UEFA Europa League · J2')).getByRole('article');
+    const palace = within(block('Ligue Europa · J2')).getByRole('article');
     const logos = within(palace).getAllByRole('img');
     expect(logos.map((img) => img.getAttribute('src'))).toEqual([
       // L'OL porte l'identifiant football-data (523) dans l'API : repris en 465.
@@ -223,17 +223,20 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     const competitions = screen.getByRole('group', { name: 'Filtrer par compétition' });
     expect(within(competitions).getAllByRole('button').map((b) => b.textContent)).toEqual([
       'Toutes46',
-      'Ligue 134',
-      'Champions4',
-      'Europa8',
+      'L134',
+      'C14',
+      'C38',
     ]);
+    // Nom court affiché, nom long en infobulle et dans le nom accessible.
+    expect(within(competitions).getByRole('button', { name: 'Ligue des champions · 4 matchs' })).toBeInTheDocument();
+    expect(within(competitions).getByText('C3')).toHaveAttribute('title', 'Ligue Europa');
     // La somme des pastilles égale « Toutes » : aucun match hors pastille.
     const [all, ...perCompetition] = within(competitions)
       .getAllByRole('button')
       .map((b) => Number(b.querySelector('span')?.textContent));
     expect(perCompetition.reduce((sum, n) => sum + n, 0)).toBe(all);
 
-    await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+    await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
 
     expect(screen.getAllByRole('article')).toHaveLength(8);
     const status = screen.getByRole('group', { name: 'Filtrer par statut' });
@@ -245,7 +248,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('8');
     expect(screen.queryByRole('heading', { level: 3, name: /Ligue 1/ })).not.toBeInTheDocument();
 
-    await user.click(within(competitions).getByRole('button', { name: /Champions League/ }));
+    await user.click(within(competitions).getByRole('button', { name: /Ligue des champions/ }));
     expect(screen.getAllByRole('article')).toHaveLength(4);
     expect(within(status).getAllByRole('button').map((b) => b.textContent)).toEqual([
       'Tout4',
@@ -304,21 +307,21 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       await screen.findAllByRole('article');
       const competitions = screen.getByRole('group', { name: 'Filtrer par compétition' });
 
-      await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+      await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
       const europa = card('Prochain');
       expect(europa).toHaveTextContent('Crystal Palace');
-      expect(europa).toHaveTextContent('Jeu. 15/10 · UEFA Europa League');
+      expect(europa).toHaveTextContent('Jeu. 15/10 · Ligue Europa');
       expect(europa).toHaveTextContent('18:45');
       expect(europa).not.toHaveTextContent('Lens');
       expect(card('Dernier résultat')).toHaveTextContent('Anderlecht');
       expect(card('Dernier résultat')).toHaveTextContent('1-2');
 
       // Ligue des champions : 4 matchs joués, aucun à venir → pas de carte « Prochain ».
-      await user.click(within(competitions).getByRole('button', { name: /Champions League/ }));
+      await user.click(within(competitions).getByRole('button', { name: /Ligue des champions/ }));
       expect(screen.queryByText('Prochain')).not.toBeInTheDocument();
       const last = card('Dernier résultat');
       expect(last).toHaveTextContent('Fenerbahçe SK');
-      expect(last).toHaveTextContent('Mer. 26/08 · UEFA Champions League');
+      expect(last).toHaveTextContent('Mer. 26/08 · Ligue des champions');
       expect(last).toHaveTextContent('1-2');
 
       await user.click(within(competitions).getByRole('button', { name: /^Ligue 1/ }));
@@ -452,14 +455,14 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(names(competitions)).toEqual([
         'Toutes les compétitions · 46 matchs',
         'Ligue 1 · 34 matchs',
-        'UEFA Champions League · 4 matchs',
-        'UEFA Europa League · 8 matchs',
+        'Ligue des champions · 4 matchs',
+        'Ligue Europa · 8 matchs',
       ]);
 
       // Singulier jusqu'à 1, comme les pastilles de compétition.
-      await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+      await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
       expect(names(status)).toEqual(['Tout · 8 matchs', 'À venir · 7 matchs', 'Joués · 1 match']);
-      await user.click(within(competitions).getByRole('button', { name: /Champions League/ }));
+      await user.click(within(competitions).getByRole('button', { name: /Ligue des champions/ }));
       expect(names(status)).toEqual(['Tout · 4 matchs', 'À venir · 0 match', 'Joués · 4 matchs']);
     });
 
@@ -488,9 +491,9 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expectSelected(competitions, /^Toutes les compétitions ·/);
 
       await user.click(within(status).getByRole('button', { name: /À venir/ }));
-      await user.click(within(competitions).getByRole('button', { name: /Europa League/ }));
+      await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
       expectSelected(status, /^À venir ·/);
-      expectSelected(competitions, /^UEFA Europa League ·/);
+      expectSelected(competitions, /^Ligue Europa ·/);
     });
 
     it('la vue rapide reste collante : aucun ancêtre en overflow-hidden (qui annule sticky), la section coupe en overflow-clip', async () => {

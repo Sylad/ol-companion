@@ -182,7 +182,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
 
 function Legend() {
   const items = [
-    { color: 'bg-win', label: 'Ligue des Champions' },
+    { color: 'bg-win', label: 'Ligue des champions' },
     { color: 'bg-ol-blue-bright', label: 'Ligue Europa' },
     { color: 'bg-cyan-500', label: 'Ligue Conférence' },
     { color: 'bg-draw', label: 'Barrage de relégation' },

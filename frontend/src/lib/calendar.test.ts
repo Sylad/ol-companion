@@ -43,9 +43,9 @@ describe('calendrier — compteurs et filtres', () => {
 
   it('propose les compétitions présentes, dans l’ordre Ligue 1 puis Europe, avec leur total', () => {
     expect(competitionOptions(matches)).toEqual([
-      { code: 'L1', label: 'Ligue 1', name: 'Ligue 1', count: 34 },
-      { code: 'UCL', label: 'Champions', name: 'UEFA Champions League', count: 4 },
-      { code: 'UEL', label: 'Europa', name: 'UEFA Europa League', count: 8 },
+      { code: 'L1', label: 'L1', name: 'Ligue 1', count: 34 },
+      { code: 'UCL', label: 'C1', name: 'Ligue des champions', count: 4 },
+      { code: 'UEL', label: 'C3', name: 'Ligue Europa', count: 8 },
     ]);
   });
 
@@ -58,10 +58,10 @@ describe('calendrier — compteurs et filtres', () => {
   it('ajoute la Coupe de France dès qu’un match y est connu', () => {
     const withCup = [...matches, cup({ id: 1, date: '2027-01-09T19:45:00.000Z' })];
     expect(competitionOptions(withCup).map((o) => [o.code, o.label, o.count])).toEqual([
-      ['L1', 'Ligue 1', 34],
-      ['UCL', 'Champions', 4],
-      ['UEL', 'Europa', 8],
-      ['CDF', 'Coupe', 1],
+      ['L1', 'L1', 34],
+      ['UCL', 'C1', 4],
+      ['UEL', 'C3', 8],
+      ['CDF', 'CdF', 1],
     ]);
   });
 
@@ -99,7 +99,7 @@ describe('calendrier — libellé et regroupement', () => {
     const lens = matches.find((m) => m.id === 4735252)!;
     const palace = matches.find((m) => m.id === 4828743)!;
     expect(matchLabel(lens)).toBe('Ligue 1 · J6');
-    expect(matchLabel(palace)).toBe('UEFA Europa League · J2');
+    expect(matchLabel(palace)).toBe('Ligue Europa · J2');
   });
 
   it('sans journée (tour de coupe) : la compétition seule, jamais « J0 »', () => {
@@ -108,10 +108,10 @@ describe('calendrier — libellé et regroupement', () => {
 
   it('sans journée mais avec un tour : la compétition, le tour et la manche', () => {
     expect(matches.filter((m) => m.competitionCode === 'UCL').map(matchLabel)).toEqual([
-      'UEFA Champions League · 3e tour de qualification · aller',
-      'UEFA Champions League · 3e tour de qualification · retour',
-      'UEFA Champions League · Barrages · aller',
-      'UEFA Champions League · Barrages · retour',
+      'Ligue des champions · 3e tour de qualification · aller',
+      'Ligue des champions · 3e tour de qualification · retour',
+      'Ligue des champions · Barrages · aller',
+      'Ligue des champions · Barrages · retour',
     ]);
   });
 
@@ -125,17 +125,17 @@ describe('calendrier — libellé et regroupement', () => {
     expect(groups).toHaveLength(46);
     // Le barrage retour (26-08) vient après la J1 de Ligue 1 (22-08).
     expect(groups.slice(0, 5).map((g) => g.label)).toEqual([
-      'UEFA Champions League · 3e tour de qualification · aller',
-      'UEFA Champions League · 3e tour de qualification · retour',
-      'UEFA Champions League · Barrages · aller',
+      'Ligue des champions · 3e tour de qualification · aller',
+      'Ligue des champions · 3e tour de qualification · retour',
+      'Ligue des champions · Barrages · aller',
       'Ligue 1 · J1',
-      'UEFA Champions League · Barrages · retour',
+      'Ligue des champions · Barrages · retour',
     ]);
     expect(groups.slice(8, 12).map((g) => g.label)).toEqual([
-      'UEFA Europa League · J1',
+      'Ligue Europa · J1',
       'Ligue 1 · J5',
       'Ligue 1 · J6',
-      'UEFA Europa League · J2',
+      'Ligue Europa · J2',
     ]);
     const dates = groups.flatMap((g) => g.matches.map((m) => m.date));
     expect([...dates].sort()).toEqual(dates);

@@ -8,6 +8,7 @@ import { OL_TEAM_ID } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { seasonLabel } from '@/lib/season-label';
+import { competitionLong } from '@/lib/competitions';
 import { KICKOFF_TBD, kickoffTime, unconfirmedDay } from '@/lib/kickoff';
 import {
   byCompetition,
@@ -101,7 +102,7 @@ export function FixturesPage() {
                 onChange={setCompetition}
                 options={[
                   { key: 'all', label: 'Toutes', count: data?.length ?? 0, name: 'Toutes les compétitions' },
-                  ...competitions.map((c) => ({ key: c.code, label: c.label, count: c.count, name: c.name })),
+                  ...competitions.map((c) => ({ key: c.code, label: c.label, count: c.count, name: c.name, abbr: true })),
                 ]}
               />
             )}
@@ -163,6 +164,8 @@ interface PillOption<K extends string> {
   count: number;
   /** Nom complet annoncé quand le libellé affiché est abrégé. */
   name?: string;
+  /** Libellé abrégé : le nom long passe en infobulle (`title`). */
+  abbr?: boolean;
 }
 
 function FilterPills<K extends string>({
@@ -199,7 +202,7 @@ function FilterPills<K extends string>({
               : 'text-fg-muted hover:text-fg',
           )}
         >
-          {o.label}
+          {o.abbr && o.name ? <abbr title={o.name} className="no-underline">{o.label}</abbr> : o.label}
           {/* 10 px : fg-muted (≥ 4,5:1 dans les deux états), fg-dim restait sous le seuil. */}
           <span className="ml-1.5 text-[10px] text-fg-muted">
             {o.count}
@@ -286,7 +289,7 @@ function SummaryMatch({
         />
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold text-fg-bright">{teamShortName(opponent)}</div>
-          <div className="text-xs text-fg-dim">{dateLabel} · {fixture.competition}</div>
+          <div className="text-xs text-fg-dim">{dateLabel} · {competitionLong(fixture.competitionCode)}</div>
         </div>
         {score ? (
           <div className="num text-lg font-bold text-fg-bright">{score}</div>

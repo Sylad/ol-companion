@@ -1,5 +1,6 @@
 import { OL_365SCORES_ID, OL_TEAM_ID, type SeasonMatch } from '@/types/api';
 import { clubLogoUrl } from '@/lib/ligue1-clubs-coords';
+import { competitionLong, competitionShort } from '@/lib/competitions';
 
 /**
  * Logique de la page Calendrier (L39) : la saison de l'OL toutes compétitions,
@@ -38,20 +39,14 @@ export function statusCounts(matches: SeasonMatch[]): Record<StatusTab, number> 
 
 export interface CompetitionOption {
   code: CompetitionCode;
-  /** Libellé court de la pastille (tient sur un téléphone). */
+  /** Nom court de la pastille (L1, C1, C3, CdF : tient sur un téléphone). */
   label: string;
-  /** Nom complet, tel que l'API le donne et que les blocs l'affichent. */
+  /** Nom long du glossaire, celui des blocs ; annoncé et en infobulle. */
   name: string;
   count: number;
 }
 
 const COMPETITION_ORDER: CompetitionCode[] = ['L1', 'UCL', 'UEL', 'CDF'];
-const SHORT_LABEL: Record<CompetitionCode, string> = {
-  L1: 'Ligue 1',
-  UCL: 'Champions',
-  UEL: 'Europa',
-  CDF: 'Coupe',
-};
 
 /** Les compétitions présentes dans la saison, avec leur nombre de matchs. */
 export function competitionOptions(matches: SeasonMatch[]): CompetitionOption[] {
@@ -60,21 +55,22 @@ export function competitionOptions(matches: SeasonMatch[]): CompetitionOption[] 
     if (own.length === 0) return [];
     return [{
       code,
-      label: SHORT_LABEL[code],
-      name: own[0].competition,
+      label: competitionShort(code),
+      name: competitionLong(code),
       count: own.length,
     }];
   });
 }
 
 /**
- * « Ligue 1 · J6 », « UEFA Europa League · J2 », « UEFA Champions League ·
- * Barrages · retour » (sans journée : le tour et la manche quand l'API les
- * donne), « Coupe de France ».
+ * « Ligue 1 · J6 », « Ligue Europa · J2 », « Ligue des champions · Barrages ·
+ * retour » (sans journée : le tour et la manche quand l'API les donne),
+ * « Coupe de France ». Le nom vient du glossaire, pas du libellé de l'API.
  */
 export function matchLabel(m: SeasonMatch): string {
-  if (m.matchday) return `${m.competition} · J${m.matchday}`;
-  return m.round ? `${m.competition} · ${m.round}` : m.competition;
+  const name = competitionLong(m.competitionCode);
+  if (m.matchday) return `${name} · J${m.matchday}`;
+  return m.round ? `${name} · ${m.round}` : name;
 }
 
 export interface MatchGroup {

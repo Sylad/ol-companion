@@ -12,13 +12,7 @@ import { Calendar, Goal, Shield, BarChart3, Loader2 } from 'lucide-react';
 import { useTeamSeasonStats } from '@/hooks/use-team-season-stats';
 import type { TeamSeasonChartPoint, PerCompetitionTeamStats } from '@/types/api';
 import { cn } from '@/lib/utils';
-
-const COMP_LABEL: Record<PerCompetitionTeamStats['competitionCode'], string> = {
-  L1: 'Ligue 1',
-  CDF: 'Coupe de France',
-  UEL: 'Europa League',
-  UCL: 'Champions League',
-};
+import { competitionLong } from '@/lib/competitions';
 
 // Cumulative goal-difference sparkline → bleu OL (trajectoire neutre, pas
 // "victoire" → pas de vert). Le dot du dernier point est rouge OL bright,
@@ -51,7 +45,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
         <div className="text-fg-muted num">{p.points} pts L1</div>
       )}
       <div className="text-fg-dim mt-0.5">
-        {COMP_LABEL[p.competitionCode]} ·{' '}
+        {competitionLong(p.competitionCode)} ·{' '}
         <span className={
           p.result === 'W' ? 'text-win' :
           p.result === 'L' ? 'text-loss' : 'text-fg-dim'
@@ -219,7 +213,7 @@ function Tile({ icon: Icon, label, value, sub, valueClass }: TileProps) {
 }
 
 function CompChip({ c }: { c: PerCompetitionTeamStats }) {
-  const label = COMP_LABEL[c.competitionCode];
+  const label = competitionLong(c.competitionCode);
   return (
     <div
       className="inline-flex items-center gap-2 rounded-md border border-border bg-surface-2/40 px-3 py-1.5 text-xs"
