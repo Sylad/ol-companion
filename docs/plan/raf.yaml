@@ -604,12 +604,13 @@ lots:
     finished: 2026-10-08
   - id: L63
     title: "nouveautes.tsx:325 : le commentaire du portail cite encore « la pastille de connexion », qui est maintenant dans <main> — remplacer par le bandeau démo (revue de code L30)"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-05
     started: 2026-10-08
     review: { date: 2026-10-08, verdict: "compliant — orchestré (vague 2026-10-09-0900, 0 passe(s) de correction)", commit: e058eaa4df0a88dec000b937e706d0b931ea15ab }
+    finished: 2026-10-08
   - id: L64
     title: "Téléphone : l'état du direct sort de l'écran quand on fait défiler la page (Nielsen H1) — décider entre une ligne de pastille sticky et une réserve de hauteur sous une pastille fixe, au moins sur /match/<id> (revue L30)"
     public: "Téléphone : l'état du direct reste visible quand on fait défiler la page"
@@ -626,12 +627,13 @@ lots:
     created: 2026-10-05
   - id: L66
     title: "Match /match : aucun h1 sur la page (attendu par docs/qa/expectations.md section *) — ajouter un h1 masqué visuellement ou ajuster la ligne (QA prod 05-10)"
-    status: doing
+    status: done
     estimate: 0.2
     quickwin: true
     created: 2026-10-05
     started: 2026-10-08
     review: { date: 2026-10-08, verdict: "compliant — orchestré (vague 2026-10-09-0900, 0 passe(s) de correction)", commit: 0aa475c22145ad901e6bd729edba876cbe4ad51f }
+    finished: 2026-10-08
   - id: L67
     title: "Calendrier : un timeout de la marche avant 365scores tronque la saison (06-10 08:00 UTC : 38 matchs au lieu de 46, L1 J27–J34 perdues) et écrase le cache complet — ne pas remplacer une saison par une plus courte en matchs à venir (garder l'ancienne et journaliser), réessayer la page en échec ; /fixtures et /map affichaient 38 — QA prod 06-10"
     status: done
@@ -684,13 +686,15 @@ lots:
   - id: L74
     title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
     public: Textes secondaires lisibles sur les photos et les panneaux
-    status: doing
+    status: done
     estimate: 0.5
     quickwin: true
     visible: true
     created: 2026-10-08
     started: 2026-10-08
     review: { date: 2026-10-08, verdict: "conforme — orchestré (vague 2026-10-09-0900, 0 passe(s) de correction)", commit: 64b14fb3357697a053b748c3644dfe7553edfc25 }
+    ux: { date: 2026-10-08, verdict: "conforme — contrastes mesurés sur pixels réels à 390 px en fg-muted : « · Ligue 1 · J6 » 5,66:1, statut sous VS 7,08:1, surtitre panneau 7,31:1, Aller/Retour de /map 5,75:1, surtitre /about 6,05:1 ; tous ≥ 4,5:1 (WCAG 1.4.3), à 1440 px ≥ 5,8:1 (vague 2026-10-09-0900)" }
+    finished: 2026-10-08
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
