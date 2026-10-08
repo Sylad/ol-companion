@@ -6,7 +6,7 @@ import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type Fixture } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
-import { formatKickoffLong } from '@/lib/kickoff';
+import { formatKickoffLong, hasKickoffTime } from '@/lib/kickoff';
 
 function countdown(iso: string): string {
   const diff = new Date(iso).getTime() - Date.now();
@@ -60,8 +60,11 @@ export function DashboardHero() {
     ? { id: nextMatch.awayTeamId, name: nextMatch.awayTeam }
     : { id: nextMatch.homeTeamId, name: nextMatch.homeTeam };
   const isLive = nextMatch.status === 'IN_PLAY';
-  const isMatchday = isLive || isSameLocalDay(nextMatch.date);
-  const isSoon = !isLive && hoursUntil(nextMatch.date) <= 36;
+  // Horaire non fixé (L47) : la date est un remplissage, ni compte à rebours ni « jour de match ».
+  const dayKnown = isLive || hasKickoffTime(nextMatch);
+  const isMatchday = isLive || (dayKnown && isSameLocalDay(nextMatch.date));
+  const isSoon = !isLive && dayKnown && hoursUntil(nextMatch.date) <= 36;
+  const status = isLive ? 'En cours' : dayKnown ? countdown(nextMatch.date) : 'À confirmer';
   const pulseLabel = isLive
     ? 'Match en direct'
     : isMatchday
@@ -119,7 +122,7 @@ export function DashboardHero() {
                   : 'VS'}
               </div>
               <div className="text-[11px] uppercase tracking-wider text-fg-dim mt-2 font-semibold">
-                {isLive ? 'En cours' : countdown(nextMatch.date)}
+                {status}
               </div>
             </div>
             <TeamSlot
@@ -155,7 +158,7 @@ export function DashboardHero() {
           <div className="mt-3 space-y-2">
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="text-fg-muted">Statut</span>
-              <span className="font-semibold text-fg-bright">{isLive ? 'En cours' : countdown(nextMatch.date)}</span>
+              <span className="font-semibold text-fg-bright">{status}</span>
             </div>
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="text-fg-muted">Adversaire</span>

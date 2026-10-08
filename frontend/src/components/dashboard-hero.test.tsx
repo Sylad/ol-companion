@@ -120,8 +120,19 @@ describe('<DashboardHero /> — prochain rendez-vous (L39)', () => {
     expect(container).not.toHaveTextContent('01h00');
     expect(container).not.toHaveTextContent(/\d{1,2}h\d{2}/);
     expect(container).not.toHaveTextContent(/\d{2}:\d{2}/);
-    // Le compte à rebours reste celui de la date.
-    expect(container).toHaveTextContent('dans 62 jours');
+    // Le jour est inconnu : pas de compte à rebours calculé sur la date de remplissage.
+    expect(container).not.toHaveTextContent(/dans \d+ jours?/);
+    expect(screen.getAllByText('À confirmer')).toHaveLength(2);
+  });
+
+  it('jour non fixé le jour même de la date de remplissage : ni « Jour de match » ni « Approche »', async () => {
+    vi.setSystemTime(new Date('2026-12-05T10:00:00Z'));
+    vi.stubGlobal('fetch', serve([TROYES_UNCONFIRMED]));
+    renderHero();
+
+    expect(await screen.findByText('Prochain rendez-vous')).toBeInTheDocument();
+    expect(screen.queryByText('Jour de match')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Approche/)).not.toBeInTheDocument();
   });
 
   it('prend le match à venir le plus proche, pas le premier de la liste, et ignore les matchs joués', async () => {
