@@ -426,7 +426,7 @@ lots:
   - id: L42
     title: "Effectif : l'entraîneur (position Management) est compté dans « Banc · 11 joueurs » — le sortir du banc ou l'afficher à part"
     public: "Effectif : le banc ne compte que les remplaçants du match"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
@@ -435,6 +435,8 @@ lots:
       - { date: 2026-10-03, text: "03-10, second passage QA : Tagliafico (yardLine 0, hors du groupe, absent du banc de la page match) est aussi compté dans « Banc · 11 joueurs » ; et le lien de l'entraîneur dans l'onglet Effectif mène à /player/50746 (API 404, « Aucune statistique trouvée », sans titre) — ne pas lier un membre sans statistiques." }
     started: 2026-10-08
     review: { date: 2026-10-08, verdict: "compliant — orchestré (vague ol-gains-1, 0 passe(s) de correction)", commit: 29e83a53ec3c903299b78ae4f383822099629aee }
+    ux: { date: 2026-10-08, verdict: "conforme — revue UX orchestrée 08-10 (vague ol-gains-1), 0 constat, /players à 1440 et 390 px ; verdict relu par le lead sur les captures" }
+    finished: 2026-10-08
   - id: L43
     title: "Page match : les blocs Composition ne suivent pas la formation annoncée (4-2-3-1 dessiné en 6 rangées, 4-1-4-1 en 7) — regrouper les lignes comme le terrain de /players"
     public: "Page match : des compositions dessinées selon la formation"
