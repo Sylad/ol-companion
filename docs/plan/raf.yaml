@@ -578,14 +578,20 @@ lots:
     created: 2026-10-05
   - id: L61
     title: "Banc incohérent : /players affiche 11 entrées (10 joueurs + entraîneur, Tagliafico inclus), /match/4735259 en affiche 9 sans Tagliafico — aligner les deux sources (complète L42) — QA prod 05-10"
-    status: todo
+    status: dropped
     estimate: 1
     created: 2026-10-05
+    finished: 2026-10-08
+    notes:
+      - { date: 2026-10-08, text: "abandonné : résolu par L42 : QA prod 08-10, banc 9 = 9 sur /players et /match/4735259, même liste de noms" }
   - id: L62
     title: "/about : sections Frontend, Backend, Infra introuvables en h2 (un seul h2 « L'histoire courte » mesuré) — vérifier la page ou corriger docs/qa/expectations.md — QA prod 05-10"
-    status: todo
+    status: done
     estimate: 1
     created: 2026-10-05
+    review: { date: 2026-10-08, verdict: "conforme — une ligne d'attente précisée par le lead (h3), mesurée par la QA du 08-10 : les trois sections sont présentes", commit: null }
+    started: 2026-10-08
+    finished: 2026-10-08
   - id: L63
     title: "nouveautes.tsx:325 : le commentaire du portail cite encore « la pastille de connexion », qui est maintenant dans <main> — remplacer par le bandeau démo (revue de code L30)"
     status: todo
