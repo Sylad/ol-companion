@@ -1,4 +1,5 @@
-import { Controller, Get, NotFoundException, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, ParseIntPipe, Query, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { LiveMatchService } from './live-match.service';
 
 @Controller('live-match')
@@ -6,8 +7,9 @@ export class LiveMatchController {
   constructor(private readonly service: LiveMatchService) {}
 
   @Get('current')
-  async current() {
-    return (await this.service.getCurrent()) ?? null;
+  async current(@Res() res: Response) {
+    // Nest sérialise un `null` retourné en corps vide : le client échoue à l'analyse JSON.
+    res.json((await this.service.getCurrent()) ?? null);
   }
 
   @Get(':gameId/stats')
