@@ -209,7 +209,7 @@ function FilterPills<K extends string>({
           )}
         >
           {o.abbr && o.name ? <abbr title={o.name} className="no-underline">{o.label}</abbr> : o.label}
-          {/* 10 px : fg-muted (≥ 4,5:1 dans les deux états), fg-dim restait sous le seuil. */}
+          {/* 10 px : fg-muted (≥ 4,5:1 dans les deux états) ; fg-dim (≥ 4,6:1 depuis L52) passerait aussi, mais le compteur suit le texte du bouton. */}
           <span className="ml-1.5 text-[10px] text-fg-muted">
             {o.count}
           </span>
@@ -309,7 +309,7 @@ function SummaryMatch({
 
 /**
  * À la place de l'heure quand elle n'est pas fixée. 10 px en capitales, donc
- * `fg-muted` (≥ 4,5:1 sur le fond, WCAG 1.4.3) et non `fg-dim` (3,9:1) ; reste
+ * `fg-muted` (≥ 4,5:1 sur le fond, WCAG 1.4.3) plutôt que `fg-dim` (≥ 4,6:1 aussi depuis L52, mais plus pâle) ; reste
  * plus discret qu'une heure (14 px, gras).
  */
 function KickoffTbd() {
