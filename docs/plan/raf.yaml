@@ -474,11 +474,12 @@ lots:
   - id: L48
     title: "Calendrier téléphone : noms de clubs tronqués (15/92 à 390 px, tous à 320 px) — grille 56px / 1fr / auto, nom court pour Marseille"
     public: "Calendrier sur téléphone : des noms de clubs lisibles"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
+    started: 2026-10-08
   - id: L49
     title: "Noms des compétitions : un seul glossaire — Ligue des champions / Ligue Europa en long, C1 / C3 / CdF en court avec le nom long accessible — calendrier, bilan de saison, page joueur, Nouveautés"
     public: "Des noms de compétitions identiques partout"
