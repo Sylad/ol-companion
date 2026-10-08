@@ -421,6 +421,7 @@ lots:
     quickwin: true
     created: 2026-10-03
     started: 2026-10-08
+    review: { date: 2026-10-08, verdict: "conforme — orchestré (vague 2026-10-08-0639, 0 passe(s) de correction)", commit: 245f84942b255ee2fd2583397b8d53db6b59d5fc }
   - id: L42
     title: "Effectif : l'entraîneur (position Management) est compté dans « Banc · 11 joueurs » — le sortir du banc ou l'afficher à part"
     public: "Effectif : le banc ne compte que les remplaçants du match"
