@@ -12,4 +12,4 @@ Sur un téléphone, le calendrier coupait les noms de clubs (« Sparta Pra…�
 - À 390 px, les noms de clubs s'affichent en entier (15 sur 92 étaient coupés).
 - Les marges de la liste sont resserrées sur petit écran, ce qui libère de la place pour les noms.
 - Marseille s'affiche « Marseille » et non « Olympique de Marseille ».
-- À 320 px, les noms de plusieurs mots (« Union St. Gilloise », « Crystal Palace ») passent à la ligne ; un nom d'un seul mot trop long pour la place se termine par « … » plutôt que d'être coupé en plein mot.
+- À 320 px, la colonne de la date est resserrée (le jour passe sur deux lignes, « Mar. » puis « 04 ») : les 92 noms de la saison tiennent en entier, mesuré dans un navigateur (14 étaient tronqués ou coupés avant, aucun maintenant). Un nom de plusieurs mots peut passer à la ligne entre ses mots ; un mot trop long pour la place finirait par « … », avec le nom entier en info-bulle.

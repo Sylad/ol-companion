@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { TeamLogo } from '@/components/team-logo';
@@ -319,7 +319,14 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   const awayWon = hasScore && fixture.awayScore! > fixture.homeScore!;
 
   return (
-    <article className={cn('grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors', isLive && 'border-l-[3px] border-l-live')}>
+    <article
+      className={cn(
+        'grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
+        // Sous 360 px : colonne de la date resserrée et marges réduites, pour laisser la place aux noms (L48).
+        'max-[359px]:grid-cols-[40px_1fr_auto] max-[359px]:gap-1 max-[359px]:px-2',
+        isLive && 'border-l-[3px] border-l-live',
+      )}
+    >
       <div className="text-center">
         <div className="text-xs font-semibold text-fg">{day}</div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted">{month}</div>
@@ -355,6 +362,27 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   );
 }
 
+/**
+ * Nom de club qui ne se coupe jamais en plein mot (L48). Un nom d'un seul mot est tronqué par
+ * l'ellipse de son conteneur ; un nom de plusieurs mots passe à la ligne entre ses mots, et un
+ * mot qui dépasse à lui seul la largeur disponible finit par une ellipse (chaque mot est un
+ * bloc en ligne tronquable). Le nom entier reste dans le `title` du conteneur.
+ */
+function ClubName({ name }: { name: string }) {
+  const words = name.split(/\s+/);
+  if (words.length === 1) return <>{name}</>;
+  return (
+    <>
+      {words.map((w, i) => (
+        <Fragment key={i}>
+          {i > 0 && ' '}
+          <span className="inline-block max-w-full truncate align-bottom">{w}</span>
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 function CompactTeamLine({
   id,
   name,
@@ -370,7 +398,7 @@ function CompactTeamLine({
 }) {
   const isOL = id === OL_TEAM_ID;
   return (
-    <div className={cn('flex min-w-0 items-center gap-1.5 sm:gap-2', dim && 'opacity-55')}>
+    <div className={cn('flex min-w-0 items-center gap-1.5 max-[359px]:gap-1 sm:gap-2', dim && 'opacity-55')}>
       <TeamLogo teamId={id} name={name} size={18} src={seasonTeamLogoUrl(id)} />
       <span
         title={name}
@@ -380,7 +408,7 @@ function CompactTeamLine({
           isOL ? 'font-semibold text-fg-bright' : 'text-fg',
         )}
       >
-        {teamShortName(name)}
+        <ClubName name={teamShortName(name)} />
       </span>
       {score !== null && (
         <span className={cn('num w-6 text-right text-base font-bold', won ? 'text-fg-bright' : 'text-fg-muted')}>

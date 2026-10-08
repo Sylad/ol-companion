@@ -561,21 +561,42 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
     for (const r of rows) expect(r).not.toHaveTextContent('Olympique de Marseille');
   });
 
-  it("ne coupe jamais un mot en deux : nom d'un seul mot tronqué par une ellipse, noms de plusieurs mots à la ligne, nom entier en title", async () => {
+  it("resserre la colonne de la date sous 360 px pour laisser la place aux noms", async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    const [row] = await screen.findAllByRole('article');
+    expect(row.className).toContain('max-[359px]:grid-cols-[40px_1fr_auto]');
+    expect(row.className).toContain('max-[359px]:px-2');
+  });
+
+  // jsdom n'a pas de mise en page : ce test vérifie la structure qui évite la coupe en plein mot
+  // (un nom de plusieurs mots = un bloc tronquable par mot, un mot seul = ellipse, nom entier en
+  // title). La largeur réelle à 320 px se mesure dans un navigateur (Playwright, voir la Nouveauté L48).
+  it("structure des noms : mots séparés et tronquables, mot seul à l'ellipse, nom entier en title", async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     const rows = await screen.findAllByRole('article');
     const names = rows.flatMap((r) => Array.from(r.querySelectorAll('span.min-w-0.flex-1')) as HTMLElement[]);
     expect(names.length).toBeGreaterThan(2);
+    let multi = 0;
     for (const n of names) {
       expect(n.className).not.toContain('break-words');
       expect(n.getAttribute('title')).toBeTruthy();
+      const words = Array.from(n.children) as HTMLElement[];
       if (/\s/.test(n.textContent ?? '')) {
-        expect(n.className.split(' ')).not.toContain('truncate');
-        expect(n.className).toContain('sm:truncate');
+        multi++;
+        // chaque mot est entier dans son propre bloc, tronquable seul par une ellipse
+        expect(words.length).toBeGreaterThan(1);
+        expect(words.map((w) => w.textContent).join(' ')).toBe(n.textContent);
+        for (const w of words) {
+          expect(w.className.split(' ')).toContain('truncate');
+          expect(w.textContent).not.toMatch(/\s/);
+        }
       } else {
+        expect(words).toHaveLength(0);
         expect(n.className.split(' ')).toContain('truncate');
       }
     }
+    expect(multi).toBeGreaterThan(0);
   });
 });
