@@ -85,7 +85,7 @@ export function AboutPage() {
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-1.5 mb-2">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-fg-dim font-semibold">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
           À propos · OL Companion
         </p>
         <h1 className="font-display text-3xl lg:text-4xl font-bold text-fg-bright">

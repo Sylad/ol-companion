@@ -106,7 +106,7 @@ export function DashboardHero() {
             )}>
               {pulseLabel}
             </span>
-            <span className="text-xs text-fg-dim">· {nextMatch.competition}{nextMatch.matchday ? ` · J${nextMatch.matchday}` : ''}</span>
+            <span className="text-xs text-fg-muted">· {nextMatch.competition}{nextMatch.matchday ? ` · J${nextMatch.matchday}` : ''}</span>
           </div>
 
           <div className="flex items-center gap-4 lg:gap-6">
@@ -121,7 +121,7 @@ export function DashboardHero() {
                   ? `${nextMatch.homeScore ?? '-'} : ${nextMatch.awayScore ?? '-'}`
                   : 'VS'}
               </div>
-              <div className="text-[11px] uppercase tracking-wider text-fg-dim mt-2 font-semibold">
+              <div className="text-[11px] uppercase tracking-wider text-fg-muted mt-2 font-semibold">
                 {status}
               </div>
             </div>
@@ -145,7 +145,7 @@ export function DashboardHero() {
         </div>
 
         <div className="rounded-md border border-border bg-surface/70 p-4 backdrop-blur-md min-w-0 lg:min-w-[260px]">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-fg-dim font-semibold">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-fg-muted font-semibold">
             {isLive ? (
               <Radio className="h-3.5 w-3.5 text-ol-red-bright animate-pulse" strokeWidth={2} />
             ) : isMatchday ? (

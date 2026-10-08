@@ -383,7 +383,7 @@ function MapLegend() {
       style={{ width: 170 }}
       aria-label="Légende des marqueurs"
     >
-      <div className="text-[10px] uppercase tracking-wider text-fg-dim font-semibold mb-1.5 leading-none">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold mb-1.5 leading-none">
         Aller / Retour
       </div>
       <div className="grid grid-cols-1 gap-1">

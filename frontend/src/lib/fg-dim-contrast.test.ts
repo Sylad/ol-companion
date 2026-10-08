@@ -70,3 +70,33 @@ describe('repli « OL » de l’en-tête (L52)', () => {
     expect(contrast(toRgb(token('fg-muted')), halo)).toBeGreaterThanOrEqual(4.5);
   });
 });
+
+// L74 — textes fg-dim posés sur un fond hors jeton (photo, panneau translucide,
+// halo rouge), mesurés à 390 px : 3,77:1 (bandeau d'accueil), 3,87–3,97:1
+// (légende de /map), 4,33:1 (surtitre de /about). Ils passent en fg-muted, qui
+// tient 4,5:1 sur le pire fond mesuré (3,77:1 avec fg-dim = luminance ≈ 0,024).
+describe('textes secondaires sur fond hors jeton (L74)', () => {
+  const lire = (chemin: string) => readFileSync(resolve(__dirname, chemin), 'utf8');
+  const classes = (src: string, texte: string) => {
+    const m = src.match(new RegExp(`<(?:span|div|p) className="([^"]*)"[^>]*>\\s*(?:·\\s*)?${texte}`));
+    expect(m, `élément « ${texte} » introuvable`).not.toBeNull();
+    return m![1];
+  };
+
+  it.each([
+    ['../components/dashboard-hero.tsx', '\\{nextMatch\\.competition\\}'],
+    ['../components/dashboard-hero.tsx', '\\{status\\}'],
+    ['../components/ligue1-map.tsx', 'Aller / Retour'],
+    ['../routes/about.tsx', 'À propos · OL Companion'],
+  ])('%s « %s » n’utilise pas text-fg-dim', (fichier, texte) => {
+    const c = classes(lire(fichier), texte);
+    expect(c).not.toContain('text-fg-dim');
+    expect(c).toContain('text-fg-muted');
+  });
+
+  it('fg-muted tient 4,5:1 sur le pire fond mesuré (là où fg-dim faisait 3,77:1)', () => {
+    const lumFond = (luminance(toRgb(token('fg-dim'))) + 0.05) / 3.77 - 0.05;
+    const ratio = (luminance(toRgb(token('fg-muted'))) + 0.05) / (lumFond + 0.05);
+    expect(ratio).toBeGreaterThanOrEqual(4.5);
+  });
+});
