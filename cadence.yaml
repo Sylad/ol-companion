@@ -19,7 +19,7 @@ deliver:
       contains: '"table"'
     # le calendrier lit la saison toutes compétitions (qualifications de Ligue des champions comprises)
     - url: https://ol.sladoire.dev/api/season-matches
-      contains: 'UEFA Champions League'
+      contains: 'Ligue des champions'
     - url: https://ol.sladoire.dev/
     # ce que reçoit un visiteur revenu après une livraison : le document en no-cache
     # (sinon l'ancienne appli reste affichée — 1 h 25 mesurée le 03-10) et 404, pas le
