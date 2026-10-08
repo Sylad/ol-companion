@@ -339,6 +339,46 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     });
   });
 
+  describe('jour non fixé — branches de formatDateParts (L47)', () => {
+    it('un horaire non fixé un jour de semaine : « Date à confirmer » dans la ligne et dans la carte Prochain', async () => {
+      // Mercredi : ni vendredi, ni samedi, ni dimanche → pas de « Week-end ».
+      const midweek = season.map((m) => {
+        if (m.competitionCode !== 'L1') return m;
+        if (m.matchday === 13) return { ...m, date: '2026-12-02T17:00:00Z', timeConfirmed: false };
+        if (m.matchday === 6) return { ...m, date: '2026-10-07T17:00:00Z', timeConfirmed: false };
+        return m;
+      });
+      vi.stubGlobal('fetch', serve(midweek));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const row = within(block('Ligue 1 · J13')).getByRole('article');
+      expect(row).toHaveTextContent('Dateà confirmer');
+      expect(row).not.toHaveTextContent('Week-end');
+      expect(row).not.toHaveTextContent('Mer. 02');
+
+      const next = screen.getByText('Prochain').parentElement as HTMLElement;
+      expect(next).toHaveTextContent('Date à confirmer · Ligue 1');
+      expect(next).not.toHaveTextContent('Week-end');
+      expect(next).not.toHaveTextContent('Mer. 07/10');
+    });
+
+    it('un match joué un week-end garde sa date ferme, même si timeConfirmed est faux', async () => {
+      const played = season.map((m) => (m.status === 'FINISHED' ? { ...m, timeConfirmed: false } : m));
+      vi.stubGlobal('fetch', serve(played));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      // Lyon–Rennes 4-0, samedi 19/09.
+      const last = screen.getByText('Dernier résultat').parentElement as HTMLElement;
+      expect(last).toHaveTextContent('Sam. 19/09');
+      expect(last).not.toHaveTextContent('Week-end');
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      expect(rennes).toHaveTextContent('Sam. 19');
+      expect(rennes).not.toHaveTextContent('Week-end');
+    });
+  });
+
   describe('lisibilité — revue UX du calendrier', () => {
     /** Le bloc « Horaire à confirmer » (deux lignes) contenu dans cet élément. */
     function tbd(container: HTMLElement): HTMLElement {
