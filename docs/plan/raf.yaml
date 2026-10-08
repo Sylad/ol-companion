@@ -604,10 +604,11 @@ lots:
     finished: 2026-10-08
   - id: L63
     title: "nouveautes.tsx:325 : le commentaire du portail cite encore « la pastille de connexion », qui est maintenant dans <main> — remplacer par le bandeau démo (revue de code L30)"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-05
+    started: 2026-10-08
   - id: L64
     title: "Téléphone : l'état du direct sort de l'écran quand on fait défiler la page (Nielsen H1) — décider entre une ligne de pastille sticky et une réserve de hauteur sous une pastille fixe, au moins sur /match/<id> (revue L30)"
     public: "Téléphone : l'état du direct reste visible quand on fait défiler la page"
