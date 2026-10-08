@@ -112,6 +112,12 @@ export function FixturesPage() {
               onChange={setTab}
               options={TABS.map((t) => ({ key: t.key, label: t.label, count: counts[t.key] }))}
             />
+            {competitions.length > 1 && (
+              // Le toucher n'a pas d'infobulle : le nom long des sigles reste écrit à l'écran.
+              <p className="text-xs text-fg-muted md:basis-full md:text-right">
+                Comp. : {competitions.map((c) => `${c.label} = ${c.name}`).join(' · ')}
+              </p>
+            )}
           </div>
         </header>
 

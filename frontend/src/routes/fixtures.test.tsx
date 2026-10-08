@@ -215,6 +215,17 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.getAllByRole('article')).toHaveLength(36);
   });
 
+  it('une légende visible donne le nom long des sigles de compétition, sans survol ni lecteur d’écran', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+    const legend = screen.getByText(/^Comp\. :/);
+    expect(legend).toHaveTextContent(
+      'Comp. : L1 = Ligue 1 · C1 = Ligue des champions · C3 = Ligue Europa',
+    );
+    expect(legend).not.toHaveClass('sr-only');
+  });
+
   it('le filtre par compétition restreint la liste, les compteurs et la vue rapide', async () => {
     vi.stubGlobal('fetch', serve());
     const user = userEvent.setup();
