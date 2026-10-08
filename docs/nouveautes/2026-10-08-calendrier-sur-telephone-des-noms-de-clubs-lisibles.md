@@ -13,4 +13,4 @@ Sur un téléphone, le calendrier coupait les noms de clubs (« Sparta Pra…�
 - Les marges de la liste sont resserrées sur petit écran, ce qui libère de la place pour les noms.
 - Marseille s'affiche « Marseille » et non « Olympique de Marseille ».
 - À 320 px, la colonne de la date est resserrée (le jour passe sur deux lignes, « Mar. » puis « 04 ») : les 92 noms de la saison tiennent en entier, mesuré dans un navigateur (14 étaient tronqués ou coupés avant, aucun maintenant). Un nom de plusieurs mots peut passer à la ligne entre ses mots ; un mot trop long pour la place finirait par « … », avec le nom entier en info-bulle.
-- À 320 px, un match dont le jour n'est pas fixé affiche « Date » puis « à conf. » (forme courte) au lieu de « à confirmer », qui débordait sur l'écusson ; à partir de 360 px rien ne change.
+- À 320 px, un match dont le jour n'est pas fixé affiche « Date » puis « à conf. » (forme courte) au lieu de « à confirmer », qui débordait sur l'écusson ; à partir de 360 px rien ne change.
