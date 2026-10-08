@@ -228,8 +228,8 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       'C38',
     ]);
     // Nom court affiché, nom long en infobulle et dans le nom accessible.
-    expect(within(competitions).getByRole('button', { name: 'Ligue des champions · 4 matchs' })).toBeInTheDocument();
-    expect(within(competitions).getByText('C3')).toHaveAttribute('title', 'Ligue Europa');
+    expect(within(competitions).getByRole('button', { name: 'C1 — Ligue des champions · 4 matchs' })).toBeInTheDocument();
+    expect(within(competitions).getByTitle('Ligue Europa')).toHaveTextContent('C3');
     // La somme des pastilles égale « Toutes » : aucun match hors pastille.
     const [all, ...perCompetition] = within(competitions)
       .getAllByRole('button')
@@ -324,7 +324,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(last).toHaveTextContent('Mer. 26/08 · Ligue des champions');
       expect(last).toHaveTextContent('1-2');
 
-      await user.click(within(competitions).getByRole('button', { name: /^Ligue 1/ }));
+      await user.click(within(competitions).getByRole('button', { name: /^L1 — Ligue 1/ }));
       expect(card('Prochain')).toHaveTextContent('Lens');
       expect(card('Prochain')).toHaveTextContent('Horaire à confirmer');
     });
@@ -454,9 +454,9 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(within(status).getByRole('button', { name: 'À venir · 36 matchs' })).toBeInTheDocument();
       expect(names(competitions)).toEqual([
         'Toutes les compétitions · 46 matchs',
-        'Ligue 1 · 34 matchs',
-        'Ligue des champions · 4 matchs',
-        'Ligue Europa · 8 matchs',
+        'L1 — Ligue 1 · 34 matchs',
+        'C1 — Ligue des champions · 4 matchs',
+        'C3 — Ligue Europa · 8 matchs',
       ]);
 
       // Singulier jusqu'à 1, comme les pastilles de compétition.
@@ -493,7 +493,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       await user.click(within(status).getByRole('button', { name: /À venir/ }));
       await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
       expectSelected(status, /^À venir ·/);
-      expectSelected(competitions, /^Ligue Europa ·/);
+      expectSelected(competitions, /^C3 — Ligue Europa ·/);
     });
 
     it('la vue rapide reste collante : aucun ancêtre en overflow-hidden (qui annule sticky), la section coupe en overflow-clip', async () => {

@@ -190,7 +190,7 @@ function FilterPills<K extends string>({
           type="button"
           aria-pressed={value === o.key}
           // Sans nom explicite, le libellé et le compteur sont lus collés (« À venir36 »).
-          aria-label={`${o.name ?? o.label} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}`}
+          aria-label={`${o.abbr && o.name ? `${o.label} — ${o.name}` : o.name ?? o.label} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}`}
           onClick={() => onChange(o.key)}
           className={cn(
             'whitespace-nowrap px-3 py-1 text-xs font-semibold rounded-full transition-colors',
