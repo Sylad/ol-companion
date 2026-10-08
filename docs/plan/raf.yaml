@@ -609,6 +609,7 @@ lots:
     quickwin: true
     created: 2026-10-05
     started: 2026-10-08
+    review: { date: 2026-10-08, verdict: "compliant — orchestré (vague 2026-10-09-0900, 0 passe(s) de correction)", commit: e058eaa4df0a88dec000b937e706d0b931ea15ab }
   - id: L64
     title: "Téléphone : l'état du direct sort de l'écran quand on fait défiler la page (Nielsen H1) — décider entre une ligne de pastille sticky et une réserve de hauteur sous une pastille fixe, au moins sur /match/<id> (revue L30)"
     public: "Téléphone : l'état du direct reste visible quand on fait défiler la page"
