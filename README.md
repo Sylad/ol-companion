@@ -40,6 +40,8 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
 
 ### Page match — timeline + shot map + stats équipe + top performers
 
+La page porte un `h1` masqué visuellement (« Lyon – Nice ») pour les lecteurs d'écran et le contrôle QA (L66).
+
 ![Match live avec shot map et stats](./docs/screenshots/match-live.png)
 
 Tous les blocs viennent **du même endpoint 365scores** (`/web/game/?gameId=X&matchupId=H-A-G`) — les stats équipe sont reconstruites côté backend en agrégeant les stats de chaque titulaire, et le shot chart utilise la convention de coordonnées (`side` = axe long, `line` = axe court) avec marqueurs proportionnels à √xG.

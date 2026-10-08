@@ -211,6 +211,7 @@ export function MatchPage() {
   return (
     <div className="space-y-4">
       {burst && <MatchEventBurst key={burst.id} type={burst.type} />}
+      <h1 className="sr-only">{data.home.name} – {data.away.name}</h1>
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
         <ArrowLeft className="h-4 w-4" /> Accueil
       </Link>
