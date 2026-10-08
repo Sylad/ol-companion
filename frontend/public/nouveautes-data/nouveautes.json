@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-08 15:14",
+  "generated": "2026-10-08 17:23",
   "entries": [
+    {
+      "slug": "2026-10-08-des-textes-secondaires-plus-lisibles",
+      "title": "Des textes secondaires plus lisibles",
+      "date": "2026-10-08",
+      "lots": [
+        "L52"
+      ],
+      "captures": [
+        "captures/2026-10-08-textes-secondaires-390.png"
+      ],
+      "alts": [
+        "Tableau de bord à 390 px : la carte Tableau de bord match tient dans l'écran avec un nom d'adversaire long, les étiquettes grises sont lisibles"
+      ],
+      "html": "<p>Les petits textes en gris (étiquettes de tableaux, dates, mentions « Terminé », légendes) sont un peu plus clairs sur le fond sombre : ils restent discrets mais se lisent mieux, surtout à 10 et 11 px sur téléphone.</p>\n<p>Sur le tableau de bord, à 390 px de large, la carte « Tableau de bord match » ne se rogne plus quand le nom de l'adversaire est long : le nom passe à la ligne.</p>"
+    },
     {
       "slug": "2026-10-08-des-noms-de-competitions-identiques-partout",
       "title": "Des noms de compétitions identiques partout",
