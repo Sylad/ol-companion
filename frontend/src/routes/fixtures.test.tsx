@@ -377,6 +377,17 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(rennes).toHaveTextContent('Sam. 19');
       expect(rennes).not.toHaveTextContent('Week-end');
     });
+
+    it('la date « du 05/12 » d’une ligne non fixée est en fg-muted (WCAG 1.4.3), pas fg-dim', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const row = within(block('Ligue 1 · J13')).getByRole('article');
+      const date = within(row).getByText('du 05/12');
+      expect(date).toHaveClass('text-fg-muted');
+      expect(date).not.toHaveClass('text-fg-dim');
+    });
   });
 
   describe('lisibilité — revue UX du calendrier', () => {

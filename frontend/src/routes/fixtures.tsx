@@ -322,7 +322,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
     <article className={cn('grid grid-cols-[72px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-2/45 transition-colors', isLive && 'border-l-[3px] border-l-live')}>
       <div className="text-center">
         <div className="text-xs font-semibold text-fg">{day}</div>
-        <div className="text-[10px] uppercase tracking-wider text-fg-dim">{month}</div>
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">{month}</div>
       </div>
       <div className="min-w-0 space-y-1.5">
         <CompactTeamLine
