@@ -503,6 +503,7 @@ lots:
     visible: true
     created: 2026-10-03
     started: 2026-10-08
+    review: { date: 2026-10-08, verdict: "conforme (3 notes mineures, sans sous-tâche) — orchestré (vague 2026-10-08-1510, 2 passe(s) de correction)", commit: c43335ab978df169ab81a936a987318fd4611f52 }
   - id: L50
     title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
     public: "Calendrier : une liste plus compacte, regroupée par mois"
