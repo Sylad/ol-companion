@@ -12,4 +12,4 @@ Sur un téléphone, le calendrier coupait les noms de clubs (« Sparta Pra…�
 - À 390 px, les noms de clubs s'affichent en entier (15 sur 92 étaient coupés).
 - Les marges de la liste sont resserrées sur petit écran, ce qui libère de la place pour les noms.
 - Marseille s'affiche « Marseille » et non « Olympique de Marseille ».
-- À 320 px, la plupart des noms tiennent ; quelques noms longs (« Union St. Gilloise », « Crystal Palace ») restent encore coupés.
+- À 320 px, les noms de plusieurs mots (« Union St. Gilloise », « Crystal Palace ») passent à la ligne ; un nom d'un seul mot trop long pour la place se termine par « … » plutôt que d'être coupé en plein mot.
