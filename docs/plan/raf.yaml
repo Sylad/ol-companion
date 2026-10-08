@@ -497,13 +497,17 @@ lots:
   - id: L49
     title: "Noms des compétitions : un seul glossaire — Ligue des champions / Ligue Europa en long, C1 / C3 / CdF en court avec le nom long accessible — calendrier, bilan de saison, page joueur, Nouveautés"
     public: "Des noms de compétitions identiques partout"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
     started: 2026-10-08
     review: { date: 2026-10-08, verdict: "conforme (3 notes mineures, sans sous-tâche) — orchestré (vague 2026-10-08-1510, 2 passe(s) de correction)", commit: c43335ab978df169ab81a936a987318fd4611f52 }
+    ux: { date: 2026-10-08, verdict: "conforme — captures 1440 et 390 px du calendrier : pastilles L1/C1/C3 avec nom long accessible, légende visible, intitulés du glossaire ; 3 notes mineures (abréviation « Comp. : » dans la légende, nom brut 365scores sur l'Effectif, direct et page match hors périmètre)" }
+    notes:
+      - { date: 2026-10-08, text: "Mineurs de revue non traités (budget) : ordre des compétitions en double (légende page joueur vs COMPETITION_ORDER) ; noms longs à 3 endroits (lib/competitions.ts, TRACKED_COMPETITIONS, COMP_NAMES) sans test de cohérence ; cups.service sans spec sur « Ligue Europa » ; CompetitionAbbr inatteignable dans l'infobulle Recharts ; page Effectif, direct et page match affichent encore le nom brut 365scores" }
+    finished: 2026-10-08
   - id: L50
     title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
     public: "Calendrier : une liste plus compacte, regroupée par mois"
