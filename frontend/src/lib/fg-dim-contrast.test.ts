@@ -44,3 +44,15 @@ describe('fg-dim (L52)', () => {
     expect(contrast(dim, toRgb(token(fond)))).toBeGreaterThanOrEqual(4.5);
   });
 });
+
+// Un fond teinté par le jeton lui-même (bg-fg-dim/NN) fait tomber le texte
+// text-fg-dim à 4,12:1 : le badge « Éliminé » de /cups n'en porte pas.
+describe('fg-dim sur fond teinté (L52)', () => {
+  it('le badge « Éliminé » de /cups n’est pas posé sur bg-fg-dim/NN', () => {
+    const src = readFileSync(resolve(__dirname, '../routes/cups.tsx'), 'utf8');
+    const badge = src.match(/text-\[10px\][^\n]*\n[^\n]*isEliminated\n([^\n]*)/);
+    expect(badge).not.toBeNull();
+    expect(badge![1]).toContain('text-fg-dim');
+    expect(badge![1]).not.toMatch(/bg-fg-dim\/\d+/);
+  });
+});

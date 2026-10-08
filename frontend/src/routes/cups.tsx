@@ -90,7 +90,7 @@ function CupTab({
           className={cn(
             'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
             cup.isEliminated
-              ? 'bg-fg-dim/15 text-fg-dim'
+              ? 'border border-fg-dim/40 text-fg-dim'
               : 'bg-ol-red/15 text-ol-red-bright',
           )}
         >
