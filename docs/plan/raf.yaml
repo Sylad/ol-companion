@@ -663,6 +663,16 @@ lots:
     quickwin: true
     visible: true
     created: 2026-10-08
+  - id: L72
+    title: "Glossaire des compétitions (suite L49) : /match et /players (« Dernier match ») affichent encore le nom brut 365scores « France, Ligue 1 » — passer par le glossaire (competitionLong) ; ajouter la ligne never dans docs/qa/expectations.md (QA 08-10)"
+    status: todo
+    estimate: 1
+    created: 2026-10-08
+  - id: L73
+    title: "QA : attentes de / — accepter « Approche du coup d'envoi » comme variante de « Prochain rendez-vous » (match à moins d'un jour) et « Différence buts » pour la tuile (QA 08-10)"
+    status: todo
+    estimate: 1
+    created: 2026-10-08
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
