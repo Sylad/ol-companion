@@ -90,8 +90,9 @@
     {
       "id": "L42",
       "title": "Effectif : le banc ne compte que les remplaçants du match",
-      "status": "doing",
-      "started": "2026-10-08"
+      "status": "done",
+      "started": "2026-10-08",
+      "finished": "2026-10-08"
     },
     {
       "id": "L43",
