@@ -531,6 +531,7 @@ lots:
     visible: true
     created: 2026-10-03
     started: 2026-10-08
+    review: { date: 2026-10-08, verdict: "conforme — orchestré (vague 2026-10-08-1720, 1 passe(s) de correction + passe des mineurs)", commit: e1b6e5fa7030340ae42b3c34e3b7403d85f0cb73 }
   - id: L53
     title: "Statistiques joueurs : un détail de match 365scores en timeout est sauté en silence (stats bâties sur 9 matchs sur 10 et gardées 1 h) ; vérifier les passes décisives (Tolisso 12 en 10 matchs)"
     status: todo
