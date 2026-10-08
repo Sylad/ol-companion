@@ -74,7 +74,7 @@ dans l'ordre que donne isHome.
 - shows: le titre « FC NOOBZ » ; 3 cartes (Lecteur de sauvegarde FM, Histoire du club, Palmarès virtuel) ; l'image du club
 
 ## /about
-- shows: le titre « Vibe coded with Claude Code » ; les sections Frontend, Backend, Infra, chacune non vide ; chaque lien de « Mes autres sites » répond 2xx
+- shows: le titre « Vibe coded with Claude Code » ; les sections Frontend, Backend, Infra (titres h3, pas h2), chacune non vide ; chaque lien de « Mes autres sites » répond 2xx
 
 ## /nouveautes
 - shows: le titre « Ce qui a changé » ; au moins 5 entrées, chacune avec une date, un titre et sa capture chargée
