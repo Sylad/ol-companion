@@ -612,3 +612,5 @@ lots:
     started: 2026-10-07
     review: { date: 2026-10-07, verdict: "conforme (lead) : cadence.yaml seul, orchestrate.ux au format lu par readOrchestrateConfig, commande POSIX essayée sous groupe de processus → HTTP 200, ports libérés après kill", commit: 93fb7507d0eb6086dfad0588ee31ce517814ce8c }
     finished: 2026-10-07
+acknowledged:
+  - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
