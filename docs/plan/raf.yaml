@@ -497,11 +497,12 @@ lots:
   - id: L49
     title: "Noms des compétitions : un seul glossaire — Ligue des champions / Ligue Europa en long, C1 / C3 / CdF en court avec le nom long accessible — calendrier, bilan de saison, page joueur, Nouveautés"
     public: "Des noms de compétitions identiques partout"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
+    started: 2026-10-08
   - id: L50
     title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
     public: "Calendrier : une liste plus compacte, regroupée par mois"
