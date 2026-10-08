@@ -525,11 +525,12 @@ lots:
   - id: L52
     title: Contraste du jeton fg-dim sur toute l'app (3,84–3,98:1 à 10–11 px) — viser rgb(115,131,153) ; carte du tableau de bord rognée à 390 px avec un nom long
     public: "Des textes secondaires plus lisibles"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
+    started: 2026-10-08
   - id: L53
     title: "Statistiques joueurs : un détail de match 365scores en timeout est sauté en silence (stats bâties sur 9 matchs sur 10 et gardées 1 h) ; vérifier les passes décisives (Tolisso 12 en 10 matchs)"
     status: todo
