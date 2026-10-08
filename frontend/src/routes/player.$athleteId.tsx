@@ -13,6 +13,7 @@ import {
 import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
 import { TeamLogo } from '@/components/team-logo';
 import { CompetitionAbbr } from '@/components/competition-abbr';
+import { competitionLong, competitionShort } from '@/lib/competitions';
 import { cn } from '@/lib/utils';
 import type { PlayerByMatch, PlayerSeasonStats } from '@/types/api';
 
@@ -370,6 +371,9 @@ export function PlayerDetailPage() {
               ))}
             </tbody>
           </table>
+          <p className="px-4 py-2 text-xs text-fg-muted border-t border-border">
+            Comp. : {(['L1', 'UCL', 'UEL', 'CDF'] as const).map((c) => `${competitionShort(c)} = ${competitionLong(c)}`).join(' · ')}
+          </p>
         </div>
       </section>
 
