@@ -363,6 +363,25 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(next).not.toHaveTextContent('Mer. 07/10');
     });
 
+    // jsdom ne mesure pas : on vérifie la structure qui évite que « À CONFIRMER » (64 px) déborde la
+    // colonne de 40 px sous 360 px (L48) — forme courte à l'écran, forme entière pour les lecteurs d'écran.
+    it('« Date à confirmer » : forme courte sous 360 px, forme entière conservée pour les lecteurs d’écran', async () => {
+      const midweek = season.map((m) =>
+        m.competitionCode === 'L1' && m.matchday === 13 ? { ...m, date: '2026-12-02T17:00:00Z', timeConfirmed: false } : m,
+      );
+      vi.stubGlobal('fetch', serve(midweek));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const month = within(block('Ligue 1 · J13')).getByRole('article').children[0].children[1] as HTMLElement;
+      const [long, short] = Array.from(month.children) as HTMLElement[];
+      expect(long).toHaveTextContent('à confirmer');
+      expect(long.className.split(' ')).toContain('max-[359px]:sr-only');
+      expect(short).toHaveTextContent('à conf.');
+      expect(short.className.split(' ')).toEqual(expect.arrayContaining(['hidden', 'max-[359px]:inline']));
+      expect(short).toHaveAttribute('aria-hidden', 'true');
+    });
+
     it('un match joué un week-end garde sa date ferme, même si timeConfirmed est faux', async () => {
       const played = season.map((m) => (m.status === 'FINISHED' ? { ...m, timeConfirmed: false } : m));
       vi.stubGlobal('fetch', serve(played));
@@ -585,11 +604,12 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
       const words = Array.from(n.children) as HTMLElement[];
       if (/\s/.test(n.textContent ?? '')) {
         multi++;
-        // chaque mot est entier dans son propre bloc, tronquable seul par une ellipse
+        // chaque mot est entier dans son propre bloc, tronquable seul par une ellipse :
+        // `truncate` n'agit que sur une boîte en bloc ou inline-block, bornée par max-w-full
         expect(words.length).toBeGreaterThan(1);
         expect(words.map((w) => w.textContent).join(' ')).toBe(n.textContent);
         for (const w of words) {
-          expect(w.className.split(' ')).toContain('truncate');
+          expect(w.className.split(' ')).toEqual(expect.arrayContaining(['inline-block', 'max-w-full', 'truncate']));
           expect(w.textContent).not.toMatch(/\s/);
         }
       } else {

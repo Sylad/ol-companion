@@ -40,6 +40,8 @@ const pad2 = (n: number): string => n.toString().padStart(2, '0');
 function formatDateParts(match: SeasonMatch): {
   day: string;
   month: string;
+  /** Libellé du mois sous 360 px quand `month` ne tient pas dans la colonne de 40 px (L48). */
+  monthShort?: string;
   time: string | null;
   label: string;
 } {
@@ -50,7 +52,7 @@ function formatDateParts(match: SeasonMatch): {
     return { day: 'Week-end', month: `du ${sat}`, time: null, label: `Week-end du ${sat}` };
   }
   if (unconfirmed) {
-    return { day: 'Date', month: 'à confirmer', time: null, label: 'Date à confirmer' };
+    return { day: 'Date', month: 'à confirmer', monthShort: 'à conf.', time: null, label: 'Date à confirmer' };
   }
   const day = `${WEEKDAY[d.getDay()]} ${pad2(d.getDate())}`;
   const month = pad2(d.getMonth() + 1);
@@ -312,7 +314,7 @@ function KickoffTbd() {
 }
 
 function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
-  const { day, month, time } = formatDateParts(fixture);
+  const { day, month, monthShort, time } = formatDateParts(fixture);
   const hasScore = fixture.homeScore !== null && fixture.awayScore !== null;
   const isLive = fixture.status === 'IN_PLAY';
   const homeWon = hasScore && fixture.homeScore! > fixture.awayScore!;
@@ -329,7 +331,19 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
     >
       <div className="text-center">
         <div className="text-xs font-semibold text-fg">{day}</div>
-        <div className="text-[10px] uppercase tracking-wider text-fg-muted">{month}</div>
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">
+          {monthShort ? (
+            <>
+              {/* Sous 360 px « à confirmer » (64 px) déborde la colonne de 40 px : forme courte à l'écran, forme entière pour les lecteurs d'écran (L48). */}
+              <span className="max-[359px]:sr-only">{month}</span>
+              <span aria-hidden="true" className="hidden max-[359px]:inline">
+                {monthShort}
+              </span>
+            </>
+          ) : (
+            month
+          )}
+        </div>
       </div>
       <div className="min-w-0 space-y-1.5">
         <CompactTeamLine
