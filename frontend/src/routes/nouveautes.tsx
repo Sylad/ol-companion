@@ -322,7 +322,7 @@ function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => 
   const imgStyle = capture.size ? ({ '--cap-w': `${capture.size[0]}px` } as CSSProperties) : undefined;
 
   // Portail sous <body> : <main> est un contexte d'empilement (relative z-10), un z-index
-  // posé à l'intérieur ne passerait jamais au-dessus de la barre du bas ni de la pastille de connexion.
+  // posé à l'intérieur ne passerait jamais au-dessus de la barre du bas ni du bandeau démo.
   return createPortal(
     // z-[60] : au-dessus de la barre du bas (z-40) et du bandeau démo (z-50).
     <div
