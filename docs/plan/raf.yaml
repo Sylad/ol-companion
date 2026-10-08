@@ -474,20 +474,26 @@ lots:
     created: 2026-10-03
     started: 2026-10-08
     tasks:
-      - { id: t1, title: "Carte Ligue 1 : la bulle « À venir » (ligue1-map.tsx) affiche la date de remplissage comme ferme quand l'horaire n'est pas fixé — passer par unconfirmedDay() de lib/kickoff.ts (revue UX 08-10)", status: todo }
-      - { id: t2, title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX 08-10)", status: todo }
+      - { id: t1, title: "Carte Ligue 1 : la bulle « À venir » (ligue1-map.tsx) affiche la date de remplissage comme ferme quand l'horaire n'est pas fixé — passer par unconfirmedDay() de lib/kickoff.ts (revue UX 08-10)", status: dropped }
+      - { id: t2, title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX 08-10)", status: dropped }
     review: { date: 2026-10-08, verdict: "conforme — revue neuve 08-10 après correction c893a51 : doc CLAUDE.md/README/Nouveauté en accord avec le code et les tests ; 301 tests verts, build OK", commit: c893a513ecef19f34a3d795f23821b94125927ff }
     ux: { date: 2026-10-08, verdict: "conforme — tableau de bord vérifié en navigateur dans les 4 états (fixé, week-end, semaine, jour même), « Week-end du … » lisible à 320/360/390 px ; popup carte L1 et contraste en sous-tâches" }
     finished: 2026-10-08
+    notes:
+      - { date: 2026-10-08, text: "[L47/t1] abandonné : repris en lot autonome (suite hors périmètre de L47)" }
+      - { date: 2026-10-08, text: "[L47/t2] abandonné : repris en lot autonome (suite hors périmètre de L47)" }
   - id: L48
     title: "Calendrier téléphone : noms de clubs tronqués (15/92 à 390 px, tous à 320 px) — grille 56px / 1fr / auto, nom court pour Marseille"
     public: "Calendrier sur téléphone : des noms de clubs lisibles"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
     started: 2026-10-08
+    review: { date: 2026-10-08, verdict: "conforme — revue neuve 08-10 (correction 4186a29 : 0/92 noms coupés à 320/360/390 px, 390 inchangé) puis revue courte de e82ab67 (forme courte « à conf. » sous 360 px, sr-only/aria-hidden sans double lecture, test de structure) ; son bloquant (6 espaces U+202F dans la Nouveauté) corrigé par le lead en d1f1776, tsc + 302 tests verts relancés par le lead", commit: d1f1776ea506ecb827780a794e7e99943cd0d4b0 }
+    ux: { date: 2026-10-08, verdict: "conforme — mesuré en navigateur : 0/92 noms coupés à 320, 360 et 390 px, 390 px inchangé, aucun défilement horizontal, colonne date sur deux lignes lisible ; « À CONFIRMER » qui chevauchait l'écusson à 320 px corrigé (78,7 px pour un écusson à 86 px)" }
+    finished: 2026-10-08
   - id: L49
     title: "Noms des compétitions : un seul glossaire — Ligue des champions / Ligue Europa en long, C1 / C3 / CdF en court avec le nom long accessible — calendrier, bilan de saison, page joueur, Nouveautés"
     public: "Des noms de compétitions identiques partout"
@@ -629,6 +635,22 @@ lots:
     started: 2026-10-07
     review: { date: 2026-10-07, verdict: "conforme (lead) : cadence.yaml seul, orchestrate.ux au format lu par readOrchestrateConfig, commande POSIX essayée sous groupe de processus → HTTP 200, ports libérés après kill", commit: 93fb7507d0eb6086dfad0588ee31ce517814ce8c }
     finished: 2026-10-07
+  - id: L70
+    title: "Carte Ligue 1 : la bulle « À venir » (ligue1-map.tsx) affiche la date de remplissage comme ferme quand l'horaire n'est pas fixé — passer par unconfirmedDay() de lib/kickoff.ts (revue UX L47, 08-10)"
+    public: "Carte Ligue 1 : un match à l'horaire non fixé ne montre plus une date ferme"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-08
+  - id: L71
+    title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX L47, 08-10)"
+    public: "Calendrier : la date d'une ligne « à confirmer » plus lisible"
+    status: todo
+    estimate: 1
+    quickwin: true
+    visible: true
+    created: 2026-10-08
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

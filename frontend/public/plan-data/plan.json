@@ -109,21 +109,14 @@
       "title": "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée",
       "status": "done",
       "started": "2026-10-08",
-      "finished": "2026-10-08",
-      "tasks": [
-        {
-          "status": "todo"
-        },
-        {
-          "status": "todo"
-        }
-      ]
+      "finished": "2026-10-08"
     },
     {
       "id": "L48",
       "title": "Calendrier sur téléphone : des noms de clubs lisibles",
-      "status": "doing",
-      "started": "2026-10-08"
+      "status": "done",
+      "started": "2026-10-08",
+      "finished": "2026-10-08"
     },
     {
       "id": "L49",
@@ -158,6 +151,16 @@
     {
       "id": "L65",
       "title": "Match à 320 px : le nom du club visiteur n'est plus tronqué",
+      "status": "todo"
+    },
+    {
+      "id": "L70",
+      "title": "Carte Ligue 1 : un match à l'horaire non fixé ne montre plus une date ferme",
+      "status": "todo"
+    },
+    {
+      "id": "L71",
+      "title": "Calendrier : la date d'une ligne « à confirmer » plus lisible",
       "status": "todo"
     }
   ]
