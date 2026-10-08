@@ -553,11 +553,12 @@ lots:
   - id: L55
     title: "À propos : lien Eywa mort (eywa-eywa.pages.dev ne résout pas ; le site répond sur avatar-pandora-12q.pages.dev)"
     public: "À propos : le lien vers Eywa réparé"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
+    started: 2026-10-08
   - id: L56
     title: "Page match : aucun h1 ; tableau de bord : lieu du prochain match « Stade Racing Club de Lens » (« Stade » + nom du club) — le vrai stade ou rien ; positions en anglais (GOALKEEPER, CENTRE BACK, COACH)"
     public: "Page match : un vrai titre, et le bon stade pour le prochain match"
