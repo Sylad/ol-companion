@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-08 19:23",
+  "generated": "2026-10-08 20:57",
   "entries": [
+    {
+      "slug": "2026-10-08-a-propos-le-lien-vers-eywa-repare",
+      "title": "À propos : le lien vers Eywa réparé",
+      "date": "2026-10-08",
+      "lots": [
+        "L55"
+      ],
+      "captures": [
+        "captures/L55-lien-eywa.png"
+      ],
+      "alts": [
+        "La rubrique « Mes autres sites » de la page À propos, avec la carte Eywa"
+      ],
+      "html": "<p>Sur la page À propos, la carte « Eywa » (rubrique « Mes autres sites ») ouvre maintenant le site Eywa. Auparavant, elle menait à une adresse qui n'existait plus et n'affichait rien.</p>"
+    },
     {
       "slug": "2026-10-08-textes-secondaires-lisibles-sur-les-photos-et-les-panneaux",
       "title": "Textes secondaires lisibles sur les photos et les panneaux",

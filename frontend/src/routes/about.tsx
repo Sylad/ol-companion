@@ -244,7 +244,7 @@ export function AboutPage() {
             { tag: '🦖', name: 'Evatosorus', desc: 'Codex Mésozoïque (cadeau pour Eva)', url: 'https://evatosorus.pages.dev' },
             { tag: '⚔️', name: 'Warhammer 40K Codex', desc: 'Fan codex narratif W40K', url: 'https://github.com/Sylad/warhammer40k' },
             { tag: '💸', name: 'Finance Tracker', desc: 'Suivi finances perso (PDF Claude)', url: 'https://github.com/Sylad/finance-tracker' },
-            { tag: '🌿', name: 'Eywa', desc: 'Codex Pandora (pour Eva)', url: 'https://eywa-eywa.pages.dev' },
+            { tag: '🌿', name: 'Eywa', desc: 'Codex Pandora (pour Eva)', url: 'https://avatar-pandora-12q.pages.dev' },
           ].map((s) => (
             <a key={s.name} href={s.url} target="_blank" rel="noopener"
               className="rounded-md border border-border p-3 flex items-center gap-3 hover:border-ol-red-bright transition-colors group">
