@@ -319,7 +319,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   const awayWon = hasScore && fixture.awayScore! > fixture.homeScore!;
 
   return (
-    <article className={cn('grid grid-cols-[72px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-2/45 transition-colors', isLive && 'border-l-[3px] border-l-live')}>
+    <article className={cn('grid grid-cols-[56px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-2/45 transition-colors', isLive && 'border-l-[3px] border-l-live')}>
       <div className="text-center">
         <div className="text-xs font-semibold text-fg">{day}</div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted">{month}</div>
@@ -340,7 +340,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
           dim={hasScore && !awayWon}
         />
       </div>
-      <div className="min-w-[72px] text-right">
+      <div className="text-right">
         {isLive ? (
           <div className="text-xs font-bold text-live animate-pulse-live">LIVE</div>
         ) : hasScore ? (

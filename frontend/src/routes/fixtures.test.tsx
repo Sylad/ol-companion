@@ -534,3 +534,30 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.getByText('Saison 2027-28')).toBeInTheDocument();
   });
 });
+
+// L48 — au téléphone (390 px, 320 px), la ligne compacte laisse la place au nom
+// des clubs : colonne date 56 px, nom en 1fr, colonne d'état à sa largeur utile.
+describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('range date / clubs / état dans une grille 56px 1fr auto', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    const [row] = await screen.findAllByRole('article');
+    expect(row.className).toContain('grid-cols-[56px_1fr_auto]');
+    expect(row.className).not.toContain('72px');
+    const state = row.lastElementChild as HTMLElement;
+    expect(state.className).not.toContain('min-w-[72px]');
+  });
+
+  it("affiche « Marseille » et non « Olympique de Marseille »", async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+    const rows = screen.getAllByRole('article').filter((a) => /Marseille/.test(a.textContent ?? ''));
+    expect(rows.length).toBeGreaterThan(0);
+    for (const r of rows) expect(r).not.toHaveTextContent('Olympique de Marseille');
+  });
+});

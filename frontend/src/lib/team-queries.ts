@@ -53,7 +53,14 @@ export function teamWikiQuery(teamId: number, fallbackName: string): string {
   return TEAM_WIKI_BY_ID[teamId] ?? fallbackName;
 }
 
+/** Noms que les règles ci-dessous ne raccourcissent pas (L48 : 22 caractères tronqués à 390 px). */
+const SHORT_NAME_BY_FULL_NAME: Record<string, string> = {
+  'Olympique de Marseille': 'Marseille',
+};
+
 export function teamShortName(name: string): string {
+  const trimmed = name.trim();
+  if (SHORT_NAME_BY_FULL_NAME[trimmed]) return SHORT_NAME_BY_FULL_NAME[trimmed];
   return name
     .replace(/^(AS|RC|FC|SCO|OGC|OL|OM|PSG|AJ)\s+/i, '')
     .replace(/\s+(FC|SCO|OGC|OL|OM|AC)$/i, '')
