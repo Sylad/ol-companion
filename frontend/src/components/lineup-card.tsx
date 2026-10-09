@@ -1,4 +1,5 @@
 import type { LiveMatchLineup, LiveMatchLineupPlayer } from '@/types/api';
+import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -56,7 +57,7 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
 function PlayerChip({ player, chipClass, numClass }: { player: LiveMatchLineupPlayer; chipClass: string; numClass: string }) {
   return (
     <span
-      title={`${player.name}${player.positionShort ? ` · ${player.positionShort}` : ''}`}
+      title={`${player.name}${player.positionShort ? ` · ${positionShortFr(player.positionShort)}` : ''}`}
       className={cn('inline-flex items-center gap-1.5 rounded-sm border bg-surface-2/60 px-2 py-1 text-xs whitespace-nowrap', chipClass)}
     >
       {player.jerseyNumber !== null && (

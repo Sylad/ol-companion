@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { positionShortFr } from '@/lib/position-fr';
 import { Loader2, LayoutGrid, Users, BarChart3, ArrowUpDown } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useLineup } from '@/hooks/use-lineup';
@@ -219,7 +220,7 @@ function PlayerStatsRow({ player }: { player: PlayerSeasonStats }) {
             {player.name}
           </span>
           <span className="text-[10px] uppercase tracking-wider text-fg-dim">
-            {player.positionShort}
+            {positionShortFr(player.positionShort)}
           </span>
         </Link>
       </td>

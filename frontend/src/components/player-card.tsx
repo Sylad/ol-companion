@@ -1,4 +1,5 @@
 import type { LineupPlayer } from '@/types/api';
+import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
 
 function playerPhotoUrl(p: LineupPlayer): string | null {
@@ -86,7 +87,7 @@ export function PlayerCard({ player, compact = false }: PlayerCardProps) {
               tone,
             )}
           >
-            {player.positionShort}
+            {positionShortFr(player.positionShort)}
           </span>
           {compact && player.jerseyNumber !== null && (
             <span className="font-mono tabular-nums text-fg-dim text-xs">#{player.jerseyNumber}</span>

@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-08 20:57",
+  "generated": "2026-10-09 09:04",
   "entries": [
+    {
+      "slug": "2026-10-09-page-match-un-vrai-titre-et-le-bon-stade-pour-le-prochain-ma",
+      "title": "Page match : un vrai titre, et le bon stade pour le prochain match",
+      "date": "2026-10-09",
+      "lots": [
+        "L56"
+      ],
+      "captures": [
+        "captures/L56-stade.png"
+      ],
+      "alts": [
+        "Tableau de bord : pour Lens - Lyon, le lieu affiché est Stade Bollaert-Delelis"
+      ],
+      "html": "<p>Le tableau de bord n'écrit plus « Stade Racing Club de Lens » : pour un match à l'extérieur, il affiche le vrai stade du club qui reçoit (« Stade Bollaert-Delelis »), et rien du tout quand le stade n'est pas connu.</p>\n<p>Les postes des joueurs et de l'entraîneur sont en français (« Gardien », « Défenseur central », « Entraîneur », abrégés GB, DC, ENT…) au lieu de GOALKEEPER, CENTRE BACK ou COACH. La page d'un match a, de son côté, un vrai titre de page pour les lecteurs d'écran.</p>"
+    },
     {
       "slug": "2026-10-08-a-propos-le-lien-vers-eywa-repare",
       "title": "À propos : le lien vers Eywa réparé",

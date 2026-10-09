@@ -1,4 +1,5 @@
 import { Link, useParams } from '@tanstack/react-router';
+import { positionLabelFr } from '@/lib/position-fr';
 import { Loader2, ArrowLeft, Goal, Target, Clock, Award, Activity, ShieldCheck } from 'lucide-react';
 import {
   LineChart,
@@ -241,7 +242,7 @@ export function PlayerDetailPage() {
               {player.name}
             </h1>
             <p className="mt-1 text-sm text-fg-muted">
-              <span className="text-fg-bright font-semibold">{player.position || player.positionShort}</span>
+              <span className="text-fg-bright font-semibold">{positionLabelFr(player.position || player.positionShort)}</span>
               {player.jerseyNumber !== null && (
                 <>
                   {' '}· <span className="font-mono tabular-nums">#{player.jerseyNumber}</span>
