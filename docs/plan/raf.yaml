@@ -840,7 +840,7 @@ lots:
     created: 2026-10-09
   - id: L88
     title: "Accueil, libellés : strip de forme « W D » (D = nul) sous « 2N · 1D » (D = défaite) → V/N/D avec aria-label ; « 1.83 ppm », « 1.80 / match » → virgule fr-FR et « pts/match » ; « Stade Rennais FC 1901 » non raccourci par teamShortName ; info-bulle « 1 matchs » (season-summary.tsx l.220) (revue UX L2)"
-    public: "Accueil : libellés harmonisés (forme V/N/D, virgule, noms de clubs courts)"
+    public: "Accueil : libellés harmonisés (forme V, N, D, virgule décimale, noms de clubs courts)"
     status: todo
     estimate: 0.25
     visible: true
