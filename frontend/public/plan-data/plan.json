@@ -168,6 +168,12 @@
       "id": "L71",
       "title": "Calendrier : la date d'une ligne « à confirmer » plus lisible",
       "status": "todo"
+    },
+    {
+      "id": "L77",
+      "title": "Match à venir : « vs » à la place d'un faux score « -1 · -1 »",
+      "status": "doing",
+      "started": "2026-10-09"
     }
   ]
 }

@@ -723,6 +723,7 @@ lots:
     created: 2026-10-09
   - id: L77
     title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
+    public: "Match à venir : « vs » à la place d'un faux score « -1 · -1 »"
     status: doing
     estimate: 1
     visible: true
