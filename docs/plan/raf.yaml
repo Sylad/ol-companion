@@ -692,11 +692,12 @@ lots:
   - id: L71
     title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX L47, 08-10)"
     public: "Calendrier : la date d'une ligne « à confirmer » plus lisible"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-08
+    started: 2026-10-09
   - id: L72
     title: "Glossaire des compétitions (suite L49) : /match et /players (« Dernier match ») affichent encore le nom brut 365scores « France, Ligue 1 » — passer par le glossaire (competitionLong) ; ajouter la ligne never dans docs/qa/expectations.md (QA 08-10)"
     status: todo
