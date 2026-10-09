@@ -8,7 +8,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 ## *
 - shows: un h1 non vide — le bandeau du club ou le titre propre de la page ; la navigation — barre latérale à 1440, barre du bas à 5 entrées (4 liens + bouton « Plus ») à 390
 - shows: le bundle chargé par la page (script[src]) est celui que référence /index.html relu sans cache
-- never: « Erreur de chargement », « Too Many Requests », un élément .animate-spin ou .animate-pulse visible, ou un texte « Chargement », 8 s après le chargement
+- never: « Erreur de chargement », « Too Many Requests », un élément .animate-spin ou .animate-pulse visible, ou un texte d'état « Chargement… », « Chargement de … », « Chargement du … » ou « Chargement des … » (jamais le mot seul : la prose de /about, « chargement progressif des routes », et un titre de /nouveautes le contiennent), 8 s après le chargement
 - api: /api/demo/status
 - api: /api/events — flux SSE, sans taille
 - api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche
