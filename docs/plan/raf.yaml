@@ -730,7 +730,7 @@ lots:
     finished: 2026-10-08
   - id: L75
     title: "QA : docs/qa/expectations.md — la ligne never « Chargement » de ## * matche la prose de /about (« chargement progressif des routes ») et un titre de /nouveautes ; la restreindre au texte d'état (« Chargement… », « Chargement de … ») — QA prod 08-10"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-08
@@ -738,6 +738,7 @@ lots:
       - { date: 2026-10-09, text: "QA L32 09-10 : ajouter « Chargement du » à la liste des textes d'état (« Chargement du match… » vu sur /match)" }
     started: 2026-10-09
     review: { date: 2026-10-09, verdict: "conforme — 1 commit (acdb287), ligne never restreinte aux textes d'état « Chargement… / de / du / des » ; plus aucune fausse alerte sur la prose de /about ni sur /nouveautes (vérifié par grep) ; seule note : la variante « Chargement... » en points ASCII n'est pas citée à la lettre — orchestré (vague 2026-10-09-2157, 0 passe(s) de correction)", commit: null }
+    finished: 2026-10-09
   - id: L76
     title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
     status: todo
