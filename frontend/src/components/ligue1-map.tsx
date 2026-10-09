@@ -365,10 +365,11 @@ function ClubMarker({ club, positionOffsetMeters, standingEntry, ligue1Matches, 
 
 /**
  * Legend overlay explaining the bicolor markers.
- * Positioned in the top-right corner with high z-index above Leaflet panes.
+ * Au téléphone (< sm) : sous la carte, dans le flux, pour ne pas masquer l'en-tête
+ * des bulles (L81). À partir de sm : coin haut-droit, au-dessus des panes Leaflet.
  * Compact (~170 px wide) so it never crushes the map area.
  */
-function MapLegend() {
+export function MapLegend() {
   const swatch = (color: string, label: string) => (
     <div className="flex items-center gap-1.5">
       <span
@@ -380,8 +381,7 @@ function MapLegend() {
   );
   return (
     <div
-      className="absolute top-2 right-2 z-[500] rounded-md border border-border bg-surface/90 backdrop-blur px-2.5 py-2 shadow-md pointer-events-none"
-      style={{ width: 170 }}
+      className="border-t border-border bg-surface px-2.5 py-2 sm:absolute sm:top-2 sm:right-2 sm:z-[500] sm:w-[170px] sm:rounded-md sm:border sm:bg-surface/90 sm:backdrop-blur sm:shadow-md sm:pointer-events-none"
       aria-label="Légende des marqueurs"
     >
       <div className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold mb-1.5 leading-none">
@@ -423,42 +423,44 @@ export function Ligue1Map() {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative rounded-md border border-border overflow-hidden bg-surface"
-      style={{ height: 'min(72vh, 720px)', minHeight: 460 }}
-    >
-      <MapLegend />
-      <MapContainer
-        center={FRANCE_CENTER}
-        zoom={6}
-        scrollWheelZoom
-        className="h-full w-full"
-        style={{ background: '#0e1420' }}
+    <div className="relative rounded-md border border-border overflow-hidden bg-surface">
+      <div
+        ref={containerRef}
+        className="relative"
+        style={{ height: 'min(72vh, 720px)', minHeight: 460 }}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
-          maxZoom={18}
-        />
-        <FitBoundsToClubs />
-        {LIGUE1_CLUBS_COORDS.map((club) => {
-          // Paris collision — Paris FC sits ~3 km south of PSG. We push Paris
-          // FC ~600 m further south so both pins are clickable at zoom <= 8.
-          const offset =
-            club.id365 === 6075 ? { dx: 0, dy: -600 } : undefined;
-          return (
-            <ClubMarker
-              key={club.id365}
-              club={club}
-              positionOffsetMeters={offset}
-              standingEntry={findStandingForClub(club)}
-              ligue1Matches={ligue1Matches}
-              allMatches={seasonMatchesQ.data}
-            />
-          );
-        })}
-      </MapContainer>
+        <MapContainer
+          center={FRANCE_CENTER}
+          zoom={6}
+          scrollWheelZoom
+          className="h-full w-full"
+          style={{ background: '#0e1420' }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
+            maxZoom={18}
+          />
+          <FitBoundsToClubs />
+          {LIGUE1_CLUBS_COORDS.map((club) => {
+            // Paris collision — Paris FC sits ~3 km south of PSG. We push Paris
+            // FC ~600 m further south so both pins are clickable at zoom <= 8.
+            const offset =
+              club.id365 === 6075 ? { dx: 0, dy: -600 } : undefined;
+            return (
+              <ClubMarker
+                key={club.id365}
+                club={club}
+                positionOffsetMeters={offset}
+                standingEntry={findStandingForClub(club)}
+                ligue1Matches={ligue1Matches}
+                allMatches={seasonMatchesQ.data}
+              />
+            );
+          })}
+        </MapContainer>
+      </div>
+      <MapLegend />
     </div>
   );
 }
