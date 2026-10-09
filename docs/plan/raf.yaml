@@ -267,15 +267,17 @@ lots:
     finished: 2026-10-06
   - id: L32
     title: "API : /api/wiki-image répond 429 en navigation ordinaire (9 appels refusés en passant de / à /fixtures, deux fois, le 03-10) — la limite par visiteur se déclenche sur les logos de clubs ; mesurer puis relever la limite ou regrouper/mettre en cache les appels"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "03-10, passage QA : premier chargement à froid de /standings = 26 appels /api en 250 ms, 12 × 429 sur wiki-image, 1 logo jamais chargé (Lorient ou Le Havre selon le chargement, une seule relance à ~1 s) ; /fixtures : 9 × 429, tous rattrapés. Reproduit après une minute de calme : un visiteur ordinaire le subit." }
       - { date: 2026-10-03, text: "03-10, second passage QA : toujours 12 × 429 au premier chargement de /standings, un écusson différent manquant à chaque chargement (PSG, Marseille, Brest, Troyes)." }
       - { date: 2026-10-05, text: "QA prod 05-10 : /standings 12 (1440) à 17 (390) réponses 429 wiki-image, 15 écussons sur 18 à 1440 ; /fixtures et /news 8/8 en 429 pour les logos du bandeau" }
+      - { date: 2026-10-09, text: "Revue 09-10 (mineur, note) : CLAUDE.md:91 et backend/src/config/throttlers.ts parlent d'une limite « par visiteur » ; @nestjs/throttler compte par visiteur ET par endpoint (clé classe-handler-seau-IP), les 60/min de /api/standings ne sont pas entamés par /api/wiki-image — à préciser « par visiteur et par endpoint » lors d'une prochaine passe doc" }
     started: 2026-10-09
     review: { date: 2026-10-09, verdict: "conforme (1 note mineure : la doc présente la limite comme commune à tout le visiteur alors qu'elle est comptée par endpoint) — orchestré (vague 2026-10-09-1752, 0 passe(s) de correction)", commit: 985b8d68c1818ba7d39f28d567b66d5d53137001 }
+    finished: 2026-10-09
   - id: L33
     title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
     status: done
