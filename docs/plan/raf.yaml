@@ -803,6 +803,7 @@ lots:
     created: 2026-10-09
   - id: L83
     title: "Accueil : « 0D/2D » des pastilles par compétition en rouge --loss à 12 px = 3,85:1 sur surface (WCAG 1.4.3 exige 4,5) — texte en --ol-red-bright (4,95:1) ou pastille colorée + chiffre fg (revue UX L2)"
+    public: "Accueil : les compteurs de défaites par compétition plus lisibles"
     status: doing
     estimate: 0.25
     visible: true
@@ -811,48 +812,56 @@ lots:
     review: { date: 2026-10-09, verdict: "conforme (Sonnet, revue légère 09-10, verdict confirmé par le lead après re-vérification) : 1 commit 7d2da22, « D » des pastilles en --ol-red-bright, 4,83:1 mesuré sur la pastille (WCAG 1.4.3), test sur les 4 pastilles « 0D » ; 2 notes mineures (autres usages de text-loss hors lot)", commit: 7d2da224c8c3e1adcfbfe7048134d11c928b3932 }
   - id: L84
     title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
+    public: "Accueil : pendant un match en direct, le bandeau montre le match en cours, pas le suivant"
     status: todo
     estimate: 0.5
     visible: true
     created: 2026-10-09
   - id: L85
     title: "Accueil : pendant le chargement et en erreur réseau, « Aucun match programmé. », « Points 0 », « Forme 0V » s'affichent comme des valeurs, et « Erreur de chargement. » n'a pas de Réessayer — squelettes ou « — » tant que isLoading, message + refetch si isError, état vide réel avec lien vers le calendrier (dashboard-hero, last-result, dashboard-stats) (revue UX L2)"
+    public: "Accueil : pendant le chargement, pas de faux « Aucun match » ni de zéros, et un bouton Réessayer en cas d'erreur"
     status: todo
     estimate: 0.5
     visible: true
     created: 2026-10-09
   - id: L86
     title: "Accueil : les tuiles comptent le match en cours comme joué et perdu (« 6 matchs · 1.83 ppm », « 2N · 1D » à la 56e de Lens – Lyon) quand la pastille Ligue 1 de la même page dit 5 matchs · 0D — exclure le match live du calcul ou l'étiqueter (revue UX L2)"
+    public: "Accueil : un match en cours n'est plus compté comme joué dans les tuiles"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-09
   - id: L87
     title: "Accueil : le pied du tracker « Journée 1 → 6 · Actuellement 2e · 11 pts » est coupé en deux à 1440 et 390 — la ligne est dans le bloc h-[280px] rempli par le graphique et la section est overflow-hidden (position-tracker.tsx l.46, 89-91, 136-148) ; sortir le pied du bloc (revue UX L2)"
+    public: "Accueil : le pied du tracker de classement n'est plus coupé"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-09
   - id: L88
     title: "Accueil, libellés : strip de forme « W D » (D = nul) sous « 2N · 1D » (D = défaite) → V/N/D avec aria-label ; « 1.83 ppm », « 1.80 / match » → virgule fr-FR et « pts/match » ; « Stade Rennais FC 1901 » non raccourci par teamShortName ; info-bulle « 1 matchs » (season-summary.tsx l.220) (revue UX L2)"
+    public: "Accueil : libellés harmonisés (forme V/N/D, virgule décimale, noms de clubs courts)"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-09
   - id: L89
     title: "Accueil : le sur-titre du bandeau (« Prochain rendez-vous », « Jour de match », « Match en direct ») est gris fg-dim au lieu du rouge prévu — .eyebrow (@layer utilities, index.css l.116) écrase text-ol-red-bright/text-live ; sur la photo, 10 % de son fond passe sous 4,5:1 à 390 (revue UX L2)"
+    public: "Accueil : le sur-titre du bandeau retrouve sa couleur"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-09
   - id: L90
     title: "Accueil, téléphone : masquer sous lg le panneau « Tableau de bord match » du bandeau (180 px qui répètent statut, adversaire, lieu ; barre 24/46/72 % sans légende), « · Domicile/Extérieur » en fin de ligne lieu — maquette de la revue L2 (tmp/ux-ol-L2/rapport.md) à valider avant de coder (revue UX L2)"
+    public: "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler"
     status: todo
     estimate: 0.5
     visible: true
     created: 2026-10-09
   - id: L91
     title: "Carte Ligue 1 : la bulle d'un club liste le match en cours sous « À venir » (bilan 0 V 0 N 0 D, marqueur « Pas encore joué ») alors que /api/season-matches le donne IN_PLAY avec son score (Lens 2-1 Lyon 90+6', 09-10) — isPast (ligue1-map.tsx l.145) ignore le statut ; afficher le score en cours ou « en direct » ; ajouter la ligne never correspondante à docs/qa/expectations.md (QA L81 09-10)"
+    public: "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score"
     status: todo
     estimate: 0.25
     visible: true
