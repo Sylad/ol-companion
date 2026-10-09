@@ -577,6 +577,7 @@ lots:
     ux: { date: 2026-10-09, verdict: "conforme — 0 bloquant, 0 majeur, 1 mineur (badges de poste abrégés sans forme longue) ; stade mesuré 7,4:1, 0 reste anglais sur /players /player /match, h1 sr-only unique (ux-reviewer 09-10, captures .cadence/runs/2026-10-09-0842/ol-companion--L56/playwright)" }
     notes:
       - { date: 2026-10-09, text: "mineur (revues code + UX) : badges de poste abrégés (GB, DC, MDC, AG, PG…) sans title/aria-label sur /players et chips /match — exposer positionLabelFr en abbr ; note, pas de sous-tâche (pas de bug observable)" }
+      - { date: 2026-10-09, text: "QA prod 09-10 après livraison 06f36b6 : 13/13 pages, stade réel, postes FR, h1 sr-only ; 3 mineurs → L78, L79, notes L77/L73 ; captures .cadence/runs/2026-10-09-0842/ol-companion--L56/qa/" }
     finished: 2026-10-09
   - id: L57
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
@@ -695,6 +696,8 @@ lots:
     status: todo
     estimate: 1
     created: 2026-10-08
+    notes:
+      - { date: 2026-10-09, text: "QA L56 09-10 : troisième variante « Jour de match » (match dans la journée) à accepter dans expectations.md à côté de « Prochain rendez-vous » / « Approche du coup d'envoi »" }
   - id: L74
     title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
     public: Textes secondaires lisibles sur les photos et les panneaux
@@ -720,6 +723,18 @@ lots:
     created: 2026-10-09
   - id: L77
     title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
+    status: todo
+    estimate: 1
+    created: 2026-10-09
+    notes:
+      - { date: 2026-10-09, text: "QA L56 09-10 : l'en-tête de /match/<id> (.text-5xl) affiche aussi « -1 · -1 » pour un match non joué, même donnée — traiter dans le même lot" }
+  - id: L78
+    title: "Postes : « Milieu de Terrain » (libellé FR de 365scores) traverse positionLabelFr tel quel sur /player/<id> (majuscule à Terrain) et tp.role brut dans « Joueurs en vue » de /match — ajouter les libellés français 365scores à position-fr.ts et normaliser la casse (QA L56 09-10)"
+    status: todo
+    estimate: 1
+    created: 2026-10-09
+  - id: L79
+    title: "Page match à venir : pas de bloc « Faits du match » et colonne centrale vide à 1440 (grille xl 3 colonnes) — état « Le match n'a pas commencé » ou grille repliée ; ajouter « may be absent when le match n'a pas commencé » à la ligne shows de /match dans docs/qa/expectations.md (QA L56 09-10)"
     status: todo
     estimate: 1
     created: 2026-10-09
