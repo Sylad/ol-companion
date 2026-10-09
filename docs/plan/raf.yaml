@@ -573,6 +573,7 @@ lots:
     visible: true
     created: 2026-10-03
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "conforme (1 remarque mineure : badges de poste abrégés sans forme longue) — revue orchestrate 2026-10-09-0842, session review-small opus", commit: 7d7ff384198d5922a68e0b18f0a99c6e46809fdf }
   - id: L57
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
     status: todo
