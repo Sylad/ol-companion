@@ -803,10 +803,11 @@ lots:
     created: 2026-10-09
   - id: L83
     title: "Accueil : « 0D/2D » des pastilles par compétition en rouge --loss à 12 px = 3,85:1 sur surface (WCAG 1.4.3 exige 4,5) — texte en --ol-red-bright (4,95:1) ou pastille colorée + chiffre fg (revue UX L2)"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-09
+    started: 2026-10-09
   - id: L84
     title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
     status: todo
