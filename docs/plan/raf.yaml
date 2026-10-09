@@ -275,6 +275,7 @@ lots:
       - { date: 2026-10-03, text: "03-10, second passage QA : toujours 12 × 429 au premier chargement de /standings, un écusson différent manquant à chaque chargement (PSG, Marseille, Brest, Troyes)." }
       - { date: 2026-10-05, text: "QA prod 05-10 : /standings 12 (1440) à 17 (390) réponses 429 wiki-image, 15 écussons sur 18 à 1440 ; /fixtures et /news 8/8 en 429 pour les logos du bandeau" }
       - { date: 2026-10-09, text: "Revue 09-10 (mineur, note) : CLAUDE.md:91 et backend/src/config/throttlers.ts parlent d'une limite « par visiteur » ; @nestjs/throttler compte par visiteur ET par endpoint (clé classe-handler-seau-IP), les 60/min de /api/standings ne sont pas entamés par /api/wiki-image — à préciser « par visiteur et par endpoint » lors d'une prochaine passe doc" }
+      - { date: 2026-10-09, text: "QA prod 09-10 18:10 (14/14 pages, 1440 et 390) : /standings 18/18 écussons CDN 365scores, 0 wiki-image pour le tableau ; chaîne / → /fixtures → /standings → /cups : 7 wiki-image, 7 × 200, 0 × 429 aux deux largeurs (12 × 429 à la passe de 14 h)" }
     started: 2026-10-09
     review: { date: 2026-10-09, verdict: "conforme (1 note mineure : la doc présente la limite comme commune à tout le visiteur alors qu'elle est comptée par endpoint) — orchestré (vague 2026-10-09-1752, 0 passe(s) de correction)", commit: 985b8d68c1818ba7d39f28d567b66d5d53137001 }
     finished: 2026-10-09
@@ -703,6 +704,7 @@ lots:
     notes:
       - { date: 2026-10-09, text: "QA L56 09-10 : troisième variante « Jour de match » (match dans la journée) à accepter dans expectations.md à côté de « Prochain rendez-vous » / « Approche du coup d'envoi »" }
       - { date: 2026-10-09, text: "QA L77 09-10 : troisième variante du titre du bandeau, « Jour de match » (match le jour même) ; lignes expectations à ajouter : ## / shows « Prochain rendez-vous » ou « Approche du coup d'envoi » ou « Jour de match » avec deux clubs, une date et un stade ; ## / shows carte À venir « vs » entre les clubs tant que live-match/current est upcoming avec scores null ; ## / et ## /match never « -1 · -1 »" }
+      - { date: 2026-10-09, text: "QA L32 09-10 : accepter « Jour de match » (3e variante du bandeau à moins de 2 h du coup d'envoi), « du dd/mm » pour les horaires non fixés sur /fixtures (plus de « Horaire à confirmer »), préciser que la tuile Lieu vaut Domicile/Extérieur et le nom de stade est celui du bandeau" }
   - id: L74
     title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
     public: Textes secondaires lisibles sur les photos et les panneaux
@@ -721,6 +723,8 @@ lots:
     estimate: 0.1
     quickwin: true
     created: 2026-10-08
+    notes:
+      - { date: 2026-10-09, text: "QA L32 09-10 : ajouter « Chargement du » à la liste des textes d'état (« Chargement du match… » vu sur /match)" }
   - id: L76
     title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
     status: todo
@@ -753,6 +757,11 @@ lots:
     created: 2026-10-09
     notes:
       - { date: 2026-10-09, text: "QA L77 09-10 : « Statistiques » affiche « Pas encore de statistiques. » pour un match à venir — ajouter aussi « may show … when le match n'a pas commencé » à la ligne de /match" }
+  - id: L80
+    title: "Page match à venir : « Chargement du match… » sans requête /api/live-match/<id>/stats émise, vu 1 fois sur 5 chargements à 390 px (QA L32 09-10, non reproduit en solo ×3) — vérifier la condition enabled / la clé de la query stats et prévoir une sortie (erreur + Réessayer) après N s"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-09
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
