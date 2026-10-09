@@ -698,6 +698,7 @@ lots:
     created: 2026-10-08
     notes:
       - { date: 2026-10-09, text: "QA L56 09-10 : troisième variante « Jour de match » (match dans la journée) à accepter dans expectations.md à côté de « Prochain rendez-vous » / « Approche du coup d'envoi »" }
+      - { date: 2026-10-09, text: "QA L77 09-10 : troisième variante du titre du bandeau, « Jour de match » (match le jour même) ; lignes expectations à ajouter : ## / shows « Prochain rendez-vous » ou « Approche du coup d'envoi » ou « Jour de match » avec deux clubs, une date et un stade ; ## / shows carte À venir « vs » entre les clubs tant que live-match/current est upcoming avec scores null ; ## / et ## /match never « -1 · -1 »" }
   - id: L74
     title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
     public: Textes secondaires lisibles sur les photos et les panneaux
@@ -731,6 +732,7 @@ lots:
     notes:
       - { date: 2026-10-09, text: "QA L56 09-10 : l'en-tête de /match/<id> (.text-5xl) affiche aussi « -1 · -1 » pour un match non joué, même donnée — traiter dans le même lot" }
       - { date: 2026-10-09, text: "revue UX 09-10 : le « Aucun match programmé. » au-dessus de la carte À venir sur le banc local vient de l'absence de FOOTBALL_API_KEY dans backend/.env local (la prod renvoie 29 matchs à venir), pas un défaut ; mini-standings.tsx:38 a le même aria-label sur un span (mesure de la revue de code), pas de bug observable" }
+      - { date: 2026-10-09, text: "QA prod 09-10 (sha 376ba53) : 13/13 pages à 1440 et 390 (/match à venir et terminé), « vs » Lens – Lyon sur la carte À venir et l'en-tête /match/4735252, aucun « -1 », live-match/current scores null, Nouveauté et capture en ligne ; 0 défaut nouveau ; déjà planifiés L32 (12 × 429 wiki-image, écusson manquant /standings, reproduit seul après 1 min), L38, L72, L75, L79 ; captures tmp/qa-ol-L77" }
     started: 2026-10-09
     review: { date: 2026-10-09, verdict: "conforme — 5 commits : « vs » à la place de « -1 · -1 » sur la carte À venir et l'en-tête /match, -1 ramené à null à la source (plus de faux « But ! »), libellé sr-only ; Nouveauté corrigée (U+202F, capture 342×150, nouveautes-data régénéré) ; vitest 339/339, jest 315/315, tsc OK, raf news check et raf check verts", commit: 7a1ea1141a7d187bdced915fc6c328a183b77307 }
     ux: { date: 2026-10-09, verdict: "conforme — « vs » 4,91:1 (WCAG 1.4.3), aucun nœud AX « vs », sr-only « Match pas encore commencé » exposé, aucun « -1 · -1 » sur / et /match à 1440 et 390 px, hauteur carte/en-tête identique avec ou sans score (36/48 px), reflow OK à 320 px ; non vérifié : match terminé réel, libellé « Score indisponible », « But ! » au coup d'envoi" }
@@ -745,6 +747,8 @@ lots:
     status: todo
     estimate: 1
     created: 2026-10-09
+    notes:
+      - { date: 2026-10-09, text: "QA L77 09-10 : « Statistiques » affiche « Pas encore de statistiques. » pour un match à venir — ajouter aussi « may show … when le match n'a pas commencé » à la ligne de /match" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
