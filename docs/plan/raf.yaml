@@ -17,12 +17,16 @@ lots:
     finished: 2026-09-28
   - id: L2
     title: Revue UX — Accueil
-    status: todo
+    status: done
     estimate: 0.25
     created: 2026-09-28
     notes:
       - { date: 2026-10-01, text: "Revue UX L17 (390 px) : libellés de la barre de navigation du bas coupés (« nboard », « FC No… »), pastille LIVE RECONNECTE qui chevauche le contenu — à mesurer" }
       - { date: 2026-10-01, text: "Revue UX L13 : passer Carte L1 (puis Coupes) dans « Plus » → 6 cases + Plus, 55,7 px par case à 390 px, Classement (52 px) et Dashboard (49 px) ne sont plus coupés ; onglet actif rouge 9 px à 4,4:1 sur pixels" }
+      - { date: 2026-10-09, text: "Revue UX 09-10 (agent, pendant Lens – Lyon en direct) : 1 bloquant, 4 majeurs, 9 mineurs → lots L83 à L90 ; notes : SVG Recharts sans role/nom et icône « i » div+title non focusable ; carte LIVE : « Lyon » en rouge mais barre bleue (→ L9) ; /api/live-match/4735252/stats 500 une fois puis 200. Déjà planifié : L45 L12 L64 L73. Captures tmp/ux-ol-L2/" }
+    ux: { date: 2026-10-09, verdict: "non conforme (agent ux-reviewer 09-10, verdict acté par Sylvain) : 1 bloquant (WCAG 1.4.3, « 0D/2D » rouges à 3,85:1), 4 majeurs, 9 mineurs — retours posés en lots" }
+    started: 2026-10-09
+    finished: 2026-10-09
   - id: L3
     title: Revue UX — Calendrier et résultats (/fixtures)
     status: todo
@@ -779,16 +783,66 @@ lots:
   - id: L81
     title: "Carte Ligue 1 à 390 px : la légende « Aller / Retour » (MapLegend absolute z-[500] hors du conteneur Leaflet) recouvre l'en-tête de la bulle — nom du club, stade, bouton × — 25 % de la bulle de Lens masqués, mesuré QA L70 09-10 ; passer la légende sous les bulles ou la déplacer en bas de la carte au téléphone"
     public: "Carte Ligue 1 : la légende ne cache plus le haut d'une bulle sur téléphone"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     visible: true
     created: 2026-10-09
     started: 2026-10-09
     review: { date: 2026-10-09, verdict: "conforme (Sonnet, orchestrate 2026-10-09-2018, 0 bloquant, 0 majeur, 1 mineur ; verdict confirmé par le lead : 317 backend, 348 frontend, build OK, raf check propre ; incident de procédure : captures de revue laissées à la racine, sorties du dépôt)", commit: c6874b32a499e83b18fffa17c3c5e3412c877e06 }
+    ux: { date: 2026-10-09, verdict: "conforme (Sylvain 09-10) : légende « Aller / Retour » sous la carte à < 640 px, l'en-tête de la bulle n'est plus recouvert ; en prod depuis e134e4a" }
+    finished: 2026-10-09
   - id: L82
     title: "Carte Ligue 1 : au zoom initial, PSG est sous Paris FC (2 px), Monaco sous OGC Nice, Lille sous Lens à 390 — la bulle du club dessous ne s'ouvre pas (QA L70 09-10) ; regrouper ou décaler les marqueurs voisins"
     public: "Carte Ligue 1 : les clubs voisins restent cliquables au zoom de départ"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-09
+  - id: L83
+    title: "Accueil : « 0D/2D » des pastilles par compétition en rouge --loss à 12 px = 3,85:1 sur surface (WCAG 1.4.3 exige 4,5) — texte en --ol-red-bright (4,95:1) ou pastille colorée + chiffre fg (revue UX L2)"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-09
+  - id: L84
+    title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-09
+  - id: L85
+    title: "Accueil : pendant le chargement et en erreur réseau, « Aucun match programmé. », « Points 0 », « Forme 0V » s'affichent comme des valeurs, et « Erreur de chargement. » n'a pas de Réessayer — squelettes ou « — » tant que isLoading, message + refetch si isError, état vide réel avec lien vers le calendrier (dashboard-hero, last-result, dashboard-stats) (revue UX L2)"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-09
+  - id: L86
+    title: "Accueil : les tuiles comptent le match en cours comme joué et perdu (« 6 matchs · 1.83 ppm », « 2N · 1D » à la 56e de Lens – Lyon) quand la pastille Ligue 1 de la même page dit 5 matchs · 0D — exclure le match live du calcul ou l'étiqueter (revue UX L2)"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-09
+  - id: L87
+    title: "Accueil : le pied du tracker « Journée 1 → 6 · Actuellement 2e · 11 pts » est coupé en deux à 1440 et 390 — la ligne est dans le bloc h-[280px] rempli par le graphique et la section est overflow-hidden (position-tracker.tsx l.46, 89-91, 136-148) ; sortir le pied du bloc (revue UX L2)"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-09
+  - id: L88
+    title: "Accueil, libellés : strip de forme « W D » (D = nul) sous « 2N · 1D » (D = défaite) → V/N/D avec aria-label ; « 1.83 ppm », « 1.80 / match » → virgule fr-FR et « pts/match » ; « Stade Rennais FC 1901 » non raccourci par teamShortName ; info-bulle « 1 matchs » (season-summary.tsx l.220) (revue UX L2)"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-09
+  - id: L89
+    title: "Accueil : le sur-titre du bandeau (« Prochain rendez-vous », « Jour de match », « Match en direct ») est gris fg-dim au lieu du rouge prévu — .eyebrow (@layer utilities, index.css l.116) écrase text-ol-red-bright/text-live ; sur la photo, 10 % de son fond passe sous 4,5:1 à 390 (revue UX L2)"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-09
+  - id: L90
+    title: "Accueil, téléphone : masquer sous lg le panneau « Tableau de bord match » du bandeau (180 px qui répètent statut, adversaire, lieu ; barre 24/46/72 % sans légende), « · Domicile/Extérieur » en fin de ligne lieu — maquette de la revue L2 (tmp/ux-ol-L2/rapport.md) à valider avant de coder (revue UX L2)"
     status: todo
     estimate: 0.5
     visible: true
