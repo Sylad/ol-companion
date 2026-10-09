@@ -9,6 +9,13 @@ export function MatchScore({ home, away, status, sepClass = 'mx-1.5' }: {
   sepClass?: string;
 }) {
   const text = scoreText(home, away, status);
-  if (!text) return <span className="text-fg-dim" aria-label="Match pas encore commencé">vs</span>;
+  if (!text) {
+    return (
+      <span className="text-fg-dim">
+        <span aria-hidden="true">vs</span>
+        <span className="sr-only">{status === 'upcoming' ? 'Match pas encore commencé' : 'Score indisponible'}</span>
+      </span>
+    );
+  }
   return <>{text[0]}<span className={`text-fg-dim ${sepClass}`}>·</span>{text[1]}</>;
 }
