@@ -567,13 +567,17 @@ lots:
   - id: L56
     title: "Page match : aucun h1 ; tableau de bord : lieu du prochain match « Stade Racing Club de Lens » (« Stade » + nom du club) — le vrai stade ou rien ; positions en anglais (GOALKEEPER, CENTRE BACK, COACH)"
     public: "Page match : un vrai titre, et le bon stade pour le prochain match"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
     started: 2026-10-09
     review: { date: 2026-10-09, verdict: "conforme (1 remarque mineure : badges de poste abrégés sans forme longue) — revue orchestrate 2026-10-09-0842, session review-small opus", commit: 7d7ff384198d5922a68e0b18f0a99c6e46809fdf }
+    ux: { date: 2026-10-09, verdict: "conforme — 0 bloquant, 0 majeur, 1 mineur (badges de poste abrégés sans forme longue) ; stade mesuré 7,4:1, 0 reste anglais sur /players /player /match, h1 sr-only unique (ux-reviewer 09-10, captures .cadence/runs/2026-10-09-0842/ol-companion--L56/playwright)" }
+    notes:
+      - { date: 2026-10-09, text: "mineur (revues code + UX) : badges de poste abrégés (GB, DC, MDC, AG, PG…) sans title/aria-label sur /players et chips /match — exposer positionLabelFr en abbr ; note, pas de sous-tâche (pas de bug observable)" }
+    finished: 2026-10-09
   - id: L57
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
     status: todo
@@ -709,6 +713,16 @@ lots:
     estimate: 0.1
     quickwin: true
     created: 2026-10-08
+  - id: L76
+    title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
+    status: todo
+    estimate: 1
+    created: 2026-10-09
+  - id: L77
+    title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
+    status: todo
+    estimate: 1
+    created: 2026-10-09
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

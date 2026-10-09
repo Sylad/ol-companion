@@ -145,8 +145,9 @@
     {
       "id": "L56",
       "title": "Page match : un vrai titre, et le bon stade pour le prochain match",
-      "status": "doing",
-      "started": "2026-10-09"
+      "status": "done",
+      "started": "2026-10-09",
+      "finished": "2026-10-09"
     },
     {
       "id": "L64",
