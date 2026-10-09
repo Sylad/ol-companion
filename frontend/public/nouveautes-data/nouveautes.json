@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-09 19:32",
+  "generated": "2026-10-09 19:45",
   "entries": [
     {
       "slug": "2026-10-09-carte-ligue-1-un-match-a-l-horaire-non-fixe-ne-montre-plus-u",
@@ -15,7 +15,7 @@
       "alts": [
         "Bulle sombre de Lens sur la carte : une date ferme pour le match à horaire fixé, « Week-end du 13/02 » pour celui dont l'horaire n'est pas fixé"
       ],
-      "html": "<p>Sur la carte de la Ligue 1, la bulle d'un club liste les matchs « À venir » de l'OL contre lui. Quand l'horaire d'un match n'est pas encore fixé, la bulle n'affiche plus une date exacte qui n'en était pas une : elle indique « Week-end du 05/12 » (si le match tombe du vendredi au dimanche) ou « Date à confirmer ». Dès que l'horaire est fixé, la date exacte revient. La même règle s'applique au match de Coupe de France à venir, quand il y en a un. C'est la règle déjà en vigueur sur le calendrier et le tableau de bord.</p>"
+      "html": "<p>Sur la carte de la Ligue 1, la bulle d'un club liste les matchs « À venir » de l'OL contre lui. Quand l'horaire d'un match n'est pas encore fixé, la bulle n'affiche plus une date exacte qui n'en était pas une : elle indique « Week-end du 13/02 » (si le match tombe du vendredi au dimanche) ou « Date à confirmer ». Dès que l'horaire est fixé, la date exacte revient. C'est la règle déjà en vigueur sur le calendrier et le tableau de bord.</p>"
     },
     {
       "slug": "2026-10-09-match-a-venir-vs-a-la-place-d-un-faux-score",
