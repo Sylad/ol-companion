@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-09 09:04",
+  "generated": "2026-10-09 13:28",
   "entries": [
+    {
+      "slug": "2026-10-09-match-a-venir-vs-a-la-place-d-un-faux-score",
+      "title": "Match à venir : « vs » à la place d'un faux score",
+      "date": "2026-10-09",
+      "lots": [
+        "L77"
+      ],
+      "captures": [
+        "captures/L77-a-venir-vs.png"
+      ],
+      "alts": [
+        "Carte À venir du tableau de bord : Lens vs Lyon, sans score"
+      ],
+      "html": "<p>Tant qu'un match n'a pas commencé, la carte « À venir » du tableau de bord et l'en-tête de sa page affichent « vs » entre les deux équipes, au lieu du faux score « -1 · -1 » que renvoyait la source 365scores (Lens – Lyon, vu le 9 octobre). Un lecteur d'écran lit « Match pas encore commencé ».</p>\n<p>Le -1 est maintenant écarté à la source : au coup d'envoi, l'application ne croit plus voir un but quand le score passe de -1 à 0.</p>"
+    },
     {
       "slug": "2026-10-09-page-match-un-vrai-titre-et-le-bon-stade-pour-le-prochain-ma",
       "title": "Page match : un vrai titre, et le bon stade pour le prochain match",
