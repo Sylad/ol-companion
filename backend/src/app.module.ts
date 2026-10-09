@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ClientIpThrottlerGuard } from './guards/client-ip-throttler.guard';
+import { THROTTLERS } from './config/throttlers';
 import configuration from './config/configuration';
 import { DemoModule } from './modules/demo/demo.module';
 import { DemoModeMiddleware } from './modules/demo/demo-mode.middleware';
@@ -35,10 +36,7 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     // Cloudflare). Bucket court (10/s) pour absorber les bursts UI, bucket
     // long (60/min) pour limiter les abus de tiers extérieurs (365scores
     // pourrait nous bannir si on relaie trop d'IPs publiques).
-    ThrottlerModule.forRoot([
-      { name: 'short', ttl: 1000, limit: 10 },
-      { name: 'long', ttl: 60_000, limit: 60 },
-    ]),
+    ThrottlerModule.forRoot(THROTTLERS),
     DemoModule,
     SchedulerModule,
     EventsModule,

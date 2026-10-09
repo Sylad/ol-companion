@@ -78,7 +78,7 @@ Agrégat RSS de 3 sources (OL officiel via olympique-et-lyonnais.com, L'Équipe 
 | Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) |
 | Live updates | SSE (`@nestjs/common` `@Sse` + `EventSource` côté client + `invalidateQueries` TanStack) |
 | Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
-| Sources externes | [365scores](https://www.365scores.com/) (classement, calendrier de la saison, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier : prochain match, heure des coups d'envoi fixée ou non), Wikipedia FR (logos) |
+| Sources externes | [365scores](https://www.365scores.com/) (classement, calendrier de la saison, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier : prochain match, heure des coups d'envoi fixée ou non), Wikipedia FR (logos du tableau de bord et des coupes ; les écussons du classement et du calendrier viennent du CDN 365scores) |
 | Build | Docker multi-stage (node:20-alpine → nginx:alpine) |
 | Déploiement | Images sur GHCR (CI GitHub), chart Helm sur k3s via ArgoCD (GitOps), exposé par un tunnel Cloudflare |
 | Cache HTTP | nginx sert `index.html` et les fichiers aux noms fixes en `no-cache` (revalidés à chaque visite), `/assets/` (noms à empreinte) en cache d'un an ; un fichier absent de `/assets/` répond 404, jamais la page |
@@ -119,7 +119,7 @@ Les caches API (fixtures, standings, etc.) se peuplent au premier appel.
 - **football-data.org** : API publique avec free tier (10 req/min, suffit pour Ligue 1).
 - **Aucun appel Claude au runtime** : pas de SDK Anthropic ni de clé Anthropic ; tout le contenu vient des sources ci-dessus.
 - **Reverse-engineering raisonnable** : un seul utilisateur, polling 30 s max sur les matchs live, 1 h sur le classement. Pas de proxy commercial, pas de scraping massif.
-- Le module wiki-image est porté du projet warhammer40k (FR cette fois).
+- Le module wiki-image est porté du projet warhammer40k (FR cette fois). Sa limite de débit est propre (40/s, 300/min par visiteur) : une page de logos dépassait les 10/s par défaut (L32).
 
 ## Crédits IA
 

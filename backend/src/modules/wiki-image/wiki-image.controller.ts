@@ -1,6 +1,10 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
+import { WIKI_IMAGE_THROTTLE } from '../../config/throttlers';
 import { WikiImageService } from './wiki-image.service.js';
 
+// L32 : limite propre aux logos (cache serveur), cf. config/throttlers.ts
+@Throttle(WIKI_IMAGE_THROTTLE)
 @Controller('wiki-image')
 export class WikiImageController {
   constructor(private readonly service: WikiImageService) {}
