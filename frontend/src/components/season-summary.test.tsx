@@ -38,4 +38,21 @@ describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
     }
     expect(screen.queryByText(/^(C1|C3|CdF)$/)).not.toBeInTheDocument();
   });
+
+  // L83 — « 0D » à 12 px en --loss = 3,85:1 (WCAG 1.4.3 : 4,5) ; --ol-red-bright = 4,95:1.
+  it('écrit les défaites des pastilles en --ol-red-bright, jamais en --loss', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: async () => stats })));
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <SeasonSummary />
+      </QueryClientProvider>,
+    );
+    const defeats = await screen.findAllByText('0D');
+    expect(defeats).toHaveLength(4);
+    for (const el of defeats) {
+      expect(el).toHaveClass('text-ol-red-bright');
+      expect(el).not.toHaveClass('text-loss');
+    }
+  });
 });

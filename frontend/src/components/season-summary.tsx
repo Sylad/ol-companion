@@ -229,7 +229,7 @@ function CompChip({ c }: { c: PerCompetitionTeamStats }) {
         <span className="text-fg-dim">·</span>
         <span className="text-fg-muted">{c.draw}N</span>
         <span className="text-fg-dim">·</span>
-        <span className="text-loss">{c.lost}D</span>
+        <span className="text-ol-red-bright">{c.lost}D</span>
       </span>
       {c.competitionCode === 'L1' && (
         <>

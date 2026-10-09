@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-09 20:15",
+  "generated": "2026-10-09 23:08",
   "entries": [
+    {
+      "slug": "2026-10-09-accueil-defaites-par-competition-plus-lisibles",
+      "title": "Accueil : les défaites par compétition se lisent mieux",
+      "date": "2026-10-09",
+      "lots": [
+        "L83"
+      ],
+      "captures": [
+        "captures/L83-defaites-lisibles.png"
+      ],
+      "alts": [
+        "Accueil, bloc OL en chiffres : les pastilles Ligue 1, Ligue des champions et Ligue Europa avec leurs défaites en rouge clair"
+      ],
+      "html": "<p>Sur l'Accueil, dans « OL en chiffres », le nombre de défaites de chaque pastille de compétition (par exemple « 0D » ou « 2D ») est écrit dans un rouge plus clair. Il se lit plus facilement sur le fond sombre, en particulier sur téléphone.</p>"
+    },
     {
       "slug": "2026-10-09-carte-ligue-1-la-legende-ne-cache-plus-le-haut-d-une-bulle-s",
       "title": "Carte Ligue 1 : la légende ne cache plus le haut d'une bulle sur téléphone",

@@ -184,6 +184,12 @@
       "id": "L82",
       "title": "Carte Ligue 1 : les clubs voisins restent cliquables au zoom de départ",
       "status": "todo"
+    },
+    {
+      "id": "L83",
+      "title": "Accueil : les défaites par compétition se lisent mieux",
+      "status": "doing",
+      "started": "2026-10-09"
     }
   ]
 }
