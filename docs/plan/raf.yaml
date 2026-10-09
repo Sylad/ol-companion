@@ -778,6 +778,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "conforme (Sonnet, orchestrate 2026-10-09-2018, 0 bloquant, 0 majeur, 1 mineur ; verdict confirmé par le lead : 317 backend, 348 frontend, build OK, raf check propre ; incident de procédure : captures de revue laissées à la racine, sorties du dépôt)", commit: c6874b32a499e83b18fffa17c3c5e3412c877e06 }
   - id: L82
     title: "Carte Ligue 1 : au zoom initial, PSG est sous Paris FC (2 px), Monaco sous OGC Nice, Lille sous Lens à 390 — la bulle du club dessous ne s'ouvre pas (QA L70 09-10) ; regrouper ou décaler les marqueurs voisins"
     public: "Carte Ligue 1 : les clubs voisins restent cliquables au zoom de départ"
