@@ -808,6 +808,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "conforme (Sonnet, revue légère 09-10, verdict confirmé par le lead après re-vérification) : 1 commit 7d2da22, « D » des pastilles en --ol-red-bright, 4,83:1 mesuré sur la pastille (WCAG 1.4.3), test sur les 4 pastilles « 0D » ; 2 notes mineures (autres usages de text-loss hors lot)", commit: 7d2da224c8c3e1adcfbfe7048134d11c928b3932 }
   - id: L84
     title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
     status: todo
