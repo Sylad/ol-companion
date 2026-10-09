@@ -730,6 +730,7 @@ lots:
     notes:
       - { date: 2026-10-09, text: "QA L56 09-10 : l'en-tête de /match/<id> (.text-5xl) affiche aussi « -1 · -1 » pour un match non joué, même donnée — traiter dans le même lot" }
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "compliant : les 2 constats mineurs (aria-label sur un span sans rôle, libellé « pas encore commencé » pour un match commencé sans score) sont corrigés, aucune régression — orchestré (vague 2026-10-09-1253, 1 passe(s) de correction + passe des mineurs)", commit: 23bdc22cd4b175bb61d6c0cf8aa565bdcb6fd397 }
   - id: L78
     title: "Postes : « Milieu de Terrain » (libellé FR de 365scores) traverse positionLabelFr tel quel sur /player/<id> (majuscule à Terrain) et tp.role brut dans « Joueurs en vue » de /match — ajouter les libellés français 365scores à position-fr.ts et normaliser la casse (QA L56 09-10)"
     status: todo
