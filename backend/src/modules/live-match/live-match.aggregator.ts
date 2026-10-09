@@ -71,7 +71,7 @@ function toSide(c: Scores365Competitor | undefined): LiveMatchSide {
     name: c?.name ?? '',
     symbolicName: c?.symbolicName ?? '',
     imageVersion: c?.imageVersion ?? 0,
-    score: typeof c?.score === 'number' ? c.score : null,
+    score: typeof c?.score === 'number' && c.score >= 0 ? c.score : null, // 365scores met -1 avant le coup d'envoi
   };
 }
 

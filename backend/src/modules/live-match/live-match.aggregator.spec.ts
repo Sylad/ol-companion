@@ -43,6 +43,17 @@ describe('summarize', () => {
   });
 });
 
+describe('summarize — score avant le coup d\'envoi', () => {
+  it('ramène le -1 de 365scores à null (sinon -2 → 0 au coup d\'envoi passe pour un but)', () => {
+    const game = JSON.parse(JSON.stringify(fixture.game));
+    game.homeCompetitor.score = -1;
+    game.awayCompetitor.score = -1;
+    const s = summarize(game);
+    expect(s.home.score).toBeNull();
+    expect(s.away.score).toBeNull();
+  });
+});
+
 describe('aggregate (full payload)', () => {
   const result = aggregate(fixture);
 
