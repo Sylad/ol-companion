@@ -177,6 +177,16 @@
       "status": "done",
       "started": "2026-10-09",
       "finished": "2026-10-09"
+    },
+    {
+      "id": "L81",
+      "title": "Carte Ligue 1 : la légende ne cache plus le haut d'une bulle sur téléphone",
+      "status": "todo"
+    },
+    {
+      "id": "L82",
+      "title": "Carte Ligue 1 : les clubs voisins restent cliquables au zoom de départ",
+      "status": "todo"
     }
   ]
 }

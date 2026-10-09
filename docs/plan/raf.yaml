@@ -771,7 +771,7 @@ lots:
     created: 2026-10-09
   - id: L81
     title: "Carte Ligue 1 à 390 px : la légende « Aller / Retour » (MapLegend absolute z-[500] hors du conteneur Leaflet) recouvre l'en-tête de la bulle — nom du club, stade, bouton × — 25 % de la bulle de Lens masqués, mesuré QA L70 09-10 ; passer la légende sous les bulles ou la déplacer en bas de la carte au téléphone"
-    public: "Carte Ligue 1 : sur téléphone, la légende ne cache plus le haut de la bulle d'un club"
+    public: "Carte Ligue 1 : la légende ne cache plus le haut d'une bulle sur téléphone"
     status: todo
     estimate: 0.25
     quickwin: true
@@ -779,7 +779,7 @@ lots:
     created: 2026-10-09
   - id: L82
     title: "Carte Ligue 1 : au zoom initial, PSG est sous Paris FC (2 px), Monaco sous OGC Nice, Lille sous Lens à 390 — la bulle du club dessous ne s'ouvre pas (QA L70 09-10) ; regrouper ou décaler les marqueurs voisins"
-    public: "Carte Ligue 1 : les clubs voisins (Paris, Monaco et Nice…) restent cliquables au zoom de départ"
+    public: "Carte Ligue 1 : les clubs voisins restent cliquables au zoom de départ"
     status: todo
     estimate: 0.5
     visible: true
