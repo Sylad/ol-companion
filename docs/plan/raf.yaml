@@ -737,6 +737,7 @@ lots:
     notes:
       - { date: 2026-10-09, text: "QA L32 09-10 : ajouter « Chargement du » à la liste des textes d'état (« Chargement du match… » vu sur /match)" }
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "conforme — 1 commit (acdb287), ligne never restreinte aux textes d'état « Chargement… / de / du / des » ; plus aucune fausse alerte sur la prose de /about ni sur /nouveautes (vérifié par grep) ; seule note : la variante « Chargement... » en points ASCII n'est pas citée à la lettre — orchestré (vague 2026-10-09-2157, 0 passe(s) de correction)", commit: null }
   - id: L76
     title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
     status: todo
