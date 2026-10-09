@@ -684,6 +684,7 @@ lots:
     visible: true
     created: 2026-10-08
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "conforme — 0 bloquant, 0 majeur, 4 notes mineures (colonne date de largeur variable dans la bulle, texte de la Nouveauté encore en « 05/12 », marge de la bulle elle aussi écrasée par leaflet.css, branchement de la bulle sans test) — orchestré (vague 2026-10-09-1826, 2 passe(s) de correction)", commit: d6a8229fd12e67abd99c70ef2bf55e526641d30d }
   - id: L71
     title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX L47, 08-10)"
     public: "Calendrier : la date d'une ligne « à confirmer » plus lisible"
