@@ -172,8 +172,9 @@
     {
       "id": "L77",
       "title": "Match à venir : « vs » à la place d'un faux score « -1 · -1 »",
-      "status": "doing",
-      "started": "2026-10-09"
+      "status": "done",
+      "started": "2026-10-09",
+      "finished": "2026-10-09"
     }
   ]
 }

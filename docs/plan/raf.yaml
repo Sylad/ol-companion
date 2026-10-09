@@ -724,14 +724,17 @@ lots:
   - id: L77
     title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
     public: "Match à venir : « vs » à la place d'un faux score « -1 · -1 »"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-09
     notes:
       - { date: 2026-10-09, text: "QA L56 09-10 : l'en-tête de /match/<id> (.text-5xl) affiche aussi « -1 · -1 » pour un match non joué, même donnée — traiter dans le même lot" }
+      - { date: 2026-10-09, text: "revue UX 09-10 : le « Aucun match programmé. » au-dessus de la carte À venir sur le banc local vient de l'absence de FOOTBALL_API_KEY dans backend/.env local (la prod renvoie 29 matchs à venir), pas un défaut ; mini-standings.tsx:38 a le même aria-label sur un span (mesure de la revue de code), pas de bug observable" }
     started: 2026-10-09
-    review: { date: 2026-10-09, verdict: "compliant : les 2 constats mineurs (aria-label sur un span sans rôle, libellé « pas encore commencé » pour un match commencé sans score) sont corrigés, aucune régression — orchestré (vague 2026-10-09-1253, 1 passe(s) de correction + passe des mineurs)", commit: 23bdc22cd4b175bb61d6c0cf8aa565bdcb6fd397 }
+    review: { date: 2026-10-09, verdict: "conforme — 5 commits : « vs » à la place de « -1 · -1 » sur la carte À venir et l'en-tête /match, -1 ramené à null à la source (plus de faux « But ! »), libellé sr-only ; Nouveauté corrigée (U+202F, capture 342×150, nouveautes-data régénéré) ; vitest 339/339, jest 315/315, tsc OK, raf news check et raf check verts", commit: 7a1ea1141a7d187bdced915fc6c328a183b77307 }
+    ux: { date: 2026-10-09, verdict: "conforme — « vs » 4,91:1 (WCAG 1.4.3), aucun nœud AX « vs », sr-only « Match pas encore commencé » exposé, aucun « -1 · -1 » sur / et /match à 1440 et 390 px, hauteur carte/en-tête identique avec ou sans score (36/48 px), reflow OK à 320 px ; non vérifié : match terminé réel, libellé « Score indisponible », « But ! » au coup d'envoi" }
+    finished: 2026-10-09
   - id: L78
     title: "Postes : « Milieu de Terrain » (libellé FR de 365scores) traverse positionLabelFr tel quel sur /player/<id> (majuscule à Terrain) et tp.role brut dans « Joueurs en vue » de /match — ajouter les libellés français 365scores à position-fr.ts et normaliser la casse (QA L56 09-10)"
     status: todo
