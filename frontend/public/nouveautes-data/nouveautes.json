@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-09 19:45",
+  "generated": "2026-10-09 20:15",
   "entries": [
+    {
+      "slug": "2026-10-09-carte-ligue-1-la-legende-ne-cache-plus-le-haut-d-une-bulle-s",
+      "title": "Carte Ligue 1 : la légende ne cache plus le haut d'une bulle sur téléphone",
+      "date": "2026-10-09",
+      "lots": [
+        "L81"
+      ],
+      "captures": [
+        "captures/L81-legende-sous-la-carte.png"
+      ],
+      "alts": [
+        "Carte Ligue 1 à 390 px : bulle ouverte, légende Aller / Retour placée sous la carte"
+      ],
+      "html": "<p>Sur la carte Ligue 1, au téléphone, la légende « Aller / Retour » ne se pose plus par-dessus la carte : elle s'affiche juste sous elle. Le haut d'une bulle de club (nom, stade, bouton ×) n'est donc plus recouvert. Sur grand écran, la légende reste dans le coin haut droit de la carte.</p>"
+    },
     {
       "slug": "2026-10-09-carte-ligue-1-un-match-a-l-horaire-non-fixe-ne-montre-plus-u",
       "title": "Carte Ligue 1 : un match à l'horaire non fixé ne montre plus une date ferme",
