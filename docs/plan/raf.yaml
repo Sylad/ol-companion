@@ -678,14 +678,15 @@ lots:
   - id: L70
     title: "Carte Ligue 1 : la bulle « À venir » (ligue1-map.tsx) affiche la date de remplissage comme ferme quand l'horaire n'est pas fixé — passer par unconfirmedDay() de lib/kickoff.ts (revue UX L47, 08-10)"
     public: "Carte Ligue 1 : un match à l'horaire non fixé ne montre plus une date ferme"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-08
     started: 2026-10-09
-    review: { date: 2026-10-09, verdict: "conforme — 0 bloquant, 0 majeur, 4 notes mineures (colonne date de largeur variable dans la bulle, texte de la Nouveauté encore en « 05/12 », marge de la bulle elle aussi écrasée par leaflet.css, branchement de la bulle sans test) — orchestré (vague 2026-10-09-1826, 2 passe(s) de correction)", commit: d6a8229fd12e67abd99c70ef2bf55e526641d30d }
+    review: { date: 2026-10-09, verdict: "conforme (orchestrate 2026-10-09-1826, 2 corrections ; puis Sonnet sur c4e0743 Nouveauté : exact par rapport à kickoff.ts, JSON = .md, 27/27) — notes mineures : libellé « Week-end du » dupliqué kickoff.ts/fixtures.tsx, ClubPopup sans test, marge .leaflet-popup-content écrasée par leaflet.css", commit: c4e07430550c665392c9307b3809ac44e6561c1f }
     ux: { date: 2026-10-09, verdict: "conforme (Sylvain 09-10, sur capture de la bulle sombre de Lens) — 0 bloquant, 0 majeur ; notes mineures du reviewer : colonne date de largeur variable (33 px), marge de la bulle écrasée par leaflet.css, branchement de la bulle sans test" }
+    finished: 2026-10-09
   - id: L71
     title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX L47, 08-10)"
     public: "Calendrier : la date d'une ligne « à confirmer » plus lisible"
