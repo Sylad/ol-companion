@@ -275,6 +275,7 @@ lots:
       - { date: 2026-10-03, text: "03-10, second passage QA : toujours 12 × 429 au premier chargement de /standings, un écusson différent manquant à chaque chargement (PSG, Marseille, Brest, Troyes)." }
       - { date: 2026-10-05, text: "QA prod 05-10 : /standings 12 (1440) à 17 (390) réponses 429 wiki-image, 15 écussons sur 18 à 1440 ; /fixtures et /news 8/8 en 429 pour les logos du bandeau" }
     started: 2026-10-09
+    review: { date: 2026-10-09, verdict: "conforme (1 note mineure : la doc présente la limite comme commune à tout le visiteur alors qu'elle est comptée par endpoint) — orchestré (vague 2026-10-09-1752, 0 passe(s) de correction)", commit: 985b8d68c1818ba7d39f28d567b66d5d53137001 }
   - id: L33
     title: "Panne : l'hôte data.365scores.com ne répond plus (timeout / 503 depuis le 01-10 au moins) — effectif vide sur /players, classement et direct touchés ; les mêmes chemins répondent sur webws.365scores.com : hôte de l'API centralisé dans config/scores365-http.ts et basculé"
     status: done
