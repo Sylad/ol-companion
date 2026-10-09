@@ -8,6 +8,7 @@ import { LineupCard } from '@/components/lineup-card';
 import { MiniStandings } from '@/components/mini-standings';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
+import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent } from '@/types/api';
 
@@ -255,7 +256,7 @@ export function MatchPage() {
             </div>
           </div>
           <div className="text-5xl font-bold tabular-nums num text-fg-bright">
-            {data.home.score ?? '-'}<span className="text-fg-dim mx-2">·</span>{data.away.score ?? '-'}
+            <MatchScore home={data.home} away={data.away} status={data.status} sepClass="mx-2" />
           </div>
           <div>
             <div className={cn('font-display font-bold text-2xl leading-none', !olIsHome && 'text-ol-red-bright')}>

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { Radio, Trophy, Clock, Pause } from 'lucide-react';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import { deriveClock } from '@/lib/match-clock';
+import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
 import { OL_365SCORES_ID as OL_ID } from '@/types/api';
 
@@ -107,7 +108,7 @@ export function LiveMatchCard() {
           </div>
         </div>
         <div className="text-3xl font-bold tabular-nums num text-fg-bright">
-          {current.home.score ?? '-'}<span className="text-fg-dim mx-1.5">·</span>{current.away.score ?? '-'}
+          <MatchScore home={current.home} away={current.away} status={current.status} sepClass="mx-1.5" />
         </div>
         <div className="text-left">
           <div className={cn('font-display font-bold text-lg leading-none truncate', !olIsHome && 'text-ol-red-bright')}>
