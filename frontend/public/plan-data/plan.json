@@ -187,9 +187,49 @@
     },
     {
       "id": "L83",
-      "title": "Accueil : les défaites par compétition se lisent mieux",
+      "title": "Accueil : les compteurs de défaites par compétition plus lisibles",
       "status": "doing",
       "started": "2026-10-09"
+    },
+    {
+      "id": "L84",
+      "title": "Accueil : pendant un match en direct, le bandeau montre ce match",
+      "status": "todo"
+    },
+    {
+      "id": "L85",
+      "title": "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur",
+      "status": "todo"
+    },
+    {
+      "id": "L86",
+      "title": "Accueil : un match en cours n'est plus compté comme joué dans les tuiles",
+      "status": "todo"
+    },
+    {
+      "id": "L87",
+      "title": "Accueil : le pied du tracker de classement n'est plus coupé",
+      "status": "todo"
+    },
+    {
+      "id": "L88",
+      "title": "Accueil : libellés harmonisés (forme V, N, D, virgule, clubs courts)",
+      "status": "todo"
+    },
+    {
+      "id": "L89",
+      "title": "Accueil : le sur-titre du bandeau retrouve sa couleur",
+      "status": "todo"
+    },
+    {
+      "id": "L90",
+      "title": "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler",
+      "status": "todo"
+    },
+    {
+      "id": "L91",
+      "title": "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score",
+      "status": "todo"
     }
   ]
 }
