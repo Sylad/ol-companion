@@ -819,7 +819,7 @@ lots:
     created: 2026-10-09
   - id: L85
     title: "Accueil : pendant le chargement et en erreur réseau, « Aucun match programmé. », « Points 0 », « Forme 0V » s'affichent comme des valeurs, et « Erreur de chargement. » n'a pas de Réessayer — squelettes ou « — » tant que isLoading, message + refetch si isError, état vide réel avec lien vers le calendrier (dashboard-hero, last-result, dashboard-stats) (revue UX L2)"
-    public: "Accueil : plus de faux « Aucun match » pendant le chargement, Réessayer en cas d'erreur"
+    public: "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur"
     status: todo
     estimate: 0.5
     visible: true
