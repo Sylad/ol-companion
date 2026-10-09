@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { CalendarDays, MapPin, Radio, Shield, Sparkles } from 'lucide-react';
 import { useFixtures } from '@/hooks/use-fixtures';
+import { nextMatchVenue } from '@/lib/stadium';
 import { useWikiImage } from '@/hooks/use-wiki-image';
 import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type Fixture } from '@/types/api';
@@ -56,6 +57,7 @@ export function DashboardHero() {
   }
 
   const olIsHome = nextMatch.homeTeamId === OL_TEAM_ID;
+  const venue = nextMatchVenue(nextMatch);
   const opponent = olIsHome
     ? { id: nextMatch.awayTeamId, name: nextMatch.awayTeam }
     : { id: nextMatch.homeTeamId, name: nextMatch.homeTeam };
@@ -137,10 +139,12 @@ export function DashboardHero() {
               <CalendarDays className="h-3.5 w-3.5" strokeWidth={2} />
               {formatKickoffLong(nextMatch)}
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
-              {olIsHome ? 'Groupama Stadium · Décines-Charpieu' : `Stade ${teamShortName(nextMatch.homeTeam)}`}
-            </span>
+            {venue && (
+              <span className="inline-flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
+                {venue}
+              </span>
+            )}
           </div>
         </div>
 
