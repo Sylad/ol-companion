@@ -725,6 +725,7 @@ lots:
     title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
     status: doing
     estimate: 1
+    visible: true
     created: 2026-10-09
     notes:
       - { date: 2026-10-09, text: "QA L56 09-10 : l'en-tête de /match/<id> (.text-5xl) affiche aussi « -1 · -1 » pour un match non joué, même donnée — traiter dans le même lot" }
