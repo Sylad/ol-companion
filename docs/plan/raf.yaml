@@ -730,12 +730,13 @@ lots:
     finished: 2026-10-08
   - id: L75
     title: "QA : docs/qa/expectations.md — la ligne never « Chargement » de ## * matche la prose de /about (« chargement progressif des routes ») et un titre de /nouveautes ; la restreindre au texte d'état (« Chargement… », « Chargement de … ») — QA prod 08-10"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-08
     notes:
       - { date: 2026-10-09, text: "QA L32 09-10 : ajouter « Chargement du » à la liste des textes d'état (« Chargement du match… » vu sur /match)" }
+    started: 2026-10-09
   - id: L76
     title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
     status: todo
