@@ -567,11 +567,12 @@ lots:
   - id: L56
     title: "Page match : aucun h1 ; tableau de bord : lieu du prochain match « Stade Racing Club de Lens » (« Stade » + nom du club) — le vrai stade ou rien ; positions en anglais (GOALKEEPER, CENTRE BACK, COACH)"
     public: "Page match : un vrai titre, et le bon stade pour le prochain match"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-03
+    started: 2026-10-09
   - id: L57
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
     status: todo
