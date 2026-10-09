@@ -678,11 +678,12 @@ lots:
   - id: L70
     title: "Carte Ligue 1 : la bulle « À venir » (ligue1-map.tsx) affiche la date de remplissage comme ferme quand l'horaire n'est pas fixé — passer par unconfirmedDay() de lib/kickoff.ts (revue UX L47, 08-10)"
     public: "Carte Ligue 1 : un match à l'horaire non fixé ne montre plus une date ferme"
-    status: todo
+    status: doing
     estimate: 1
     quickwin: true
     visible: true
     created: 2026-10-08
+    started: 2026-10-09
   - id: L71
     title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX L47, 08-10)"
     public: "Calendrier : la date d'une ligne « à confirmer » plus lisible"
