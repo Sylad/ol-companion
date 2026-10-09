@@ -18,6 +18,7 @@ import {
   olMatchesVsClub,
   type OLMatchResult,
 } from '@/lib/ligue1-club-match';
+import { formatKickoffDayShort } from '@/lib/kickoff';
 import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
 /**
@@ -247,7 +248,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                     >
                       ·
                     </span>
-                    <span className="text-fg-dim w-[68px] num">{formatDate(m.fixture.date)}</span>
+                    <span className="text-fg-dim min-w-[68px] num">{formatKickoffDayShort(m.fixture)}</span>
                     <span className="text-fg-muted">
                       {m.isHome ? 'à domicile' : "à l'extérieur"}
                     </span>
@@ -281,7 +282,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                       >
                         {chipLetter}
                       </span>
-                      <span className="text-fg-dim w-[68px] num">{formatDate(m.match.date)}</span>
+                      <span className="text-fg-dim min-w-[68px] num">{m.isPast ? formatDate(m.match.date) : formatKickoffDayShort(m.match)}</span>
                       <span className="text-fg-muted">{isHome ? 'D' : 'E'}</span>
                       {m.isPast && olScore !== null && oppScore !== null ? (
                         <span className="num font-bold">

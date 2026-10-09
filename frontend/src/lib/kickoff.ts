@@ -69,3 +69,18 @@ export function formatKickoffLong(match: WithKickoff): string {
   const d = new Date(match.date);
   return `${WEEKDAY_LONG[d.getDay()]} ${d.getDate()} ${MONTH_LONG[d.getMonth()]} · ${kickoffTime(match, 'h')}`;
 }
+
+/**
+ * Le jour d'un match en une courte ligne (bulle de la carte, L70) :
+ * « 05 déc. 2026 » quand l'horaire est fixé ; sinon jamais la date de
+ * remplissage — « Week-end du 05/12 » (vendredi à dimanche) ou « Date à confirmer ».
+ */
+export function formatKickoffDayShort(match: WithKickoff): string {
+  const unconfirmed = unconfirmedDay(match);
+  if (unconfirmed?.kind === 'unknown') return 'Date à confirmer';
+  if (unconfirmed) {
+    const s = unconfirmed.saturday;
+    return `Week-end du ${pad(s.getDate())}/${pad(s.getMonth() + 1)}`;
+  }
+  return new Date(match.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
