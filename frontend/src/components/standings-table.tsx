@@ -1,3 +1,4 @@
+import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type StandingEntry, type FormOutcome } from '@/types/api';
 import { cn } from '@/lib/utils';
@@ -121,7 +122,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 </td>
                 <td className="px-2 py-3 max-w-0 min-w-[7.25rem]">
                   <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
-                    <TeamLogo teamId={row.teamId} name={row.team} size={22} />
+                    <TeamLogo teamId={row.teamId} name={row.team} size={22} src={seasonTeamLogoUrl(row.teamId)} />
                     <span
                       title={row.team}
                       className={cn(

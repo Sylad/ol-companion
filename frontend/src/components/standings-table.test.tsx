@@ -90,3 +90,14 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(cell.querySelector('span.inline-block')).toHaveClass('mr-1', 'md:mr-2');
   });
 });
+
+describe('<StandingsTable /> — écussons (L32)', () => {
+  it('prend chaque écusson au CDN 365scores par identifiant : aucun appel /api/wiki-image (18 clubs d’un coup dépassaient la limite de débit)', () => {
+    renderTable();
+    const fetchMock = vi.mocked(globalThis.fetch);
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).startsWith('/api/wiki-image'))).toHaveLength(0);
+    const logo = screen.getByAltText('Paris Saint-Germain Football Club');
+    expect(logo.getAttribute('src')).toContain('imagecache.365scores.com');
+    expect(logo.getAttribute('src')).toContain('/Competitors/524');
+  });
+});
