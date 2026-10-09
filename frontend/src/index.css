@@ -636,8 +636,8 @@
 .leaflet-container {
   font-family: 'Inter', system-ui, sans-serif;
 }
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
+.leaflet-container .leaflet-popup-content-wrapper,
+.leaflet-container .leaflet-popup-tip {
   background: hsl(var(--surface));
   color: hsl(var(--fg));
   border: 1px solid hsl(var(--border-strong));
