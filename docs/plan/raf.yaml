@@ -687,6 +687,8 @@ lots:
     review: { date: 2026-10-09, verdict: "conforme (orchestrate 2026-10-09-1826, 2 corrections ; puis Sonnet sur c4e0743 Nouveauté : exact par rapport à kickoff.ts, JSON = .md, 27/27) — notes mineures : libellé « Week-end du » dupliqué kickoff.ts/fixtures.tsx, ClubPopup sans test, marge .leaflet-popup-content écrasée par leaflet.css", commit: c4e07430550c665392c9307b3809ac44e6561c1f }
     ux: { date: 2026-10-09, verdict: "conforme (Sylvain 09-10, sur capture de la bulle sombre de Lens) — 0 bloquant, 0 majeur ; notes mineures du reviewer : colonne date de largeur variable (33 px), marge de la bulle écrasée par leaflet.css, branchement de la bulle sans test" }
     finished: 2026-10-09
+    notes:
+      - { date: 2026-10-09, text: "QA prod 09-10 20:08 (/map, /nouveautes, /, 1440 et 390) : 0 date ferme sur les 21 matchs non fixés, bulle fond rgb(16,18,25), contraste date 4,91:1 mesuré sur pixels, écusson chargé dans les 18 bulles, Nouveauté L70 en tête sans « Coupe de France » ; défaut antérieur révélé : légende sur l'en-tête de la bulle à 390 (lot dédié)" }
   - id: L71
     title: "Calendrier : « du 05/12 » à 3,9:1 en 10 px (WCAG 1.4.3) — ligne mois/date en fg-muted à remonter à 4,5:1 (revue UX L47, 08-10)"
     public: "Calendrier : la date d'une ligne « à confirmer » plus lisible"
@@ -709,6 +711,7 @@ lots:
       - { date: 2026-10-09, text: "QA L56 09-10 : troisième variante « Jour de match » (match dans la journée) à accepter dans expectations.md à côté de « Prochain rendez-vous » / « Approche du coup d'envoi »" }
       - { date: 2026-10-09, text: "QA L77 09-10 : troisième variante du titre du bandeau, « Jour de match » (match le jour même) ; lignes expectations à ajouter : ## / shows « Prochain rendez-vous » ou « Approche du coup d'envoi » ou « Jour de match » avec deux clubs, une date et un stade ; ## / shows carte À venir « vs » entre les clubs tant que live-match/current est upcoming avec scores null ; ## / et ## /match never « -1 · -1 »" }
       - { date: 2026-10-09, text: "QA L32 09-10 : accepter « Jour de match » (3e variante du bandeau à moins de 2 h du coup d'envoi), « du dd/mm » pour les horaires non fixés sur /fixtures (plus de « Horaire à confirmer »), préciser que la tuile Lieu vaut Domicile/Extérieur et le nom de stade est celui du bandeau" }
+      - { date: 2026-10-09, text: "QA L70 09-10 : /map — ajouter « un clic au centre de chaque marqueur ouvre la bulle de ce club » et « la bulle n'est recouverte par aucun contrôle de la carte » ; / — « Lieu » du tableau de bord dit Domicile/Extérieur, le stade est dans le bandeau" }
   - id: L74
     title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
     public: Textes secondaires lisibles sur les photos et les panneaux
@@ -765,6 +768,19 @@ lots:
     title: "Page match à venir : « Chargement du match… » sans requête /api/live-match/<id>/stats émise, vu 1 fois sur 5 chargements à 390 px (QA L32 09-10, non reproduit en solo ×3) — vérifier la condition enabled / la clé de la query stats et prévoir une sortie (erreur + Réessayer) après N s"
     status: todo
     estimate: 0.25
+    created: 2026-10-09
+  - id: L81
+    title: "Carte Ligue 1 à 390 px : la légende « Aller / Retour » (MapLegend absolute z-[500] hors du conteneur Leaflet) recouvre l'en-tête de la bulle — nom du club, stade, bouton × — 25 % de la bulle de Lens masqués, mesuré QA L70 09-10 ; passer la légende sous les bulles ou la déplacer en bas de la carte au téléphone"
+    status: todo
+    estimate: 0.25
+    quickwin: true
+    visible: true
+    created: 2026-10-09
+  - id: L82
+    title: "Carte Ligue 1 : au zoom initial, PSG est sous Paris FC (2 px), Monaco sous OGC Nice, Lille sous Lens à 390 — la bulle du club dessous ne s'ouvre pas (QA L70 09-10) ; regrouper ou décaler les marqueurs voisins"
+    status: todo
+    estimate: 0.5
+    visible: true
     created: 2026-10-09
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
