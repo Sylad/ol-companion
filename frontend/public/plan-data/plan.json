@@ -252,6 +252,11 @@
       "status": "done",
       "started": "2026-10-10",
       "finished": "2026-10-10"
+    },
+    {
+      "id": "L107",
+      "title": "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange",
+      "status": "todo"
     }
   ]
 }
