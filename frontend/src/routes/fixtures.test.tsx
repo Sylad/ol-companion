@@ -196,6 +196,8 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     // ne s'affiche pas comme une date ferme (L47).
     expect(troyes).toHaveTextContent('Week-end');
     expect(troyes).toHaveTextContent('du 05/12');
+    // « Week-end » ne se coupe pas au trait d'union dans la colonne date (L100).
+    expect(within(troyes).getByText('Week-end').closest('div')).toHaveClass('whitespace-nowrap');
     expect(troyes).not.toHaveTextContent('Sam. 05');
 
     // 21 matchs de Ligue 1 sans heure fixée ce jour-là ; aucun n'affiche d'heure.
@@ -682,6 +684,8 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
     await screen.findAllByRole('article');
     expect(screen.getByText('Saison 2027-28')).toBeInTheDocument();
+    // À 768 px l'en-tête passe en ligne : le libellé ne se coupe pas (L100).
+    expect(screen.getByText('Saison 2027-28')).toHaveClass('whitespace-nowrap');
   });
 });
 

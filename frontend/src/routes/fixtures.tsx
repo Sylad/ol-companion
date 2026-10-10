@@ -105,7 +105,7 @@ export function FixturesPage() {
       <section className="rounded-md bg-surface border border-border overflow-clip">
         <header className="px-5 py-4 flex flex-col gap-4 border-b border-border md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="eyebrow mb-1">Saison {seasonLabel(data)}</div>
+            <div className="eyebrow mb-1 whitespace-nowrap">Saison {seasonLabel(data)}</div>
             <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
               Calendrier
             </h2>
@@ -392,7 +392,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
       )}
     >
       <DateBlock className="block text-center" {...(iso ? { dateTime: iso, title } : {})}>
-        <div className="text-xs font-semibold text-fg">
+        <div className="whitespace-nowrap text-xs font-semibold text-fg max-[359px]:text-[10px]">
           <MatchLink fixture={fixture}>{day}</MatchLink>
         </div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted">
