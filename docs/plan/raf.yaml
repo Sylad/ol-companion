@@ -948,6 +948,7 @@ lots:
     estimate: 0.25
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant — 1 minor (police des dates réduite à 10 px pour toutes les lignes sous 360 px, largeur de « Week-end » non mesurée) — orchestré (vague 2026-10-10-1510, 0 passe(s) de correction)", commit: 72a486f9eb5d50a40362fcead9ec5866bdb1344f }
   - id: L101
     title: Heures « 18:45 » au calendrier mais « 20h45 » sur l'accueil — un seul séparateur (revue UX L3, mineur Nielsen H4)
     status: todo
