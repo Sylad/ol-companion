@@ -14,6 +14,7 @@ import {
 } from '@/lib/news-badge';
 import { entryForFragment, permalink } from '@/lib/news-anchor';
 import { cn } from '@/lib/utils';
+import { kickoffTime } from '@/lib/kickoff';
 
 // Journal généré par `cadence news build` (cd frontend && npm run news), servi en
 // statique depuis public/nouveautes-data/ (voir lib/nouveautes.ts).
@@ -152,7 +153,7 @@ export function NouveautesPage() {
                 aria-hidden="true"
                 className="flex items-center gap-3 text-xs text-fg-muted before:h-px before:flex-1 before:bg-border-strong after:h-px after:flex-1 after:bg-border-strong"
               >
-                {`Déjà vu lors de votre visite du ${new Date(previousVisit!.at!).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}`}
+                {`Déjà vu lors de votre visite du ${visitInstant(previousVisit!.at!)}`}
               </div>
             )}
             <article
@@ -301,6 +302,12 @@ export function NouveautesPage() {
       )}
     </div>
   );
+}
+
+/** « 29 septembre 2026 à 10h30 » : l'heure en « h » comme partout (L106). */
+function visitInstant(iso: string): string {
+  const date = new Date(iso).toLocaleDateString('fr-FR', { dateStyle: 'long' });
+  return `${date} à ${kickoffTime({ date: iso }) ?? ''}`;
 }
 
 function CaptureViewer({ capture, onClose }: { capture: Capture; onClose: () => void }) {

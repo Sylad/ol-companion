@@ -3,14 +3,14 @@ import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type CupMatch } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
+import { kickoffTime } from '@/lib/kickoff';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
 function formatDate(iso: string): { day: string; time: string } {
   const d = new Date(iso);
   const day = `${WEEKDAY[d.getDay()]} ${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
-  const time = `${d.getHours().toString().padStart(2, '0')}h${d.getMinutes().toString().padStart(2, '0')}`;
-  return { day, time };
+  return { day, time: kickoffTime({ date: iso }) ?? '' };
 }
 
 function teamIdForLogo(teamName: string, teamId: number): number {

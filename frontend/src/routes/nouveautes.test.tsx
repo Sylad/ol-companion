@@ -231,8 +231,12 @@ describe('<NouveautesPage />', () => {
     expect(screen.getAllByText('Nouveau')).toHaveLength(1);
     expect(screen.getByTestId('nouveautes-depuis')).toHaveTextContent('1 nouveauté depuis votre dernière visite');
     const sep = screen.getByTestId('nouveautes-deja-vu');
-    const when = new Date(at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+    const d = new Date(at);
+    const when = `${d.toLocaleDateString('fr-FR', { dateStyle: 'long' })} à ${String(d.getHours()).padStart(2, '0')}h${String(d.getMinutes()).padStart(2, '0')}`;
     expect(sep).toHaveTextContent(`Déjà vu lors de votre visite du ${when}`);
+    // L106 : l'heure s'écrit « 09h30 » comme partout, jamais « 09:30 ».
+    expect(sep.textContent).toMatch(/\d{2}h\d{2}/);
+    expect(sep.textContent).not.toMatch(/\d{2}:\d{2}/);
     expect(sep.nextElementSibling).toHaveAttribute('id', '2026-09-28-ancienne');
     const first = document.getElementById('2026-10-01-page')!;
     expect(within(first).getByText('Nouveau')).toBeInTheDocument();
