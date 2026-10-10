@@ -888,9 +888,10 @@ lots:
     created: 2026-10-10
   - id: L94
     title: "Calendrier : score du perdant illisible (2,97:1) sur chaque match joué — retirer l'opacité du score (revue UX L3, bloquant WCAG 1.4.3)"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-10
+    started: 2026-10-10
   - id: L95
     title: "Calendrier : la pastille au clavier ressemble à la pastille choisie — focus-visible anneau rouge 2 px (revue UX L3, majeur WCAG 2.4.7)"
     status: todo
