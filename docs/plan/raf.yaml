@@ -1017,6 +1017,7 @@ lots:
     created: 2026-10-10
   - id: L108
     title: "Calendrier : le score d'un match nul s'affiche en gris dans les lignes, comme celui d'un perdant, alors que le README annonce le nul en orange au calendrier — scores du nul en --draw dans les lignes, test (QA prod 10-10)"
+    public: "Calendrier : le score d'un match nul s'affiche en orange"
     status: todo
     estimate: 0.25
     visible: true
@@ -1026,3 +1027,4 @@ acknowledged:
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
   - { sha: 5437b2fb717a3c7e8a13394d12f713a806cca64a, subject: "config: precheck des vagues orchestrate sur le modèle local (mesure du precheck local)", date: 2026-10-10, reason: "configuration des vagues (precheck local), pas de lot" }
   - { sha: fe0230f9d2244998f3340efdb8bafed9e1ac62b6, subject: "plan: suites de la revue UX du calendrier closes, précheck des vagues remis sur Sonnet, données du plan régénérées", date: 2026-10-10, reason: "configuration des vagues remise sur Sonnet, avec les données du plan" }
+  - { sha: b55065fbb0cdf83532a10384d5faf4cb235f6761, subject: "plan: note QA prod du calendrier, suite sur la couleur du nul dans les lignes", date: 2026-10-10, reason: "entretien du plan et régénération des Nouveautés, pas de lot" }

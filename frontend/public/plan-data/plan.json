@@ -257,6 +257,11 @@
       "id": "L107",
       "title": "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange",
       "status": "todo"
+    },
+    {
+      "id": "L108",
+      "title": "Calendrier : le score d'un match nul s'affiche en orange",
+      "status": "todo"
     }
   ]
 }
