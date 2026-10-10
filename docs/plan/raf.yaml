@@ -958,9 +958,10 @@ lots:
     review: { date: 2026-10-10, verdict: "conforme, 1 note mineure (le commentaire de kickoffTime dit « partout dans l'app », mais la page Nouveautés affiche encore « à 15:27 ») — orchestré (vague 2026-10-10-1510, 2 passe(s) de correction)", commit: 772b0b8fd9278f073d957ea762aca630169de8f9 }
   - id: L102
     title: Nul en orange au calendrier, en gris dans « OL en chiffres » — une règle de couleur V/N/D appliquée aux deux (revue UX L3, mineur)
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-10
+    started: 2026-10-10
   - id: L103
     title: "Nouveautés : entrées L94 (score du perdant lisible) et L95 (contour rouge au clavier) avec captures de /fixtures prises sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml : la prod n'a pas encore ces lots) ; L94 passé visible avec titre public"
     status: done
