@@ -1,10 +1,11 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { getCurrentSeason } from '../scheduler/season.util';
+import { SeasonResetService } from '../scheduler/season-reset.service';
 import { isCupEliminated } from './cup-status';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
@@ -24,6 +25,8 @@ export interface CupMatch {
   status: string;
   stage: string;
   stageFr: string;
+  /** Issue de la confrontation lue sur sa dernière manche : vrai si l'OL est qualifié, faux si l'adversaire l'est ; absent sinon. */
+  olQualified?: boolean;
 }
 
 export interface CupInfo {
@@ -118,7 +121,11 @@ export class CupsService implements OnModuleInit {
   constructor(
     private config: ConfigService,
     private readonly bracketService: BracketService,
-  ) {}
+    @Optional() seasonReset?: SeasonResetService,
+  ) {
+    // Le cache fichier part à l'archive le 1er août : la copie en mémoire doit partir avec lui.
+    seasonReset?.onReset(() => { this.lastKnown = null; });
+  }
 
   onModuleInit() {
     try {
@@ -302,6 +309,14 @@ export class CupsService implements OnModuleInit {
     const homeScore = hasScore ? (g.homeCompetitor?.score ?? null) : null;
     const awayScore = hasScore ? (g.awayCompetitor?.score ?? null) : null;
 
+    const olIsHome = g.homeCompetitor?.id === OL_365SCORES_ID;
+    const olSide = olIsHome ? g.homeCompetitor : g.awayCompetitor;
+    const oppSide = olIsHome ? g.awayCompetitor : g.homeCompetitor;
+    const olQualified = status !== 'FINISHED' ? undefined
+      : olSide?.isQualified === true ? true
+      : oppSide?.isQualified === true ? false
+      : undefined;
+
     return {
       id: g.id,
       date,
@@ -314,6 +329,7 @@ export class CupsService implements OnModuleInit {
       status,
       stage,
       stageFr,
+      ...(olQualified === undefined ? {} : { olQualified }),
     };
   }
 

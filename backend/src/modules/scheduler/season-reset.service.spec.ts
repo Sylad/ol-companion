@@ -54,4 +54,12 @@ describe('SeasonResetService', () => {
     expect(result).toEqual({ archivedSeason: '2025-2026' });
     expect(fs.existsSync(path.join(dataDir, 'archive', '2025-2026'))).toBe(true);
   });
+
+  it('prévient les services qui gardent une copie en mémoire', async () => {
+    const seen: string[] = [];
+    service.onReset(() => seen.push('a'));
+    service.onReset(() => seen.push('b'));
+    await service.resetSeason(new Date('2026-08-01T03:00:00'));
+    expect(seen).toEqual(['a', 'b']);
+  });
 });

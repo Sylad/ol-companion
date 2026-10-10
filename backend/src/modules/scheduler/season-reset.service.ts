@@ -28,6 +28,13 @@ export class SeasonResetService {
   private readonly logger = new Logger(SeasonResetService.name);
   private readonly dataDir: string;
 
+  private readonly resetListeners: Array<() => void> = [];
+
+  /** Les services qui gardent en mémoire une copie d'un cache archivé s'y inscrivent pour la vider. */
+  onReset(listener: () => void): void {
+    this.resetListeners.push(listener);
+  }
+
   constructor(@Optional() @Inject(SEASON_RESET_DATA_DIR) dataDir?: string) {
     this.dataDir = dataDir ?? path.resolve(process.cwd(), 'data');
   }
@@ -50,6 +57,8 @@ export class SeasonResetService {
       fs.renameSync(src, dst);
       this.logger.log(`Archived ${filename} → archive/${season.id}/`);
     }
+
+    for (const listener of this.resetListeners) listener();
 
     this.logger.log(`Season reset complete: archived ${season.id}`);
     return { archivedSeason: season.id };
