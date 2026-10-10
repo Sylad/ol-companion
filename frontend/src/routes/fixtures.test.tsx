@@ -549,7 +549,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
         for (const b of buttons) {
           expect(b).toHaveAttribute('aria-pressed', b === pressed[0] ? 'true' : 'false');
           if (b === pressed[0]) expect(b).toHaveClass('ring-1', 'ring-fg-muted');
-          else expect(b.className).not.toMatch(/\bring-/);
+          else expect(b.className.replace(/focus-visible:\S+/g, '')).not.toMatch(/\bring-/);
         }
       };
 
@@ -560,6 +560,22 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
       expectSelected(status, /^À venir ·/);
       expectSelected(competitions, /^C3 — Ligue Europa ·/);
+    });
+
+    it('au clavier (focus-visible) : anneau rouge 2 px, distinct de l\'anneau gris de la pastille choisie (WCAG 2.4.7)', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+      for (const name of ['Filtrer par statut', 'Filtrer par compétition']) {
+        const buttons = within(screen.getByRole('group', { name })).getAllByRole('button');
+        for (const b of buttons) {
+          expect(b).toHaveClass(
+            'focus-visible:outline-none',
+            'focus-visible:ring-2',
+            'focus-visible:ring-ol-red-bright',
+          );
+        }
+      }
     });
 
     it('la vue rapide reste collante : aucun ancêtre en overflow-hidden (qui annule sticky), la section coupe en overflow-clip', async () => {
