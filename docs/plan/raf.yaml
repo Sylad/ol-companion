@@ -942,7 +942,7 @@ lots:
     estimate: 1
     created: 2026-10-10
   - id: L103
-    title: "Nouveautés : entrées L94 (score du perdant lisible) et L95 (contour rouge au clavier) avec captures de /fixtures en prod ; L94 passé visible avec titre public"
+    title: "Nouveautés : entrées L94 (score du perdant lisible) et L95 (contour rouge au clavier) avec captures de /fixtures prises sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml : la prod n'a pas encore ces lots) ; L94 passé visible avec titre public"
     status: todo
     estimate: 0.25
     after: [ L94, L95 ]
