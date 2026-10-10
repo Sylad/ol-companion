@@ -48,7 +48,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
         {competitionLong(p.competitionCode)} ·{' '}
         <span className={
           p.result === 'W' ? 'text-win' :
-          p.result === 'L' ? 'text-loss' : 'text-fg-dim'
+          p.result === 'L' ? 'text-loss' : 'text-draw'
         }>
           {p.result === 'W' ? 'Victoire' : p.result === 'L' ? 'Défaite' : 'Match nul'}
         </span>
@@ -227,7 +227,7 @@ function CompChip({ c }: { c: PerCompetitionTeamStats }) {
       <span className="num">
         <span className="text-win">{c.won}V</span>
         <span className="text-fg-dim">·</span>
-        <span className="text-fg-muted">{c.draw}N</span>
+        <span className="text-draw">{c.draw}N</span>
         <span className="text-fg-dim">·</span>
         <span className="text-ol-red-bright">{c.lost}D</span>
       </span>

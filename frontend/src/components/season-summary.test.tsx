@@ -55,4 +55,21 @@ describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
       expect(el).not.toHaveClass('text-loss');
     }
   });
+
+  // L102 — le nul a une seule couleur (--draw, comme au calendrier), pas le gris des textes secondaires.
+  it('écrit les nuls des pastilles en --draw, comme le calendrier', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: async () => stats })));
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <SeasonSummary />
+      </QueryClientProvider>,
+    );
+    const draws = await screen.findAllByText('1N');
+    expect(draws).toHaveLength(4);
+    for (const el of draws) {
+      expect(el).toHaveClass('text-draw');
+      expect(el).not.toHaveClass('text-fg-muted');
+    }
+  });
 });
