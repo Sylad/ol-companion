@@ -970,7 +970,6 @@ lots:
     title: "Nouveautés : entrée L96 (une ligne du calendrier et les cartes Prochain/Dernier mènent à la page du match) avec capture prise sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml, la prod n'a pas encore ce lot) ; L96 passé visible avec titre public"
     status: todo
     estimate: 0.25
-    after: [ L96 ]
     created: 2026-10-10
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
