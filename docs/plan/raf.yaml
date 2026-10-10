@@ -1009,6 +1009,7 @@ lots:
     estimate: 0.25
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1645, 0 passe(s) de correction)", commit: 86b0d73c2ab1024b8528e6a8285978c4e70ace60 }
   - id: L107
     title: "Nouveautés : entrée calendrier (L97 L98 L100 L101 L102) avec capture de /fixtures à 390 px prise sur l'app lancée en local (commande orchestrate.ux de cadence.yaml)"
     public: "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange"
