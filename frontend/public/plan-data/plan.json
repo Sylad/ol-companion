@@ -268,7 +268,8 @@
     {
       "id": "L109",
       "title": "Calendrier : un match en cours à égalité n'est plus affiché comme un nul",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-10"
     }
   ]
 }

@@ -525,6 +525,21 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       }
     });
 
+    it('L109 — un match EN COURS à égalité n\'affiche pas ses scores en --draw : le nul ne colore qu\'un match terminé', async () => {
+      const live = season.map((m) =>
+        m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, status: 'IN_PLAY', homeScore: 1, awayScore: 1 } : m,
+      );
+      vi.stubGlobal('fetch', serve(live as typeof season));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      expect(within(rennes).getByText('LIVE')).toBeInTheDocument();
+      const scores = within(rennes).getAllByText('1');
+      expect(scores).toHaveLength(2);
+      for (const sc of scores) expect(sc).not.toHaveClass('text-draw');
+    });
+
     /** Le bloc « Horaire à confirmer » (deux lignes) contenu dans cet élément. */
     function tbd(container: HTMLElement): HTMLElement {
       return within(container).getByText('Horaire').parentElement as HTMLElement;

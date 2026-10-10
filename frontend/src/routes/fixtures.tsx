@@ -381,7 +381,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   const isLive = fixture.status === 'IN_PLAY';
   const homeWon = hasScore && fixture.homeScore! > fixture.awayScore!;
   const awayWon = hasScore && fixture.awayScore! > fixture.homeScore!;
-  const drew = hasScore && fixture.homeScore === fixture.awayScore;
+  const drew = hasScore && fixture.status === 'FINISHED' && fixture.homeScore === fixture.awayScore;
 
   return (
     <article
