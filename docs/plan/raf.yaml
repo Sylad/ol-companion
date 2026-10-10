@@ -1046,6 +1046,8 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1720, 0 passe(s) de correction)", commit: e364737390e521e2e49534d4b3a111660a78a93e }
     ux: { date: 2026-10-10, verdict: ok Sylvain 10-10 (Discord « ok L109 ») ; revue UX auto conforme }
     finished: 2026-10-10
+    notes:
+      - { date: 2026-10-10, text: "QA prod 10-10 (qa-reviewer Sonnet, /fixtures /nouveautes /cups /, 1440/390, sha-955fa0c) : L106 0 « HH:MM » sur /, /fixtures, /cups (1 sur /nouveautes = citation voulue dans l'entrée L107) ; L107 entrée et capture chargées ; L108 3 nuls terminés en rgb(200,139,9), 8 V/D sans orange ; L109 non observable (aucun match en cours) ; /cups « ÉLIMINÉ » avec des matchs à venir = L38 déjà planifié" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
