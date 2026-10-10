@@ -81,7 +81,7 @@ function CupTab({
       className={cn(
         'min-w-[220px] rounded-md border px-3 py-2.5 text-left transition-colors',
         active
-          ? 'border-ol-red-bright bg-ol-red/15 text-fg-bright'
+          ? 'border-ol-red-bright bg-ol-red/10 text-fg-bright'
           : 'border-border bg-surface-2/35 text-fg-muted hover:border-border-strong hover:text-fg',
       )}
     >

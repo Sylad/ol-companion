@@ -52,4 +52,40 @@ describe('<CupsPage /> — fond de l’onglet actif (L112)', () => {
     const css = await generatedCss(['bg-ol-red/12']);
     expect(css).not.toContain('background-color');
   });
+
+  // WCAG 1.4.3 : les deux textes les plus fragiles de l'onglet actif, mesurés dans le
+  // navigateur (1440 px) — pastille « En lice » (10 px gras) et sous-titre (text-xs, fg-dim).
+  it('les textes fragiles de l’onglet actif restent ≥ 4,5:1 sur le fond calculé', async () => {
+    render(<CupsPage />);
+    const tab = screen.getByRole('button', { pressed: true });
+    const bgClasses = tab.className.split(/\s+/).filter((c) => c.startsWith('bg-'));
+    const css = await generatedCss(bgClasses);
+
+    const section: Rgb = [16, 18, 25]; // fond de section mesuré
+    const olRed: Rgb = [221, 34, 34]; // --ol-red 0 73% 50%
+    let bg = section;
+    for (const cls of bgClasses) {
+      const m = css.match(new RegExp(`\\.${esc(cls)}\\s*\\{[^}]*?/\\s*([0-9.]+)\\)`));
+      expect(m, `alpha de ${cls} introuvable`).not.toBeNull();
+      const a = Number(m![1]);
+      bg = bg.map((c, i) => olRed[i] * a + c * (1 - a)) as Rgb;
+    }
+    const pastille: Rgb = [239, 67, 67]; // --ol-red-bright
+    const sousTitre: Rgb = [116, 132, 154]; // --fg-dim
+    expect(contrast(pastille, bg)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(sousTitre, bg)).toBeGreaterThanOrEqual(4.5);
+  });
 });
+
+type Rgb = [number, number, number];
+function luminance(c: Rgb): number {
+  const [r, g, b] = c.map((v) => {
+    const x = v / 255;
+    return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function contrast(a: Rgb, b: Rgb): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
