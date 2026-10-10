@@ -895,9 +895,10 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1035, 0 passe(s) de correction + passe des mineurs)", commit: b8516dcc8b83fff7861b5f22c4a0bf4b441fb533 }
   - id: L95
     title: "Calendrier : la pastille au clavier ressemble à la pastille choisie — focus-visible anneau rouge 2 px (revue UX L3, majeur WCAG 2.4.7)"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-10
+    started: 2026-10-10
   - id: L96
     title: "Calendrier : un match de la liste ne mène pas à sa page de match — ligne et cartes Prochain/Dernier en lien /match/<id>?matchupId= (revue UX L3, majeur)"
     status: todo
