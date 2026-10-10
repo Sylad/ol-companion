@@ -231,6 +231,12 @@
       "id": "L91",
       "title": "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score",
       "status": "todo"
+    },
+    {
+      "id": "L95",
+      "title": "Calendrier : un contour rouge net sur le filtre atteint au clavier",
+      "status": "doing",
+      "started": "2026-10-10"
     }
   ]
 }
