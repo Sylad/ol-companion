@@ -396,12 +396,13 @@ lots:
   - id: L38
     title: "Coupes : Europa League affichée ÉLIMINÉ après une seule journée de phase de ligue gagnée (isEliminated = matchs joués > 0 et aucun à venir) — ne pas conclure à l'élimination quand la phase de ligue est en cours"
     public: "Coupes : un statut juste tant que l'OL est en lice"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "03-10, après L39 : l'app se contredit — /fixtures liste 8 matchs de Ligue Europa dont 7 à venir pendant que /cups dit ÉLIMINÉ." }
+    started: 2026-10-10
   - id: L39
     title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
     status: done
