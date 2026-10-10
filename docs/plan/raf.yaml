@@ -972,6 +972,7 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1510, 2 passe(s) de correction)", commit: 5e028fae37634fab2963c7fdc490c223abc5a898 }
     notes:
       - { date: 2026-10-10, text: "Revue : l'infobulle du graphique « OL en chiffres » (ChartTooltip, nul en text-draw) n'a pas de test car Recharts ne la rend qu'au survol — accepté" }
+      - { date: 2026-10-10, text: "QA prod 10-10 (qa-reviewer Sonnet, / et /fixtures à 1440/390, sondes 768/320) : L97 à L102 conformes (pastilles 40 px, mois en toutes lettres, V/N/D fg-muted, Week-end sur une ligne, 0 « HH:MM », nul rgb(200,139,9) identique) ; écart : le score d'un nul reste gris dans les lignes du calendrier" }
     finished: 2026-10-10
   - id: L103
     title: "Nouveautés : entrées L94 (score du perdant lisible) et L95 (contour rouge au clavier) avec captures de /fixtures prises sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml : la prod n'a pas encore ces lots) ; L94 passé visible avec titre public"
@@ -1010,6 +1011,12 @@ lots:
   - id: L107
     title: "Nouveautés : entrée calendrier (L97 L98 L100 L101 L102) avec capture de /fixtures à 390 px prise sur l'app lancée en local (commande orchestrate.ux de cadence.yaml)"
     public: "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-10
+  - id: L108
+    title: "Calendrier : le score d'un match nul s'affiche en gris dans les lignes, comme celui d'un perdant, alors que le README annonce le nul en orange au calendrier — scores du nul en --draw dans les lignes, test (QA prod 10-10)"
     status: todo
     estimate: 0.25
     visible: true
