@@ -912,8 +912,10 @@ lots:
     finished: 2026-10-10
   - id: L96
     title: "Calendrier : un match de la liste ne mène pas à sa page de match — ligne et cartes Prochain/Dernier en lien /match/<id>?matchupId= (revue UX L3, majeur)"
+    public: "Calendrier : un match de la liste mène à sa page"
     status: doing
     estimate: 1
+    visible: true
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "conforme — orchestré (vague 2026-10-10-1251, 0 passe(s) de correction + passe des mineurs)", commit: 640aebf3787f3bf736400e4ca8d90060d8ca2daa }

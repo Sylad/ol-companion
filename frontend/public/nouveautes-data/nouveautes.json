@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-10 11:42",
+  "generated": "2026-10-10 13:23",
   "entries": [
+    {
+      "slug": "2026-10-10-calendrier-un-match-de-la-liste-mene-a-sa-page",
+      "title": "Calendrier : un match de la liste mène à sa page",
+      "date": "2026-10-10",
+      "lots": [
+        "L96"
+      ],
+      "captures": [
+        "captures/L96-ligne-lien.png",
+        "captures/L96-page-du-match.png"
+      ],
+      "alts": [
+        "Calendrier : la liste des matchs, avec les cartes Prochain (Crystal Palace) et Dernier résultat (Lens) à gauche et les rencontres Sparta Praha – Lyon, Lyon – Sparta Praha et Fenerbahçe – Lyon à droite, chacune cliquable",
+        "Page du match Sparta Praha – Lyon (2-1), ouverte depuis la ligne du calendrier : score, buteurs et statut Terminé"
+      ],
+      "html": "<p>Dans le calendrier, chaque match de la liste est maintenant un lien : un clic (ou un appui du doigt) sur la ligne ouvre la page de la rencontre, avec le score, les buteurs et les faits du match. Les cartes « Prochain » et « Dernier résultat » de la vue rapide font de même. Au clavier, la touche Tab passe de match en match et le contour rouge montre où l'on est.</p>"
+    },
     {
       "slug": "2026-10-10-calendrier-un-contour-rouge-net-sur-le-filtre-atteint-au-cla",
       "title": "Calendrier : un contour rouge net sur le filtre atteint au clavier",
