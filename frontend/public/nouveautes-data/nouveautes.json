@@ -1,7 +1,17 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-10 19:24",
+  "generated": "2026-10-10 19:47",
   "entries": [
+    {
+      "slug": "2026-10-10-coupes-l-onglet-de-la-coupe-affichee-se-distingue-a-nouveau",
+      "title": "Coupes : l'onglet de la coupe affichée se distingue à nouveau",
+      "date": "2026-10-10",
+      "lots": [
+        "L112"
+      ],
+      "captures": [],
+      "html": "<p>Sur la page Coupes, l'onglet de la coupe affichée retrouve son fond rouge léger : il se distingue de nouveau des autres onglets, qui n'en ont pas. Rien d'autre ne change sur la page.</p>"
+    },
     {
       "slug": "2026-10-10-coupes-pastille-plus-lisible-et-onglets-annonces-aux-lecteur",
       "title": "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran",
