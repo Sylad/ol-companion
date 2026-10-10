@@ -56,6 +56,21 @@ describe('CupsService — appel des matchs à venir en échec', () => {
 
   const recent = new Date(Date.now() - 3 * 86_400_000).toISOString();
 
+  it('matchs à venir en échec : le verdict « Éliminé » du dernier résultat connu est conservé', async () => {
+    const svc = await load();
+    (svc as unknown as { lastKnown: unknown }).lastKnown = [{
+      competitionId: 37, name: 'Coupe de France', currentStageFr: '32ème de finale', isEliminated: true, matches: [],
+    }];
+    global.fetch = jest.fn(async (url: string | URL | Request) => {
+      if (FIXTURES.test(String(url))) throw new Error('timeout');
+      return new Response(JSON.stringify({ games: [game(1, 4, recent, 0, 2)] }), { status: 200 });
+    }) as unknown as typeof fetch;
+
+    const cups = await svc.getCups({ force: true });
+
+    expect(cups[0].isEliminated).toBe(true);
+  });
+
   it('réessaie, puis ne conclut pas « Éliminé » et ne perd pas le dernier match à venir connu', async () => {
     const svc = await load();
     (svc as unknown as { lastKnown: unknown }).lastKnown = [{

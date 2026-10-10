@@ -229,11 +229,14 @@ export class CupsService implements OnModuleInit {
       const compName = COMP_NAMES[cid] ?? `Compétition #${cid}`;
       const finished = matches.filter(m => m.status === 'FINISHED');
 
+      // Sans dernier résultat connu pour cette coupe, l'absence de match à venir ne prouve rien.
+      let upcomingKnown = upcomingOk;
       if (!upcomingOk) {
         // Appel des matchs à venir en échec : on reprend ceux du dernier résultat connu.
         const known = new Set(matches.map((m) => m.id));
-        const kept = (this.lastKnown ?? [])
-          .find((c) => c.competitionId === cid)
+        const previousCup = (this.lastKnown ?? []).find((c) => c.competitionId === cid);
+        upcomingKnown = previousCup !== undefined;
+        const kept = previousCup
           ?.matches.filter((m) => m.status !== 'FINISHED' && !known.has(m.id)) ?? [];
         matches.push(...kept);
         matches.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -241,7 +244,7 @@ export class CupsService implements OnModuleInit {
       const upcoming = matches.filter(m => m.status === 'SCHEDULED' || m.status === 'IN_PLAY');
       const lastFinished = finished[finished.length - 1];
 
-      const isEliminated = isCupEliminated(matches, new Date(), upcomingOk);
+      const isEliminated = isCupEliminated(matches, new Date(), upcomingKnown);
       const currentStage = upcoming[0]?.stageFr ?? lastFinished?.stageFr ?? '';
 
       results.push({ competitionId: cid, name: compName, currentStageFr: currentStage, isEliminated, matches });
