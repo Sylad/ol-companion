@@ -249,8 +249,9 @@
     {
       "id": "L96",
       "title": "Calendrier : un match de la liste mène à sa page",
-      "status": "doing",
-      "started": "2026-10-10"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     }
   ]
 }
