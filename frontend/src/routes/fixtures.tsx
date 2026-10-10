@@ -381,6 +381,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   const isLive = fixture.status === 'IN_PLAY';
   const homeWon = hasScore && fixture.homeScore! > fixture.awayScore!;
   const awayWon = hasScore && fixture.awayScore! > fixture.homeScore!;
+  const drew = hasScore && fixture.homeScore === fixture.awayScore;
 
   return (
     <article
@@ -415,6 +416,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
           name={fixture.homeTeam}
           score={fixture.homeScore}
           won={homeWon}
+          drew={drew}
           dim={hasScore && !homeWon}
         />
         <CompactTeamLine
@@ -422,6 +424,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
           name={fixture.awayTeam}
           score={fixture.awayScore}
           won={awayWon}
+          drew={drew}
           dim={hasScore && !awayWon}
         />
       </div>
@@ -466,12 +469,14 @@ function CompactTeamLine({
   name,
   score,
   won,
+  drew,
   dim,
 }: {
   id: number;
   name: string;
   score: number | null;
   won: boolean;
+  drew: boolean;
   dim: boolean;
 }) {
   const isOL = id === OL_TEAM_ID;
@@ -492,7 +497,7 @@ function CompactTeamLine({
         <ClubName name={teamShortName(name)} />
       </span>
       {score !== null && (
-        <span className={cn('num w-6 text-right text-base font-bold', won ? 'text-fg-bright' : 'text-fg-muted')}>
+        <span className={cn('num w-6 text-right text-base font-bold', won ? 'text-fg-bright' : drew ? 'text-draw' : 'text-fg-muted')}>
           {score}
         </span>
       )}

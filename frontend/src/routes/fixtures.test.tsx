@@ -505,7 +505,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(logoWrap(rennes, 'Lyon')).not.toHaveClass('opacity-55');
     });
 
-    it('L94 — sur un match nul, les deux écussons sont atténués et les deux scores en fg-muted, sans opacité sur le texte', async () => {
+    it('L94 — sur un match nul, les deux écussons sont atténués et les deux scores en --draw (L108), sans opacité sur le texte', async () => {
       const draw = season.map((m) =>
         m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, homeScore: 1, awayScore: 1 } : m,
       );
@@ -519,7 +519,8 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       const scores = within(rennes).getAllByText('1');
       expect(scores).toHaveLength(2);
       for (const sc of scores) {
-        expect(sc).toHaveClass('text-fg-muted');
+        expect(sc).toHaveClass('text-draw');
+        expect(sc).not.toHaveClass('text-fg-muted');
         expect(sc.className).not.toMatch(/opacity-/);
       }
     });
