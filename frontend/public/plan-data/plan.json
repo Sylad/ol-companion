@@ -71,8 +71,9 @@
     {
       "id": "L38",
       "title": "Coupes : un statut juste tant que l'OL est en lice",
-      "status": "doing",
+      "status": "done",
       "started": "2026-10-10",
+      "finished": "2026-10-10",
       "tasks": [
         {
           "status": "done"
@@ -289,13 +290,20 @@
     {
       "id": "L110",
       "title": "Coupes : l'élimination à l'issue de la phase de ligue est reconnue",
-      "status": "todo"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     },
     {
       "id": "L111",
       "title": "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran",
       "status": "doing",
       "started": "2026-10-10"
+    },
+    {
+      "id": "L112",
+      "title": "Coupes : l'onglet de la coupe affichée se distingue à nouveau",
+      "status": "todo"
     }
   ]
 }

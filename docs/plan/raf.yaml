@@ -396,7 +396,7 @@ lots:
   - id: L38
     title: "Coupes : Europa League affichée ÉLIMINÉ après une seule journée de phase de ligue gagnée (isEliminated = matchs joués > 0 et aucun à venir) — ne pas conclure à l'élimination quand la phase de ligue est en cours"
     public: "Coupes : un statut juste tant que l'OL est en lice"
-    status: doing
+    status: done
     estimate: 2
     visible: true
     created: 2026-10-03
@@ -408,6 +408,8 @@ lots:
       - { id: t2, title: "lastKnown (copie en mémoire du cache des coupes) vidé à la remise à zéro de saison du 1er août, comme cups-cache.json ; test", status: done }
       - { id: t3, title: "Tests du mode dégradé des coupes : TTL de 5 min, lastKnown non mis à jour en mode dégradé, reprise du cache au démarrage (cups.service.ts:125-160, 333)", status: done }
     review: { date: 2026-10-10, verdict: "compliant (décision du lead 10-10) : 3e revue Opus sans bloquant, seul majeur = périmètre (le classement de la phase de ligue prévu en L110 est livré sous L38, testé : cup-status.spec.ts:122 rang 25 éliminé) ; t1 t2 t3 faits (1d324cc, fd1814e) ; re-vérifié : 354 tests backend, 373 frontend, build", commit: b32e2d81b5fe45956c2d39c46e8aa6311f6aaff4 }
+    ux: { date: 2026-10-10, verdict: ok Sylvain 10-10 (Discord « ok L38 ») ; revue UX auto conforme }
+    finished: 2026-10-10
   - id: L39
     title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
     status: done
@@ -1057,12 +1059,15 @@ lots:
   - id: L110
     title: "Coupes : une phase de ligue terminée n'est jamais conclue (OL 25e ou plus resterait « En lice » jusqu'à 50 jours) — lire le classement de la phase de ligue (365scores) : 25e et plus = éliminé, 9e-24e = barrages ; tests (revue L38)"
     public: "Coupes : l'élimination à l'issue de la phase de ligue est reconnue"
-    status: todo
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-10
     notes:
       - { date: 2026-10-10, text: "Livré sous L38 (commits 487fcf2, 6f4b71f, b32e2d8 : fetchLeaguePhaseRank, leaguePhaseOutcome, tests rang 9-24 barrages / 25+ éliminé) — décision du lead 10-10" }
+    ux: { date: 2026-10-10, verdict: ok Sylvain 10-10 (Discord « ok L38 ») ; revue UX auto conforme }
+    started: 2026-10-10
+    finished: 2026-10-10
   - id: L111
     title: "Coupes, accessibilité : pastille « En lice » à 4,39-4,49:1 (WCAG 1.4.3, bordure seule comme « Éliminé ») et onglets de coupe sans état (aria-pressed ou tablist/aria-selected, WCAG 4.1.2) — revue UX L38, antérieur au lot"
     public: "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran"
@@ -1072,6 +1077,13 @@ lots:
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "compliant (2 notes mineures, aucune sous-tâche) : aria-pressed présent, contraste de la pastille mesuré à 4,95:1, les 5 choix de l'auteur tiennent. — orchestré (vague 2026-10-10-1920, 0 passe(s) de correction)", commit: d22224b55dddb6a8ccba0ef731aa23c75d8d0511 }
+  - id: L112
+    title: "Coupes : l'onglet actif n'a pas de fond (bg-ol-red/12 n'est pas une classe générée par Tailwind, seules /10 et /15 existent) — classe générée + test du fond calculé (revue L111)"
+    public: "Coupes : l'onglet de la coupe affichée se distingue à nouveau"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-10
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

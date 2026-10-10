@@ -2,7 +2,7 @@
 title: "Coupes : un statut juste tant que l'OL est en lice"
 date: 2026-10-10
 created: 2026-10-10T18:02+02:00
-lots: [L38]
+lots: [L38, L110]
 captures: [{ file: captures/L38-coupes-en-lice.png, alt: "Page Coupes : la Ligue Europa est « En lice » après une seule journée de phase de ligue gagnée contre Anderlecht" }]
 # une capture peut dire ce qu'elle montre : captures: [{ file: captures/x.png, alt: "texte alternatif" }]
 # nocapture: raison, quand une capture n'a pas de sens

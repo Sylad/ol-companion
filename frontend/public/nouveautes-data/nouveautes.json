@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-10 19:20",
+  "generated": "2026-10-10 19:22",
   "entries": [
     {
       "slug": "2026-10-10-coupes-pastille-plus-lisible-et-onglets-annonces-aux-lecteur",
@@ -22,7 +22,8 @@
       "title": "Coupes : un statut juste tant que l'OL est en lice",
       "date": "2026-10-10",
       "lots": [
-        "L38"
+        "L38",
+        "L110"
       ],
       "captures": [
         "captures/L38-coupes-en-lice.png"
