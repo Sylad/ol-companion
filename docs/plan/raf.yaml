@@ -924,32 +924,32 @@ lots:
   - id: L97
     title: "Calendrier téléphone : filtres de 24 px de haut, trop petits au doigt — min-h-10 sous lg (revue UX L3, majeur WCAG 2.5.8)"
     status: todo
-    estimate: 1
+    estimate: 0.25
     created: 2026-10-10
   - id: L98
     title: "Calendrier : mois « 08 » nu sous le jour, date sans nom de mois ni année — <time datetime> « Mar. 04 / AOÛT » (revue UX L3, majeur Nielsen H2)"
     status: todo
-    estimate: 1
+    estimate: 0.25
     created: 2026-10-10
   - id: L99
     title: "Calendrier : libellés V/N/D de la vue rapide à 4,23:1 en 10 px — 11 px ou fg-muted (revue UX L3, mineur)"
     status: todo
-    estimate: 1
+    estimate: 0.25
     created: 2026-10-10
   - id: L100
     title: "Calendrier : « Week-end » coupé en « Week-/end » dans la colonne date et « Saison 2026-27 » coupé à 768 px (revue UX L3, mineur)"
     status: todo
-    estimate: 1
+    estimate: 0.25
     created: 2026-10-10
   - id: L101
     title: Heures « 18:45 » au calendrier mais « 20h45 » sur l'accueil — un seul séparateur (revue UX L3, mineur Nielsen H4)
     status: todo
-    estimate: 1
+    estimate: 0.25
     created: 2026-10-10
   - id: L102
     title: Nul en orange au calendrier, en gris dans « OL en chiffres » — une règle de couleur V/N/D appliquée aux deux (revue UX L3, mineur)
     status: todo
-    estimate: 1
+    estimate: 0.25
     created: 2026-10-10
   - id: L103
     title: "Nouveautés : entrées L94 (score du perdant lisible) et L95 (contour rouge au clavier) avec captures de /fixtures prises sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml : la prod n'a pas encore ces lots) ; L94 passé visible avec titre public"
