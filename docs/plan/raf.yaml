@@ -1079,6 +1079,8 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant (2 notes mineures, aucune sous-tâche) : aria-pressed présent, contraste de la pastille mesuré à 4,95:1, les 5 choix de l'auteur tiennent. — orchestré (vague 2026-10-10-1920, 0 passe(s) de correction)", commit: d22224b55dddb6a8ccba0ef731aa23c75d8d0511 }
     ux: { date: 2026-10-10, verdict: "ok Sylvain 10-10 (Discord « ok L111 ») ; revue UX auto conforme, contraste 4,95:1" }
     finished: 2026-10-10
+    notes:
+      - { date: 2026-10-10, text: "QA prod 10-10 (lead, API) : /api/cups sert Ligue Europa en lice, 8 matchs dont 7 à venir (avant : ÉLIMINÉ, 1 match) — L38 L110 L111 livrés a00676a" }
   - id: L112
     title: "Coupes : l'onglet actif n'a pas de fond (bg-ol-red/12 n'est pas une classe générée par Tailwind, seules /10 et /15 existent) — classe générée + test du fond calculé (revue L111)"
     public: "Coupes : l'onglet de la coupe affichée se distingue à nouveau"
