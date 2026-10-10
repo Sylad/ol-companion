@@ -304,8 +304,9 @@
     {
       "id": "L112",
       "title": "Coupes : l'onglet de la coupe affichée se distingue à nouveau",
-      "status": "doing",
-      "started": "2026-10-10"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     }
   ]
 }
