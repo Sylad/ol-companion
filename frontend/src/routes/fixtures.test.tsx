@@ -424,6 +424,25 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
   });
 
   describe('lisibilité — revue UX du calendrier', () => {
+    it('L94 — le score et le nom du perdant ne portent aucune opacité (WCAG 1.4.3), seul l’écusson est atténué', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      const score = within(rennes).getByText('0');
+      expect(score).toHaveClass('text-fg-muted');
+      let el: HTMLElement | null = score;
+      while (el && el !== rennes) {
+        expect(el.className).not.toMatch(/opacity-/);
+        el = el.parentElement;
+      }
+      const name = within(rennes).getByText('Rennes');
+      for (let n: HTMLElement | null = name; n && n !== rennes; n = n.parentElement) {
+        expect(n.className).not.toMatch(/opacity-/);
+      }
+    });
+
     /** Le bloc « Horaire à confirmer » (deux lignes) contenu dans cet élément. */
     function tbd(container: HTMLElement): HTMLElement {
       return within(container).getByText('Horaire').parentElement as HTMLElement;
