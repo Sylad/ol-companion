@@ -23,8 +23,7 @@ describe('heure du coup d’envoi', () => {
   it('heure fixée : rendue en heure locale', () => {
     const lens = { date: '2026-10-09T18:45:00.000Z', timeConfirmed: true };
     expect(hasKickoffTime(lens)).toBe(true);
-    expect(kickoffTime(lens)).toBe('20:45');
-    expect(kickoffTime(lens, 'h')).toBe('20h45');
+    expect(kickoffTime(lens)).toBe('20h45');
   });
 
   it('heure non fixée : aucune heure, ni celle de minuit UTC ni l’heure de remplissage', () => {
@@ -40,7 +39,7 @@ describe('heure du coup d’envoi', () => {
   });
 
   it('champ absent (backend antérieur) : l’heure est rendue comme avant', () => {
-    expect(kickoffTime({ date: '2026-10-09T18:45:00Z' })).toBe('20:45');
+    expect(kickoffTime({ date: '2026-10-09T18:45:00Z' })).toBe('20h45');
   });
 
   it('libellé long du tableau de bord : la date seule quand l’heure n’est pas fixée', () => {

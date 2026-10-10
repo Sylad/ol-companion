@@ -31,11 +31,11 @@ export function hasKickoffTime(match: WithKickoff): boolean {
   return match.timeConfirmed !== false;
 }
 
-/** « 20:45 » (ou « 20h45 ») en heure locale ; `null` quand l'heure n'est pas fixée. */
-export function kickoffTime(match: WithKickoff, separator: ':' | 'h' = ':'): string | null {
+/** « 20h45 » (séparateur français, partout dans l'app, L101) en heure locale ; `null` quand l'heure n'est pas fixée. */
+export function kickoffTime(match: WithKickoff): string | null {
   if (!hasKickoffTime(match)) return null;
   const d = new Date(match.date);
-  return `${pad(d.getHours())}${separator}${pad(d.getMinutes())}`;
+  return `${pad(d.getHours())}h${pad(d.getMinutes())}`;
 }
 
 /**
@@ -67,7 +67,7 @@ export function formatKickoffLong(match: WithKickoff): string {
     return `week-end du ${s.getDate()} ${MONTH_LONG[s.getMonth()]} · ${KICKOFF_TBD.toLowerCase()}`;
   }
   const d = new Date(match.date);
-  return `${WEEKDAY_LONG[d.getDay()]} ${d.getDate()} ${MONTH_LONG[d.getMonth()]} · ${kickoffTime(match, 'h')}`;
+  return `${WEEKDAY_LONG[d.getDay()]} ${d.getDate()} ${MONTH_LONG[d.getMonth()]} · ${kickoffTime(match)}`;
 }
 
 /**

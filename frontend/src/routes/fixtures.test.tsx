@@ -88,7 +88,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(palace).toHaveTextContent('Lyon');
     expect(palace).toHaveTextContent('Crystal Palace');
     expect(palace).toHaveTextContent('Jeu. 15');
-    expect(palace).toHaveTextContent('18:45');
+    expect(palace).toHaveTextContent('18h45');
 
     const anderlecht = within(block('Ligue Europa · J1')).getByRole('article');
     expect(anderlecht).toHaveTextContent('Anderlecht');
@@ -156,7 +156,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
     const lens = within(block('Ligue 1 · J6')).getByRole('article');
     expect(lens).toHaveTextContent('Ven. 09');
-    expect(lens).toHaveTextContent('20:45');
+    expect(lens).toHaveTextContent('20h45');
   });
 
   it('suit l’ordre des dates, toutes compétitions mêlées', async () => {
@@ -336,7 +336,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       const next = card('Prochain');
       expect(next).toHaveTextContent('Lens');
       expect(next).toHaveTextContent('Ven. 09/10 · Ligue 1');
-      expect(next).toHaveTextContent('20:45');
+      expect(next).toHaveTextContent('20h45');
       expect(next).not.toHaveTextContent('Horaire à confirmer');
     });
 
@@ -367,7 +367,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       const europa = card('Prochain');
       expect(europa).toHaveTextContent('Crystal Palace');
       expect(europa).toHaveTextContent('Jeu. 15/10 · Ligue Europa');
-      expect(europa).toHaveTextContent('18:45');
+      expect(europa).toHaveTextContent('18h45');
       expect(europa).not.toHaveTextContent('Lens');
       expect(card('Dernier résultat')).toHaveTextContent('Anderlecht');
       expect(card('Dernier résultat')).toHaveTextContent('1-2');
