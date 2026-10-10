@@ -1,7 +1,37 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-09 23:08",
+  "generated": "2026-10-10 11:42",
   "entries": [
+    {
+      "slug": "2026-10-10-calendrier-un-contour-rouge-net-sur-le-filtre-atteint-au-cla",
+      "title": "Calendrier : un contour rouge net sur le filtre atteint au clavier",
+      "date": "2026-10-10",
+      "lots": [
+        "L95"
+      ],
+      "captures": [
+        "captures/L95-contour-clavier.png"
+      ],
+      "alts": [
+        "Filtres du calendrier : la pastille « Tout » atteinte au clavier est entourée d'un contour rouge, sous lequel l'anneau gris de la pastille choisie reste visible"
+      ],
+      "html": "<p>Quand on parcourt les filtres du calendrier au clavier (touche Tab), la pastille atteinte est entourée d'un contour rouge de 2 px, bien visible. Si c'est la pastille choisie, son anneau gris reste visible juste dessous : on distingue ce qui est sélectionné de ce qui est simplement atteint.</p>"
+    },
+    {
+      "slug": "2026-10-10-calendrier-le-score-et-le-nom-du-perdant-redeviennent-lisibl",
+      "title": "Calendrier : le score et le nom du perdant redeviennent lisibles",
+      "date": "2026-10-10",
+      "lots": [
+        "L94"
+      ],
+      "captures": [
+        "captures/L94-score-perdant.png"
+      ],
+      "alts": [
+        "Calendrier : le match Sparta Praha – Lyon (2-1), le score 1 et le nom de Lyon, perdant, en texte net"
+      ],
+      "html": "<p>Dans le calendrier, le score de l'équipe qui perd un match n'est plus affiché en grisé : le 1 de Lyon face au Sparta Praha se lit aussi nettement que le 2 du vainqueur. Le nom du perdant reste lui aussi en pleine opacité. Seul l'écusson reste atténué, et un match nul garde ses deux côtés légèrement estompés.</p>"
+    },
     {
       "slug": "2026-10-09-accueil-defaites-par-competition-plus-lisibles",
       "title": "Accueil : les défaites par compétition se lisent mieux",

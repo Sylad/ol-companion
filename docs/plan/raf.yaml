@@ -888,8 +888,10 @@ lots:
     created: 2026-10-10
   - id: L94
     title: "Calendrier : score du perdant illisible (2,97:1) sur chaque match joué — retirer l'opacité du score (revue UX L3, bloquant WCAG 1.4.3)"
+    public: "Calendrier : le score et le nom du perdant redeviennent lisibles"
     status: done
     estimate: 1
+    visible: true
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1035, 0 passe(s) de correction + passe des mineurs)", commit: b8516dcc8b83fff7861b5f22c4a0bf4b441fb533 }
