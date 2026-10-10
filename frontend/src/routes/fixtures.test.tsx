@@ -104,7 +104,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
     const spartaAway = row('Ligue des champions · 3e tour de qualification · aller');
     expect(spartaAway).toHaveTextContent('Mar. 04');
-    expect(spartaAway).toHaveTextContent('08');
+    expect(spartaAway).toHaveTextContent('août');
     expect(spartaAway).toHaveTextContent('Sparta Praha2');
     expect(spartaAway).toHaveTextContent('Lyon1');
 
@@ -674,6 +674,31 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
 // L48 — au téléphone (390 px, 320 px), la ligne compacte laisse la place au nom
 // des clubs : colonne date 56 px, nom en 1fr, colonne d'état à sa largeur utile.
+describe('<FixturesPage /> — date lisible : mois nommé et année (L98)', () => {
+  it('une date ferme porte le nom du mois abrégé et un <time datetime> avec l’année', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+
+    const row = within(block('Ligue des champions · 3e tour de qualification · aller')).getByRole('article');
+    const time = row.querySelector('time') as HTMLTimeElement;
+    expect(time).toHaveAttribute('datetime', '2026-08-04');
+    expect(time).toHaveTextContent('Mar. 04');
+    expect(time).toHaveTextContent('août');
+    expect(time).not.toHaveTextContent('Mar. 04 08');
+    expect(time).toHaveAttribute('title', 'mardi 4 août 2026');
+    expect(row).not.toHaveTextContent(/\b08\b/);
+  });
+
+  it('une date non fixée n’est pas balisée comme un instant', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+    const row = within(block('Ligue 1 · J13')).getByRole('article');
+    expect(row.querySelector('time')).toBeNull();
+  });
+});
+
 describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

@@ -35,6 +35,10 @@ const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
 const pad2 = (n: number): string => n.toString().padStart(2, '0');
 
+/** Mois abrégés en français, 5 caractères au plus : tiennent dans la colonne de 40 px sous 360 px (L98). */
+const MONTH_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const dateLong = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
 /**
  * Jour, mois, heure et libellé court de la date ; `time` est `null` quand
  * l'heure n'est pas fixée. Un horaire non fixé veut dire un jour non fixé (L47) :
@@ -47,6 +51,9 @@ function formatDateParts(match: SeasonMatch): {
   monthShort?: string;
   time: string | null;
   label: string;
+  /** `YYYY-MM-DD` et date en toutes lettres avec l'année, pour `<time>` ; absents si le jour n'est pas fixé (L98). */
+  iso?: string;
+  title?: string;
 } {
   const d = new Date(match.date);
   const unconfirmed = match.status === 'SCHEDULED' || match.status === 'TIMED' ? unconfirmedDay(match) : null;
@@ -58,8 +65,15 @@ function formatDateParts(match: SeasonMatch): {
     return { day: 'Date', month: 'à confirmer', monthShort: 'à conf.', time: null, label: 'Date à confirmer' };
   }
   const day = `${WEEKDAY[d.getDay()]} ${pad2(d.getDate())}`;
-  const month = pad2(d.getMonth() + 1);
-  return { day, month, time: kickoffTime(match), label: `${day}/${month}` };
+  const month = MONTH_SHORT[d.getMonth()];
+  return {
+    day,
+    month,
+    time: kickoffTime(match),
+    label: `${day}/${pad2(d.getMonth() + 1)}`,
+    iso: `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`,
+    title: dateLong.format(d),
+  };
 }
 
 export function FixturesPage() {
@@ -361,7 +375,8 @@ function KickoffTbd() {
 }
 
 function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
-  const { day, month, monthShort, time } = formatDateParts(fixture);
+  const { day, month, monthShort, time, iso, title } = formatDateParts(fixture);
+  const DateBlock = iso ? 'time' : 'div';
   const hasScore = fixture.homeScore !== null && fixture.awayScore !== null;
   const isLive = fixture.status === 'IN_PLAY';
   const homeWon = hasScore && fixture.homeScore! > fixture.awayScore!;
@@ -376,7 +391,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
         isLive && 'border-l-[3px] border-l-live',
       )}
     >
-      <div className="text-center">
+      <DateBlock className="block text-center" {...(iso ? { dateTime: iso, title } : {})}>
         <div className="text-xs font-semibold text-fg">
           <MatchLink fixture={fixture}>{day}</MatchLink>
         </div>
@@ -393,7 +408,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
             month
           )}
         </div>
-      </div>
+      </DateBlock>
       <div className="min-w-0 space-y-1.5">
         <CompactTeamLine
           id={fixture.homeTeamId}
