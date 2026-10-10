@@ -29,7 +29,7 @@ function formatChartLabel(date: string): string {
     .padStart(2, '0')}`;
 }
 
-function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
+export function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
   const p = payload[0].payload as TeamSeasonChartPoint;
   const sign = p.goalDifference >= 0 ? '+' : '';

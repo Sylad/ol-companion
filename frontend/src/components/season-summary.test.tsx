@@ -7,7 +7,7 @@ vi.mock('recharts', () => {
   return { Area: Null, AreaChart: Null, CartesianGrid: Null, ResponsiveContainer: Null, Tooltip: Null, XAxis: Null, YAxis: Null };
 });
 
-import { SeasonSummary } from './season-summary';
+import { ChartTooltip, SeasonSummary } from './season-summary';
 
 // L49 — le bilan de saison nomme chaque compétition en long, via le glossaire.
 
@@ -71,5 +71,14 @@ describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
       expect(el).toHaveClass('text-draw');
       expect(el).not.toHaveClass('text-fg-muted');
     }
+  });
+
+  // L102 — idem dans l'infobulle du graphique : « Match nul » en --draw, jamais en gris.
+  it("écrit « Match nul » de l'infobulle en --draw", () => {
+    const point = { matchIndex: 3, date: '2026-09-20', goalDifference: 2, points: 7, competitionCode: 'L1', result: 'D' };
+    render(<ChartTooltip active payload={[{ payload: point }] as never} />);
+    const label = screen.getByText('Match nul');
+    expect(label).toHaveClass('text-draw');
+    expect(label).not.toHaveClass('text-fg-dim');
   });
 });
