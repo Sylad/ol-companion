@@ -897,6 +897,8 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1035, 0 passe(s) de correction + passe des mineurs)", commit: b8516dcc8b83fff7861b5f22c4a0bf4b441fb533 }
     ux: { date: 2026-10-10, verdict: "conforme (Sylvain 10-10 sur captures tmp/ux-ol-L94-L95/) : score du perdant 7,22:1, nom 16,98:1 à 1440 et 390 ; nul atténué des deux côtés gardé tel quel" }
     finished: 2026-10-10
+    notes:
+      - { date: 2026-10-10, text: "QA prod 10-10 (agent, 13/13 pages, 1440 et 390) : score du perdant 7,22:1, nom 16,98:1, écusson seul à 0,55 ; L95 contour 4,83:1 et anneau gris conservé ; Nouveautés L94/L95 en tête avec images 200 ; un 502 Cloudflare vu une fois sur /nouveautes à 10:10Z, non reproduit ×8 (tunnel juste remonté après le reboot de dark-blue). Captures tmp/qa-ol-fixtures/" }
   - id: L95
     title: "Calendrier : la pastille au clavier ressemble à la pastille choisie — focus-visible anneau rouge 2 px (revue UX L3, majeur WCAG 2.4.7)"
     public: "Calendrier : un contour rouge net sur le filtre atteint au clavier"
@@ -954,6 +956,11 @@ lots:
     notes:
       - { date: 2026-10-10, text: "mineur revue 10-10 : l'entrée L94 dit que le score du perdant « se lit aussi nettement » que celui du vainqueur — en fait 7,2:1 (fg-muted) contre 18,5:1 (blanc) ; à adoucir à la prochaine retouche des Nouveautés" }
     finished: 2026-10-10
+  - id: L104
+    title: "Calendrier : « Matchs listés » ignore le filtre de statut (8 affiché pour 1 ligne avec C3 + Joués) — total depuis filtered, pas scoped (fixtures.tsx l.70) ; attente QA : compteur = lignes affichées quel que soit le filtre (QA prod 10-10)"
+    status: todo
+    estimate: 0.1
+    created: 2026-10-10
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
