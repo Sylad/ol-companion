@@ -1089,6 +1089,7 @@ lots:
     visible: true
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "conforme (2 notes mineures, aucune sous-tâche) : onglet actif en bg-ol-red/10, classe générée, fond rgba(221,34,34,0.1) relevé à l'écran, contraste calculé à 4,67:1 pour la pastille et 4,63:1 pour le sous-titre, test qui échoue sur /12 et /15, README à jour. — orchestré (vague 2026-10-10-1950, 1 passe(s) de correction)", commit: 16ef079af12421dee5e2a23cd2dfe8f5ee96a838 }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
