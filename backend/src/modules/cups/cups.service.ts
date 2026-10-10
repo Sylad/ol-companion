@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { getCurrentSeason } from '../scheduler/season.util';
+import { isCupEliminated } from './cup-status';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
@@ -181,7 +182,7 @@ export class CupsService implements OnModuleInit {
     // Fetch upcoming games (for future cup matches)
     try {
       const res = await fetch(
-        `${baseUrl}/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=20`,
+        `${baseUrl}/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=50`,
         { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) }
       );
       if (res.ok) {
@@ -221,8 +222,7 @@ export class CupsService implements OnModuleInit {
       const upcoming = matches.filter(m => m.status === 'SCHEDULED' || m.status === 'IN_PLAY');
       const lastFinished = finished[finished.length - 1];
 
-      // Eliminated = played at least one game and nothing upcoming
-      const isEliminated = finished.length > 0 && upcoming.length === 0;
+      const isEliminated = isCupEliminated(cid, matches);
       const currentStage = upcoming[0]?.stageFr ?? lastFinished?.stageFr ?? '';
 
       results.push({ competitionId: cid, name: compName, currentStageFr: currentStage, isEliminated, matches });
