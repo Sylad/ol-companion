@@ -137,7 +137,7 @@ export function FixturesPage() {
           {data && filtered.length > 0 && (
             <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
               <FixtureSummary
-                total={scoped.length}
+                total={filtered.length}
                 record={record}
                 nextMatch={nextMatch}
                 lastMatch={lastMatch}

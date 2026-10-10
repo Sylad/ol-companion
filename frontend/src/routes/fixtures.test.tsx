@@ -259,6 +259,12 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('8');
     expect(screen.queryByRole('heading', { level: 3, name: /Ligue 1/ })).not.toBeInTheDocument();
 
+    // L104 : « Matchs listés » compte les lignes affichées, filtre de statut compris.
+    await user.click(within(status).getByRole('button', { name: /Joués/ }));
+    expect(screen.getAllByRole('article')).toHaveLength(1);
+    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('1');
+    await user.click(within(status).getByRole('button', { name: /Tout/ }));
+
     await user.click(within(competitions).getByRole('button', { name: /Ligue des champions/ }));
     expect(screen.getAllByRole('article')).toHaveLength(4);
     expect(within(status).getAllByRole('button').map((b) => b.textContent)).toEqual([

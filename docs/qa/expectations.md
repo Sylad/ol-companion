@@ -51,7 +51,7 @@ dans l'ordre que donne isHome.
 - api: /api/live-match/<gameId>/stats
 
 ## /fixtures
-- shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal à ce total ; les pastilles par compétition, dont la somme égale « Toutes »
+- shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal au nombre de lignes affichées, quel que soit le filtre de statut ou de compétition (au total, sans filtre) ; les pastilles par compétition, dont la somme égale « Toutes »
 - shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux
 - never: « Aucun match dans cette catégorie. » quand la pastille choisie annonce au moins 1 match ; une heure « 01:00 » ou « 02:00 » (minuit UTC)
 - api: /api/season-matches
