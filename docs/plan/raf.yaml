@@ -1005,9 +1005,10 @@ lots:
     finished: 2026-10-10
   - id: L106
     title: "Heure en « h » partout : la page Nouveautés affiche encore « 15:21 » (toLocaleString timeStyle short, nouveautes.tsx) et la ligne de coupe met l'heure en forme à part (cup-match-row.tsx) — passer par kickoffTime de lib/kickoff.ts, un test par écran ; tests fixtures.test.tsx l.196/206/208 : assertions négatives /\\d{2}:\\d{2}/ à remplacer par /\\d{2}h\\d{2}/"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-10
+    started: 2026-10-10
   - id: L107
     title: "Nouveautés : entrée calendrier (L97 L98 L100 L101 L102) avec capture de /fixtures à 390 px prise sur l'app lancée en local (commande orchestrate.ux de cadence.yaml)"
     public: "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange"
