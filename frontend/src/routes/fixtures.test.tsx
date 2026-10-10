@@ -131,6 +131,19 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(quick).toHaveTextContent('5V3N2D');
   });
 
+  it('les libellés V/N/D de la vue rapide sont en fg-muted (≥ 4,5:1), jamais en fg-dim (4,23:1 en 10 px)', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+
+    const quick = screen.getByText('Vue rapide').parentElement as HTMLElement;
+    for (const l of ['V', 'N', 'D']) {
+      const label = within(quick).getByText(l, { selector: 'div' });
+      expect(label).toHaveClass('text-fg-muted');
+      expect(label).not.toHaveClass('text-fg-dim');
+    }
+  });
+
   it('garde la journée, le score et l’heure des matchs de Ligue 1', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();

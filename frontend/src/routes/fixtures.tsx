@@ -281,7 +281,7 @@ function MiniStat({ label, value, tone }: { label: string; value: number; tone: 
   return (
     <div className="rounded-md border border-border bg-surface px-2 py-3">
       <div className={cn('num text-xl font-bold leading-none', tone)}>{value}</div>
-      <div className="mt-1 text-[10px] uppercase tracking-wider text-fg-dim">{label}</div>
+      <div className="mt-1 text-[10px] uppercase tracking-wider text-fg-muted">{label}</div>
     </div>
   );
 }
