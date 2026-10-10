@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-10 17:19",
+  "generated": "2026-10-10 18:13",
   "entries": [
+    {
+      "slug": "2026-10-10-coupes-un-statut-juste-tant-que-l-ol-est-en-lice",
+      "title": "Coupes : un statut juste tant que l'OL est en lice",
+      "date": "2026-10-10",
+      "lots": [
+        "L38"
+      ],
+      "captures": [
+        "captures/L38-coupes-en-lice.png"
+      ],
+      "alts": [
+        "Page Coupes : la Ligue Europa est « En lice » après une seule journée de phase de ligue gagnée contre Anderlecht"
+      ],
+      "html": "<p>Sur la page Coupes, l'OL n'est plus donné « Éliminé » par erreur : le statut n'est plus déduit de l'absence de match à venir, mais de la dernière confrontation, perdue au cumul des deux matchs. Tant que le tirage du tour suivant (ou des barrages, après la phase de ligue de la Ligue Europa) n'est pas publié, l'OL reste « En lice ». Si la source des matchs à venir ne répond pas, la page réessaie et garde les derniers matchs connus au lieu de les effacer.</p>"
+    },
     {
       "slug": "2026-10-10-calendrier-un-match-en-cours-a-egalite-n-est-plus-affiche-co",
       "title": "Calendrier : un match en cours à égalité n'est plus affiché comme un nul",
