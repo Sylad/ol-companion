@@ -8,6 +8,7 @@ import {
   countResults,
   groupMatches,
   matchLabel,
+  matchupId,
   statusCounts,
 } from './calendar';
 
@@ -161,5 +162,18 @@ describe('calendrier — libellé et regroupement', () => {
       cup({ id: 2, date: '2027-01-12T19:45:00.000Z' }),
     ];
     expect(groupMatches(list).map((g) => g.matches.map((m) => m.id))).toEqual([[1, 2]]);
+  });
+});
+
+// L96 — la page match demande `matchupId` = « <365 domicile>-<365 extérieur>-<id> » :
+// l'OL est stocké sous 523 (football-data) au calendrier, mais 465 chez 365scores.
+describe('matchupId (L96)', () => {
+  it("rend l'OL à domicile sous son identifiant 365scores (465), pas 523", () => {
+    const m = cup({ id: 4609001, date: '2026-10-04T15:00:00Z' });
+    expect(matchupId({ ...m, homeTeamId: 523, awayTeamId: 1 })).toBe('465-1-4609001');
+  });
+  it("rend l'OL à l'extérieur sous 465", () => {
+    const m = cup({ id: 77, date: '2026-10-04T15:00:00Z' });
+    expect(matchupId({ ...m, homeTeamId: 9, awayTeamId: 523 })).toBe('9-465-77');
   });
 });

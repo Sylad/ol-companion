@@ -122,3 +122,13 @@ export function countResults(matches: SeasonMatch[]): { wins: number; draws: num
 export function seasonTeamLogoUrl(teamId: number): string {
   return clubLogoUrl(teamId === OL_TEAM_ID ? OL_365SCORES_ID : teamId);
 }
+
+/**
+ * `matchupId` que la page `/match/<id>` envoie au backend : « domicile-extérieur-id »,
+ * en identifiants 365scores. Le calendrier stocke l'OL sous son identifiant football-data
+ * (523, `OL_TEAM_ID`) : on le rend à 465 (`OL_365SCORES_ID`) (L96).
+ */
+export function matchupId(match: SeasonMatch): string {
+  const id365 = (id: number) => (id === OL_TEAM_ID ? OL_365SCORES_ID : id);
+  return `${id365(match.homeTeamId)}-${id365(match.awayTeamId)}-${match.id}`;
+}

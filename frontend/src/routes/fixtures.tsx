@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { Fragment, useMemo, useState } from 'react';
 import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { KnowledgeHeader } from '@/components/knowledge-header';
@@ -17,6 +18,7 @@ import {
   countResults,
   groupMatches,
   isUpcoming,
+  matchupId,
   seasonTeamLogoUrl,
   statusCounts,
   type CompetitionFilter,
@@ -285,7 +287,7 @@ function SummaryMatch({
     : time;
 
   return (
-    <div className="rounded-md border border-border bg-surface-2/35 p-4">
+    <div className="relative rounded-md border border-border bg-surface-2/35 p-4 transition-colors hover:border-border-strong">
       <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-fg-dim font-semibold">
         <Icon className="h-3.5 w-3.5 text-ol-red-bright" strokeWidth={2} />
         {label}
@@ -298,7 +300,9 @@ function SummaryMatch({
           src={seasonTeamLogoUrl(olIsHome ? fixture.awayTeamId : fixture.homeTeamId)}
         />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-semibold text-fg-bright">{teamShortName(opponent)}</div>
+          <div className="truncate text-sm font-semibold text-fg-bright">
+            <MatchLink fixture={fixture} prefix={label}>{teamShortName(opponent)}</MatchLink>
+          </div>
           <div className="text-xs text-fg-dim">{dateLabel} · {competitionLong(fixture.competitionCode)}</div>
         </div>
         {score ? (
@@ -308,6 +312,33 @@ function SummaryMatch({
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Lien vers la page du match (L96). Étiré sur toute la ligne ou la carte (le parent est
+ * `relative`) par un pseudo-élément : la zone cliquable est la rangée entière, sans <a> autour
+ * de blocs. Nom accessible = la rencontre, pas le seul nom du club.
+ */
+function MatchLink({
+  fixture,
+  prefix,
+  children,
+}: {
+  fixture: SeasonMatch;
+  prefix?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      to="/match/$gameId"
+      params={{ gameId: String(fixture.id) }}
+      search={{ matchupId: matchupId(fixture) }}
+      aria-label={`${prefix ? `${prefix} : ` : ''}${fixture.homeTeam} contre ${fixture.awayTeam} — détail du match`}
+      className="after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+    >
+      {children}
+    </Link>
   );
 }
 
@@ -336,14 +367,16 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   return (
     <article
       className={cn(
-        'grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
+        'relative grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
         // Sous 360 px : colonne de la date resserrée et marges réduites, pour laisser la place aux noms (L48).
         'max-[359px]:grid-cols-[40px_1fr_auto] max-[359px]:gap-1 max-[359px]:px-2',
         isLive && 'border-l-[3px] border-l-live',
       )}
     >
       <div className="text-center">
-        <div className="text-xs font-semibold text-fg">{day}</div>
+        <div className="text-xs font-semibold text-fg">
+          <MatchLink fixture={fixture}>{day}</MatchLink>
+        </div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted">
           {monthShort ? (
             <>

@@ -5,6 +5,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import season from '@/test/fixtures/season-matches-2026-10-03.json';
 import { FixturesPage } from './fixtures';
 
+// Pas de routeur dans ce test : Link rend un <a> dont on lit `to`, `params` et `search` (L96).
+vi.mock('@tanstack/react-router', () => ({
+  Link: ({ children, to, params, search, ...rest }: any) => (
+    <a
+      {...rest}
+      href={`${String(to).replace('$gameId', params?.gameId)}?matchupId=${search?.matchupId}`}
+    >
+      {children}
+    </a>
+  ),
+}));
+
 // L39 — le calendrier liste toutes les compétitions où l'OL joue, depuis
 // /api/season-matches, et n'affiche jamais une heure qui n'est pas fixée.
 // Charge : la saison que 365scores servait le 03-10-2026 (46 matchs, dont les
@@ -712,5 +724,44 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
       }
     }
     expect(multi).toBeGreaterThan(0);
+  });
+});
+
+describe('<FixturesPage /> — lien vers la page du match (L96)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('chaque ligne est un lien /match/<id>?matchupId=, nommé par la rencontre', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    const rows = await screen.findAllByRole('article');
+    for (const row of rows) {
+      const link = within(row).getByRole('link');
+      expect(link.getAttribute('href')).toMatch(/^\/match\/\d+\?matchupId=\d+-\d+-\d+$/);
+      expect(link).toHaveAccessibleName(/ contre .* — détail du match$/);
+    }
+  });
+
+  it("l'OL est 465 dans matchupId (identifiant 365scores), jamais 523", async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    const rows = await screen.findAllByRole('article');
+    for (const row of rows) {
+      const href = within(row).getByRole('link').getAttribute('href')!;
+      const [home, away] = href.split('matchupId=')[1].split('-');
+      expect([home, away]).toContain('465');
+      expect([home, away]).not.toContain('523');
+    }
+  });
+
+  it('les cartes Prochain et Dernier résultat mènent aussi à leur match', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+    const aside = screen.getByText('Vue rapide').closest('aside') as HTMLElement;
+    const links = within(aside).getAllByRole('link');
+    expect(links).toHaveLength(2);
+    for (const l of links) expect(l.getAttribute('href')).toMatch(/^\/match\/\d+\?matchupId=/);
   });
 });
