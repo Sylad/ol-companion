@@ -1071,12 +1071,14 @@ lots:
   - id: L111
     title: "Coupes, accessibilité : pastille « En lice » à 4,39-4,49:1 (WCAG 1.4.3, bordure seule comme « Éliminé ») et onglets de coupe sans état (aria-pressed ou tablist/aria-selected, WCAG 4.1.2) — revue UX L38, antérieur au lot"
     public: "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "compliant (2 notes mineures, aucune sous-tâche) : aria-pressed présent, contraste de la pastille mesuré à 4,95:1, les 5 choix de l'auteur tiennent. — orchestré (vague 2026-10-10-1920, 0 passe(s) de correction)", commit: d22224b55dddb6a8ccba0ef731aa23c75d8d0511 }
+    ux: { date: 2026-10-10, verdict: "ok Sylvain 10-10 (Discord « ok L111 ») ; revue UX auto conforme, contraste 4,95:1" }
+    finished: 2026-10-10
   - id: L112
     title: "Coupes : l'onglet actif n'a pas de fond (bg-ol-red/12 n'est pas une classe générée par Tailwind, seules /10 et /15 existent) — classe générée + test du fond calculé (revue L111)"
     public: "Coupes : l'onglet de la coupe affichée se distingue à nouveau"

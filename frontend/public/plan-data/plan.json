@@ -297,8 +297,9 @@
     {
       "id": "L111",
       "title": "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran",
-      "status": "doing",
-      "started": "2026-10-10"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     },
     {
       "id": "L112",
