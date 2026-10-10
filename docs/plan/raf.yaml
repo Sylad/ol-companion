@@ -937,9 +937,10 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant (1 note mineure : le commentaire L48 du test s'est retrouvé au-dessus du bloc L98) — orchestré (vague 2026-10-10-1510, 0 passe(s) de correction)", commit: 5dc573173f28fec7f57d2915ed6d77a515b3324b }
   - id: L99
     title: "Calendrier : libellés V/N/D de la vue rapide à 4,23:1 en 10 px — 11 px ou fg-muted (revue UX L3, mineur)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-10
+    started: 2026-10-10
   - id: L100
     title: "Calendrier : « Week-end » coupé en « Week-/end » dans la colonne date et « Saison 2026-27 » coupé à 768 px (revue UX L3, mineur)"
     status: todo
