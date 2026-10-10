@@ -404,9 +404,10 @@ lots:
       - { date: 2026-10-03, text: "03-10, après L39 : l'app se contredit — /fixtures liste 8 matchs de Ligue Europa dont 7 à venir pendant que /cups dit ÉLIMINÉ." }
     started: 2026-10-10
     tasks:
-      - { id: t1, title: "Tirs au but : une confrontation à élimination directe perdue aux tirs au but (cumul nul) doit donner « Éliminé » — lire l'équipe qualifiée chez 365scores pour le dernier tour à élimination directe, ou à défaut garder l'ancienne règle (dernier tour KO joué et rien à venir) ; tests CdF 1-1 t.a.b. et EL aller-retour 1-0/0-1 t.a.b.", status: todo }
-      - { id: t2, title: "lastKnown (copie en mémoire du cache des coupes) vidé à la remise à zéro de saison du 1er août, comme cups-cache.json ; test", status: todo }
-      - { id: t3, title: "Tests du mode dégradé des coupes : TTL de 5 min, lastKnown non mis à jour en mode dégradé, reprise du cache au démarrage (cups.service.ts:125-160, 333)", status: todo }
+      - { id: t1, title: "Tirs au but : une confrontation à élimination directe perdue aux tirs au but (cumul nul) doit donner « Éliminé » — lire l'équipe qualifiée chez 365scores pour le dernier tour à élimination directe, ou à défaut garder l'ancienne règle (dernier tour KO joué et rien à venir) ; tests CdF 1-1 t.a.b. et EL aller-retour 1-0/0-1 t.a.b.", status: done }
+      - { id: t2, title: "lastKnown (copie en mémoire du cache des coupes) vidé à la remise à zéro de saison du 1er août, comme cups-cache.json ; test", status: done }
+      - { id: t3, title: "Tests du mode dégradé des coupes : TTL de 5 min, lastKnown non mis à jour en mode dégradé, reprise du cache au démarrage (cups.service.ts:125-160, 333)", status: done }
+    review: { date: 2026-10-10, verdict: "compliant (décision du lead 10-10) : 3e revue Opus sans bloquant, seul majeur = périmètre (le classement de la phase de ligue prévu en L110 est livré sous L38, testé : cup-status.spec.ts:122 rang 25 éliminé) ; t1 t2 t3 faits (1d324cc, fd1814e) ; re-vérifié : 354 tests backend, 373 frontend, build", commit: b32e2d81b5fe45956c2d39c46e8aa6311f6aaff4 }
   - id: L39
     title: "Calendrier : 15 matchs listés (Ligue 1 J1–J15) alors que /api/season-matches en connaît 36, Europa League comprise ; horaires non fixés affichés 01:00 (dates à T00:00:00Z) — à décider : toutes compétitions ou Ligue 1 seule"
     status: done
@@ -1060,6 +1061,8 @@ lots:
     estimate: 1
     visible: true
     created: 2026-10-10
+    notes:
+      - { date: 2026-10-10, text: "Livré sous L38 (commits 487fcf2, 6f4b71f, b32e2d8 : fetchLeaguePhaseRank, leaguePhaseOutcome, tests rang 9-24 barrages / 25+ éliminé) — décision du lead 10-10" }
   - id: L111
     title: "Coupes, accessibilité : pastille « En lice » à 4,39-4,49:1 (WCAG 1.4.3, bordure seule comme « Éliminé ») et onglets de coupe sans état (aria-pressed ou tablist/aria-selected, WCAG 4.1.2) — revue UX L38, antérieur au lot"
     public: "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran"
