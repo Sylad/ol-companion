@@ -214,4 +214,58 @@ describe('CupsService — appel des matchs à venir en échec', () => {
     expect(cups[0].matches[0].olQualified).toBe(false);
     expect(cups[0].isEliminated).toBe(true);
   });
+
+  describe('Ligue Europa — phase de ligue terminée', () => {
+    const STANDINGS = /\/web\/standings\//;
+    const elGame = (id: number, daysAgo: number) => ({
+      id, competitionId: 573, stageNum: 1, roundNum: id, statusGroup: 4,
+      startTime: new Date(Date.now() - daysAgo * 86_400_000).toISOString(),
+      homeCompetitor: { id: 465, name: 'Lyon', score: 1 },
+      awayCompetitor: { id: 7, name: 'Autre', score: 0 },
+    });
+    function mockEl(standings: (() => Response) | 'fail') {
+      global.fetch = jest.fn(async (url: string | URL | Request) => {
+        const u = String(url);
+        if (STANDINGS.test(u)) {
+          if (standings === 'fail') throw new Error('timeout');
+          return standings();
+        }
+        if (FIXTURES.test(u)) return new Response(JSON.stringify({ games: [] }), { status: 200 });
+        return new Response(JSON.stringify({ games: Array.from({ length: 8 }, (_, i) => elGame(i + 1, 5 + i)) }), { status: 200 });
+      }) as unknown as typeof fetch;
+    }
+    const table = (olRank: number) => () => new Response(JSON.stringify({
+      standings: [{ isCurrentStage: true, rows: Array.from({ length: 36 }, (_, i) => ({
+        position: i + 1, competitor: { id: i + 1 === olRank ? 465 : 1000 + i },
+      })) }],
+    }), { status: 200 });
+
+    it('classé 28e : éliminé', async () => {
+      mockEl(table(28));
+      const [cup] = await (await load()).getCups({ force: true });
+      expect(cup.isEliminated).toBe(true);
+      expect(cup.awaitingDraw).toBeFalsy();
+    });
+
+    it('classé 12e : en lice, barrages', async () => {
+      mockEl(table(12));
+      const [cup] = await (await load()).getCups({ force: true });
+      expect(cup.isEliminated).toBe(false);
+      expect(cup.currentStageFr).toBe('Barrages');
+      expect(cup.awaitingDraw).toBeFalsy();
+    });
+
+    it('classé 5e : en lice, huitièmes', async () => {
+      mockEl(table(5));
+      const [cup] = await (await load()).getCups({ force: true });
+      expect(cup.currentStageFr).toBe('1/8 de finale');
+    });
+
+    it('classement illisible : ni éliminé ni « en lice » affirmé, en attente du tirage', async () => {
+      mockEl('fail');
+      const [cup] = await (await load()).getCups({ force: true });
+      expect(cup.isEliminated).toBe(false);
+      expect(cup.awaitingDraw).toBe(true);
+    });
+  });
 });

@@ -94,7 +94,7 @@ function CupTab({
               : 'bg-ol-red/15 text-ol-red-bright',
           )}
         >
-          {cup.isEliminated ? 'Éliminé' : 'En lice'}
+          {cupStatusLabel(cup)}
         </span>
       </div>
       <div className="mt-1 text-xs text-fg-dim">
@@ -102,6 +102,12 @@ function CupTab({
       </div>
     </button>
   );
+}
+
+/** Phase de ligue jouée sans classement lisible : on n'affirme ni « En lice » ni « Éliminé ». */
+function cupStatusLabel(cup: CupInfo): string {
+  if (cup.isEliminated) return 'Éliminé';
+  return cup.awaitingDraw ? 'En attente du tirage' : 'En lice';
 }
 
 function CupCard({ cup }: { cup: CupInfo }) {
@@ -134,7 +140,7 @@ function CupCard({ cup }: { cup: CupInfo }) {
           </div>
           <div className="text-right shrink-0">
             <div className="text-[10px] uppercase tracking-wider text-fg-dim font-semibold">
-              {cup.isEliminated ? 'Éliminé' : 'En lice'}
+              {cupStatusLabel(cup)}
             </div>
             <div className="text-sm font-semibold text-fg mt-0.5">{cup.currentStageFr}</div>
           </div>

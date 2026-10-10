@@ -6,7 +6,8 @@ import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { getCurrentSeason } from '../scheduler/season.util';
 import { SeasonResetService } from '../scheduler/season-reset.service';
-import { isCupEliminated } from './cup-status';
+import { isCupEliminated, isLeaguePhaseComplete, leaguePhaseOutcome } from './cup-status';
+import { Scores365StandingsResponseSchema } from '../standings/standings.schema';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
@@ -34,6 +35,8 @@ export interface CupInfo {
   name: string;
   currentStageFr: string;
   isEliminated: boolean;
+  /** Phase de ligue jouée, classement final illisible : ni « En lice » ni « Éliminé » ne sont prouvés. */
+  awaitingDraw?: boolean;
   matches: CupMatch[];
   bracket?: BracketInfo;
 }
@@ -101,6 +104,8 @@ const BRACKET_FROM_STAGE: Record<number, number> = {
 
 // Cup display order (first = most important)
 const COMP_ORDER = [37, 573];
+/** Compétition à phase de ligue (classement final lu chez 365scores). */
+const LEAGUE_PHASE_COMPETITION = 573;
 
 const CACHE_TTL_MS = 7200_000; // 2h
 /** Cache écrit sans les matchs à venir : on réessaie au bout de 5 min, pas 2 h. */
@@ -244,10 +249,19 @@ export class CupsService implements OnModuleInit {
       const upcoming = matches.filter(m => m.status === 'SCHEDULED' || m.status === 'IN_PLAY');
       const lastFinished = finished[finished.length - 1];
 
-      const isEliminated = isCupEliminated(matches, new Date(), upcomingKnown);
-      const currentStage = upcoming[0]?.stageFr ?? lastFinished?.stageFr ?? '';
+      // Phase de ligue jouée, rien à venir : seul le classement final dit la suite (éliminé dès la dernière journée).
+      const needsRank = cid === LEAGUE_PHASE_COMPETITION && upcomingKnown && upcoming.length === 0 && isLeaguePhaseComplete(matches);
+      const rank = needsRank ? await this.fetchLeaguePhaseRank(cid) : undefined;
+      const isEliminated = isCupEliminated(matches, new Date(), upcomingKnown, rank);
+      const awaitingDraw = needsRank && rank === undefined && !isEliminated;
+      const currentStage = upcoming[0]?.stageFr
+        ?? (rank !== undefined && !isEliminated ? leaguePhaseOutcome(rank) : undefined)
+        ?? lastFinished?.stageFr ?? '';
 
-      results.push({ competitionId: cid, name: compName, currentStageFr: currentStage, isEliminated, matches });
+      results.push({
+        competitionId: cid, name: compName, currentStageFr: currentStage, isEliminated,
+        ...(awaitingDraw ? { awaitingDraw } : {}), matches,
+      });
       this.logger.log(`Cup: ${compName} — ${matches.length} matchs, éliminé=${isEliminated}`);
     }
 
@@ -272,6 +286,24 @@ export class CupsService implements OnModuleInit {
     });
 
     return { results, upcomingOk };
+  }
+
+  /** Rang final de l'OL au classement de la phase de ligue (365scores) ; undefined si illisible. */
+  private async fetchLeaguePhaseRank(competitionId: number): Promise<number | undefined> {
+    const url = `${SCORES365_API_BASE}/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${competitionId}`;
+    try {
+      const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // Pas readScores365Standings : il impose les 18 lignes de la Ligue 1 (ici 36 clubs).
+      const data = parseExternal(Scores365StandingsResponseSchema, await res.json(), '365scores cups league phase');
+      const stage = data.standings?.find((s) => s.isCurrentStage) ?? data.standings?.[0];
+      const position = stage?.rows?.find((r) => r.competitor?.id === OL_365SCORES_ID)?.position;
+      if (position === undefined) throw new Error('OL absent du classement');
+      return position;
+    } catch (err: unknown) {
+      this.logger.warn(`365scores league phase standings failed: ${(err as Error)?.message ?? err}`);
+      return undefined;
+    }
   }
 
   private async fetchUpcoming(baseUrl: string, into: Scores365Game[]): Promise<boolean> {

@@ -109,6 +109,8 @@ export interface CupInfo {
   name: string;
   currentStageFr: string;
   isEliminated: boolean;
+  /** Phase de ligue jouée, classement final illisible : ni en lice ni éliminé prouvé. */
+  awaitingDraw?: boolean;
   matches: CupMatch[];
   bracket?: BracketInfo;
 }

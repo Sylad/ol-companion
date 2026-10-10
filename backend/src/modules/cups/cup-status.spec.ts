@@ -1,4 +1,4 @@
-import { isCupEliminated, STALE_DAYS } from './cup-status';
+import { isCupEliminated, isLeaguePhaseComplete, leaguePhaseOutcome, STALE_DAYS } from './cup-status';
 import type { CupMatch } from './cups.service';
 import { OL_365SCORES_ID } from '../../config/constants';
 
@@ -107,6 +107,38 @@ describe('isCupEliminated', () => {
 
     it('cumul nul sans qualifié lisible = pas de conclusion avant STALE_DAYS', () => {
       expect(isCupEliminated([m('FINISHED', '32ème de finale', { ol: 1, opp: 1 })], NOW)).toBe(false);
+    });
+  });
+
+  describe('classement de la phase de ligue', () => {
+    const played = () => Array.from({ length: 8 }, (_, i) => m('FINISHED', 'Phase de ligue', { daysAgo: 5 + i, ol: 1, opp: 0 }));
+
+    it('8 journées jouées : complète ; 7 : en cours', () => {
+      expect(isLeaguePhaseComplete(played())).toBe(true);
+      expect(isLeaguePhaseComplete(played().slice(1))).toBe(false);
+      expect(isLeaguePhaseComplete([...played(), m('FINISHED', 'Barrages')])).toBe(false);
+    });
+
+    it('rang 25 à 36 = éliminé dès la dernière journée', () => {
+      expect(isCupEliminated(played(), NOW, true, 25)).toBe(true);
+      expect(isCupEliminated(played(), NOW, true, 36)).toBe(true);
+    });
+
+    it('rang 1 à 24 = en lice', () => {
+      expect(isCupEliminated(played(), NOW, true, 24)).toBe(false);
+      expect(isCupEliminated(played(), NOW, true, 8)).toBe(false);
+    });
+
+    it('un rang ne compte pas tant que la phase de ligue est en cours', () => {
+      expect(isCupEliminated(played().slice(1), NOW, true, 30)).toBe(false);
+    });
+
+    it('rang → prochain tour', () => {
+      expect(leaguePhaseOutcome(1)).toBe('1/8 de finale');
+      expect(leaguePhaseOutcome(8)).toBe('1/8 de finale');
+      expect(leaguePhaseOutcome(9)).toBe('Barrages');
+      expect(leaguePhaseOutcome(24)).toBe('Barrages');
+      expect(leaguePhaseOutcome(25)).toBe('Éliminé');
     });
   });
 });
