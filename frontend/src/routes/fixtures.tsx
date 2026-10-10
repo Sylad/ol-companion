@@ -200,9 +200,10 @@ function FilterPills<K extends string>({
           onClick={() => onChange(o.key)}
           className={cn(
             'whitespace-nowrap px-3 py-1 text-xs font-semibold rounded-full transition-colors',
-            // Au clavier : anneau rouge 2 px, plus épais et d'une autre couleur que l'anneau gris
-            // de la pastille choisie (WCAG 2.4.7) ; il le remplace tant que le focus y est.
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright',
+            // Au clavier : contour rouge 2 px (outline, pas ring : le ring est le box-shadow
+            // de l'anneau gris et l'écraserait), à 1 px de la pastille, donc l'anneau gris de la
+            // pastille choisie reste visible dessous (WCAG 2.4.7). 1 + 2 px tiennent dans le p-1.
+            'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright',
             // Pastille choisie : le fond seul fait 1,07:1 sur le groupe et le texte
             // ne change que de clarté — l'anneau fg-muted porte l'état (≥ 3:1,
             // WCAG 1.4.1 / 1.4.11).

@@ -570,10 +570,13 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
         const buttons = within(screen.getByRole('group', { name })).getAllByRole('button');
         for (const b of buttons) {
           expect(b).toHaveClass(
-            'focus-visible:outline-none',
-            'focus-visible:ring-2',
-            'focus-visible:ring-ol-red-bright',
+            'focus-visible:outline',
+            'focus-visible:outline-2',
+            'focus-visible:outline-offset-1',
+            'focus-visible:outline-ol-red-bright',
           );
+          // Pas de ring au focus : il écraserait l'anneau gris (même box-shadow) de la pastille choisie.
+          expect(b.className).not.toMatch(/focus-visible:ring/);
         }
       }
     });
