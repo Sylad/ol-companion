@@ -188,10 +188,10 @@ function FilterPills<K extends string>({
   onChange: (key: K) => void;
 }) {
   return (
-    // rounded-[17px] = la demi-hauteur d'une rangée (34 px) : même capsule que
+    // rounded-[17px] (lg) = la demi-hauteur d'une rangée (34 px) ; 24 px en dessous (rangée de 48 px) : même capsule que
     // rounded-full sur une ligne, et un bloc arrondi propre si les pastilles
     // passent sur deux lignes (4 compétitions sur un téléphone de 390 px).
-    <div role="group" aria-label={label} className="flex flex-wrap items-center gap-1 rounded-[17px] border border-border p-1">
+    <div role="group" aria-label={label} className="flex flex-wrap items-center gap-1 rounded-[24px] border border-border p-1 lg:rounded-[17px]">
       {options.map((o) => (
         <button
           key={o.key}
@@ -201,7 +201,9 @@ function FilterPills<K extends string>({
           aria-label={`${o.abbr && o.name ? `${o.label} — ${o.name}` : o.name ?? o.label} · ${o.count} ${o.count > 1 ? 'matchs' : 'match'}`}
           onClick={() => onChange(o.key)}
           className={cn(
-            'whitespace-nowrap px-3 py-1 text-xs font-semibold rounded-full transition-colors',
+            // Sous lg (téléphone, tablette) : cible de 40 px (WCAG 2.5.8 exige 24 px, 40 px au pouce) ;
+            // le bureau garde la pastille de 24 px (pointeur fin).
+            'whitespace-nowrap px-3 py-1 text-xs font-semibold rounded-full transition-colors min-h-10 lg:min-h-0',
             // Au clavier : contour rouge 2 px (outline, pas ring : le ring est le box-shadow
             // de l'anneau gris et l'écraserait), à 1 px de la pastille, donc l'anneau gris de la
             // pastille choisie reste visible dessous (WCAG 2.4.7). 1 + 2 px tiennent dans le p-1.

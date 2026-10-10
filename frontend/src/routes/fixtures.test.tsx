@@ -238,6 +238,18 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     expect(legend).not.toHaveClass('sr-only');
   });
 
+  // jsdom ne mesure pas : on vérifie la classe qui porte la cible de 40 px sous lg (WCAG 2.5.8, L97).
+  it('les pastilles de filtre font 40 px de haut au toucher (sous lg), sans changer le bureau', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+    for (const name of ['Filtrer par compétition', 'Filtrer par statut']) {
+      const buttons = within(screen.getByRole('group', { name })).getAllByRole('button');
+      expect(buttons.length).toBeGreaterThan(1);
+      for (const b of buttons) expect(b).toHaveClass('min-h-10', 'lg:min-h-0');
+    }
+  });
+
   it('le filtre par compétition restreint la liste, les compteurs et la vue rapide', async () => {
     vi.stubGlobal('fetch', serve());
     const user = userEvent.setup();
