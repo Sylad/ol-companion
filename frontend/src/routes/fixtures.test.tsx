@@ -187,10 +187,10 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     const articles = await screen.findAllByRole('article');
 
-    // J13 Troyes–Lyon : football-data sans heure, 365scores à 18:00 de remplissage.
+    // J13 Troyes–Lyon : football-data sans heure, 365scores à 18h00 de remplissage.
     const troyes = within(block('Ligue 1 · J13')).getByRole('article');
     expect(troyes).toHaveTextContent('Horaire à confirmer');
-    expect(troyes).not.toHaveTextContent(/\d{2}:\d{2}/);
+    expect(troyes).not.toHaveTextContent(/\d{2}[h:]\d{2}/);
 
     // Le jour n'est pas plus fixé que l'heure : le samedi de remplissage (5 déc.)
     // ne s'affiche pas comme une date ferme (L47).
@@ -203,9 +203,9 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     // 21 matchs de Ligue 1 sans heure fixée ce jour-là ; aucun n'affiche d'heure.
     const unconfirmed = articles.filter((a) => a.textContent?.includes('Horaire à confirmer'));
     expect(unconfirmed).toHaveLength(21);
-    expect(unconfirmed.some((a) => /\d{2}:\d{2}/.test(a.textContent ?? ''))).toBe(false);
-    // Et « 01:00 » (minuit UTC lu à Paris) n'apparaît nulle part.
-    expect(screen.queryByText('01:00')).not.toBeInTheDocument();
+    expect(unconfirmed.some((a) => /\d{2}[h:]\d{2}/.test(a.textContent ?? ''))).toBe(false);
+    // Et « 01h00 » (minuit UTC lu à Paris) n'apparaît nulle part.
+    expect(screen.queryByText('01h00')).not.toBeInTheDocument();
   });
 
   it('prend les écussons au CDN de 365scores, par identifiant de club, sans appel /api/wiki-image par ligne', async () => {
