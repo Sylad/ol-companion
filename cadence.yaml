@@ -34,3 +34,5 @@ orchestrate:
     command: '(cd backend && npm run start:dev) & (cd frontend && npm run dev -- --port 5174 --strictPort) & wait'
     url: http://localhost:5174
     timeout: 300
+  # Precheck « livrable déjà présent ? » sur le modèle local (claude-local, Ollama) : hors quota, Sonnet en filet.
+  precheck: local
