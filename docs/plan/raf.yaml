@@ -804,12 +804,14 @@ lots:
   - id: L83
     title: "Accueil : « 0D/2D » des pastilles par compétition en rouge --loss à 12 px = 3,85:1 sur surface (WCAG 1.4.3 exige 4,5) — texte en --ol-red-bright (4,95:1) ou pastille colorée + chiffre fg (revue UX L2)"
     public: "Accueil : les compteurs de défaites par compétition plus lisibles"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-09
     started: 2026-10-09
-    review: { date: 2026-10-09, verdict: "conforme (Sonnet, revue légère 09-10, verdict confirmé par le lead après re-vérification) : 1 commit 7d2da22, « D » des pastilles en --ol-red-bright, 4,83:1 mesuré sur la pastille (WCAG 1.4.3), test sur les 4 pastilles « 0D » ; 2 notes mineures (autres usages de text-loss hors lot)", commit: 7d2da224c8c3e1adcfbfe7048134d11c928b3932 }
+    review: { date: 2026-10-10, verdict: "conforme (revue Sonnet vague 2307, confirmée par le lead 10-10) : 1 commit 7d2da22, 0 bloquant, 0 majeur, 2 mineurs ; « D » mesuré 4,83:1 sur la pastille (WCAG 1.4.3 tenu), test des 4 pastilles 0D ; 349/349, build ok", commit: 7d2da224c8c3e1adcfbfe7048134d11c928b3932 }
+    ux: { date: 2026-10-10, verdict: "conforme (Sylvain 10-10, captures tmp/ux-ol-L83/) : défaites par compétition lisibles en --ol-red-bright" }
+    finished: 2026-10-10
   - id: L84
     title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
     public: "Accueil : pendant un match en direct, le bandeau montre ce match"
