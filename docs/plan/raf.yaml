@@ -1014,7 +1014,7 @@ lots:
   - id: L107
     title: "Nouveautés : entrée calendrier (L97 L98 L100 L101 L102) avec capture de /fixtures à 390 px prise sur l'app lancée en local (commande orchestrate.ux de cadence.yaml)"
     public: "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-10
@@ -1022,15 +1022,19 @@ lots:
     review: { date: 2026-10-10, verdict: "compliant: 0 blocking, 0 major, 3 minor (capture sans aucune ligne de la liste, « jour et mois en toutes lettres » inexact, phrase du nul qui doublonne l'entrée L108 au lieu de décrire L102) — orchestré (vague 2026-10-10-1645, 1 passe(s) de correction)", commit: b4cd8191fcf699489311f7703432e7860b31eda2 }
     notes:
       - { date: 2026-10-10, text: "Revue : la capture à 390 montre le haut de /fixtures (filtres, vue rapide, « 18h45 ») mais aucune ligne de la liste — dates, Week-end et nul orange dans les lignes n'y figurent pas ; accepté" }
+    ux: { date: 2026-10-10, verdict: ok Sylvain 10-10 (Discord « ok L107 L108 ») ; revue UX auto conforme }
+    finished: 2026-10-10
   - id: L108
     title: "Calendrier : le score d'un match nul s'affiche en gris dans les lignes, comme celui d'un perdant, alors que le README annonce le nul en orange au calendrier — scores du nul en --draw dans les lignes, test (QA prod 10-10)"
     public: "Calendrier : le score d'un match nul s'affiche en orange"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "compliant: 0 blocking, 0 major, 1 minor (nul affiché en orange aussi pour un match en cours à égalité) — orchestré (vague 2026-10-10-1645, 0 passe(s) de correction)", commit: 5406fa3428b4107c618687e22326da36e807d5fa }
+    ux: { date: 2026-10-10, verdict: "ok Sylvain 10-10 (Discord « ok L107 L108 ») ; revue UX auto conforme, 1 mineur (nul en cours → L109)" }
+    finished: 2026-10-10
   - id: L109
     title: "Calendrier : un match EN COURS à égalité (0-0, 1-1) s'affiche en orange « nul » comme un résultat final — ne colorer le nul qu'un match terminé (statut FINISHED), test avec un match IN_PLAY (revue L108, mesuré en local)"
     public: "Calendrier : un match en cours à égalité n'est plus affiché comme un nul"

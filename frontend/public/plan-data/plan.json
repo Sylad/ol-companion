@@ -256,14 +256,16 @@
     {
       "id": "L107",
       "title": "Calendrier : filtres au doigt, dates lisibles, heures en « h », nuls en orange",
-      "status": "doing",
-      "started": "2026-10-10"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     },
     {
       "id": "L108",
       "title": "Calendrier : le score d'un match nul s'affiche en orange",
-      "status": "doing",
-      "started": "2026-10-10"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     },
     {
       "id": "L109",
