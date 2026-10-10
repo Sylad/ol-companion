@@ -912,9 +912,10 @@ lots:
     finished: 2026-10-10
   - id: L96
     title: "Calendrier : un match de la liste ne mène pas à sa page de match — ligne et cartes Prochain/Dernier en lien /match/<id>?matchupId= (revue UX L3, majeur)"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-10
+    started: 2026-10-10
   - id: L97
     title: "Calendrier téléphone : filtres de 24 px de haut, trop petits au doigt — min-h-10 sous lg (revue UX L3, majeur WCAG 2.5.8)"
     status: todo
