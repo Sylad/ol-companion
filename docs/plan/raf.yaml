@@ -927,6 +927,7 @@ lots:
     estimate: 0.25
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant (1 note mineure : commentaire « 48 px » inexact, la rangée fait 50 px) — orchestré (vague 2026-10-10-1510, 0 passe(s) de correction)", commit: 60508d275f7eff6a8dc3377ba6da420ac43a30fb }
   - id: L98
     title: "Calendrier : mois « 08 » nu sous le jour, date sans nom de mois ni année — <time datetime> « Mar. 04 / AOÛT » (revue UX L3, majeur Nielsen H2)"
     status: todo
