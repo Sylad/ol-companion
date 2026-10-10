@@ -764,4 +764,15 @@ describe('<FixturesPage /> — lien vers la page du match (L96)', () => {
     expect(links).toHaveLength(2);
     for (const l of links) expect(l.getAttribute('href')).toMatch(/^\/match\/\d+\?matchupId=/);
   });
+
+  it("la zone cliquable passe au-dessus des écussons atténués et du LIVE animé (z-10), et l'infobulle donne la rencontre entière", async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    const rows = await screen.findAllByRole('article');
+    for (const row of rows) {
+      const link = within(row).getByRole('link');
+      expect(link.className).toContain('after:z-10');
+      expect(link.getAttribute('title')).toMatch(/ contre /);
+    }
+  });
 });

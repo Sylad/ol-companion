@@ -335,7 +335,8 @@ function MatchLink({
       params={{ gameId: String(fixture.id) }}
       search={{ matchupId: matchupId(fixture) }}
       aria-label={`${prefix ? `${prefix} : ` : ''}${fixture.homeTeam} contre ${fixture.awayTeam} — détail du match`}
-      className="after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+      title={`${fixture.homeTeam} contre ${fixture.awayTeam}`}
+      className="after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
     >
       {children}
     </Link>
