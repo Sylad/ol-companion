@@ -300,7 +300,7 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
         PREV,
         PREV,
         PREV,
-        '/web/games/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=465&limit=20',
+        '/web/games/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=465&limit=50',
         '/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&competitions=37&limit=200',
         '/web/games/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&competitions=37&limit=200',
       ]);
