@@ -923,9 +923,10 @@ lots:
     finished: 2026-10-10
   - id: L97
     title: "Calendrier téléphone : filtres de 24 px de haut, trop petits au doigt — min-h-10 sous lg (revue UX L3, majeur WCAG 2.5.8)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-10
+    started: 2026-10-10
   - id: L98
     title: "Calendrier : mois « 08 » nu sous le jour, date sans nom de mois ni année — <time datetime> « Mar. 04 / AOÛT » (revue UX L3, majeur Nielsen H2)"
     status: todo
