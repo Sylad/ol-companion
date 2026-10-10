@@ -264,6 +264,11 @@
       "title": "Calendrier : le score d'un match nul s'affiche en orange",
       "status": "doing",
       "started": "2026-10-10"
+    },
+    {
+      "id": "L109",
+      "title": "Calendrier : un match en cours à égalité n'est plus affiché comme un nul",
+      "status": "todo"
     }
   ]
 }
