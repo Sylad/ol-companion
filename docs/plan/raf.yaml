@@ -962,6 +962,7 @@ lots:
     estimate: 0.25
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1510, 2 passe(s) de correction)", commit: 5e028fae37634fab2963c7fdc490c223abc5a898 }
   - id: L103
     title: "Nouveautés : entrées L94 (score du perdant lisible) et L95 (contour rouge au clavier) avec captures de /fixtures prises sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml : la prod n'a pas encore ces lots) ; L94 passé visible avec titre public"
     status: done
