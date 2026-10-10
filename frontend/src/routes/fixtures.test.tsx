@@ -424,7 +424,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
   });
 
   describe('lisibilité — revue UX du calendrier', () => {
-    it('L94 — le score et le nom du perdant ne portent aucune opacité (WCAG 1.4.3), seul l’écusson est atténué', async () => {
+    it('L94 — le score et le nom du perdant ne portent aucune opacité (WCAG 1.4.3)', async () => {
       vi.stubGlobal('fetch', serve());
       renderPage();
       await screen.findAllByRole('article');
@@ -440,6 +440,42 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       const name = within(rennes).getByText('Rennes');
       for (let n: HTMLElement | null = name; n && n !== rennes; n = n.parentElement) {
         expect(n.className).not.toMatch(/opacity-/);
+      }
+    });
+
+    /** Le conteneur d'écusson (celui qui porte l'éventuelle opacité) de la ligne de ce club. */
+    function logoWrap(row: HTMLElement, club: string): HTMLElement {
+      const name = within(row).getByText(club);
+      const line = name.closest('div.flex') as HTMLElement;
+      return line.firstElementChild as HTMLElement;
+    }
+
+    it('L94 — l’écusson du perdant porte opacity-55, celui du vainqueur non', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      expect(logoWrap(rennes, 'Rennes')).toHaveClass('opacity-55');
+      expect(logoWrap(rennes, 'Lyon')).not.toHaveClass('opacity-55');
+    });
+
+    it('L94 — sur un match nul, les deux écussons sont atténués et les deux scores en fg-muted, sans opacité sur le texte', async () => {
+      const draw = season.map((m) =>
+        m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, homeScore: 1, awayScore: 1 } : m,
+      );
+      vi.stubGlobal('fetch', serve(draw));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      expect(logoWrap(rennes, 'Rennes')).toHaveClass('opacity-55');
+      expect(logoWrap(rennes, 'Lyon')).toHaveClass('opacity-55');
+      const scores = within(rennes).getAllByText('1');
+      expect(scores).toHaveLength(2);
+      for (const sc of scores) {
+        expect(sc).toHaveClass('text-fg-muted');
+        expect(sc.className).not.toMatch(/opacity-/);
       }
     });
 

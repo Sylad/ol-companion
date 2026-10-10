@@ -422,7 +422,7 @@ function CompactTeamLine({
   const isOL = id === OL_TEAM_ID;
   return (
     <div className="flex min-w-0 items-center gap-1.5 max-[359px]:gap-1 sm:gap-2">
-      {/* L94 : seul l'écusson du perdant est atténué ; une opacité sur le nom ou le score les ramenait à 2,97:1 (WCAG 1.4.3). */}
+      {/* L94 : seul l'écusson du perdant est atténué (les deux sur un match nul : ni homeWon ni awayWon) ; une opacité sur le nom ou le score les ramenait à 2,97:1 (WCAG 1.4.3). */}
       <span className={cn('inline-flex shrink-0', dim && 'opacity-55')}>
         <TeamLogo teamId={id} name={name} size={18} src={seasonTeamLogoUrl(id)} />
       </span>
