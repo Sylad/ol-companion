@@ -100,6 +100,10 @@ const BRACKET_FROM_STAGE: Record<number, number> = {
 const COMP_ORDER = [37, 573];
 
 const CACHE_TTL_MS = 7200_000; // 2h
+/** Cache écrit sans les matchs à venir : on réessaie au bout de 5 min, pas 2 h. */
+const DEGRADED_TTL_MS = 300_000;
+const UPCOMING_ATTEMPTS = 3;
+const UPCOMING_RETRY_DELAY_MS = 1_000;
 const CACHE_FILE = path.resolve(process.cwd(), 'data', 'cups-cache.json');
 
 const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
@@ -108,6 +112,9 @@ const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 export class CupsService implements OnModuleInit {
   private readonly logger = new Logger(CupsService.name);
 
+  /** Dernier résultat connu (cache d'avant le démarrage compris) : repli si les matchs à venir échouent. */
+  private lastKnown: CupInfo[] | null = null;
+
   constructor(
     private config: ConfigService,
     private readonly bracketService: BracketService,
@@ -115,6 +122,7 @@ export class CupsService implements OnModuleInit {
 
   onModuleInit() {
     try {
+      this.lastKnown = this.readCache({ ignoreTtl: true });
       if (fs.existsSync(CACHE_FILE)) fs.unlinkSync(CACHE_FILE);
     } catch (err) {
       this.logger.warn(`Could not invalidate cups cache: ${(err as Error).message}`);
@@ -138,13 +146,18 @@ export class CupsService implements OnModuleInit {
     }
 
     try {
-      const results = await this.fetchCupsFrom365Scores();
-      const previous = this.readCache();
+      const { results, upcomingOk } = await this.fetchCupsFrom365Scores();
+      const previous = this.readCache() ?? this.lastKnown;
       if (results.length === 0 && previous && previous.length > 0) {
         this.logger.warn('365scores a rendu 0 coupe — cache existant conservé');
         return previous;
       }
-      this.writeCache(results);
+      if (upcomingOk) {
+        this.lastKnown = results;
+        this.writeCache(results);
+      } else {
+        this.writeCache(results, DEGRADED_TTL_MS);
+      }
       return results;
     } catch (err) {
       this.logger.error('getCups (365scores) failed', err);
@@ -152,7 +165,7 @@ export class CupsService implements OnModuleInit {
     }
   }
 
-  private async fetchCupsFrom365Scores(): Promise<CupInfo[]> {
+  private async fetchCupsFrom365Scores(): Promise<{ results: CupInfo[]; upcomingOk: boolean }> {
     const allGames: Scores365Game[] = [];
     const baseUrl = `${SCORES365_API_BASE}/web/games`;
     const seasonStart = getCurrentSeason().startDate.getTime();
@@ -179,19 +192,8 @@ export class CupsService implements OnModuleInit {
       }
     }
 
-    // Fetch upcoming games (for future cup matches)
-    try {
-      const res = await fetch(
-        `${baseUrl}/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=50`,
-        { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) }
-      );
-      if (res.ok) {
-        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores cups upcoming');
-        allGames.push(...(d.games ?? []));
-      }
-    } catch (err: unknown) {
-      this.logger.warn(`365scores upcoming fetch failed: ${(err as Error)?.message ?? err}`);
-    }
+    // Fetch upcoming games (for future cup matches), with retries: a miss must not read as "no match left"
+    const upcomingOk = await this.fetchUpcoming(baseUrl, allGames);
 
     this.logger.log(`365scores: ${allGames.length} événements récupérés`);
 
@@ -219,10 +221,20 @@ export class CupsService implements OnModuleInit {
 
       const compName = COMP_NAMES[cid] ?? `Compétition #${cid}`;
       const finished = matches.filter(m => m.status === 'FINISHED');
+
+      if (!upcomingOk) {
+        // Appel des matchs à venir en échec : on reprend ceux du dernier résultat connu.
+        const known = new Set(matches.map((m) => m.id));
+        const kept = (this.lastKnown ?? [])
+          .find((c) => c.competitionId === cid)
+          ?.matches.filter((m) => m.status !== 'FINISHED' && !known.has(m.id)) ?? [];
+        matches.push(...kept);
+        matches.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      }
       const upcoming = matches.filter(m => m.status === 'SCHEDULED' || m.status === 'IN_PLAY');
       const lastFinished = finished[finished.length - 1];
 
-      const isEliminated = isCupEliminated(cid, matches);
+      const isEliminated = isCupEliminated(matches, new Date(), upcomingOk);
       const currentStage = upcoming[0]?.stageFr ?? lastFinished?.stageFr ?? '';
 
       results.push({ competitionId: cid, name: compName, currentStageFr: currentStage, isEliminated, matches });
@@ -249,7 +261,24 @@ export class CupsService implements OnModuleInit {
       return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
     });
 
-    return results;
+    return { results, upcomingOk };
+  }
+
+  private async fetchUpcoming(baseUrl: string, into: Scores365Game[]): Promise<boolean> {
+    const url = `${baseUrl}/fixtures/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=50`;
+    for (let attempt = 1; attempt <= UPCOMING_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores cups upcoming');
+        into.push(...(d.games ?? []));
+        return true;
+      } catch (err: unknown) {
+        this.logger.warn(`365scores upcoming fetch failed (essai ${attempt}/${UPCOMING_ATTEMPTS}): ${(err as Error)?.message ?? err}`);
+        if (attempt < UPCOMING_ATTEMPTS) await new Promise((r) => setTimeout(r, UPCOMING_RETRY_DELAY_MS));
+      }
+    }
+    return false;
   }
 
   private gameToMatch(g: Scores365Game, compId: number, stageNames: Record<number, string>): CupMatch {
@@ -288,20 +317,20 @@ export class CupsService implements OnModuleInit {
     };
   }
 
-  private readCache(): CupInfo[] | null {
+  private readCache(opts: { ignoreTtl?: boolean } = {}): CupInfo[] | null {
     if (!fs.existsSync(CACHE_FILE)) return null;
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
-      if (Date.now() - ts < CACHE_TTL_MS) return data;
+      if (opts.ignoreTtl || Date.now() - ts < CACHE_TTL_MS) return data;
     } catch (err: unknown) {
       this.logger.warn(`Failed to read cups cache ${CACHE_FILE}: ${(err as Error)?.message ?? err}`);
     }
     return null;
   }
 
-  private writeCache(data: CupInfo[]): void {
+  private writeCache(data: CupInfo[], ttlMs = CACHE_TTL_MS): void {
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
-    atomicWriteJsonSync(CACHE_FILE, { ts: Date.now(), data });
+    atomicWriteJsonSync(CACHE_FILE, { ts: Date.now() - (CACHE_TTL_MS - ttlMs), data });
   }
 
   private stageFrToNum(competitionId: number, stageFr: string): number | null {
