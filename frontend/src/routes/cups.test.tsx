@@ -64,3 +64,27 @@ describe('<CupsPage /> — statut des coupes (L38)', () => {
     expect(screen.getAllByText('Ligue Europa').every((el) => !/truncate/.test(el.className))).toBe(true);
   });
 });
+
+// L111 — onglets de coupe : état annoncé (WCAG 4.1.2) ; pastille « En lice » en bordure seule,
+// sans fond teinté (WCAG 1.4.3, 4,39–4,49:1 mesurés avec le fond).
+describe('<CupsPage /> — accessibilité des onglets et de la pastille (L111)', () => {
+  it('chaque onglet porte aria-pressed, vrai pour la coupe affichée seulement', () => {
+    cups = [cup({}), cup({ competitionId: 37, name: 'Coupe de France' })];
+    render(<CupsPage />);
+    const europa = screen.getByRole('button', { name: /Ligue Europa/ });
+    const cdf = screen.getByRole('button', { name: /Coupe de France/ });
+    expect(europa.getAttribute('aria-pressed')).toBe('true');
+    expect(cdf.getAttribute('aria-pressed')).toBe('false');
+    fireEvent.click(cdf);
+    expect(europa.getAttribute('aria-pressed')).toBe('false');
+    expect(cdf.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('la pastille « En lice » de l\'onglet est en bordure seule, sans fond teinté', () => {
+    cups = [cup({})];
+    render(<CupsPage />);
+    const pill = screen.getAllByText('En lice')[0];
+    expect(pill.className).toMatch(/\bborder\b/);
+    expect(pill.className).not.toMatch(/\bbg-/);
+  });
+});

@@ -77,6 +77,7 @@ function CupTab({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
         'min-w-[220px] rounded-md border px-3 py-2.5 text-left transition-colors',
         active
@@ -88,10 +89,10 @@ function CupTab({
         <span className="font-display text-sm font-semibold">{cup.name}</span>
         <span
           className={cn(
-            'rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
+            'rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
             cup.isEliminated
-              ? 'border border-fg-dim/40 text-fg-dim'
-              : 'bg-ol-red/15 text-ol-red-bright',
+              ? 'border-fg-dim/40 text-fg-dim'
+              : 'border-ol-red-bright/50 text-ol-red-bright',
           )}
         >
           {cupStatusLabel(cup)}

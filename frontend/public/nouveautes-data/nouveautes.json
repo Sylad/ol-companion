@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-10 18:30",
+  "generated": "2026-10-10 19:20",
   "entries": [
+    {
+      "slug": "2026-10-10-coupes-pastille-plus-lisible-et-onglets-annonces-aux-lecteur",
+      "title": "Coupes : pastille plus lisible et onglets annoncés aux lecteurs d'écran",
+      "date": "2026-10-10",
+      "lots": [
+        "L111"
+      ],
+      "captures": [
+        "captures/L111-coupes-onglets.png"
+      ],
+      "alts": [
+        "Page Coupes : l’onglet Ligue Europa, choisi, porte la pastille « En lice » en simple contour rouge ; Coupe de France porte « Éliminé »"
+      ],
+      "html": "<p>Sur la page Coupes, la pastille « En lice » des onglets passe en simple contour rouge, sans fond teinté : son texte est plus net (au moins 4,5 contre 1, contre 4,4 avant). Les onglets de coupe indiquent aussi aux lecteurs d'écran lequel est affiché. L'apparence reste celle d'avant pour tout le reste.</p>"
+    },
     {
       "slug": "2026-10-10-coupes-un-statut-juste-tant-que-l-ol-est-en-lice",
       "title": "Coupes : un statut juste tant que l'OL est en lice",
