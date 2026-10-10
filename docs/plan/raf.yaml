@@ -968,9 +968,10 @@ lots:
     finished: 2026-10-10
   - id: L105
     title: "Nouveautés : entrée L96 (une ligne du calendrier et les cartes Prochain/Dernier mènent à la page du match) avec capture prise sur l'app lancée EN LOCAL (commande orchestrate.ux de cadence.yaml, la prod n'a pas encore ce lot) ; L96 passé visible avec titre public"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-10
+    started: 2026-10-10
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
