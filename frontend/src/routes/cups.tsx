@@ -84,11 +84,11 @@ function CupTab({
           : 'border-border bg-surface-2/35 text-fg-muted hover:border-border-strong hover:text-fg',
       )}
     >
-      <div className="flex items-center justify-between gap-3">
-        <span className="truncate font-display text-sm font-semibold">{cup.name}</span>
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <span className="font-display text-sm font-semibold">{cup.name}</span>
         <span
           className={cn(
-            'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
+            'rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
             cup.isEliminated
               ? 'border border-fg-dim/40 text-fg-dim'
               : 'bg-ol-red/15 text-ol-red-bright',
@@ -117,7 +117,7 @@ function CupCard({ cup }: { cup: CupInfo }) {
   return (
     <div>
       <header className="px-5 py-4 border-b border-border bg-surface-2/25">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <div
             className={cn(
               'shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
@@ -132,13 +132,13 @@ function CupCard({ cup }: { cup: CupInfo }) {
               <Trophy className="h-5 w-5" strokeWidth={2} />
             )}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-[10rem]">
             <div className="eyebrow mb-0.5">Compétition à élimination</div>
-            <h2 className="font-display text-lg font-bold text-fg-bright leading-tight truncate">
+            <h2 className="font-display text-lg font-bold text-fg-bright leading-tight">
               {cup.name}
             </h2>
           </div>
-          <div className="text-right shrink-0">
+          <div className="max-sm:basis-full max-sm:pl-[3.25rem] sm:text-right sm:shrink-0">
             <div className="text-[10px] uppercase tracking-wider text-fg-dim font-semibold">
               {cupStatusLabel(cup)}
             </div>
