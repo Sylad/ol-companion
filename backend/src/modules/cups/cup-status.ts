@@ -23,7 +23,7 @@ function aggregate(matches: CupMatch[]): number {
 
 /**
  * Éliminé seulement sur preuve : la dernière confrontation à élimination directe
- * est perdue au cumul et rien n'est à venir. Un tour gagné, une phase de ligue
+ * est perdue (équipe qualifiée lue chez 365scores, à défaut cumul des buts) et rien n'est à venir. Un tour gagné, une phase de ligue
  * (le classement n'est pas lu ici) ou un score illisible ne prouvent rien : on
  * reste « en lice » jusqu'à STALE_DAYS sans match. `upcomingKnown` = false quand
  * l'appel des matchs à venir a échoué : l'absence de match ne veut alors rien dire.
@@ -39,6 +39,9 @@ export function isCupEliminated(matches: CupMatch[], now: Date = new Date(), upc
   const last = finished[finished.length - 1];
   if (last.stageFr !== LEAGUE_PHASE_STAGE) {
     const tie = finished.filter((m) => m.stageFr === last.stageFr);
+    // 365scores désigne l'équipe qualifiée : seul moyen de lire une issue aux tirs au but (cumul nul).
+    const decided = tie.find((m) => m.olQualified !== undefined);
+    if (decided) return !decided.olQualified;
     if (aggregate(tie) < 0) return true;
   }
   return now.getTime() - new Date(last.date).getTime() > STALE_DAYS * 86_400_000;

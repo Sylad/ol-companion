@@ -8,7 +8,7 @@ const DAY = 86_400_000;
 function m(
   status: string,
   stageFr: string,
-  o: { daysAgo?: number; ol?: number; opp?: number; home?: boolean } = {},
+  o: { daysAgo?: number; ol?: number; opp?: number; home?: boolean; qualified?: boolean } = {},
 ): CupMatch {
   const home = o.home ?? true;
   const ol = o.ol ?? null;
@@ -20,6 +20,7 @@ function m(
     awayTeam: 'B', awayTeamId: home ? 7 : OL_365SCORES_ID,
     homeScore: home ? ol : opp, awayScore: home ? opp : ol,
     status, stage: stageFr, stageFr,
+    ...(o.qualified === undefined ? {} : { olQualified: o.qualified }),
   };
 }
 
@@ -73,5 +74,39 @@ describe('isCupEliminated', () => {
   it(`sans issue lisible, plus aucun match depuis plus de ${STALE_DAYS} jours = éliminé`, () => {
     const old = Array.from({ length: 8 }, (_, i) => m('FINISHED', 'Phase de ligue', { daysAgo: STALE_DAYS + 1 + i }));
     expect(isCupEliminated(old, NOW)).toBe(true);
+  });
+
+  describe('tirs au but (cumul nul)', () => {
+    it('Coupe de France 1-1 t.a.b. perdus (adversaire qualifié) = éliminé', () => {
+      expect(isCupEliminated([m('FINISHED', '32ème de finale', { ol: 1, opp: 1, qualified: false })], NOW)).toBe(true);
+    });
+
+    it('Coupe de France 1-1 t.a.b. gagnés = en lice', () => {
+      expect(isCupEliminated([m('FINISHED', '32ème de finale', { ol: 1, opp: 1, qualified: true })], NOW)).toBe(false);
+    });
+
+    it('Ligue Europa aller-retour 1-0 / 0-1 t.a.b. perdus = éliminé', () => {
+      const tie = [
+        m('FINISHED', 'Barrages', { daysAgo: 10, ol: 1, opp: 0 }),
+        m('FINISHED', 'Barrages', { daysAgo: 3, ol: 0, opp: 1, home: false, qualified: false }),
+      ];
+      expect(isCupEliminated(tie, NOW)).toBe(true);
+    });
+
+    it('Ligue Europa aller-retour 1-0 / 0-1 t.a.b. gagnés = en lice', () => {
+      const tie = [
+        m('FINISHED', 'Barrages', { daysAgo: 10, ol: 1, opp: 0 }),
+        m('FINISHED', 'Barrages', { daysAgo: 3, ol: 0, opp: 1, home: false, qualified: true }),
+      ];
+      expect(isCupEliminated(tie, NOW)).toBe(false);
+    });
+
+    it('qualifié lu et cumul perdant : le qualifié de 365scores l\'emporte sur le calcul', () => {
+      expect(isCupEliminated([m('FINISHED', 'Barrages', { ol: 0, opp: 1, qualified: true })], NOW)).toBe(false);
+    });
+
+    it('cumul nul sans qualifié lisible = pas de conclusion avant STALE_DAYS', () => {
+      expect(isCupEliminated([m('FINISHED', '32ème de finale', { ol: 1, opp: 1 })], NOW)).toBe(false);
+    });
   });
 });

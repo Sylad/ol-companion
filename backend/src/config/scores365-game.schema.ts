@@ -10,6 +10,8 @@ const competitorSchema = z.object({
   id: z.number(),
   name: z.string().optional(),
   score: z.number().optional(),
+  /** Vrai pour l'équipe qualifiée, sur la dernière manche d'une confrontation (tirs au but compris). */
+  isQualified: z.boolean().optional(),
 });
 
 export const Scores365GameSchema = z
