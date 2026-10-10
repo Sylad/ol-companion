@@ -29,9 +29,10 @@ lots:
     finished: 2026-10-09
   - id: L3
     title: Revue UX — Calendrier et résultats (/fixtures)
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-09-28
+    started: 2026-10-10
   - id: L4
     title: Revue UX — Classement
     status: todo
@@ -812,6 +813,8 @@ lots:
     review: { date: 2026-10-10, verdict: "conforme (revue Sonnet vague 2307, confirmée par le lead 10-10) : 1 commit 7d2da22, 0 bloquant, 0 majeur, 2 mineurs ; « D » mesuré 4,83:1 sur la pastille (WCAG 1.4.3 tenu), test des 4 pastilles 0D ; 349/349, build ok", commit: 7d2da224c8c3e1adcfbfe7048134d11c928b3932 }
     ux: { date: 2026-10-10, verdict: "conforme (Sylvain 10-10, captures tmp/ux-ol-L83/) : défaites par compétition lisibles en --ol-red-bright" }
     finished: 2026-10-10
+    notes:
+      - { date: 2026-10-10, text: "QA prod 10-10 (agent, 13/13 pages, 1440 et 390) : D des pastilles 4,86:1 sur fond réel rgb(18,20,29), Nouveautés L83 avec capture 329 883 o ; aucun constat nouveau ; déjà planifié L38 L72 L73 L88 L51 L89. Captures tmp/qa-ol-L83/" }
   - id: L84
     title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
     public: "Accueil : pendant un match en direct, le bandeau montre ce match"
@@ -873,6 +876,11 @@ lots:
     status: todo
     estimate: 0.1
     created: 2026-10-09
+  - id: L93
+    title: "QA : attentes — nommer le sélecteur du surtitre de /about (aucun .eyebrow sur la page) et rafraîchir le compte daté du tracker (6 points le 10-10)"
+    status: todo
+    estimate: 1
+    created: 2026-10-10
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
