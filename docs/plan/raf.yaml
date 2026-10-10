@@ -1018,6 +1018,7 @@ lots:
     visible: true
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant: 0 blocking, 0 major, 3 minor (capture sans aucune ligne de la liste, « jour et mois en toutes lettres » inexact, phrase du nul qui doublonne l'entrée L108 au lieu de décrire L102) — orchestré (vague 2026-10-10-1645, 1 passe(s) de correction)", commit: b4cd8191fcf699489311f7703432e7860b31eda2 }
   - id: L108
     title: "Calendrier : le score d'un match nul s'affiche en gris dans les lignes, comme celui d'un perdant, alors que le README annonce le nul en orange au calendrier — scores du nul en --draw dans les lignes, test (QA prod 10-10)"
     public: "Calendrier : le score d'un match nul s'affiche en orange"
