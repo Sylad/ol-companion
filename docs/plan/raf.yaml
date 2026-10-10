@@ -901,6 +901,7 @@ lots:
     visible: true
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant (1 mineur : le titre du test parle encore d'« anneau ») — orchestré (vague 2026-10-10-1035, 1 passe(s) de correction + passe des mineurs)", commit: e58571d23990c8e26d16371d70c54512aae892d4 }
   - id: L96
     title: "Calendrier : un match de la liste ne mène pas à sa page de match — ligne et cartes Prochain/Dernier en lien /match/<id>?matchupId= (revue UX L3, majeur)"
     status: todo
