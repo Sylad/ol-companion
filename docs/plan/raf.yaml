@@ -916,6 +916,7 @@ lots:
     estimate: 1
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "conforme — orchestré (vague 2026-10-10-1251, 0 passe(s) de correction + passe des mineurs)", commit: 640aebf3787f3bf736400e4ca8d90060d8ca2daa }
   - id: L97
     title: "Calendrier téléphone : filtres de 24 px de haut, trop petits au doigt — min-h-10 sous lg (revue UX L3, majeur WCAG 2.5.8)"
     status: todo
