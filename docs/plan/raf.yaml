@@ -941,6 +941,7 @@ lots:
     estimate: 0.25
     created: 2026-10-10
     started: 2026-10-10
+    review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1510, 0 passe(s) de correction)", commit: e68a877652bb00613eebb404a948c16e08e2bca6 }
   - id: L100
     title: "Calendrier : « Week-end » coupé en « Week-/end » dans la colonne date et « Saison 2026-27 » coupé à 768 px (revue UX L3, mineur)"
     status: todo
