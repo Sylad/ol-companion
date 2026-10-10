@@ -235,8 +235,9 @@
     {
       "id": "L95",
       "title": "Calendrier : un contour rouge net sur le filtre atteint au clavier",
-      "status": "doing",
-      "started": "2026-10-10"
+      "status": "done",
+      "started": "2026-10-10",
+      "finished": "2026-10-10"
     }
   ]
 }

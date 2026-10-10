@@ -888,20 +888,24 @@ lots:
     created: 2026-10-10
   - id: L94
     title: "Calendrier : score du perdant illisible (2,97:1) sur chaque match joué — retirer l'opacité du score (revue UX L3, bloquant WCAG 1.4.3)"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "compliant — orchestré (vague 2026-10-10-1035, 0 passe(s) de correction + passe des mineurs)", commit: b8516dcc8b83fff7861b5f22c4a0bf4b441fb533 }
+    ux: { date: 2026-10-10, verdict: "conforme (Sylvain 10-10 sur captures tmp/ux-ol-L94-L95/) : score du perdant 7,22:1, nom 16,98:1 à 1440 et 390 ; nul atténué des deux côtés gardé tel quel" }
+    finished: 2026-10-10
   - id: L95
     title: "Calendrier : la pastille au clavier ressemble à la pastille choisie — focus-visible anneau rouge 2 px (revue UX L3, majeur WCAG 2.4.7)"
     public: "Calendrier : un contour rouge net sur le filtre atteint au clavier"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-10
     started: 2026-10-10
     review: { date: 2026-10-10, verdict: "compliant (1 mineur : le titre du test parle encore d'« anneau ») — orchestré (vague 2026-10-10-1035, 1 passe(s) de correction + passe des mineurs)", commit: e58571d23990c8e26d16371d70c54512aae892d4 }
+    ux: { date: 2026-10-10, verdict: "conforme (Sylvain 10-10) : contour rouge 2 px au clavier 4,95:1, anneau gris de la pastille choisie visible sous le contour" }
+    finished: 2026-10-10
   - id: L96
     title: "Calendrier : un match de la liste ne mène pas à sa page de match — ligne et cartes Prochain/Dernier en lien /match/<id>?matchupId= (revue UX L3, majeur)"
     status: todo
