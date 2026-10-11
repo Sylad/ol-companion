@@ -101,8 +101,9 @@ function Contenu({ data }: { data: JeuxVideoData }) {
     <>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
         <div className="grid gap-6">
-          {sortie && (
-            <Panel testId="prochaine-sortie" eyebrow={['surtitre-prochaine-sortie', 'À venir']} title={['titre-prochaine-sortie', 'Prochaine sortie']}>
+          <Panel testId="prochaine-sortie" eyebrow={['surtitre-prochaine-sortie', 'À venir']} title={['titre-prochaine-sortie', 'Prochaine sortie']}>
+            {sortie ? (
+              <>
               <p data-testid="sortie-nom" className="mb-2 font-semibold text-fg-bright">
                 {sortie.nom}
               </p>
@@ -117,9 +118,15 @@ function Contenu({ data }: { data: JeuxVideoData }) {
                   {sortie.plateformes}
                 </p>
               )}
-            </Panel>
-          )}
+              </>
+            ) : (
+              <VideMessage testId="prochaine-sortie-vide">Aucune sortie annoncée pour le moment.</VideMessage>
+            )}
+          </Panel>
           <Panel testId="editions" eyebrow={['surtitre-editions', 'Déjà sorties']} title={['titre-editions', 'Éditions précédentes']}>
+            {data.editions.length === 0 ? (
+              <VideMessage testId="editions-vide">Aucune édition précédente.</VideMessage>
+            ) : (
             <ul>
               {data.editions.map((e) => (
                 <li key={e.nom} data-testid="edition-ligne" className="flex justify-between gap-3 border-t border-border py-2.5 text-sm first:border-t-0 first:pt-0">
@@ -132,10 +139,14 @@ function Contenu({ data }: { data: JeuxVideoData }) {
                 </li>
               ))}
             </ul>
+            )}
           </Panel>
         </div>
         <div className="grid gap-6">
           <Panel testId="nouveautes-annoncees" eyebrow={['surtitre-nouveautes', 'Annoncé']} title={['titre-nouveautes', 'Nouveautés annoncées']}>
+            {data.nouveautes.length === 0 ? (
+              <VideMessage testId="nouveautes-vide">Aucune nouveauté annoncée pour le moment.</VideMessage>
+            ) : (
             <ul>
               {data.nouveautes.map((n) => (
                 <li key={n.titre} data-testid="nouveaute-ligne" className="border-t border-border py-3 first:border-t-0 first:pt-0">
@@ -148,6 +159,7 @@ function Contenu({ data }: { data: JeuxVideoData }) {
                 </li>
               ))}
             </ul>
+            )}
           </Panel>
           <SeriePanel />
         </div>
@@ -178,6 +190,14 @@ function premiereAdresseParSite(sources: string[]): string[] {
   const parSite = new Map<string, string>();
   for (const u of sources) if (!parSite.has(siteName(u))) parSite.set(siteName(u), u);
   return [...parSite.values()];
+}
+
+function VideMessage({ testId, children }: { testId: string; children: React.ReactNode }) {
+  return (
+    <p data-testid={testId} className="text-sm text-fg-muted">
+      {children}
+    </p>
+  );
 }
 
 function SeriePanel() {

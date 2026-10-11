@@ -34,6 +34,9 @@ champs:
   - { id: nouveaute-ligne, libelle: Ligne de nouveauté, type: ligne, source: "nouveautes[]", obligatoire: true }
   - { id: nouveaute-titre, libelle: Titre de la nouveauté, type: texte, source: "nouveautes[].titre", obligatoire: true }
   - { id: nouveaute-description, libelle: Description de la nouveauté, type: texte, source: "nouveautes[].description", obligatoire: true }
+  - { id: prochaine-sortie-vide, libelle: Message du bloc « Prochaine sortie » sans sortie annoncée, type: texte, source: statique, obligatoire: false }
+  - { id: editions-vide, libelle: Message du bloc des éditions sans édition, type: texte, source: statique, obligatoire: false }
+  - { id: nouveautes-vide, libelle: Message du bloc des nouveautés sans nouveauté, type: texte, source: statique, obligatoire: false }
   - { id: serie, libelle: Bloc de présentation de la série, type: carte, source: statique, obligatoire: true }
   - { id: surtitre-serie, libelle: Surtitre du bloc de la série, type: texte, source: statique, obligatoire: true }
   - { id: titre-serie, libelle: Titre du bloc « Football Manager », type: texte, source: statique, obligatoire: true }
@@ -99,7 +102,16 @@ regles:
     statut: sourcee
     source: "demande du lot L25 : « au niveau de FC Noobz » ; comportement déjà codé : path.startsWith('/fcnoobz') dans sidebar.tsx et bottom-nav.tsx ; le chemin /fcnoobz/jeux-video est une hypothèse de rédaction"
     tests: ["R6 — la tuile de /fcnoobz mène à la page", "R6 — FC Noobz est l'entrée courante de la barre latérale", "R6 — « Plus » est actif avec le nom « Plus, page actuelle : FC Noobz »"]
+  - id: R7
+    etat: charge
+    enonce: >-
+      Quand la source contient au moins une donnée (sinon R3) mais qu'un bloc n'a rien à montrer — prochaineSortie nulle, editions ou nouveautes vide —, ce bloc garde son cadre et son titre et affiche à la place de son contenu un message propre : « Aucune sortie annoncée pour le moment. » (Prochaine sortie), « Aucune édition précédente. » (Éditions précédentes), « Aucune nouveauté annoncée pour le moment. » (Nouveautés annoncées). Les quatre blocs de R4 restent donc toujours présents.
+    message: "Aucune sortie annoncée pour le moment. / Aucune édition précédente. / Aucune nouveauté annoncée pour le moment."
+    champs: [prochaine-sortie-vide, editions-vide, nouveautes-vide]
+    statut: hypothese
+    si_faux: Seuls les libellés ou le choix d'afficher un message plutôt que d'omettre le bloc changent ; aucune donnée en jeu.
+    tests: ["R7 — prochaine sortie nulle : le bloc reste, avec son message", "R7 — éditions vides : le bloc reste, avec son message", "R7 — nouveautés vides : le bloc reste, avec son message", "R7 — blocs renseignés : aucun message de bloc vide"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /jeux-video-data/football-manager.json", regles: [R1, R2, R3, R4, R5, R6] }
+  - { id: A1, declencheur: ~, appel: "GET /jeux-video-data/football-manager.json", regles: [R1, R2, R3, R4, R5, R6, R7] }
   - { id: A2, declencheur: bouton-reessayer, appel: "GET /jeux-video-data/football-manager.json", regles: [R2] }
