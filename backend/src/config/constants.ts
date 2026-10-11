@@ -9,6 +9,9 @@
 /** 365scores team competitor id for Olympique Lyonnais. */
 export const OL_365SCORES_ID = 465;
 
+/** 365scores team competitor id for the France national team (A). */
+export const FRANCE_365SCORES_ID = 5061;
+
 /** football-data.org team id for Olympique Lyonnais. Used as the canonical id on the frontend. */
 export const OL_TEAM_ID = 523;
 

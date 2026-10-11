@@ -24,6 +24,7 @@ import { WikiImageModule } from './modules/wiki-image/wiki-image.module';
 import { ChannelsModule } from './modules/channels/channels.module';
 import { LineupModule } from './modules/lineup/lineup.module';
 import { LiveMatchModule } from './modules/live-match/live-match.module';
+import { FranceModule } from './modules/france/france.module';
 import { PlayersModule } from './modules/players/players.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
 
@@ -51,6 +52,7 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     LineupModule,
     LiveMatchModule,
     PlayersModule,
+    FranceModule,
   ],
   providers: [
     // L16 : un quota par visiteur (CF-Connecting-IP recopié par nginx),
