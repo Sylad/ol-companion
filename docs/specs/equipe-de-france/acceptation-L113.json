@@ -4,7 +4,7 @@
   "fichiers": [
     "frontend/src/routes/equipe-de-france.acceptation.test.tsx"
   ],
-  "vert": false,
+  "vert": true,
   "empreintes": {
     "frontend/src/routes/equipe-de-france.acceptation.test.tsx": "181686ab4426bbf928ee45d5d36ea67d4a750df4"
   }
