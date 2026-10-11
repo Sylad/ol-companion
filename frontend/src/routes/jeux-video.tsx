@@ -158,7 +158,7 @@ function Contenu({ data }: { data: JeuxVideoData }) {
           <>
             {' '}
             sur{' '}
-            {[...new Map(data.sources.map((u) => [siteName(u), u])).values()].map((s, i) => (
+            {premiereAdresseParSite(data.sources).map((s, i) => (
               <span key={s}>
                 {i > 0 && ', '}
                 <a href={s} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: GREEN }}>
@@ -172,6 +172,12 @@ function Contenu({ data }: { data: JeuxVideoData }) {
       </p>
     </>
   );
+}
+
+function premiereAdresseParSite(sources: string[]): string[] {
+  const parSite = new Map<string, string>();
+  for (const u of sources) if (!parSite.has(siteName(u))) parSite.set(siteName(u), u);
+  return [...parSite.values()];
 }
 
 function SeriePanel() {
