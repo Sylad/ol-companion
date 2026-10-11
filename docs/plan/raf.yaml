@@ -482,6 +482,7 @@ lots:
     started: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "Retour de Sylvain 11-10 sur la maquette (#etat-charge) : « les compositions sont moins lisibles ; Lacazette/Perri, l'attaquant et le gardien devraient être centrés ». Cause : .row = grid repeat(var(--n),1fr) → 1 joueur = pastille pleine largeur nom à gauche, 2 = deux moitiés. RÈGLE (sourcée : Sylvain 11-10) : dans un bloc, toutes les pastilles ont la même largeur (celle de la rangée la plus fournie) et chaque rangée est centrée — buteur seul et gardien au milieu, comme le terrain de /players ; règle + test « Rn — rangée centrée » dans la fiche, maquette et captures refaites ; montrer la maquette à Sylvain avant le code" }
+      - { date: 2026-10-11, text: "Reprise (décision lead 11-10 ~23 h 50) : R7 (règle de Sylvain : rangées centrées, largeur commune) CONFORME à la revue. Nouveau majeur : noms coupés au milieu du mot (« Frankows|ki ») — pastilles de 57 à 75 px quand 4-5 joueurs tiennent dans 340 px ; contraire à R6 (coupure au tiret seulement, jamais d'ellipse). DÉCISION : pastille VERTICALE — numéro au-dessus, nom dessous, comme un terrain dessiné — le nom a toute la largeur ; coupure au tiret seulement ; un nom sans tiret qui dépasse encore passe de 11 à 10 px ; jamais d'ellipse ni de coupure en milieu de mot. Règle à écrire dans la fiche (sourcée : décision lead d'après R6 et la règle de Sylvain), maquette et captures refaites." }
   - id: L44
     title: Écrire docs/qa/expectations.md à partir du brouillon du passage QA du 03-10 (13 routes), au format de cadence 0.6.0 ; trancher les lignes « à décider » (calendrier, coupes vides, live-match vide)
     status: done
@@ -557,6 +558,8 @@ lots:
     started: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "Rendu 11-10 (vague 2026-10-11-2015, budget 850 k / 800 k, fix non joué) — à corriger : [bloquant UX] fixtures.tsx:383 lignes de match sans focus visible (MatchLink <a> inline autour de <span class=block> : boîtes 0×0, l'outline ne s'affiche pas, WCAG 2.4.7) → display:block/flex sur le lien ; [majeur] index.css:678 scroll-padding-top 124 px < barre collante 163 px avec 4 compétitions à 390/360 px (139 à 320) → focus sous la barre (WCAG 2.4.11) — mesurer la barre ou la borner ; [majeur] README.md:31 décrit encore les libellés V/N/D 10 px de la vue rapide, supprimés par a41a0c6" }
+      - { date: 2026-10-11, text: "Mineurs de la revue 11-10 (notes) : calendar.ts:97 mois calculés en heure locale et non de Paris (R4 ; le test d'acceptation fixe TZ=Europe/Paris) ; matchLabel mort (calendar.ts:70) ; une déclaration CSS morte fait seule passer le test scellé R7" }
+    ux: { date: 2026-10-11, verdict: "conforme : verdict de Sylvain « ok L50 » le 11-10 ; écart restant = lignes ~20 % plus hautes que la maquette à 390 px, suivi par un lot à part" }
   - id: L51
     title: "Calendrier : état vide actionnable et annoncé, pastilles sans « 0 » pendant le chargement, erreur avec Réessayer ; score cumulé sur le match retour des qualifications ; qualifications sur la page Coupes (à décider)"
     public: "Calendrier : des messages plus clairs quand il n'y a rien à afficher"
@@ -867,6 +870,7 @@ lots:
     started: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "Rendu 11-10 (vague 2026-10-11-2015, budget 758 k / 800 k, plus de quoi payer la revue après correction) — à corriger : [majeur] dashboard-hero.tsx:66 (même garde last-result.tsx:35, dashboard-stats.tsx:54) : la 2e phrase de R2 « une erreur de rafraîchissement avec des données déjà là n'efface rien » n'a aucun test — test avec cache rempli puis échec du refetch (use-event-stream relance ['fixtures'] à chaque fixtures-changed)" }
+      - { date: 2026-10-11, text: "Reprise 3 (décision lead 11-10) — SEUL point à faire : le code est juste ; le Réessayer d'« OL en chiffres » (season-summary.tsx:83) et du tracker (position-tracker.tsx:70), avec la garde isError && !data, est codé et testé « R9 — … » mais R9 n'existe pas dans docs/specs/accueil/fiche.yaml → ajouter R9 à la fiche (champs, messages exacts « Impossible de charger les statistiques de la saison. » et « Impossible de charger l'évolution du classement. », action refetch, statut sourcee : titre du lot) + README ; ne pas toucher au code ni aux tests d'acceptation scellés. Mineur en note : squelette du dernier résultat 150 px contre 188 px chargé." }
   - id: L86
     title: "Accueil : les tuiles comptent le match en cours comme joué et perdu (« 6 matchs · 1.83 ppm », « 2N · 1D » à la 56e de Lens – Lyon) quand la pastille Ligue 1 de la même page dit 5 matchs · 0D — exclure le match live du calcul ou l'étiqueter (revue UX L2)"
     public: "Accueil : un match en cours n'est plus compté comme joué dans les tuiles"
@@ -1250,6 +1254,12 @@ lots:
     title: "QA — docs/qa/expectations.md : /fcnoobz passe à 4 cartes (tuile Jeux vidéo = lien) et nouvelle section /fcnoobz/jeux-video (h1, 4 blocs, ligne de vérification, never des états, api /jeux-video-data/football-manager.json) — brouillon du contrôle QA L25 dans ~/projects/developpeur/tmp/qa-ol-l25/ et le rapport du 11-10"
     status: todo
     estimate: 0.25
+    created: 2026-10-11
+  - id: L124
+    title: "Calendrier à 390 px : lignes de match ~20 % plus hautes que la maquette validée de L50 (2 926 px contre 2 447 pour 46 matchs) — resserrer score et noms sans perdre la lisibilité (suite de L50)"
+    status: todo
+    estimate: 0.25
+    visible: true
     created: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
