@@ -539,11 +539,12 @@ lots:
   - id: L50
     title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
     public: "Calendrier : une liste plus compacte, regroupée par mois"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     screen: journey
     created: 2026-10-03
+    started: 2026-10-11
   - id: L51
     title: "Calendrier : état vide actionnable et annoncé, pastilles sans « 0 » pendant le chargement, erreur avec Réessayer ; score cumulé sur le match retour des qualifications ; qualifications sur la page Coupes (à décider)"
     public: "Calendrier : des messages plus clairs quand il n'y a rien à afficher"
