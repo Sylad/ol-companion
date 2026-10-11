@@ -1124,7 +1124,7 @@ lots:
     title: "Page Équipe de France : les Bleus sur une page à eux (prochain match, derniers résultats, effectif — contenu et sources fixés par la fiche d'écran, données publiques 365scores), états de chargement, d'erreur et vide ; remplace L27"
     public: Une page dédiée à l'équipe de France
     status: todo
-    estimate: 1
+    estimate: 2
     visible: true
     screen: page
     created: 2026-10-11
