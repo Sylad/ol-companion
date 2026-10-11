@@ -24,11 +24,13 @@ const POSITION_GROUPS = [
 ] as const;
 
 export function EquipeDeFrancePage() {
-  const { data, isPending, isError, isFetching, refetch } = useFrance();
+  const { data, isPending, isError, isFetching, fetchStatus, refetch } = useFrance();
   // TanStack v5 : `isPending` reste faux quand des données existent déjà, « Réessayer » se lit donc sur `isFetching`.
-  // Hors ligne la requête est en pause (`isPending` vrai, `isFetching` faux) : le chargement reste affiché.
-  const loading = isPending || (isError && isFetching);
-  const failed = isError && !isFetching;
+  // Hors ligne la requête est en pause (`fetchStatus` « paused », `isFetching` faux), avec ou sans données :
+  // le chargement reste affiché, y compris après une erreur (L119).
+  const paused = fetchStatus === 'paused';
+  const loading = isPending || (isError && (isFetching || paused));
+  const failed = isError && !isFetching && !paused;
   // Focus (WCAG 2.4.3) : le bouton disparaît pendant le nouvel appel, le focus passe donc sur la zone de statut
   // (stable), puis revient sur « Réessayer » si l'erreur revient.
   const zoneRef = useRef<HTMLElement>(null);

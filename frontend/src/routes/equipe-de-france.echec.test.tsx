@@ -98,6 +98,22 @@ describe('L118 — échec après des blocs affichés', () => {
     expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
     expect(screen.queryByTestId('message-erreur')).toBeNull();
   });
+  it('L119 — hors ligne avec des données déjà affichées : « Réessayer » montre le chargement et garde le focus dans la page', async () => {
+    const { client, setHandler } = await setup(ok);
+    await screen.findByTestId('effectif');
+    setHandler(async () => ({ ok: false, status: 500, json: async () => null }));
+    await act(async () => {
+      await client.refetchQueries({ queryKey: ['france'] });
+    });
+    await screen.findByTestId('message-erreur');
+    act(() => onlineManager.setOnline(false));
+    const user = userEvent.setup();
+    screen.getByTestId('bouton-reessayer').focus();
+    await user.keyboard('{Enter}');
+    expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
+    expect(screen.queryByTestId('message-erreur')).toBeNull();
+    expect(screen.getByTestId('zone-statut')).toBe(document.activeElement);
+  });
   it('âge absent : aucun « 0 ans »', async () => {
     await setup(ok);
     await screen.findByTestId('effectif');
