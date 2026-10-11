@@ -891,7 +891,7 @@ lots:
     created: 2026-10-09
   - id: L93
     title: "QA : attentes — nommer le sélecteur du surtitre de /about (aucun .eyebrow sur la page) et rafraîchir le compte daté du tracker (6 points le 10-10)"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-10
     started: 2026-10-11
@@ -917,6 +917,7 @@ lots:
           Vérifications lancées : `npx vitest run` passe (39 fichiers, 379 tests). `npx tsc --noEmit -p .` et `npx tsc -b` ne signalent aucune erreur. Le working tree n'a pas changé. — orchestré (vague 2026-10-11-0915, 0 passe(s) de correction + passe des mineurs)",
         commit: 0aee67fef28b6c413d6c230b3ddd71e38005dcce
       }
+    finished: 2026-10-11
   - id: L94
     title: "Calendrier : score du perdant illisible (2,97:1) sur chaque match joué — retirer l'opacité du score (revue UX L3, bloquant WCAG 1.4.3)"
     public: "Calendrier : le score et le nom du perdant redeviennent lisibles"
