@@ -61,6 +61,8 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-09-28
+    notes:
+      - { date: 2026-10-11, text: "QA L25 11-10 : pied de page « Section indépendante du suivi OL — purement personnelle. » (vert 50 % d'opacité, 12 px) à 3,15:1 sur son fond, sous 4,5:1 (WCAG 1.4.3) — préexistant à L25" }
   - id: L9
     title: Revue UX — Match en direct (/match)
     status: todo
@@ -1243,6 +1245,11 @@ lots:
     status: todo
     estimate: 0.5
     after: [ L120 ]
+    created: 2026-10-11
+  - id: L123
+    title: "QA — docs/qa/expectations.md : /fcnoobz passe à 4 cartes (tuile Jeux vidéo = lien) et nouvelle section /fcnoobz/jeux-video (h1, 4 blocs, ligne de vérification, never des états, api /jeux-video-data/football-manager.json) — brouillon du contrôle QA L25 dans ~/projects/developpeur/tmp/qa-ol-l25/ et le rapport du 11-10"
+    status: todo
+    estimate: 0.25
     created: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
