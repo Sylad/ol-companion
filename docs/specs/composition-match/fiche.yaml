@@ -48,12 +48,12 @@ regles:
     tests: ["R3 — vide : pas de bloc Composition sans lineup"]
   - id: R4
     etat: charge
-    enonce: "Les rangées d'un bloc suivent la formation annoncée : le gardien seul en bas, puis une rangée par nombre de la formation, de la défense vers l'attaque, attaque en haut. 4-2-3-1 = 5 rangées (1, 4, 2, 3, 1), 4-1-4-1 = 5 rangées (1, 4, 1, 4, 1), jamais 6 ou 7 rangées. Les joueurs sont répartis en triant les 10 joueurs de champ par yardLine puis yardSide et en découpant selon la formation ; dans une rangée, de gauche à droite (yardSide)."
+    enonce: "Les rangées d'un bloc suivent la formation annoncée : le gardien seul en bas, puis une rangée par nombre de la formation, de la défense vers l'attaque, attaque en haut. 4-2-3-1 = 5 rangées (1, 4, 2, 3, 1), 4-1-4-1 = 5 rangées (1, 4, 1, 4, 1), jamais 6 ou 7 rangées ; le nombre de lignes visibles est égal au nombre de rangées (une rangée tient sur une seule ligne à toute largeur : N cellules égales, nom tronqué par une ellipse, nom complet en title). Les joueurs sont répartis en triant les 10 joueurs de champ par yardLine puis yardSide et en découpant selon la formation ; dans une rangée, de gauche à droite (yardSide)."
     message: ~
     champs: [liste-compositions, bloc-composition, titre-composition, formation-composition, rangee-composition, banc-composition]
     statut: sourcee
     source: "demande du lot L43 : « regrouper les lignes comme le terrain de /players » ; yardLine/yardSide : lineup-card.tsx et backend live-match.types.ts"
-    tests: ["R4 — 4-2-3-1 : 5 rangées de 1, 4, 2, 3, 1 joueurs (attaque en haut)", "R4 — 4-1-4-1 : 5 rangées de 1, 4, 1, 4, 1 joueurs"]
+    tests: ["R4 — 4-2-3-1 à 390 et 1440 px : 5 lignes visibles, aucun joueur seul sur une ligne de trop", "R4 — 4-2-3-1 : 5 rangées de 1, 4, 2, 3, 1 joueurs (attaque en haut)", "R4 — 4-1-4-1 : 5 rangées de 1, 4, 1, 4, 1 joueurs"]
   - id: R5
     etat: charge
     enonce: "Si la formation est absente ou ne totalise pas 10 joueurs de champ, le bloc garde le regroupement actuel par yardLine, sans pastille de formation, avec une note."
@@ -64,12 +64,12 @@ regles:
     tests: ["R5 — formation absente : rangées par yardLine, note visible, pas de pastille"]
   - id: R6
     etat: charge
-    enonce: "Les rangées, la pastille, le banc, les couleurs (rouge OL, bleu adversaire) et les puces de joueur restent ceux du composant actuel ; seul le découpage en rangées change. Le tri d'une rangée suit yardSide, comme avant."
+    enonce: "Les rangées, la pastille, le banc, et les couleurs (rouge OL, bleu adversaire sur la bordure) restent ceux du composant actuel ; le numéro de maillot adverse passe à hsl(226 70% 70%) (contraste ≥ 4,5:1, WCAG 1.4.3) ; les rangées deviennent des grilles de N cellules égales. Le découpage en rangées change. Le tri d'une rangée suit yardSide, comme avant."
     message: ~
     champs: [banc-composition]
     statut: sourcee
     source: "frontend/src/components/lineup-card.tsx ; docs/qa/expectations.md /match : deux blocs « Composition » de 11"
-    tests: ["R6 — 11 titulaires et banc inchangés"]
+    tests: ["R6 — numéro adverse : contraste ≥ 4,5:1", "R6 — 11 titulaires et banc inchangés"]
 
 actions:
   - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6] }
