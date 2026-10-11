@@ -25,6 +25,10 @@ champs:
   - { id: squelette-dernier-resultat, libelle: Squelette du dernier résultat, type: carte, source: statique, obligatoire: false }
   - { id: message-erreur-dernier-resultat, libelle: Message d'erreur du dernier résultat, type: texte, source: statique, obligatoire: false }
   - { id: bouton-reessayer-dernier-resultat, libelle: Réessayer (dernier résultat), type: bouton, source: "action A4", obligatoire: false }
+  - { id: message-erreur-season-summary, libelle: Message d'erreur de « OL en chiffres » (season-summary), type: texte, source: statique, obligatoire: false }
+  - { id: bouton-reessayer-season-summary, libelle: Réessayer (OL en chiffres), type: bouton, source: "action A5", obligatoire: false }
+  - { id: message-erreur-position-tracker, libelle: Message d'erreur du tracker de classement (position-tracker), type: texte, source: statique, obligatoire: false }
+  - { id: bouton-reessayer-position-tracker, libelle: Réessayer (tracker de classement), type: bouton, source: "action A6", obligatoire: false }
 
 regles:
   - id: R1
@@ -100,8 +104,20 @@ regles:
     source: "comportement déjà codé : dashboard-hero.tsx, dashboard-stats.tsx, last-result.tsx (libellés d'unité de L88 non traités ici)"
     tests: ["R8 — chargé : les trois blocs affichent les données"]
 
+  - id: R9
+    etat: erreur
+    enonce: >-
+      Si la requête des statistiques de la saison (« OL en chiffres ») ou celle de l'évolution du classement (tracker) échoue sans donnée en cache (isError et pas de data), le bloc affiche son message d'erreur et un bouton « Réessayer » qui relance l'appel (refetch), au lieu de l'ancien « Erreur de chargement. » sans action. Une erreur de rafraîchissement avec des données déjà là n'efface rien et n'affiche aucun message.
+    message: "Impossible de charger les statistiques de la saison. / Impossible de charger l'évolution du classement."
+    champs: [message-erreur-season-summary, bouton-reessayer-season-summary, message-erreur-position-tracker, bouton-reessayer-position-tracker]
+    statut: sourcee
+    source: "demande du lot L85 : « « Erreur de chargement. » n'a pas de Réessayer » (revue UX L2, finding M2) ; libellés « Impossible de charger … » alignés sur R2–R4"
+    tests: ["R9 — OL en chiffres en erreur affiche un message et « Réessayer », qui relance l’appel", "R9 — tracker de classement en erreur affiche un message et « Réessayer », qui relance l’appel", "R9 — données en cache puis échec du refetch : rien n’est effacé, aucun message"]
+
 actions:
   - { id: A1, declencheur: ~, appel: "GET /api/fixtures", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
   - { id: A2, declencheur: bouton-reessayer-prochain-match, appel: "GET /api/fixtures", regles: [R2] }
   - { id: A3, declencheur: bouton-reessayer-stats, appel: "GET /api/standings", regles: [R3] }
   - { id: A4, declencheur: bouton-reessayer-dernier-resultat, appel: "GET /api/fixtures", regles: [R4] }
+  - { id: A5, declencheur: bouton-reessayer-season-summary, appel: "GET /api/season-matches/team-stats", regles: [R9] }
+  - { id: A6, declencheur: bouton-reessayer-position-tracker, appel: "GET /api/standings/season-rankings", regles: [R9] }
