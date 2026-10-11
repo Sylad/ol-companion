@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider, onlineManager } from '@tanstack/react-query';
 import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
@@ -68,6 +68,19 @@ describe('L118 — échec après des blocs affichés', () => {
     await userEvent.setup().click(screen.getByTestId('bouton-reessayer'));
     expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
     expect(screen.queryByTestId('message-erreur')).toBeNull();
+  });
+  it('L118 — focus clavier : stable pendant le nouvel appel, puis sur « Réessayer » si l’erreur revient', async () => {
+    const { setHandler } = await setup(async () => ({ ok: false, status: 500, json: async () => null }));
+    const user = userEvent.setup();
+    await screen.findByTestId('message-erreur');
+    setHandler(() => new Promise((r) => setTimeout(() => r({ ok: false, status: 500, json: async () => null }), 50)));
+    screen.getByTestId('bouton-reessayer').focus();
+    await user.keyboard('{Enter}');
+    await screen.findByTestId('message-chargement');
+    expect(document.body).not.toBe(document.activeElement);
+    expect(screen.getByTestId('zone-statut')).toBe(document.activeElement);
+    await screen.findByTestId('message-erreur');
+    await waitFor(() => expect(screen.getByTestId('bouton-reessayer')).toBe(document.activeElement));
   });
   it('L118 — hors ligne (requête en pause) : le message de chargement reste affiché', async () => {
     onlineManager.setOnline(false);

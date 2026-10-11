@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-11 13:02",
+  "generated": "2026-10-11 14:21",
   "entries": [
     {
       "slug": "2026-10-11-equipe-de-france-suites-de-la-revue-l113-apres-reessayer-en",
@@ -15,7 +15,7 @@
       "alts": [
         "Page Équipe de France : un joueur sans âge connu n’affiche aucune mention d’âge, les autres gardent leur âge"
       ],
-      "html": "<p>Sur la page Équipe de France, quand le chargement échoue, le message d'erreur remplace toute la page au lieu de s'afficher au-dessus d'anciennes données. Un clic sur « Réessayer » affiche de nouveau « Chargement de l’équipe de France… » le temps du nouvel appel.</p>\n<p>Si 365scores ne donne pas l'âge d'un joueur, la ligne n'affiche plus « 0 ans » : l'âge est simplement omis. Quand 365scores répond de façon incomplète ou tombe en panne, la page continue de montrer les dernières données connues, sans relancer la lecture à chaque visite.</p>"
+      "html": "<p>Sur la page Équipe de France, quand le chargement échoue, le message d'erreur remplace toute la page au lieu de s'afficher au-dessus d'anciennes données. Un clic sur « Réessayer » affiche de nouveau « Chargement de l’équipe de France… » le temps du nouvel appel, et le curseur du clavier ne se perd plus : il reste sur la page pendant le chargement, puis revient sur « Réessayer » si l'erreur revient.</p>\n<p>Si 365scores ne donne pas l'âge d'un joueur, la ligne n'affiche plus « 0 ans » : l'âge est simplement omis. Quand 365scores répond de façon incomplète ou tombe en panne, la page continue de montrer les dernières données connues, sans relancer la lecture à chaque visite.</p>"
     },
     {
       "slug": "2026-10-11-equipe-de-france-jour-du-prochain-match",

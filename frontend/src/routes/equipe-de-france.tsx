@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useFrance } from '@/hooks/use-france';
 import { TeamLogo } from '@/components/team-logo';
@@ -28,6 +29,17 @@ export function EquipeDeFrancePage() {
   // Hors ligne la requête est en pause (`isPending` vrai, `isFetching` faux) : le chargement reste affiché.
   const loading = isPending || (isError && isFetching);
   const failed = isError && !isFetching;
+  // Focus (WCAG 2.4.3) : le bouton disparaît pendant le nouvel appel, le focus passe donc sur la zone de statut
+  // (stable), puis revient sur « Réessayer » si l'erreur revient.
+  const zoneRef = useRef<HTMLElement>(null);
+  const boutonRef = useRef<HTMLButtonElement>(null);
+  const reessaye = useRef(false);
+  useEffect(() => {
+    if (failed && reessaye.current) {
+      reessaye.current = false;
+      boutonRef.current?.focus();
+    }
+  }, [failed]);
   const empty = !!data && !isError && !data.nextMatch && data.results.length === 0 && data.squad.length === 0;
 
   return (
@@ -48,30 +60,35 @@ export function EquipeDeFrancePage() {
         </div>
       </header>
 
-      {loading && (
-        <section aria-busy="true">
-          <div role="status" className="flex flex-col items-center gap-4 py-20 text-center text-fg-muted">
-            <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-            <p data-testid="message-chargement" className="text-sm">
-              Chargement de l’équipe de France…
-            </p>
-          </div>
-        </section>
-      )}
-
-      {failed && (
-        <section className="flex flex-col items-center gap-4 py-20 text-center">
-          <p data-testid="message-erreur" role="alert" className="text-sm text-ol-red-bright">
-            Impossible de charger l’équipe de France.
-          </p>
-          <button
-            type="button"
-            data-testid="bouton-reessayer"
-            onClick={() => void refetch()}
-            className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue px-5 text-sm font-semibold text-fg-bright"
-          >
-            Réessayer
-          </button>
+      {(loading || failed) && (
+        <section ref={zoneRef} data-testid="zone-statut" tabIndex={-1} aria-busy={loading} className="outline-none">
+          {loading ? (
+            <div role="status" className="flex flex-col items-center gap-4 py-20 text-center text-fg-muted">
+              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+              <p data-testid="message-chargement" className="text-sm">
+                Chargement de l’équipe de France…
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-4 py-20 text-center">
+              <p data-testid="message-erreur" role="alert" className="text-sm text-ol-red-bright">
+                Impossible de charger l’équipe de France.
+              </p>
+              <button
+                ref={boutonRef}
+                type="button"
+                data-testid="bouton-reessayer"
+                onClick={() => {
+                  reessaye.current = true;
+                  zoneRef.current?.focus();
+                  void refetch();
+                }}
+                className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue px-5 text-sm font-semibold text-fg-bright"
+              >
+                Réessayer
+              </button>
+            </div>
+          )}
         </section>
       )}
 
