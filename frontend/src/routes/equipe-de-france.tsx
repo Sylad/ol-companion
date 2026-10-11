@@ -211,9 +211,7 @@ function ResultRow({ result }: { result: FranceResult }) {
 }
 
 function SquadPanel({ squad }: { squad: FrancePlayer[] }) {
-  const known = POSITION_GROUPS.map((g) => ({ label: g.label, players: squad.filter((p) => p.position === g.api) }));
-  const others = squad.filter((p) => !POSITION_GROUPS.some((g) => g.api === p.position));
-  const groups = [...known, { label: 'Autres', players: others }].filter((g) => g.players.length > 0);
+  const groups = POSITION_GROUPS.map((g) => ({ label: g.label, players: squad.filter((p) => p.position === g.api) })).filter((g) => g.players.length > 0);
   return (
     <Panel eyebrow={['surtitre-effectif', 'Sélection']} title={['titre-effectif', 'Effectif']}>
       <div data-testid="effectif" className="grid gap-5 p-4 lg:grid-cols-2">
