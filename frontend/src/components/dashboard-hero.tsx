@@ -83,7 +83,7 @@ export function DashboardHero() {
         <Link
           to="/fixtures"
           data-testid="lien-calendrier"
-          className="mt-3 inline-flex min-h-[44px] items-center text-sm font-semibold text-ol-blue-bright underline"
+          className="mt-3 inline-flex min-h-[44px] items-center rounded-md border border-ol-blue-bright bg-ol-blue-bright/10 px-5 text-sm font-semibold text-fg-bright"
         >
           Voir le calendrier
         </Link>
