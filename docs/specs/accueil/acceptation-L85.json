@@ -4,5 +4,8 @@
   "fichiers": [
     "frontend/src/routes/accueil.acceptation-L85.test.tsx"
   ],
-  "vert": false
+  "vert": false,
+  "empreintes": {
+    "frontend/src/routes/accueil.acceptation-L85.test.tsx": "f81b7885d3c571e754dbf0babb64c2317c0e21e5"
+  }
 }
