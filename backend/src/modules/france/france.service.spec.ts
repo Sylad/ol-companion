@@ -171,6 +171,19 @@ describe('FranceService', () => {
     expect(urls.length).toBeGreaterThan(n);
   });
 
+  it('L118 — un 200 sans « games » côté matchs à venir garde le prochain match connu de la copie, tant qu’il est à venir', async () => {
+    const T0 = Date.now();
+    let degraded = false;
+    const { svc } = service({ fixtures: () => (degraded ? {} : FIXTURES) });
+    expect((await svc.getFrance()).nextMatch?.id).toBe(10);
+    degraded = true;
+    jest.setSystemTime(new Date(T0 + 11 * 60 * 1000));
+    expect((await svc.getFrance()).nextMatch?.id).toBe(10);
+    // Une fois le match passé, la copie ne le garde plus.
+    jest.setSystemTime(new Date(T0 + 4 * 24 * 60 * 60 * 1000));
+    expect((await svc.getFrance()).nextMatch).toBeNull();
+  });
+
   it('L118 — copie périmée servie quand 365scores est en panne : réhorodatée, pas de nouvelle rafale à chaque requête', async () => {
     const T0 = Date.now();
     const { svc } = service();

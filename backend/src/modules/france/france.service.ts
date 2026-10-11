@@ -115,7 +115,7 @@ export class FranceService {
       const fixturesRes = parseExternal(Scores365GamesResponseSchema, fixtures, '365scores France fixtures');
       const resultsRes = parseExternal(Scores365GamesResponseSchema, results, '365scores France results');
       const data: FranceOverview = {
-        nextMatch: this.toNextMatch(fixturesRes.games ?? [], now),
+        nextMatch: fixturesRes.games ? this.toNextMatch(fixturesRes.games, now) : this.keptNextMatch(now),
         results: this.toResults(resultsRes.games ?? []),
         squad: this.toSquad(parseExternal(SquadsResponseSchema, squads, '365scores France squads')),
       };
@@ -135,6 +135,12 @@ export class FranceService {
       }
       throw new ServiceUnavailableException('365scores indisponible');
     }
+  }
+
+  /** Sans « games » (rendu dégradé), le prochain match de la copie reste tant qu'il est à venir. */
+  private keptNextMatch(now: number): FranceNextMatch | null {
+    const kept = this.cache?.data.nextMatch;
+    return kept && new Date(kept.date).getTime() >= now - 3 * 60 * 60 * 1000 ? kept : null;
   }
 
   private async fetchJson(url: string, what: string): Promise<unknown> {
