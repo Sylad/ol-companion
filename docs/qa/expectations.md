@@ -72,8 +72,8 @@ dans l'ordre que donne isHome.
 - never: « Chargement de la carte… » après 8 s
 
 ## /equipe-de-france
-- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur ») et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; au téléphone, le bouton « Plus » actif
-- never: « Impossible de charger l’équipe de France. » ; « Aucune donnée sur l’équipe de France pour le moment. » ; une heure de coup d'envoi présentée comme sûre quand elle est « à confirmer »
+- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur ») et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; le prochain match donne toujours son jour (« Jeu. 12/11 ») puis l'heure ou « Horaire à confirmer » ; au téléphone, le bouton « Plus » actif
+- never: « Impossible de charger l’équipe de France. » ; « Aucune donnée sur l’équipe de France pour le moment. » ; une heure de coup d'envoi présentée comme sûre quand elle est « à confirmer » ; « Date et horaire à confirmer » ou « Week-end du … » pour le prochain match des Bleus (le jour est connu)
 - api: /api/france
 
 ## /fcnoobz

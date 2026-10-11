@@ -98,14 +98,14 @@ regles:
   - id: R7
     etat: charge
     enonce: >-
-      La règle L47 s'applique (lib/kickoff.ts, `unconfirmedDay`, `KICKOFF_TBD`) : le jour d'un match dont l'heure n'est pas fixée est aussi un remplissage et n'est jamais présenté comme sûr.
-      Vendredi, samedi ou dimanche : « Week-end du <samedi> » (JJ/MM) suivi de « · » et de « Horaire à confirmer » (message-heure-a-confirmer, imbriqué dans prochain-match-date) ; un autre jour : « Date et horaire à confirmer » remplace toute la ligne de date (même champ).
+      Le jour du prochain match des Bleus est connu (365scores le donne, un jeudi de sélection comme un autre jour) : il est toujours affiché, « Jeu. 12/11 » (prochain-match-date). Seule l'heure peut être à confirmer : « Jeu. 12/11 · Horaire à confirmer » (message-heure-a-confirmer, imbriqué dans prochain-match-date).
+      La règle L47 (jour de remplissage d'une journée de Ligue 1) ne s'applique pas à cette page : ni « Week-end du … » ni « Date et horaire à confirmer ».
       Jamais d'heure de remplissage. Hors des 14 prochains jours, l'heure est tenue pour non fixée (365scores seul, sans football-data).
     message: "Horaire à confirmer"
     champs: [message-heure-a-confirmer]
     statut: hypothese
-    si_faux: "Le seuil de 14 jours (repris de CLAUDE.md L39, où football-data est consulté en plus ; ici 365scores seul) pourrait changer, ou l'heure être toujours montrée ; seul le calcul d'affichage de ce champ change, aucune donnée stockée. La reprise de unconfirmedDay est sourcée (L47)."
-    tests: ["R7 — match dans plus de 14 jours : « Week-end du JJ/MM · Horaire à confirmer » sans heure", "R7 — jour hors week-end : « Date et horaire à confirmer »", "R7 — match proche : l'heure s'affiche"]
+    si_faux: "Le seuil de 14 jours (repris de CLAUDE.md L39, où football-data est consulté en plus ; ici 365scores seul) pourrait changer, ou l'heure être toujours montrée ; seul le calcul d'affichage de ce champ change, aucune donnée stockée. Le jour affiché vient tel quel de 365scores (L117)."
+    tests: ["R7 — match dans plus de 14 jours : le jour connu, « Horaire à confirmer » à la place de l'heure", "R7 — jour de semaine (jeudi de sélection) : le jour reste affiché, jamais « Date et horaire à confirmer »", "R7 — match proche : l'heure s'affiche"]
   - id: R8
     etat: charge
     enonce: L'effectif est groupé par poste (Gardiens, Défenseurs, Milieux, Attaquants), avec le nombre de joueurs par groupe ; chaque ligne donne le nom et l'âge, sans lien vers une fiche joueur ni numéro (365scores rend un numéro -1 pour la sélection).

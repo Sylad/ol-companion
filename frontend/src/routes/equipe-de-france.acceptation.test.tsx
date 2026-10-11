@@ -265,26 +265,28 @@ describe('R7 — heure du prochain match', () => {
     }
     throw new Error('jour introuvable');
   };
+  const WEEKDAYS = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
   const dd = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
 
-  it('R7 — match dans plus de 14 jours : « Week-end du JJ/MM · Horaire à confirmer » sans heure', async () => {
+  it('R7 — match dans plus de 14 jours : le jour connu, « Horaire à confirmer » à la place de l\'heure', async () => {
     const d = farDate((w) => w === 6);
     handler = okJson({ ...FULL, nextMatch: { ...NEXT, date: d.toISOString(), timeConfirmed: false } });
     await renderPage();
     await loaded();
     const date = tid('prochain-match-date');
-    expect(date.textContent).toBe(`Week-end du ${dd(d)} · Horaire à confirmer`);
+    expect(date.textContent).toBe(`${WEEKDAYS[d.getDay()]} ${dd(d)} · Horaire à confirmer`);
     expect(within(date).getByTestId('message-heure-a-confirmer')).toHaveTextContent('Horaire à confirmer');
     expect(date.textContent).not.toMatch(/\d{1,2}h\d{2}/);
   });
-  it('R7 — jour hors week-end : « Date et horaire à confirmer »', async () => {
-    const d = farDate((w) => w >= 1 && w <= 4);
+  it('R7 — jour de semaine (jeudi de sélection) : le jour reste affiché, jamais « Date et horaire à confirmer »', async () => {
+    const d = farDate((w) => w === 4);
     handler = okJson({ ...FULL, nextMatch: { ...NEXT, date: d.toISOString(), timeConfirmed: false } });
     await renderPage();
     await loaded();
     const date = tid('prochain-match-date');
-    expect(date).toHaveTextContent('Date et horaire à confirmer');
-    expect(date.textContent).not.toMatch(/\d{1,2}h\d{2}/);
+    expect(date.textContent).toBe(`Jeu. ${dd(d)} · Horaire à confirmer`);
+    expect(date.textContent).not.toMatch(/Date et horaire/);
+    expect(date.textContent).not.toMatch(/Week-end/);
   });
   it("R7 — match proche : l'heure s'affiche", async () => {
     handler = okJson({ ...FULL, nextMatch: { ...NEXT, date: iso(3, 20, 45), timeConfirmed: true } });

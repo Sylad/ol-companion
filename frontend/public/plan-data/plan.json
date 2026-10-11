@@ -314,6 +314,12 @@
       "status": "done",
       "started": "2026-10-11",
       "finished": "2026-10-11"
+    },
+    {
+      "id": "L117",
+      "title": "Le jour du prochain match des Bleus toujours affiché",
+      "status": "doing",
+      "started": "2026-10-11"
     }
   ]
 }

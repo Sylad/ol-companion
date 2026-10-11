@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-11 12:21",
+  "generated": "2026-10-11 12:57",
   "entries": [
+    {
+      "slug": "2026-10-11-equipe-de-france-jour-du-prochain-match",
+      "title": "Le jour du prochain match des Bleus toujours affiché",
+      "date": "2026-10-11",
+      "lots": [
+        "L117"
+      ],
+      "captures": [
+        "captures/L117-jour-prochain-match.png"
+      ],
+      "alts": [
+        "Page Équipe de France : le prochain match affiche « Jeu. 12/11 · Horaire à confirmer »"
+      ],
+      "html": "<p>Sur la page « Équipe de France », le prochain match affiche désormais son jour, par exemple « Jeu. 12/11 », même quand l'heure n'est pas encore connue. Seule l'heure est alors remplacée par « Horaire à confirmer » : « Jeu. 12/11 · Horaire à confirmer ». Avant, un match de sélection tombant en semaine, comme ce jeudi, était présenté par « Date et horaire à confirmer » alors que sa date est connue.</p>"
+    },
     {
       "slug": "2026-10-11-une-page-dediee-a-l-equipe-de-france",
       "title": "Une page dédiée à l'équipe de France",

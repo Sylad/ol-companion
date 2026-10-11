@@ -2,7 +2,7 @@ import { Loader2 } from 'lucide-react';
 import { useFrance } from '@/hooks/use-france';
 import { TeamLogo } from '@/components/team-logo';
 import { clubLogoUrl } from '@/lib/ligue1-clubs-coords';
-import { DATE_AND_KICKOFF_TBD, KICKOFF_TBD, kickoffTime, unconfirmedDay } from '@/lib/kickoff';
+import { KICKOFF_TBD, kickoffTime } from '@/lib/kickoff';
 import { cn } from '@/lib/utils';
 import type { FranceNextMatch, FrancePlayer, FranceResult, FranceTeam } from '@/types/api';
 
@@ -147,20 +147,17 @@ function Side({ testId, team }: { testId: string; team: FranceTeam }) {
   );
 }
 
-/** Règle L47 (lib/kickoff.ts) : un jour dont l'heure n'est pas fixée n'est jamais présenté comme sûr. */
+/**
+ * La date de la sélection est connue (365scores donne le jour du match) : seule l'heure
+ * peut être « à confirmer » (L117). La règle L47 (jour de remplissage d'une journée de
+ * Ligue 1) ne s'applique pas ici.
+ */
 function NextMatchDate({ match }: { match: FranceNextMatch }) {
-  const unconfirmed = unconfirmedDay(match);
-  if (unconfirmed?.kind === 'unknown') return <span data-testid="prochain-match-date">{DATE_AND_KICKOFF_TBD}</span>;
-  if (unconfirmed) {
-    return (
-      <span data-testid="prochain-match-date">
-        Week-end du {dayMonth(unconfirmed.saturday)} · <span data-testid="message-heure-a-confirmer">{KICKOFF_TBD}</span>
-      </span>
-    );
-  }
+  const time = kickoffTime(match);
   return (
     <span data-testid="prochain-match-date">
-      {shortDate(match.date)} · {kickoffTime(match)}
+      {shortDate(match.date)} ·{' '}
+      {time ?? <span data-testid="message-heure-a-confirmer">{KICKOFF_TBD}</span>}
     </span>
   );
 }
