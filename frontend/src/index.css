@@ -676,6 +676,8 @@
 @media (max-width: 1023px) {
   html {
     scroll-padding-top: 124px;
+    /* hauteur mesurée de la barre par la page Calendrier ; 124 px tant qu'elle n'y est pas */
+    scroll-padding-top: var(--barre-filtres-h, 124px);
     scroll-padding-bottom: 72px;
   }
 }

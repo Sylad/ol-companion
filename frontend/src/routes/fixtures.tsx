@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { TeamLogo } from '@/components/team-logo';
@@ -97,6 +97,24 @@ export function FixturesPage() {
   }, [scoped]);
   const record = useMemo(() => countResults(scoped), [scoped]);
 
+  // La barre collante change de hauteur (4 compétitions : 163 px à 390 px, 139 à 320) : on la mesure pour que
+  // `scroll-padding-top` (index.css, repli 124 px) la suive, sinon un focus clavier passe dessous (WCAG 2.4.11).
+  const barRef = useRef<HTMLDivElement>(null);
+  const hasBar = Boolean(data);
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar || typeof ResizeObserver === 'undefined') return;
+    const root = document.documentElement;
+    const apply = () => root.style.setProperty('--barre-filtres-h', `${Math.ceil(bar.getBoundingClientRect().height)}px`);
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(bar);
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty('--barre-filtres-h');
+    };
+  }, [hasBar]);
+
   return (
     <div className="space-y-8">
       <KnowledgeHeader />
@@ -117,6 +135,7 @@ export function FixturesPage() {
             {/* Sous 1024 px, la barre colle en haut de la fenêtre (fond opaque, 115 px à 390 px) ; au bureau elle
                 reste dans le flux, sous le titre. La légende est dehors, dans le flux. */}
             <div
+              ref={barRef}
               data-testid="barre-filtres"
               className="flex flex-col gap-1.5 bg-surface px-3 py-1.5 sm:px-5 max-lg:sticky max-lg:top-0 max-lg:z-20 max-lg:border-b max-lg:border-border max-lg:shadow-[0_6px_12px_-8px_rgba(0,0,0,0.9)] lg:flex-row lg:flex-wrap lg:items-center lg:justify-end lg:gap-2 lg:py-3"
             >
@@ -367,10 +386,13 @@ function matchLinkName(fixture: SeasonMatch): string {
 function MatchLink({
   fixture,
   prefix,
+  block,
   children,
 }: {
   fixture: SeasonMatch;
   prefix?: string;
+  /** Lien en bloc : sa boîte entoure son contenu, le contour de focus s'affiche (WCAG 2.4.7). */
+  block?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -380,7 +402,10 @@ function MatchLink({
       search={{ matchupId: matchupId(fixture) }}
       aria-label={`${prefix ? `${prefix}, ` : ''}${matchLinkName(fixture)}`}
       title={`${fixture.homeTeam} contre ${fixture.awayTeam}`}
-      className="after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+      className={cn(
+        block && 'block',
+        "after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright",
+      )}
     >
       {children}
     </Link>
@@ -460,7 +485,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
         )}
       </DateBlock>
       <div data-testid="equipes-match" className="min-w-0">
-        <MatchLink fixture={fixture}>
+        <MatchLink fixture={fixture} block>
           <span className="block space-y-1">
             <CompactTeamLine
               id={fixture.homeTeamId}
