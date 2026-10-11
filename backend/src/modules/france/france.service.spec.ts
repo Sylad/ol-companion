@@ -96,6 +96,12 @@ describe('FranceService', () => {
     ]);
   });
 
+  it('R8 — un joueur dont le poste n’a pas de nom ne fait pas échouer la lecture', async () => {
+    const squads = { squads: [{ competitorId: 5061, athletes: [{ id: 9, name: 'Sans Poste', age: 20, position: { id: 99 } }] }] };
+    const { squad } = await service({ squads: () => squads }).svc.getFrance();
+    expect(squad).toEqual([{ id: 9, name: 'Sans Poste', position: '', age: 20 }]);
+  });
+
   it('un appel en échec sans copie en mémoire : 503, jamais une réponse vide', async () => {
     const { svc } = service({ squads: () => new Error('boom') });
     await expect(svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);

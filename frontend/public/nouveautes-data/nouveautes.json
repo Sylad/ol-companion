@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-10 20:10",
+  "generated": "2026-10-11 12:21",
   "entries": [
+    {
+      "slug": "2026-10-11-une-page-dediee-a-l-equipe-de-france",
+      "title": "Une page dédiée à l'équipe de France",
+      "date": "2026-10-11",
+      "lots": [
+        "L113"
+      ],
+      "captures": [
+        "captures/L113-equipe-de-france.png"
+      ],
+      "alts": [
+        "Page Équipe de France : prochain match, cinq derniers résultats avec badge V/N/D, effectif par poste"
+      ],
+      "html": "<p>Une nouvelle page « Équipe de France » réunit les Bleus au même endroit. Elle montre le prochain match, les cinq derniers résultats (du plus récent au plus ancien, toutes compétitions, écrits « Domicile – Extérieur » comme le calendrier, avec une pastille V, N ou D vue de la France) et l'effectif groupé par poste (gardiens, défenseurs, milieux, attaquants) avec l'âge de chaque joueur. Quand l'heure du prochain match n'est pas fixée, la page ne l'invente pas : elle écrit « Week-end du JJ/MM · Horaire à confirmer » ou « Date et horaire à confirmer ». La page se trouve dans la barre latérale, après « Carte L1 », et dans le panneau « Plus » au téléphone. Pendant le chargement, en cas d'erreur (avec un bouton « Réessayer ») ou sans donnée, un message l'explique.</p>\n<h3>Hypothèses</h3>\n<ul><li>R1 — le message de chargement est un simple texte « Chargement de l’équipe de France… » ; si on préfère un squelette, seul l'aspect change.</li><li>R7 — l'heure du prochain match est tenue pour non fixée au-delà de 14 jours (365scores seul) ; si le seuil est faux, seul l'affichage de la date change.</li><li>R8 — l'effectif donne le nom et l'âge, sans fiche joueur ni numéro ; si on veut des fiches ou des numéros, des champs s'ajoutent à la ligne.</li><li>R9 — la page est dans la barre latérale et derrière « Plus » au téléphone ; si elle doit être dans la barre du bas, seule la liste de navigation change.</li></ul>"
+    },
     {
       "slug": "2026-10-10-coupes-l-onglet-de-la-coupe-affichee-se-distingue-a-nouveau",
       "title": "Coupes : l'onglet de la coupe affichée se distingue à nouveau",

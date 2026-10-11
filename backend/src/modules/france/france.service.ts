@@ -56,7 +56,7 @@ const SquadsResponseSchema = z.object({
                 id: z.number(),
                 name: z.string(),
                 age: z.number().optional(),
-                position: z.object({ name: z.string() }).optional(),
+                position: z.object({ name: z.string().optional() }).optional(),
               })
               .passthrough(),
           )
@@ -102,7 +102,7 @@ export class FranceService {
       const [results, fixtures, squads] = await Promise.all([
         this.fetchJson(`${SCORES365_API_BASE}/web/games/results/?${QUERY}&limit=${RESULTS_COUNT + 5}`, 'results'),
         this.fetchJson(`${SCORES365_API_BASE}/web/games/fixtures/?${QUERY}&limit=5`, 'fixtures'),
-        this.fetchJson(`${SCORES365_API_BASE}/web/squads/?competitorId=${FRANCE_365SCORES_ID}`, 'squads'),
+        this.fetchJson(`${SCORES365_API_BASE}/web/squads/?langId=1&timezoneName=Europe/Paris&competitors=${FRANCE_365SCORES_ID}`, 'squads'),
       ]);
       const data: FranceOverview = {
         nextMatch: this.toNextMatch(parseExternal(Scores365GamesResponseSchema, fixtures, '365scores France fixtures').games ?? [], now),

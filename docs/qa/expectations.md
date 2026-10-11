@@ -71,6 +71,11 @@ dans l'ordre que donne isHome.
 - shows: 18 marqueurs sur la carte ; les tuiles de la carte chargées ; la légende « Aller / Retour »
 - never: « Chargement de la carte… » après 8 s
 
+## /equipe-de-france
+- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur ») et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; au téléphone, le bouton « Plus » actif
+- never: « Impossible de charger l’équipe de France. » ; « Aucune donnée sur l’équipe de France pour le moment. » ; une heure de coup d'envoi présentée comme sûre quand elle est « à confirmer »
+- api: /api/france
+
 ## /fcnoobz
 - shows: le titre « FC NOOBZ » ; 3 cartes (Lecteur de sauvegarde FM, Histoire du club, Palmarès virtuel) ; l'image du club
 
