@@ -23,7 +23,7 @@ export function DashboardStats() {
         sub={ol ? (matchday > 0 ? `Ligue 1 · J${matchday}` : 'Ligue 1') : ''}
         icon={Award}
         testId="stat-position"
-        trend={positionTrend}
+        trend={ol ? positionTrend : null}
       />
       <StatCard
         label="Points"
