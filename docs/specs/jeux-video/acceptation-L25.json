@@ -1,0 +1,8 @@
+{
+  "lot": "L25",
+  "fiche": "docs/specs/jeux-video/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/jeux-video.acceptation.test.tsx"
+  ],
+  "vert": false
+}
