@@ -222,12 +222,14 @@ lots:
   - id: L27
     title: Page dédiée à l'équipe de France
     public: "Une page dédiée à l'équipe de France"
-    status: todo
+    status: dropped
     estimate: 1
     visible: true
     created: 2026-10-02
     notes:
       - { date: 2026-10-11, text: "11-10 : repris par L113 (lot à écran, étape spec : fiche, maquette, tests d'acceptation)" }
+      - { date: 2026-10-11, text: "abandonné : remplacé par L113 (page Équipe de France livrée le 11-10)" }
+    finished: 2026-10-11
   - id: L28
     title: "Navigation : le lien Dashboard (/) porte peut-être aria-current=page sur toutes les routes (correspondance floue de TanStack Link) — à vérifier à l'exécution puis corriger, barre du bas et barre latérale (relecture L24)"
     status: done
