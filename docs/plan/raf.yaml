@@ -216,6 +216,8 @@ lots:
     screen: page
     created: 2026-10-02
     started: 2026-10-11
+    notes:
+      - { date: 2026-10-11, text: "Revue vague 2026-10-11-1905 (rendu, budget de lot atteint avant la passe fix) — à corriger : [bloquant UX] sidebar.tsx:158 entrée « FC Noobz » active #1d4ed8 sur #03040a = 3,06:1 (WCAG 1.4.3) → retirer text-[#1d4ed8] du span (hérite #3aa0ff, 7,46:1) ; [majeur] football-manager.json:11 date FM24 tirée de Wikipedia alors que sources ne cite que footballmanager.com (R5) → ajouter la source ou revérifier ; [majeur] jeux-video.tsx:123 « Aucune sortie annoncée. » hors fiche et sans test → règle + test « R… — » dans la fiche, ou retirer. Mineurs : captures pleine page de la maquette avec barres fixes mal placées ; tuile Jeux vidéo sans signe de lien (Nielsen 4/6) ; lien-retour 76×15 px (viser 44 px) ; dates d'éditions coupées à 320 px (whitespace-nowrap)." }
   - id: L26
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé (captures, scripts de mesure, builds de démonstration), documents périmés (specs et plans de lots livrés, audits dépassés), scripts jetables, captures non référencées, dépendances et fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé, garder ce que les Nouveautés ou la doc référencent ; à refaire à chaque clôture de vague, rouvrir ce lot ou en créer un nouveau"
     status: todo
@@ -1211,6 +1213,26 @@ lots:
     finished: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "QA prod 11-10 (362b2aa) : 3/3 pages conformes aux deux largeurs ; simulation hors ligne de « Réessayer » conforme (chargement + focus sur la zone de statut, erreur → focus sur le bouton, succès → focus sur le h1). À préciser dans docs/qa/expectations.md (## *) : la ligne never « Chargement de … » doit exclure les citations entre « » du texte des entrées de /nouveautes (l'entrée L119 cite ce message)." }
+  - id: L120
+    title: "FC Noobz — étude de faisabilité (basse priorité) : lire les sauvegardes Football Manager de E:\\Documents\\Sports Interactive (FM21–FM26, .fm de 70 à 450 Mo, format binaire compressé non documenté) ou, à défaut, les exports de FM (vues imprimées en HTML/texte, exported teams) — oui/non/partiel avec preuves, lecture seule, aucun fichier de Sylvain modifié ; données locales Windows → import local qui publie un résumé dans l'app"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-11
+  - id: L121
+    title: "FC Noobz — suivi de mes clubs par édition de Football Manager (FC Noobz, Grenoble, SLA… : saisons, divisions, titres), alimenté par l'import local de l'étude (basse priorité ; forme fixée par la fiche d'écran)"
+    public: Mes carrières Football Manager, édition par édition
+    status: todo
+    estimate: 1
+    visible: true
+    screen: page
+    after: [ L120 ]
+    created: 2026-10-11
+  - id: L122
+    title: "FC Noobz — préparer Football Manager 27 (sortie 10/11/2026) : contenu à décider avec Sylvain (basse priorité)"
+    status: todo
+    estimate: 0.5
+    after: [ L120 ]
+    created: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
