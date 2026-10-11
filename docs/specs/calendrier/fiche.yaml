@@ -1,0 +1,121 @@
+ecran:
+  id: calendrier
+  titre: Calendrier — densité
+  route: /fixtures
+  lot: L50
+  largeurs: [1440, 390]
+  maquette: docs/specs/calendrier/maquette.html
+etats: [vide, chargement, erreur, charge]
+
+champs:
+  - { id: titre-page, libelle: Titre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: message-erreur, libelle: Message d'erreur de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: message-vide, libelle: Message d'état vide, type: texte, source: statique, obligatoire: true }
+  - { id: barre-filtres, libelle: Barre des filtres (compétition et statut), type: groupe, source: statique, obligatoire: true }
+  - { id: filtre-competition, libelle: Pastilles de compétition avec compteur, type: liste, source: "GET /api/season-matches → competitionCode (comptes)", obligatoire: true }
+  - { id: filtre-statut, libelle: Pastilles de statut (Tout, À venir, Joués) avec compteur, type: liste, source: "GET /api/season-matches → status (comptes)", obligatoire: true }
+  - { id: legende-competitions, libelle: Légende des sigles de compétition, type: texte, source: "GET /api/season-matches → competitionCode", obligatoire: true }
+  - { id: vue-rapide, libelle: Vue rapide (V N D, matchs listés), type: carte, source: "GET /api/season-matches → scores", obligatoire: true }
+  - { id: carte-prochain, libelle: Carte Prochain (entière cliquable vers /match/$gameId), type: carte, source: "GET /api/season-matches → premier match à venir", obligatoire: true }
+  - { id: carte-dernier-resultat, libelle: Carte Dernier résultat (entière cliquable), type: carte, source: "GET /api/season-matches → dernier match joué", obligatoire: true }
+  - { id: liste-mois, libelle: Liste des blocs par mois, type: liste, source: "GET /api/season-matches → date (groupée par mois)", obligatoire: true }
+  - { id: bloc-mois, libelle: Bloc d'un mois, type: groupe, source: "GET /api/season-matches → date", obligatoire: true }
+  - { id: titre-mois, libelle: Titre du bloc (mois et année), type: texte, source: "GET /api/season-matches → date", obligatoire: true }
+  - { id: nombre-matchs-mois, libelle: Nombre de matchs du mois, type: texte, source: "GET /api/season-matches (compte)", obligatoire: true }
+  - { id: ligne-match, libelle: Ligne de match, type: ligne, source: "GET /api/season-matches → items", obligatoire: true }
+  - { id: date-match, libelle: Jour du match (sans le mois) ou week-end à confirmer, type: texte, source: "GET /api/season-matches → date, timeConfirmed", obligatoire: true }
+  - { id: equipes-match, libelle: Équipes et scores (lien vers le match), type: texte, source: "GET /api/season-matches → homeTeam, awayTeam, homeScore, awayScore", obligatoire: true }
+  - { id: score-match, libelle: Heure, Terminé ou Horaire à confirmer, type: texte, source: "GET /api/season-matches → status, date, timeConfirmed", obligatoire: true }
+  - { id: competition-match, libelle: Compétition dans la ligne (sigle et journée), type: texte, source: "GET /api/season-matches → competitionCode, matchday", obligatoire: true }
+  - { id: tour-match, libelle: Tour et manche d'un match sans journée, type: texte, source: "GET /api/season-matches → round", obligatoire: false }
+
+regles:
+  - id: R1
+    etat: chargement
+    enonce: Pendant le chargement, l'écran affiche le message d'attente à la place des filtres et de la liste.
+    message: "Chargement des matchs…"
+    champs: [message-chargement]
+    statut: sourcee
+    source: "frontend/src/routes/fixtures.tsx (état isLoading) ; amélioration des pastilles pendant le chargement : lot L51"
+    tests: ["R1 — chargement : le message s'affiche"]
+  - id: R2
+    etat: erreur
+    enonce: Si l'appel échoue, l'écran affiche l'erreur. Texte et absence de bouton inchangés ici ; « Réessayer » et le rôle d'alerte sont le lot L51.
+    message: "Erreur de chargement."
+    champs: [message-erreur]
+    statut: sourcee
+    source: "frontend/src/routes/fixtures.tsx (isError) ; le lot L51 reprend l'état d'erreur"
+    tests: ["R2 — erreur : le message s'affiche"]
+  - id: R3
+    etat: vide
+    enonce: Quand le filtre ne laisse aucun match, le message remplace la vue rapide et la liste ; les filtres restent visibles pour changer de choix.
+    message: "Aucun match dans cette catégorie."
+    champs: [message-vide, barre-filtres]
+    masque: [liste-mois, vue-rapide]
+    statut: sourcee
+    source: "fixtures.tsx (filtered.length === 0) ; docs/qa/expectations.md /fixtures ; état vide actionnable : lot L51"
+    tests: ["R3 — vide : le message s'affiche, ni liste ni vue rapide, filtres présents"]
+  - id: R4
+    etat: charge
+    enonce: La liste est découpée en un bloc par mois civil (heure de Paris), dans l'ordre des dates, avec titre « Mois année » et nombre de matchs du mois ; le mois quitte la colonne de date de chaque ligne (reste le jour de la semaine et le quantième). Un mois sans match n'a pas de bloc. Plus de blocs « Ligue 1 · J6 » par compétition ou journée.
+    message: "Octobre 2026"
+    champs: [liste-mois, bloc-mois, titre-mois, nombre-matchs-mois, date-match]
+    statut: sourcee
+    source: "lot L50 : « blocs par mois »"
+    tests: ["R4 — charge : un bloc par mois, titre et nombre de matchs", "R4 — la somme des nombres de matchs égale « Matchs listés »", "R4 — l'ordre des dates est conservé"]
+  - id: R5
+    etat: charge
+    enonce: Chaque ligne porte sa compétition (sigle du glossaire, nom long en abbr et pour les lecteurs d'écran) suivie de « · J<journée> » ; un match sans journée (qualifications) montre sous les équipes son tour et sa manche.
+    message: "L1 · J6"
+    champs: [ligne-match, competition-match, tour-match]
+    statut: sourcee
+    source: "lot L50 : « compétition dans la ligne » ; glossaire frontend/src/lib/competitions.ts ; round : CLAUDE.md « Match sans journée »"
+    tests: ["R5 — chaque ligne affiche sigle et journée", "R5 — un match de qualification affiche son tour et sa manche"]
+  - id: R6
+    etat: charge
+    enonce: La ligne reste un lien entier vers /match/$gameId (L96) ; heure, « Terminé » ou « Horaire à confirmer » restent dans la colonne de droite, jamais les deux, et un jour non fixé reste « Week-end du jj/mm » (L47).
+    message: "Horaire à confirmer"
+    champs: [equipes-match, score-match, date-match]
+    statut: sourcee
+    source: "CLAUDE.md « Calendrier » (L47) ; docs/qa/expectations.md /fixtures ; fixtures.tsx (MatchLink, L96)"
+    tests: ["R6 — la ligne entière mène au match", "R6 — heure ou « Horaire à confirmer », jamais les deux"]
+  - id: R7
+    etat: charge
+    enonce: Sous 1024 px, les deux groupes de filtres (compétition, statut) forment une barre collée en haut de la fenêtre pendant le défilement, sur fond opaque ; la légende des sigles défile avec la page. Au bureau les filtres restent dans l'en-tête, non collants.
+    message: ~
+    champs: [barre-filtres, filtre-competition, filtre-statut, legende-competitions]
+    statut: sourcee
+    source: "lot L50 : « filtres collants au téléphone »"
+    tests: ["R7 — 390 px : après défilement, les pastilles restent visibles en haut", "R7 — 1440 px : la barre n'est pas collante"]
+  - id: R8
+    etat: charge
+    enonce: "Les cartes Prochain et Dernier résultat sont cliquables sur toute leur surface (lien vers le match, nom accessible « Prochain, Lyon contre Crystal Palace — détail du match ») et un chevron signale le lien."
+    message: "Prochain"
+    champs: [carte-prochain, carte-dernier-resultat]
+    statut: sourcee
+    source: "lot L50 : « carte Prochain cliquable » ; route /match/$gameId existante"
+    tests: ["R8 — un clic n'importe où sur la carte Prochain ouvre le match", "R8 — la carte Dernier résultat est cliquable aussi"]
+  - id: R9
+    etat: charge
+    enonce: Sous 1024 px, la vue rapide tient sur une ligne (V N D et Matchs listés) et les deux cartes passent en rangées resserrées, pour que la première ligne de match apparaisse dans le premier écran ; au bureau, la colonne de 280 px à gauche reste collante comme aujourd'hui.
+    message: ~
+    champs: [vue-rapide]
+    statut: hypothese
+    si_faux: Si la vue rapide doit garder son format actuel au téléphone, seul le style de ce bloc change ; aucune donnée en jeu.
+    tests: ["R9 — 390 px : la première ligne de match est visible sans défilement sur 844 px de haut"]
+  - id: R10
+    etat: charge
+    enonce: Un match à jour non fixé est rangé dans le mois de sa date de remplissage ; chaque pastille filtre aussi les blocs (un mois sans match du filtre disparaît, les nombres de matchs des mois suivent le filtre).
+    message: ~
+    champs: [bloc-mois, nombre-matchs-mois]
+    statut: hypothese
+    si_faux: Si un week-end à confirmer à cheval sur deux mois doit être rangé dans l'autre, seule la clé de regroupement change.
+    tests: ["R10 — un filtre actif retire les mois vides et met à jour les nombres"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /api/season-matches", regles: [R1, R2, R3, R4, R5, R6, R10] }
+  - { id: A2, declencheur: filtre-competition, appel: "GET /api/season-matches", regles: [R3, R10] }
+  - { id: A3, declencheur: filtre-statut, appel: "GET /api/season-matches", regles: [R3, R10] }
+  - { id: A4, declencheur: carte-prochain, appel: "GET /match/$gameId", regles: [R8] }
+  - { id: A5, declencheur: ligne-match, appel: "GET /match/$gameId", regles: [R6] }
