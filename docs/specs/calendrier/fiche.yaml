@@ -33,7 +33,7 @@ champs:
 regles:
   - id: R1
     etat: chargement
-    enonce: Pendant le chargement, l'écran affiche le message d'attente à la place des filtres et de la liste.
+    enonce: "Pendant le chargement, l'écran affiche le message d'attente à la place des filtres et de la liste."
     message: "Chargement des matchs…"
     champs: [message-chargement]
     statut: sourcee
@@ -41,7 +41,7 @@ regles:
     tests: ["R1 — chargement : le message s'affiche"]
   - id: R2
     etat: erreur
-    enonce: Si l'appel échoue, l'écran affiche l'erreur. Texte et absence de bouton inchangés ici ; « Réessayer » et le rôle d'alerte sont le lot L51.
+    enonce: "Si l'appel échoue, l'écran affiche l'erreur. Texte et absence de bouton inchangés ici ; « Réessayer » et le rôle d'alerte sont le lot L51."
     message: "Erreur de chargement."
     champs: [message-erreur]
     statut: sourcee
@@ -49,16 +49,16 @@ regles:
     tests: ["R2 — erreur : le message s'affiche"]
   - id: R3
     etat: vide
-    enonce: Quand le filtre ne laisse aucun match, le message remplace la vue rapide et la liste ; les filtres restent visibles pour changer de choix.
+    enonce: "Quand la combinaison de filtres ne laisse aucun match (exemple de la maquette : compétition C1 et statut À venir, la Ligue des champions 2026-2027 n'ayant plus de match à venir), le message remplace la vue rapide et la liste ; les filtres restent visibles pour changer de choix."
     message: "Aucun match dans cette catégorie."
     champs: [message-vide, barre-filtres]
     masque: [liste-mois, vue-rapide]
     statut: sourcee
     source: "fixtures.tsx (filtered.length === 0) ; docs/qa/expectations.md /fixtures ; état vide actionnable : lot L51"
-    tests: ["R3 — vide : le message s'affiche, ni liste ni vue rapide, filtres présents"]
+    tests: ["R3 — vide : C1 + À venir affiche le message, ni liste ni vue rapide, filtres présents (C1 et À venir actifs, compteur 0)"]
   - id: R4
     etat: charge
-    enonce: La liste est découpée en un bloc par mois civil (heure de Paris), dans l'ordre des dates, avec titre « Mois année » et nombre de matchs du mois ; le mois quitte la colonne de date de chaque ligne (reste le jour de la semaine et le quantième). Un mois sans match n'a pas de bloc. Plus de blocs « Ligue 1 · J6 » par compétition ou journée.
+    enonce: "La liste est découpée en un bloc par mois civil (heure de Paris), dans l'ordre des dates, avec titre « Mois année » et nombre de matchs du mois ; le mois quitte la colonne de date de chaque ligne (reste le jour de la semaine et le quantième). Un mois sans match n'a pas de bloc. Plus de blocs « Ligue 1 · J6 » par compétition ou journée."
     message: "Octobre 2026"
     champs: [liste-mois, bloc-mois, titre-mois, nombre-matchs-mois, date-match]
     statut: sourcee
@@ -66,15 +66,15 @@ regles:
     tests: ["R4 — charge : un bloc par mois, titre et nombre de matchs", "R4 — la somme des nombres de matchs égale « Matchs listés »", "R4 — l'ordre des dates est conservé"]
   - id: R5
     etat: charge
-    enonce: Chaque ligne porte sa compétition (sigle du glossaire, nom long en abbr et pour les lecteurs d'écran) suivie de « · J<journée> » ; un match sans journée (qualifications) montre sous les équipes son tour et sa manche.
+    enonce: "Le nom accessible du lien reprend les noms affichés et, pour un match joué, les scores (« Sparta Praha 2, Lyon 1 — détail du match » ; à venir : « Lyon contre Union SG — détail du match »). Chaque ligne porte sa compétition (sigle du glossaire, nom long en abbr et pour les lecteurs d'écran) suivie de « · J<journée> » ; un match sans journée (qualifications) montre sous les équipes son tour et sa manche."
     message: "L1 · J6"
     champs: [ligne-match, competition-match, tour-match]
     statut: sourcee
     source: "lot L50 : « compétition dans la ligne » ; glossaire frontend/src/lib/competitions.ts ; round : CLAUDE.md « Match sans journée »"
-    tests: ["R5 — chaque ligne affiche sigle et journée", "R5 — un match de qualification affiche son tour et sa manche"]
+    tests: ["R5 — le nom du lien d'un match joué contient les deux scores et les noms affichés", "R5 — chaque ligne affiche sigle et journée", "R5 — un match de qualification affiche son tour et sa manche"]
   - id: R6
     etat: charge
-    enonce: La ligne reste un lien entier vers /match/$gameId (L96) ; heure, « Terminé » ou « Horaire à confirmer » restent dans la colonne de droite, jamais les deux, et un jour non fixé reste « Week-end du jj/mm » (L47).
+    enonce: "La ligne reste un lien entier vers /match/$gameId (L96) ; heure, « Terminé » ou « Horaire à confirmer » restent dans la colonne de droite, jamais les deux, et un jour non fixé reste « Week-end du jj/mm » (L47)."
     message: "Horaire à confirmer"
     champs: [equipes-match, score-match, date-match]
     statut: sourcee
@@ -82,12 +82,12 @@ regles:
     tests: ["R6 — la ligne entière mène au match", "R6 — heure ou « Horaire à confirmer », jamais les deux"]
   - id: R7
     etat: charge
-    enonce: Sous 1024 px, les deux groupes de filtres (compétition, statut) forment une barre collée en haut de la fenêtre pendant le défilement, sur fond opaque ; la légende des sigles défile avec la page. Au bureau les filtres restent dans l'en-tête, non collants.
+    enonce: "Sous 1024 px, les deux groupes de filtres (compétition, statut) forment une barre collée en haut de la fenêtre pendant le défilement, sur fond opaque ; la légende des sigles est hors de la zone collante, dans le flux, et reste lisible au téléphone. Sous 1024 px, `html` porte scroll-padding-top 124 px (hauteur de la barre, 115 px à 390 px) et scroll-padding-bottom 72 px (barre de navigation du bas) pour qu'un élément focalisé ne passe jamais dessous (WCAG 2.4.11). Les pastilles passent à la ligne, sans défilement horizontal, jusqu'à 320 px (WCAG 1.4.10), et les noms de club se coupent aux espaces, sans ellipse. Les pastilles ont pour nom « <sigle> — <nom> · n matchs » (WCAG 2.5.3). Au bureau les filtres restent dans l'en-tête, non collants."
     message: ~
     champs: [barre-filtres, filtre-competition, filtre-statut, legende-competitions]
     statut: sourcee
     source: "lot L50 : « filtres collants au téléphone »"
-    tests: ["R7 — 390 px : après défilement, les pastilles restent visibles en haut", "R7 — 1440 px : la barre n'est pas collante"]
+    tests: ["R7 — 390 px : après défilement, les pastilles restent visibles en haut", "R7 — 390 px : la légende des sigles est visible sous la barre", "R7 — 390 px : un lien focalisé au clavier n'est jamais sous la barre collante ni sous la navigation du bas", "R7 — 320 px : pas de défilement horizontal, nom des pastilles commençant par leur texte affiché", "R7 — 1440 px : la barre n'est pas collante"]
   - id: R8
     etat: charge
     enonce: "Les cartes Prochain et Dernier résultat sont cliquables sur toute leur surface (lien vers le match, nom accessible « Prochain, Lyon contre Crystal Palace — détail du match ») et un chevron signale le lien."
@@ -98,7 +98,7 @@ regles:
     tests: ["R8 — un clic n'importe où sur la carte Prochain ouvre le match", "R8 — la carte Dernier résultat est cliquable aussi"]
   - id: R9
     etat: charge
-    enonce: Sous 1024 px, la vue rapide tient sur une ligne (V N D et Matchs listés) et les deux cartes passent en rangées resserrées, pour que la première ligne de match apparaisse dans le premier écran ; au bureau, la colonne de 280 px à gauche reste collante comme aujourd'hui.
+    enonce: "Sous 1024 px, la vue rapide tient sur une ligne (chiffres V N D en 19 px gras minimum, pour un contraste de grand texte) (V N D et Matchs listés) et les deux cartes passent en rangées resserrées, pour que la première ligne de match apparaisse dans le premier écran ; au bureau, la colonne de 280 px à gauche reste collante comme aujourd'hui."
     message: ~
     champs: [vue-rapide]
     statut: hypothese
@@ -106,11 +106,11 @@ regles:
     tests: ["R9 — 390 px : la première ligne de match est visible sans défilement sur 844 px de haut"]
   - id: R10
     etat: charge
-    enonce: Un match à jour non fixé est rangé dans le mois de sa date de remplissage ; chaque pastille filtre aussi les blocs (un mois sans match du filtre disparaît, les nombres de matchs des mois suivent le filtre).
+    enonce: "Un match à jour non fixé est rangé dans le mois de sa date de remplissage ; chaque pastille filtre aussi les blocs (un mois sans match du filtre disparaît, les nombres de matchs des mois suivent le filtre) ; les compteurs d'un groupe de pastilles suivent le choix de l'autre groupe (avec C1 actif : Tout 4, À venir 0, Joués 4 ; avec À venir actif : Toutes 35, L1 28, C1 0, C3 7), pour qu'un choix à 0 se voie avant le clic."
     message: ~
     champs: [bloc-mois, nombre-matchs-mois]
     statut: hypothese
-    si_faux: Si un week-end à confirmer à cheval sur deux mois doit être rangé dans l'autre, seule la clé de regroupement change.
+    si_faux: Si un week-end à confirmer à cheval sur deux mois doit être rangé dans l'autre, seule la clé de regroupement change ; si les compteurs doivent rester globaux (46, 35, 11), seul le calcul des compteurs change et l'état vide garde son message.
     tests: ["R10 — un filtre actif retire les mois vides et met à jour les nombres"]
 
 actions:
