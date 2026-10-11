@@ -71,5 +71,7 @@ describe('L118 — échec après des blocs affichés', () => {
     await screen.findByTestId('effectif');
     expect(screen.queryByText(/0 ans/)).toBeNull();
     expect(screen.getByText('31 ans')).toBeInTheDocument();
+    const ligne = screen.getByText('Sans Âge').closest('[data-testid="joueur-ligne"]')!;
+    expect(ligne.textContent).not.toMatch(/ans/);
   });
 });
