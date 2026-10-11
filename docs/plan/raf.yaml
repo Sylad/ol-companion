@@ -1172,6 +1172,7 @@ lots:
     started: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "Rendu par la vague 2026-10-11-1310 : le verrou protégeait encore les tests de L113 (vert, livré) alors que 4e76f31 révise R7 dans la fiche et ses tests ensemble (correct). Attend le lot cadence qui admet ce cas (fiche changée dans le même lot), puis reprise telle quelle." }
+    review: { date: 2026-10-11, verdict: "compliant after 1 note (mineur : scellé acceptation-L113.json à refaire par le cycle) — orchestré (vague 2026-10-11-1330, 0 passe(s) de correction)", commit: 4e76f31f6cba54aa503e13e4457fd824a87fb91d }
   - id: L118
     title: "/equipe-de-france, suites de la revue L113 : après « Réessayer » en échec, l'erreur s'affiche au-dessus des anciens blocs (contraire à R2) et aucun indicateur de chargement pendant le nouvel appel (isPending faux en TanStack v5, equipe-de-france.tsx:47/58) ; /api/france : un 200 sans « games » garde 10 min une liste vide, la copie périmée n'est jamais réhorodatée quand 365scores est en panne (3 lectures × 2 essais par requête), âge absent affiché « 0 ans » (france.service.ts:108/123/184)"
     status: doing
