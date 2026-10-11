@@ -1,0 +1,105 @@
+ecran:
+  id: jeux-video
+  titre: Jeux vidéo — Football Manager
+  route: /fcnoobz/jeux-video
+  lot: L25
+  largeurs: [1440, 390]
+  maquette: docs/specs/jeux-video/maquette.html
+etats: [vide, chargement, erreur, charge]
+
+champs:
+  - { id: surtitre-page, libelle: Surtitre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: titre-page, libelle: Titre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: sous-titre-page, libelle: Sous-titre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: lien-retour, libelle: Lien de retour vers FC Noobz, type: lien, source: statique, obligatoire: true }
+  - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: message-erreur, libelle: Message d'erreur de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: bouton-reessayer, libelle: Réessayer, type: bouton, source: "action A2", obligatoire: true }
+  - { id: message-vide, libelle: Message d'état vide, type: texte, source: statique, obligatoire: true }
+  - { id: prochaine-sortie, libelle: Bloc de la prochaine sortie, type: carte, source: "GET /jeux-video-data/football-manager.json → prochaineSortie", obligatoire: true }
+  - { id: surtitre-prochaine-sortie, libelle: Surtitre du bloc de la prochaine sortie, type: texte, source: statique, obligatoire: true }
+  - { id: titre-prochaine-sortie, libelle: Titre du bloc « Prochaine sortie », type: texte, source: statique, obligatoire: true }
+  - { id: sortie-nom, libelle: Nom de l'édition à venir, type: texte, source: "GET /jeux-video-data/football-manager.json → prochaineSortie.nom", obligatoire: true }
+  - { id: sortie-date, libelle: Date de sortie annoncée (ou « Date à confirmer »), type: texte, source: "GET /jeux-video-data/football-manager.json → prochaineSortie.date", obligatoire: true }
+  - { id: sortie-plateformes, libelle: Plateformes annoncées, type: texte, source: "GET /jeux-video-data/football-manager.json → prochaineSortie.plateformes", obligatoire: false }
+  - { id: editions, libelle: Bloc des éditions précédentes, type: liste, source: "GET /jeux-video-data/football-manager.json → editions", obligatoire: true }
+  - { id: surtitre-editions, libelle: Surtitre du bloc des éditions, type: texte, source: statique, obligatoire: true }
+  - { id: titre-editions, libelle: Titre du bloc « Éditions précédentes », type: texte, source: statique, obligatoire: true }
+  - { id: edition-ligne, libelle: Ligne d'édition, type: ligne, source: "GET /jeux-video-data/football-manager.json → editions[]", obligatoire: true }
+  - { id: edition-nom, libelle: Nom de l'édition, type: texte, source: "editions[].nom", obligatoire: true }
+  - { id: edition-date, libelle: Date de sortie de l'édition, type: texte, source: "editions[].date", obligatoire: true }
+  - { id: nouveautes-annoncees, libelle: Bloc des nouveautés annoncées, type: liste, source: "GET /jeux-video-data/football-manager.json → nouveautes", obligatoire: true }
+  - { id: surtitre-nouveautes, libelle: Surtitre du bloc des nouveautés, type: texte, source: statique, obligatoire: true }
+  - { id: titre-nouveautes, libelle: Titre du bloc « Nouveautés annoncées », type: texte, source: statique, obligatoire: true }
+  - { id: nouveaute-ligne, libelle: Ligne de nouveauté, type: ligne, source: "nouveautes[]", obligatoire: true }
+  - { id: nouveaute-titre, libelle: Titre de la nouveauté, type: texte, source: "nouveautes[].titre", obligatoire: true }
+  - { id: nouveaute-description, libelle: Description de la nouveauté, type: texte, source: "nouveautes[].description", obligatoire: true }
+  - { id: serie, libelle: Bloc de présentation de la série, type: carte, source: statique, obligatoire: true }
+  - { id: surtitre-serie, libelle: Surtitre du bloc de la série, type: texte, source: statique, obligatoire: true }
+  - { id: titre-serie, libelle: Titre du bloc « Football Manager », type: texte, source: statique, obligatoire: true }
+  - { id: serie-presentation, libelle: Présentation de la série, type: texte, source: statique, obligatoire: true }
+  - { id: source-verification, libelle: Source et date de vérification des infos, type: texte, source: "GET /jeux-video-data/football-manager.json → verifieLe, sources", obligatoire: true }
+  - { id: tuile-jeux-video, libelle: Tuile « Jeux vidéo » de la page /fcnoobz, type: lien, source: statique, obligatoire: true }
+  - { id: entree-navigation, libelle: Entrée « FC Noobz » de la barre latérale, active sur cette page, type: lien, source: statique, obligatoire: true }
+  - { id: bouton-plus, libelle: Bouton « Plus » de la barre du bas, actif sur cette page, type: bouton, source: statique, obligatoire: true }
+
+regles:
+  - id: R1
+    etat: chargement
+    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun bloc ; le message est dans un conteneur role="status" et la section porte aria-busy.
+    message: "Chargement de Football Manager…"
+    champs: [titre-page, sous-titre-page, message-chargement]
+    statut: hypothese
+    si_faux: Seul le libellé (calqué sur « Chargement de l’équipe de France… ») change ; aucune donnée en jeu.
+    tests: ["R1 — chargement : le message s'affiche, aucun bloc de données", "R1 — le message est dans un conteneur role=status"]
+  - id: R2
+    etat: erreur
+    enonce: Si l'appel échoue, la page affiche l'erreur et un bouton « Réessayer » qui rappelle la source ; aucun bloc n'est montré.
+    message: "Impossible de charger les infos Football Manager."
+    champs: [message-erreur, bouton-reessayer]
+    statut: hypothese
+    si_faux: Seul le libellé change ; aucune donnée en jeu (même gabarit que la page Équipe de France).
+    tests: ["R2 — erreur : message et bouton Réessayer", "R2 — Réessayer relance l'appel"]
+  - id: R3
+    etat: vide
+    enonce: >-
+      Si la source ne contient ni prochaine sortie, ni édition, ni nouveauté, la page affiche ce message à la place des blocs (le bloc « La série », statique, n'est pas concerné : voir R4).
+    message: "Aucune info Football Manager pour le moment."
+    champs: [message-vide]
+    masque: [prochaine-sortie, editions, nouveautes-annoncees, source-verification]
+    statut: hypothese
+    si_faux: Seul le seuil « rien du tout » ou le libellé changent ; aucune donnée en jeu.
+    tests: ["R3 — vide : le message s'affiche, pas de bloc de données"]
+  - id: R4
+    etat: charge
+    enonce: >-
+      La page, sous FC Noobz et dans son thème (vert/bleu électrique, body.theme-fcnoobz, seule exception à la palette OL), montre quatre blocs : « Prochaine sortie », « Éditions précédentes », « Nouveautés annoncées » et « La série » (présentation statique de Football Manager). Sur deux colonnes à 1440 px (sortie et éditions à gauche, nouveautés et série à droite), empilés au téléphone. Elle porte un lien de retour « ← FC Noobz » et sa vérification (R5).
+      Les données sont un fichier JSON statique du frontend, relu sur des sources en ligne au moment de coder (jamais de mémoire), sans appel au backend ni à un service externe depuis le navigateur.
+    message: ~
+    champs: [surtitre-page, titre-page, sous-titre-page, lien-retour, prochaine-sortie, surtitre-prochaine-sortie, titre-prochaine-sortie, sortie-nom, sortie-date, sortie-plateformes, editions, surtitre-editions, titre-editions, edition-ligne, edition-nom, edition-date, nouveautes-annoncees, surtitre-nouveautes, titre-nouveautes, nouveaute-ligne, nouveaute-titre, nouveaute-description, serie, surtitre-serie, titre-serie, serie-presentation]
+    statut: sourcee
+    source: "demande du lot L25 : « présentation de la série et surtout infos sur les sorties à venir (dates, nouveautés annoncées) — infos à vérifier sur des sources en ligne au moment de coder, pas de mémoire » ; thème : CLAUDE.md « Theme FC Noobz » ; la forme JSON statique sous public/ est une hypothèse (voir R5, comme plan-data)"
+    tests: ["R4 — chargé : prochaine sortie, éditions, nouveautés et série présentes", "R4 — le thème FC Noobz est actif sur la page"]
+  - id: R5
+    etat: charge
+    enonce: >-
+      Chaque info datée dit d'où elle vient et quand elle a été vue : la ligne source-verification donne la date de vérification et le site officiel consulté (« Infos vérifiées le 11/10/2026 sur footballmanager.com. Les dates peuvent changer. »). Les dates s'écrivent « Mar. 03/11/2026 » (jour de la semaine calculé depuis la date, jamais saisi à la main). Une date non annoncée s'affiche « Date à confirmer », jamais une date inventée ni une heure ; plateformes absentes : la ligne est omise.
+      Les données (nom, date ISO, plateformes, nouveautés, verifieLe, sources) sont lues dans /jeux-video-data/football-manager.json, servi comme plan-data (Cache-Control: no-cache).
+    message: "Date à confirmer"
+    champs: [sortie-date, sortie-plateformes, source-verification]
+    statut: hypothese
+    si_faux: "Si les infos doivent venir d'un backend ou d'un flux automatique, un endpoint /api s'ajoute et la page change de source (le fichier JSON et son nom ne sont pas un contrat public) ; les valeurs d'exemple de la maquette (Football Manager 27, 03/11/2026, nouveautés) ne sont PAS vérifiées et seront remplacées au codage."
+    tests: ["R5 — la date s'affiche avec son jour de la semaine", "R5 — date non annoncée : « Date à confirmer »", "R5 — la vérification (date et site) est affichée"]
+  - id: R6
+    etat: charge
+    enonce: >-
+      La page est reliée à FC Noobz : la page /fcnoobz gagne une quatrième tuile « Jeux vidéo » (lien vers /fcnoobz/jeux-video) ; la route étant sous /fcnoobz, l'entrée « FC Noobz » de la barre latérale reste active et, au téléphone, le bouton « Plus » est actif (nom accessible « Plus, page actuelle : FC Noobz »). Aucune entrée nouvelle dans la navigation principale.
+    message: ~
+    champs: [tuile-jeux-video, entree-navigation, bouton-plus, lien-retour]
+    statut: sourcee
+    source: "demande du lot L25 : « au niveau de FC Noobz » ; comportement déjà codé : path.startsWith('/fcnoobz') dans sidebar.tsx et bottom-nav.tsx ; le chemin /fcnoobz/jeux-video est une hypothèse de rédaction"
+    tests: ["R6 — la tuile de /fcnoobz mène à la page", "R6 — FC Noobz est l'entrée courante de la barre latérale", "R6 — « Plus » est actif avec le nom « Plus, page actuelle : FC Noobz »"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /jeux-video-data/football-manager.json", regles: [R1, R2, R3, R4, R5, R6] }
+  - { id: A2, declencheur: bouton-reessayer, appel: "GET /jeux-video-data/football-manager.json", regles: [R2] }

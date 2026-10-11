@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette — Jeux vidéo · Football Manager (L25)</title>
+<style>
+:root{--bg:232 25% 5%;--surface:228 21% 8%;--surface-2:226 22% 11%;--border:224 19% 15%;--fg:0 0% 96%;--fg-muted:215 20% 65%;--fg-dim:215 16% 53%;--fg-bright:0 0% 100%;--ol-red-bright:0 84% 60%;--noobz-green:#84cc16;--noobz-blue:#3aa0ff}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:hsl(var(--fg));background:linear-gradient(180deg,#03040a 0%,#060814 60%,#03040a 100%)}
+h1,h2,h3,p,ul,dl,dd{margin:0;padding:0} ul{list-style:none}
+.eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--noobz-green)}
+aside{display:none}
+main{padding:24px 20px 88px;max-width:1440px;margin:0 auto;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(29,78,216,.18),transparent 65%)}
+nav.bottom{position:fixed;bottom:0;left:0;right:0;display:flex;background:hsl(var(--surface));border-top:1px solid hsl(var(--border));height:64px}
+nav.bottom a,nav.bottom button{position:relative;flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;color:hsl(var(--fg-muted));background:none;border:0;font-family:inherit;padding:0}
+nav.bottom .on{color:hsl(var(--fg-bright))} nav.bottom .on::before{content:'';position:absolute;left:12px;right:12px;top:0;height:3px;border-radius:0 0 9999px 9999px;background:currentColor}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media(min-width:1024px){
+ aside{display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;width:240px;background:hsl(var(--surface));padding:24px 12px;gap:4px;border-right:1px solid hsl(var(--border))}
+ aside a{padding:9px 12px;border-radius:6px;font-size:14px;color:hsl(var(--fg-muted))}
+ aside a.on{background:rgba(132,204,22,.1);color:hsl(var(--fg-bright))}
+ aside .logo{font-weight:800;color:hsl(var(--fg-bright));padding:0 12px 20px}
+ main{margin-left:240px;padding:40px 32px;max-width:none} .wrap{max-width:1376px;margin:0 auto} nav.bottom{display:none}
+}
+.etat{display:none} .etat:target{display:block} body:not(:has(.etat:target)) #etat-charge{display:block}
+.back{display:inline-block;font-size:13px;color:var(--noobz-green);text-decoration:underline;margin-bottom:16px}
+header.top{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid rgba(132,204,22,.4)}
+h1{font-family:Manrope,sans-serif;font-size:26px;font-weight:800;color:var(--noobz-blue);line-height:1.15;margin-top:6px}
+header.top p{margin-top:8px;font-size:14px;color:hsl(var(--fg-muted));max-width:60ch}
+@media(min-width:1024px){h1{font-size:36px}}
+.panel{background:linear-gradient(180deg,rgba(5,7,20,.85),rgba(3,4,10,.9));border:1px solid rgba(132,204,22,.4);border-radius:6px;padding:20px}
+h2{font-family:Manrope,sans-serif;font-size:20px;font-weight:700;color:var(--noobz-blue);margin:6px 0 12px}
+.grid{display:grid;gap:24px} @media(min-width:1024px){.grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start}}
+.col{display:grid;gap:24px}
+.lead{font-size:14px;line-height:1.65;color:hsl(var(--fg-muted))} .lead+.lead{margin-top:12px}
+.date{font-family:"Geist Mono",ui-monospace,monospace;font-size:22px;font-weight:700;color:hsl(var(--fg-bright))}
+.pill{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:2px;color:var(--noobz-green);border:1px solid var(--noobz-green);background:rgba(132,204,22,.1)}
+.plats{margin-top:10px;font-size:13px;color:hsl(var(--fg-muted))}
+.news li{padding:12px 0;border-top:1px solid hsl(var(--border))} .news li:first-child{border-top:0;padding-top:0}
+.news .t{font-size:14px;font-weight:600;color:hsl(var(--fg-bright))} .news .d{font-size:13px;color:hsl(var(--fg-muted));margin-top:2px;line-height:1.5}
+.ed li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid hsl(var(--border));font-size:14px}
+.ed li:first-child{border-top:0} .ed .d{color:hsl(var(--fg-muted));text-align:right}
+.src{margin-top:24px;font-size:12px;color:hsl(var(--fg-dim))} .src a{color:var(--noobz-green)}
+.msg{padding:80px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;font-size:14px}
+.muted{color:hsl(var(--fg-muted))} .err{color:hsl(var(--ol-red-bright))}
+button.retry{font:inherit;font-size:14px;font-weight:600;padding:10px 20px;border-radius:6px;border:1px solid var(--noobz-green);background:rgba(132,204,22,.1);color:hsl(var(--fg-bright));min-height:44px}
+.spin{width:20px;height:20px;border-radius:50%;border:2px solid hsl(var(--border));border-top-color:var(--noobz-green)}
+</style></head><body>
+<aside><div class="logo">Olympique Lyonnais</div><a>Dashboard</a><a>Calendrier</a><a>Classement</a><a>Joueurs</a><a>Actu</a><a>Coupes</a><a>Carte L1</a><a>Équipe de France</a><a class="on" aria-current="page" data-testid="entree-navigation">FC Noobz</a></aside>
+<main><div class="wrap">
+
+<a class="back" data-testid="lien-retour" href="#">← FC Noobz</a>
+<header class="top">
+ <div class="eyebrow" data-testid="surtitre-page">FC Noobz</div>
+ <h1 data-testid="titre-page">Jeux vidéo</h1>
+ <p data-testid="sous-titre-page">Football Manager : la série et ses prochaines sorties</p>
+</header>
+
+<section id="etat-chargement" class="etat" aria-busy="true">
+ <div class="msg" role="status"><div class="spin" aria-hidden="true"></div><p class="muted" data-testid="message-chargement">Chargement de Football Manager…</p></div>
+</section>
+
+<section id="etat-erreur" class="etat">
+ <div class="msg"><p class="err" role="alert" data-testid="message-erreur">Impossible de charger les infos Football Manager.</p><button type="button" class="retry" data-testid="bouton-reessayer">Réessayer</button></div>
+</section>
+
+<section id="etat-vide" class="etat">
+ <div class="msg"><p class="muted" data-testid="message-vide">Aucune info Football Manager pour le moment.</p></div>
+</section>
+
+<section id="etat-charge" class="etat">
+ <div class="grid">
+  <div class="col">
+   <section class="panel" data-testid="prochaine-sortie">
+    <div class="eyebrow" data-testid="surtitre-prochaine-sortie">À venir</div>
+    <h2 data-testid="titre-prochaine-sortie">Prochaine sortie</h2>
+    <p class="lead" style="margin:0 0 8px;color:hsl(var(--fg-bright));font-weight:600" data-testid="sortie-nom">Football Manager 27</p>
+    <p class="date" data-testid="sortie-date">Mar. 03/11/2026</p>
+    <p class="plats" data-testid="sortie-plateformes">PC, Mac · consoles à confirmer</p>
+   </section>
+   <section class="panel" data-testid="editions">
+    <div class="eyebrow" data-testid="surtitre-editions">Déjà sorties</div>
+    <h2 data-testid="titre-editions">Éditions précédentes</h2>
+    <ul class="ed"><li data-testid="edition-ligne"><span data-testid="edition-nom">Football Manager 26</span><span class="d" data-testid="edition-date">Mar. 04/11/2025</span></li></ul>
+   </section>
+  </div>
+  <div class="col">
+   <section class="panel" data-testid="nouveautes-annoncees">
+    <div class="eyebrow" data-testid="surtitre-nouveautes">Annoncé</div>
+    <h2 data-testid="titre-nouveautes">Nouveautés annoncées</h2>
+    <ul class="news"><li data-testid="nouveaute-ligne"><div class="t" data-testid="nouveaute-titre">Exemple de nouveauté annoncée</div><div class="d" data-testid="nouveaute-description">Description courte rédigée à partir de l’annonce officielle.</div></li><li data-testid="nouveaute-ligne"><div class="t" data-testid="nouveaute-titre">Seconde nouveauté d’exemple</div><div class="d" data-testid="nouveaute-description">Une phrase, sans promesse au-delà de ce que dit la source.</div></li></ul>
+   </section>
+   <section class="panel" data-testid="serie">
+    <div class="eyebrow" data-testid="surtitre-serie">La série</div>
+    <h2 data-testid="titre-serie">Football Manager</h2>
+    <p class="lead" data-testid="serie-presentation">Série de simulation de gestion de football : on dirige un club, de la composition d’équipe au mercato, saison après saison. C’est le jeu dans lequel est né le FC Noobz.</p>
+   </section>
+  </div>
+ </div>
+ <p class="src" data-testid="source-verification">Infos vérifiées le 11/10/2026 sur <a href="#">footballmanager.com</a>. Les dates peuvent changer.</p>
+</section>
+
+<hr style="margin:48px 0 16px;border:0;border-top:1px dashed hsl(var(--border))">
+<section aria-label="Annotation de maquette" style="font-size:12px;color:hsl(var(--fg-dim))">
+ <p class="eyebrow">Sur la page /fcnoobz : une quatrième tuile, lien vers cette page (R6)</p>
+ <a class="panel" style="display:block;margin-top:12px;max-width:380px;text-decoration:none" href="#" data-testid="tuile-jeux-video"><h2 style="font-size:16px;margin:0 0 6px">Jeux vidéo</h2><p class="lead">Football Manager : la série et ses prochaines sorties.</p></a>
+</section>
+</div></main>
+<nav class="bottom" aria-label="Navigation principale"><a>Dashboard</a><a>Calendrier</a><a>Classement</a><a>Actu</a><button type="button" class="on" data-testid="bouton-plus" aria-label="Plus, page actuelle : FC Noobz">Plus</button></nav>
+</body></html>
