@@ -9,4 +9,11 @@ describe('À propos — mes autres sites', () => {
     expect(lien?.getAttribute('href')).toBe('https://avatar-pandora-12q.pages.dev');
     expect(container.innerHTML).not.toContain('eywa-eywa');
   });
+
+  // L93 — docs/qa/expectations.md nomme ce sélecteur : `header > p`, jamais `.eyebrow`.
+  it('porte le surtitre dans le premier <p> du <header>, sans classe .eyebrow', () => {
+    const { container } = render(<AboutPage />);
+    expect(container.querySelector('.eyebrow')).toBeNull();
+    expect(container.querySelector('header > p')?.textContent).toContain('À propos · OL Companion');
+  });
 });
