@@ -105,7 +105,17 @@ export class FranceService {
   /** Dernier échec sans copie à servir : pendant 1 min, 503 sans relire 365scores. */
   private failedAt: number | null = null;
 
-  async getFrance(): Promise<FranceOverview> {
+  /** Lecture en cours : les requêtes simultanées la partagent au lieu de relancer 3 lectures × 2 essais chacune. */
+  private inflight: Promise<FranceOverview> | null = null;
+
+  getFrance(): Promise<FranceOverview> {
+    this.inflight ??= this.load().finally(() => {
+      this.inflight = null;
+    });
+    return this.inflight;
+  }
+
+  private async load(): Promise<FranceOverview> {
     const now = Date.now();
     if (this.cache && now - this.cache.at < CACHE_TTL_MS) return this.cache.data;
     if (!this.cache && this.failedAt !== null && now - this.failedAt < RETRY_AFTER_FAILURE_MS) {
@@ -142,7 +152,8 @@ export class FranceService {
         this.cache.at = now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS;
         return this.cache.data;
       }
-      this.failedAt = now;
+      // L'heure de l'échec, pas celle du début de la requête : la fenêtre d'1 min court depuis le 503.
+      this.failedAt = Date.now();
       throw new ServiceUnavailableException('365scores indisponible');
     }
   }

@@ -221,6 +221,18 @@ describe('FranceService', () => {
     expect((await svc.getFrance()).squad).toHaveLength(2);
   });
 
+  it('L119 — des requêtes simultanées partagent une seule lecture 365scores', async () => {
+    const { svc } = service();
+    let calls = 0;
+    svc.fetcher = (async () => {
+      calls++;
+      throw new Error('boom');
+    }) as never;
+    const results = await Promise.allSettled([svc.getFrance(), svc.getFrance(), svc.getFrance()]);
+    expect(results.every((r) => r.status === 'rejected')).toBe(true);
+    expect(calls).toBe(3 * 2);
+  });
+
   it('L119 — sans copie, une panne n’est pas relancée à chaque requête : 503 pendant 1 min, puis nouvel essai', async () => {
     const T0 = Date.now();
     const { svc } = service();
