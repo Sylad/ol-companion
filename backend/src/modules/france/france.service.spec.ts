@@ -96,10 +96,32 @@ describe('FranceService', () => {
     ]);
   });
 
-  it('R8 — un joueur dont le poste n’a pas de nom ne fait pas échouer la lecture', async () => {
-    const squads = { squads: [{ competitorId: 5061, athletes: [{ id: 9, name: 'Sans Poste', age: 20, position: { id: 99 } }] }] };
+  it('R8 — le staff (poste id 0) et un joueur sans poste connu ne sont pas dans l’effectif', async () => {
+    const squads = {
+      squads: [
+        {
+          competitorId: 5061,
+          athletes: [
+            { id: 3, name: 'Rabiot', age: 31, position: { id: 3, name: 'Milieu de Terrain' } },
+            { id: 8, name: 'Zinedine Zidane', age: 54, position: { id: 0 } },
+            { id: 9, name: 'Sans Poste', age: 20, position: { id: 99 } },
+            { id: 10, name: 'Sans Position', age: 20 },
+          ],
+        },
+      ],
+    };
     const { squad } = await service({ squads: () => squads }).svc.getFrance();
-    expect(squad).toEqual([{ id: 9, name: 'Sans Poste', position: '', age: 20 }]);
+    expect(squad).toEqual([{ id: 3, name: 'Rabiot', position: 'Midfielder', age: 31 }]);
+  });
+
+  it('R4 — les trois lectures 365scores demandent le français (langId=15)', async () => {
+    const { svc, urls } = service();
+    await svc.getFrance();
+    expect(urls.length).toBe(3);
+    for (const u of urls) {
+      expect(u).toContain('langId=15');
+      expect(u).not.toContain('langId=1&');
+    }
   });
 
   it('un appel en échec sans copie en mémoire : 503, jamais une réponse vide', async () => {

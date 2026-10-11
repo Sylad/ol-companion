@@ -56,7 +56,7 @@ const SquadsResponseSchema = z.object({
                 id: z.number(),
                 name: z.string(),
                 age: z.number().optional(),
-                position: z.object({ name: z.string().optional() }).optional(),
+                position: z.object({ id: z.number().optional(), name: z.string().optional() }).optional(),
               })
               .passthrough(),
           )
@@ -67,8 +67,13 @@ const SquadsResponseSchema = z.object({
 });
 
 const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
-const QUERY = `appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${FRANCE_365SCORES_ID}`;
+const QUERY = `appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=75&competitors=${FRANCE_365SCORES_ID}`;
 const RESULTS_COUNT = 5;
+/**
+ * Les quatre postes de la fiche (R8), par identifiant 365scores (stable d'une langue à l'autre,
+ * contrairement aux noms). Le staff (Entraîneur, Assistant Coach) a `position.id` 0 : écarté.
+ */
+const POSITION_BY_ID: Record<number, string> = { 1: 'Goalkeeper', 2: 'Defender', 3: 'Midfielder', 4: 'Attacker' };
 /** Durée de la copie en mémoire : la page se lit à la demande, pas par cron. */
 const CACHE_TTL_MS = 10 * 60 * 1000;
 /**
@@ -102,7 +107,7 @@ export class FranceService {
       const [results, fixtures, squads] = await Promise.all([
         this.fetchJson(`${SCORES365_API_BASE}/web/games/results/?${QUERY}&limit=${RESULTS_COUNT + 5}`, 'results'),
         this.fetchJson(`${SCORES365_API_BASE}/web/games/fixtures/?${QUERY}&limit=5`, 'fixtures'),
-        this.fetchJson(`${SCORES365_API_BASE}/web/squads/?langId=1&timezoneName=Europe/Paris&competitors=${FRANCE_365SCORES_ID}`, 'squads'),
+        this.fetchJson(`${SCORES365_API_BASE}/web/squads/?langId=15&timezoneName=Europe/Paris&competitors=${FRANCE_365SCORES_ID}`, 'squads'),
       ]);
       const data: FranceOverview = {
         nextMatch: this.toNextMatch(parseExternal(Scores365GamesResponseSchema, fixtures, '365scores France fixtures').games ?? [], now),
@@ -174,6 +179,9 @@ export class FranceService {
 
   private toSquad(res: z.infer<typeof SquadsResponseSchema>): FrancePlayer[] {
     const athletes = res.squads?.find((s) => s.competitorId === FRANCE_365SCORES_ID)?.athletes ?? res.squads?.[0]?.athletes ?? [];
-    return athletes.map((a) => ({ id: a.id, name: a.name, position: a.position?.name ?? '', age: a.age ?? 0 }));
+    return athletes.flatMap((a) => {
+      const position = POSITION_BY_ID[a.position?.id ?? -1];
+      return position ? [{ id: a.id, name: a.name, position, age: a.age ?? 0 }] : [];
+    });
   }
 }
