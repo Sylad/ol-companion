@@ -1,0 +1,107 @@
+ecran:
+  id: accueil
+  titre: Accueil — chargement, erreur et vide
+  route: /
+  lot: L85
+  largeurs: [1440, 390]
+  maquette: docs/specs/accueil/maquette.html
+etats: [vide, chargement, erreur, charge]
+
+champs:
+  - { id: carte-prochain-match, libelle: Carte du prochain match (dashboard-hero), type: carte, source: "GET /api/fixtures → prochain match SCHEDULED/TIMED/IN_PLAY", obligatoire: true }
+  - { id: squelette-prochain-match, libelle: Squelette du prochain match, type: carte, source: statique, obligatoire: false }
+  - { id: message-aucun-match, libelle: Message « aucun match programmé », type: texte, source: statique, obligatoire: false }
+  - { id: lien-calendrier, libelle: Lien vers le calendrier, type: lien, source: statique, obligatoire: false }
+  - { id: message-erreur-prochain-match, libelle: Message d'erreur du prochain match, type: texte, source: statique, obligatoire: false }
+  - { id: bouton-reessayer-prochain-match, libelle: Réessayer (prochain match), type: bouton, source: "action A2", obligatoire: false }
+  - { id: tuiles-stats, libelle: Quatre tuiles de statistiques (dashboard-stats), type: liste, source: "GET /api/standings → table (OL)", obligatoire: true }
+  - { id: stat-position, libelle: Tuile Position, type: texte, source: "GET /api/standings → table[OL].position", obligatoire: true }
+  - { id: stat-points, libelle: Tuile Points, type: texte, source: "GET /api/standings → table[OL].points", obligatoire: true }
+  - { id: stat-diff, libelle: Tuile Différence buts, type: texte, source: "GET /api/standings → table[OL].goalDifference", obligatoire: true }
+  - { id: stat-forme, libelle: Tuile Forme, type: texte, source: "GET /api/standings → table[OL].won", obligatoire: true }
+  - { id: message-erreur-stats, libelle: Message d'erreur du classement, type: texte, source: statique, obligatoire: false }
+  - { id: bouton-reessayer-stats, libelle: Réessayer (classement), type: bouton, source: "action A3", obligatoire: false }
+  - { id: dernier-resultat, libelle: Carte du dernier résultat (last-result), type: carte, source: "GET /api/fixtures → dernier match FINISHED", obligatoire: true }
+  - { id: squelette-dernier-resultat, libelle: Squelette du dernier résultat, type: carte, source: statique, obligatoire: false }
+  - { id: message-erreur-dernier-resultat, libelle: Message d'erreur du dernier résultat, type: texte, source: statique, obligatoire: false }
+  - { id: bouton-reessayer-dernier-resultat, libelle: Réessayer (dernier résultat), type: bouton, source: "action A4", obligatoire: false }
+
+regles:
+  - id: R1
+    etat: chargement
+    enonce: >-
+      Tant que les requêtes sont en cours (isLoading, sans donnée en cache), le prochain match et le dernier résultat sont des squelettes (role="status", aria-busy, texte lecteur d'écran « Chargement… ») et les quatre tuiles montrent « — » sans sous-texte : ni « Aucun match programmé. », ni « Points 0 », ni « Forme 0V ».
+    message: ~
+    champs: [squelette-prochain-match, squelette-dernier-resultat, tuiles-stats, stat-position, stat-points, stat-diff, stat-forme]
+    statut: sourcee
+    source: "demande du lot L85 : « squelettes ou « — » tant que isLoading »"
+    tests: ["R1 — chargement : squelettes et « — », aucune valeur factice", "R1 — chargement : ni « Aucun match programmé. » ni « 0V »"]
+  - id: R2
+    etat: erreur
+    enonce: >-
+      Si la requête des matchs échoue et qu'aucune donnée n'est en cache (isError), la carte du prochain match est remplacée par le message d'erreur et un bouton « Réessayer » qui relance l'appel (refetch). Une erreur de rafraîchissement avec des données déjà là n'efface rien.
+    message: "Impossible de charger le prochain match."
+    champs: [message-erreur-prochain-match, bouton-reessayer-prochain-match]
+    statut: sourcee
+    source: "demande du lot L85 : « message + refetch si isError » ; libellé « Impossible de charger … » repris des pages jeux-video et équipe de France (hypothèse de rédaction)"
+    tests: ["R2 — erreur : message et bouton Réessayer du prochain match", "R2 — Réessayer relance l'appel des matchs"]
+  - id: R3
+    etat: erreur
+    enonce: >-
+      Si la requête du classement échoue sans donnée en cache, les tuiles gardent « — » et un message avec « Réessayer » apparaît sous elles ; la tendance de position (rankings) reste facultative et ne déclenche aucune erreur.
+    message: "Impossible de charger le classement."
+    champs: [message-erreur-stats, bouton-reessayer-stats, tuiles-stats, stat-position, stat-points, stat-diff, stat-forme]
+    statut: hypothese
+    si_faux: Si l'erreur doit aussi tenir compte de la requête des rankings, la condition du message change ; libellé et place du message sont modifiables sans donnée en jeu.
+    tests: ["R3 — erreur : tuiles « — », message et bouton Réessayer", "R3 — Réessayer relance l'appel du classement"]
+  - id: R4
+    etat: erreur
+    enonce: >-
+      Si la requête des matchs échoue, le dernier résultat affiche à son tour un message avec « Réessayer » (même requête que R2 : un clic sur l'un ou l'autre relance l'appel et ramène les deux blocs à l'état de chargement).
+    message: "Impossible de charger le dernier résultat."
+    champs: [message-erreur-dernier-resultat, bouton-reessayer-dernier-resultat]
+    statut: hypothese
+    si_faux: Si un seul bouton suffit pour les deux blocs, l'un des deux messages disparaît ; aucune donnée en jeu.
+    tests: ["R4 — erreur : message et bouton Réessayer du dernier résultat", "R4 — Réessayer relance l'appel et repasse en chargement"]
+  - id: R5
+    etat: vide
+    enonce: >-
+      Si les matchs sont chargés mais qu'aucun n'est à venir, la carte affiche « Aucun match programmé. » avec un lien « Voir le calendrier » vers /fixtures. Ce message n'apparaît plus ni au chargement ni en erreur.
+    message: "Aucun match programmé."
+    champs: [message-aucun-match, lien-calendrier]
+    masque: [carte-prochain-match, squelette-prochain-match]
+    statut: sourcee
+    source: "demande du lot L85 : « état vide réel avec lien vers le calendrier » ; route /fixtures : page Calendrier existante"
+    tests: ["R5 — vide : message et lien vers le calendrier", "R5 — le lien mène à /fixtures"]
+  - id: R6
+    etat: vide
+    enonce: >-
+      Si le classement est chargé mais ne contient pas l'OL (ou est nul), les quatre tuiles restent à « — » sans sous-texte chiffré : jamais « Points 0 » ni « Forme 0V » comme valeurs.
+    message: ~
+    champs: [tuiles-stats, stat-position, stat-points, stat-diff, stat-forme]
+    statut: sourcee
+    source: "demande du lot L85 : « Points 0 », « Forme 0V » s'affichent comme des valeurs"
+    tests: ["R6 — vide : « — » sur les quatre tuiles, pas de 0", "R6 — vide : pas de « 0V »"]
+  - id: R7
+    etat: vide
+    enonce: Sans match terminé (ou sans score), le bloc « Dernier résultat » reste absent, comme aujourd'hui ; aucun message n'est ajouté.
+    message: ~
+    champs: []
+    masque: [dernier-resultat, squelette-dernier-resultat]
+    statut: hypothese
+    si_faux: Si un message « Aucun résultat pour le moment. » est voulu, un champ s'ajoute au bloc ; aucune donnée en jeu.
+    tests: ["R7 — vide : pas de bloc Dernier résultat"]
+  - id: R8
+    etat: charge
+    enonce: Avec les données, les trois blocs s'affichent comme aujourd'hui (carte du prochain match, quatre tuiles avec valeurs et sous-textes, dernier résultat) ; aucun squelette ni message d'erreur.
+    message: ~
+    champs: [carte-prochain-match, tuiles-stats, stat-position, stat-points, stat-diff, stat-forme, dernier-resultat]
+    statut: sourcee
+    source: "comportement déjà codé : dashboard-hero.tsx, dashboard-stats.tsx, last-result.tsx (libellés d'unité de L88 non traités ici)"
+    tests: ["R8 — chargé : les trois blocs affichent les données"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /api/fixtures", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
+  - { id: A2, declencheur: bouton-reessayer-prochain-match, appel: "GET /api/fixtures", regles: [R2] }
+  - { id: A3, declencheur: bouton-reessayer-stats, appel: "GET /api/standings", regles: [R3] }
+  - { id: A4, declencheur: bouton-reessayer-dernier-resultat, appel: "GET /api/fixtures", regles: [R4] }
