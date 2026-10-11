@@ -23,8 +23,11 @@ const POSITION_GROUPS = [
 ] as const;
 
 export function EquipeDeFrancePage() {
-  const { data, isPending, isError, refetch } = useFrance();
-  const empty = !!data && !data.nextMatch && data.results.length === 0 && data.squad.length === 0;
+  const { data, isPending, isError, isFetching, refetch } = useFrance();
+  // TanStack v5 : `isPending` reste faux quand des données existent déjà, « Réessayer » se lit donc sur `isFetching`.
+  const loading = isFetching && (isPending || isError);
+  const failed = isError && !isFetching;
+  const empty = !!data && !isError && !data.nextMatch && data.results.length === 0 && data.squad.length === 0;
 
   return (
     <div className="space-y-8">
@@ -44,7 +47,7 @@ export function EquipeDeFrancePage() {
         </div>
       </header>
 
-      {isPending && !isError && (
+      {loading && (
         <section aria-busy="true">
           <div role="status" className="flex flex-col items-center gap-4 py-20 text-center text-fg-muted">
             <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
@@ -55,7 +58,7 @@ export function EquipeDeFrancePage() {
         </section>
       )}
 
-      {isError && (
+      {failed && (
         <section className="flex flex-col items-center gap-4 py-20 text-center">
           <p data-testid="message-erreur" role="alert" className="text-sm text-ol-red-bright">
             Impossible de charger l’équipe de France.
@@ -77,7 +80,7 @@ export function EquipeDeFrancePage() {
         </p>
       )}
 
-      {data && !empty && (
+      {data && !isError && !empty && (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
           <div className="grid gap-6">
             <NextMatchPanel match={data.nextMatch} />
@@ -221,7 +224,7 @@ function SquadPanel({ squad }: { squad: FrancePlayer[] }) {
               {g.players.map((p) => (
                 <li key={p.id} data-testid="joueur-ligne" className="flex justify-between gap-3 border-t border-border py-2 text-sm">
                   <span className="text-fg-bright [overflow-wrap:anywhere]">{p.name}</span>
-                  <span className="num shrink-0 text-xs text-fg-dim">{p.age} ans</span>
+                  {p.age != null && <span className="num shrink-0 text-xs text-fg-dim">{p.age} ans</span>}
                 </li>
               ))}
             </ul>

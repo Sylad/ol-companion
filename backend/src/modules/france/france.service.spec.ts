@@ -145,4 +145,56 @@ describe('FranceService', () => {
     await svc.getFrance();
     expect(urls).toHaveLength(3);
   });
+
+  it('L118 — un 200 sans « games » (résultats) n’est pas gardé : 503 sans copie, copie périmée sinon', async () => {
+    const T0 = Date.now();
+    await expect(service({ results: () => ({}) }).svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    const { svc } = service();
+    const first = await svc.getFrance();
+    let degraded = true;
+    const ok = svc.fetcher;
+    svc.fetcher = ((url: string, init: never) => (degraded ? Promise.resolve({ ok: true, status: 200, json: async () => ({}) }) : (ok as any)(url, init))) as never;
+    jest.setSystemTime(new Date(T0 + 11 * 60 * 1000));
+    expect(await svc.getFrance()).toEqual(first);
+    degraded = false;
+    jest.setSystemTime(new Date(T0 + 13 * 60 * 1000));
+    expect((await svc.getFrance()).results).toHaveLength(5);
+  });
+
+  it('L118 — un 200 sans « games » côté matchs à venir n’est pas gardé 10 min', async () => {
+    const T0 = Date.now();
+    const { svc, urls } = service({ fixtures: () => ({}) });
+    expect((await svc.getFrance()).nextMatch).toBeNull();
+    const n = urls.length;
+    jest.setSystemTime(new Date(T0 + 2 * 60 * 1000));
+    await svc.getFrance();
+    expect(urls.length).toBeGreaterThan(n);
+  });
+
+  it('L118 — copie périmée servie quand 365scores est en panne : réhorodatée, pas de nouvelle rafale à chaque requête', async () => {
+    const T0 = Date.now();
+    const { svc } = service();
+    await svc.getFrance();
+    let calls = 0;
+    svc.fetcher = (async () => {
+      calls++;
+      throw new Error('boom');
+    }) as never;
+    jest.setSystemTime(new Date(T0 + 11 * 60 * 1000));
+    await svc.getFrance();
+    const afterFirst = calls;
+    expect(afterFirst).toBe(3 * 2);
+    await svc.getFrance();
+    await svc.getFrance();
+    expect(calls).toBe(afterFirst);
+    jest.setSystemTime(new Date(T0 + 13 * 60 * 1000));
+    await svc.getFrance();
+    expect(calls).toBeGreaterThan(afterFirst);
+  });
+
+  it('L118 — âge absent : null, jamais 0', async () => {
+    const T0 = Date.now();
+    const squads = { squads: [{ competitorId: 5061, athletes: [{ id: 3, name: 'Rabiot', position: { id: 3 } }] }] };
+    expect((await service({ squads: () => squads }).svc.getFrance()).squad).toEqual([{ id: 3, name: 'Rabiot', position: 'Midfielder', age: null }]);
+  });
 });

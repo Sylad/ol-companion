@@ -425,7 +425,8 @@ export interface FrancePlayer {
   name: string;
   /** Poste tel que rendu par 365scores : Goalkeeper, Defender, Midfielder, Attacker. */
   position: string;
-  age: number;
+  /** Absent quand 365scores ne le donne pas. */
+  age: number | null;
 }
 
 export interface FranceOverview {

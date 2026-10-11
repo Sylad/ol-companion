@@ -35,7 +35,8 @@ export interface FrancePlayer {
   id: number;
   name: string;
   position: string;
-  age: number;
+  /** `null` quand 365scores ne le donne pas (jamais 0). */
+  age: number | null;
 }
 
 export interface FranceOverview {
@@ -81,6 +82,8 @@ const CACHE_TTL_MS = 10 * 60 * 1000;
  * football-data ne suit pas les Bleus : au-delà de 14 jours (seuil de CLAUDE.md « L39 »),
  * l'heure est tenue pour non fixée.
  */
+/** Nouvel essai après une réponse inutilisable (365scores en panne, 200 sans « games ») : 1 min, pas 10. */
+const RETRY_AFTER_FAILURE_MS = 60 * 1000;
 const TIME_CONFIRMED_HORIZON_MS = 14 * 24 * 60 * 60 * 1000;
 
 type Fetcher = typeof fetch;
@@ -109,18 +112,27 @@ export class FranceService {
         this.fetchJson(`${SCORES365_API_BASE}/web/games/fixtures/?${QUERY}&limit=5`, 'fixtures'),
         this.fetchJson(`${SCORES365_API_BASE}/web/squads/?langId=15&timezoneName=Europe/Paris&competitors=${FRANCE_365SCORES_ID}`, 'squads'),
       ]);
+      const fixturesRes = parseExternal(Scores365GamesResponseSchema, fixtures, '365scores France fixtures');
+      const resultsRes = parseExternal(Scores365GamesResponseSchema, results, '365scores France results');
       const data: FranceOverview = {
-        nextMatch: this.toNextMatch(parseExternal(Scores365GamesResponseSchema, fixtures, '365scores France fixtures').games ?? [], now),
-        results: this.toResults(parseExternal(Scores365GamesResponseSchema, results, '365scores France results').games ?? []),
+        nextMatch: this.toNextMatch(fixturesRes.games ?? [], now),
+        results: this.toResults(resultsRes.games ?? []),
         squad: this.toSquad(parseExternal(SquadsResponseSchema, squads, '365scores France squads')),
       };
-      this.cache = { at: now, data };
+      // Un 200 sans « games » (rendu dégradé) n'est pas une liste vide : on ne le garde pas 10 min.
+      if (!resultsRes.games) throw new Error('365scores France : résultats en 200 sans « games »');
+      // Matchs à venir sans « games » : peut être réel (fin de calendrier) ou dégradé → servi, revu dans 1 min.
+      this.cache = { at: fixturesRes.games ? now : now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS, data };
       return data;
     } catch (err) {
       this.logger.warn(`France : lecture 365scores en échec — ${(err as Error)?.message ?? err}`);
       // Un appel refusé ne vide pas la page : la dernière réponse connue, sinon une erreur
-      // (jamais `{ results: [] … }`, qui voudrait dire « aucune donnée »).
-      if (this.cache) return this.cache.data;
+      // (jamais `{ results: [] … }`, qui voudrait dire « aucune donnée »). La copie est
+      // réhorodatée pour ne pas relancer 3 lectures × 2 essais à chaque requête.
+      if (this.cache) {
+        this.cache.at = now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS;
+        return this.cache.data;
+      }
       throw new ServiceUnavailableException('365scores indisponible');
     }
   }
@@ -181,7 +193,7 @@ export class FranceService {
     const athletes = res.squads?.find((s) => s.competitorId === FRANCE_365SCORES_ID)?.athletes ?? res.squads?.[0]?.athletes ?? [];
     return athletes.flatMap((a) => {
       const position = POSITION_BY_ID[a.position?.id ?? -1];
-      return position ? [{ id: a.id, name: a.name, position, age: a.age ?? 0 }] : [];
+      return position ? [{ id: a.id, name: a.name, position, age: a.age ?? null }] : [];
     });
   }
 }
