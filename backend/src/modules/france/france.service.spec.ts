@@ -205,6 +205,41 @@ describe('FranceService', () => {
     expect(calls).toBeGreaterThan(afterFirst);
   });
 
+  it('L119 — un 200 sans « squads » n’est pas gardé : 503 sans copie, effectif et copie conservés sinon', async () => {
+    const T0 = Date.now();
+    await expect(service({ squads: () => ({}) }).svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    const { svc } = service();
+    const first = await svc.getFrance();
+    expect(first.squad).toHaveLength(2);
+    let degraded = true;
+    const ok = svc.fetcher;
+    svc.fetcher = ((url: string, init: never) => (degraded ? Promise.resolve({ ok: true, status: 200, json: async () => ({}) }) : (ok as any)(url, init))) as never;
+    jest.setSystemTime(new Date(T0 + 11 * 60 * 1000));
+    expect(await svc.getFrance()).toEqual(first);
+    degraded = false;
+    jest.setSystemTime(new Date(T0 + 13 * 60 * 1000));
+    expect((await svc.getFrance()).squad).toHaveLength(2);
+  });
+
+  it('L119 — sans copie, une panne n’est pas relancée à chaque requête : 503 pendant 1 min, puis nouvel essai', async () => {
+    const T0 = Date.now();
+    const { svc } = service();
+    let calls = 0;
+    svc.fetcher = (async () => {
+      calls++;
+      throw new Error('boom');
+    }) as never;
+    await expect(svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    const afterFirst = calls;
+    expect(afterFirst).toBe(3 * 2);
+    await expect(svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    await expect(svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    expect(calls).toBe(afterFirst);
+    jest.setSystemTime(new Date(T0 + 61 * 1000));
+    await expect(svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    expect(calls).toBeGreaterThan(afterFirst);
+  });
+
   it('L118 — âge absent : null, jamais 0', async () => {
     const T0 = Date.now();
     const squads = { squads: [{ competitorId: 5061, athletes: [{ id: 3, name: 'Rabiot', position: { id: 3 } }] }] };

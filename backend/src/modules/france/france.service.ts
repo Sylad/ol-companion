@@ -102,10 +102,15 @@ export class FranceService {
   retryDelayMs = 1_000;
 
   private cache: { at: number; data: FranceOverview } | null = null;
+  /** Dernier échec sans copie à servir : pendant 1 min, 503 sans relire 365scores. */
+  private failedAt: number | null = null;
 
   async getFrance(): Promise<FranceOverview> {
     const now = Date.now();
     if (this.cache && now - this.cache.at < CACHE_TTL_MS) return this.cache.data;
+    if (!this.cache && this.failedAt !== null && now - this.failedAt < RETRY_AFTER_FAILURE_MS) {
+      throw new ServiceUnavailableException('365scores indisponible');
+    }
     try {
       const [results, fixtures, squads] = await Promise.all([
         this.fetchJson(`${SCORES365_API_BASE}/web/games/results/?${QUERY}&limit=${RESULTS_COUNT + 5}`, 'results'),
@@ -114,14 +119,18 @@ export class FranceService {
       ]);
       const fixturesRes = parseExternal(Scores365GamesResponseSchema, fixtures, '365scores France fixtures');
       const resultsRes = parseExternal(Scores365GamesResponseSchema, results, '365scores France results');
+      const squadsRes = parseExternal(SquadsResponseSchema, squads, '365scores France squads');
       const data: FranceOverview = {
         nextMatch: fixturesRes.games ? this.toNextMatch(fixturesRes.games, now) : this.keptNextMatch(now),
         results: this.toResults(resultsRes.games ?? []),
-        squad: this.toSquad(parseExternal(SquadsResponseSchema, squads, '365scores France squads')),
+        squad: this.toSquad(squadsRes),
       };
       // Un 200 sans « games » (rendu dégradé) n'est pas une liste vide : on ne le garde pas 10 min.
       if (!resultsRes.games) throw new Error('365scores France : résultats en 200 sans « games »');
       // Matchs à venir sans « games » : peut être réel (fin de calendrier) ou dégradé → servi, revu dans 1 min.
+      // Idem pour l'effectif : sans « squads », ni vidé 10 min ni substitué à la copie.
+      if (!squadsRes.squads) throw new Error('365scores France : effectif en 200 sans « squads »');
+      this.failedAt = null;
       this.cache = { at: fixturesRes.games ? now : now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS, data };
       return data;
     } catch (err) {
@@ -133,6 +142,7 @@ export class FranceService {
         this.cache.at = now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS;
         return this.cache.data;
       }
+      this.failedAt = now;
       throw new ServiceUnavailableException('365scores indisponible');
     }
   }
