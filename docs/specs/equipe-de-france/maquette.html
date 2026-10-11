@@ -41,7 +41,7 @@ h2{font-family:Manrope,sans-serif;font-size:20px;font-weight:700;color:hsl(var(-
 .when{text-align:center;font-size:14px;color:hsl(var(--fg))} .when small{display:block;margin-top:4px;color:hsl(var(--fg-muted));font-size:12px}
 .row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid hsl(var(--border))} .row:first-child{border-top:0}
 .badge{flex:none;width:20px;height:20px;border-radius:4px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:hsl(var(--bg))}
-.badge.win{background:hsl(var(--win))}.badge.draw{background:hsl(var(--draw))}.badge.loss{background:hsl(var(--loss))}
+.badge.win{background:hsl(var(--win))}.badge.draw{background:hsl(var(--draw))}.badge.loss{background:hsl(var(--loss));color:hsl(var(--fg-bright))}
 .mid{flex:1;min-width:0} .t{font-size:14px;color:hsl(var(--fg-bright));white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .s{font-size:12px;color:hsl(var(--fg-dim));margin-top:2px}
 .score{font-size:16px;font-weight:600;color:hsl(var(--fg-bright))}
 .squad{padding:16px;display:grid;gap:20px} @media(min-width:1024px){.squad{grid-template-columns:1fr 1fr}}
@@ -82,7 +82,7 @@ button{font:inherit;font-size:14px;font-weight:600;padding:10px 20px;border-radi
     <header><div class="eyebrow">Prochain rendez-vous</div><h2>Prochain match</h2></header>
     <div class="next">
      <div class="teams"><div class="team"><div class="crest">FR</div>France</div><span class="vs">VS</span><div class="team"><div class="crest">AZE</div>Azerbaïdjan</div></div>
-     <div class="when"><span data-testid="prochain-match-date">Jeu. 13/11 · 20h45</span><small data-testid="prochain-match-competition">Qualifications Coupe du monde</small></div>
+     <div class="when"><span data-testid="prochain-match-date">Mer. 14/10 · 20h45</span><small data-testid="prochain-match-competition">Qualifications Coupe du monde</small></div>
     </div>
    </section>
    <section class="panel">
@@ -96,11 +96,21 @@ button{font:inherit;font-size:14px;font-weight:600;padding:10px 20px;border-radi
   </section>
  </div>
 <hr style="margin:48px 0 16px;border:0;border-top:1px dashed hsl(var(--border-strong))">
-<section aria-label="Variantes de l’état chargé (annotation de maquette)" style="font-size:12px;color:hsl(var(--fg-dim))">
- <p class="eyebrow">Variantes de l’état chargé (non rendues ci-dessus)</p>
- <div class="panel" style="margin-top:12px"><div class="empty-line" data-testid="message-aucun-match">Aucun match programmé.</div></div>
- <div class="panel" style="margin-top:12px"><div class="empty-line" style="padding:12px 16px" data-testid="message-heure-a-confirmer">Horaire à confirmer</div></div>
-</section>
+<section aria-label="Variantes du bloc Prochain match (annotation de maquette)" style="font-size:12px;color:hsl(var(--fg-dim))">
+ <p class="eyebrow">Variantes du bloc « Prochain match » dans l’état chargé (R6, R7) : chacune remplace le bloc ci-dessus, les deux autres blocs restent inchangés</p>
+ <p style="margin-top:12px">R6 — aucun match à venir : le message remplace clubs, date et compétition ; le titre reste.</p>
+ <section class="panel" style="margin-top:8px;max-width:560px" data-testid="prochain-match" data-variante="aucun-match">
+  <header><div class="eyebrow">Prochain rendez-vous</div><h2>Prochain match</h2></header>
+  <div class="empty-line" data-testid="message-aucun-match">Aucun match programmé.</div>
+ </section>
+ <p style="margin-top:20px">R7 — heure non fixée : la ligne de date (<code>prochain-match-date</code>) contient la date suivie de <code>message-heure-a-confirmer</code>, sans heure.</p>
+ <section class="panel" style="margin-top:8px;max-width:560px" data-testid="prochain-match" data-variante="heure-a-confirmer">
+  <header><div class="eyebrow">Prochain rendez-vous</div><h2>Prochain match</h2></header>
+  <div class="next">
+   <div class="teams"><div class="team"><div class="crest">FR</div>France</div><span class="vs">VS</span><div class="team"><div class="crest">AZE</div>Azerbaïdjan</div></div>
+   <div class="when"><span data-testid="prochain-match-date">Ven. 13/11 · <span data-testid="message-heure-a-confirmer">Horaire à confirmer</span></span><small data-testid="prochain-match-competition">Qualifications Coupe du monde</small></div>
+  </div>
+ </section>
 </section>
 
 </div></main>

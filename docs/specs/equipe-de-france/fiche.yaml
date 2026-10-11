@@ -68,7 +68,7 @@ regles:
     tests: ["R5 — 5 lignes du plus récent au plus ancien", "R5 — badge V/N/D selon le score de la France", "R5 — le badge a un nom accessible"]
   - id: R6
     etat: charge
-    enonce: Sans match à venir connu, le bloc du prochain match garde son titre et affiche ce message à la place des clubs, de la date et de la compétition ; les deux autres blocs restent affichés.
+    enonce: Sans match à venir connu, le bloc du prochain match garde son titre « Prochain match » et affiche ce message (message-aucun-match, dans prochain-match) à la place des clubs, de la date et de la compétition ; les deux autres blocs restent affichés.
     message: "Aucun match programmé."
     champs: [message-aucun-match]
     statut: sourcee
@@ -76,7 +76,7 @@ regles:
     tests: ["R6 — sans match à venir : message dans le bloc, résultats et effectif présents"]
   - id: R7
     etat: charge
-    enonce: L'heure du prochain match n'est affichée que si elle est tenue pour fixée ; sinon la date seule est suivie de « Horaire à confirmer », jamais d'une heure de remplissage. Hors des 14 prochains jours, l'heure est tenue pour non fixée, comme pour le calendrier de l'OL.
+    enonce: L'heure du prochain match n'est affichée que si elle est tenue pour fixée ; sinon la date seule est suivie de « Horaire à confirmer » (message-heure-a-confirmer, imbriqué dans prochain-match-date, après la date et « · »), jamais d'une heure de remplissage. Hors des 14 prochains jours, l'heure est tenue pour non fixée, comme pour le calendrier de l'OL.
     message: "Horaire à confirmer"
     champs: [message-heure-a-confirmer]
     statut: hypothese
