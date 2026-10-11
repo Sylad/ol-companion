@@ -213,7 +213,7 @@ describe('FranceService', () => {
     expect(first.squad).toHaveLength(2);
     let degraded = true;
     const ok = svc.fetcher;
-    svc.fetcher = ((url: string, init: never) => (degraded ? Promise.resolve({ ok: true, status: 200, json: async () => ({}) }) : (ok as any)(url, init))) as never;
+    svc.fetcher = ((url: string, init: never) => (degraded && url.includes('/squads/') ? Promise.resolve({ ok: true, status: 200, json: async () => ({}) }) : (ok as any)(url, init))) as never;
     jest.setSystemTime(new Date(T0 + 11 * 60 * 1000));
     expect(await svc.getFrance()).toEqual(first);
     degraded = false;
