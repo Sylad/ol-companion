@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -642,6 +644,48 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
           // Pas de ring au focus : il écraserait l'anneau gris (même box-shadow) de la pastille choisie.
           expect(b.className).not.toMatch(/focus-visible:ring/);
         }
+      }
+    });
+
+    it('R7 — la hauteur mesurée de la barre collante alimente --barre-filtres-h (scroll-padding-top, WCAG 2.4.11)', async () => {
+      const observers: Array<() => void> = [];
+      let height = 163;
+      class FakeResizeObserver {
+        constructor(cb: () => void) {
+          observers.push(cb);
+        }
+        observe() {}
+        disconnect() {}
+      }
+      vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+      vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+        () => ({ height }) as DOMRect,
+      );
+      vi.stubGlobal('fetch', serve());
+      const { unmount } = renderPage();
+      await screen.findAllByRole('article');
+      const root = document.documentElement;
+      expect(root.style.getPropertyValue('--barre-filtres-h')).toBe('163px');
+      height = 139.2;
+      observers.forEach((cb) => cb());
+      expect(root.style.getPropertyValue('--barre-filtres-h')).toBe('140px');
+      unmount();
+      expect(root.style.getPropertyValue('--barre-filtres-h')).toBe('');
+      vi.restoreAllMocks();
+    });
+
+    it('R7 — le CSS lit --barre-filtres-h pour scroll-padding-top, repli 124 px', () => {
+      const css = readFileSync(resolve(__dirname, '../index.css'), 'utf8');
+      expect(css).toMatch(/scroll-padding-top:\s*var\(--barre-filtres-h,\s*124px\)/);
+    });
+
+    it('R5 — le lien de chaque ligne est un bloc (contour de focus visible, WCAG 2.4.7)', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      const rows = await screen.findAllByRole('article');
+      for (const row of rows) {
+        const links = within(row).getAllByRole('link');
+        expect(links.some((l) => l.classList.contains('block'))).toBe(true);
       }
     });
 
