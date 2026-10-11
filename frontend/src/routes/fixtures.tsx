@@ -116,8 +116,8 @@ export function FixturesPage() {
   }, [hasBar]);
 
   return (
-    <div className="space-y-8">
-      <KnowledgeHeader />
+    <div className="space-y-3 lg:space-y-8">
+      <KnowledgeHeader compact />
 
       {/* overflow-clip, pas overflow-hidden : même coupe aux coins arrondis, mais
           la section ne devient pas le conteneur de défilement de la barre des filtres

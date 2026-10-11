@@ -877,3 +877,18 @@ describe('<FixturesPage /> — lien vers la page du match (L96)', () => {
     }
   });
 });
+
+describe('<FixturesPage /> — bandeau compact au téléphone (L50)', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('R9 — le bandeau « Olympique Lyonnais » tient sur une ligne sous 1024 px (écusson 24 px), inchangé au bureau', async () => {
+    vi.stubGlobal('fetch', serve());
+    renderPage();
+    await screen.findAllByRole('article');
+    const header = screen.getByRole('heading', { level: 1 }).closest('header')!;
+    expect(header.dataset.compact).toBe('true');
+    expect(header.className).toContain('min-h-10');
+    expect(header.querySelector('div')!.className).toMatch(/\bw-6 h-6\b/);
+    expect(header.querySelector('div')!.className).toContain('lg:w-20');
+  });
+});
