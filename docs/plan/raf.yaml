@@ -895,6 +895,28 @@ lots:
     estimate: 1
     created: 2026-10-10
     started: 2026-10-11
+    review:
+      {
+        date: 2026-10-11,
+        verdict: "Lot conforme : 2 commits relus (0aee67f, 02585e0), rien à signaler. Le constat mineur sur l'en-tête de date est corrigé. Vitest : 39 fichiers et 379 tests passent. tsc -b sans erreur. Les six choix d'interprétation de l'auteur tiennent.
+
+
+          Détail :
+
+          - 0aee67f : la ligne `*` de docs/qa/expectations.md nomme désormais le surtitre de /about : « le premier `<p>` de son `<header>` : aucun `.eyebrow` sur cette page ». Le compte du tracker passe de « (5 le 03-10) » à « (6 le 10-10) ». Un test de garde est ajouté dans about.test.tsx (lignes 13-18). Il vérifie qu'il n'y a pas de `.eyebrow` et que `header > p` contient « À propos · OL Companion ». Il échouerait si on ajoutait une classe `.eyebrow` ou si un autre `<p>` passait devant le surtitre, donc il ne passe pas à vide.
+
+          - 02585e0 : l'en-tête « Les comptes datent du 03-10-2026 » devient « Chaque compte porte sa date ». C'est cohérent avec le reste du fichier : les autres comptes portent déjà leur propre date, comme « (46 le 03-10) » ou « Ligue Europa le 03-10 ».
+
+          - Le sélecteur `header > p` est bien unique sur /about. about.tsx:87-90 a le surtitre en premier `<p>` du `<header>`, et aucun `.eyebrow` n'existe dans about.tsx (on en trouve seulement dans cups, map et standings).
+
+          - Les autres choix sont dans le périmètre du lot : pas de `data-testid` ajouté, date remplacée plutôt que cumulée, plan non modifié.
+
+          - Le test de garde est un ajout au-delà de la demande, mais il est sans risque.
+
+
+          Vérifications lancées : `npx vitest run` passe (39 fichiers, 379 tests). `npx tsc --noEmit -p .` et `npx tsc -b` ne signalent aucune erreur. Le working tree n'a pas changé. — orchestré (vague 2026-10-11-0915, 0 passe(s) de correction + passe des mineurs)",
+        commit: 0aee67fef28b6c413d6c230b3ddd71e38005dcce
+      }
   - id: L94
     title: "Calendrier : score du perdant illisible (2,97:1) sur chaque match joué — retirer l'opacité du score (revue UX L3, bloquant WCAG 1.4.3)"
     public: "Calendrier : le score et le nom du perdant redeviennent lisibles"
