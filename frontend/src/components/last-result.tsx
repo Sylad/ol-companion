@@ -26,7 +26,7 @@ export function LastResult() {
         data-testid="squelette-dernier-resultat"
         role="status"
         aria-busy="true"
-        className="rounded-md bg-surface border border-border h-[150px] animate-pulse"
+        className="rounded-md bg-surface border border-border h-[263px] lg:h-[189px] animate-pulse"
       >
         <span className="sr-only">Chargement…</span>
       </section>

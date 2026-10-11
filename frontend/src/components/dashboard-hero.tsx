@@ -56,7 +56,7 @@ export function DashboardHero() {
         data-testid="squelette-prochain-match"
         role="status"
         aria-busy="true"
-        className="rounded-md bg-surface border border-border min-h-[260px] p-8 animate-pulse"
+        className="rounded-md bg-surface border border-border min-h-[345px] lg:min-h-[260px] p-8 animate-pulse"
       >
         <span className="sr-only">Chargement…</span>
       </section>
