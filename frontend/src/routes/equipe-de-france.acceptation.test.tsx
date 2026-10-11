@@ -152,7 +152,7 @@ describe('R3 — vide', () => {
     expect(await screen.findByTestId('message-vide')).toHaveTextContent('Aucune donnée sur l’équipe de France pour le moment.');
     for (const id of DATA_BLOCKS) expect(screen.queryByTestId(id)).toBeNull();
   });
-  it('R3 — un seul bloc renseigné : pas d’état vide', async () => {
+  it("R3 — un seul bloc renseigné : pas d'état vide", async () => {
     handler = okJson({ nextMatch: null, results: [], squad: SQUAD });
     await renderPage();
     expect(await screen.findByTestId('effectif')).toBeInTheDocument();
@@ -203,7 +203,7 @@ describe('R5 — derniers résultats', () => {
       'France – Belgique',
     ]);
   });
-  it('R5 — match à l’extérieur : France en second, score domicile-extérieur', async () => {
+  it("R5 — match à l'extérieur : France en second, score domicile-extérieur", async () => {
     await renderPage();
     await loaded();
     const row = screen.getAllByTestId('resultat-ligne')[3];
