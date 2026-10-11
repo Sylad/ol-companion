@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 vi.mock('recharts', () => {
   const Null = () => null;
@@ -13,17 +13,18 @@ import { SeasonSummary } from './season-summary';
 import { PositionTracker } from './position-tracker';
 
 // L85 (finding M2 de la revue UX L2) — « Erreur de chargement. » de l'accueil a son « Réessayer ».
-// La fiche ne couvre pas ces deux blocs : aucune règle Rn citée.
+// R9 (à ajouter à la fiche par le lead) : ces deux blocs en erreur sans cache ont message + « Réessayer » ;
+// une erreur de rafraîchissement avec des données déjà là n'efface rien.
 
 function renderWith(ui: JSX.Element) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+  return { client, ...render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>) };
 }
 
 describe.each([
   ['OL en chiffres', <SeasonSummary />, { played: 0 }],
   ['tracker de classement', <PositionTracker />, []],
-])('L85 — %s en erreur', (_nom, ui, ok) => {
+])('R9 — %s en erreur', (_nom, ui, ok) => {
   afterEach(() => vi.unstubAllGlobals());
 
   it('affiche un message et « Réessayer », qui relance l’appel', async () => {
@@ -43,5 +44,28 @@ describe.each([
     fireEvent.click(bouton);
     await waitFor(() => expect(fetchMock.mock.calls.length).toBeGreaterThan(appels));
     await waitFor(() => expect(screen.queryByRole('button', { name: 'Réessayer' })).not.toBeInTheDocument());
+  });
+
+  it('R9 — données en cache puis échec du refetch : rien n’est effacé, aucun message', async () => {
+    let fail = false;
+    const fetchMock = vi.fn(() =>
+      Promise.resolve(fail
+        ? { ok: false, status: 500, json: async () => ({}) }
+        : { ok: true, status: 200, json: async () => ok }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const { client } = renderWith(ui);
+    await waitFor(() => expect(client.getQueryCache().getAll().some((q) => q.state.data !== undefined)).toBe(true));
+    await waitFor(() => expect(client.isFetching()).toBe(0));
+    const appels = fetchMock.mock.calls.length;
+    fail = true;
+    await act(async () => {
+      await client.refetchQueries();
+      await new Promise((r) => setTimeout(r, 20)); // TanStack notifie les composants au tick suivant
+    });
+    expect(fetchMock.mock.calls.length).toBeGreaterThan(appels);
+    expect(client.getQueryCache().getAll().some((q) => q.state.status === 'error')).toBe(true);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).not.toBeInTheDocument();
   });
 });
