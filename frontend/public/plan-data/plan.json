@@ -331,9 +331,10 @@
     },
     {
       "id": "L119",
-      "title": "Équipe de France : l'effectif reste affiché si 365scores répond mal",
-      "status": "doing",
-      "started": "2026-10-11"
+      "title": "Équipe de France : la page tient mieux quand le réseau ou la source flanchent",
+      "status": "done",
+      "started": "2026-10-11",
+      "finished": "2026-10-11"
     }
   ]
 }

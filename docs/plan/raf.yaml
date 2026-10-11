@@ -1192,12 +1192,15 @@ lots:
     finished: 2026-10-11
   - id: L119
     title: "/equipe-de-france, suites de L118 : « Réessayer » hors ligne avec des données affichées ne montre pas le chargement et sort le focus du bouton (fetchStatus « paused », equipe-de-france.tsx:30) ; /api/france : un 200 sans « squads » vide l'effectif 10 min et remplace la copie (france.service.ts:120/125) ; sans copie (redémarrage pendant une panne de 365scores) chaque requête relance 3 lectures × 2 essais (france.service.ts:107/132)"
-    status: doing
+    public: "Équipe de France : la page tient mieux quand le réseau ou la source flanchent"
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-11
     started: 2026-10-11
     review: { date: 2026-10-11, verdict: "conforme (3 remarques mineures, sans sous-tâche) — orchestré (vague 2026-10-11-1505, 1 passe(s) de correction + passe des mineurs)", commit: a7c9ec3203d088b18f601ffa8396933b8b4a2bf7 }
+    ux: { date: 2026-10-11, verdict: "Sylvain 11-10 : ok L119 (Réessayer hors ligne, capture 1440) ; revue UX automatique conforme" }
+    finished: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
