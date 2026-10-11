@@ -1123,7 +1123,7 @@ lots:
   - id: L113
     title: "Page Équipe de France : les Bleus sur une page à eux (prochain match, derniers résultats, effectif — contenu et sources fixés par la fiche d'écran, données publiques 365scores), états de chargement, d'erreur et vide ; remplace L27"
     public: Une page dédiée à l'équipe de France
-    status: doing
+    status: done
     estimate: 2
     visible: true
     screen: page
@@ -1135,6 +1135,8 @@ lots:
     review: { date: 2026-10-11, verdict: "conforme : 0 bloquant, 0 majeur, 4 notes mineures (attente d'environ 17 s par visite quand 365scores est en panne, pas d'indicateur pendant « Réessayer », « 0 ans » si l'âge manque, commentaire de type périmé) — orchestré (vague 2026-10-11-1205, 1 passe(s) de correction)", commit: ea46963ea8448a98919b55391417b60263623534 }
     tasks:
       - { id: t1, title: "/equipe-de-france, suites de la revue L113 : après « Réessayer » en échec, l'erreur s'affiche au-dessus des anciens blocs (contraire à R2) et aucun indicateur de chargement pendant le nouvel appel (isPending faux en TanStack v5, equipe-de-france.tsx:47/58) ; /api/france : un 200 sans « games » garde 10 min une liste vide, la copie périmée n'est jamais réhorodatée quand 365scores est en panne (3 lectures × 2 essais par requête), âge absent affiché « 0 ans » (france.service.ts:108/123/184)", status: todo }
+    ux: { date: 2026-10-11, verdict: "Sylvain 11-10 : ok L113 (captures chargé 1440 / erreur 390 px) ; revue UX automatique conforme, 2 mineurs 365scores en note" }
+    finished: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

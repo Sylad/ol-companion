@@ -311,8 +311,9 @@
     {
       "id": "L113",
       "title": "Une page dédiée à l'équipe de France",
-      "status": "doing",
+      "status": "done",
       "started": "2026-10-11",
+      "finished": "2026-10-11",
       "tasks": [
         {
           "status": "todo"
