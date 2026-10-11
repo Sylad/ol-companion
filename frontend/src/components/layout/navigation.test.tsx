@@ -80,10 +80,10 @@ describe('barre latérale (bureau)', () => {
   });
 
   // L24 : seule la barre du bas (téléphone) passe à 4 pages + « Plus » ; le bureau garde ses 7 pages.
-  it('garde les 7 pages principales, Joueurs, Coupes et Carte L1 compris', async () => {
+  it('garde les 8 pages principales, Joueurs, Coupes, Carte L1 et Équipe de France compris (L113)', async () => {
     await renderAt('/', () => <Sidebar eventStreamStatus="connected" />);
     const labels = NAV_ITEMS.map((i) => i.label);
-    expect(labels).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Joueurs', 'Actu', 'Coupes', 'Carte L1']);
+    expect(labels).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Joueurs', 'Actu', 'Coupes', 'Carte L1', 'Équipe de France']);
     for (const label of labels) expect(screen.getByRole('link', { name: label })).toBeInTheDocument();
   });
 });
@@ -192,14 +192,14 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(badge.className).not.toMatch(/-right-2\.5/);
   });
 
-  it('« Plus » ouvre Joueurs, Coupes, Carte L1, FC Noobz, Nouveautés, Plan de travail et À propos ; Échap ferme et rend le focus à « Plus »', async () => {
+  it('« Plus » ouvre Joueurs, Coupes, Carte L1, Équipe de France, FC Noobz, Nouveautés, Plan de travail et À propos ; Échap ferme et rend le focus à « Plus »', async () => {
     const user = userEvent.setup();
     await renderAt('/', () => <BottomNav />);
     const plus = screen.getByRole('button', { name: 'Plus' });
     await user.click(plus);
     const dialog = screen.getByRole('dialog', { name: 'Plus de pages' });
     const labels = within(dialog).getAllByRole('link').map((a) => a.textContent?.trim());
-    expect(labels).toEqual(['Joueurs', 'Coupes', 'Carte L1', 'FC Noobz', 'Nouveautés', 'Plan de travail', 'À propos']);
+    expect(labels).toEqual(['Joueurs', 'Coupes', 'Carte L1', 'Équipe de France', 'FC Noobz', 'Nouveautés', 'Plan de travail', 'À propos']);
     expect(within(dialog).getByRole('link', { name: 'Joueurs' })).toHaveAttribute('href', '/players');
     expect(within(dialog).getByRole('link', { name: 'Coupes' })).toHaveAttribute('href', '/cups');
     expect(within(dialog).getByRole('link', { name: 'Carte L1' })).toHaveAttribute('href', '/map');
@@ -226,7 +226,7 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(title.className).toBe(GROUP_TITLE);
     const lists = within(dialog).getAllByRole('list');
     expect(lists.map((l) => within(l).getAllByRole('link').map((a) => a.textContent?.trim()))).toEqual([
-      ['Joueurs', 'Coupes', 'Carte L1'],
+      ['Joueurs', 'Coupes', 'Carte L1', 'Équipe de France'],
       ['FC Noobz'],
       ['Nouveautés', 'Plan de travail', 'À propos'],
     ]);

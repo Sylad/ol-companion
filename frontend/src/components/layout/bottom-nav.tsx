@@ -11,7 +11,7 @@ import { useNewsBadge } from '@/hooks/use-news-badge';
 // à 320 px. Avec 8 cases de 40 px, « Dashboard », « Calendrier » et « Classement »
 // débordaient (49 à 52 px). Joueurs, Coupes et Carte L1 passent dans le panneau « Plus »,
 // avec FC Noobz et les pages « Application », comme le « Plus » de finance-tracker.
-// La barre latérale (bureau) garde ses 7 pages.
+// La barre latérale (bureau) garde ses 8 pages (L113 : Équipe de France, derrière « Plus » au téléphone).
 const BAR_PATHS: readonly string[] = ['/', '/fixtures', '/standings', '/news'];
 const BAR_ITEMS = NAV_ITEMS.filter((i) => BAR_PATHS.includes(i.to));
 const MOVED_ITEMS = NAV_ITEMS.filter((i) => !BAR_PATHS.includes(i.to));

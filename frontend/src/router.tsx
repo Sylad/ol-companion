@@ -20,6 +20,7 @@ const AboutPage = lazyNamed(() => import('./routes/about'), 'AboutPage');
 const NouveautesPage = lazyNamed(() => import('./routes/nouveautes'), 'NouveautesPage');
 const PlanPage = lazyNamed(() => import('./routes/plan'), 'PlanPage');
 const MatchPage = lazyNamed(() => import('./routes/match'), 'MatchPage');
+const EquipeDeFrancePage = lazyNamed(() => import('./routes/equipe-de-france'), 'EquipeDeFrancePage');
 const MapPage = lazyNamed(() => import('./routes/map'), 'MapPage');
 
 function lazyNamed<TModule, TName extends keyof TModule>(
@@ -136,6 +137,12 @@ const mapRoute = createRoute({
   component: withSuspense(MapPage),
 });
 
+const equipeDeFranceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/equipe-de-france',
+  component: withSuspense(EquipeDeFrancePage),
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   fixturesRoute,
@@ -150,6 +157,7 @@ const routeTree = rootRoute.addChildren([
   planRoute,
   matchRoute,
   mapRoute,
+  equipeDeFranceRoute,
 ]);
 
 export const router = createRouter({

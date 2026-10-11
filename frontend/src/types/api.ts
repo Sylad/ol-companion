@@ -393,3 +393,43 @@ export interface PlayerSeasonStats {
   averageRating: number | null;
   byMatch: PlayerByMatch[];
 }
+
+/** GET /api/france — l'équipe de France A lue sur 365scores (L113). */
+export interface FranceTeam {
+  id: number;
+  name: string;
+}
+
+export interface FranceResult {
+  id: number;
+  date: string;
+  home: FranceTeam;
+  away: FranceTeam;
+  homeScore: number;
+  awayScore: number;
+  franceIsHome: boolean;
+  competition: string;
+}
+
+export interface FranceNextMatch {
+  id: number;
+  date: string;
+  timeConfirmed: boolean;
+  home: FranceTeam;
+  away: FranceTeam;
+  competition: string;
+}
+
+export interface FrancePlayer {
+  id: number;
+  name: string;
+  /** Poste tel que rendu par 365scores : Goalkeeper, Defender, Midfielder, Attacker. */
+  position: string;
+  age: number;
+}
+
+export interface FranceOverview {
+  nextMatch: FranceNextMatch | null;
+  results: FranceResult[];
+  squad: FrancePlayer[];
+}

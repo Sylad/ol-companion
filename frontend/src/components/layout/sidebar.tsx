@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import { Home, CalendarDays, ListOrdered, Newspaper, Trophy, Users, MapPin } from 'lucide-react';
+import { Home, CalendarDays, ListOrdered, Newspaper, Trophy, Users, MapPin, Flag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SidebarLinks } from './sidebar-links';
 import { LiveConnectionBadge } from '@/components/live-connection-badge';
@@ -16,6 +16,7 @@ export const NAV_ITEMS = [
   { to: '/news', label: 'Actu', icon: Newspaper, exact: false },
   { to: '/cups', label: 'Coupes', icon: Trophy, exact: false },
   { to: '/map', label: 'Carte L1', icon: MapPin, exact: false },
+  { to: '/equipe-de-france', label: 'Équipe de France', icon: Flag, exact: false },
 ] as const;
 
 /** Sous-pages qui n'ont pas le chemin de leur entrée pour préfixe : la fiche joueur dépend de « Joueurs » (L29). */
