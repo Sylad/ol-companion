@@ -226,6 +226,8 @@ lots:
     estimate: 1
     visible: true
     created: 2026-10-02
+    notes:
+      - { date: 2026-10-11, text: "11-10 : repris par L113 (lot à écran, étape spec : fiche, maquette, tests d'acceptation)" }
   - id: L28
     title: "Navigation : le lien Dashboard (/) porte peut-être aria-current=page sur toutes les routes (correspondance floue de TanStack Link) — à vérifier à l'exécution puis corriger, barre du bas et barre latérale (relecture L24)"
     status: done
@@ -1118,6 +1120,14 @@ lots:
     notes:
       - { date: 2026-10-10, text: "Revue : la capture Nouveautés vient de l'état intermédiaire bg-ol-red/15 (code final /10, écart d'opacité 5 % quasi invisible) ; test de style sans calcul de contraste, couleurs en dur — acceptés" }
     finished: 2026-10-10
+  - id: L113
+    title: "Page Équipe de France : les Bleus sur une page à eux (prochain match, derniers résultats, effectif — contenu et sources fixés par la fiche d'écran, données publiques 365scores), états de chargement, d'erreur et vide ; remplace L27"
+    public: Une page dédiée à l'équipe de France
+    status: todo
+    estimate: 1
+    visible: true
+    screen: page
+    created: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

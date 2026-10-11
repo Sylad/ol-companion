@@ -34,3 +34,7 @@ orchestrate:
     command: '(cd backend && npm run start:dev) & (cd frontend && npm run dev -- --port 5174 --strictPort) & wait'
     url: http://localhost:5174
     timeout: 300
+  # Étape spec d'un lot à écran (screen:) : fiche + maquette sous docs/specs/<écran>/, revue de maquette,
+  # puis tests d'acceptation rouges lancés par la commande dédiée ci-dessous (lanceur dans frontend/).
+  spec: { dir: docs/specs }
+  accept: cd frontend && npx vitest run -c vitest.acceptation.config.ts
