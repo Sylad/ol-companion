@@ -1,0 +1,8 @@
+{
+  "lot": "L85",
+  "fiche": "docs/specs/accueil/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/accueil.acceptation-L85.test.tsx"
+  ],
+  "vert": false
+}
