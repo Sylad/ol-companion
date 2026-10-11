@@ -1123,11 +1123,12 @@ lots:
   - id: L113
     title: "Page Équipe de France : les Bleus sur une page à eux (prochain match, derniers résultats, effectif — contenu et sources fixés par la fiche d'écran, données publiques 365scores), états de chargement, d'erreur et vide ; remplace L27"
     public: Une page dédiée à l'équipe de France
-    status: todo
+    status: doing
     estimate: 2
     visible: true
     screen: page
     created: 2026-10-11
+    started: 2026-10-11
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
