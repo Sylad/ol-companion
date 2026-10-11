@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Link } from '@tanstack/react-router';
 import { Gamepad2, Trophy, History, Construction } from 'lucide-react';
 
 const ELECTRIC_BLUE_BRIGHT = '#3aa0ff';
@@ -105,12 +106,38 @@ export function FcNoobzPage() {
           desc="Trophées, statistiques et records accumulés au fil des éditions FM."
           status="À venir"
         />
+        <JeuxVideoTile />
       </section>
 
       <p className="text-center text-xs" style={{ color: 'rgba(132, 204, 22, 0.5)' }}>
         Section indépendante du suivi OL — purement personnelle.
       </p>
     </div>
+  );
+}
+
+function JeuxVideoTile() {
+  return (
+    <Link
+      to="/fcnoobz/jeux-video"
+      data-testid="tuile-jeux-video"
+      className="group block rounded-md p-5 transition-all hover:scale-[1.02]"
+      style={{
+        background: 'linear-gradient(180deg, rgba(15, 17, 35, 0.85), rgba(5, 7, 20, 0.9))',
+        border: `1px solid ${NOOBZ_GREEN}`,
+      }}
+    >
+      <div
+        className="mb-3 flex h-10 w-10 items-center justify-center rounded-md"
+        style={{ background: 'rgba(29, 78, 216, 0.2)', border: `1px solid ${NOOBZ_GREEN}`, color: ELECTRIC_BLUE_BRIGHT }}
+      >
+        <Gamepad2 className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
+      </div>
+      <h3 className="mb-1.5 font-bold" style={{ color: ELECTRIC_BLUE_BRIGHT }}>
+        Jeux vidéo
+      </h3>
+      <p className="text-sm leading-relaxed text-fg-muted">Football Manager : la série et ses prochaines sorties.</p>
+    </Link>
   );
 }
 

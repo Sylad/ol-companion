@@ -228,6 +228,7 @@ export function BottomNav() {
           <button
             ref={plusButton}
             type="button"
+            data-testid="bouton-plus"
             aria-label={plusName}
             aria-expanded={open}
             aria-controls="more-pages-sheet"

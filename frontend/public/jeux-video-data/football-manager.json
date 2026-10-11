@@ -1,0 +1,21 @@
+{
+  "verifieLe": "2026-10-11",
+  "sources": ["https://www.footballmanager.com/"],
+  "prochaineSortie": {
+    "nom": "Football Manager 27",
+    "date": "2026-11-10",
+    "plateformes": "PC : Steam, Epic Games Store, Microsoft Store"
+  },
+  "editions": [
+    { "nom": "Football Manager 26", "date": "2025-11-04" },
+    { "nom": "Football Manager 24", "date": "2023-11-06" }
+  ],
+  "nouveautes": [
+    { "titre": "Train With Purpose", "description": "L’entraînement est revu, avec de nouveaux axes d’équipe et l’efficacité tactique." },
+    { "titre": "Enhanced Match Engine", "description": "Des « Tactical Tweaks » et des améliorations du moteur de match." },
+    { "titre": "Match Day Spectacle", "description": "Une ambiance de match enrichie : foules, météo et éclairage mis à jour." },
+    { "titre": "Un monde plus immersif", "description": "Retour des tirages de coupe et de la journée des transferts, fil d’actualités refondu." },
+    { "titre": "Une interface plus claire", "description": "Moins de clics et une navigation plus intuitive." },
+    { "titre": "Beyond The Pitch", "description": "Un Manager Creator amélioré pour personnaliser son profil." }
+  ]
+}
