@@ -145,19 +145,6 @@ describe('R2 — erreur', () => {
   });
 });
 
-describe('L118 — Réessayer', () => {
-  it('pendant le nouvel appel, le message de chargement remplace l’erreur', async () => {
-    handler = async () => ({ ok: false, status: 500, json: async () => null });
-    const user = userEvent.setup();
-    await renderPage();
-    await screen.findByTestId('message-erreur');
-    handler = () => new Promise(() => {});
-    await user.click(tid('bouton-reessayer'));
-    expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
-    expect(screen.queryByTestId('message-erreur')).toBeNull();
-  });
-});
-
 describe('R3 — vide', () => {
   it("R3 — vide : le message s'affiche, pas de bloc", async () => {
     handler = okJson({ nextMatch: null, results: [], squad: [] });

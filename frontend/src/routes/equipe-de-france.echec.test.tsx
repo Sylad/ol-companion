@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import { EquipeDeFrancePage } from './equipe-de-france';
@@ -56,6 +57,14 @@ describe('L118 — échec après des blocs affichés', () => {
     expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
     expect(screen.queryByTestId('message-erreur')).toBeNull();
     expect(screen.queryByTestId('effectif')).toBeNull();
+  });
+  it('L118 — Réessayer : pendant le nouvel appel, le message de chargement remplace l’erreur', async () => {
+    const { setHandler } = await setup(async () => ({ ok: false, status: 500, json: async () => null }));
+    await screen.findByTestId('message-erreur');
+    setHandler(() => new Promise(() => {}));
+    await userEvent.setup().click(screen.getByTestId('bouton-reessayer'));
+    expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
+    expect(screen.queryByTestId('message-erreur')).toBeNull();
   });
   it('âge absent : aucun « 0 ans »', async () => {
     await setup(ok);
