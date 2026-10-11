@@ -106,7 +106,8 @@
     {
       "id": "L43",
       "title": "Page match : des compositions dessinées selon la formation",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-11"
     },
     {
       "id": "L45",
@@ -210,7 +211,8 @@
     {
       "id": "L85",
       "title": "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-11"
     },
     {
       "id": "L86",
