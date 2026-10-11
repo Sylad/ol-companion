@@ -42,11 +42,24 @@ function renderPage() {
   );
 }
 
-/** Le bloc (carte) dont l'en-tête porte ce libellé. */
-function block(label: string): HTMLElement {
-  const heading = screen.getByRole('heading', { level: 3, name: label });
-  return heading.parentElement as HTMLElement;
+/** La ligne du match d'identifiant `id` (le lien de la ligne mène à /match/<id>). */
+function rowById(id: number): HTMLElement {
+  const row = screen
+    .getAllByRole('article')
+    .find((a) => within(a).getByRole('link').getAttribute('href')?.startsWith(`/match/${id}?`));
+  if (!row) throw new Error(`ligne du match ${id} introuvable`);
+  return row;
 }
+
+const PALACE = 4828743;
+const LENS = 4735252;
+const RENNES = 4735259;
+const TROYES = 4735182;
+const ANDERLECHT = 4828762;
+const SPARTA_ALLER = 4779514;
+const SPARTA_RETOUR = 4779515;
+const FENER_ALLER = 4809607;
+const FENER_RETOUR = 4809611;
 
 describe('<FixturesPage /> — toutes compétitions (L39)', () => {
   const previousTz = process.env.TZ;
@@ -72,7 +85,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       'À venir36',
       'Joués10',
     ]);
-    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('46');
+    expect(screen.getByTestId('vue-rapide')).toHaveTextContent(/Matchs listés\s*46$/);
     // Une seule source pour un match : la page ne lit plus /api/fixtures.
     const urls = fetchMock.mock.calls.map(([url]) => url);
     expect(urls).toContain('/api/season-matches');
@@ -84,13 +97,13 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     await screen.findAllByRole('article');
 
-    const palace = within(block('Ligue Europa · J2')).getByRole('article');
+    const palace = rowById(PALACE);
     expect(palace).toHaveTextContent('Lyon');
     expect(palace).toHaveTextContent('Crystal Palace');
     expect(palace).toHaveTextContent('Jeu. 15');
     expect(palace).toHaveTextContent('18h45');
 
-    const anderlecht = within(block('Ligue Europa · J1')).getByRole('article');
+    const anderlecht = rowById(ANDERLECHT);
     expect(anderlecht).toHaveTextContent('Anderlecht');
     expect(anderlecht).toHaveTextContent('Terminé');
   });
@@ -100,25 +113,24 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     await screen.findAllByRole('article');
 
-    const row = (label: string) => within(block(label)).getByRole('article');
-
-    const spartaAway = row('Ligue des champions · 3e tour de qualification · aller');
+    const spartaAway = rowById(SPARTA_ALLER);
     expect(spartaAway).toHaveTextContent('Mar. 04');
-    expect(spartaAway).toHaveTextContent('août');
+    expect(spartaAway).not.toHaveTextContent('août');
+    expect(spartaAway).toHaveTextContent('3e tour de qualification · aller');
     expect(spartaAway).toHaveTextContent('Sparta Praha2');
     expect(spartaAway).toHaveTextContent('Lyon1');
 
-    const spartaHome = row('Ligue des champions · 3e tour de qualification · retour');
+    const spartaHome = rowById(SPARTA_RETOUR);
     expect(spartaHome).toHaveTextContent('Mar. 11');
     expect(spartaHome).toHaveTextContent('Lyon3');
     expect(spartaHome).toHaveTextContent('Sparta Praha0');
 
-    const fenerAway = row('Ligue des champions · Barrages · aller');
+    const fenerAway = rowById(FENER_ALLER);
     expect(fenerAway).toHaveTextContent('Mar. 18');
     expect(fenerAway).toHaveTextContent('Fenerbahçe SK1');
     expect(fenerAway).toHaveTextContent('Lyon1');
 
-    const fenerHome = row('Ligue des champions · Barrages · retour');
+    const fenerHome = rowById(FENER_RETOUR);
     expect(fenerHome).toHaveTextContent('Mer. 26');
     expect(fenerHome).toHaveTextContent('Lyon1');
     expect(fenerHome).toHaveTextContent('Fenerbahçe SK2');
@@ -128,19 +140,18 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     }
     // Bilan toutes compétitions : 5 V, 3 N, 2 D.
     const quick = screen.getByText('Vue rapide').parentElement as HTMLElement;
-    expect(quick).toHaveTextContent('5V3N2D');
+    expect(quick).toHaveTextContent('5 V3 N2 D');
   });
 
-  it('les libellés V/N/D de la vue rapide sont en fg-muted (≥ 4,5:1), jamais en fg-dim (4,23:1 en 10 px)', async () => {
+  it('L50/R9 — les chiffres V N D de la vue rapide sont en 20 px gras, sur la ligne de « Matchs listés »', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     await screen.findAllByRole('article');
 
-    const quick = screen.getByText('Vue rapide').parentElement as HTMLElement;
+    const quick = screen.getByTestId('vue-rapide');
     for (const l of ['V', 'N', 'D']) {
-      const label = within(quick).getByText(l, { selector: 'div' });
-      expect(label).toHaveClass('text-fg-muted');
-      expect(label).not.toHaveClass('text-fg-dim');
+      const figure = within(quick).getByText(new RegExp(`^\\d+ ${l}$`));
+      expect(figure).toHaveClass('text-xl', 'font-bold');
     }
   });
 
@@ -149,37 +160,29 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     await screen.findAllByRole('article');
 
-    const rennes = within(block('Ligue 1 · J5')).getByRole('article');
+    const rennes = rowById(RENNES);
     expect(rennes).toHaveTextContent('Lyon4');
     expect(rennes).toHaveTextContent('Rennes0');
     expect(rennes).toHaveTextContent('Terminé');
+    expect(within(rennes).getByTestId('competition-match')).toHaveTextContent(/^L1Ligue 1 · J5/);
 
-    const lens = within(block('Ligue 1 · J6')).getByRole('article');
+    const lens = rowById(LENS);
     expect(lens).toHaveTextContent('Ven. 09');
     expect(lens).toHaveTextContent('20h45');
   });
 
-  it('suit l’ordre des dates, toutes compétitions mêlées', async () => {
+  it('suit l’ordre des dates : un bloc par mois, toutes compétitions mêlées (L50)', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     await screen.findAllByRole('article');
 
-    const labels = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent);
-    expect(labels.slice(0, 12)).toEqual([
-      'Ligue des champions · 3e tour de qualification · aller',
-      'Ligue des champions · 3e tour de qualification · retour',
-      'Ligue des champions · Barrages · aller',
-      'Ligue 1 · J1',
-      'Ligue des champions · Barrages · retour',
-      'Ligue 1 · J2',
-      'Ligue 1 · J3',
-      'Ligue 1 · J4',
-      'Ligue Europa · J1',
-      'Ligue 1 · J5',
-      'Ligue 1 · J6',
-      'Ligue Europa · J2',
+    expect(screen.getAllByTestId('titre-mois').map((h) => h.textContent)).toEqual([
+      'Août 2026', 'Septembre 2026', 'Octobre 2026', 'Novembre 2026', 'Décembre 2026',
+      'Janvier 2027', 'Février 2027', 'Mars 2027', 'Avril 2027', 'Mai 2027',
     ]);
-    expect(labels[labels.length - 1]).toBe('Ligue 1 · J34');
+    expect(screen.getAllByTestId('nombre-matchs-mois').map((h) => Number(/\d+/.exec(h.textContent ?? '')?.[0]))).toEqual([
+      6, 4, 6, 5, 3, 6, 4, 3, 4, 5,
+    ]);
   });
 
   it('heure non fixée : « Horaire à confirmer », jamais une heure inventée', async () => {
@@ -188,7 +191,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     const articles = await screen.findAllByRole('article');
 
     // J13 Troyes–Lyon : football-data sans heure, 365scores à 18h00 de remplissage.
-    const troyes = within(block('Ligue 1 · J13')).getByRole('article');
+    const troyes = rowById(TROYES);
     expect(troyes).toHaveTextContent('Horaire à confirmer');
     expect(troyes).not.toHaveTextContent(/\d{2}[h:]\d{2}/);
 
@@ -214,7 +217,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     renderPage();
     await screen.findAllByRole('article');
 
-    const palace = within(block('Ligue Europa · J2')).getByRole('article');
+    const palace = rowById(PALACE);
     const logos = within(palace).getAllByRole('img');
     expect(logos.map((img) => img.getAttribute('src'))).toEqual([
       // L'OL porte l'identifiant football-data (523) dans l'API : repris en 465.
@@ -295,13 +298,13 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       'À venir7',
       'Joués1',
     ]);
-    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('8');
+    expect(screen.getByTestId('vue-rapide')).toHaveTextContent(/Matchs listés\s*8$/);
     expect(screen.queryByRole('heading', { level: 3, name: /Ligue 1/ })).not.toBeInTheDocument();
 
     // L104 : « Matchs listés » compte les lignes affichées, filtre de statut compris.
     await user.click(within(status).getByRole('button', { name: /Joués/ }));
     expect(screen.getAllByRole('article')).toHaveLength(1);
-    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('1');
+    expect(screen.getByTestId('vue-rapide')).toHaveTextContent(/Matchs listés\s*1$/);
     await user.click(within(status).getByRole('button', { name: /Tout/ }));
 
     await user.click(within(competitions).getByRole('button', { name: /Ligue des champions/ }));
@@ -311,7 +314,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       'À venir0',
       'Joués4',
     ]);
-    expect(screen.getByText('Matchs listés').nextElementSibling).toHaveTextContent('4');
+    expect(screen.getByTestId('vue-rapide')).toHaveTextContent(/Matchs listés\s*4$/);
 
     await user.click(within(competitions).getByRole('button', { name: /Toutes/ }));
     expect(screen.getAllByRole('article')).toHaveLength(46);
@@ -411,7 +414,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       renderPage();
       await screen.findAllByRole('article');
 
-      const row = within(block('Ligue 1 · J13')).getByRole('article');
+      const row = rowById(TROYES);
       expect(row).toHaveTextContent('Dateà confirmer');
       expect(row).not.toHaveTextContent('Week-end');
       expect(row).not.toHaveTextContent('Mer. 02');
@@ -432,7 +435,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       renderPage();
       await screen.findAllByRole('article');
 
-      const month = within(block('Ligue 1 · J13')).getByRole('article').children[0].children[1] as HTMLElement;
+      const month = rowById(TROYES).children[0].children[1] as HTMLElement;
       const [long, short] = Array.from(month.children) as HTMLElement[];
       expect(long).toHaveTextContent('à confirmer');
       expect(long.className.split(' ')).toContain('max-[359px]:sr-only');
@@ -461,7 +464,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       renderPage();
       await screen.findAllByRole('article');
 
-      const row = within(block('Ligue 1 · J13')).getByRole('article');
+      const row = rowById(TROYES);
       const date = within(row).getByText('du 05/12');
       expect(date).toHaveClass('text-fg-muted');
       expect(date).not.toHaveClass('text-fg-dim');
@@ -491,7 +494,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     /** Le conteneur d'écusson (celui qui porte l'éventuelle opacité) de la ligne de ce club. */
     function logoWrap(row: HTMLElement, club: string): HTMLElement {
       const name = within(row).getByText(club);
-      const line = name.closest('div.flex') as HTMLElement;
+      const line = name.closest('span.flex') as HTMLElement;
       return line.firstElementChild as HTMLElement;
     }
 
@@ -553,7 +556,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       renderPage();
       await screen.findAllByRole('article');
 
-      const inRow = tbd(within(block('Ligue 1 · J13')).getByRole('article'));
+      const inRow = tbd(rowById(TROYES));
       const inNextCard = tbd(screen.getByText('Prochain').parentElement as HTMLElement);
       for (const el of [inRow, inNextCard]) {
         expect(el).toHaveTextContent('Horaire à confirmer');
@@ -580,7 +583,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       // Le nom est celui que lit un lecteur d'écran, pas « À venir36 ».
       expect(within(status).getByRole('button', { name: 'À venir · 36 matchs' })).toBeInTheDocument();
       expect(names(competitions)).toEqual([
-        'Toutes les compétitions · 46 matchs',
+        'Toutes · 46 matchs',
         'L1 — Ligue 1 · 34 matchs',
         'C1 — Ligue des champions · 4 matchs',
         'C3 — Ligue Europa · 8 matchs',
@@ -615,7 +618,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       };
 
       expectSelected(status, /^Tout ·/);
-      expectSelected(competitions, /^Toutes les compétitions ·/);
+      expectSelected(competitions, /^Toutes ·/);
 
       await user.click(within(status).getByRole('button', { name: /À venir/ }));
       await user.click(within(competitions).getByRole('button', { name: /Ligue Europa/ }));
@@ -708,17 +711,17 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 // L48 — au téléphone (390 px, 320 px), la ligne compacte laisse la place au nom
 // des clubs : colonne date 56 px, nom en 1fr, colonne d'état à sa largeur utile.
 describe('<FixturesPage /> — date lisible : mois nommé et année (L98)', () => {
-  it('une date ferme porte le nom du mois abrégé et un <time datetime> avec l’année', async () => {
+  it('une date ferme porte un <time datetime> avec l’année, le mois étant dans le titre du bloc (L50)', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     await screen.findAllByRole('article');
 
-    const row = within(block('Ligue des champions · 3e tour de qualification · aller')).getByRole('article');
+    const row = rowById(SPARTA_ALLER);
     const time = row.querySelector('time') as HTMLTimeElement;
     expect(time).toHaveAttribute('datetime', '2026-08-04');
     expect(time).toHaveTextContent('Mar. 04');
-    expect(time).toHaveTextContent('août');
-    expect(time).not.toHaveTextContent('Mar. 04 08');
+    // L50 : le mois est dans le titre du bloc, plus dans la colonne de date.
+    expect(time).not.toHaveTextContent('août');
     expect(time).toHaveAttribute('title', 'mardi 4 août 2026');
     expect(row).not.toHaveTextContent(/\b08\b/);
   });
@@ -727,7 +730,7 @@ describe('<FixturesPage /> — date lisible : mois nommé et année (L98)', () =
     vi.stubGlobal('fetch', serve());
     renderPage();
     await screen.findAllByRole('article');
-    const row = within(block('Ligue 1 · J13')).getByRole('article');
+    const row = rowById(TROYES);
     expect(row.querySelector('time')).toBeNull();
   });
 });
@@ -765,35 +768,19 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
   });
 
   // jsdom n'a pas de mise en page : ce test vérifie la structure qui évite la coupe en plein mot
-  // (un nom de plusieurs mots = un bloc tronquable par mot, un mot seul = ellipse, nom entier en
-  // title). La largeur réelle à 320 px se mesure dans un navigateur (Playwright, voir la Nouveauté L48).
-  it("structure des noms : mots séparés et tronquables, mot seul à l'ellipse, nom entier en title", async () => {
+  // (L50 : plus d'ellipse — un nom passe à la ligne entre ses mots, un mot trop long se casse).
+  it('structure des noms : retour à la ligne aux espaces, jamais d’ellipse', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     const rows = await screen.findAllByRole('article');
     const names = rows.flatMap((r) => Array.from(r.querySelectorAll('span.min-w-0.flex-1')) as HTMLElement[]);
     expect(names.length).toBeGreaterThan(2);
-    let multi = 0;
     for (const n of names) {
-      expect(n.className).not.toContain('break-words');
-      expect(n.getAttribute('title')).toBeTruthy();
-      const words = Array.from(n.children) as HTMLElement[];
-      if (/\s/.test(n.textContent ?? '')) {
-        multi++;
-        // chaque mot est entier dans son propre bloc, tronquable seul par une ellipse :
-        // `truncate` n'agit que sur une boîte en bloc ou inline-block, bornée par max-w-full
-        expect(words.length).toBeGreaterThan(1);
-        expect(words.map((w) => w.textContent).join(' ')).toBe(n.textContent);
-        for (const w of words) {
-          expect(w.className.split(' ')).toEqual(expect.arrayContaining(['inline-block', 'max-w-full', 'truncate']));
-          expect(w.textContent).not.toMatch(/\s/);
-        }
-      } else {
-        expect(words).toHaveLength(0);
-        expect(n.className.split(' ')).toContain('truncate');
-      }
+      expect(n.className).toContain('break-words');
+      expect(n.className).not.toMatch(/truncate|overflow-hidden|text-ellipsis/);
+      expect(n.children).toHaveLength(0);
     }
-    expect(multi).toBeGreaterThan(0);
+    expect(names.some((n) => /\s/.test(n.textContent ?? ''))).toBe(true);
   });
 });
 
@@ -809,7 +796,7 @@ describe('<FixturesPage /> — lien vers la page du match (L96)', () => {
     for (const row of rows) {
       const link = within(row).getByRole('link');
       expect(link.getAttribute('href')).toMatch(/^\/match\/\d+\?matchupId=\d+-\d+-\d+$/);
-      expect(link).toHaveAccessibleName(/ contre .* — détail du match$/);
+      expect(link).toHaveAccessibleName(/^(.+ contre .+|.+ \d+, .+ \d+) — détail du match$/);
     }
   });
 

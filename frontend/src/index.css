@@ -670,3 +670,12 @@
 .leaflet-control-zoom a:hover {
   background: hsl(var(--surface-2)) !important;
 }
+
+/* L50 — sous 1024 px, un élément focalisé au clavier ne passe ni sous la barre des filtres collante du
+   Calendrier (124 px ; 115 px à 390 px) ni sous la navigation du bas (72 px) : WCAG 2.4.11. */
+@media (max-width: 1023px) {
+  html {
+    scroll-padding-top: 124px;
+    scroll-padding-bottom: 72px;
+  }
+}

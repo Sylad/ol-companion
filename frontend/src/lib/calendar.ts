@@ -73,24 +73,31 @@ export function matchLabel(m: SeasonMatch): string {
   return m.round ? `${name} · ${m.round}` : name;
 }
 
-export interface MatchGroup {
+export interface MonthGroup {
+  /** `YYYY-MM`. */
   key: string;
+  /** « Octobre 2026 ». */
   label: string;
   matches: SeasonMatch[];
 }
 
+const MONTH_NAME = [
+  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+];
+
 /**
- * Un bloc par libellé, dans l'ordre reçu : seuls des matchs CONSÉCUTIFS de même
- * libellé partagent un bloc, pour que l'ordre des dates soit toujours respecté
- * (deux tours de coupe sans journée ne sont pas rapprochés).
+ * Un bloc par mois civil (L50), dans l'ordre reçu, donc des dates. Un mois sans match n'a pas de
+ * bloc. Un match à jour non fixé est rangé dans le mois de sa date de remplissage.
  */
-export function groupMatches(matches: SeasonMatch[]): MatchGroup[] {
-  const groups: MatchGroup[] = [];
+export function groupByMonth(matches: SeasonMatch[]): MonthGroup[] {
+  const groups: MonthGroup[] = [];
   for (const m of matches) {
-    const label = matchLabel(m);
+    const d = new Date(m.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     const last = groups[groups.length - 1];
-    if (last && last.label === label) last.matches.push(m);
-    else groups.push({ key: `${label}#${m.id}`, label, matches: [m] });
+    if (last && last.key === key) last.matches.push(m);
+    else groups.push({ key, label: `${MONTH_NAME[d.getMonth()]} ${d.getFullYear()}`, matches: [m] });
   }
   return groups;
 }

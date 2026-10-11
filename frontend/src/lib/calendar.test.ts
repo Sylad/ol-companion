@@ -6,7 +6,7 @@ import {
   byStatus,
   competitionOptions,
   countResults,
-  groupMatches,
+  groupByMonth,
   matchLabel,
   matchupId,
   statusCounts,
@@ -121,47 +121,25 @@ describe('calendrier — libellé et regroupement', () => {
     expect(matchLabel(older as SeasonMatch)).toBe('Coupe de France');
   });
 
-  it('rend les matchs dans l’ordre des dates, un bloc par libellé', () => {
-    const groups = groupMatches(matches);
-    expect(groups).toHaveLength(46);
-    // Le barrage retour (26-08) vient après la J1 de Ligue 1 (22-08).
-    expect(groups.slice(0, 5).map((g) => g.label)).toEqual([
-      'Ligue des champions · 3e tour de qualification · aller',
-      'Ligue des champions · 3e tour de qualification · retour',
-      'Ligue des champions · Barrages · aller',
-      'Ligue 1 · J1',
-      'Ligue des champions · Barrages · retour',
-    ]);
-    expect(groups.slice(8, 12).map((g) => g.label)).toEqual([
-      'Ligue Europa · J1',
-      'Ligue 1 · J5',
-      'Ligue 1 · J6',
-      'Ligue Europa · J2',
-    ]);
+  it('L50 — un bloc par mois civil, dans l’ordre des dates, sans bloc pour un mois vide', () => {
+    const groups = groupByMonth(matches);
+    expect(groups.map((g) => g.key)).toEqual([...new Set(groups.map((g) => g.key))].sort());
+    expect(groups[0].label).toBe('Août 2026');
+    expect(groups.reduce((n, g) => n + g.matches.length, 0)).toBe(46);
     const dates = groups.flatMap((g) => g.matches.map((m) => m.date));
     expect([...dates].sort()).toEqual(dates);
-    expect(new Set(groups.map((g) => g.key)).size).toBe(46);
   });
 
-  it('deux tours de coupe séparés par un autre match ne sont pas rapprochés', () => {
+  it('L50 — le nom du mois porte l’année ; des matchs de mois éloignés ne sont pas rapprochés', () => {
     const list = [
-      cup({ id: 1, date: '2027-01-09T19:45:00.000Z' }),
-      matches.find((m) => m.matchday === 16 && m.competitionCode === 'L1')!,
-      cup({ id: 2, date: '2027-02-03T19:45:00.000Z' }),
+      cup({ id: 1, date: '2026-12-09T19:45:00.000Z' }),
+      cup({ id: 2, date: '2026-12-12T19:45:00.000Z' }),
+      cup({ id: 3, date: '2027-02-03T19:45:00.000Z' }),
     ];
-    expect(groupMatches(list).map((g) => [g.label, g.matches.map((m) => m.id)])).toEqual([
-      ['Coupe de France', [1]],
-      ['Ligue 1 · J16', [4735161]],
-      ['Coupe de France', [2]],
+    expect(groupByMonth(list).map((g) => [g.label, g.matches.map((m) => m.id)])).toEqual([
+      ['Décembre 2026', [1, 2]],
+      ['Février 2027', [3]],
     ]);
-  });
-
-  it('deux matchs consécutifs de même libellé partagent un bloc', () => {
-    const list = [
-      cup({ id: 1, date: '2027-01-09T19:45:00.000Z' }),
-      cup({ id: 2, date: '2027-01-12T19:45:00.000Z' }),
-    ];
-    expect(groupMatches(list).map((g) => g.matches.map((m) => m.id))).toEqual([[1, 2]]);
   });
 });
 
