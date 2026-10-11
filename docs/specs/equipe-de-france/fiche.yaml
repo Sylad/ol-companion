@@ -15,24 +15,40 @@ champs:
   - { id: bouton-reessayer, libelle: Réessayer, type: bouton, source: "action A2", obligatoire: true }
   - { id: message-vide, libelle: Message d'état vide, type: texte, source: statique, obligatoire: true }
   - { id: prochain-match, libelle: Bloc du prochain match, type: carte, source: "GET /api/france → nextMatch", obligatoire: true }
+  - { id: surtitre-prochain-match, libelle: Surtitre du bloc du prochain match, type: texte, source: statique, obligatoire: true }
+  - { id: titre-prochain-match, libelle: Titre du bloc « Prochain match », type: texte, source: statique, obligatoire: true }
+  - { id: prochain-match-domicile, libelle: Équipe à domicile du prochain match (écusson et nom), type: texte, source: "GET /api/france → nextMatch.home", obligatoire: true }
+  - { id: prochain-match-exterieur, libelle: Équipe à l'extérieur du prochain match (écusson et nom), type: texte, source: "GET /api/france → nextMatch.away", obligatoire: true }
   - { id: prochain-match-date, libelle: Date et heure du prochain match, type: texte, source: "GET /api/france → nextMatch.date, nextMatch.timeConfirmed", obligatoire: true }
   - { id: prochain-match-competition, libelle: Compétition du prochain match, type: texte, source: "GET /api/france → nextMatch.competition", obligatoire: true }
   - { id: message-aucun-match, libelle: Message sans match à venir, type: texte, source: statique, obligatoire: false }
   - { id: message-heure-a-confirmer, libelle: Heure à confirmer, type: texte, source: statique, obligatoire: false }
   - { id: derniers-resultats, libelle: Liste des derniers résultats, type: liste, source: "GET /api/france → results (5 plus récents)", obligatoire: true }
-  - { id: resultat-ligne, libelle: Ligne de résultat (badge V/N/D, adversaire, compétition, date, score), type: ligne, source: "GET /api/france → results[]", obligatoire: true }
+  - { id: surtitre-derniers-resultats, libelle: Surtitre du bloc des derniers résultats, type: texte, source: statique, obligatoire: true }
+  - { id: titre-derniers-resultats, libelle: Titre du bloc « Derniers résultats », type: texte, source: statique, obligatoire: true }
+  - { id: resultat-ligne, libelle: Ligne de résultat, type: ligne, source: "GET /api/france → results[]", obligatoire: true }
+  - { id: resultat-badge, libelle: Badge V/N/D vu de la France (texte masqué Victoire / Match nul / Défaite), type: texte, source: "GET /api/france → results[].homeScore, awayScore, franceIsHome", obligatoire: true }
+  - { id: resultat-rencontre, libelle: Rencontre « Domicile – Extérieur », type: texte, source: "GET /api/france → results[].home, results[].away", obligatoire: true }
+  - { id: resultat-competition, libelle: Compétition du résultat, type: texte, source: "GET /api/france → results[].competition", obligatoire: true }
+  - { id: resultat-date, libelle: Date du résultat, type: texte, source: "GET /api/france → results[].date", obligatoire: true }
+  - { id: resultat-score, libelle: Score domicile-extérieur, type: texte, source: "GET /api/france → results[].homeScore, awayScore", obligatoire: true }
+  - { id: surtitre-effectif, libelle: Surtitre du bloc de l'effectif, type: texte, source: statique, obligatoire: true }
+  - { id: titre-effectif, libelle: Titre du bloc « Effectif », type: texte, source: statique, obligatoire: true }
+  - { id: groupe-poste-titre, libelle: Titre de groupe de poste avec son nombre de joueurs, type: texte, source: "GET /api/france → squad[].position (nombre calculé)", obligatoire: true }
   - { id: effectif, libelle: Effectif par poste, type: liste, source: "GET /api/france → squad", obligatoire: true }
   - { id: joueur-ligne, libelle: Ligne de joueur (nom, âge), type: ligne, source: "GET /api/france → squad[]", obligatoire: true }
+  - { id: entree-navigation, libelle: Entrée « Équipe de France » de la barre latérale (et du panneau Plus), type: lien, source: statique, obligatoire: true }
+  - { id: bouton-plus, libelle: Bouton « Plus » de la barre du bas, actif sur cette page, type: bouton, source: statique, obligatoire: true }
 
 regles:
   - id: R1
     etat: chargement
-    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun des trois blocs.
+    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun des trois blocs ; le message est dans un conteneur role="status" (annoncé par les lecteurs d'écran, WCAG 4.1.3) et la section porte aria-busy.
     message: "Chargement de l’équipe de France…"
     champs: [titre-page, sous-titre-page, message-chargement]
     statut: hypothese
     si_faux: Seul le libellé (calqué sur « Chargement des coupes… » de /cups) ou un squelette à la place du texte changerait ; aucune donnée en jeu.
-    tests: ["R1 — chargement : le message s'affiche, aucun bloc de données"]
+    tests: ["R1 — chargement : le message s'affiche, aucun bloc de données", "R1 — le message est dans un conteneur role=status"]
   - id: R2
     etat: erreur
     enonce: Si l'appel échoue, la page affiche l'erreur et un bouton « Réessayer » qui rappelle l'API ; aucun bloc de données n'est montré.
@@ -54,43 +70,62 @@ regles:
     etat: charge
     enonce: La page montre trois blocs, dans cet ordre au téléphone et sur deux colonnes à 1440 px (prochain match et derniers résultats à gauche, effectif à droite) ; leurs données viennent d'un seul appel, lu sur 365scores côté serveur (équipe de France A, competitorId 365scores 5061).
     message: ~
-    champs: [titre-page, sous-titre-page, prochain-match, prochain-match-date, prochain-match-competition, derniers-resultats, resultat-ligne, effectif, joueur-ligne]
+    champs: [titre-page, sous-titre-page, prochain-match, surtitre-prochain-match, titre-prochain-match, prochain-match-domicile, prochain-match-exterieur, prochain-match-date, prochain-match-competition, derniers-resultats, surtitre-derniers-resultats, titre-derniers-resultats, resultat-ligne, effectif, surtitre-effectif, titre-effectif, joueur-ligne]
     statut: sourcee
     source: "demande du lot L113 : « prochain match, derniers résultats, effectif … données publiques 365scores » ; relevé du 11-10 : /web/squads/?competitorId=5061 rend l'effectif de la France A (Maignan en tête)"
     tests: ["R4 — chargé : prochain match, derniers résultats et effectif présents", "R4 — la page n'appelle qu'un seul endpoint"]
   - id: R5
     etat: charge
-    enonce: Les derniers résultats sont les 5 matchs joués les plus récents de la France, du plus récent au plus ancien, toutes compétitions ; chaque ligne porte le badge V, N ou D vu de la France (nul en jaune, pas de vert décoratif), l'adversaire, la compétition, la date et le score du match (pas de cumul aller-retour).
+    enonce: >-
+      Les derniers résultats sont les 5 matchs joués les plus récents de la France, du plus récent au plus ancien, toutes compétitions.
+      Chaque ligne s'écrit « Domicile – Extérieur » comme le calendrier (fixtures.tsx) : la France est en premier à domicile, en second à l'extérieur (« Croatie – France »), et le score suit le même ordre (domicile-extérieur : « 2-1 » pour « Croatie – France » est une défaite de la France).
+      Le badge V, N ou D est toujours vu de la France (nul en jaune, pas de vert décoratif) ; il se compose d'un texte masqué visuellement (« Victoire », « Match nul », « Défaite ») et de la lettre en aria-hidden, sans aria-label sur un élément générique (WCAG 4.1.2).
+      Un seul libellé de compétition, tel que rendu par l'API, sans forme courte : le même partout dans la page. Le score est celui du match, sans cumul aller-retour.
+      Un nom d'adversaire long (« Bosnie-Herzégovine – France ») revient à la ligne, jamais tronqué (WCAG 1.4.10).
     message: ~
-    champs: [derniers-resultats, resultat-ligne]
+    champs: [derniers-resultats, resultat-ligne, resultat-badge, resultat-rencontre, resultat-competition, resultat-date, resultat-score]
     statut: sourcee
-    source: "convention des lignes de match déjà codée (cup-match-row : badge V/N/D, libellé accessible Victoire / Match nul / Défaite) et CLAUDE.md « Calendrier » (score du match, pas de cumul) ; le nombre 5 est une hypothèse de rédaction sans effet sur les données"
-    tests: ["R5 — 5 lignes du plus récent au plus ancien", "R5 — badge V/N/D selon le score de la France", "R5 — le badge a un nom accessible"]
+    source: "convention des lignes de match déjà codée (fixtures.tsx : domicile–extérieur ; cup-match-row : badge V/N/D) et CLAUDE.md « Calendrier » (score du match, pas de cumul) ; le nombre 5 et la forme du texte masqué du badge sont des hypothèses de rédaction sans effet sur les données"
+    tests: ["R5 — 5 lignes du plus récent au plus ancien", "R5 — match à l'extérieur : France en second, score domicile-extérieur", "R5 — badge V/N/D selon le score de la France", "R5 — le badge a un nom accessible par texte masqué", "R5 — nom long : retour à la ligne, pas de troncature à 320 px"]
   - id: R6
     etat: charge
-    enonce: Sans match à venir connu, le bloc du prochain match garde son titre « Prochain match » et affiche ce message (message-aucun-match, dans prochain-match) à la place des clubs, de la date et de la compétition ; les deux autres blocs restent affichés.
+    enonce: Sans match à venir connu, le bloc du prochain match garde son titre « Prochain match » et affiche ce message (message-aucun-match, dans prochain-match) à la place des équipes, de la date et de la compétition ; les deux autres blocs restent affichés.
     message: "Aucun match programmé."
-    champs: [message-aucun-match]
+    champs: [message-aucun-match, titre-prochain-match]
     statut: sourcee
     source: "même message que le tableau de bord (docs/qa/expectations.md, section /, « Aucun match programmé. »)"
     tests: ["R6 — sans match à venir : message dans le bloc, résultats et effectif présents"]
   - id: R7
     etat: charge
-    enonce: L'heure du prochain match n'est affichée que si elle est tenue pour fixée ; sinon la date seule est suivie de « Horaire à confirmer » (message-heure-a-confirmer, imbriqué dans prochain-match-date, après la date et « · »), jamais d'une heure de remplissage. Hors des 14 prochains jours, l'heure est tenue pour non fixée, comme pour le calendrier de l'OL.
+    enonce: >-
+      La règle L47 s'applique (lib/kickoff.ts, `unconfirmedDay`, `KICKOFF_TBD`) : le jour d'un match dont l'heure n'est pas fixée est aussi un remplissage et n'est jamais présenté comme sûr.
+      Vendredi, samedi ou dimanche : « Week-end du <samedi> » (JJ/MM) suivi de « · » et de « Horaire à confirmer » (message-heure-a-confirmer, imbriqué dans prochain-match-date) ; un autre jour : « Date et horaire à confirmer » remplace toute la ligne de date (même champ).
+      Jamais d'heure de remplissage. Hors des 14 prochains jours, l'heure est tenue pour non fixée (365scores seul, sans football-data).
     message: "Horaire à confirmer"
     champs: [message-heure-a-confirmer]
     statut: hypothese
-    si_faux: "Le seuil de 14 jours (repris de CLAUDE.md L39, où football-data est consulté en plus ; ici 365scores seul) pourrait changer, ou l'heure être toujours montrée ; seul le calcul d'affichage de ce champ change, aucune donnée stockée."
-    tests: ["R7 — match dans plus de 14 jours : « Horaire à confirmer » sans heure", "R7 — match proche : l'heure s'affiche"]
+    si_faux: "Le seuil de 14 jours (repris de CLAUDE.md L39, où football-data est consulté en plus ; ici 365scores seul) pourrait changer, ou l'heure être toujours montrée ; seul le calcul d'affichage de ce champ change, aucune donnée stockée. La reprise de unconfirmedDay est sourcée (L47)."
+    tests: ["R7 — match dans plus de 14 jours : « Week-end du JJ/MM · Horaire à confirmer » sans heure", "R7 — jour hors week-end : « Date et horaire à confirmer »", "R7 — match proche : l'heure s'affiche"]
   - id: R8
     etat: charge
     enonce: L'effectif est groupé par poste (Gardiens, Défenseurs, Milieux, Attaquants), avec le nombre de joueurs par groupe ; chaque ligne donne le nom et l'âge, sans lien vers une fiche joueur ni numéro (365scores rend un numéro -1 pour la sélection).
     message: ~
-    champs: [effectif, joueur-ligne]
+    champs: [effectif, groupe-poste-titre, joueur-ligne]
     statut: hypothese
     si_faux: "Si l'on veut des fiches ou des numéros, des champs s'ajoutent à la ligne ; l'ordre des groupes ou la présence des âges changent sans toucher aux données (les identifiants 365scores de /api/france ne sont de toute façon pas ceux de /player/<id>)."
-    tests: ["R8 — joueurs groupés par poste avec effectifs", "R8 — chaque ligne a un nom et un âge"]
+    tests: ["R8 — joueurs groupés par poste avec effectifs", "R8 — chaque ligne a un nom et un âge", "R8 — le titre de groupe porte le nombre de joueurs"]
+  - id: R9
+    etat: charge
+    enonce: >-
+      L'entrée « Équipe de France » (route /equipe-de-france) s'ajoute à NAV_ITEMS (sidebar.tsx), après « Carte L1 » : 8e lien de la barre latérale du bureau.
+      Elle n'est pas dans BAR_PATHS de bottom-nav.tsx : au téléphone elle est dans le panneau « Plus », et sur cette page le bouton « Plus » est actif (filet de 3 px, nom accessible « Plus, page actuelle : Équipe de France »).
+      La barre du bas est celle de l'app : Dashboard, Calendrier, Classement, Actu, Plus.
+    message: ~
+    champs: [entree-navigation, bouton-plus]
+    statut: hypothese
+    si_faux: "Si la page doit être dans la barre du bas ou sous un autre libellé, seule la liste NAV_ITEMS / BAR_PATHS change ; l'URL /equipe-de-france, elle, est fixée par le lot (voir questions du rapport)."
+    tests: ["R9 — l'entrée de la barre latérale pointe /equipe-de-france et est courante", "R9 — « Plus » est actif avec le nom « Plus, page actuelle : Équipe de France »"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/france", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
+  - { id: A1, declencheur: ~, appel: "GET /api/france", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9] }
   - { id: A2, declencheur: bouton-reessayer, appel: "GET /api/france", regles: [R2] }
