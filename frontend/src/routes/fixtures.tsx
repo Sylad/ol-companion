@@ -486,7 +486,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
       </DateBlock>
       <div data-testid="equipes-match" className="min-w-0">
         <MatchLink fixture={fixture} block>
-          <span className="block space-y-1">
+          <span className="block">
             <CompactTeamLine
               id={fixture.homeTeamId}
               name={fixture.homeTeam}
@@ -558,14 +558,14 @@ function CompactTeamLine({
       </span>
       <span
         className={cn(
-          'min-w-0 flex-1 break-words text-sm leading-tight',
+          'min-w-0 flex-1 break-words text-[13px] leading-[1.35]',
           isOL ? 'font-semibold text-fg-bright' : 'text-fg',
         )}
       >
         {teamShortName(name)}
       </span>
       {score !== null && (
-        <span className={cn('num w-6 text-right text-base font-bold', won ? 'text-fg-bright' : drew ? 'text-draw' : 'text-fg-muted')}>
+        <span className={cn('num w-6 text-right text-sm font-bold leading-tight', won ? 'text-fg-bright' : drew ? 'text-draw' : 'text-fg-muted')}>
           {score}
         </span>
       )}
