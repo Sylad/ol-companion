@@ -35,6 +35,7 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
 - **News** — agrégat RSS multi-sources (OL officiel, Olympique-et-Lyonnais, L'Équipe, Google News)
 - **YouTube** — chaînes lore/club recommandées
 - **FC Noobz** — section privée perso (équipe loisirs entre amis)
+  - **Jeux vidéo** (`/fcnoobz/jeux-video`, L25) — page Football Manager sous FC Noobz (quatrième tuile de `/fcnoobz`, thème vert/bleu, « FC Noobz » reste l'entrée courante de la barre latérale et de « Plus ») : prochaine sortie (nom, date « Mar. 10/11/2026 » au jour de la semaine calculé, plateformes ; « Date à confirmer » sans date), éditions précédentes, nouveautés annoncées, présentation de la série, et la ligne « Infos vérifiées le … sur footballmanager.com ». Aucune donnée backend : un fichier statique `frontend/public/jeux-video-data/football-manager.json` (`verifieLe`, `sources`, `prochaineSortie`, `editions`, `nouveautes`), servi `no-cache` comme `plan-data/`, **relu à la main sur les sources en ligne** à chaque mise à jour (jamais de mémoire). États de chargement, d'erreur (« Réessayer ») et vide.
 - **Reset saison automatique** — cron annuel le 1er août archive les caches dans `data/archive/<season>/` et redémarre la collecte. Endpoint admin `POST /api/admin/reset-season` pour le forcer manuellement.
 
 ## Captures
