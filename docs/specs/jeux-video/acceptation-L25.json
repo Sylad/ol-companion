@@ -4,5 +4,8 @@
   "fichiers": [
     "frontend/src/routes/jeux-video.acceptation.test.tsx"
   ],
-  "vert": false
+  "vert": false,
+  "empreintes": {
+    "frontend/src/routes/jeux-video.acceptation.test.tsx": "41cb6a39f938f3c929e61e06eba6db0f5463e881"
+  }
 }
