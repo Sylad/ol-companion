@@ -30,7 +30,7 @@ regles:
   - id: R1
     etat: chargement
     enonce: >-
-      Tant que les requêtes sont en cours (isLoading, sans donnée en cache), le prochain match et le dernier résultat sont des squelettes (role="status", aria-busy, texte lecteur d'écran « Chargement… ») et les quatre tuiles montrent « — » sans sous-texte : ni « Aucun match programmé. », ni « Points 0 », ni « Forme 0V ».
+      Tant que les requêtes sont en cours (isLoading, sans donnée en cache), le prochain match et le dernier résultat sont des squelettes (role="status", aria-busy, texte lecteur d'écran « Chargement… ») et les quatre tuiles montrent « — » sans aucun sous-texte (pas même « Ligue 1 ») : ni « Aucun match programmé. », ni « Points 0 », ni « Forme 0V ».
     message: ~
     champs: [squelette-prochain-match, squelette-dernier-resultat, tuiles-stats, stat-position, stat-points, stat-diff, stat-forme]
     statut: sourcee
