@@ -64,7 +64,12 @@ button.retry{font:inherit;font-size:14px;font-weight:600;padding:10px 20px;borde
 </section>
 
 <section id="etat-vide" class="etat">
- <div class="msg"><p class="muted" data-testid="message-vide">Aucune info Football Manager pour le moment.</p></div>
+ <div class="msg" style="padding:32px 16px"><p class="muted" data-testid="message-vide">Aucune info Football Manager pour le moment.</p></div>
+ <div style="max-width:720px"><section class="panel" data-testid="serie">
+    <div class="eyebrow" data-testid="surtitre-serie">La série</div>
+    <h2 data-testid="titre-serie">Football Manager</h2>
+    <p class="lead" data-testid="serie-presentation">Série de simulation de gestion de football : on dirige un club, de la composition d’équipe au mercato, saison après saison. C’est le jeu dans lequel est né le FC Noobz.</p>
+   </section></div>
 </section>
 
 <section id="etat-charge" class="etat">
@@ -96,6 +101,15 @@ button.retry{font:inherit;font-size:14px;font-weight:600;padding:10px 20px;borde
    </section>
   </div>
  </div>
+ <section aria-label="Variante : date non annoncée" style="margin-top:32px;max-width:520px">
+  <p class="eyebrow" style="color:hsl(var(--fg-dim))">Variante (R5) : date non annoncée, plateformes absentes → ligne omise</p>
+  <section class="panel" style="margin-top:8px" data-variante="date-a-confirmer">
+   <div class="eyebrow">À venir</div>
+   <h2>Prochaine sortie</h2>
+   <p class="lead" style="margin:0 0 8px;color:hsl(var(--fg-bright));font-weight:600">Football Manager 27</p>
+   <p class="date" style="font-size:18px;color:hsl(var(--fg-muted))" data-testid="sortie-date">Date à confirmer</p>
+  </section>
+ </section>
  <p class="src" data-testid="source-verification">Infos vérifiées le 11/10/2026 sur <a href="#">footballmanager.com</a>. Les dates peuvent changer.</p>
 </section>
 

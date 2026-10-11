@@ -63,13 +63,13 @@ regles:
   - id: R3
     etat: vide
     enonce: >-
-      Si la source ne contient ni prochaine sortie, ni édition, ni nouveauté, la page affiche ce message à la place des blocs (le bloc « La série », statique, n'est pas concerné : voir R4).
+      Si la source ne contient ni prochaine sortie, ni édition, ni nouveauté, la page affiche ce message à la place des blocs ; le bloc « La série » (statique, fiche R4) reste affiché sous le message, il ne fait pas partie du masque.
     message: "Aucune info Football Manager pour le moment."
-    champs: [message-vide]
+    champs: [message-vide, serie, surtitre-serie, titre-serie, serie-presentation]
     masque: [prochaine-sortie, editions, nouveautes-annoncees, source-verification]
     statut: hypothese
     si_faux: Seul le seuil « rien du tout » ou le libellé changent ; aucune donnée en jeu.
-    tests: ["R3 — vide : le message s'affiche, pas de bloc de données"]
+    tests: ["R3 — vide : le message s'affiche, pas de bloc de données", "R3 — vide : le bloc La série reste affiché"]
   - id: R4
     etat: charge
     enonce: >-
