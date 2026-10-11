@@ -33,7 +33,7 @@ export function JeuxVideoPage() {
         <Link
           to="/fcnoobz"
           data-testid="lien-retour"
-          className="mb-4 inline-flex min-h-[24px] items-center text-[13px] underline"
+          className="mb-4 inline-flex min-h-[44px] items-center text-[13px] underline"
           style={{ color: GREEN }}
         >
           ← FC Noobz
@@ -101,28 +101,24 @@ function Contenu({ data }: { data: JeuxVideoData }) {
     <>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
         <div className="grid gap-6">
-          <Panel testId="prochaine-sortie" eyebrow={['surtitre-prochaine-sortie', 'À venir']} title={['titre-prochaine-sortie', 'Prochaine sortie']}>
-            {sortie ? (
-              <>
-                <p data-testid="sortie-nom" className="mb-2 font-semibold text-fg-bright">
-                  {sortie.nom}
+          {sortie && (
+            <Panel testId="prochaine-sortie" eyebrow={['surtitre-prochaine-sortie', 'À venir']} title={['titre-prochaine-sortie', 'Prochaine sortie']}>
+              <p data-testid="sortie-nom" className="mb-2 font-semibold text-fg-bright">
+                {sortie.nom}
+              </p>
+              <p
+                data-testid="sortie-date"
+                className={sortie.date ? 'num text-[22px] font-bold text-fg-bright' : 'num text-lg font-bold text-fg-muted'}
+              >
+                {formatSortie(sortie.date)}
+              </p>
+              {sortie.plateformes && (
+                <p data-testid="sortie-plateformes" className="mt-2.5 text-[13px] text-fg-muted">
+                  {sortie.plateformes}
                 </p>
-                <p
-                  data-testid="sortie-date"
-                  className={sortie.date ? 'num text-[22px] font-bold text-fg-bright' : 'num text-lg font-bold text-fg-muted'}
-                >
-                  {formatSortie(sortie.date)}
-                </p>
-                {sortie.plateformes && (
-                  <p data-testid="sortie-plateformes" className="mt-2.5 text-[13px] text-fg-muted">
-                    {sortie.plateformes}
-                  </p>
-                )}
-              </>
-            ) : (
-              <p className="text-sm text-fg-muted">Aucune sortie annoncée.</p>
-            )}
-          </Panel>
+              )}
+            </Panel>
+          )}
           <Panel testId="editions" eyebrow={['surtitre-editions', 'Déjà sorties']} title={['titre-editions', 'Éditions précédentes']}>
             <ul>
               {data.editions.map((e) => (
@@ -130,7 +126,7 @@ function Contenu({ data }: { data: JeuxVideoData }) {
                   <span data-testid="edition-nom" className="text-fg-bright">
                     {e.nom}
                   </span>
-                  <span data-testid="edition-date" className="num text-right text-fg-muted">
+                  <span data-testid="edition-date" className="num whitespace-nowrap text-right text-fg-muted">
                     {formatSortie(e.date)}
                   </span>
                 </li>
@@ -162,7 +158,7 @@ function Contenu({ data }: { data: JeuxVideoData }) {
           <>
             {' '}
             sur{' '}
-            {data.sources.map((s, i) => (
+            {[...new Map(data.sources.map((u) => [siteName(u), u])).values()].map((s, i) => (
               <span key={s}>
                 {i > 0 && ', '}
                 <a href={s} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: GREEN }}>

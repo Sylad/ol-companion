@@ -1,6 +1,10 @@
 {
   "verifieLe": "2026-10-11",
-  "sources": ["https://www.footballmanager.com/"],
+  "sources": [
+    "https://www.footballmanager.com/",
+    "https://www.footballmanager.com/news/football-manager-26-launches-4-november",
+    "https://www.footballmanager.com/news/fm24-release-date-confirmed-november-6th"
+  ],
   "prochaineSortie": {
     "nom": "Football Manager 27",
     "date": "2026-11-10",

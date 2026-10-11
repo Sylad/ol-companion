@@ -155,7 +155,7 @@ function FcNoobzLink({ active }: { active: boolean }) {
         className={cn(
           'font-bold tracking-wide',
           active &&
-            'text-[#1d4ed8] [-webkit-text-stroke:0.4px_#000] [text-shadow:0_0_8px_rgba(132,204,22,0.45)]',
+            '[-webkit-text-stroke:0.4px_#000] [text-shadow:0_0_8px_rgba(132,204,22,0.45)]',
         )}
       >
         FC Noobz
