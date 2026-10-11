@@ -65,7 +65,7 @@ export function DashboardHero() {
 
   if (!fixtures && isError) {
     return (
-      <section className="rounded-md bg-surface border border-border p-8">
+      <section className="flex min-h-[260px] items-center justify-center rounded-md bg-surface border border-border p-8">
         <RetryMessage
           message="Impossible de charger le prochain match."
           onRetry={() => void refetch()}
@@ -78,7 +78,7 @@ export function DashboardHero() {
 
   if (!nextMatch) {
     return (
-      <section className="rounded-md bg-surface border border-border p-8 text-center text-fg-muted">
+      <section className="flex min-h-[260px] flex-col items-center justify-center rounded-md bg-surface border border-border p-8 text-center text-fg-muted">
         <p data-testid="message-aucun-match">Aucun match programmé.</p>
         <Link
           to="/fixtures"

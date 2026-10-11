@@ -17,7 +17,7 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
         type="button"
         data-testid={buttonTestId}
         onClick={onRetry}
-        className="min-h-[44px] rounded-md border border-border px-5 text-sm font-semibold text-fg-bright"
+        className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue-bright/10 px-5 text-sm font-semibold text-fg-bright"
       >
         Réessayer
       </button>
