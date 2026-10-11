@@ -1,0 +1,8 @@
+{
+  "lot": "L50",
+  "fiche": "docs/specs/calendrier/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/fixtures.acceptation-L50.test.tsx"
+  ],
+  "vert": false
+}
