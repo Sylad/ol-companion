@@ -38,8 +38,8 @@ regles:
     enonce: Si l'appel échoue, la page affiche l'erreur et un bouton « Réessayer » qui rappelle l'API ; aucun bloc de données n'est montré.
     message: "Impossible de charger l’équipe de France."
     champs: [message-erreur, bouton-reessayer]
-    statut: hypothese
-    si_faux: Le libellé ou la présence du bouton changeraient ; aucune donnée en jeu (le bouton relance une lecture, rien d'irréversible).
+    statut: sourcee
+    source: réponse du lead
     tests: ["R2 — erreur : message et bouton Réessayer", "R2 — Réessayer relance l'appel"]
   - id: R3
     etat: vide
