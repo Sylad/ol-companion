@@ -34,12 +34,19 @@ export function EquipeDeFrancePage() {
   const zoneRef = useRef<HTMLElement>(null);
   const boutonRef = useRef<HTMLButtonElement>(null);
   const reessaye = useRef(false);
+  // Si le nouvel essai réussit, la zone disparaît : le focus passe sur le titre de la page (toujours monté).
+  const titreRef = useRef<HTMLHeadingElement>(null);
+  const reussi = !!data && !isError && !loading;
   useEffect(() => {
-    if (failed && reessaye.current) {
+    if (!reessaye.current) return;
+    if (failed) {
       reessaye.current = false;
       boutonRef.current?.focus();
+    } else if (reussi) {
+      reessaye.current = false;
+      titreRef.current?.focus();
     }
-  }, [failed]);
+  }, [failed, reussi]);
   const empty = !!data && !isError && !data.nextMatch && data.results.length === 0 && data.squad.length === 0;
 
   return (
@@ -51,7 +58,12 @@ export function EquipeDeFrancePage() {
           style={{ background: 'linear-gradient(90deg, hsl(var(--ol-blue)) 0 33%, #fff 33% 66%, hsl(var(--ol-red)) 66%)' }}
         />
         <div className="min-w-0">
-          <h1 data-testid="titre-page" className="font-display text-2xl font-bold leading-tight tracking-tight text-fg-bright lg:text-[34px]">
+          <h1
+            ref={titreRef}
+            tabIndex={-1}
+            data-testid="titre-page"
+            className="font-display text-2xl font-bold leading-tight tracking-tight text-fg-bright outline-none lg:text-[34px]"
+          >
             Équipe de France
           </h1>
           <p data-testid="sous-titre-page" className="mt-1 text-sm text-fg-muted">

@@ -82,6 +82,16 @@ describe('L118 — échec après des blocs affichés', () => {
     await screen.findByTestId('message-erreur');
     await waitFor(() => expect(screen.getByTestId('bouton-reessayer')).toBe(document.activeElement));
   });
+  it('L118 — focus clavier : « Réessayer » qui réussit pose le focus sur le titre de la page', async () => {
+    const { setHandler } = await setup(async () => ({ ok: false, status: 500, json: async () => null }));
+    const user = userEvent.setup();
+    await screen.findByTestId('message-erreur');
+    setHandler(() => new Promise((r) => setTimeout(() => r({ ok: true, status: 200, json: async () => BODY }), 50)));
+    screen.getByTestId('bouton-reessayer').focus();
+    await user.keyboard('{Enter}');
+    await screen.findByTestId('effectif');
+    await waitFor(() => expect(screen.getByTestId('titre-page')).toBe(document.activeElement));
+  });
   it('L118 — hors ligne (requête en pause) : le message de chargement reste affiché', async () => {
     onlineManager.setOnline(false);
     await setup(ok);
