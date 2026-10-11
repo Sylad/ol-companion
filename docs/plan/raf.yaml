@@ -1140,6 +1140,14 @@ lots:
     finished: 2026-10-11
   - id: L114
     title: "Tirs au but : une confrontation à élimination directe perdue aux tirs au but (cumul nul) doit donner « Éliminé » — lire l'équipe qualifiée chez 365scores pour le dernier tour à élimination directe, ou à défaut garder l'ancienne règle (dernier tour KO joué et rien à venir) ; tests CdF 1-1 t.a.b. et EL aller-retour 1-0/0-1 t.a.b.\", status: done }"
+    status: dropped
+    estimate: 0.5
+    created: 2026-10-11
+    finished: 2026-10-11
+    notes:
+      - { date: 2026-10-11, text: "abandonné : créé par erreur (titre d'une autre sous-tâche t1 copié), remplacé" }
+  - id: L115
+    title: "/equipe-de-france, suites de la revue L113 : après « Réessayer » en échec, l'erreur s'affiche au-dessus des anciens blocs (contraire à R2) et aucun indicateur de chargement pendant le nouvel appel (isPending faux en TanStack v5, equipe-de-france.tsx:47/58) ; /api/france : un 200 sans « games » garde 10 min une liste vide, la copie périmée n'est jamais réhorodatée quand 365scores est en panne (3 lectures × 2 essais par requête), âge absent affiché « 0 ans » (france.service.ts:108/123/184)"
     status: todo
     estimate: 0.5
     created: 2026-10-11
