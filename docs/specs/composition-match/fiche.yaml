@@ -10,12 +10,12 @@ etats: [vide, chargement, erreur, charge]
 champs:
   - { id: message-chargement, libelle: Message de chargement de la page match, type: texte, source: statique, obligatoire: true }
   - { id: message-erreur, libelle: Message d'erreur de la page match, type: texte, source: statique, obligatoire: true }
-  - { id: liste-compositions, libelle: Blocs Composition (OL et adversaire), type: liste, source: "GET /api/live-match → lineups", obligatoire: true }
-  - { id: bloc-composition, libelle: Bloc Composition d'une équipe, type: carte, source: "GET /api/live-match → lineups", obligatoire: true }
-  - { id: titre-composition, libelle: Titre « Composition · club », type: texte, source: "GET /api/live-match → équipe", obligatoire: true }
-  - { id: formation-composition, libelle: Pastille de la formation annoncée, type: texte, source: "GET /api/live-match → lineup.formation", obligatoire: false }
-  - { id: rangee-composition, libelle: Rangée de joueurs (une par ligne de la formation, gardien en bas), type: ligne, source: "GET /api/live-match → lineup.starters (yardLine, yardSide)", obligatoire: true }
-  - { id: banc-composition, libelle: Banc sur une ligne, type: texte, source: "GET /api/live-match → lineup.bench", obligatoire: false }
+  - { id: liste-compositions, libelle: Blocs Composition (OL et adversaire), type: liste, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: true }
+  - { id: bloc-composition, libelle: Bloc Composition d'une équipe, type: carte, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: true }
+  - { id: titre-composition, libelle: Titre « Composition · club », type: texte, source: "GET /api/live-match/{gameId}/stats → équipe", obligatoire: true }
+  - { id: formation-composition, libelle: Pastille de la formation annoncée, type: texte, source: "GET /api/live-match/{gameId}/stats → lineup.formation", obligatoire: false }
+  - { id: rangee-composition, libelle: Rangée de joueurs (une par ligne de la formation, gardien en bas), type: ligne, source: "GET /api/live-match/{gameId}/stats → lineup.starters (yardLine, yardSide)", obligatoire: true }
+  - { id: banc-composition, libelle: Banc sur une ligne, type: texte, source: "GET /api/live-match/{gameId}/stats → lineup.bench", obligatoire: false }
   - { id: note-repli, libelle: Note de formation inconnue, type: texte, source: statique, obligatoire: false }
   - { id: bloc-statistiques, libelle: Bloc Statistiques resté seul quand la composition manque, type: carte, source: statique, obligatoire: false }
   - { id: absence-composition, libelle: Annotation de maquette (non affichée à l'écran), type: texte, source: statique, obligatoire: false }
@@ -72,4 +72,4 @@ regles:
     tests: ["R6 — 11 titulaires et banc inchangés"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/live-match", regles: [R1, R2, R3, R4, R5, R6] }
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6] }
