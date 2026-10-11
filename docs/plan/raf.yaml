@@ -1172,16 +1172,18 @@ lots:
     started: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "Rendu par la vague 2026-10-11-1310 : le verrou protégeait encore les tests de L113 (vert, livré) alors que 4e76f31 révise R7 dans la fiche et ses tests ensemble (correct). Attend le lot cadence qui admet ce cas (fiche changée dans le même lot), puis reprise telle quelle." }
+      - { date: 2026-10-11, text: "Prêt (vague 2026-10-11-1330, revues conformes) mais la capture Nouveautés docs/nouveautes/captures/L117-jour-prochain-match.png a été prise sur des données de test : écussons faux (Birmingham pour la France, Ipswich pour l'Azerbaïdjan). À la reprise : refaire la capture sur la vraie API (backend local réel, /api/france de 365scores), même cadrage, régénérer les données Nouveautés ; ne rien changer d'autre." }
     review: { date: 2026-10-11, verdict: "compliant after 1 note (mineur : scellé acceptation-L113.json à refaire par le cycle) — orchestré (vague 2026-10-11-1330, 0 passe(s) de correction)", commit: 4e76f31f6cba54aa503e13e4457fd824a87fb91d }
   - id: L118
     title: "/equipe-de-france, suites de la revue L113 : après « Réessayer » en échec, l'erreur s'affiche au-dessus des anciens blocs (contraire à R2) et aucun indicateur de chargement pendant le nouvel appel (isPending faux en TanStack v5, equipe-de-france.tsx:47/58) ; /api/france : un 200 sans « games » garde 10 min une liste vide, la copie périmée n'est jamais réhorodatée quand 365scores est en panne (3 lectures × 2 essais par requête), âge absent affiché « 0 ans » (france.service.ts:108/123/184)"
     status: doing
-    estimate: 0.5
+    estimate: 1
     visible: true
     created: 2026-10-11
     started: 2026-10-11
     notes:
       - { date: 2026-10-11, text: "Rendu par la vague 2026-10-11-1310 (verrou des tests d'acceptation). À la reprise : ne pas ajouter de cas au fichier d'acceptation de L113 (frontend/src/routes/equipe-de-france.acceptation.test.tsx, verrouillé par acceptation-L113.json) — déplacer le describe « L118 — Réessayer » de 76e9b2c dans equipe-de-france.echec.test.tsx et rendre le fichier d'acceptation à son état après L117. Reprendre APRÈS L117." }
+      - { date: 2026-10-11, text: "Rendu par la vague 2026-10-11-1400 (revue non conforme après 2 passes ; hors ligne en pause et README corrigés dans 1da6476 et 93c3fba). À corriger : MAJEUR equipe-de-france.tsx:30 — le focus est perdu après « Réessayer » (failed = isError && !isFetching démonte la section d'erreur et son bouton pendant le nouvel appel, focus sur body ; mesuré à 390 au clavier et 1440 au clic ; et le nouveau bouton n'a pas le focus quand l'appel échoue de nouveau) — WCAG 2.4.3 : garder le focus sur une cible stable (la zone de statut ou le titre de la section, tabIndex -1) pendant le chargement, puis sur le bouton si l'erreur revient ; test clavier." }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
