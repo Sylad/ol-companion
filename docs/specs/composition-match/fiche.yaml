@@ -48,7 +48,7 @@ regles:
     tests: ["R3 — vide : pas de bloc Composition sans lineup"]
   - id: R4
     etat: charge
-    enonce: "Les rangées d'un bloc suivent la formation annoncée : le gardien seul en bas, puis une rangée par nombre de la formation, de la défense vers l'attaque, attaque en haut. 4-2-3-1 = 5 rangées (1, 4, 2, 3, 1), 4-1-4-1 = 5 rangées (1, 4, 1, 4, 1), jamais 6 ou 7 rangées ; le nombre de lignes visibles est égal au nombre de rangées (une rangée tient sur une seule ligne à toute largeur : N cellules égales, nom tronqué par une ellipse, nom complet en title). Les joueurs sont répartis en triant les 10 joueurs de champ par yardLine puis yardSide et en découpant selon la formation ; dans une rangée, de gauche à droite (yardSide)."
+    enonce: "Les rangées d'un bloc suivent la formation annoncée : le gardien seul en bas, puis une rangée par nombre de la formation, de la défense vers l'attaque, attaque en haut. 4-2-3-1 = 5 rangées (1, 4, 2, 3, 1), 4-1-4-1 = 5 rangées (1, 4, 1, 4, 1), jamais 6 ou 7 rangées ; le nombre de lignes visibles est égal au nombre de rangées (une rangée = une bande horizontale de pastilles, à toute largeur, y compris 320 px ; une pastille ne passe jamais à la ligne suivante, mais son nom peut y tenir sur 2 lignes). Les joueurs sont répartis en triant les 10 joueurs de champ par yardLine puis yardSide et en découpant selon la formation ; dans une rangée, de gauche à droite (yardSide)."
     message: ~
     champs: [liste-compositions, bloc-composition, titre-composition, formation-composition, rangee-composition, banc-composition]
     statut: sourcee
@@ -64,12 +64,20 @@ regles:
     tests: ["R5 — formation absente : rangées par yardLine, note visible, pas de pastille"]
   - id: R6
     etat: charge
-    enonce: "Les rangées, la pastille, le banc, et les couleurs (rouge OL, bleu adversaire sur la bordure) restent ceux du composant actuel ; le numéro de maillot adverse passe à hsl(226 70% 70%) (contraste ≥ 4,5:1, WCAG 1.4.3) ; les rangées deviennent des grilles de N cellules égales. Le découpage en rangées change. Le tri d'une rangée suit yardSide, comme avant."
+    enonce: "Les rangées, la pastille, le banc, et les couleurs (rouge OL, bleu adversaire sur la bordure) restent ceux du composant actuel ; le numéro de maillot adverse passe à hsl(226 70% 70%) (contraste ≥ 4,5:1, WCAG 1.4.3) ; les rangées deviennent des bandes flex centrées (voir R7) ; le nom d'un joueur tient sur 2 lignes au plus (retour à la ligne au tiret, jamais d'ellipse, police 10 px) pour rester lisible à 320 px. Le découpage en rangées change. Le tri d'une rangée suit yardSide, comme avant."
     message: ~
     champs: [banc-composition]
     statut: sourcee
     source: "frontend/src/components/lineup-card.tsx ; docs/qa/expectations.md /match : deux blocs « Composition » de 11"
-    tests: ["R6 — numéro adverse : contraste ≥ 4,5:1", "R6 — 11 titulaires et banc inchangés"]
+    tests: ["R6 — numéro adverse : contraste ≥ 4,5:1", "R6 — 11 titulaires et banc inchangés", "R6 — 320 px : aucun nom tronqué par une ellipse (Maitland-Niles sur 2 lignes)"]
+  - id: R7
+    etat: charge
+    enonce: "Dans un bloc, toutes les pastilles ont la même largeur, celle de la rangée la plus fournie (4 dans les deux formations dessinées), et chaque rangée est centrée dans le bloc : buteur seul, gardien seul et rangée de 2 ou 3 au milieu, comme le terrain de /players. Une rangée = display:flex, justify-content:center, gap 4 px ; pastille = (100 % − (Nmax−1)·4 px) / Nmax."
+    message: ~
+    champs: [rangee-composition]
+    statut: sourcee
+    source: "Sylvain 11-10, note L43 : « l'attaquant et le gardien devraient être centrés »"
+    tests: ["R7 — rangée centrée : 4-2-3-1, les 11 pastilles ont la même largeur ±1 px ; centre de la pastille du buteur et du gardien = centre du bloc ±1 px", "R7 — rangée centrée : 4-1-4-1, rangées de 1, 4, 1, 4, 1 centrées, pastilles de largeur égale"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6] }
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7] }
