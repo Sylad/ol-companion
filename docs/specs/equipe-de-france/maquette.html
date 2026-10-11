@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette — Équipe de France (L113)</title>
+<style>
+:root{--bg:232 25% 5%;--surface:228 21% 8%;--surface-2:226 22% 11%;--border:224 19% 15%;--border-strong:226 18% 21%;--ol-blue:224 64% 33%;--ol-blue-bright:226 56% 51%;--ol-red:0 73% 50%;--ol-red-bright:0 84% 60%;--fg:0 0% 96%;--fg-muted:215 20% 65%;--fg-dim:215 16% 53%;--fg-bright:0 0% 100%;--win:142 71% 36%;--draw:41 91% 41%;--loss:0 73% 50%}
+*{box-sizing:border-box;border-color:hsl(var(--border))}
+html,body{margin:0;min-height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:hsl(var(--fg));background:hsl(var(--bg));
+background-image:radial-gradient(ellipse 130% 55% at 50% 0%,hsl(0 78% 50%/.22),transparent 70%),radial-gradient(ellipse 130% 50% at 50% 100%,hsl(224 80% 50%/.22),transparent 70%);background-attachment:fixed}
+h1,h2,h3,p,ul{margin:0;padding:0} ul{list-style:none}
+.num{font-family:"Geist Mono","JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:hsl(var(--fg-dim))}
+aside{display:none}
+main{padding:24px 20px 88px;max-width:1440px;margin:0 auto}
+nav.bottom{position:fixed;bottom:0;left:0;right:0;display:flex;background:hsl(var(--surface));border-top:1px solid hsl(var(--border));height:64px}
+nav.bottom a{flex:1;display:flex;align-items:center;justify-content:center;font-size:11px;color:hsl(var(--fg-muted))}
+@media(min-width:1024px){
+ aside{display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;width:240px;background:hsl(var(--surface));padding:24px 12px;gap:4px;border-right:1px solid hsl(var(--border))}
+ aside a{padding:9px 12px;border-radius:6px;font-size:14px;color:hsl(var(--fg-muted))}
+ aside a.on{background:hsl(var(--ol-red)/.1);color:hsl(var(--fg-bright))}
+ aside .logo{font-family:Manrope,sans-serif;font-weight:800;color:hsl(var(--fg-bright));padding:0 12px 20px}
+ main{margin-left:240px;padding:40px 32px;max-width:none} .wrap{max-width:1376px;margin:0 auto}
+ nav.bottom{display:none}
+}
+.etat{display:none} .etat:target{display:block} body:not(:has(.etat:target)) #etat-charge{display:block}
+header.top{display:flex;align-items:center;gap:20px;padding-bottom:24px;border-bottom:1px solid hsl(var(--border));margin-bottom:28px}
+.flag{flex:none;width:64px;height:64px;border-radius:50%;border:1px solid hsl(var(--border));background:linear-gradient(90deg,hsl(var(--ol-blue)) 0 33%,#fff 33% 66%,hsl(var(--ol-red)) 66%);}
+h1{font-family:Manrope,sans-serif;font-size:24px;font-weight:700;color:hsl(var(--fg-bright));line-height:1.15;letter-spacing:-.01em}
+header.top p{margin-top:4px;font-size:14px;color:hsl(var(--fg-muted))}
+@media(min-width:1024px){h1{font-size:34px}.flag{width:80px;height:80px}}
+.panel{background:hsl(var(--surface));border:1px solid hsl(var(--border));border-radius:8px;overflow:hidden}
+.panel>header{padding:16px;border-bottom:1px solid hsl(var(--border))}
+h2{font-family:Manrope,sans-serif;font-size:20px;font-weight:700;color:hsl(var(--fg-bright));line-height:1;margin-top:6px}
+.grid{display:grid;gap:24px} @media(min-width:1024px){.grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start}.left{display:grid;gap:24px}}
+.left{display:grid;gap:24px}
+.next{padding:20px 16px;display:grid;gap:16px}
+.teams{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.team{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:Manrope,sans-serif;font-weight:700;color:hsl(var(--fg-bright));text-align:center}
+.crest{width:48px;height:48px;border-radius:50%;background:hsl(var(--surface-2));border:1px solid hsl(var(--border-strong));display:flex;align-items:center;justify-content:center;font-size:12px;color:hsl(var(--fg-muted))}
+.vs{font-size:12px;color:hsl(var(--fg-dim));font-weight:600}
+.when{text-align:center;font-size:14px;color:hsl(var(--fg))} .when small{display:block;margin-top:4px;color:hsl(var(--fg-muted));font-size:12px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid hsl(var(--border))} .row:first-child{border-top:0}
+.badge{flex:none;width:20px;height:20px;border-radius:4px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:hsl(var(--bg))}
+.badge.win{background:hsl(var(--win))}.badge.draw{background:hsl(var(--draw))}.badge.loss{background:hsl(var(--loss))}
+.mid{flex:1;min-width:0} .t{font-size:14px;color:hsl(var(--fg-bright));white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .s{font-size:12px;color:hsl(var(--fg-dim));margin-top:2px}
+.score{font-size:16px;font-weight:600;color:hsl(var(--fg-bright))}
+.squad{padding:16px;display:grid;gap:20px} @media(min-width:1024px){.squad{grid-template-columns:1fr 1fr}}
+.grp h3{margin-bottom:6px}
+.grp li{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid hsl(var(--border));font-size:14px}
+.grp .age{font-size:12px;color:hsl(var(--fg-dim))}
+.msg{padding:80px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.msg p{font-size:14px} .muted{color:hsl(var(--fg-muted))} .err{color:hsl(var(--ol-red-bright))}
+button{font:inherit;font-size:14px;font-weight:600;padding:10px 20px;border-radius:6px;border:1px solid hsl(var(--ol-blue-bright));background:hsl(var(--ol-blue));color:hsl(var(--fg-bright));min-height:44px;cursor:pointer}
+.spin{width:20px;height:20px;border-radius:50%;border:2px solid hsl(var(--border-strong));border-top-color:hsl(var(--fg-muted))}
+.sk{background:hsl(var(--surface-2));border-radius:6px;height:14px}
+.empty-line{padding:24px 16px;text-align:center;font-size:14px;color:hsl(var(--fg-muted))}
+</style></head><body>
+<aside><div class="logo">Olympique Lyonnais</div><a class="">Dashboard</a><a class="">Calendrier</a><a class="">Classement</a><a class="">Joueurs</a><a class="">Actu</a><a class="">Coupes</a><a class="">Carte L1</a><a class="on">Équipe de France</a></aside>
+<main><div class="wrap">
+
+<header class="top">
+ <div class="flag" aria-hidden="true"></div>
+ <div><h1 data-testid="titre-page">Équipe de France</h1><p data-testid="sous-titre-page">Les Bleus · sélection masculine A</p></div>
+</header>
+
+<section id="etat-chargement" class="etat" aria-busy="true">
+ <div class="msg"><div class="spin" aria-hidden="true"></div><p class="muted" data-testid="message-chargement">Chargement de l’équipe de France…</p></div>
+</section>
+
+<section id="etat-erreur" class="etat">
+ <div class="msg"><p class="err" data-testid="message-erreur" role="alert">Impossible de charger l’équipe de France.</p><button type="button" data-testid="bouton-reessayer">Réessayer</button></div>
+</section>
+
+<section id="etat-vide" class="etat">
+ <div class="msg"><p class="muted" data-testid="message-vide">Aucune donnée sur l’équipe de France pour le moment.</p></div>
+</section>
+
+<section id="etat-charge" class="etat">
+ <div class="grid">
+  <div class="left">
+   <section class="panel" data-testid="prochain-match">
+    <header><div class="eyebrow">Prochain rendez-vous</div><h2>Prochain match</h2></header>
+    <div class="next">
+     <div class="teams"><div class="team"><div class="crest">FR</div>France</div><span class="vs">VS</span><div class="team"><div class="crest">AZE</div>Azerbaïdjan</div></div>
+     <div class="when"><span data-testid="prochain-match-date">Jeu. 13/11 · 20h45</span><small data-testid="prochain-match-competition">Qualifications Coupe du monde</small></div>
+    </div>
+   </section>
+   <section class="panel">
+    <header><div class="eyebrow">Forme</div><h2>Derniers résultats</h2></header>
+    <ul data-testid="derniers-resultats"><li class="row" data-testid="resultat-ligne"><span class="badge win" aria-label="Victoire">V</span><div class="mid"><div class="t">France – Ukraine</div><div class="s">Qualifs Coupe du monde · Sam. 10/10</div></div><span class="score num">2-0</span></li><li class="row" data-testid="resultat-ligne"><span class="badge draw" aria-label="Match nul">N</span><div class="mid"><div class="t">France – Islande</div><div class="s">Qualifs Coupe du monde · Mer. 03/09</div></div><span class="score num">1-1</span></li><li class="row" data-testid="resultat-ligne"><span class="badge win" aria-label="Victoire">V</span><div class="mid"><div class="t">France – Italie</div><div class="s">Ligue des nations · Sam. 06/06</div></div><span class="score num">3-1</span></li><li class="row" data-testid="resultat-ligne"><span class="badge loss" aria-label="Défaite">D</span><div class="mid"><div class="t">France – Croatie</div><div class="s">Ligue des nations · Mer. 02/06</div></div><span class="score num">1-2</span></li><li class="row" data-testid="resultat-ligne"><span class="badge win" aria-label="Victoire">V</span><div class="mid"><div class="t">France – Belgique</div><div class="s">Match amical · Sam. 28/03</div></div><span class="score num">2-1</span></li></ul>
+   </section>
+  </div>
+  <section class="panel">
+   <header><div class="eyebrow">Sélection</div><h2>Effectif</h2></header>
+   <div class="squad" data-testid="effectif"><div class="grp"><h3 class="eyebrow">Gardiens <span class="num">(3)</span></h3><ul><li data-testid="joueur-ligne"><span class="nm">Mike Maignan</span><span class="age num">31 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Brice Samba</span><span class="age num">32 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Lucas Chevalier</span><span class="age num">24 ans</span></li></ul></div><div class="grp"><h3 class="eyebrow">Défenseurs <span class="num">(6)</span></h3><ul><li data-testid="joueur-ligne"><span class="nm">William Saliba</span><span class="age num">25 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Dayot Upamecano</span><span class="age num">27 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Jules Koundé</span><span class="age num">27 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Theo Hernandez</span><span class="age num">28 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Ibrahima Konaté</span><span class="age num">27 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Lucas Digne</span><span class="age num">33 ans</span></li></ul></div><div class="grp"><h3 class="eyebrow">Milieux <span class="num">(4)</span></h3><ul><li data-testid="joueur-ligne"><span class="nm">Aurélien Tchouaméni</span><span class="age num">26 ans</span></li><li data-testid="joueur-ligne"><span class="nm">N'Golo Kanté</span><span class="age num">35 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Manu Koné</span><span class="age num">25 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Warren Zaïre-Emery</span><span class="age num">20 ans</span></li></ul></div><div class="grp"><h3 class="eyebrow">Attaquants <span class="num">(5)</span></h3><ul><li data-testid="joueur-ligne"><span class="nm">Kylian Mbappé</span><span class="age num">27 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Michael Olise</span><span class="age num">24 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Ousmane Dembélé</span><span class="age num">29 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Désiré Doué</span><span class="age num">21 ans</span></li><li data-testid="joueur-ligne"><span class="nm">Marcus Thuram</span><span class="age num">29 ans</span></li></ul></div></div>
+  </section>
+ </div>
+<hr style="margin:48px 0 16px;border:0;border-top:1px dashed hsl(var(--border-strong))">
+<section aria-label="Variantes de l’état chargé (annotation de maquette)" style="font-size:12px;color:hsl(var(--fg-dim))">
+ <p class="eyebrow">Variantes de l’état chargé (non rendues ci-dessus)</p>
+ <div class="panel" style="margin-top:12px"><div class="empty-line" data-testid="message-aucun-match">Aucun match programmé.</div></div>
+ <div class="panel" style="margin-top:12px"><div class="empty-line" style="padding:12px 16px" data-testid="message-heure-a-confirmer">Horaire à confirmer</div></div>
+</section>
+</section>
+
+</div></main>
+<nav class="bottom"><a>Dashboard</a><a>Calendrier</a><a>Classement</a><a>Joueurs</a><a>Plus</a></nav>
+</body></html>

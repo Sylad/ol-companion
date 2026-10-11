@@ -1,0 +1,96 @@
+ecran:
+  id: equipe-de-france
+  titre: Équipe de France
+  route: /equipe-de-france
+  lot: L113
+  largeurs: [1440, 390]
+  maquette: docs/specs/equipe-de-france/maquette.html
+etats: [vide, chargement, erreur, charge]
+
+champs:
+  - { id: titre-page, libelle: Titre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: sous-titre-page, libelle: Sous-titre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: message-erreur, libelle: Message d'erreur de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: bouton-reessayer, libelle: Réessayer, type: bouton, source: "action A2", obligatoire: true }
+  - { id: message-vide, libelle: Message d'état vide, type: texte, source: statique, obligatoire: true }
+  - { id: prochain-match, libelle: Bloc du prochain match, type: carte, source: "GET /api/france → nextMatch", obligatoire: true }
+  - { id: prochain-match-date, libelle: Date et heure du prochain match, type: texte, source: "GET /api/france → nextMatch.date, nextMatch.timeConfirmed", obligatoire: true }
+  - { id: prochain-match-competition, libelle: Compétition du prochain match, type: texte, source: "GET /api/france → nextMatch.competition", obligatoire: true }
+  - { id: message-aucun-match, libelle: Message sans match à venir, type: texte, source: statique, obligatoire: false }
+  - { id: message-heure-a-confirmer, libelle: Heure à confirmer, type: texte, source: statique, obligatoire: false }
+  - { id: derniers-resultats, libelle: Liste des derniers résultats, type: liste, source: "GET /api/france → results (5 plus récents)", obligatoire: true }
+  - { id: resultat-ligne, libelle: Ligne de résultat (badge V/N/D, adversaire, compétition, date, score), type: ligne, source: "GET /api/france → results[]", obligatoire: true }
+  - { id: effectif, libelle: Effectif par poste, type: liste, source: "GET /api/france → squad", obligatoire: true }
+  - { id: joueur-ligne, libelle: Ligne de joueur (nom, âge), type: ligne, source: "GET /api/france → squad[]", obligatoire: true }
+
+regles:
+  - id: R1
+    etat: chargement
+    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun des trois blocs.
+    message: "Chargement de l’équipe de France…"
+    champs: [titre-page, sous-titre-page, message-chargement]
+    statut: hypothese
+    si_faux: Seul le libellé (calqué sur « Chargement des coupes… » de /cups) ou un squelette à la place du texte changerait ; aucune donnée en jeu.
+    tests: ["R1 — chargement : le message s'affiche, aucun bloc de données"]
+  - id: R2
+    etat: erreur
+    enonce: Si l'appel échoue, la page affiche l'erreur et un bouton « Réessayer » qui rappelle l'API ; aucun bloc de données n'est montré.
+    message: "Impossible de charger l’équipe de France."
+    champs: [message-erreur, bouton-reessayer]
+    statut: hypothese
+    si_faux: Le libellé ou la présence du bouton changeraient ; aucune donnée en jeu (le bouton relance une lecture, rien d'irréversible).
+    tests: ["R2 — erreur : message et bouton Réessayer", "R2 — Réessayer relance l'appel"]
+  - id: R3
+    etat: vide
+    enonce: Si la source ne rend ni match (joué ou à venir) ni joueur, la page affiche le message d'état vide à la place des trois blocs. Dès qu'un des trois blocs a une donnée, on est dans l'état chargé.
+    message: "Aucune donnée sur l’équipe de France pour le moment."
+    champs: [message-vide]
+    masque: [prochain-match, derniers-resultats, effectif]
+    statut: sourcee
+    source: "demande du lot L113 : « états de chargement, d'erreur et vide » ; seuil « ni match ni joueur » = hypothèse de rédaction sans effet sur les données"
+    tests: ["R3 — vide : le message s'affiche, pas de bloc", "R3 — un seul bloc renseigné : pas d'état vide"]
+  - id: R4
+    etat: charge
+    enonce: La page montre trois blocs, dans cet ordre au téléphone et sur deux colonnes à 1440 px (prochain match et derniers résultats à gauche, effectif à droite) ; leurs données viennent d'un seul appel, lu sur 365scores côté serveur (équipe de France A, competitorId 365scores 5061).
+    message: ~
+    champs: [titre-page, sous-titre-page, prochain-match, prochain-match-date, prochain-match-competition, derniers-resultats, resultat-ligne, effectif, joueur-ligne]
+    statut: sourcee
+    source: "demande du lot L113 : « prochain match, derniers résultats, effectif … données publiques 365scores » ; relevé du 11-10 : /web/squads/?competitorId=5061 rend l'effectif de la France A (Maignan en tête)"
+    tests: ["R4 — chargé : prochain match, derniers résultats et effectif présents", "R4 — la page n'appelle qu'un seul endpoint"]
+  - id: R5
+    etat: charge
+    enonce: Les derniers résultats sont les 5 matchs joués les plus récents de la France, du plus récent au plus ancien, toutes compétitions ; chaque ligne porte le badge V, N ou D vu de la France (nul en jaune, pas de vert décoratif), l'adversaire, la compétition, la date et le score du match (pas de cumul aller-retour).
+    message: ~
+    champs: [derniers-resultats, resultat-ligne]
+    statut: sourcee
+    source: "convention des lignes de match déjà codée (cup-match-row : badge V/N/D, libellé accessible Victoire / Match nul / Défaite) et CLAUDE.md « Calendrier » (score du match, pas de cumul) ; le nombre 5 est une hypothèse de rédaction sans effet sur les données"
+    tests: ["R5 — 5 lignes du plus récent au plus ancien", "R5 — badge V/N/D selon le score de la France", "R5 — le badge a un nom accessible"]
+  - id: R6
+    etat: charge
+    enonce: Sans match à venir connu, le bloc du prochain match garde son titre et affiche ce message à la place des clubs, de la date et de la compétition ; les deux autres blocs restent affichés.
+    message: "Aucun match programmé."
+    champs: [message-aucun-match]
+    statut: sourcee
+    source: "même message que le tableau de bord (docs/qa/expectations.md, section /, « Aucun match programmé. »)"
+    tests: ["R6 — sans match à venir : message dans le bloc, résultats et effectif présents"]
+  - id: R7
+    etat: charge
+    enonce: L'heure du prochain match n'est affichée que si elle est tenue pour fixée ; sinon la date seule est suivie de « Horaire à confirmer », jamais d'une heure de remplissage. Hors des 14 prochains jours, l'heure est tenue pour non fixée, comme pour le calendrier de l'OL.
+    message: "Horaire à confirmer"
+    champs: [message-heure-a-confirmer]
+    statut: hypothese
+    si_faux: "Le seuil de 14 jours (repris de CLAUDE.md L39, où football-data est consulté en plus ; ici 365scores seul) pourrait changer, ou l'heure être toujours montrée ; seul le calcul d'affichage de ce champ change, aucune donnée stockée."
+    tests: ["R7 — match dans plus de 14 jours : « Horaire à confirmer » sans heure", "R7 — match proche : l'heure s'affiche"]
+  - id: R8
+    etat: charge
+    enonce: L'effectif est groupé par poste (Gardiens, Défenseurs, Milieux, Attaquants), avec le nombre de joueurs par groupe ; chaque ligne donne le nom et l'âge, sans lien vers une fiche joueur ni numéro (365scores rend un numéro -1 pour la sélection).
+    message: ~
+    champs: [effectif, joueur-ligne]
+    statut: hypothese
+    si_faux: "Si l'on veut des fiches ou des numéros, des champs s'ajoutent à la ligne ; l'ordre des groupes ou la présence des âges changent sans toucher aux données (les identifiants 365scores de /api/france ne sont de toute façon pas ceux de /player/<id>)."
+    tests: ["R8 — joueurs groupés par poste avec effectifs", "R8 — chaque ligne a un nom et un âge"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /api/france", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
+  - { id: A2, declencheur: bouton-reessayer, appel: "GET /api/france", regles: [R2] }
