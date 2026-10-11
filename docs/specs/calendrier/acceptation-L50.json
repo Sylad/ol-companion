@@ -4,7 +4,7 @@
   "fichiers": [
     "frontend/src/routes/fixtures.acceptation-L50.test.tsx"
   ],
-  "vert": false,
+  "vert": true,
   "empreintes": {
     "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "6be631b7f0b0618e402a4e2bcfd3b34762336192"
   }
