@@ -3,12 +3,13 @@ import { useFixtures } from '@/hooks/use-fixtures';
 import { OL_TEAM_ID, type Fixture } from '@/types/api';
 import { TeamLogo } from './team-logo';
 import { teamShortName } from '@/lib/team-queries';
+import { RetryMessage } from './retry-message';
 import { cn } from '@/lib/utils';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
 export function LastResult() {
-  const { data: fixtures } = useFixtures();
+  const { data: fixtures, isPending, isError, refetch } = useFixtures();
 
   const lastFinished = useMemo<Fixture | null>(() => {
     if (!fixtures) return null;
@@ -18,6 +19,31 @@ export function LastResult() {
       new Date(f.date).getTime() > new Date(latest.date).getTime() ? f : latest,
     );
   }, [fixtures]);
+
+  if (!fixtures && isPending) {
+    return (
+      <section
+        data-testid="squelette-dernier-resultat"
+        role="status"
+        aria-busy="true"
+        className="rounded-md bg-surface border border-border h-[150px] animate-pulse"
+      >
+        <span className="sr-only">Chargement…</span>
+      </section>
+    );
+  }
+  if (!fixtures && isError) {
+    return (
+      <section className="rounded-md bg-surface border border-border p-5">
+        <RetryMessage
+          message="Impossible de charger le dernier résultat."
+          onRetry={() => void refetch()}
+          messageTestId="message-erreur-dernier-resultat"
+          buttonTestId="bouton-reessayer-dernier-resultat"
+        />
+      </section>
+    );
+  }
 
   if (!lastFinished) return null;
 
@@ -48,7 +74,7 @@ export function LastResult() {
   const dateLabel = `${WEEKDAY[d.getDay()]} ${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
 
   return (
-    <section className="rounded-md bg-surface border border-border overflow-hidden">
+    <section data-testid="dernier-resultat" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-4 flex items-center justify-between border-b border-border">
         <div>
           <div className="eyebrow mb-1">Dernier résultat</div>

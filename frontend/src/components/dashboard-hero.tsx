@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Link } from '@tanstack/react-router';
 import { CalendarDays, MapPin, Radio, Shield, Sparkles } from 'lucide-react';
 import { useFixtures } from '@/hooks/use-fixtures';
 import { nextMatchVenue } from '@/lib/stadium';
@@ -7,6 +8,7 @@ import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type Fixture } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
+import { RetryMessage } from './retry-message';
 import { formatKickoffLong, hasKickoffTime } from '@/lib/kickoff';
 
 function countdown(iso: string): string {
@@ -34,7 +36,7 @@ function isSameLocalDay(iso: string): boolean {
 }
 
 export function DashboardHero() {
-  const { data: fixtures } = useFixtures();
+  const { data: fixtures, isPending, isError, refetch } = useFixtures();
   const { data: stadiumImg } = useWikiImage('Groupama Stadium');
 
   const nextMatch = useMemo<Fixture | null>(() => {
@@ -48,10 +50,43 @@ export function DashboardHero() {
     );
   }, [fixtures]);
 
+  if (!fixtures && isPending) {
+    return (
+      <section
+        data-testid="squelette-prochain-match"
+        role="status"
+        aria-busy="true"
+        className="rounded-md bg-surface border border-border min-h-[260px] p-8 animate-pulse"
+      >
+        <span className="sr-only">Chargement…</span>
+      </section>
+    );
+  }
+
+  if (!fixtures && isError) {
+    return (
+      <section className="rounded-md bg-surface border border-border p-8">
+        <RetryMessage
+          message="Impossible de charger le prochain match."
+          onRetry={() => void refetch()}
+          messageTestId="message-erreur-prochain-match"
+          buttonTestId="bouton-reessayer-prochain-match"
+        />
+      </section>
+    );
+  }
+
   if (!nextMatch) {
     return (
       <section className="rounded-md bg-surface border border-border p-8 text-center text-fg-muted">
-        Aucun match programmé.
+        <p data-testid="message-aucun-match">Aucun match programmé.</p>
+        <Link
+          to="/fixtures"
+          data-testid="lien-calendrier"
+          className="mt-3 inline-flex min-h-[44px] items-center text-sm font-semibold text-ol-blue-bright underline"
+        >
+          Voir le calendrier
+        </Link>
       </section>
     );
   }
@@ -77,6 +112,7 @@ export function DashboardHero() {
 
   return (
     <section
+      data-testid="carte-prochain-match"
       className={cn(
         'relative overflow-hidden rounded-md border bg-surface min-h-[260px]',
         isMatchday

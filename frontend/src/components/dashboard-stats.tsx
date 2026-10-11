@@ -2,33 +2,35 @@ import { TrendingUp, Target, Activity, Award } from 'lucide-react';
 import { useStandings } from '@/hooks/use-standings';
 import { useSeasonRankings } from '@/hooks/use-season-rankings';
 import { OL_TEAM_ID, type FormOutcome } from '@/types/api';
+import { RetryMessage } from './retry-message';
 import { cn } from '@/lib/utils';
 
 export function DashboardStats() {
-  const { data: standings } = useStandings();
+  const { data: standings, isError, refetch } = useStandings();
   const { data: rankings } = useSeasonRankings();
 
   const ol = standings?.table.find((t) => t.teamId === OL_TEAM_ID);
   const positionTrend = useMemoTrend(rankings ?? []);
-  const wins = ol?.won ?? 0;
-  const points = ol?.points ?? 0;
   const matchday = standings?.currentMatchday ?? 0;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="space-y-3">
+    <div data-testid="tuiles-stats" className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       <StatCard
         label="Position"
         value={ol ? `${ol.position}` : '—'}
         suffix={ol ? (ol.position === 1 ? 'er' : 'e') : ''}
-        sub={matchday > 0 ? `Ligue 1 · J${matchday}` : 'Ligue 1'}
+        sub={ol ? (matchday > 0 ? `Ligue 1 · J${matchday}` : 'Ligue 1') : ''}
         icon={Award}
+        testId="stat-position"
         trend={positionTrend}
       />
       <StatCard
         label="Points"
-        value={`${points}`}
-        sub={ol ? `${ol.played} matchs · ${(points / Math.max(1, ol.played)).toFixed(2)} ppm` : ''}
+        value={ol ? `${ol.points}` : '—'}
+        sub={ol ? `${ol.played} matchs · ${(ol.points / Math.max(1, ol.played)).toFixed(2)} ppm` : ''}
         icon={Target}
+        testId="stat-points"
       />
       <StatCard
         label="Différence buts"
@@ -38,14 +40,25 @@ export function DashboardStats() {
         }
         sub={ol ? `${ol.goalsFor} pour · ${ol.goalsAgainst} contre` : ''}
         icon={Activity}
+        testId="stat-diff"
       />
       <StatCard
         label="Forme"
-        value={`${wins}V`}
+        value={ol ? `${ol.won}V` : '—'}
         sub={ol ? `${ol.draw}N · ${ol.lost}D` : ''}
         icon={TrendingUp}
+        testId="stat-forme"
         formStrip={ol?.recentForm}
       />
+    </div>
+    {!standings && isError && (
+      <RetryMessage
+        message="Impossible de charger le classement."
+        onRetry={() => void refetch()}
+        messageTestId="message-erreur-stats"
+        buttonTestId="bouton-reessayer-stats"
+      />
+    )}
     </div>
   );
 }
@@ -59,11 +72,12 @@ interface StatCardProps {
   valueClass?: string;
   trend?: 'up' | 'down' | 'flat' | null;
   formStrip?: FormOutcome[];
+  testId: string;
 }
 
-function StatCard({ label, value, suffix, sub, icon: Icon, valueClass, trend, formStrip }: StatCardProps) {
+function StatCard({ label, value, suffix, sub, icon: Icon, valueClass, trend, formStrip, testId }: StatCardProps) {
   return (
-    <div className="rounded-md bg-surface border border-border p-4 lg:p-5">
+    <div data-testid={testId} className="rounded-md bg-surface border border-border p-4 lg:p-5">
       <div className="flex items-center justify-between mb-2">
         <span className="eyebrow">{label}</span>
         <Icon className="h-4 w-4 text-fg-dim" strokeWidth={1.75} />

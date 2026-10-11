@@ -2,6 +2,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Fixture } from '@/types/api';
+import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import { DashboardHero } from './dashboard-hero';
 
 // L39 — le « prochain rendez-vous » du tableau de bord lit /api/fixtures
@@ -75,9 +76,12 @@ function serve(fixtures: Fixture[]) {
 
 function renderHero() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  // Le lien « Voir le calendrier » (L85) a besoin d'un routeur.
+  const root = createRootRoute({ component: DashboardHero });
+  const router = createRouter({ routeTree: root, history: createMemoryHistory({ initialEntries: ['/'] }) });
   return render(
     <QueryClientProvider client={client}>
-      <DashboardHero />
+      <RouterProvider router={router} />
     </QueryClientProvider>,
   );
 }
