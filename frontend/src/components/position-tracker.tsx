@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Info, Loader2 } from 'lucide-react';
 import { useSeasonRankings } from '@/hooks/use-season-rankings';
+import { RetryMessage } from '@/components/retry-message';
 
 interface ChartPoint {
   matchday: number;
@@ -40,7 +41,7 @@ function PositionTooltip({ active, payload }: TooltipProps<number, string>) {
 }
 
 export function PositionTracker() {
-  const { data, isLoading, isError } = useSeasonRankings();
+  const { data, isLoading, isError, refetch } = useSeasonRankings();
 
   return (
     <section className="rounded-md bg-surface border border-border overflow-hidden">
@@ -66,8 +67,14 @@ export function PositionTracker() {
             <span>Chargement de l'évolution…</span>
           </div>
         )}
-        {isError && (
-          <p className="py-12 text-center text-loss">Erreur de chargement.</p>
+        {isError && !data && (
+          <RetryMessage
+            className="flex flex-col items-center gap-3 py-12 text-center"
+            message="Impossible de charger l'évolution du classement."
+            onRetry={() => void refetch()}
+            messageTestId="erreur-position-tracker"
+            buttonTestId="bouton-reessayer-position-tracker"
+          />
         )}
         {data && data.length === 0 && (
           <p className="py-12 text-center text-fg-muted">Aucune donnée d'évolution disponible.</p>

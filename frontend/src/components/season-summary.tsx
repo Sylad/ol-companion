@@ -12,6 +12,7 @@ import { Calendar, Goal, Shield, BarChart3, Loader2 } from 'lucide-react';
 import { useTeamSeasonStats } from '@/hooks/use-team-season-stats';
 import type { TeamSeasonChartPoint, PerCompetitionTeamStats } from '@/types/api';
 import { cn } from '@/lib/utils';
+import { RetryMessage } from '@/components/retry-message';
 import { competitionLong } from '@/lib/competitions';
 
 // Cumulative goal-difference sparkline → bleu OL (trajectoire neutre, pas
@@ -58,7 +59,7 @@ export function ChartTooltip({ active, payload }: TooltipProps<number, string>) 
 }
 
 export function SeasonSummary() {
-  const { data, isLoading, isError } = useTeamSeasonStats();
+  const { data, isLoading, isError, refetch } = useTeamSeasonStats();
 
   return (
     <section className="rounded-md bg-surface border border-border overflow-hidden">
@@ -79,8 +80,14 @@ export function SeasonSummary() {
             <span>Calcul des stats saison…</span>
           </div>
         )}
-        {isError && (
-          <p className="py-8 text-center text-loss">Erreur de chargement.</p>
+        {isError && !data && (
+          <RetryMessage
+            className="flex flex-col items-center gap-3 py-8 text-center"
+            message="Impossible de charger les statistiques de la saison."
+            onRetry={() => void refetch()}
+            messageTestId="erreur-season-summary"
+            buttonTestId="bouton-reessayer-season-summary"
+          />
         )}
         {data && data.played === 0 && (
           <p className="py-8 text-center text-fg-muted">Aucun match joué cette saison.</p>
