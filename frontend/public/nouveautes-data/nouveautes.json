@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-11 14:41",
+  "generated": "2026-10-11 14:56",
   "entries": [
+    {
+      "slug": "2026-10-11-equipe-de-france-suites-de-l118-reessayer-hors-ligne-avec-de",
+      "title": "Équipe de France : l'effectif reste affiché si 365scores répond mal",
+      "date": "2026-10-11",
+      "lots": [
+        "L119"
+      ],
+      "captures": [
+        "captures/L119-equipe-de-france-effectif.png"
+      ],
+      "alts": [
+        "Page Équipe de France : prochain match, derniers résultats et effectif par poste"
+      ],
+      "html": "<p>Sur la page Équipe de France, quand 365scores répond sans la liste des joueurs, l'effectif n'est plus vidé pendant 10 minutes et les dernières données connues restent affichées ; la lecture est retentée au bout d'une minute.</p>\n<p>Si le serveur vient de redémarrer pendant une panne de 365scores, la page affiche l'erreur et « Réessayer » sans que chaque visite relance toute la lecture : un nouvel essai a lieu au plus une fois par minute.</p>\n<p>Hors ligne, « Réessayer » affiche de nouveau « Chargement de l’équipe de France… » même quand des données étaient déjà à l'écran, et le curseur du clavier reste sur la page.</p>"
+    },
     {
       "slug": "2026-10-11-equipe-de-france-suites-de-la-revue-l113-apres-reessayer-en",
       "title": "Équipe de France : « Réessayer » plus clair, effectif sans « 0 ans »",
