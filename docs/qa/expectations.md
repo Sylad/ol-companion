@@ -1,7 +1,7 @@
 # Attendus QA — ol-companion
 
 Ce que l'utilisateur doit trouver sur chaque page de https://ol.sladoire.dev. Lu par l'agent
-`qa-reviewer` de cadence après chaque livraison. Les comptes datent du 03-10-2026 ; une ligne suivie
+`qa-reviewer` de cadence après chaque livraison. Chaque compte porte sa date ; une ligne suivie
 de « à décider » attend une décision de Sylvain. Les textes se comparent sans tenir compte de la casse
 (l'écran met certains libellés en capitales).
 
