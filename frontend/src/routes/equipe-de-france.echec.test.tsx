@@ -1,11 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, onlineManager } from '@tanstack/react-query';
 import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import { EquipeDeFrancePage } from './equipe-de-france';
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  onlineManager.setOnline(true);
+});
 
 const BODY = {
   nextMatch: null,
@@ -63,6 +66,12 @@ describe('L118 — échec après des blocs affichés', () => {
     await screen.findByTestId('message-erreur');
     setHandler(() => new Promise(() => {}));
     await userEvent.setup().click(screen.getByTestId('bouton-reessayer'));
+    expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
+    expect(screen.queryByTestId('message-erreur')).toBeNull();
+  });
+  it('L118 — hors ligne (requête en pause) : le message de chargement reste affiché', async () => {
+    onlineManager.setOnline(false);
+    await setup(ok);
     expect(await screen.findByTestId('message-chargement')).toBeInTheDocument();
     expect(screen.queryByTestId('message-erreur')).toBeNull();
   });

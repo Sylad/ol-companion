@@ -25,7 +25,8 @@ const POSITION_GROUPS = [
 export function EquipeDeFrancePage() {
   const { data, isPending, isError, isFetching, refetch } = useFrance();
   // TanStack v5 : `isPending` reste faux quand des données existent déjà, « Réessayer » se lit donc sur `isFetching`.
-  const loading = isFetching && (isPending || isError);
+  // Hors ligne la requête est en pause (`isPending` vrai, `isFetching` faux) : le chargement reste affiché.
+  const loading = isPending || (isError && isFetching);
   const failed = isError && !isFetching;
   const empty = !!data && !isError && !data.nextMatch && data.results.length === 0 && data.squad.length === 0;
 
