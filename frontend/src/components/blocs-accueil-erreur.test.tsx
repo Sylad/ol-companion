@@ -46,6 +46,14 @@ describe.each([
     await waitFor(() => expect(screen.queryByRole('button', { name: 'Réessayer' })).not.toBeInTheDocument());
   });
 
+  it('R9 — le message porte l’id de champ de la fiche', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 500, json: async () => ({}) })));
+    renderWith(ui);
+    await screen.findByRole('alert');
+    const id = _nom === 'OL en chiffres' ? 'message-erreur-season-summary' : 'message-erreur-position-tracker';
+    expect(screen.getByTestId(id)).toBe(screen.getByRole('alert'));
+  });
+
   it('R9 — données en cache puis échec du refetch : rien n’est effacé, aucun message', async () => {
     let fail = false;
     const fetchMock = vi.fn(() =>

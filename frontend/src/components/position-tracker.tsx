@@ -72,7 +72,7 @@ export function PositionTracker() {
             className="flex flex-col items-center gap-3 py-12 text-center"
             message="Impossible de charger l'évolution du classement."
             onRetry={() => void refetch()}
-            messageTestId="erreur-position-tracker"
+            messageTestId="message-erreur-position-tracker"
             buttonTestId="bouton-reessayer-position-tracker"
           />
         )}

@@ -85,7 +85,7 @@ export function SeasonSummary() {
             className="flex flex-col items-center gap-3 py-8 text-center"
             message="Impossible de charger les statistiques de la saison."
             onRetry={() => void refetch()}
-            messageTestId="erreur-season-summary"
+            messageTestId="message-erreur-season-summary"
             buttonTestId="bouton-reessayer-season-summary"
           />
         )}
