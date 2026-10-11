@@ -851,11 +851,12 @@ lots:
   - id: L85
     title: "Accueil : pendant le chargement et en erreur réseau, « Aucun match programmé. », « Points 0 », « Forme 0V » s'affichent comme des valeurs, et « Erreur de chargement. » n'a pas de Réessayer — squelettes ou « — » tant que isLoading, message + refetch si isError, état vide réel avec lien vers le calendrier (dashboard-hero, last-result, dashboard-stats) (revue UX L2)"
     public: "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     screen: journey
     created: 2026-10-09
+    started: 2026-10-11
   - id: L86
     title: "Accueil : les tuiles comptent le match en cours comme joué et perdu (« 6 matchs · 1.83 ppm », « 2N · 1D » à la 56e de Lens – Lyon) quand la pastille Ligue 1 de la même page dit 5 matchs · 0D — exclure le match live du calcul ou l'étiqueter (revue UX L2)"
     public: "Accueil : un match en cours n'est plus compté comme joué dans les tuiles"
