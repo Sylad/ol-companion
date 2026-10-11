@@ -1165,10 +1165,11 @@ lots:
       - { date: 2026-10-11, text: "abandonné : recréé en L117 (lot visible : modifie l'écran)" }
   - id: L117
     title: "/equipe-de-france : afficher la date connue du prochain match (jeu. 12/11) au lieu de « Date et horaire à confirmer » — la règle L47 (unconfirmedDay, lib/kickoff.ts:53) traite un jeudi de sélection comme une journée de Ligue 1 au jour inconnu ; pour les Bleus n'annoncer « à confirmer » que pour l'heure (fiche R7 à corriger), ligne shows dans docs/qa/expectations.md — QA prod L113 11-10"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-11
+    started: 2026-10-11
   - id: L118
     title: "/equipe-de-france, suites de la revue L113 : après « Réessayer » en échec, l'erreur s'affiche au-dessus des anciens blocs (contraire à R2) et aucun indicateur de chargement pendant le nouvel appel (isPending faux en TanStack v5, equipe-de-france.tsx:47/58) ; /api/france : un 200 sans « games » garde 10 min une liste vide, la copie périmée n'est jamais réhorodatée quand 365scores est en panne (3 lectures × 2 essais par requête), âge absent affiché « 0 ans » (france.service.ts:108/123/184)"
     status: todo
