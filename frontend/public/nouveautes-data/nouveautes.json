@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-11 21:04",
+  "generated": "2026-10-11 21:53",
   "entries": [
+    {
+      "slug": "2026-10-11-accueil-pas-de-faux-aucun-match-au-chargement-reessayer-en-c",
+      "title": "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur",
+      "date": "2026-10-11",
+      "lots": [
+        "L85"
+      ],
+      "captures": [
+        "captures/L85-accueil-erreur.png"
+      ],
+      "alts": [
+        "Accueil quand le serveur ne répond pas : messages « Impossible de charger… » avec bouton Réessayer, tuiles à « — »"
+      ],
+      "html": "<p>Sur l'accueil, plus de fausses valeurs pendant le chargement : le prochain match et le dernier résultat sont remplacés par un cadre « Chargement… », et les quatre tuiles (position, points, différence de buts, forme) affichent « — » au lieu de « Points 0 » ou « Forme 0V ». Si le serveur ne répond pas, chaque bloc le dit (« Impossible de charger le prochain match. », « … le dernier résultat. », « … le classement. ») avec un bouton « Réessayer ». Quand il n'y a vraiment aucun match à venir, la carte l'écrit et propose un lien « Voir le calendrier ». Avec les données, l'écran reste comme avant.</p>\n<h3>Hypothèses</h3>\n<ul><li>R3 — l'erreur du classement ne tient pas compte de la tendance de position ; si elle doit en tenir compte, seule la condition du message change.</li><li>R4 — le dernier résultat a son propre message et son propre « Réessayer » (même appel que le prochain match) ; un seul bouton suffirait, au prix d'un message en moins.</li><li>R7 — sans match terminé, le bloc « Dernier résultat » reste absent sans message ; si un message est voulu, un champ s'ajoute.</li></ul>"
+    },
     {
       "slug": "2026-10-11-calendrier-une-liste-plus-compacte-regroupee-par-mois",
       "title": "Calendrier : une liste plus compacte, regroupée par mois",
