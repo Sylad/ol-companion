@@ -165,7 +165,7 @@ export function MatchPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20 text-fg-dim">
+      <div data-testid="message-chargement" className="flex items-center justify-center py-20 text-fg-dim">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
         Chargement du match…
       </div>
@@ -174,7 +174,7 @@ export function MatchPage() {
   if (isError || !data) {
     return (
       <div className="space-y-3 max-w-md mx-auto text-center py-20">
-        <p className="text-loss font-semibold">Match introuvable</p>
+        <p data-testid="message-erreur" className="text-loss font-semibold">Match introuvable</p>
         <Link to="/" className="text-fg-muted underline text-sm">Retour à l'accueil</Link>
       </div>
     );
@@ -359,7 +359,7 @@ export function MatchPage() {
 
       {/* Stats + compo adverse */}
       <div className="space-y-4 min-w-0">
-      <section className="rounded-md bg-surface border border-border overflow-hidden">
+      <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-3 border-b border-border">
           <div className="eyebrow">Statistiques</div>
         </header>

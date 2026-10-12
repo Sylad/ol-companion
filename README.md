@@ -42,6 +42,8 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
 
 ### Page match — timeline + shot map + stats équipe + top performers
 
+Les blocs **Composition** (un par équipe, sous « Joueurs en vue » et « Statistiques ») suivent la formation annoncée (L43) : gardien seul en bas, puis une rangée par nombre de la formation, attaque en haut (4-2-3-1 = 5 rangées de 1, 4, 2, 3, 1 ; 4-1-4-1 = 1, 4, 1, 4, 1). Rangées centrées, pastilles de même largeur (celle de la rangée la plus fournie), numéro au-dessus du nom ; un nom ne se coupe qu'au tiret ou à l'espace, 10 px au lieu de 11 s'il a un mot de plus de 10 lettres, jamais d'ellipse. Numéro adverse en `hsl(226 70% 70%)` (≥ 4,5:1). Formation absente ou ne totalisant pas 10 joueurs de champ : repli par `yardLine` avec la note « Formation inconnue… ». Tests : `frontend/src/routes/match.composition-L43.test.tsx`.
+
 La page porte un `h1` masqué visuellement (« Lyon – Nice ») pour les lecteurs d'écran et le contrôle QA (L66).
 
 ![Match live avec shot map et stats](./docs/screenshots/match-live.png)
