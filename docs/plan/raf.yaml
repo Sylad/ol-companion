@@ -1284,11 +1284,12 @@ lots:
     created: 2026-10-12
   - id: L127
     title: "Page match à 320 px : « Frankowski » (10 lettres) déborde de 4 px de sa pastille — le passage en 10 px de R8 se fait sur w.length > 10 (lineup-card.tsx:82) au lieu de la largeur ; corriger le seuil ou mesurer, test (UX L43)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-12
     notes:
       - { date: 2026-10-12, text: "QA prod L43 12-10 (7e54b93) : à 320 px, 7 noms débordent sur 4 matchs, pas seulement Frankowski — Omobamidele +10,5 px et Augustinsson +6,5 px même en 10 px, Coosemans +5,5, Thomasson +5,5, Greenwood +3,5, M. Ouédraogo +1,5, Guendouzi +0,5 ; toujours à droite (nom calé à gauche). Corriger le seuil ne suffit pas : mesurer la largeur du texte contre la pastille (ou taille décroissante jusqu à tenir), R8 tient alors pour tout nom ; test avec ces noms. Captures tmp/qa-ol-L43/gap-match_*-320-bloc1.png." }
+    started: 2026-10-12
   - id: L128
     title: "Page match à 320 px : la pastille de formation passe sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 ») quand le nom du club est long (Anderlecht, Fenerbahçe SK) — garder la formation sur une ligne ; ligne d'attente dans docs/qa/expectations.md (QA L43)"
     status: todo
