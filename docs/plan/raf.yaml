@@ -1305,9 +1305,10 @@ lots:
     review: { date: 2026-10-12, verdict: "compliant (0 bloquant, 0 majeur, 1 note mineure : le test vérifie des classes CSS, pas le rendu). Les 4 choix d'interprétation de l'auteur tiennent. Tests : 511/511 verts, tsc sans erreur. — orchestré (vague 2026-10-12-2200, 0 passe(s) de correction)", commit: ccec1787337adda8bc80fc98af68bc9cb8f307db }
   - id: L129
     title: "Page match d'un match à venir : compositions 365scores affichées 3 jours avant le coup d'envoi comme confirmées (Lyon – Crystal Palace) et numéros de maillot 0 (7 joueurs) — étiqueter « composition probable » si la source le permet, ne pas afficher un numéro 0 ; ligne never dans docs/qa/expectations.md (QA L43)"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-10-12
+    started: 2026-10-12
   - id: L130
     title: "Page match : après un élargissement sans recharger (rotation du téléphone 390→844, fenêtre 320→1440), les noms réduits par R8 gardent leur petite taille (Augustinsson 8 px au lieu de 10, Coosemans 9 au lieu de 11) — observer la pastille, pas le span du nom (lineup-card.tsx, ResizeObserver) ; corriger aussi l'exemple de la fiche (Frankowski à 9 px à 320, pas 10) (QA L127 12-10)"
     status: done
