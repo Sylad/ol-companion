@@ -43,13 +43,16 @@ export function KnowledgeHeader({ compact = false }: { compact?: boolean }) {
       <div className={cn('min-w-0 flex-1', compact && 'flex flex-wrap items-baseline gap-x-2 lg:block')}>
         <h1
           className={cn(
-            'font-display lg:text-[34px] font-bold text-fg-bright leading-tight tracking-tight',
+            'font-display font-bold text-fg-bright tracking-tight',
             compact ? 'text-base' : 'text-2xl',
+            // Après les tailles : tailwind-merge retire un `leading-*` placé avant `text-base` / `text-2xl` / `lg:text-[34px]`
+            // (une taille de police impose sa hauteur de ligne). Au bureau : 34 px, leading-tight, comme avant L50.
+            'lg:text-[34px] lg:leading-tight',
           )}
         >
           Olympique Lyonnais
         </h1>
-        <p className={cn('text-sm text-fg-muted lg:mt-1', compact ? 'text-xs' : 'mt-1')}>{subtitle}</p>
+        <p className={cn('text-sm text-fg-muted lg:mt-1', compact ? 'text-xs lg:text-sm' : 'mt-1')}>{subtitle}</p>
       </div>
     </header>
   );
