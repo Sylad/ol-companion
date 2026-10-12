@@ -48,6 +48,7 @@ Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 dans l'ordre que donne isHome.
 - shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; « Classement en direct » avec 5 lignes dont Lyon
 - never: « Match introuvable » ; « Lien incomplet »
+- never: à 320 px, une formation de la pastille « Composition » coupée sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 »), même avec un nom de club long (Anderlecht, Fenerbahçe SK)
 - api: /api/live-match/<gameId>/stats
 
 ## /fixtures

@@ -28,11 +28,11 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
   return (
     <section data-testid="bloc-composition" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between gap-2">
-        <div data-testid="titre-composition" className="eyebrow truncate">Composition · {teamName}</div>
+        <div data-testid="titre-composition" className="eyebrow truncate min-w-0">Composition · {teamName}</div>
         {known && lineup.formation && (
           <span
             data-testid="formation-composition"
-            className={cn('text-[10px] font-bold tabular-nums num px-2 py-0.5 rounded-sm border', chipClass)}
+            className={cn('shrink-0 whitespace-nowrap text-[10px] font-bold tabular-nums num px-2 py-0.5 rounded-sm border', chipClass)}
           >
             {lineup.formation}
           </span>
