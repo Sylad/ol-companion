@@ -105,7 +105,7 @@ function PlayerChip({
       title={`${player.name}${player.positionShort ? ` · ${positionShortFr(player.positionShort)}` : ''}`}
       style={{ flex: `0 0 ${width}`, borderColor }}
       className={cn(
-        'flex flex-col items-center text-center gap-0.5 min-w-0 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight text-fg',
+        'flex flex-col items-center justify-center text-center gap-0.5 min-w-0 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight text-fg',
       )}
     >
       {hasJersey(player.jerseyNumber) && (

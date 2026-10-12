@@ -102,4 +102,20 @@ describe('Page match — match à venir (L129)', () => {
     expect(within(ol).queryByText('0')).toBeNull();
     expect(within(ol).getByTestId('banc-composition').textContent).not.toMatch(/\b0\b/);
   });
+
+  it('joueur sans numéro dans une rangée de numérotés : pastille centrée verticalement (revue UX)', () => {
+    // Les pastilles d'une rangée s'étirent à la même hauteur : sans centrage, le nom du joueur
+    // sans numéro reste collé en haut (mesuré : 5 px du haut contre 21 px pour un numéroté).
+    const bare = (x: LiveMatchLineupPlayer) => (x.name === 'Cherki' ? { ...x, jerseyNumber: 0 } : x);
+    hook = { isLoading: false, isError: false, data: stats({
+      home: lineup('4-2-3-1', OL_421.map(bare), BENCH_OL),
+      away: lineup('4-1-4-1', OPP_4141, BENCH_OPP),
+    }) };
+    render(<MatchPage />);
+    const chipOf = (name: string) => within(blocks()[0]).getByText(name).parentElement as HTMLElement;
+    expect(chipOf('Cherki').className).toContain('justify-center');
+    // Les numérotés gardent la même pastille : numéro puis nom, centrés.
+    expect(chipOf('Fofana').className).toContain('justify-center');
+    expect(chipOf('Fofana').firstElementChild).toHaveTextContent('7');
+  });
 });
