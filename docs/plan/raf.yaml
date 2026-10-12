@@ -1306,12 +1306,17 @@ lots:
   - id: L129
     title: "Page match d'un match à venir : compositions 365scores affichées 3 jours avant le coup d'envoi comme confirmées (Lyon – Crystal Palace) et numéros de maillot 0 (7 joueurs) — étiqueter « composition probable » si la source le permet, ne pas afficher un numéro 0 ; ligne never dans docs/qa/expectations.md (QA L43)"
     public: "Page match : une composition « probable » tant qu'elle n'est pas confirmée"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-12
     started: 2026-10-12
+    ux: { date: 2026-10-12, verdict: "conforme après 1 correction : étiquette « Composition probable » trouvée et comprise, contraste 4,91:1 (≥ 4,5), placée sous l'en-tête sans toucher la pastille de formation ; nom d'un joueur sans numéro recentré (5/20,8 px → 12,9/12,9 px, 316ccff) ; notes hors lot : en-tête « COMPOSITION · CRYSTA… » tronqué à 320 px, virgules ambiguës au banc" }
+    review: { date: 2026-10-12, verdict: "conforme : 8 commits, jest 377 + e2e 5, vitest 514, builds et raf check verts, test scellé L43 intact ; mineur : la fixture réelle est en anglais (langId=1) alors que le service lit langId=15 — vérifié par le lead : « Non confirmé » en français → probable, la règle tient", commit: 316ccffa3b262851e9c32231cb684c9f2eb85cac }
+    notes:
+      - { date: 2026-10-12, text: "Fixture réelle capturée en langId=1 ; en production (langId=15) 365scores renvoie « Non confirmé » (vérifié le 12-10 sur 4828743) — même verdict. Hors lot : empreinte du verrou acceptation-L43.json (38bf30a9…) ≠ fichier actuel (da084d40…) depuis L127/L130" }
+    finished: 2026-10-12
   - id: L130
     title: "Page match : après un élargissement sans recharger (rotation du téléphone 390→844, fenêtre 320→1440), les noms réduits par R8 gardent leur petite taille (Augustinsson 8 px au lieu de 10, Coosemans 9 au lieu de 11) — observer la pastille, pas le span du nom (lineup-card.tsx, ResizeObserver) ; corriger aussi l'exemple de la fiche (Frankowski à 9 px à 320, pas 10) (QA L127 12-10)"
     status: done

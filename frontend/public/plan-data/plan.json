@@ -353,8 +353,9 @@
     {
       "id": "L129",
       "title": "Page match : une composition « probable » tant qu'elle n'est pas confirmée",
-      "status": "doing",
-      "started": "2026-10-12"
+      "status": "done",
+      "started": "2026-10-12",
+      "finished": "2026-10-12"
     }
   ]
 }
