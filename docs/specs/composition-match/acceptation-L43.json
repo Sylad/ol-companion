@@ -1,0 +1,8 @@
+{
+  "lot": "L43",
+  "fiche": "docs/specs/composition-match/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/match.composition-L43.test.tsx"
+  ],
+  "vert": false
+}
