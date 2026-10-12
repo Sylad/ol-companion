@@ -1298,9 +1298,10 @@ lots:
     finished: 2026-10-12
   - id: L128
     title: "Page match à 320 px : la pastille de formation passe sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 ») quand le nom du club est long (Anderlecht, Fenerbahçe SK) — garder la formation sur une ligne ; ligne d'attente dans docs/qa/expectations.md (QA L43)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-12
+    started: 2026-10-12
   - id: L129
     title: "Page match d'un match à venir : compositions 365scores affichées 3 jours avant le coup d'envoi comme confirmées (Lyon – Crystal Palace) et numéros de maillot 0 (7 joueurs) — étiqueter « composition probable » si la source le permet, ne pas afficher un numéro 0 ; ligne never dans docs/qa/expectations.md (QA L43)"
     status: todo
