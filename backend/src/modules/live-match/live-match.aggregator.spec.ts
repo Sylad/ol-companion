@@ -278,6 +278,31 @@ describe('toLineups — match à venir (L129)', () => {
     const p = [...home.starters, ...home.bench].find((x) => x.id === id)!;
     expect(p.jerseyNumber).toBeNull();
   });
+
+  it('charge réelle 365scores (Lyon – Crystal Palace, 15/10, gameId 4828743, composition « NotConfirmed »)', () => {
+    const real = JSON.parse(
+      fs.readFileSync(
+        path.resolve(__dirname, '../../../test/fixtures/365_game_lyon_crystal_palace_upcoming_not_confirmed.json'),
+        'utf-8',
+      ),
+    );
+    // Les deux compositions sont annoncées « NotConfirmed » alors que le match est à venir (statusGroup 2).
+    expect(real.game.homeCompetitor.lineups.status).toBe('NotConfirmed');
+    expect(real.game.awayCompetitor.lineups.status).toBe('NotConfirmed');
+    const lineups = aggregate(real).lineups!;
+    expect(lineups.home.probable).toBe(true);
+    expect(lineups.away.probable).toBe(true);
+
+    // Dans cette charge, 7 des titulaires/remplaçants (1 Lyon, 6 Crystal Palace) ont le numéro de remplissage 0.
+    const players = [lineups.home, lineups.away].flatMap((t) => [...t.starters, ...t.bench]);
+    expect(players.length).toBeGreaterThan(40);
+    expect(players.filter((p) => p.jerseyNumber === 0)).toEqual([]);
+    expect(players.every((p) => p.jerseyNumber === null || p.jerseyNumber > 0)).toBe(true);
+    const unnumbered = [4941908, 50752231, 75420191, 79316114, 1287557, 79291971, 64741566];
+    for (const id of unnumbered) expect(players.find((p) => p.id === id)!.jerseyNumber).toBeNull();
+    // Les numéros réels, eux, restent affichés (Šulc, n° 10).
+    expect(players.find((p) => p.id === 42213317)!.jerseyNumber).toBe(10);
+  });
 });
 
 describe('événements — noms des joueurs résolus depuis game.members[]', () => {
