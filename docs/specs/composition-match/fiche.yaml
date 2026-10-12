@@ -80,12 +80,12 @@ regles:
     tests: ["R7 — rangée centrée : 4-2-3-1, les 11 pastilles ont la même largeur ±1 px ; centre de la pastille du buteur et du gardien = centre du bloc ±1 px", "R7 — rangée centrée : 4-1-4-1, rangées de 1, 4, 1, 4, 1 centrées, pastilles de largeur égale"]
   - id: R8
     etat: charge
-    enonce: "La pastille est verticale : le numéro de maillot au-dessus, le nom dessous sur toute la largeur de la pastille, centrés. Un nom ne se coupe qu'au tiret (ou à l'espace) : overflow-wrap:normal, hyphens:manual, jamais d'ellipse ni de line-clamp, jamais de coupure en milieu de mot (« Frankowski » reste entier, « Maitland-Niles » passe sur 2 lignes après le tiret). Taille du nom 11 px ; un nom sans tiret qui dépasse encore la pastille passe à 10 px (à 320 px dans la maquette)."
+    enonce: "La pastille est verticale : le numéro de maillot au-dessus, le nom dessous sur toute la largeur de la pastille, centrés. Un nom ne se coupe qu'au tiret (ou à l'espace) : overflow-wrap:normal, hyphens:manual, jamais d'ellipse ni de line-clamp, jamais de coupure en milieu de mot (« Frankowski » reste entier, « Maitland-Niles » passe sur 2 lignes après le tiret). Le nom est mesuré contre la pastille : sa taille descend 11 → 10 → 9 → 8 px jusqu'à ce que le mot le plus long tienne, plancher 8 px (à 320 px, « Frankowski » passe à 10 px, « Omobamidele » à 9 px ou moins)."
     message: ~
     champs: [rangee-composition]
     statut: sourcee
-    source: "décision lead du 11-10 (~23 h 50) d'après R6 et la règle de Sylvain (R7) : pastille verticale, coupure au tiret seulement, 11 → 10 px, jamais d'ellipse"
-    tests: ["R8 — 320, 390 et 1440 px : aucun nom coupé ailleurs qu'après un tiret (ni ellipse, ni débordement de la pastille)", "R8 — pastille : le numéro est au-dessus du nom (même axe vertical, numéro plus haut)", "R8 — nom sans tiret trop long : 10 px, jamais coupé en milieu de mot"]
+    source: "décision lead du 11-10 (~23 h 50) d'après R6 et la règle de Sylvain (R7) : pastille verticale, coupure au tiret seulement, jamais d'ellipse ; révisée par L127 d'après la QA prod L43 du 12-10 (7 noms débordaient à 320 px) : taille mesurée 11 → 8 px"
+    tests: ["R8 — 320, 390 et 1440 px : aucun nom coupé ailleurs qu'après un tiret (ni ellipse, ni débordement de la pastille)", "R8 — pastille : le numéro est au-dessus du nom (même axe vertical, numéro plus haut)", "R8 — nom sans tiret trop long : réduit, jamais coupé en milieu de mot", "R8 — mesure : chaque nom prend la plus grande taille qui tient dans la pastille (7 noms de la QA 12-10)"]
 
 actions:
   - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
