@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Link } from '@tanstack/react-router';
 import { CalendarDays, MapPin, Radio, Shield, Sparkles } from 'lucide-react';
-import { useFixtures } from '@/hooks/use-fixtures';
+import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { nextMatchVenue } from '@/lib/stadium';
 import { useWikiImage } from '@/hooks/use-wiki-image';
 import { TeamLogo } from './team-logo';
-import { OL_TEAM_ID, type Fixture } from '@/types/api';
+import { OL_TEAM_ID, type SeasonMatch } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
@@ -36,10 +36,11 @@ function isSameLocalDay(iso: string): boolean {
 }
 
 export function DashboardHero() {
-  const { data: fixtures, isPending, isError, refetch } = useFixtures();
+  // Toutes les compétitions suivies (L45) : /api/fixtures n'a que la Ligue 1.
+  const { data: fixtures, isPending, isError, refetch } = useSeasonMatches();
   const { data: stadiumImg } = useWikiImage('Groupama Stadium');
 
-  const nextMatch = useMemo<Fixture | null>(() => {
+  const nextMatch = useMemo<SeasonMatch | null>(() => {
     if (!fixtures) return null;
     const upcoming = fixtures.filter(
       (f) => f.status === 'SCHEDULED' || f.status === 'TIMED' || f.status === 'IN_PLAY',
@@ -144,7 +145,7 @@ export function DashboardHero() {
             )}>
               {pulseLabel}
             </span>
-            <span className="text-xs text-fg-muted">· {nextMatch.competition}{nextMatch.matchday ? ` · J${nextMatch.matchday}` : ''}</span>
+            <span className="text-xs text-fg-muted">· {nextMatch.competition}{nextMatch.matchday ? ` · J${nextMatch.matchday}` : nextMatch.round ? ` · ${nextMatch.round}` : ''}</span>
           </div>
 
           <div className="flex items-center gap-4 lg:gap-6">

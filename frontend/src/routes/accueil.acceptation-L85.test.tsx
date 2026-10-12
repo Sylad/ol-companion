@@ -16,6 +16,7 @@ const pending = (): Promise<Res> => new Promise(() => {});
 
 let calls: string[] = [];
 let fixturesHandler: () => Promise<Res>;
+let seasonHandler: () => Promise<Res>;
 let standingsHandler: () => Promise<Res>;
 
 const DAY = 86_400_000;
@@ -39,6 +40,7 @@ const standings = (table: unknown[]) => okJson({ season: '2026', updatedAt: '202
 beforeEach(() => {
   calls = [];
   fixturesHandler = async () => okJson([NEXT, LAST]);
+  seasonHandler = async () => okJson([NEXT, LAST]);
   standingsHandler = async () => standings([OTHER_ROW, OL_ROW]);
   vi.stubGlobal(
     'fetch',
@@ -46,6 +48,7 @@ beforeEach(() => {
       const u = String(url);
       calls.push(u);
       if (u === '/api/fixtures') return fixturesHandler();
+      if (u === '/api/season-matches') return seasonHandler();
       if (u === '/api/standings') return standingsHandler();
       return { ok: false, status: 404, json: async () => null };
     }),
@@ -88,6 +91,7 @@ function expectDashes() {
 describe('R1 — chargement', () => {
   beforeEach(() => {
     fixturesHandler = pending;
+    seasonHandler = pending;
     standingsHandler = pending;
   });
   it('R1 — chargement : squelettes et « — », aucune valeur factice', async () => {
@@ -119,7 +123,7 @@ describe('R1 — chargement', () => {
 
 describe('R2 — erreur des matchs', () => {
   beforeEach(() => {
-    fixturesHandler = async () => fail();
+    seasonHandler = async () => fail();
   });
   it('R2 — erreur : message et bouton Réessayer du prochain match', async () => {
     renderPage();
@@ -133,9 +137,9 @@ describe('R2 — erreur des matchs', () => {
     const user = userEvent.setup();
     renderPage();
     const btn = await screen.findByTestId('bouton-reessayer-prochain-match', undefined, SLOW);
-    const before = count('/api/fixtures');
+    const before = count('/api/season-matches');
     await user.click(btn);
-    await waitFor(() => expect(count('/api/fixtures')).toBeGreaterThan(before));
+    await waitFor(() => expect(count('/api/season-matches')).toBeGreaterThan(before));
   });
 });
 
@@ -180,7 +184,7 @@ describe('R4 — erreur du dernier résultat', () => {
     await user.click(btn);
     await waitFor(() => expect(count('/api/fixtures')).toBeGreaterThan(before));
     await screen.findByTestId('squelette-dernier-resultat');
-    expect(tid('squelette-prochain-match')).toBeInTheDocument();
+    // (L45) le bandeau lit season-matches : il ne repasse plus en chargement avec le dernier résultat.
     absent('message-erreur-dernier-resultat');
     absent('message-erreur-prochain-match');
   });
@@ -189,6 +193,7 @@ describe('R4 — erreur du dernier résultat', () => {
 describe('R5 — aucun match à venir', () => {
   beforeEach(() => {
     fixturesHandler = async () => okJson([LAST]);
+    seasonHandler = async () => okJson([LAST]);
   });
   it('R5 — vide : message et lien vers le calendrier', async () => {
     renderPage();
@@ -231,6 +236,7 @@ describe('R6 — classement sans l’OL', () => {
 describe('R7 — aucun match terminé', () => {
   it('R7 — vide : pas de bloc Dernier résultat', async () => {
     fixturesHandler = async () => okJson([NEXT]);
+    seasonHandler = async () => okJson([NEXT]);
     renderPage();
     await screen.findByTestId('carte-prochain-match', undefined, SLOW);
     absent('dernier-resultat');

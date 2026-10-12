@@ -66,9 +66,12 @@ const MARSEILLE_TIMED = match({
   matchday: 14,
 });
 
-function serve(fixtures: Fixture[]) {
+// L45 : le bandeau lit le calendrier de toute la saison (/api/season-matches),
+// pas la seule Ligue 1 de /api/fixtures. `serve` répond la même liste aux deux.
+function serve(fixtures: Fixture[], seasonMatches: Fixture[] = fixtures) {
   return vi.fn((url: string) => {
     if (url === '/api/fixtures') return Promise.resolve(okJson(fixtures));
+    if (url === '/api/season-matches') return Promise.resolve(okJson(seasonMatches));
     if (url.startsWith('/api/wiki-image')) return Promise.resolve(okJson({ imageUrl: null }));
     return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
   });
@@ -175,5 +178,44 @@ describe('<DashboardHero /> — prochain rendez-vous (L39)', () => {
     const carte = nom!.closest('.backdrop-blur-md');
     expect(carte).toHaveClass('min-w-0');
     expect(carte!.parentElement).toHaveClass('grid-cols-1', 'min-w-0');
+  });
+});
+
+describe('<DashboardHero /> — toutes compétitions (L45)', () => {
+  const previousTz = process.env.TZ;
+  beforeAll(() => {
+    process.env.TZ = 'Europe/Paris';
+  });
+  afterAll(() => {
+    process.env.TZ = previousTz;
+  });
+  beforeEach(() => {
+    // Après Lens (09-10) : Nice est le prochain match de Ligue 1 (18-10), mais
+    // Lyon – Crystal Palace (Ligue Europa) a lieu le 15-10.
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-10T12:00:00Z') });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  const NICE = match({ id: 10, date: '2026-10-18T15:00:00Z', matchday: 8 });
+  const PALACE = match({
+    id: 11,
+    date: '2026-10-15T19:00:00Z',
+    awayTeam: 'Crystal Palace FC',
+    awayTeamId: 354,
+    competition: 'Ligue Europa',
+    matchday: null,
+  });
+
+  it('un match de coupe plus proche que la prochaine journée de Ligue 1 passe devant', async () => {
+    vi.stubGlobal('fetch', serve([NICE], [PALACE, NICE]));
+    renderHero();
+
+    expect(await screen.findByText(/Ligue Europa/)).toBeInTheDocument();
+    expect(screen.getAllByText('Crystal Palace FC').length).toBeGreaterThan(0);
+    expect(screen.queryByText('OGC Nice')).not.toBeInTheDocument();
+    expect(screen.queryByText(/J8/)).not.toBeInTheDocument();
   });
 });

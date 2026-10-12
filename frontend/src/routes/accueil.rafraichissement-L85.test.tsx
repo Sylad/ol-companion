@@ -37,7 +37,7 @@ beforeEach(() => {
       const u = String(url);
       calls.push(u);
       if (failing) return fail();
-      if (u === '/api/fixtures') return json([NEXT, LAST]);
+      if (u === '/api/fixtures' || u === '/api/season-matches') return json([NEXT, LAST]);
       if (u === '/api/standings') return json({ season: '2026', updatedAt: '2026-10-11T00:00:00Z', currentMatchday: 6, table: [OL_ROW] });
       return { ok: false, status: 404, json: async () => null };
     }),
@@ -61,13 +61,15 @@ describe('L85 — rafraîchissement en échec', () => {
     expect(screen.getByTestId('stat-points')).toHaveTextContent('11');
 
     failing = true;
-    const before = calls.filter((u) => u === '/api/fixtures' || u === '/api/standings').length;
+    const before = calls.filter((u) => u === '/api/fixtures' || u === '/api/season-matches' || u === '/api/standings').length;
     await act(async () => {
       await client.invalidateQueries({ queryKey: ['fixtures'] });
+      await client.invalidateQueries({ queryKey: ['season-matches'] });
       await client.invalidateQueries({ queryKey: ['standings'] });
     });
-    await waitFor(() => expect(calls.filter((u) => u === '/api/fixtures' || u === '/api/standings').length).toBeGreaterThan(before));
+    await waitFor(() => expect(calls.filter((u) => u === '/api/fixtures' || u === '/api/season-matches' || u === '/api/standings').length).toBeGreaterThan(before));
     await waitFor(() => expect(client.getQueryState(['fixtures'])?.status).toBe('error'));
+    await waitFor(() => expect(client.getQueryState(['season-matches'])?.status).toBe('error'));
 
     expect(screen.getByTestId('carte-prochain-match')).toBeInTheDocument();
     expect(screen.getByTestId('dernier-resultat')).toBeInTheDocument();
