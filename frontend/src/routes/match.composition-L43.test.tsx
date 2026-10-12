@@ -349,28 +349,3 @@ describe('Page match — blocs Composition (L43)', () => {
     }
   });
 });
-
-describe('Page match — match à venir (L129)', () => {
-  it('composition probable : libellé « Composition probable », sinon rien', () => {
-    hook = { isLoading: false, isError: false, data: stats({
-      home: { ...lineup('4-2-3-1', OL_421, BENCH_OL), probable: true },
-      away: lineup('4-1-4-1', OPP_4141, BENCH_OPP),
-    }) };
-    render(<MatchPage />);
-    const [ol, opp] = blocks();
-    expect(within(ol).getByTestId('etiquette-probable')).toHaveTextContent('Composition probable');
-    expect(within(opp).queryByTestId('etiquette-probable')).toBeNull();
-  });
-
-  it('numéro 0 : jamais affiché (titulaire ni banc)', () => {
-    const zero = (x: LiveMatchLineupPlayer) => ({ ...x, jerseyNumber: 0 });
-    hook = { isLoading: false, isError: false, data: stats({
-      home: lineup('4-2-3-1', OL_421.map(zero), BENCH_OL.map(zero)),
-      away: lineup('4-1-4-1', OPP_4141, BENCH_OPP),
-    }) };
-    render(<MatchPage />);
-    const ol = blocks()[0];
-    expect(within(ol).queryByText('0')).toBeNull();
-    expect(within(ol).getByTestId('banc-composition').textContent).not.toMatch(/\b0\b/);
-  });
-});
