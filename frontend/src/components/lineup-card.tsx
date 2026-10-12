@@ -20,6 +20,8 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
   const widest = Math.max(1, ...rows.map((r) => r.length));
   const chipWidth = `calc((100% - ${(widest - 1) * 4}px) / ${widest})`;
   const chipClass = accent === 'red' ? 'border-ol-red/50 text-fg' : 'border-ol-blue/60 text-fg';
+  // Bordure des pastilles en style en ligne : la classe reste identique d'un bloc à l'autre (R7).
+  const chipBorder = accent === 'red' ? 'hsl(var(--ol-red) / 0.5)' : 'hsl(var(--ol-blue) / 0.6)';
   const numClass = accent === 'red' ? 'text-ol-red-bright' : 'text-[hsl(226_70%_70%)]';
 
   return (
@@ -39,7 +41,7 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
         {rows.map((row, i) => (
           <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
             {row.map((p) => (
-              <PlayerChip key={p.id} player={p} width={chipWidth} chipClass={chipClass} numClass={numClass} />
+              <PlayerChip key={p.id} player={p} width={chipWidth} borderColor={chipBorder} numClass={numClass} />
             ))}
           </div>
         ))}
@@ -68,12 +70,12 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
 function PlayerChip({
   player,
   width,
-  chipClass,
+  borderColor,
   numClass,
 }: {
   player: LiveMatchLineupPlayer;
   width: string;
-  chipClass: string;
+  borderColor: string;
   numClass: string;
 }) {
   // Un nom ne se coupe qu'au tiret ou à l'espace : si un mot dépasse la pastille, 10 px au lieu de 11.
@@ -81,10 +83,9 @@ function PlayerChip({
   return (
     <span
       title={`${player.name}${player.positionShort ? ` · ${positionShortFr(player.positionShort)}` : ''}`}
-      style={{ flex: `0 0 ${width}` }}
+      style={{ flex: `0 0 ${width}`, borderColor }}
       className={cn(
-        'flex flex-col items-center text-center gap-0.5 min-w-0 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight',
-        chipClass,
+        'flex flex-col items-center text-center gap-0.5 min-w-0 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight text-fg',
       )}
     >
       {player.jerseyNumber !== null && (
