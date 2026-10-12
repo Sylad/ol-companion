@@ -550,7 +550,7 @@ lots:
   - id: L50
     title: "Calendrier : densité — blocs par mois, compétition dans la ligne, carte Prochain cliquable, filtres collants au téléphone (46 matchs = 8 écrans ; maquette à valider avant de coder)"
     public: "Calendrier : une liste plus compacte, regroupée par mois"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     screen: journey
@@ -560,6 +560,8 @@ lots:
       - { date: 2026-10-11, text: "Rendu 11-10 (vague 2026-10-11-2015, budget 850 k / 800 k, fix non joué) — à corriger : [bloquant UX] fixtures.tsx:383 lignes de match sans focus visible (MatchLink <a> inline autour de <span class=block> : boîtes 0×0, l'outline ne s'affiche pas, WCAG 2.4.7) → display:block/flex sur le lien ; [majeur] index.css:678 scroll-padding-top 124 px < barre collante 163 px avec 4 compétitions à 390/360 px (139 à 320) → focus sous la barre (WCAG 2.4.11) — mesurer la barre ou la borner ; [majeur] README.md:31 décrit encore les libellés V/N/D 10 px de la vue rapide, supprimés par a41a0c6" }
       - { date: 2026-10-11, text: "Mineurs de la revue 11-10 (notes) : calendar.ts:97 mois calculés en heure locale et non de Paris (R4 ; le test d'acceptation fixe TZ=Europe/Paris) ; matchLabel mort (calendar.ts:70) ; une déclaration CSS morte fait seule passer le test scellé R7" }
     ux: { date: 2026-10-11, verdict: "conforme : verdict de Sylvain « ok L50 » le 11-10 ; écart restant = lignes ~20 % plus hautes que la maquette à 390 px, suivi par un lot à part" }
+    review: { date: 2026-10-12, verdict: "conforme après 1 correction : revue 9 conforme (3 mineurs en notes) ; bandeau au bureau corrigé par 5ff5f41 (leading-tight après la taille, sous-titre 14 px), test qui échoue sans ; 1 mineur restant (titre du bandeau non compact sous 1024 px 24/32 au lieu de 24/30) suivi en lot", commit: 5ff5f41c7f0ae83bb2b184eeabb61ea5b1077d29 }
+    finished: 2026-10-12
   - id: L51
     title: "Calendrier : état vide actionnable et annoncé, pastilles sans « 0 » pendant le chargement, erreur avec Réessayer ; score cumulé sur le match retour des qualifications ; qualifications sur la page Coupes (à décider)"
     public: "Calendrier : des messages plus clairs quand il n'y a rien à afficher"
@@ -1264,6 +1266,11 @@ lots:
     estimate: 0.25
     visible: true
     created: 2026-10-11
+  - id: L125
+    title: "Bandeau Olympique Lyonnais hors Calendrier sous 1024 px : rétablir leading-tight sur le titre non compact (24 px sur 30 px comme avant L50, 32 px depuis cc5b883 — tailwind-merge) et le tester (revue L50)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-12
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

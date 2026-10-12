@@ -139,8 +139,9 @@
     {
       "id": "L50",
       "title": "Calendrier : une liste plus compacte, regroupée par mois",
-      "status": "doing",
-      "started": "2026-10-11"
+      "status": "done",
+      "started": "2026-10-11",
+      "finished": "2026-10-12"
     },
     {
       "id": "L51",
