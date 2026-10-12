@@ -1284,7 +1284,7 @@ lots:
     created: 2026-10-12
   - id: L127
     title: "Page match à 320 px : « Frankowski » (10 lettres) déborde de 4 px de sa pastille — le passage en 10 px de R8 se fait sur w.length > 10 (lineup-card.tsx:82) au lieu de la largeur ; corriger le seuil ou mesurer, test (UX L43)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-12
     notes:
@@ -1293,6 +1293,7 @@ lots:
       - { date: 2026-10-12, text: "Reprise 3 (lead 12-10) : acceptation-L43.json remis à son scellé par le lead (la session 2 l avait réécrit : écart du verrou). NE JAMAIS toucher un acceptation.json ; la fiche R8 réécrite (8879321) suffit à admettre la modification du test L43. Reste : revue." }
     started: 2026-10-12
     review: { date: 2026-10-12, verdict: "compliant after 0 blocking/major: 3 minor notes (test name in fiche ≠ test title, dead 10-letter fallback, seal hash left to lead) — orchestré (vague 2026-10-12-1120, 0 passe(s) de correction)", commit: c11a5c215a44e9e71f43d32d57c1fda32b039b9d }
+    finished: 2026-10-12
   - id: L128
     title: "Page match à 320 px : la pastille de formation passe sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 ») quand le nom du club est long (Anderlecht, Fenerbahçe SK) — garder la formation sur une ligne ; ligne d'attente dans docs/qa/expectations.md (QA L43)"
     status: todo
