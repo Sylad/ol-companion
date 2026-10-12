@@ -4,5 +4,8 @@
   "fichiers": [
     "frontend/src/routes/match.composition-L43.test.tsx"
   ],
-  "vert": false
+  "vert": false,
+  "empreintes": {
+    "frontend/src/routes/match.composition-L43.test.tsx": "38bf30a94fb113f4d5f38ce2fe4e8ae082fb6cd0"
+  }
 }
