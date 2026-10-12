@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react';
 import type { LiveMatchLineup, LiveMatchLineupPlayer } from '@/types/api';
 import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
@@ -79,7 +80,19 @@ function PlayerChip({
   numClass: string;
 }) {
   // Un nom ne se coupe qu'au tiret ou à l'espace : si un mot dépasse la pastille, 10 px au lieu de 11.
+  // Valeur de départ (avant mesure, ou sans géométrie) ; la mesure ci-dessous a le dernier mot.
   const longWord = player.shortName.split(/[-\s]+/).some((w) => w.length > 10);
+  const nameRef = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    const el = nameRef.current;
+    if (!el) return;
+    const fit = () => fitNameFont(el);
+    fit();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [player.shortName, width]);
   return (
     <span
       title={`${player.name}${player.positionShort ? ` · ${positionShortFr(player.positionShort)}` : ''}`}
@@ -92,6 +105,7 @@ function PlayerChip({
         <span className={cn('num tabular-nums font-bold text-[11px]', numClass)}>{player.jerseyNumber}</span>
       )}
       <span
+        ref={nameRef}
         className={cn(
           'font-medium min-w-0 max-w-full [overflow-wrap:normal] [word-break:normal] [hyphens:manual]',
           longWord ? 'text-[10px]' : 'text-[11px]',
@@ -101,6 +115,21 @@ function PlayerChip({
       </span>
     </span>
   );
+}
+
+/** Tailles essayées, de la plus grande à la plus petite ; la dernière est le plancher. */
+export const NAME_FONT_SIZES = [11, 10, 9, 8];
+
+/**
+ * Le nom ne se coupe pas en milieu de mot : on prend la plus grande taille dont le mot le plus
+ * long tient dans la pastille (scrollWidth ≤ clientWidth), plancher 8 px. Mesure réelle, car
+ * la largeur dépend de l'écran et de la police (« Omobamidele » déborde de 10 px à 320 px).
+ */
+export function fitNameFont(el: HTMLElement): void {
+  for (const size of NAME_FONT_SIZES) {
+    el.style.fontSize = `${size}px`;
+    if (el.scrollWidth <= el.clientWidth) return;
+  }
 }
 
 const byPitch = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) => a.yardLine - b.yardLine || a.yardSide - b.yardSide;

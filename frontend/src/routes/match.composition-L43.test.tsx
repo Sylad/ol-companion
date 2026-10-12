@@ -284,4 +284,30 @@ describe('Page match — blocs Composition (L43)', () => {
     const short = declared(screen.getByText('Samba'));
     expect(short + ' ' + declared(screen.getByText('Samba').parentElement as HTMLElement)).toMatch(/text-\[11px\]|font-size:\s*11px/);
   });
+
+  it('R8 — mesure : chaque nom prend la plus grande taille qui tient dans la pastille (7 noms de la QA 12-10)', () => {
+    const noms = ['Frankowski', 'Omobamidele', 'Augustinsson', 'Coosemans', 'Thomasson', 'Greenwood', 'Guendouzi'];
+    const opp = [...OPP_4141];
+    noms.forEach((n, k) => { opp[k + 1] = p(n, 30 + k, 2, 40 + k); });
+    const CLIENT = 58;
+    const wide = (el: HTMLElement) => (parseFloat(el.style.fontSize) || 11) * el.textContent!.length * 0.55;
+    const sw = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
+      return Math.max(wide(this), CLIENT);
+    });
+    const cw = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(CLIENT);
+    try {
+      loaded(lineup('4-1-4-1', opp, BENCH_OPP));
+      render(<MatchPage />);
+      for (const n of noms) {
+        const el = screen.getByText(n);
+        const size = parseFloat(el.style.fontSize);
+        expect(wide(el), n).toBeLessThanOrEqual(CLIENT); // tient
+        if (size < 11) expect(n.length * (size + 1) * 0.55, n).toBeGreaterThan(CLIENT); // et pas plus petit que nécessaire
+      }
+      expect(screen.getByText('Samba').style.fontSize).toBe('11px');
+    } finally {
+      sw.mockRestore();
+      cw.mockRestore();
+    }
+  });
 });
