@@ -498,10 +498,11 @@ lots:
   - id: L45
     title: "Tableau de bord : « prochain rendez-vous » toutes compétitions (aujourd'hui Ligue 1 seule : après Lens le 09/10 il annoncera Nice le 18/10 et sautera Lyon – Crystal Palace du 15/10, alors que le calendrier dit l'inverse)"
     public: "Tableau de bord : le prochain rendez-vous, toutes compétitions confondues"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-03
+    started: 2026-10-12
   - id: L46
     title: "Calendrier, suites de la relecture de code du 03-10 : test du repli par journée refusé quand SCHEDULED répond 200 sans match ; test « aucun match à venir » du tableau de bord qui passe sur l'état de chargement ; tests du tour (journée + manche, « 1er tour ») ; tests des libellés C1 du bilan et de la page joueur ; borner l'âge des matchs gardés du cache football-data ou rendre l'échec durable visible ; comparer l'heure 365scores à celle de football-data avant de l'afficher comme fixée"
     status: todo
