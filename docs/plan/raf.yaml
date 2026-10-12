@@ -1287,6 +1287,18 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-10-12
+    notes:
+      - { date: 2026-10-12, text: "QA prod L43 12-10 (7e54b93) : à 320 px, 7 noms débordent sur 4 matchs, pas seulement Frankowski — Omobamidele +10,5 px et Augustinsson +6,5 px même en 10 px, Coosemans +5,5, Thomasson +5,5, Greenwood +3,5, M. Ouédraogo +1,5, Guendouzi +0,5 ; toujours à droite (nom calé à gauche). Corriger le seuil ne suffit pas : mesurer la largeur du texte contre la pastille (ou taille décroissante jusqu à tenir), R8 tient alors pour tout nom ; test avec ces noms. Captures tmp/qa-ol-L43/gap-match_*-320-bloc1.png." }
+  - id: L128
+    title: "Page match à 320 px : la pastille de formation passe sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 ») quand le nom du club est long (Anderlecht, Fenerbahçe SK) — garder la formation sur une ligne ; ligne d'attente dans docs/qa/expectations.md (QA L43)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-12
+  - id: L129
+    title: "Page match d'un match à venir : compositions 365scores affichées 3 jours avant le coup d'envoi comme confirmées (Lyon – Crystal Palace) et numéros de maillot 0 (7 joueurs) — étiqueter « composition probable » si la source le permet, ne pas afficher un numéro 0 ; ligne never dans docs/qa/expectations.md (QA L43)"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-12
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
