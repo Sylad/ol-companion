@@ -1291,6 +1291,7 @@ lots:
       - { date: 2026-10-12, text: "QA prod L43 12-10 (7e54b93) : à 320 px, 7 noms débordent sur 4 matchs, pas seulement Frankowski — Omobamidele +10,5 px et Augustinsson +6,5 px même en 10 px, Coosemans +5,5, Thomasson +5,5, Greenwood +3,5, M. Ouédraogo +1,5, Guendouzi +0,5 ; toujours à droite (nom calé à gauche). Corriger le seuil ne suffit pas : mesurer la largeur du texte contre la pastille (ou taille décroissante jusqu à tenir), R8 tient alors pour tout nom ; test avec ces noms. Captures tmp/qa-ol-L43/gap-match_*-320-bloc1.png." }
       - { date: 2026-10-12, text: "DÉCISION LEAD 12-10 (rendu par le verrou : test d acceptation scellé de L43 modifié). Le lot fait évoluer R8, donc la FICHE change dans ce lot (exception du verrou pour un lot livré vert: true) : docs/specs/composition-match/fiche.yaml R8 réécrite — le nom est mesuré contre la pastille et sa taille descend 11 → 10 → 9 → 8 px jusqu à tenir, plancher 8 px, jamais d ellipse ni de coupure hors tiret (source : QA prod L43 12-10, 7 noms à 320 px) — dans un commit qui cite L127, AVANT ou AVEC la modification du test L43 ; les tests de R8 suivent la nouvelle règle. Le reste du travail de la session 2 (mesure navigateur, tailles 11/10/9/8) est retenu." }
       - { date: 2026-10-12, text: "Reprise 3 (lead 12-10) : acceptation-L43.json remis à son scellé par le lead (la session 2 l avait réécrit : écart du verrou). NE JAMAIS toucher un acceptation.json ; la fiche R8 réécrite (8879321) suffit à admettre la modification du test L43. Reste : revue." }
+      - { date: 2026-10-12, text: "QA prod 12-10 (62a2074) conforme sur chargement frais : 594 pastilles à 320/390/1440, aucun débordement (Omobamidele 8 px −0,25, Augustinsson 8 px, Frankowski 9 px…), L43 intact ; défaut mineur au redimensionnement sans recharger → lot à part." }
     started: 2026-10-12
     review: { date: 2026-10-12, verdict: "compliant after 0 blocking/major: 3 minor notes (test name in fiche ≠ test title, dead 10-letter fallback, seal hash left to lead) — orchestré (vague 2026-10-12-1120, 0 passe(s) de correction)", commit: c11a5c215a44e9e71f43d32d57c1fda32b039b9d }
     finished: 2026-10-12
@@ -1303,6 +1304,11 @@ lots:
     title: "Page match d'un match à venir : compositions 365scores affichées 3 jours avant le coup d'envoi comme confirmées (Lyon – Crystal Palace) et numéros de maillot 0 (7 joueurs) — étiqueter « composition probable » si la source le permet, ne pas afficher un numéro 0 ; ligne never dans docs/qa/expectations.md (QA L43)"
     status: todo
     estimate: 0.5
+    created: 2026-10-12
+  - id: L130
+    title: "Page match : après un élargissement sans recharger (rotation du téléphone 390→844, fenêtre 320→1440), les noms réduits par R8 gardent leur petite taille (Augustinsson 8 px au lieu de 10, Coosemans 9 au lieu de 11) — observer la pastille, pas le span du nom (lineup-card.tsx, ResizeObserver) ; corriger aussi l'exemple de la fiche (Frankowski à 9 px à 320, pas 10) (QA L127 12-10)"
+    status: todo
+    estimate: 0.25
     created: 2026-10-12
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
