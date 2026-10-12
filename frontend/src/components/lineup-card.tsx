@@ -86,11 +86,13 @@ function PlayerChip({
   useLayoutEffect(() => {
     const el = nameRef.current;
     if (!el) return;
+    const chip = el.parentElement;
     const fit = () => fitNameFont(el);
     fit();
-    if (typeof ResizeObserver === 'undefined') return;
+    if (typeof ResizeObserver === 'undefined' || !chip) return;
+    // La pastille, pas le span : celui-ci est dimensionné par son contenu et ne bouge pas quand l'écran s'élargit.
     const ro = new ResizeObserver(fit);
-    ro.observe(el);
+    ro.observe(chip);
     return () => ro.disconnect();
   }, [player.shortName, width]);
   return (
@@ -122,13 +124,17 @@ export const NAME_FONT_SIZES = [11, 10, 9, 8];
 
 /**
  * Le nom ne se coupe pas en milieu de mot : on prend la plus grande taille dont le mot le plus
- * long tient dans la pastille (scrollWidth ≤ clientWidth), plancher 8 px. Mesure réelle, car
+ * long tient dans la pastille (scrollWidth ≤ largeur utile de la pastille), plancher 8 px. Mesure réelle, car
  * la largeur dépend de l'écran et de la police (« Omobamidele » déborde de 10 px à 320 px).
  */
 export function fitNameFont(el: HTMLElement): void {
+  // Largeur de la pastille (moins son padding), pas celle du span, qui épouse son contenu.
+  const box = el.parentElement ?? el;
+  const cs = getComputedStyle(box);
+  const room = box.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
   for (const size of NAME_FONT_SIZES) {
     el.style.fontSize = `${size}px`;
-    if (el.scrollWidth <= el.clientWidth) return;
+    if (el.scrollWidth <= room) return;
   }
 }
 

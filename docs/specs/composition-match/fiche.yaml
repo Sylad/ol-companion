@@ -80,7 +80,7 @@ regles:
     tests: ["R7 — rangée centrée : 4-2-3-1, les 11 pastilles ont la même largeur ±1 px ; centre de la pastille du buteur et du gardien = centre du bloc ±1 px", "R7 — rangée centrée : 4-1-4-1, rangées de 1, 4, 1, 4, 1 centrées, pastilles de largeur égale"]
   - id: R8
     etat: charge
-    enonce: "La pastille est verticale : le numéro de maillot au-dessus, le nom dessous sur toute la largeur de la pastille, centrés. Un nom ne se coupe qu'au tiret (ou à l'espace) : overflow-wrap:normal, hyphens:manual, jamais d'ellipse ni de line-clamp, jamais de coupure en milieu de mot (« Frankowski » reste entier, « Maitland-Niles » passe sur 2 lignes après le tiret). Le nom est mesuré contre la pastille : sa taille descend 11 → 10 → 9 → 8 px jusqu'à ce que le mot le plus long tienne, plancher 8 px (à 320 px, « Frankowski » passe à 10 px, « Omobamidele » à 9 px ou moins)."
+    enonce: "La pastille est verticale : le numéro de maillot au-dessus, le nom dessous sur toute la largeur de la pastille, centrés. Un nom ne se coupe qu'au tiret (ou à l'espace) : overflow-wrap:normal, hyphens:manual, jamais d'ellipse ni de line-clamp, jamais de coupure en milieu de mot (« Frankowski » reste entier, « Maitland-Niles » passe sur 2 lignes après le tiret). Le nom est mesuré contre la pastille : sa taille descend 11 → 10 → 9 → 8 px jusqu'à ce que le mot le plus long tienne, plancher 8 px (à 320 px, « Frankowski » passe à 9 px, « Omobamidele » à 9 px ou moins ; la mesure est refaite quand la pastille s'élargit, sans recharger)."
     message: ~
     champs: [rangee-composition]
     statut: sourcee
