@@ -346,7 +346,8 @@ export function toLineups(game: Scores365GameDetailed): LiveMatchStats['lineups'
             id: m.id,
             name: info?.name ?? `Joueur #${m.id}`,
             shortName: info?.shortName ?? info?.name ?? `#${m.id}`,
-            jerseyNumber: typeof info?.jerseyNumber === 'number' ? info.jerseyNumber : null,
+            // 0 = valeur de remplissage de 365scores avant le match, pas un numéro (L129).
+            jerseyNumber: typeof info?.jerseyNumber === 'number' && info.jerseyNumber > 0 ? info.jerseyNumber : null,
             positionShort: abbreviatePosition(m.formation?.shortName ?? m.position?.shortName),
             yardLine: m.yardFormation?.line ?? 0,
             yardSide: m.yardFormation?.fieldSide ?? 50,
@@ -357,8 +358,11 @@ export function toLineups(game: Scores365GameDetailed): LiveMatchStats['lineups'
       });
     const byLineThenSide = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) =>
       a.yardLine - b.yardLine || a.yardSide - b.yardSide;
+    // Avant le coup d'envoi, tout ce que 365scores ne dit pas « Confirmé » est une composition probable.
+    const confirmed = /^confirm/i.test(lineup.status ?? '');
     return {
       formation: lineup.formation ?? '',
+      probable: (game.statusGroup ?? 0) < 3 && !confirmed,
       starters: players.filter((p) => p.starting).map((p) => p.player).sort(byLineThenSide),
       bench: players.filter((p) => !p.starting).map((p) => p.player),
     };

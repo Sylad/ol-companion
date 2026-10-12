@@ -38,6 +38,11 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
           </span>
         )}
       </header>
+      {lineup.probable && (
+        <p data-testid="etiquette-probable" className="px-5 pt-2 text-[11px] text-fg-dim">
+          Composition probable
+        </p>
+      )}
       <div className="px-3 py-3 space-y-2">
         {rows.map((row, i) => (
           <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
@@ -52,7 +57,7 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
             {lineup.bench.map((p, i) => (
               <span key={p.id}>
                 {i > 0 && ', '}
-                {p.jerseyNumber !== null && <span className="num tabular-nums text-fg-dim">{p.jerseyNumber} </span>}
+                {hasJersey(p.jerseyNumber) && <span className="num tabular-nums text-fg-dim">{p.jerseyNumber} </span>}
                 {p.shortName}
               </span>
             ))}
@@ -103,7 +108,7 @@ function PlayerChip({
         'flex flex-col items-center text-center gap-0.5 min-w-0 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight text-fg',
       )}
     >
-      {player.jerseyNumber !== null && (
+      {hasJersey(player.jerseyNumber) && (
         <span className={cn('num tabular-nums font-bold text-[11px]', numClass)}>{player.jerseyNumber}</span>
       )}
       <span
@@ -137,6 +142,9 @@ export function fitNameFont(el: HTMLElement): void {
     if (el.scrollWidth <= room) return;
   }
 }
+
+/** Un numéro 0 est un remplissage de la source : jamais affiché. */
+const hasJersey = (n: number | null): n is number => n !== null && n > 0;
 
 const byPitch = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) => a.yardLine - b.yardLine || a.yardSide - b.yardSide;
 

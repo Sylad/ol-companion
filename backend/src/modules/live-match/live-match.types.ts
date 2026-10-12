@@ -88,6 +88,8 @@ export interface LiveMatchLineupPlayer {
 
 export interface LiveMatchLineup {
   formation: string;         // '4-2-3-1'
+  /** Match pas commencé et composition non « Confirmée » par 365scores (L129). */
+  probable: boolean;
   starters: LiveMatchLineupPlayer[];  // triés gardien → attaque
   bench: LiveMatchLineupPlayer[];
 }

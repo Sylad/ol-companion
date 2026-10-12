@@ -265,6 +265,7 @@ export interface LiveMatchLineupPlayer {
 
 export interface LiveMatchLineup {
   formation: string;
+  probable?: boolean;
   starters: LiveMatchLineupPlayer[];
   bench: LiveMatchLineupPlayer[];
 }

@@ -244,6 +244,42 @@ describe('toLineups — compositions des deux équipes depuis le détail live', 
   });
 });
 
+describe('toLineups — match à venir (L129)', () => {
+  const clone = () => JSON.parse(JSON.stringify(fixture));
+
+  it('« Confirmé » : composition non probable', () => {
+    expect(aggregate(fixture).lineups?.home.probable).toBe(false);
+  });
+
+  it('match à venir dont la source ne dit pas « Confirmé » : composition probable', () => {
+    const g = clone();
+    g.game.statusGroup = 1;
+    g.game.homeCompetitor.lineups.status = 'Probable';
+    delete g.game.awayCompetitor.lineups.status;
+    const l = aggregate(g).lineups!;
+    expect(l.home.probable).toBe(true);
+    expect(l.away.probable).toBe(true);
+  });
+
+  it('match à venir « Confirmé » : pas probable ; match terminé sans statut : pas probable', () => {
+    const g = clone();
+    g.game.statusGroup = 1;
+    expect(aggregate(g).lineups!.home.probable).toBe(false);
+    g.game.statusGroup = 4;
+    delete g.game.homeCompetitor.lineups.status;
+    expect(aggregate(g).lineups!.home.probable).toBe(false);
+  });
+
+  it('numéro de maillot 0 (valeur de remplissage) : null', () => {
+    const g = clone();
+    const id = g.game.homeCompetitor.lineups.members.find((m: any) => m.status === 1).id;
+    g.game.members.find((m: any) => m.id === id).jerseyNumber = 0;
+    const home = aggregate(g).lineups!.home;
+    const p = [...home.starters, ...home.bench].find((x) => x.id === id)!;
+    expect(p.jerseyNumber).toBeNull();
+  });
+});
+
 describe('événements — noms des joueurs résolus depuis game.members[]', () => {
   const payload = aggregate(fixture);
 

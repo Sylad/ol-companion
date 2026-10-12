@@ -49,6 +49,7 @@ dans l'ordre que donne isHome.
 - shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; « Classement en direct » avec 5 lignes dont Lyon
 - never: « Match introuvable » ; « Lien incomplet »
 - never: à 320 px, une formation de la pastille « Composition » coupée sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 »), même avec un nom de club long (Anderlecht, Fenerbahçe SK)
+- never: sur un match à venir, une composition non « Confirmé » par 365scores sans l'étiquette « Composition probable » ; un numéro de maillot « 0 » (titulaire ou banc)
 - api: /api/live-match/<gameId>/stats
 
 ## /fixtures
