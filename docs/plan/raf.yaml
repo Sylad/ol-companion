@@ -503,6 +503,8 @@ lots:
     visible: true
     created: 2026-10-03
     started: 2026-10-12
+    notes:
+      - { date: 2026-10-13, text: "13-10 : ACCORD DE SYLVAIN — la règle de L85 évolue : le bandeau « prochain rendez-vous » de l'accueil est lu dans /api/season-matches (toutes compétitions), plus dans l'ancienne source Ligue 1. Voie à suivre (exception « lot livré » du verrou, README cadence) : modifier dans un commit qui cite L45 la fiche de l'écran docs/specs/accueil/fiche.yaml (la règle du bandeau et sa source) ET le test scellé frontend/src/routes/accueil.acceptation-L85.test.tsx, ensemble ; cadence spec check doit rester vert. Ne pas créer de nouveau fichier d'acceptation pour L85, ne pas toucher acceptation-L85.json." }
   - id: L46
     title: "Calendrier, suites de la relecture de code du 03-10 : test du repli par journée refusé quand SCHEDULED répond 200 sans match ; test « aucun match à venir » du tableau de bord qui passe sur l'état de chargement ; tests du tour (journée + manche, « 1er tour ») ; tests des libellés C1 du bilan et de la page joueur ; borner l'âge des matchs gardés du cache football-data ou rendre l'échec durable visible ; comparer l'heure 365scores à celle de football-data avant de l'afficher comme fixée"
     status: todo
