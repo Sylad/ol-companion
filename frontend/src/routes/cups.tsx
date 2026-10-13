@@ -1,4 +1,3 @@
-import { isOlTeamName } from '@/lib/ol-name';
 import { useMemo, useState } from 'react';
 import { Loader2, Trophy, ShieldAlert } from 'lucide-react';
 import { useCups } from '@/hooks/use-cups';
