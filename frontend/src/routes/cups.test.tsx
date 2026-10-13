@@ -88,3 +88,19 @@ describe('<CupsPage /> — accessibilité des onglets et de la pastille (L111)',
     expect(pill.className).not.toMatch(/\bbg-/);
   });
 });
+
+describe('<CupsPage /> — bilan V N D et tirs au but (L140)', () => {
+  const game = (id: number, o: object) => ({
+    id, date: '2026-02-01T19:00:00Z', homeTeam: 'Lyon', homeTeamId: 523, awayTeam: 'Lille', awayTeamId: 79,
+    homeScore: 1, awayScore: 1, status: 'FINISHED' as const, stage: 'x', stageFr: 'x', ...o,
+  });
+  const stat = (label: string) => screen.getAllByText(label).find((e) => e.previousElementSibling?.classList.contains('num'))?.previousElementSibling?.textContent;
+  it('un nul gagné aux tirs au but compte en victoire, un nul perdu en défaite, un nul simple en nul', () => {
+    cups = [cup({ matches: [game(1, { olQualified: true }), game(2, { olQualified: false }), game(3, {}), game(4, { homeScore: 3, awayScore: 0 })] })];
+    render(<CupsPage />);
+    expect(stat('V')).toBe('2');
+    expect(stat('N')).toBe('1');
+    expect(stat('D')).toBe('1');
+  });
+});
+

@@ -39,3 +39,22 @@ describe('<CupMatchRow /> (L101)', () => {
     expect(container.textContent).toContain('18h05');
   });
 });
+
+describe('<CupMatchRow /> — tirs au but (L140)', () => {
+  const done = (o: Partial<CupMatch>) => ({ ...match('FINISHED', new Date(2026, 1, 3, 21, 0)), homeScore: 1, awayScore: 1, ...o });
+  it('un nul gagné aux tirs au but : badge « Victoire », « t.a.b. » écrit', () => {
+    const { getByLabelText, container } = renderRow(done({ olQualified: true }));
+    expect(getByLabelText('Victoire')).toHaveTextContent('V');
+    expect(container.textContent).toContain('t.a.b.');
+  });
+  it('un nul perdu aux tirs au but : badge « Défaite »', () => {
+    const { getByLabelText } = renderRow(done({ olQualified: false }));
+    expect(getByLabelText('Défaite')).toHaveTextContent('D');
+  });
+  it('un nul sans qualifié : badge « Match nul », pas de « t.a.b. »', () => {
+    const { getByLabelText, container } = renderRow(done({}));
+    expect(getByLabelText('Match nul')).toHaveTextContent('N');
+    expect(container.textContent).not.toContain('t.a.b.');
+  });
+});
+

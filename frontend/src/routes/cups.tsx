@@ -5,6 +5,7 @@ import { useCups } from '@/hooks/use-cups';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { CupMatchRow } from '@/components/cup-match-row';
 import { Bracket } from '@/components/bracket';
+import { cupResult } from '@/lib/cup-result';
 import { cn } from '@/lib/utils';
 import type { CupInfo } from '@/types/api';
 
@@ -177,7 +178,7 @@ function CupCard({ cup }: { cup: CupInfo }) {
             </p>
           )}
           {cup.matches.map((m) => (
-            <CupMatchRow key={m.id} match={m} />
+            <CupMatchRow key={m.id} match={m} tie={cup.matches} />
           ))}
         </div>
       </div>
@@ -199,15 +200,10 @@ function countResults(cup: CupInfo): { wins: number; draws: number; losses: numb
     draws = 0,
     losses = 0;
   for (const m of cup.matches) {
-    if (m.status !== 'FINISHED' || m.homeScore === null || m.awayScore === null) continue;
-    const olIsHome = isOlTeamName(m.homeTeam);
-    const olIsAway = isOlTeamName(m.awayTeam);
-    if (!olIsHome && !olIsAway) continue;
-    const olScore = olIsHome ? m.homeScore : m.awayScore;
-    const oppScore = olIsHome ? m.awayScore : m.homeScore;
-    if (olScore > oppScore) wins++;
-    else if (olScore < oppScore) losses++;
-    else draws++;
+    const r = cupResult(m, cup.matches)?.result;
+    if (r === 'W') wins++;
+    else if (r === 'L') losses++;
+    else if (r === 'D') draws++;
   }
   return { wins, draws, losses };
 }

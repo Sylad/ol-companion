@@ -107,6 +107,8 @@ export interface CupMatch {
   status: 'SCHEDULED' | 'IN_PLAY' | 'FINISHED';
   stage: string;
   stageFr: string;
+  /** Issue de la confrontation lue sur sa dernière manche : vrai si l'OL est qualifié, faux si l'adversaire l'est ; absent sinon (L140). */
+  olQualified?: boolean;
 }
 
 export interface CupInfo {

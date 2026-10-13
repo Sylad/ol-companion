@@ -3,6 +3,7 @@ import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type CupMatch } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
+import { cupResult } from '@/lib/cup-result';
 import { kickoffTime } from '@/lib/kickoff';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
@@ -18,28 +19,29 @@ function teamIdForLogo(teamName: string, teamId: number): number {
   return teamId;
 }
 
-export function CupMatchRow({ match }: { match: CupMatch }) {
+export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] }) {
   const { day, time } = formatDate(match.date);
   const isFinished = match.status === 'FINISHED';
   const isLive = match.status === 'IN_PLAY';
   const hasScore = match.homeScore !== null && match.awayScore !== null;
-
-  const homeWon = hasScore && match.homeScore! > match.awayScore!;
-  const awayWon = hasScore && match.awayScore! > match.homeScore!;
 
   const homeIsOL = isOlTeamName(match.homeTeam);
   const awayIsOL = isOlTeamName(match.awayTeam);
 
   // isFinished : sans lui le badge « Victoire » s'affichait dès la 10e minute
   // d'un match en cours où OL menait. Review 2026-08-14.
-  const olWon = isFinished && ((homeIsOL && homeWon) || (awayIsOL && awayWon));
-  const olLost = isFinished && !olWon && hasScore && match.homeScore !== match.awayScore;
-  const olDrew = isFinished && hasScore && match.homeScore === match.awayScore;
+  // L140 : un nul décidé aux tirs au but est une victoire ou une défaite (cupResult).
+  const outcome = cupResult(match, tie ?? [match]);
+  const shootout = outcome?.shootout ?? false;
+  // Le qualifié aux tirs au but se met en avant comme un vainqueur.
+  const olAhead = outcome?.result === 'W';
+  const homeWon = hasScore && (match.homeScore! > match.awayScore! || (shootout && homeIsOL === olAhead));
+  const awayWon = hasScore && (match.awayScore! > match.homeScore! || (shootout && awayIsOL === olAhead));
 
   let resultBadge: { label: string; cls: string } | null = null;
-  if (olWon) resultBadge = { label: 'V', cls: 'bg-win text-bg' };
-  else if (olDrew) resultBadge = { label: 'N', cls: 'bg-draw text-bg' };
-  else if (olLost) resultBadge = { label: 'D', cls: 'bg-loss text-bg' };
+  if (outcome?.result === 'W') resultBadge = { label: 'V', cls: 'bg-win text-bg' };
+  else if (outcome?.result === 'D') resultBadge = { label: 'N', cls: 'bg-draw text-bg' };
+  else if (outcome?.result === 'L') resultBadge = { label: 'D', cls: 'bg-loss text-bg' };
 
   return (
     <div
@@ -59,12 +61,22 @@ export function CupMatchRow({ match }: { match: CupMatch }) {
               resultBadge.cls,
             )}
             aria-label={resultBadge.label === 'V' ? 'Victoire' : resultBadge.label === 'N' ? 'Match nul' : 'Défaite'}
+            title={shootout ? (resultBadge.label === 'V' ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but') : undefined}
           >
             {resultBadge.label}
           </span>
         )}
         <span className="ml-auto text-[11px] text-fg-dim">
           {day} · {isFinished ? 'Terminé' : isLive ? 'LIVE' : time}
+          {shootout && (
+            <>
+              {' · '}
+              <abbr title="Qualifié aux tirs au but" className="no-underline">
+                <span aria-hidden="true">t.a.b.</span>
+                <span className="sr-only">tirs au but</span>
+              </abbr>
+            </>
+          )}
         </span>
       </div>
 
