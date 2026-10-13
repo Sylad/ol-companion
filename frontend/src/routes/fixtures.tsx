@@ -355,16 +355,14 @@ function SummaryMatch({
             <MatchLink fixture={fixture} prefix={label}>{teamShortName(opponent)}</MatchLink>
           </div>
           <div className="text-xs text-fg-dim">{dateLabel} · {competitionLong(fixture.competitionCode)}</div>
+          {shootoutName && (
+            <div data-testid="tirs-au-but-carte" className="text-[11px] font-semibold text-fg-muted">
+              {fixture.shootoutWinnerId === OL_TEAM_ID ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}
+            </div>
+          )}
         </div>
         {score ? (
-          <div className="text-right">
-            <div className="num text-lg font-bold text-fg-bright">{score}</div>
-            {shootoutName && (
-              <div data-testid="tirs-au-but-carte" className="text-[11px] font-semibold text-fg-muted">
-                {fixture.shootoutWinnerId === OL_TEAM_ID ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}
-              </div>
-            )}
-          </div>
+          <div className="num text-right text-lg font-bold text-fg-bright">{score}</div>
         ) : (
           <KickoffTbd />
         )}

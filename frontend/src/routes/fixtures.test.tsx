@@ -575,6 +575,9 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       const carte = screen.getByTestId('carte-dernier-resultat');
       expect(within(carte).getByTestId('tirs-au-but-carte')).toHaveTextContent('Qualifié aux tirs au but');
       expect(within(carte).getByRole('link', { name: /qualifié aux tirs au but/ })).toBeInTheDocument();
+      // Le libellé (116 px) ne se pose pas dans la colonne du score, qui écraserait le nom du club : il vit dans la colonne du nom.
+      const libelle = within(carte).getByTestId('tirs-au-but-carte');
+      expect(libelle.parentElement).toContainElement(within(carte).getByRole('link', { name: /qualifié aux tirs au but/ }));
     });
 
     it('L140 — la carte « Dernier résultat » dit « Éliminé aux tirs au but » quand l\'adversaire est qualifié', async () => {
