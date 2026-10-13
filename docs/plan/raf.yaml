@@ -1350,6 +1350,7 @@ lots:
     notes:
       - { date: 2026-10-13, text: "13-10 lead : périmètre = le texte de l'entrée Nouveautés de L45 seulement (docs/nouveautes/2026-10-12-tableau-de-bord-… et frontend/public/nouveautes-data/nouveautes.json). Le renforcement du test R4 passe dans L131, qui modifie R4 : ne touche PAS accueil.acceptation-L85.test.tsx (scellé, toute modification sans changement de la fiche rend le lot)." }
     started: 2026-10-13
+    review: { date: 2026-10-13, verdict: "conforme (1 mineur, note) : le texte de la Nouveauté L45 est corrigé de façon cohérente dans le .md et le .json, et correspond au code du bandeau ; le renforcement du test R4 est renvoyé à L131 par les notes du lot — orchestré (vague 2026-10-13-0900b, 0 passe(s) de correction)", commit: 42fdb487a0a226fe205c45a4a66be62ef17ab292 }
   - id: L133
     title: "Page match à venir : numéro de maillot absent dans la composition probable quand 365scores envoie 0 (Nakamura, n° 11 au match précédent, affiché sans numéro ; 7 joueurs sur 42 le 13-10 sur Lyon – Crystal Palace) — reprendre le numéro de l'effectif (/api/lineup ou match précédent), et ajouter la ligne shows correspondante dans docs/qa/expectations.md (QA L45)"
     public: "Page match à venir : les numéros de maillot de la composition probable"
