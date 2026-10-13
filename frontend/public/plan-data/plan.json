@@ -361,12 +361,23 @@
     {
       "id": "L131",
       "title": "Accueil : le dernier résultat, toutes compétitions confondues",
-      "status": "doing",
-      "started": "2026-10-13"
+      "status": "done",
+      "started": "2026-10-13",
+      "finished": "2026-10-13"
     },
     {
       "id": "L133",
       "title": "Page match à venir : les numéros de maillot de la composition probable",
+      "status": "todo"
+    },
+    {
+      "id": "L134",
+      "title": "Dernier résultat : la date ne se coupe plus sur téléphone",
+      "status": "todo"
+    },
+    {
+      "id": "L135",
+      "title": "Dernier résultat : les tirs au but comptés en coupe",
       "status": "todo"
     }
   ]

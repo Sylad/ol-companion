@@ -1336,7 +1336,7 @@ lots:
   - id: L131
     title: "Accueil : « Dernier résultat » toutes compétitions (lu dans /api/season-matches comme le bandeau) — aujourd'hui Ligue 1 seule : du 16 au 18/10 il montrera Lens (09/10) et sautera Lyon – Crystal Palace (constat UX L45, Nielsen 4)"
     public: "Accueil : le dernier résultat, toutes compétitions confondues"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-13
@@ -1344,18 +1344,35 @@ lots:
       - { date: 2026-10-13, text: "13-10 lead : ce lot change la règle R4 de docs/specs/accueil/fiche.yaml (le dernier résultat lu dans /api/season-matches) : modifier la fiche ET le test scellé accueil.acceptation-L85.test.tsx dans des commits qui citent L131 (exception « lot livré » du verrou, comme L45). Dans le même mouvement, renforcer le test R4 : après « Réessayer » du dernier résultat, carte-prochain-match reste affichée (constat revue L45). Ne pas toucher acceptation-L85.json." }
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "conforme (4 mineurs, en notes) — orchestré (vague 2026-10-13-0900b, 2 passe(s) de correction)", commit: 5510cb78d463bfa2cde2dc7aa171b7149bc7e41f }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-0900b (4 mineurs) et captures 1440/390 regardées par le lead : carte Dernier résultat lue dans season-matches (Lens 2·1 Lyon, Ligue 1 · J6, ven. 09/10, juste au 13-10) ; pied de carte à 390 px et tirs au but repris en lots" }
+    finished: 2026-10-13
   - id: L132
     title: "Nouveautés L45 : texte corrigé — la compétition est à côté de « Prochain rendez-vous », pas de la date ; un match de phase de ligue européenne affiche sa journée (J2), pas un tour ; renforcer le test R4 (le bandeau reste affiché après « Réessayer » du dernier résultat)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-13
     notes:
       - { date: 2026-10-13, text: "13-10 lead : périmètre = le texte de l'entrée Nouveautés de L45 seulement (docs/nouveautes/2026-10-12-tableau-de-bord-… et frontend/public/nouveautes-data/nouveautes.json). Le renforcement du test R4 passe dans L131, qui modifie R4 : ne touche PAS accueil.acceptation-L85.test.tsx (scellé, toute modification sans changement de la fiche rend le lot)." }
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "conforme (1 mineur, note) : le texte de la Nouveauté L45 est corrigé de façon cohérente dans le .md et le .json, et correspond au code du bandeau ; le renforcement du test R4 est renvoyé à L131 par les notes du lot — orchestré (vague 2026-10-13-0900b, 0 passe(s) de correction)", commit: 42fdb487a0a226fe205c45a4a66be62ef17ab292 }
+    finished: 2026-10-13
   - id: L133
     title: "Page match à venir : numéro de maillot absent dans la composition probable quand 365scores envoie 0 (Nakamura, n° 11 au match précédent, affiché sans numéro ; 7 joueurs sur 42 le 13-10 sur Lyon – Crystal Palace) — reprendre le numéro de l'effectif (/api/lineup ou match précédent), et ajouter la ligne shows correspondante dans docs/qa/expectations.md (QA L45)"
     public: "Page match à venir : les numéros de maillot de la composition probable"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-13
+  - id: L134
+    title: "Carte « Dernier résultat » à 390 px : avec un tour long (« Ligue Europa · 3e tour de qualification · retour »), le pied passe sur deux lignes et la date se coupe en « Mar. » / « 13/10 » — la date ne se coupe jamais (constat revue L131, last-result.tsx:131)"
+    public: "Dernier résultat : la date ne se coupe plus sur téléphone"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-13
+  - id: L135
+    title: "Carte « Dernier résultat » : match de coupe décidé aux tirs au but (1-1) affiché « Match nul » — lire l'issue des tirs au but dans season-matches (365scores) et l'afficher dans le badge et le score ; en profiter pour retirer useFixtures, mort depuis L131 (constat revue L131)"
+    public: "Dernier résultat : les tirs au but comptés en coupe"
     status: todo
     estimate: 0.5
     visible: true
