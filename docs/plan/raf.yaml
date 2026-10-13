@@ -1366,10 +1366,11 @@ lots:
   - id: L134
     title: "Carte « Dernier résultat » à 390 px : avec un tour long (« Ligue Europa · 3e tour de qualification · retour »), le pied passe sur deux lignes et la date se coupe en « Mar. » / « 13/10 » — la date ne se coupe jamais (constat revue L131, last-result.tsx:131)"
     public: "Dernier résultat : la date ne se coupe plus sur téléphone"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-13
+    started: 2026-10-13
   - id: L135
     title: "Carte « Dernier résultat » : match de coupe décidé aux tirs au but (1-1) affiché « Match nul » — lire l'issue des tirs au but dans season-matches (365scores) et l'afficher dans le badge et le score ; en profiter pour retirer useFixtures, mort depuis L131 (constat revue L131)"
     public: "Dernier résultat : les tirs au but comptés en coupe"
