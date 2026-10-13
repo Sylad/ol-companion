@@ -1371,6 +1371,7 @@ lots:
     visible: true
     created: 2026-10-13
     started: 2026-10-13
+    review: { date: 2026-10-13, verdict: "compliant — orchestré (vague 2026-10-13-1030, 0 passe(s) de correction)", commit: d3cf6320ef0149210cb69243768f93ee89b8b75a }
   - id: L135
     title: "Carte « Dernier résultat » : match de coupe décidé aux tirs au but (1-1) affiché « Match nul » — lire l'issue des tirs au but dans season-matches (365scores) et l'afficher dans le badge et le score ; en profiter pour retirer useFixtures, mort depuis L131 (constat revue L131)"
     public: "Dernier résultat : les tirs au but comptés en coupe"
