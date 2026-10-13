@@ -1438,22 +1438,27 @@ lots:
     visible: true
     created: 2026-10-13
     started: 2026-10-13
+    notes:
+      - { date: 2026-10-13, text: "13-10 : rendu au lead (revue non conforme après 2 corrections, 499 k) — reste 1 majeur : carte « Dernier résultat » de la vue rapide /fixtures écrit « 1-1 t.a.b. » sans dire qui est qualifié (infobulle toujours « Qualifié »), + mineurs (garde manche aller dans cupResult, bracket-match ignore les tirs au but). MIS EN PAUSE par le lead : 5e lot sur les tirs au but alors qu'aucun match de la saison n'en a eu ; chaque revue trouve un cas limite de plus. Reprendre quand un vrai match aux tirs au but existe, ou sur décision de Sylvain. Ses 5 commits sont au-dessus de 2a2a562 et non livrés." }
   - id: L141
     title: "Nouveautés L135, L138 et L139 : les captures montrent des matchs d'exemple (Rennes 1-1 OL en Coupe de France, Lyon 1-1 Rennes en barrages C3) qui n'existent pas — le dire dans le texte et le texte alternatif (« exemple, aucun match de la saison n'a encore été décidé aux tirs au but »)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant (0 bloquant, 0 majeur, 1 mineur : redondance de formulation « exemple : exemple ») — orchestré (vague 2026-10-13-1230, 0 passe(s) de correction)", commit: fd292f0374c607ce3b3071f431a79f1b543068ec }
+    finished: 2026-10-13
   - id: L142
     title: "Fiche joueur : badges de résultat V/N/D en text-loss/text-win sur fond à 20 % (player.$athleteId.tsx:41-43), contraste ~3,6:1 < 4,5:1 — reprendre les jetons -fg de L138 (WCAG 1.4.3)"
     public: "Fiche joueur : résultats plus lisibles"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant — orchestré (vague 2026-10-13-1230, 0 passe(s) de correction)", commit: 2a2a562f6583d5cec417eddec288eaff14915bf1 }
+    ux: { date: 2026-10-13, verdict: "conforme — revue UX de la vague 2026-10-13-1230 et capture regardée par le lead : badges W/L/D en jetons -fg sur fond à 10 %, lisibles" }
+    finished: 2026-10-13
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
