@@ -18,7 +18,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - shows: « Prochain rendez-vous » avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (6 le 10-10) ; le lieu du prochain match est un nom de stade, ou rien
 - never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 » ou « 02h00 » (minuit UTC)
 - api: /api/standings
-- api: /api/fixtures
+- api: /api/season-matches — lu par le bandeau « Prochain rendez-vous » et par « Dernier résultat » (toutes compétitions) ; `/api/fixtures` n'est plus appelé par `/`
 - api: /api/standings/season-rankings
 - api: /api/season-matches/team-stats
 
