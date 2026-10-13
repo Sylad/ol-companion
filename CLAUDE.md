@@ -17,8 +17,8 @@ App perso pour suivre l'Olympique Lyonnais (Ligue 1). Frontend React + TanStack,
 `fixtures`, `standings`, `news`, `cups`, `players`, `france`, `wiki-image`, `channels`, `lineup`, `events`, `health`.
 
 Endpoints clés :
-- `GET /api/fixtures` — Ligue 1 selon football-data : matchs joués + toute la fin de saison (`limit=100`, cache 1h, refresh 30 min) ; sert le tableau de bord (prochain rendez-vous, dernier résultat) et dit au calendrier si l'heure d'une journée est fixée
-- `GET /api/season-matches` — toute la saison, toutes compétitions suivies (365scores, cache 30 min) ; sert la page Calendrier, la carte, les statistiques d'équipe et de joueurs
+- `GET /api/fixtures` — Ligue 1 selon football-data : matchs joués + toute la fin de saison (`limit=100`, cache 1h, refresh 30 min) ; sert le dernier résultat du tableau de bord et dit au calendrier si l'heure d'une journée est fixée
+- `GET /api/season-matches` — toute la saison, toutes compétitions suivies (365scores, cache 30 min) ; sert la page Calendrier, le « prochain rendez-vous » du tableau de bord (L45, toutes compétitions), la carte, les statistiques d'équipe et de joueurs
 - `GET /api/france` — équipe de France A (L113) : `nextMatch`, 5 derniers `results`, `squad`, en un appel (365scores `competitorId` 5061 ; copie 10 min, dernière réponse connue si 365scores échoue, sinon 503) ; `nextMatch.timeConfirmed` = faux au-delà de 14 jours (365scores seul, pas de football-data)
 - `GET /api/standings`, `/api/standings/history`, `/api/standings/season-rankings` (365scores)
 - `GET /api/news` — flux RSS multi-sources (cache 15 min)
@@ -118,7 +118,7 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 - ✅ Journées historiques pré-2026-04-28 peuvent être incorrectes — dette acceptée par user, pas de reconstruction.
 
 ### Calendrier — une source par match, jamais d'heure inventée (L39)
-- ✅ La page `/fixtures` lit **`/api/season-matches`** (365scores) : Ligue 1, Ligue des champions (qualifications comprises), Ligue Europa, Coupe de France, dans l'ordre des dates. Elle ne lit plus `/api/fixtures`, qui reste la source du tableau de bord.
+- ✅ La page `/fixtures` lit **`/api/season-matches`** (365scores) : Ligue 1, Ligue des champions (qualifications comprises), Ligue Europa, Coupe de France, dans l'ordre des dates. Elle ne lit plus `/api/fixtures`, qui reste la source du dernier résultat du tableau de bord (le prochain rendez-vous lit `/api/season-matches`, L45).
 - ✅ **Une seule liste des compétitions suivies** : `TRACKED_COMPETITIONS` (`season-matches.service.ts`, identifiant 365scores → code + nom). Tout ce qui lit `getMatches()` en dépend : calendrier, carte (Ligue 1 seule, filtre `L1`), statistiques d'équipe et de joueurs. Une compétition de la saison absente de la liste est journalisée (`compétition non suivie`) à chaque rafraîchissement — les 4 qualifications de Ligue des champions d'août 2026 (`332`) avaient été écartées en silence. Les matchs amicaux (`321`) ne sont pas suivis. La page Coupes a sa propre liste (`cups.service.ts` : `37` et `573`).
 - ✅ **Match sans journée** (`roundNum` absent : qualifications, tours à élimination) : `matchday: null` et `round` = tour + manche, lus dans `stageName` et `legNum` (« 3e tour de qualification · aller », « Barrages · retour »). Un tour sans nom français connu n'est pas affiché. Le score est celui du match, pas le cumul aller-retour (`aggregateText` non repris).
 - ✅ **Toute la saison** : `SeasonMatchesService` demande `/web/games/results/` (matchs joués), puis `/web/games/fixtures/` (≈ 27 matchs à venir d'un coup) et suit `paging.nextPage` jusqu'à l'enveloppe sans `games` (plafond `FORWARD_PAGES`, journalisé s'il est atteint). Avant, 8 pages de 3 à 5 matchs s'arrêtaient à J28. La journée vient de `roundNum`.
