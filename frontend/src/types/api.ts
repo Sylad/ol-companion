@@ -78,6 +78,11 @@ export interface SeasonMatch extends Fixture {
    * antérieur au champ.
    */
   round?: string | null;
+  /**
+   * Club qualifié aux tirs au but d'un match de coupe fini à égalité (le score
+   * ne les compte pas) ; `null` sinon. Absent d'un backend antérieur à L135.
+   */
+  shootoutWinnerId?: number | null;
 }
 
 export interface NewsItem {

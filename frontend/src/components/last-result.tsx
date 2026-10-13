@@ -61,10 +61,16 @@ export function LastResult() {
   const won = olScore > oppScore;
   const lost = olScore < oppScore;
   const draw = olScore === oppScore;
+  // L135 : le score ne compte pas les tirs au but — un nul de coupe avec un qualifié désigné n'est pas un nul.
+  const shootout = draw && lastFinished.shootoutWinnerId != null;
+  const shootoutWon = shootout && lastFinished.shootoutWinnerId === OL_TEAM_ID;
 
   let resultLabel = 'Match nul';
   let resultTone = 'text-draw bg-draw/10 border-draw/40';
-  if (won) {
+  if (shootout) {
+    resultLabel = shootoutWon ? 'Victoire aux tirs au but' : 'Défaite aux tirs au but';
+    resultTone = shootoutWon ? 'text-win bg-win/10 border-win/40' : 'text-loss bg-loss/10 border-loss/40';
+  } else if (won) {
     resultLabel = 'Victoire';
     resultTone = 'text-win bg-win/10 border-win/40';
   } else if (lost) {
@@ -107,8 +113,15 @@ export function LastResult() {
             </>
           )}
         </div>
-        <div className="font-mono tabular-nums text-3xl font-bold text-fg-bright text-center px-3">
-          {lastFinished.homeScore} <span className="text-fg-dim">·</span> {lastFinished.awayScore}
+        <div className="text-center px-3">
+          <div className="font-mono tabular-nums text-3xl font-bold text-fg-bright">
+            {lastFinished.homeScore} <span className="text-fg-dim">·</span> {lastFinished.awayScore}
+          </div>
+          {shootout && (
+            <div className="mt-1 text-xs text-fg-dim">
+              {shootoutWon ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-3">
           {olIsHome ? (
