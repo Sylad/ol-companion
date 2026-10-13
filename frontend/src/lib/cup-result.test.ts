@@ -39,6 +39,12 @@ describe('cupResult (L140)', () => {
     const firstWin = m({ id: 2, date: '2026-02-20T19:00:00Z', homeTeam: 'Lille', homeTeamId: 79, awayTeam: 'Lyon', awayTeamId: 523, homeScore: 0, awayScore: 2 });
     expect(cupResult(second, [leagueDraw, firstWin, second])).toEqual({ result: 'D', shootout: false });
   });
+  it('manche aller nulle qui porte olQualified : un nul, pas des tirs au but (L135)', () => {
+    const first = m({ id: 2, date: '2026-02-20T19:00:00Z', homeTeam: 'Lille', homeTeamId: 79, awayTeam: 'Lyon', awayTeamId: 523, homeScore: 1, awayScore: 1, olQualified: true });
+    const second = m({ date: '2026-02-27T19:00:00Z', homeScore: 1, awayScore: 1, olQualified: true });
+    expect(cupResult(first, [first, second])).toEqual({ result: 'D', shootout: false });
+    expect(cupResult(second, [first, second])).toEqual({ result: 'W', shootout: true });
+  });
   it('match non terminé, sans score ou sans OL : null', () => {
     expect(cupResult(m({ status: 'IN_PLAY' }))).toBeNull();
     expect(cupResult(m({ homeScore: null, awayScore: null }))).toBeNull();
