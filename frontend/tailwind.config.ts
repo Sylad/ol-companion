@@ -36,6 +36,9 @@ export default {
         win: 'hsl(var(--win))',
         draw: 'hsl(var(--draw))',
         loss: 'hsl(var(--loss))',
+        'win-fg': 'hsl(var(--win-fg))',
+        'draw-fg': 'hsl(var(--draw-fg))',
+        'loss-fg': 'hsl(var(--loss-fg))',
         live: 'hsl(var(--live))',
       },
       fontFamily: {

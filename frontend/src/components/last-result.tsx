@@ -66,16 +66,16 @@ export function LastResult() {
   const shootoutWon = shootout && lastFinished.shootoutWinnerId === OL_TEAM_ID;
 
   let resultLabel = 'Match nul';
-  let resultTone = 'text-draw bg-draw/10 border-draw/40';
+  let resultTone = 'text-draw-fg bg-draw/10 border-draw/40';
   if (shootout) {
     resultLabel = shootoutWon ? 'Victoire aux tirs au but' : 'Défaite aux tirs au but';
-    resultTone = shootoutWon ? 'text-win bg-win/10 border-win/40' : 'text-loss bg-loss/10 border-loss/40';
+    resultTone = shootoutWon ? 'text-win-fg bg-win/10 border-win/40' : 'text-loss-fg bg-loss/10 border-loss/40';
   } else if (won) {
     resultLabel = 'Victoire';
-    resultTone = 'text-win bg-win/10 border-win/40';
+    resultTone = 'text-win-fg bg-win/10 border-win/40';
   } else if (lost) {
     resultLabel = 'Défaite';
-    resultTone = 'text-loss bg-loss/10 border-loss/40';
+    resultTone = 'text-loss-fg bg-loss/10 border-loss/40';
   }
 
   const d = new Date(lastFinished.date);
@@ -83,14 +83,15 @@ export function LastResult() {
 
   return (
     <section data-testid="dernier-resultat" className="rounded-md bg-surface border border-border overflow-hidden">
-      <header className="px-5 py-4 flex items-center justify-between border-b border-border">
+      {/* L138 : le badge ne se coupe jamais ; trop long pour la ligne, il passe sous le titre. */}
+      <header className="px-5 py-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-border">
         <div>
-          <div className="eyebrow mb-1">Dernier résultat</div>
+          <div className="eyebrow mb-1 whitespace-nowrap">Dernier résultat</div>
           <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
             {olIsHome ? 'À domicile' : "À l'extérieur"}
           </h2>
         </div>
-        <span className={cn('text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm border', resultTone)}>
+        <span data-testid="badge-dernier-resultat" className={cn('whitespace-nowrap text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm border', resultTone)}>
           {resultLabel}
         </span>
       </header>

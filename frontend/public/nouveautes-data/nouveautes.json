@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 11:15",
+  "generated": "2026-10-13 11:52",
   "entries": [
+    {
+      "slug": "2026-10-13-dernier-resultat-badge-lisible-sur-telephone",
+      "title": "Dernier résultat : badge lisible sur téléphone",
+      "date": "2026-10-13",
+      "lots": [
+        "L138"
+      ],
+      "captures": [
+        "captures/dernier-resultat-badge-390.png"
+      ],
+      "alts": [
+        "Carte du dernier résultat à 390 px : le badge « Défaite aux tirs au but » tient sur une ligne"
+      ],
+      "html": "<p>Sur téléphone, le badge du dernier résultat (par exemple « Défaite aux tirs au but ») ne coupe plus « Dernier résultat » en deux : quand il ne tient pas sur la ligne, il passe sous le titre, sur une seule ligne. Le texte des badges Victoire, Match nul et Défaite est aussi plus lisible : le rouge de la défaite est éclairci pour se détacher nettement du fond.</p>"
+    },
     {
       "slug": "2026-10-13-dernier-resultat-les-tirs-au-but-comptes-en-coupe",
       "title": "Dernier résultat : les tirs au but comptés en coupe",
