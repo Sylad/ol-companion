@@ -86,6 +86,8 @@ describe('LiveMatchService — numéros de maillot de la composition probable (L
         const id = Number(url.searchParams.get('gameId'));
         if (id === PREVIOUS_ID) return Promise.resolve(json(withoutAbner));
         if (id === OLDER_ID) return Promise.resolve(json(older));
+        // 844534 sans numéro dans le match à venir : les deux matchs passés se disputent son numéro.
+        if (id === UPCOMING_ID) return Promise.resolve(json(upcoming([])));
       }
       return f(input as string, init);
     };
