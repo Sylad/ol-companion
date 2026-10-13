@@ -14,6 +14,7 @@ import { computeMomentum, parsePlayByPlay, type MomentumPoint } from './live-mat
 import { extractStandingsAround, type LiveStandingRow } from './live-match.standings';
 import { readScores365Standings } from '../standings/scores365-standings';
 import { LIGUE1_365SCORES_ID } from '../../config/constants';
+import { fillMissingJerseys, jerseysOfGame } from './live-match.jerseys';
 
 const SCORES365_HEADERS = scores365Headers();
 
@@ -31,6 +32,8 @@ const RETRY_AFTER_FAILURE_MS = 60_000;
 /** Le classement 365scores est live (résultats provisoires comptés) : 60 s suffisent. */
 const STANDINGS_TTL_MS = 60_000;
 const STANDINGS_AROUND = 2;
+/** Les numéros d'un club changent rarement : on relit son dernier match toutes les 6 h. */
+const JERSEYS_TTL_MS = 6 * 3600_000;
 
 type Fetcher = typeof fetch;
 
@@ -51,6 +54,7 @@ export class LiveMatchService implements OnModuleInit {
   private readonly cachedStatsByGame = new Map<number, CachedStats>();
   private lastDiffSignature = '';
   private cachedStandings: { rows: LiveStandingRow[]; fetchedAt: number } | null = null;
+  private readonly jerseysByClub = new Map<number, { jerseys: Map<number, number>; fetchedAt: number }>();
 
   /** Injectable pour les tests (cf. season-matches). */
   fetcher: Fetcher = (input, init) => fetch(input, init);
@@ -105,6 +109,8 @@ export class LiveMatchService implements OnModuleInit {
       return cached?.payload ?? null;
     }
 
+    await this.fillJerseys(raw, payload);
+
     const momentum = await this.fetchMomentum(raw, payload);
     if (momentum) payload.momentum = momentum;
     else if (cached?.payload.momentum) payload.momentum = cached.payload.momentum;
@@ -115,6 +121,48 @@ export class LiveMatchService implements OnModuleInit {
 
     this.cachedStatsByGame.set(gameId, { payload, fetchedAt: Date.now() });
     return payload;
+  }
+
+  /**
+   * Avant le match, 365scores met 0 comme numéro à une partie des joueurs (L133) :
+   * on reprend celui du dernier match joué par leur club. Meilleur effort.
+   */
+  private async fillJerseys(raw: Scores365GameDetailResponse, payload: LiveMatchStats): Promise<void> {
+    const lineups = payload.lineups;
+    if (!lineups) return;
+    const sides = [
+      { lineup: lineups.home, clubId: raw.game?.homeCompetitor?.id },
+      { lineup: lineups.away, clubId: raw.game?.awayCompetitor?.id },
+    ];
+    for (const { lineup, clubId } of sides) {
+      if (clubId === undefined || ![...lineup.starters, ...lineup.bench].some((p) => p.jerseyNumber === null)) continue;
+      fillMissingJerseys(lineup, await this.lastMatchJerseys(clubId));
+    }
+  }
+
+  private async lastMatchJerseys(clubId: number): Promise<Map<number, number>> {
+    const cached = this.jerseysByClub.get(clubId);
+    if (cached && Date.now() - cached.fetchedAt < JERSEYS_TTL_MS) return cached.jerseys;
+    try {
+      const listUrl = `${SCORES365_API_BASE}/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${clubId}&limit=10`;
+      const list = await this.fetcher(listUrl, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
+      if (!list.ok) throw new Error(`results HTTP ${list.status}`);
+      const games = parseExternal(Scores365GamesResponseSchema, await list.json(), '365scores club results').games ?? [];
+      const last = games.find((g) => g.statusGroup === 4 && g.hasLineups === true) ?? games[0];
+      if (!last) throw new Error('aucun match précédent');
+      const detail = await this.fetcher(
+        `${SCORES365_API_BASE}/web/game/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&gameId=${last.id}`,
+        { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) },
+      );
+      if (!detail.ok) throw new Error(`game HTTP ${detail.status}`);
+      const parsed = parseExternal(Scores365GameDetailResponseSchema, await detail.json(), '365scores previous game');
+      const jerseys = jerseysOfGame(parsed.game ?? {});
+      this.jerseysByClub.set(clubId, { jerseys, fetchedAt: Date.now() });
+      return jerseys;
+    } catch (err) {
+      this.logger.warn(`Numéros du dernier match du club ${clubId} indisponibles : ${(err as Error).message}`);
+      return cached?.jerseys ?? new Map();
+    }
   }
 
   /** Mini-classement Ligue 1 autour de l'OL, cache 60 s, meilleur effort. */
