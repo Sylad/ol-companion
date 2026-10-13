@@ -30,6 +30,15 @@ describe('cupResult (L140)', () => {
     const second = m({ homeScore: 2, awayScore: 2, olQualified: false });
     expect(cupResult(second, [first, second])).toEqual({ result: 'L', shootout: true });
   });
+  it('un match d\'un autre tour contre le même club (phase de ligue) n\'est pas la manche aller', () => {
+    const league = m({ id: 3, date: '2025-11-01T19:00:00Z', stageFr: 'Phase de ligue', homeScore: 2, awayScore: 1 });
+    const first = m({ id: 2, date: '2026-02-20T19:00:00Z', homeTeam: 'Lille', homeTeamId: 79, awayTeam: 'Lyon', awayTeamId: 523, homeScore: 1, awayScore: 1 });
+    const second = m({ date: '2026-02-27T19:00:00Z', homeScore: 1, awayScore: 1, olQualified: true });
+    expect(cupResult(second, [league, first, second])).toEqual({ result: 'W', shootout: true });
+    const leagueDraw = m({ id: 3, date: '2025-11-01T19:00:00Z', stageFr: 'Phase de ligue', homeScore: 1, awayScore: 1 });
+    const firstWin = m({ id: 2, date: '2026-02-20T19:00:00Z', homeTeam: 'Lille', homeTeamId: 79, awayTeam: 'Lyon', awayTeamId: 523, homeScore: 0, awayScore: 2 });
+    expect(cupResult(second, [leagueDraw, firstWin, second])).toEqual({ result: 'D', shootout: false });
+  });
   it('match non terminé, sans score ou sans OL : null', () => {
     expect(cupResult(m({ status: 'IN_PLAY' }))).toBeNull();
     expect(cupResult(m({ homeScore: null, awayScore: null }))).toBeNull();

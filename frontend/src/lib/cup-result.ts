@@ -29,9 +29,10 @@ export function cupResult(m: CupMatch, tie: CupMatch[] = [m]): CupResult | null 
     o.status === 'FINISHED' &&
     o.homeScore !== null &&
     o.awayScore !== null &&
+    o.stageFr === m.stageFr &&
     o.date < m.date &&
     [o.homeTeamId, o.awayTeamId].sort().join() === [m.homeTeamId, m.awayTeamId].sort().join();
-  const first = tie.find(sameTie);
+  const first = tie.filter(sameTie).sort((a, b) => b.date.localeCompare(a.date))[0];
   if (first) {
     const olFirst = isOlTeamName(first.homeTeam) ? first.homeScore! - first.awayScore! : first.awayScore! - first.homeScore!;
     if (olFirst !== 0) return { result: 'D', shootout: false };
