@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 08:45",
+  "generated": "2026-10-13 08:50",
   "entries": [
+    {
+      "slug": "2026-10-13-accueil-le-dernier-resultat-toutes-competitions-confondues",
+      "title": "Accueil : le dernier résultat, toutes compétitions confondues",
+      "date": "2026-10-13",
+      "lots": [
+        "L131"
+      ],
+      "captures": [
+        "captures/L131-dernier-resultat.png"
+      ],
+      "alts": [
+        "Carte « Dernier résultat » de l'accueil affichant Lyon – Crystal Palace en Ligue Europa, journée 2"
+      ],
+      "html": "<p>La carte « Dernier résultat » de l'accueil montre maintenant le dernier match joué, toutes compétitions confondues, et plus seulement celui de Ligue 1. Après Lyon – Crystal Palace, elle l'affiche (compétition et journée en bas de la carte, ou le tour pour un match sans journée) au lieu de rester sur Lens, comme le fait déjà le bandeau « Prochain rendez-vous ». Si le chargement échoue, les deux blocs le disent ensemble, et un seul « Réessayer » les rétablit.</p>"
+    },
     {
       "slug": "2026-10-12-page-match-une-composition-probable-tant-qu-elle-n-est-pas-c",
       "title": "Page match : une composition « probable » tant qu'elle n'est pas confirmée",
