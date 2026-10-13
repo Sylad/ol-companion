@@ -239,7 +239,8 @@ describe('<DashboardHero /> — toutes compétitions (L45)', () => {
       date: '2026-10-14T19:00:00Z',
       competition: 'Ligue Europa',
       matchday: null,
-      round: 'Barrages · aller',
+      // `round` n'existe que sur SeasonMatch (la liste servie par /api/season-matches).
+      ...({ round: 'Barrages · aller' } as object),
     });
     vi.stubGlobal('fetch', serve([NICE], [BARRAGE, NICE]));
     renderHero();
