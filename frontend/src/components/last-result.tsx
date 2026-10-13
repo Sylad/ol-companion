@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useFixtures } from '@/hooks/use-fixtures';
-import { OL_TEAM_ID, type Fixture } from '@/types/api';
+import { useSeasonMatches } from '@/hooks/use-season-matches';
+import { OL_TEAM_ID, type SeasonMatch } from '@/types/api';
 import { TeamLogo } from './team-logo';
 import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
@@ -9,9 +9,10 @@ import { cn } from '@/lib/utils';
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
 export function LastResult() {
-  const { data: fixtures, isPending, isError, refetch } = useFixtures();
+  // Toutes les compétitions suivies (L131), même requête que le bandeau : /api/fixtures n'a que la Ligue 1.
+  const { data: fixtures, isPending, isError, refetch } = useSeasonMatches();
 
-  const lastFinished = useMemo<Fixture | null>(() => {
+  const lastFinished = useMemo<SeasonMatch | null>(() => {
     if (!fixtures) return null;
     const finished = fixtures.filter((f) => f.status === 'FINISHED');
     if (finished.length === 0) return null;
@@ -128,7 +129,7 @@ export function LastResult() {
       </div>
 
       <div className="px-5 py-2.5 bg-surface-2/30 border-t border-border text-xs text-fg-dim flex items-center justify-between">
-        <span>{lastFinished.competition}{lastFinished.matchday ? ` · J${lastFinished.matchday}` : ''}</span>
+        <span>{lastFinished.competition}{lastFinished.matchday ? ` · J${lastFinished.matchday}` : lastFinished.round ? ` · ${lastFinished.round}` : ''}</span>
         <span>{dateLabel}</span>
       </div>
     </section>

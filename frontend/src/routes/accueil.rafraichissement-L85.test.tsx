@@ -5,7 +5,8 @@ import { Outlet, RouterProvider, createMemoryHistory, createRootRoute, createRou
 import { DashboardPage } from './index';
 
 // L85 — R2 (2e phrase), R3, R4 : une erreur de rafraîchissement avec des données déjà là n'efface rien.
-// use-event-stream relance ['fixtures'] à chaque fixtures-changed : on rejoue ce cas.
+// use-event-stream relance ['season-matches'] à chaque fixtures-changed : on rejoue ce cas
+// (L131 : le dernier résultat lit lui aussi /api/season-matches).
 
 const DAY = 86_400_000;
 const iso = (d: number) => new Date(Date.now() + d * DAY).toISOString();
@@ -68,7 +69,6 @@ describe('L85 — rafraîchissement en échec', () => {
       await client.invalidateQueries({ queryKey: ['standings'] });
     });
     await waitFor(() => expect(calls.filter((u) => u === '/api/fixtures' || u === '/api/season-matches' || u === '/api/standings').length).toBeGreaterThan(before));
-    await waitFor(() => expect(client.getQueryState(['fixtures'])?.status).toBe('error'));
     await waitFor(() => expect(client.getQueryState(['season-matches'])?.status).toBe('error'));
 
     expect(screen.getByTestId('carte-prochain-match')).toBeInTheDocument();

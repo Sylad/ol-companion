@@ -166,8 +166,9 @@ describe('R3 — erreur du classement', () => {
 });
 
 describe('R4 — erreur du dernier résultat', () => {
+  // (L131) le dernier résultat lit /api/season-matches, comme le bandeau : une seule requête, un seul « Réessayer » effectif.
   beforeEach(() => {
-    fixturesHandler = async () => fail();
+    seasonHandler = async () => fail();
   });
   it('R4 — erreur : message et bouton Réessayer du dernier résultat', async () => {
     renderPage();
@@ -179,12 +180,22 @@ describe('R4 — erreur du dernier résultat', () => {
     const user = userEvent.setup();
     renderPage();
     const btn = await screen.findByTestId('bouton-reessayer-dernier-resultat', undefined, SLOW);
-    const before = count('/api/fixtures');
-    fixturesHandler = pending;
+    const before = count('/api/season-matches');
+    seasonHandler = pending;
     await user.click(btn);
-    await waitFor(() => expect(count('/api/fixtures')).toBeGreaterThan(before));
+    await waitFor(() => expect(count('/api/season-matches')).toBeGreaterThan(before));
     await screen.findByTestId('squelette-dernier-resultat');
-    // (L45) le bandeau lit season-matches : il ne repasse plus en chargement avec le dernier résultat.
+    absent('message-erreur-dernier-resultat');
+    expect(count('/api/fixtures')).toBe(0);
+  });
+  it('R4 — Réessayer réussi : le dernier résultat s’affiche et la carte du prochain match reste affichée', async () => {
+    const user = userEvent.setup();
+    renderPage();
+    const btn = await screen.findByTestId('bouton-reessayer-dernier-resultat', undefined, SLOW);
+    seasonHandler = async () => okJson([NEXT, LAST]);
+    await user.click(btn);
+    expect(await screen.findByTestId('dernier-resultat', undefined, SLOW)).toBeInTheDocument();
+    expect(tid('carte-prochain-match')).toBeInTheDocument();
     absent('message-erreur-dernier-resultat');
     absent('message-erreur-prochain-match');
   });

@@ -21,7 +21,7 @@ champs:
   - { id: stat-forme, libelle: Tuile Forme, type: texte, source: "GET /api/standings → table[OL].won", obligatoire: true }
   - { id: message-erreur-stats, libelle: Message d'erreur du classement, type: texte, source: statique, obligatoire: false }
   - { id: bouton-reessayer-stats, libelle: Réessayer (classement), type: bouton, source: "action A3", obligatoire: false }
-  - { id: dernier-resultat, libelle: Carte du dernier résultat (last-result), type: carte, source: "GET /api/fixtures → dernier match FINISHED", obligatoire: true }
+  - { id: dernier-resultat, libelle: Carte du dernier résultat (last-result), type: carte, source: "GET /api/season-matches → dernier match FINISHED, toutes compétitions suivies (L131)", obligatoire: true }
   - { id: squelette-dernier-resultat, libelle: Squelette du dernier résultat, type: carte, source: statique, obligatoire: false }
   - { id: message-erreur-dernier-resultat, libelle: Message d'erreur du dernier résultat, type: texte, source: statique, obligatoire: false }
   - { id: bouton-reessayer-dernier-resultat, libelle: Réessayer (dernier résultat), type: bouton, source: "action A4", obligatoire: false }
@@ -61,12 +61,12 @@ regles:
   - id: R4
     etat: erreur
     enonce: >-
-      Si la requête des matchs échoue, le dernier résultat affiche à son tour un message avec « Réessayer » (L45 : le bandeau lit /api/season-matches et le dernier résultat /api/fixtures, deux requêtes distinctes ; « Réessayer » du dernier résultat relance /api/fixtures et ne touche pas au bandeau).
+      Si la requête des matchs échoue, le dernier résultat affiche à son tour un message avec « Réessayer » (L131 : le bandeau et le dernier résultat lisent la même requête, /api/season-matches, toutes compétitions ; une panne les touche donc ensemble, et « Réessayer » du dernier résultat relance cet appel unique, qui rétablit aussi le bandeau).
     message: "Impossible de charger le dernier résultat."
     champs: [message-erreur-dernier-resultat, bouton-reessayer-dernier-resultat]
     statut: hypothese
     si_faux: Si un seul bouton suffit pour les deux blocs, l'un des deux messages disparaît ; aucune donnée en jeu.
-    tests: ["R4 — erreur : message et bouton Réessayer du dernier résultat", "R4 — Réessayer relance l'appel et repasse en chargement"]
+    tests: ["R4 — erreur : message et bouton Réessayer du dernier résultat", "R4 — Réessayer relance l'appel et repasse en chargement", "R4 — Réessayer réussi : le dernier résultat s’affiche et la carte du prochain match reste affichée"]
   - id: R5
     etat: vide
     enonce: >-
@@ -115,10 +115,10 @@ regles:
     tests: ["R9 — OL en chiffres en erreur affiche un message et « Réessayer », qui relance l’appel", "R9 — tracker de classement en erreur affiche un message et « Réessayer », qui relance l’appel", "R9 — données en cache puis échec du refetch : rien n’est effacé, aucun message"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/fixtures", regles: [R1, R3, R4, R6, R7, R8] }
+  - { id: A1, declencheur: ~, appel: "GET /api/season-matches", regles: [R1, R3, R4, R6, R7, R8] }
   - { id: A2, declencheur: bouton-reessayer-prochain-match, appel: "GET /api/season-matches", regles: [R2] }
   - { id: A3, declencheur: bouton-reessayer-stats, appel: "GET /api/standings", regles: [R3] }
-  - { id: A4, declencheur: bouton-reessayer-dernier-resultat, appel: "GET /api/fixtures", regles: [R4] }
+  - { id: A4, declencheur: bouton-reessayer-dernier-resultat, appel: "GET /api/season-matches", regles: [R4] }
   - { id: A5, declencheur: bouton-reessayer-season-summary, appel: "GET /api/season-matches/team-stats", regles: [R9] }
   - { id: A6, declencheur: bouton-reessayer-position-tracker, appel: "GET /api/standings/season-rankings", regles: [R9] }
   - { id: A7, declencheur: ~, appel: "GET /api/season-matches", regles: [R1, R2, R5, R8] }
