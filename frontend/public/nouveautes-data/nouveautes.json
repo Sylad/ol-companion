@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 10:31",
+  "generated": "2026-10-13 11:08",
   "entries": [
+    {
+      "slug": "2026-10-13-composition-le-numero-reste-colle-au-nom-sur-la-ligne-du-ban",
+      "title": "Composition : le numéro reste collé au nom sur la ligne du banc",
+      "date": "2026-10-13",
+      "lots": [
+        "L136"
+      ],
+      "captures": [
+        "captures/banc-composition-390.png"
+      ],
+      "alts": [
+        "Banc de la composition sur téléphone : chaque numéro de maillot reste collé au nom du remplaçant qui le suit"
+      ],
+      "html": "<p>Dans le bloc Composition, la ligne du banc ne sépare plus un numéro de maillot de son nom quand elle passe à la ligne : on ne lit plus « Tagliafico, 2 » puis « Bidstrup » à la ligne suivante, où le 2 semblait être celui de Tagliafico. La ligne ne se coupe qu'après la virgule : « 2 Bidstrup » reste ensemble.</p>"
+    },
     {
       "slug": "2026-10-13-page-match-a-venir-les-numeros-de-maillot-de-la-composition",
       "title": "Page match à venir : les numéros de maillot de la composition probable",

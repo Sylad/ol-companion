@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { Fragment, useLayoutEffect, useRef } from 'react';
 import type { LiveMatchLineup, LiveMatchLineupPlayer } from '@/types/api';
 import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
@@ -55,11 +55,14 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
           <p data-testid="banc-composition" className="pt-2 border-t border-border text-[11px] text-fg-muted leading-relaxed">
             <span className="uppercase tracking-wider text-[10px] text-fg-dim mr-1.5">Banc</span>
             {lineup.bench.map((p, i) => (
-              <span key={p.id}>
+              <Fragment key={p.id}>
                 {i > 0 && ', '}
-                {hasJersey(p.jerseyNumber) && <span className="num tabular-nums text-fg-dim">{p.jerseyNumber} </span>}
-                {p.shortName}
-              </span>
+                {/* Numéro et nom insécables (L136) : la ligne ne se coupe qu'après la virgule. */}
+                <span data-testid="joueur-banc" className="whitespace-nowrap">
+                  {hasJersey(p.jerseyNumber) && <span className="num tabular-nums text-fg-dim">{p.jerseyNumber} </span>}
+                  {p.shortName}
+                </span>
+              </Fragment>
             ))}
           </p>
         )}
