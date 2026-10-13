@@ -1,7 +1,17 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 11:52",
+  "generated": "2026-10-13 11:57",
   "entries": [
+    {
+      "slug": "2026-10-13-tirs-au-but-le-calendrier-les-compte-aussi",
+      "title": "Tirs au but : le calendrier les compte aussi",
+      "date": "2026-10-13",
+      "lots": [
+        "L139"
+      ],
+      "captures": [],
+      "html": "<p>Un match de coupe terminé à égalité et décidé aux tirs au but n'est plus compté comme un match nul au calendrier. Dans la liste, le club qualifié s'affiche comme vainqueur du match et l'autre comme perdant, sans la couleur du nul. Dans la vue rapide, le bilan V N D le range en victoire ou en défaite pour l'OL.</p>\n<p>Les matchs de championnat et de phase de ligue européenne ne sont jamais concernés : un nul y reste un nul.</p>"
+    },
     {
       "slug": "2026-10-13-dernier-resultat-badge-lisible-sur-telephone",
       "title": "Dernier résultat : badge lisible sur téléphone",
