@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 11:57",
+  "generated": "2026-10-13 11:58",
   "entries": [
     {
       "slug": "2026-10-13-tirs-au-but-le-calendrier-les-compte-aussi",
@@ -9,7 +9,12 @@
       "lots": [
         "L139"
       ],
-      "captures": [],
+      "captures": [
+        "captures/L139-calendrier-tirs-au-but.png"
+      ],
+      "alts": [
+        "Calendrier : Fenerbahçe 1-1 Lyon, Lyon qualifié aux tirs au but, sans la couleur du nul"
+      ],
       "html": "<p>Un match de coupe terminé à égalité et décidé aux tirs au but n'est plus compté comme un match nul au calendrier. Dans la liste, le club qualifié s'affiche comme vainqueur du match et l'autre comme perdant, sans la couleur du nul. Dans la vue rapide, le bilan V N D le range en victoire ou en défaite pour l'OL.</p>\n<p>Les matchs de championnat et de phase de ligue européenne ne sont jamais concernés : un nul y reste un nul.</p>"
     },
     {
