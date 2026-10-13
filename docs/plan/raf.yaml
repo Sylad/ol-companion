@@ -1433,10 +1433,11 @@ lots:
   - id: L140
     title: "Tirs au but, suite : la page Coupes (bilan V N D cups.tsx:197 et badge cup-match-row.tsx:37) compte encore un nul gagné aux tirs au but comme N, et la carte « Dernier résultat » de la vue rapide de /fixtures (SummaryMatch, fixtures.tsx:335-359) n'affiche que « 1-1 » sans « t.a.b. » — utiliser olQualified / shootoutWinnerId partout (constats revue L139)"
     public: "Tirs au but : la page Coupes et la vue rapide aussi"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-13
+    started: 2026-10-13
   - id: L141
     title: "Nouveautés L135, L138 et L139 : les captures montrent des matchs d'exemple (Rennes 1-1 OL en Coupe de France, Lyon 1-1 Rennes en barrages C3) qui n'existent pas — le dire dans le texte et le texte alternatif (« exemple, aucun match de la saison n'a encore été décidé aux tirs au but »)"
     status: doing
