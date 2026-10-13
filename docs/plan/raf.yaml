@@ -1381,10 +1381,11 @@ lots:
   - id: L135
     title: "Carte « Dernier résultat » : match de coupe décidé aux tirs au but (1-1) affiché « Match nul » — lire l'issue des tirs au but dans season-matches (365scores) et l'afficher dans le badge et le score ; en profiter pour retirer useFixtures, mort depuis L131 (constat revue L131)"
     public: "Dernier résultat : les tirs au but comptés en coupe"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-13
+    started: 2026-10-13
   - id: L136
     title: "Banc de la composition : le numéro de maillot se sépare du nom au retour à la ligne (« Tagliafico, 2 ⏎ Bidstrup » à 390 et 1440 px) et se lit comme celui du joueur précédent — numéro et nom insécables (lineup-card.tsx:60, constat UX L133)"
     public: "Composition : le numéro reste collé au nom sur la ligne du banc"
