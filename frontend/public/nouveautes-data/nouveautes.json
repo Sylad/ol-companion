@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 12:43",
+  "generated": "2026-10-13 13:29",
   "entries": [
     {
       "slug": "2026-10-13-tirs-au-but-la-page-coupes-et-la-vue-rapide-aussi",
@@ -15,7 +15,7 @@
       "alts": [
         "Exemple, aucun match de la saison n'a encore été décidé aux tirs au but : page Coupes à 390 px avec un Lyon 1-1 Rennes imaginaire, bilan 1 V 0 N, pastille V et mention « t.a.b. » après « Terminé »"
       ],
-      "html": "<p>Un match de coupe fini à égalité mais gagné aux tirs au but n'est plus compté comme un match nul sur la page Coupes : le bilan V N D de la coupe le compte en victoire (ou en défaite si l'OL est éliminé), et la pastille du match passe à V ou D. La ligne du match écrit « t.a.b. » après « Terminé », et le club qualifié est mis en avant comme un vainqueur.</p>\n<p>La carte « Dernier résultat » de la vue rapide du calendrier écrit elle aussi « t.a.b. » sous le score, au lieu d'afficher seulement « 1-1 ».</p>\n<p>Une manche retour sans but d'écart, mais gagnée au cumul des deux manches, reste un match nul : seuls les vrais tirs au but changent le résultat.</p>\n<p>La capture montre un match d'exemple (Lyon 1-1 Rennes en barrages de Ligue Europa) : exemple, aucun match de la saison n'a encore été décidé aux tirs au but.</p>"
+      "html": "<p>Un match de coupe fini à égalité mais gagné aux tirs au but n'est plus compté comme un match nul sur la page Coupes : le bilan V N D de la coupe le compte en victoire (ou en défaite si l'OL est éliminé), et la pastille du match passe à V ou D. La ligne du match écrit « t.a.b. » après « Terminé », et le club qualifié est mis en avant comme un vainqueur.</p>\n<p>La carte « Dernier résultat » de la vue rapide du calendrier dit elle aussi l'issue en clair, sous le nom du club : « Qualifié aux tirs au but » ou « Éliminé aux tirs au but », au lieu d'afficher seulement « 1-1 ».</p>\n<p>Une manche retour sans but d'écart, mais gagnée au cumul des deux manches, reste un match nul : seuls les vrais tirs au but changent le résultat.</p>\n<p>La capture montre un match d'exemple (Lyon 1-1 Rennes en barrages de Ligue Europa) : exemple, aucun match de la saison n'a encore été décidé aux tirs au but.</p>"
     },
     {
       "slug": "2026-10-13-fiche-joueur-resultats-plus-lisibles",
