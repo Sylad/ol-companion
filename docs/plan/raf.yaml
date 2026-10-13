@@ -1343,6 +1343,7 @@ lots:
     notes:
       - { date: 2026-10-13, text: "13-10 lead : ce lot change la règle R4 de docs/specs/accueil/fiche.yaml (le dernier résultat lu dans /api/season-matches) : modifier la fiche ET le test scellé accueil.acceptation-L85.test.tsx dans des commits qui citent L131 (exception « lot livré » du verrou, comme L45). Dans le même mouvement, renforcer le test R4 : après « Réessayer » du dernier résultat, carte-prochain-match reste affichée (constat revue L45). Ne pas toucher acceptation-L85.json." }
     started: 2026-10-13
+    review: { date: 2026-10-13, verdict: "conforme (4 mineurs, en notes) — orchestré (vague 2026-10-13-0900b, 2 passe(s) de correction)", commit: 5510cb78d463bfa2cde2dc7aa171b7149bc7e41f }
   - id: L132
     title: "Nouveautés L45 : texte corrigé — la compétition est à côté de « Prochain rendez-vous », pas de la date ; un match de phase de ligue européenne affiche sa journée (J2), pas un tour ; renforcer le test R4 (le bandeau reste affiché après « Réessayer » du dernier résultat)"
     status: doing
