@@ -1411,10 +1411,11 @@ lots:
   - id: L138
     title: "Badge du dernier résultat à 390 px : « Défaite aux tirs au but » passe sur deux lignes et coupe « Dernier résultat » en deux (43 px de haut) ; contraste du badge Défaite 3,64:1 < 4,5:1 (WCAG 1.4.3, rgb(221,34,34) sur bg-loss/10) — libellé court ou badge sous le titre, contraste ≥ 4,5:1 (constats UX L135)"
     public: "Dernier résultat : badge lisible sur téléphone"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-13
+    started: 2026-10-13
   - id: L139
     title: "Tirs au but, cohérence : /fixtures compte encore un 1-1 gagné aux tirs au but comme nul (teinte et bilan, fixtures.tsx:303/568) ; matchesChanged ignore shootoutWinnerId (pas d'événement SSE si isQualified arrive après le score) ; la détection s'applique aussi aux matchs à journée de la phase de ligue européenne (season-matches.service.ts:451) (constats revue L135)"
     public: "Tirs au but : le calendrier les compte aussi"
