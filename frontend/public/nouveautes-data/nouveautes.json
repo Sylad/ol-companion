@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 12:32",
+  "generated": "2026-10-13 12:36",
   "entries": [
+    {
+      "slug": "2026-10-13-fiche-joueur-resultats-plus-lisibles",
+      "title": "Fiche joueur : résultats plus lisibles",
+      "date": "2026-10-13",
+      "lots": [
+        "L142"
+      ],
+      "captures": [
+        "captures/player-badges-L142.png"
+      ],
+      "alts": [
+        "Tableau des matchs d'une fiche joueur : pastilles V, N et D lisibles sur leur fond teinté (match d'exemple)"
+      ],
+      "html": "<p>Dans le détail de saison d'une fiche joueur, les pastilles V, N et D à côté de chaque score sont plus faciles à lire : le texte de la pastille est plus contrasté sur son fond coloré, y compris quand on survole la ligne. La capture montre un match d'exemple.</p>"
+    },
     {
       "slug": "2026-10-13-tirs-au-but-le-calendrier-les-compte-aussi",
       "title": "Tirs au but : le calendrier les compte aussi",

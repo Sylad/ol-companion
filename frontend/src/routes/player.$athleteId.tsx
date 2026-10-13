@@ -38,9 +38,9 @@ function formatDate(iso: string): string {
 function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {
   if (!result) return <span className="text-fg-dim">—</span>;
   const tone =
-    result === 'W' ? 'bg-win/20 text-win border-win/30'
-    : result === 'L' ? 'bg-loss/20 text-loss border-loss/30'
-    : 'bg-draw/20 text-draw border-draw/30';
+    result === 'W' ? 'bg-win/10 text-win-fg border-win/40'
+    : result === 'L' ? 'bg-loss/10 text-loss-fg border-loss/40'
+    : 'bg-draw/10 text-draw-fg border-draw/40';
   return (
     <span
       className={cn(

@@ -24,8 +24,8 @@
     --win: 142 71% 36%;
     --draw: 41 91% 41%;
     --loss: 0 73% 50%;
-    /* L138 : texte des badges V/N/D sur leur teinte à 10 % (WCAG 1.4.3, ≥ 4,5:1) ; --loss seul faisait 3,6:1. */
-    --win-fg: 142 71% 36%;
+    /* L138 : texte des badges V/N/D sur leur teinte à 10 % (WCAG 1.4.3, ≥ 4,5:1) ; --loss seul faisait 3,6:1. L142 : --win-fg éclairci (36 → 40 %) pour tenir aussi au survol d'une ligne (surface-2). */
+    --win-fg: 142 71% 40%;
     --draw-fg: 41 91% 41%;
     --loss-fg: 0 84% 63%;
     --live: 0 84% 60%;
