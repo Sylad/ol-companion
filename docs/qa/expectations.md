@@ -50,7 +50,7 @@ dans l'ordre que donne isHome.
 - never: « Match introuvable » ; « Lien incomplet »
 - never: à 320 px, une formation de la pastille « Composition » coupée sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 »), même avec un nom de club long (Anderlecht, Fenerbahçe SK)
 - never: sur un match à venir, une composition non « Confirmé » par 365scores sans l'étiquette « Composition probable » ; un numéro de maillot « 0 » (titulaire ou banc)
-- shows: sur un match à venir, un numéro de maillot sur chaque titulaire et chaque remplaçant des deux compositions, y compris quand 365scores envoie 0 (reprise du numéro du dernier match du club, L133) — tolérance : un joueur sans match précédent connu (recrue) peut rester sans numéro
+- shows: sur un match à venir, un numéro de maillot sur chaque titulaire et chaque remplaçant des deux compositions, y compris quand 365scores envoie 0 (reprise du numéro des 5 derniers matchs du club, le plus récent d'abord, L133) — tolérance : un joueur absent de ces 5 matchs (recrue, blessé de longue durée) peut rester sans numéro
 - api: /api/live-match/<gameId>/stats
 
 ## /fixtures

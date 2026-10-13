@@ -33,6 +33,7 @@ const RETRY_AFTER_FAILURE_MS = 60_000;
 const STANDINGS_TTL_MS = 60_000;
 const STANDINGS_AROUND = 2;
 /** Les numéros d'un club changent rarement : on relit son dernier match toutes les 6 h. */
+const JERSEYS_PREVIOUS_GAMES = 5;
 const JERSEYS_TTL_MS = 6 * 3600_000;
 
 type Fetcher = typeof fetch;
@@ -148,20 +149,34 @@ export class LiveMatchService implements OnModuleInit {
       const list = await this.fetcher(listUrl, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
       if (!list.ok) throw new Error(`results HTTP ${list.status}`);
       const games = parseExternal(Scores365GamesResponseSchema, await list.json(), '365scores club results').games ?? [];
-      const last = games.find((g) => g.statusGroup === 4 && g.hasLineups === true) ?? games[0];
-      if (!last) throw new Error('aucun match précédent');
-      const detail = await this.fetcher(
-        `${SCORES365_API_BASE}/web/game/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&gameId=${last.id}`,
-        { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) },
-      );
-      if (!detail.ok) throw new Error(`game HTTP ${detail.status}`);
-      const parsed = parseExternal(Scores365GameDetailResponseSchema, await detail.json(), '365scores previous game');
-      const jerseys = jerseysOfGame(parsed.game ?? {});
+      const played = games.filter((g) => g.statusGroup === 4 && g.hasLineups === true);
+      const previous = (played.length > 0 ? played : games).slice(0, JERSEYS_PREVIOUS_GAMES);
+      if (previous.length === 0) throw new Error('aucun match précédent');
+      // Un joueur absent du dernier match (blessé, au repos) garde son numéro d'un match plus ancien.
+      const perGame = await Promise.all(previous.map((g) => this.gameJerseys(g.id)));
+      const jerseys = new Map<number, number>();
+      if (perGame.every((known) => known === null)) throw new Error('aucun match lisible');
+      for (const known of perGame.reverse()) for (const [id, n] of known ?? []) jerseys.set(id, n);
       this.jerseysByClub.set(clubId, { jerseys, fetchedAt: Date.now() });
       return jerseys;
     } catch (err) {
       this.logger.warn(`Numéros du dernier match du club ${clubId} indisponibles : ${(err as Error).message}`);
       return cached?.jerseys ?? new Map();
+    }
+  }
+
+  private async gameJerseys(gameId: number): Promise<Map<number, number> | null> {
+    try {
+      const detail = await this.fetcher(
+        `${SCORES365_API_BASE}/web/game/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&gameId=${gameId}`,
+        { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) },
+      );
+      if (!detail.ok) throw new Error(`game HTTP ${detail.status}`);
+      const parsed = parseExternal(Scores365GameDetailResponseSchema, await detail.json(), '365scores previous game');
+      return jerseysOfGame(parsed.game ?? {});
+    } catch (err) {
+      this.logger.warn(`Numéros du match ${gameId} indisponibles : ${(err as Error).message}`);
+      return null;
     }
   }
 

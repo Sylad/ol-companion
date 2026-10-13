@@ -69,6 +69,32 @@ describe('LiveMatchService — numéros de maillot de la composition probable (L
     expect(resultsCalls.sort()).toEqual(['465', '477']);
   });
 
+  it('un joueur absent du dernier match reprend son numéro d\'un match plus ancien, le plus récent l\'emportant', async () => {
+    const OLDER_ID = PREVIOUS_ID + 1;
+    const withoutAbner = JSON.parse(JSON.stringify(PREVIOUS));
+    withoutAbner.game.members = withoutAbner.game.members.filter((m: Member) => m.id !== 12759586);
+    const older = JSON.parse(JSON.stringify(PREVIOUS));
+    older.game.id = OLDER_ID;
+    for (const m of older.game.members as Member[]) if (m.id === 844534) m.jerseyNumber = 99;
+    const f = globalThis.fetch;
+    globalThis.fetch = (input: unknown, init?: RequestInit) => {
+      const url = new URL(String(input));
+      if (url.pathname === '/web/games/results/') {
+        return Promise.resolve(json({ games: [PREVIOUS_ID, OLDER_ID].map((id) => ({ id, startTime: PREVIOUS.game.startTime, statusGroup: 4, hasLineups: true })) }));
+      }
+      if (url.pathname === '/web/game/') {
+        const id = Number(url.searchParams.get('gameId'));
+        if (id === PREVIOUS_ID) return Promise.resolve(json(withoutAbner));
+        if (id === OLDER_ID) return Promise.resolve(json(older));
+      }
+      return f(input as string, init);
+    };
+    const out = await stats();
+    const home = [...out!.lineups!.home.starters, ...out!.lineups!.home.bench];
+    expect(home.find((p) => p.id === 12759586)?.jerseyNumber).toBe(16);
+    expect(home.find((p) => p.id === 844534)?.jerseyNumber).toBe(1);
+  });
+
   it('match précédent introuvable : le joueur reste sans numéro, la page ne casse pas', async () => {
     const f = globalThis.fetch;
     globalThis.fetch = (input: unknown, init?: RequestInit) =>
