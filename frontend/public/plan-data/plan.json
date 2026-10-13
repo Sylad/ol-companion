@@ -382,14 +382,26 @@
     {
       "id": "L135",
       "title": "Dernier résultat : les tirs au but comptés en coupe",
-      "status": "doing",
-      "started": "2026-10-13"
+      "status": "done",
+      "started": "2026-10-13",
+      "finished": "2026-10-13"
     },
     {
       "id": "L136",
       "title": "Composition : le numéro reste collé au nom sur la ligne du banc",
-      "status": "doing",
-      "started": "2026-10-13"
+      "status": "done",
+      "started": "2026-10-13",
+      "finished": "2026-10-13"
+    },
+    {
+      "id": "L138",
+      "title": "Dernier résultat : badge lisible sur téléphone",
+      "status": "todo"
+    },
+    {
+      "id": "L139",
+      "title": "Tirs au but : le calendrier les compte aussi",
+      "status": "todo"
     }
   ]
 }

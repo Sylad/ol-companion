@@ -1381,21 +1381,25 @@ lots:
   - id: L135
     title: "Carte « Dernier résultat » : match de coupe décidé aux tirs au but (1-1) affiché « Match nul » — lire l'issue des tirs au but dans season-matches (365scores) et l'afficher dans le badge et le score ; en profiter pour retirer useFixtures, mort depuis L131 (constat revue L131)"
     public: "Dernier résultat : les tirs au but comptés en coupe"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant — 5 notes mineures (garde phase de ligue, SSE sans shootoutWinnerId, contraste préexistant du badge Défaite, badge sur deux lignes à 390 px, calendrier qui compte encore le match comme nul), aucune sous-tâche — orchestré (vague 2026-10-13-1115, 0 passe(s) de correction + passe des mineurs)", commit: ace1d663768a8145b4fe487bbad22ff5b72f7b35 }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-1115 (5 mineurs) et captures regardées par le lead : « Défaite aux tirs au but » + « Éliminé aux tirs au but » sur un cas simulé (Rennes, CdF) ; badge sur deux lignes à 390 px et contraste du badge Défaite repris en lot" }
+    finished: 2026-10-13
   - id: L136
     title: "Banc de la composition : le numéro de maillot se sépare du nom au retour à la ligne (« Tagliafico, 2 ⏎ Bidstrup » à 390 et 1440 px) et se lit comme celui du joueur précédent — numéro et nom insécables (lineup-card.tsx:60, constat UX L133)"
     public: "Composition : le numéro reste collé au nom sur la ligne du banc"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant — orchestré (vague 2026-10-13-1115, 0 passe(s) de correction)", commit: 491cb475e5e062f10ea4fb8bc1a3466bd4ef0408 }
+    ux: { date: 2026-10-13, verdict: "conforme — revue UX de la vague 2026-10-13-1115 et capture 390 regardée par le lead : numéro et nom insécables sur la ligne du banc (« 26 Boudache » en début de ligne)" }
+    finished: 2026-10-13
   - id: L137
     title: "Composition probable : 4 remplaçants de Crystal Palace (Benetton, Chilwell, Williams, Osorio) toujours sans numéro sur /match/4828743 le 13-10 — chercher plus loin dans les matchs précédents ou dans l'effectif 365scores (/web/squads/) (constat revue L133)"
     status: dropped
@@ -1404,6 +1408,20 @@ lots:
     finished: 2026-10-13
     notes:
       - { date: 2026-10-13, text: "abandonné : ne se reproduit plus en prod (sha-854e9a2) : le remplissage de L133 sur les 5 derniers matchs du club couvre les 4 remplaçants (Benetton 81, Chilwell 33, Williams 43, Osorio 24), 42/42 joueurs numérotés, vérifié par le lead et la QA le 13-10" }
+  - id: L138
+    title: "Badge du dernier résultat à 390 px : « Défaite aux tirs au but » passe sur deux lignes et coupe « Dernier résultat » en deux (43 px de haut) ; contraste du badge Défaite 3,64:1 < 4,5:1 (WCAG 1.4.3, rgb(221,34,34) sur bg-loss/10) — libellé court ou badge sous le titre, contraste ≥ 4,5:1 (constats UX L135)"
+    public: "Dernier résultat : badge lisible sur téléphone"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-13
+  - id: L139
+    title: "Tirs au but, cohérence : /fixtures compte encore un 1-1 gagné aux tirs au but comme nul (teinte et bilan, fixtures.tsx:303/568) ; matchesChanged ignore shootoutWinnerId (pas d'événement SSE si isQualified arrive après le score) ; la détection s'applique aussi aux matchs à journée de la phase de ligue européenne (season-matches.service.ts:451) (constats revue L135)"
+    public: "Tirs au but : le calendrier les compte aussi"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-13
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
