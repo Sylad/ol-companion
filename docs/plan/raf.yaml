@@ -1393,6 +1393,7 @@ lots:
     visible: true
     created: 2026-10-13
     started: 2026-10-13
+    review: { date: 2026-10-13, verdict: "compliant — orchestré (vague 2026-10-13-1115, 0 passe(s) de correction)", commit: 491cb475e5e062f10ea4fb8bc1a3466bd4ef0408 }
   - id: L137
     title: "Composition probable : 4 remplaçants de Crystal Palace (Benetton, Chilwell, Williams, Osorio) toujours sans numéro sur /match/4828743 le 13-10 — chercher plus loin dans les matchs précédents ou dans l'effectif 365scores (/web/squads/) (constat revue L133)"
     status: dropped
