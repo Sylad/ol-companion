@@ -1,7 +1,8 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { Fixture } from '@/types/api';
+import { OL_TEAM_ID, type Fixture } from '@/types/api';
+import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import { DashboardHero } from './dashboard-hero';
 
@@ -217,5 +218,40 @@ describe('<DashboardHero /> — toutes compétitions (L45)', () => {
     expect(screen.getAllByText('Crystal Palace FC').length).toBeGreaterThan(0);
     expect(screen.queryByText('OGC Nice')).not.toBeInTheDocument();
     expect(screen.queryByText(/J8/)).not.toBeInTheDocument();
+  });
+
+  it('les écussons viennent du CDN 365scores, sans recherche Wikipédia (club européen)', async () => {
+    const fetchMock = serve([NICE], [PALACE, NICE]);
+    vi.stubGlobal('fetch', fetchMock);
+    renderHero();
+
+    const logo = await screen.findByAltText('Crystal Palace FC');
+    expect(logo).toHaveAttribute('src', seasonTeamLogoUrl(354));
+    expect(screen.getByAltText('Olympique Lyonnais')).toHaveAttribute('src', seasonTeamLogoUrl(OL_TEAM_ID));
+    const wikiCalls = fetchMock.mock.calls.filter(([url]) => String(url).startsWith('/api/wiki-image'));
+    expect(wikiCalls).toHaveLength(0);
+  });
+
+  it('un match sans journée affiche son tour et sa manche à la place de « J… »', async () => {
+    const BARRAGE = match({
+      id: 12,
+      date: '2026-10-14T19:00:00Z',
+      competition: 'Ligue Europa',
+      matchday: null,
+      round: 'Barrages · aller',
+    });
+    vi.stubGlobal('fetch', serve([NICE], [BARRAGE, NICE]));
+    renderHero();
+
+    expect(await screen.findByText(/Ligue Europa · Barrages · aller/)).toBeInTheDocument();
+    expect(screen.queryByText(/ J\d/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/null/)).not.toBeInTheDocument();
+  });
+
+  it('une journée de championnat s’écrit « J8 », sans tour', async () => {
+    vi.stubGlobal('fetch', serve([NICE], [NICE]));
+    renderHero();
+
+    expect(await screen.findByText(/Ligue 1 · J8/)).toBeInTheDocument();
   });
 });

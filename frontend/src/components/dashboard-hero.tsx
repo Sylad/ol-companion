@@ -9,6 +9,7 @@ import { OL_TEAM_ID, type SeasonMatch } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
+import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { formatKickoffLong, hasKickoffTime } from '@/lib/kickoff';
 
 function countdown(iso: string): string {
@@ -231,7 +232,7 @@ interface TeamSlotProps {
 function TeamSlot({ teamId, name, isOL }: TeamSlotProps) {
   return (
     <div className="flex flex-col items-center text-center min-w-0 flex-1">
-      <TeamLogo teamId={teamId} name={name} size={56} className="mb-2" />
+      <TeamLogo teamId={teamId} name={name} size={56} className="mb-2" src={seasonTeamLogoUrl(teamId)} />
       <div
         className={cn(
           'text-xs lg:text-sm font-semibold leading-tight max-w-[140px] truncate',
