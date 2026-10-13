@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 13:29",
+  "generated": "2026-10-13 13:46",
   "entries": [
+    {
+      "slug": "2026-10-13-nouveautes-des-captures-mieux-decrites",
+      "title": "Nouveautés : des captures mieux décrites",
+      "date": "2026-10-13",
+      "lots": [
+        "L143"
+      ],
+      "captures": [
+        "captures/nouveautes-alts-L143.png"
+      ],
+      "alts": [
+        "Page Nouveautés à 390 px : cette entrée, dont le texte alternatif de la capture est lu par les lecteurs d'écran"
+      ],
+      "html": "<p>Sur la page Nouveautés, chaque capture est désormais décrite par son propre texte, et plus par une phrase fabriquée à partir du titre. Les lecteurs d'écran l'annoncent sur l'image et sur le lien « Agrandir la capture » : quand une capture montre un match d'exemple, la mention « exemple » est donc bien dite. Une capture sans description garde le texte d'avant.</p>"
+    },
     {
       "slug": "2026-10-13-tirs-au-but-la-page-coupes-et-la-vue-rapide-aussi",
       "title": "Tirs au but : la page Coupes et la vue rapide aussi",

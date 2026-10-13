@@ -12,6 +12,8 @@ export interface NewsEntry {
   date: string;
   lots: string[];
   captures: string[];
+  /** Texte alternatif de chaque capture, dans l'ordre de `captures` ; absent ou vide : repli sur le titre. */
+  alts?: string[];
   html: string;
 }
 

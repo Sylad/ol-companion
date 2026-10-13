@@ -62,6 +62,25 @@ describe('<NouveautesPage />', () => {
     window.history.replaceState(null, '', '/');
   });
 
+
+  it("lit le texte alternatif du JSON (alts), sans le perdre ni dans l'image ni dans le lien d'agrandissement, avec repli sur le titre", async () => {
+    const alt = "Exemple, aucun match n'a été décidé aux tirs au but : page Coupes à 390 px";
+    stubFetch({
+      news: {
+        ...NEWS,
+        entries: [
+          { ...NEWS.entries[0], alts: [alt] },
+          { ...NEWS.entries[1], alts: ['Première capture décrite'] },
+        ],
+      },
+    });
+    renderPage();
+    const img = await screen.findByRole('img', { name: alt });
+    expect(img.closest('a')).toHaveAccessibleName(`Agrandir la capture — ${alt}`);
+    // une seule capture décrite sur deux : l'autre garde le repli fabriqué depuis le titre
+    expect(screen.getByRole('img', { name: 'Première capture décrite' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: "Capture d'écran 2 sur 2 : Une nouveauté plus ancienne" })).toBeInTheDocument();
+  });
   it('affiche les entrées du JSON cadence dans son ordre (la plus récente en haut), avec date et captures', async () => {
     const fetchMock = stubFetch();
     renderPage();

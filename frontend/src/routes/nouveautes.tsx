@@ -236,9 +236,10 @@ export function NouveautesPage() {
                       size: sizes[c],
                       src: `${BASE}/${c}`,
                       alt:
-                        e.captures.length > 1
+                        e.alts?.[i]?.trim() ||
+                        (e.captures.length > 1
                           ? `Capture d'écran ${i + 1} sur ${e.captures.length} : ${e.title}`
-                          : `Capture d'écran : ${e.title}`,
+                          : `Capture d'écran : ${e.title}`),
                     };
                     const size = sizes[c];
                     // Place réservée AVANT chargement : le lien prend min(largeur dispo, largeur
