@@ -71,7 +71,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
           {shootout && (
             <>
               {' · '}
-              <abbr title="Qualifié aux tirs au but" className="no-underline">
+              <abbr title={olAhead ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}className="no-underline">
                 <span aria-hidden="true">t.a.b.</span>
                 <span className="sr-only">tirs au but</span>
               </abbr>

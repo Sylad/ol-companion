@@ -51,6 +51,13 @@ describe('<CupMatchRow /> — tirs au but (L140)', () => {
     const { getByLabelText } = renderRow(done({ olQualified: false }));
     expect(getByLabelText('Défaite')).toHaveTextContent('D');
   });
+  it('l\'infobulle de « t.a.b. » dit la même chose que la pastille', () => {
+    const won = renderRow(done({ olQualified: true }));
+    expect(won.container.querySelector('abbr')).toHaveAttribute('title', 'Qualifié aux tirs au but');
+    won.unmount();
+    const lost = renderRow(done({ olQualified: false }));
+    expect(lost.container.querySelector('abbr')).toHaveAttribute('title', 'Éliminé aux tirs au but');
+  });
   it('un nul sans qualifié : badge « Match nul », pas de « t.a.b. »', () => {
     const { getByLabelText, container } = renderRow(done({}));
     expect(getByLabelText('Match nul')).toHaveTextContent('N');
