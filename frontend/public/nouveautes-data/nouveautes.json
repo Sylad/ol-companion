@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-12 22:25",
+  "generated": "2026-10-13 08:45",
   "entries": [
     {
       "slug": "2026-10-12-page-match-une-composition-probable-tant-qu-elle-n-est-pas-c",
@@ -30,7 +30,7 @@
       "alts": [
         "Bandeau du tableau de bord annonçant Lyon – Crystal Palace en Ligue Europa, avant la journée de Ligue 1 suivante"
       ],
-      "html": "<p>Le bandeau « Prochain rendez-vous » du tableau de bord annonce maintenant le prochain match de toutes les compétitions suivies, et plus seulement celui de Ligue 1. Après Lens le 9 octobre, il montre Lyon – Crystal Palace du 15 octobre, au lieu de sauter à Nice le 18. La compétition est indiquée à côté de la date, avec la journée en Ligue 1 ou le tour pour un match de coupe ou de qualification, et le bandeau est cohérent avec le calendrier.</p>"
+      "html": "<p>Le bandeau « Prochain rendez-vous » du tableau de bord annonce maintenant le prochain match de toutes les compétitions suivies, et plus seulement celui de Ligue 1. Après Lens le 9 octobre, il montre Lyon – Crystal Palace du 15 octobre, au lieu de sauter à Nice le 18. La compétition est indiquée à côté de « Prochain rendez-vous », avec la journée en Ligue 1 ou en phase de ligue européenne (J2, par exemple), ou le tour pour un match de coupe ou de qualification, et le bandeau est cohérent avec le calendrier.</p>"
     },
     {
       "slug": "2026-10-12-page-match-des-compositions-dessinees-selon-la-formation",
