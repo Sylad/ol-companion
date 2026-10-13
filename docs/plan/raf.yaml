@@ -1433,7 +1433,7 @@ lots:
   - id: L140
     title: "Tirs au but, suite : la page Coupes (bilan V N D cups.tsx:197 et badge cup-match-row.tsx:37) compte encore un nul gagné aux tirs au but comme N, et la carte « Dernier résultat » de la vue rapide de /fixtures (SummaryMatch, fixtures.tsx:335-359) n'affiche que « 1-1 » sans « t.a.b. » — utiliser olQualified / shootoutWinnerId partout (constats revue L139)"
     public: "Tirs au but : la page Coupes et la vue rapide aussi"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-13
@@ -1442,6 +1442,8 @@ lots:
       - { date: 2026-10-13, text: "13-10 : rendu au lead (revue non conforme après 2 corrections, 499 k) — reste 1 majeur : carte « Dernier résultat » de la vue rapide /fixtures écrit « 1-1 t.a.b. » sans dire qui est qualifié (infobulle toujours « Qualifié »), + mineurs (garde manche aller dans cupResult, bracket-match ignore les tirs au but). MIS EN PAUSE par le lead : 5e lot sur les tirs au but alors qu'aucun match de la saison n'en a eu ; chaque revue trouve un cas limite de plus. Reprendre quand un vrai match aux tirs au but existe, ou sur décision de Sylvain. Ses 5 commits sont au-dessus de 2a2a562 et non livrés." }
       - { date: 2026-10-13, text: "13-10 après-midi : les 5 commits de L140 ont été poussés sur main par erreur du lead (push HEAD:main d'un commit de plan) — non livrés (prod 2a2a562). Pause levée : AUCUNE livraison d'ol tant que L140 n'est pas conforme. Périmètre de la reprise, rien d'autre : la carte « Dernier résultat » de la vue rapide /fixtures dit qui est qualifié pour un nul aux tirs au but (texte visible, infobulle juste qualifié/éliminé), comme le tableau de bord. Les mineurs (garde manche aller de cupResult, bracket-match) restent en notes." }
     review: { date: 2026-10-13, verdict: "conforme — orchestré (vague 2026-10-13-1345, 2 passe(s) de correction + passe des mineurs)", commit: 1a2b88ceaca73049cf544a5644c5e1b06acf5cf7 }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-1345 et capture de revue regardée par le lead (données simulées) : la carte « Dernier résultat » de la vue rapide écrit « Éliminé / Qualifié aux tirs au but »" }
+    finished: 2026-10-13
   - id: L141
     title: "Nouveautés L135, L138 et L139 : les captures montrent des matchs d'exemple (Rennes 1-1 OL en Coupe de France, Lyon 1-1 Rennes en barrages C3) qui n'existent pas — le dire dans le texte et le texte alternatif (« exemple, aucun match de la saison n'a encore été décidé aux tirs au but »)"
     status: done
@@ -1464,12 +1466,14 @@ lots:
   - id: L143
     title: "Nouveautés : le texte alternatif des captures est fabriqué depuis le titre (nouveautes.tsx l.236-241) et ignore e.alts du JSON — la mention « exemple » de L141 n'atteint ni l'alt ni l'aria-label du lien d'agrandissement ; lire e.alts[i] avec repli sur le titre, test sur le rendu (QA prod 13-10)"
     public: "Nouveautés : des captures mieux décrites"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant (0 blocking, 0 major, 1 minor: mise en forme du test) — orchestré (vague 2026-10-13-1345, 0 passe(s) de correction)", commit: 7567e6e953bca48b5e46086cf4fe3f89e35c396e }
+    ux: { date: 2026-10-13, verdict: "conforme — revue UX de la vague 2026-10-13-1345 : l'alt et l'aria-label des captures reprennent e.alts (mention « exemple » comprise), repli sur le titre" }
+    finished: 2026-10-13
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
