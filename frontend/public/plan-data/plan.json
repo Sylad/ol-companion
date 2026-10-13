@@ -412,6 +412,11 @@
       "title": "Tirs au but : la page Coupes et la vue rapide aussi",
       "status": "doing",
       "started": "2026-10-13"
+    },
+    {
+      "id": "L143",
+      "title": "Nouveautés : des captures mieux décrites",
+      "status": "todo"
     }
   ]
 }
