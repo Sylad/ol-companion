@@ -154,4 +154,12 @@ describe('matchupId (L96)', () => {
     const m = cup({ id: 77, date: '2026-10-04T15:00:00Z' });
     expect(matchupId({ ...m, homeTeamId: 9, awayTeamId: 523 })).toBe('9-465-77');
   });
+
+  it('L139 — un nul gagné ou perdu aux tirs au but compte comme une victoire ou une défaite, pas un nul', () => {
+    const nul = { homeTeamId: 523, awayTeamId: 800, homeScore: 1, awayScore: 1, status: 'FINISHED' as const };
+    const won = cup({ id: 901, date: '2026-02-01T19:00:00Z', ...nul, shootoutWinnerId: 523 });
+    const lost = cup({ id: 902, date: '2026-02-02T19:00:00Z', ...nul, shootoutWinnerId: 800 });
+    const plain = cup({ id: 903, date: '2026-02-03T19:00:00Z', ...nul, shootoutWinnerId: null });
+    expect(countResults([won, lost, plain])).toEqual({ wins: 1, draws: 1, losses: 1 });
+  });
 });

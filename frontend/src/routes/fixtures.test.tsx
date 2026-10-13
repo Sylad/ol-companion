@@ -530,6 +530,25 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       }
     });
 
+    it('L139 — un 1-1 gagné aux tirs au but n\'est pas teinté en nul : le qualifié en clair, l\'autre atténué', async () => {
+      const tab = season.map((m) =>
+        m.status === 'FINISHED' && m.awayTeam.includes('Rennes')
+          ? { ...m, homeScore: 1, awayScore: 1, shootoutWinnerId: 523 }
+          : m,
+      );
+      vi.stubGlobal('fetch', serve(tab as typeof season));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      const scores = within(rennes).getAllByText('1');
+      for (const sc of scores) expect(sc).not.toHaveClass('text-draw');
+      expect(scores[0]).toHaveClass('text-fg-bright');
+      expect(scores[1]).toHaveClass('text-fg-muted');
+      expect(logoWrap(rennes, 'Lyon')).not.toHaveClass('opacity-55');
+      expect(logoWrap(rennes, 'Rennes')).toHaveClass('opacity-55');
+    });
+
     it('L109 — un match EN COURS à égalité n\'affiche pas ses scores en --draw : le nul ne colore qu\'un match terminé', async () => {
       const live = season.map((m) =>
         m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, status: 'IN_PLAY', homeScore: 1, awayScore: 1 } : m,

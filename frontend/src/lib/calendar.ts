@@ -113,6 +113,8 @@ export function countResults(matches: SeasonMatch[]): { wins: number; draws: num
     const oppScore = olIsHome ? m.awayScore : m.homeScore;
     if (olScore > oppScore) wins++;
     else if (olScore < oppScore) losses++;
+    // L139 : le score ne compte pas les tirs au but — un nul avec un qualifié désigné est une victoire ou une défaite.
+    else if (m.shootoutWinnerId != null) m.shootoutWinnerId === OL_TEAM_ID ? wins++ : losses++;
     else draws++;
   }
   return { wins, draws, losses };

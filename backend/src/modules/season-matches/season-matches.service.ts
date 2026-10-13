@@ -451,6 +451,8 @@ export class SeasonMatchesService implements OnModuleInit {
     if (status !== 'FINISHED' || g.competitionId === LIGUE1_365SCORES_ID) return null;
     // Une manche aller ne se joue pas aux tirs au but, quoi que dise isQualified.
     if (g.legNum === 1) return null;
+    // Un match à journée (phase de ligue, championnat) ne se rejoue pas aux tirs au but.
+    if (g.roundNum != null) return null;
     if (home?.score === undefined || away?.score === undefined || home.score !== away.score) return null;
     const winner = home.isQualified === true ? home : away.isQualified === true ? away : null;
     if (!winner) return null;
@@ -530,6 +532,7 @@ export class SeasonMatchesService implements OnModuleInit {
         p.status !== n.status ||
         p.homeScore !== n.homeScore ||
         p.awayScore !== n.awayScore ||
+        p.shootoutWinnerId !== n.shootoutWinnerId ||
         p.date !== n.date
       ) {
         return true;

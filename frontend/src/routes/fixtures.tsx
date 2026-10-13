@@ -452,9 +452,11 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
   const DateBlock = iso ? 'time' : 'div';
   const hasScore = fixture.homeScore !== null && fixture.awayScore !== null;
   const isLive = fixture.status === 'IN_PLAY';
-  const homeWon = hasScore && fixture.homeScore! > fixture.awayScore!;
-  const awayWon = hasScore && fixture.awayScore! > fixture.homeScore!;
-  const drew = hasScore && fixture.status === 'FINISHED' && fixture.homeScore === fixture.awayScore;
+  // L139 : un nul décidé aux tirs au but a un vainqueur — il se teinte comme une victoire, pas comme un nul.
+  const shootoutId = hasScore && fixture.homeScore === fixture.awayScore ? fixture.shootoutWinnerId ?? null : null;
+  const homeWon = hasScore && (fixture.homeScore! > fixture.awayScore! || (shootoutId !== null && shootoutId === fixture.homeTeamId));
+  const awayWon = hasScore && (fixture.awayScore! > fixture.homeScore! || (shootoutId !== null && shootoutId === fixture.awayTeamId));
+  const drew = hasScore && fixture.status === 'FINISHED' && fixture.homeScore === fixture.awayScore && shootoutId === null;
 
   return (
     <article

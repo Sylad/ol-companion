@@ -271,5 +271,19 @@ describe('SeasonMatchesService', () => {
       const [m] = await run([first]);
       expect(m.shootoutWinnerId).toBeNull();
     });
+
+    it('match à journée (phase de ligue européenne) : jamais de tirs au but, même nul avec un isQualified', async () => {
+      const [m] = await run([
+        game({ id: 1, competitionId: 573, roundNum: 4, startTime: inSeasonIso, homeCompetitor: ol(1, true), awayCompetitor: adv(1, false) }),
+      ]);
+      expect(m.shootoutWinnerId).toBeNull();
+    });
+
+    it('matchesChanged : un qualifié aux tirs au but qui arrive après le score est un changement', () => {
+      const svc = buildService([[]]) as any;
+      const base = { id: 1, status: 'FINISHED', homeScore: 1, awayScore: 1, date: inSeasonIso, shootoutWinnerId: null };
+      expect(svc.matchesChanged([base], [{ ...base }])).toBe(false);
+      expect(svc.matchesChanged([base], [{ ...base, shootoutWinnerId: 523 }])).toBe(true);
+    });
   });
 });
