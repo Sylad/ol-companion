@@ -1359,27 +1359,43 @@ lots:
   - id: L133
     title: "Page match à venir : numéro de maillot absent dans la composition probable quand 365scores envoie 0 (Nakamura, n° 11 au match précédent, affiché sans numéro ; 7 joueurs sur 42 le 13-10 sur Lyon – Crystal Palace) — reprendre le numéro de l'effectif (/api/lineup ou match précédent), et ajouter la ligne shows correspondante dans docs/qa/expectations.md (QA L45)"
     public: "Page match à venir : les numéros de maillot de la composition probable"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant — 0 blocking, 0 major, 4 minor (1 sub-task proposed: number cut from the name on the bench line) — orchestré (vague 2026-10-13-1030, 2 passe(s) de correction)", commit: 8ac7020e6d792b81797d6536405374ce1c3303e9 }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-1030 (0 bloquant, 0 majeur, 4 mineurs) et captures 1440/390 regardées par le lead : composition probable Lyon et Crystal Palace avec numéros (Nakamura 11) ; banc et 4 remplaçants Palace repris en lots" }
+    finished: 2026-10-13
   - id: L134
     title: "Carte « Dernier résultat » à 390 px : avec un tour long (« Ligue Europa · 3e tour de qualification · retour »), le pied passe sur deux lignes et la date se coupe en « Mar. » / « 13/10 » — la date ne se coupe jamais (constat revue L131, last-result.tsx:131)"
     public: "Dernier résultat : la date ne se coupe plus sur téléphone"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant — orchestré (vague 2026-10-13-1030, 0 passe(s) de correction)", commit: d3cf6320ef0149210cb69243768f93ee89b8b75a }
+    ux: { date: 2026-10-13, verdict: "conforme — revue UX de la vague 2026-10-13-1030 et capture Nouveautés regardée par le lead : tour long sur deux lignes, « Mar. 13/10 » entier à 390 px" }
+    finished: 2026-10-13
   - id: L135
     title: "Carte « Dernier résultat » : match de coupe décidé aux tirs au but (1-1) affiché « Match nul » — lire l'issue des tirs au but dans season-matches (365scores) et l'afficher dans le badge et le score ; en profiter pour retirer useFixtures, mort depuis L131 (constat revue L131)"
     public: "Dernier résultat : les tirs au but comptés en coupe"
     status: todo
     estimate: 0.5
     visible: true
+    created: 2026-10-13
+  - id: L136
+    title: "Banc de la composition : le numéro de maillot se sépare du nom au retour à la ligne (« Tagliafico, 2 ⏎ Bidstrup » à 390 et 1440 px) et se lit comme celui du joueur précédent — numéro et nom insécables (lineup-card.tsx:60, constat UX L133)"
+    public: "Composition : le numéro reste collé au nom sur la ligne du banc"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-13
+  - id: L137
+    title: "Composition probable : 4 remplaçants de Crystal Palace (Benetton, Chilwell, Williams, Osorio) toujours sans numéro sur /match/4828743 le 13-10 — chercher plus loin dans les matchs précédents ou dans l'effectif 365scores (/web/squads/) (constat revue L133)"
+    status: todo
+    estimate: 0.25
     created: 2026-10-13
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
