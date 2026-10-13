@@ -1394,9 +1394,12 @@ lots:
     created: 2026-10-13
   - id: L137
     title: "Composition probable : 4 remplaçants de Crystal Palace (Benetton, Chilwell, Williams, Osorio) toujours sans numéro sur /match/4828743 le 13-10 — chercher plus loin dans les matchs précédents ou dans l'effectif 365scores (/web/squads/) (constat revue L133)"
-    status: todo
+    status: dropped
     estimate: 0.25
     created: 2026-10-13
+    finished: 2026-10-13
+    notes:
+      - { date: 2026-10-13, text: "abandonné : ne se reproduit plus en prod (sha-854e9a2) : le remplissage de L133 sur les 5 derniers matchs du club couvre les 4 remplaçants (Benetton 81, Chilwell 33, Williams 43, Osorio 24), 42/42 joueurs numérotés, vérifié par le lead et la QA le 13-10" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
