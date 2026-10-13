@@ -549,6 +549,21 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(logoWrap(rennes, 'Rennes')).toHaveClass('opacity-55');
     });
 
+    it('L139 — un 1-1 aux tirs au but l\'écrit : « t.a.b. » à l\'écran, vainqueur dans le nom accessible', async () => {
+      const tab = season.map((m) =>
+        m.status === 'FINISHED' && m.awayTeam.includes('Rennes')
+          ? { ...m, homeScore: 1, awayScore: 1, shootoutWinnerId: 523 }
+          : m,
+      );
+      vi.stubGlobal('fetch', serve(tab as typeof season));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const rennes = screen.getAllByRole('article').find((a) => a.textContent?.includes('Rennes')) as HTMLElement;
+      expect(within(rennes).getByTestId('tirs-au-but-match')).toHaveTextContent('t.a.b.');
+      expect(within(rennes).getByRole('link', { name: /Lyon .* qualifié aux tirs au but/ })).toBeInTheDocument();
+    });
+
     it('L109 — un match EN COURS à égalité n\'affiche pas ses scores en --draw : le nul ne colore qu\'un match terminé', async () => {
       const live = season.map((m) =>
         m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, status: 'IN_PLAY', homeScore: 1, awayScore: 1 } : m,

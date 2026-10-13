@@ -367,6 +367,14 @@ function SummaryMatch({
   );
 }
 
+/** Nom court du vainqueur aux tirs au but d'un nul, sinon null (L139). */
+function shootoutWinnerName(fixture: SeasonMatch): string | null {
+  if (fixture.shootoutWinnerId == null) return null;
+  if (fixture.shootoutWinnerId === fixture.homeTeamId) return teamShortName(fixture.homeTeam);
+  if (fixture.shootoutWinnerId === fixture.awayTeamId) return teamShortName(fixture.awayTeam);
+  return null;
+}
+
 /**
  * Nom accessible d'un match : les noms affichés et, pour un match joué, les scores
  * (« Sparta Praha 2, Lyon 1 — détail du match » ; à venir « Lyon contre Union SG — … »).
@@ -375,7 +383,9 @@ function matchLinkName(fixture: SeasonMatch): string {
   const home = teamShortName(fixture.homeTeam);
   const away = teamShortName(fixture.awayTeam);
   const played = fixture.homeScore !== null && fixture.awayScore !== null;
-  return `${played ? `${home} ${fixture.homeScore}, ${away} ${fixture.awayScore}` : `${home} contre ${away}`} — détail du match`;
+  const shootout = played && fixture.homeScore === fixture.awayScore ? shootoutWinnerName(fixture) : null;
+  const score = played ? `${home} ${fixture.homeScore}, ${away} ${fixture.awayScore}` : `${home} contre ${away}`;
+  return `${score}${shootout ? `, ${shootout} qualifié aux tirs au but` : ''} — détail du match`;
 }
 
 /**
@@ -525,6 +535,14 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
             <KickoffTbd />
           )}
         </div>
+        {shootoutId !== null && (
+          <span data-testid="tirs-au-but-match" className="text-[11px] font-semibold text-fg-muted">
+            <abbr title="Qualifié aux tirs au but" className="no-underline">
+              <span aria-hidden="true">t.a.b.</span>
+              <span className="sr-only">tirs au but</span>
+            </abbr>
+          </span>
+        )}
         <CompetitionTag fixture={fixture} />
       </div>
     </article>
