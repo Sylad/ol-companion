@@ -335,6 +335,7 @@ function SummaryMatch({
   const score = fixture.homeScore !== null && fixture.awayScore !== null
     ? `${fixture.homeScore}-${fixture.awayScore}`
     : time;
+  const shootoutName = fixture.status === 'FINISHED' && fixture.homeScore === fixture.awayScore ? shootoutWinnerName(fixture) : null;
 
   return (
     <div data-testid={testId} className="relative rounded-md border border-border bg-surface-2/35 px-3 py-2.5 transition-colors hover:border-border-strong lg:p-4">
@@ -356,7 +357,17 @@ function SummaryMatch({
           <div className="text-xs text-fg-dim">{dateLabel} · {competitionLong(fixture.competitionCode)}</div>
         </div>
         {score ? (
-          <div className="num text-lg font-bold text-fg-bright">{score}</div>
+          <div className="text-right">
+            <div className="num text-lg font-bold text-fg-bright">{score}</div>
+            {shootoutName && (
+              <div data-testid="tirs-au-but-carte" className="text-[11px] font-semibold text-fg-muted">
+                <abbr title="Qualifié aux tirs au but" className="no-underline">
+                  <span aria-hidden="true">t.a.b.</span>
+                  <span className="sr-only">tirs au but</span>
+                </abbr>
+              </div>
+            )}
+          </div>
         ) : (
           <KickoffTbd />
         )}

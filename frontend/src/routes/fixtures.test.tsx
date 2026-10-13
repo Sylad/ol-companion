@@ -564,6 +564,27 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(within(rennes).getByRole('link', { name: /Lyon .* qualifié aux tirs au but/ })).toBeInTheDocument();
     });
 
+    it('L140 — la carte « Dernier résultat » de la vue rapide écrit « t.a.b. » pour un nul aux tirs au but', async () => {
+      const tab = season.map((m) =>
+        m.status === 'FINISHED' ? { ...m, homeScore: 1, awayScore: 1, shootoutWinnerId: 523 } : m,
+      );
+      vi.stubGlobal('fetch', serve(tab as typeof season));
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const carte = screen.getByTestId('carte-dernier-resultat');
+      expect(within(carte).getByTestId('tirs-au-but-carte')).toHaveTextContent('t.a.b.');
+      expect(within(carte).getByRole('link', { name: /qualifié aux tirs au but/ })).toBeInTheDocument();
+    });
+
+    it('L140 — pas de « t.a.b. » sur la carte pour un nul sans qualifié', async () => {
+      const tab = season.map((m) => (m.status === 'FINISHED' ? { ...m, homeScore: 1, awayScore: 1 } : m));
+      vi.stubGlobal('fetch', serve(tab as typeof season));
+      renderPage();
+      await screen.findAllByRole('article');
+      expect(within(screen.getByTestId('carte-dernier-resultat')).queryByTestId('tirs-au-but-carte')).toBeNull();
+    });
+
     it('L109 — un match EN COURS à égalité n\'affiche pas ses scores en --draw : le nul ne colore qu\'un match terminé', async () => {
       const live = season.map((m) =>
         m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, status: 'IN_PLAY', homeScore: 1, awayScore: 1 } : m,
