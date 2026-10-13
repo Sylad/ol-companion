@@ -216,4 +216,48 @@ describe('SeasonMatchesService', () => {
       expect(result[0].id).toBe(42);
     });
   });
+
+  describe('tirs au but (L135)', () => {
+    const ol = (score: number, isQualified?: boolean) => ({ id: 465, name: 'Lyon', score, ...(isQualified === undefined ? {} : { isQualified }) });
+    const adv = (score: number, isQualified?: boolean) => ({ id: 800, name: 'Rennes', score, ...(isQualified === undefined ? {} : { isQualified }) });
+    const run = async (games: any[]) => {
+      let out: any[] = [];
+      await withCwd(async () => {
+        out = await buildService([games]).getMatches({ force: true });
+      });
+      return out;
+    };
+
+    it('match de coupe nul sans manche retour : le qualifié désigné par 365scores gagne aux tirs au but', async () => {
+      const [m] = await run([
+        game({ id: 1, competitionId: 37, startTime: inSeasonIso, homeCompetitor: ol(1, true), awayCompetitor: adv(1, false) }),
+      ]);
+      expect(m.shootoutWinnerId).toBe(523); // identifiant football-data de l'OL
+    });
+
+    it('l’adversaire qualifié : son identifiant', async () => {
+      const [m] = await run([
+        game({ id: 1, competitionId: 37, startTime: inSeasonIso, homeCompetitor: ol(1, false), awayCompetitor: adv(1, true) }),
+      ]);
+      expect(m.shootoutWinnerId).toBe(800);
+    });
+
+    it('un nul de championnat, ou sans qualifié désigné, n’a pas de tirs au but', async () => {
+      const result = await run([
+        game({ id: 1, competitionId: 35, startTime: inSeasonIso, homeCompetitor: ol(1), awayCompetitor: adv(1) }),
+        game({ id: 2, competitionId: 37, startTime: inSeasonIso, homeCompetitor: ol(1, false), awayCompetitor: adv(1, false) }),
+        game({ id: 3, competitionId: 37, startTime: inSeasonIso, homeCompetitor: ol(2, true), awayCompetitor: adv(1, false) }),
+      ]);
+      expect(result.map((m) => m.shootoutWinnerId)).toEqual([null, null, null]);
+    });
+
+    it('manche retour nulle : tirs au but seulement si le cumul des deux manches est nul', async () => {
+      const first = (a: number, b: number) => game({ id: 10, competitionId: 573, legNum: 1, startTime: '2026-04-01T19:00:00Z', homeCompetitor: adv(a), awayCompetitor: ol(b) });
+      const second = game({ id: 11, competitionId: 573, legNum: 2, startTime: inSeasonIso, homeCompetitor: ol(1, true), awayCompetitor: adv(1, false) });
+      const aggregateWin = await run([first(0, 1), second]); // 1-0 puis 1-1 : qualifié sur le cumul
+      expect(aggregateWin.find((m) => m.id === 11)!.shootoutWinnerId).toBeNull();
+      const shootout = await run([first(1, 1), second]); // cumul 2-2
+      expect(shootout.find((m) => m.id === 11)!.shootoutWinnerId).toBe(523);
+    });
+  });
 });

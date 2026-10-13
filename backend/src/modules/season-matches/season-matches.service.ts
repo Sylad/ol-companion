@@ -59,6 +59,13 @@ interface StoredSeasonMatch {
    * match à journée, et pour un tour dont on n'a pas le nom français.
    */
   round: string | null;
+  /**
+   * Identifiant (football-data pour l'OL) du club qualifié aux tirs au but,
+   * quand le match de coupe s'est terminé à égalité et que 365scores désigne
+   * pourtant un qualifié ; `null` sinon. Le score ne compte pas les tirs au
+   * but : sans ce champ un 1-1 décidé aux t.a.b. se lit « match nul ».
+   */
+  shootoutWinnerId: number | null;
 }
 
 export interface SeasonMatch extends StoredSeasonMatch {
@@ -359,7 +366,7 @@ export class SeasonMatchesService implements OnModuleInit {
     this.warnUntracked(inSeason);
 
     const matches = filtered
-      .map((g) => this.toSeasonMatch(g))
+      .map((g) => this.toSeasonMatch(g, inSeason))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     const counts = matches.reduce<Record<string, number>>((acc, m) => {
@@ -373,7 +380,7 @@ export class SeasonMatchesService implements OnModuleInit {
     return { matches, complete };
   }
 
-  private toSeasonMatch(g: Scores365Game): StoredSeasonMatch {
+  private toSeasonMatch(g: Scores365Game, siblings: Scores365Game[]): StoredSeasonMatch {
     // 365scores statusGroups: 1=scheduled-soon, 2=scheduled-future, 3=live, 4=ended
     // (cf. live-match.types.ts). Treating 2 as IN_PLAY would tag a "next L1 match
     // in 4 days" as in-play, so map both 1 and 2 to SCHEDULED.
@@ -384,8 +391,8 @@ export class SeasonMatchesService implements OnModuleInit {
     const { name: competition, code: competitionCode } =
       TRACKED_COMPETITIONS[compId];
     const matchday = g.roundNum ?? null;
-    // Le score de 365scores est celui du match (pas le cumul aller-retour) ;
-    // aucune prolongation ni tir au but dans la saison mesurée le 2026-10-03.
+    // Le score de 365scores est celui du match (pas le cumul aller-retour) et
+    // ne compte pas les tirs au but : ils se lisent dans `shootoutWinnerId`.
     const round =
       matchday === null
         ? [stageLabel(compId, g.stageName), legLabel(g.legNum)]
@@ -407,6 +414,7 @@ export class SeasonMatchesService implements OnModuleInit {
     };
 
     return {
+      shootoutWinnerId: this.shootoutWinnerId(g, status, siblings, remapId),
       id: g.id,
       date: new Date(g.startTime).toISOString(),
       homeTeam: home?.name ?? '',
@@ -422,6 +430,43 @@ export class SeasonMatchesService implements OnModuleInit {
       matchday,
       round,
     };
+  }
+
+  /**
+   * Club qualifié aux tirs au but : match de coupe fini à égalité dont
+   * 365scores désigne un qualifié (`isQualified`, posé sur la dernière manche
+   * d'une confrontation). Sur une manche retour, un nul avec un qualifié peut
+   * aussi être une qualification au cumul : on ne retient les tirs au but que si
+   * le cumul des deux manches est nul. Manche aller introuvable → `null`, jamais
+   * un tir au but supposé.
+   */
+  private shootoutWinnerId(
+    g: Scores365Game,
+    status: SeasonMatch['status'],
+    siblings: Scores365Game[],
+    remapId: (id: number | undefined) => number,
+  ): number | null {
+    const home = g.homeCompetitor;
+    const away = g.awayCompetitor;
+    if (status !== 'FINISHED' || g.competitionId === LIGUE1_365SCORES_ID) return null;
+    if (home?.score === undefined || away?.score === undefined || home.score !== away.score) return null;
+    const winner = home.isQualified === true ? home : away.isQualified === true ? away : null;
+    if (!winner) return null;
+    if (g.legNum === 2) {
+      const first = siblings.find(
+        (o) =>
+          o.id !== g.id &&
+          o.legNum === 1 &&
+          o.competitionId === g.competitionId &&
+          o.statusGroup === 4 &&
+          [o.homeCompetitor?.id, o.awayCompetitor?.id].sort().join() === [home.id, away.id].sort().join(),
+      );
+      if (!first) return null;
+      const goals = (teamId: number) =>
+        (first.homeCompetitor?.id === teamId ? first.homeCompetitor.score : first.awayCompetitor?.score) ?? 0;
+      if (goals(home.id) + home.score !== goals(away.id) + away.score) return null;
+    }
+    return remapId(winner.id);
   }
 
   /** Les compétitions de la saison absentes de `TRACKED_COMPETITIONS`, nommées. */
