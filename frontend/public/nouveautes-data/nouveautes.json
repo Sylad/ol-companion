@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 12:16",
+  "generated": "2026-10-13 12:32",
   "entries": [
     {
       "slug": "2026-10-13-tirs-au-but-le-calendrier-les-compte-aussi",
@@ -13,9 +13,9 @@
         "captures/L139-calendrier-tirs-au-but.png"
       ],
       "alts": [
-        "Calendrier : Lyon 1-1 Rennes, manche retour à 390 px, la mention « t.a.b. » sous « Terminé » et le « 1 » de Lyon en clair, sans la couleur du nul"
+        "Exemple, aucun match de la saison n'a encore été décidé aux tirs au but : calendrier avec un Lyon 1-1 Rennes imaginaire, manche retour à 390 px, la mention « t.a.b. » sous « Terminé » et le « 1 » de Lyon en clair, sans la couleur du nul"
       ],
-      "html": "<p>Un match de coupe terminé à égalité et décidé aux tirs au but n'est plus compté comme un match nul au calendrier. Dans la liste, le club qualifié s'affiche comme vainqueur du match et l'autre comme perdant, sans la couleur du nul, et la mention « t.a.b. » (tirs au but) est écrite sous « Terminé », pour que l'issue ne tienne pas à la seule couleur. Dans la vue rapide, le bilan V N D le range en victoire ou en défaite pour l'OL.</p>\n<p>Les matchs de championnat et de phase de ligue européenne ne sont jamais concernés : un nul y reste un nul.</p>"
+      "html": "<p>Un match de coupe terminé à égalité et décidé aux tirs au but n'est plus compté comme un match nul au calendrier. Dans la liste, le club qualifié s'affiche comme vainqueur du match et l'autre comme perdant, sans la couleur du nul, et la mention « t.a.b. » (tirs au but) est écrite sous « Terminé », pour que l'issue ne tienne pas à la seule couleur. Dans la vue rapide, le bilan V N D le range en victoire ou en défaite pour l'OL.</p>\n<p>Les matchs de championnat et de phase de ligue européenne ne sont jamais concernés : un nul y reste un nul.</p>\n<p>La capture montre un match d'exemple (Lyon 1-1 Rennes en barrages de Ligue Europa) : exemple, aucun match de la saison n'a encore été décidé aux tirs au but.</p>"
     },
     {
       "slug": "2026-10-13-dernier-resultat-badge-lisible-sur-telephone",
@@ -28,9 +28,9 @@
         "captures/dernier-resultat-badge-390.png"
       ],
       "alts": [
-        "Carte du dernier résultat à 390 px : le badge « Défaite aux tirs au but » tient sur une ligne"
+        "Exemple, aucun match de la saison n'a encore été décidé aux tirs au but : carte du dernier résultat à 390 px : le badge « Défaite aux tirs au but » tient sur une ligne"
       ],
-      "html": "<p>Sur téléphone, le badge du dernier résultat (par exemple « Défaite aux tirs au but ») ne coupe plus « Dernier résultat » en deux : quand il ne tient pas sur la ligne, il passe sous le titre, sur une seule ligne. Le texte des badges Victoire, Match nul et Défaite est aussi plus lisible : le rouge de la défaite est éclairci pour se détacher nettement du fond.</p>"
+      "html": "<p>Sur téléphone, le badge du dernier résultat (par exemple « Défaite aux tirs au but ») ne coupe plus « Dernier résultat » en deux : quand il ne tient pas sur la ligne, il passe sous le titre, sur une seule ligne. Le texte des badges Victoire, Match nul et Défaite est aussi plus lisible : le rouge de la défaite est éclairci pour se détacher nettement du fond.</p>\n<p>La capture montre un match d'exemple : exemple, aucun match de la saison n'a encore été décidé aux tirs au but.</p>"
     },
     {
       "slug": "2026-10-13-dernier-resultat-les-tirs-au-but-comptes-en-coupe",
@@ -43,9 +43,9 @@
         "captures/dernier-resultat-tirs-au-but.png"
       ],
       "alts": [
-        "Carte Dernier résultat : 1 · 1 contre Rennes en Coupe de France, badge Victoire aux tirs au but"
+        "Exemple, aucun match de la saison n'a encore été décidé aux tirs au but : carte Dernier résultat avec un 1 · 1 imaginaire contre Rennes en Coupe de France, badge Victoire aux tirs au but"
       ],
-      "html": "<p>Quand le dernier match de l'OL est un match de coupe terminé à égalité (1-1 par exemple) et décidé aux tirs au but, la carte « Dernier résultat » du tableau de bord ne dit plus « Match nul ».</p>\n<p>Le badge indique « Victoire aux tirs au but » ou « Défaite aux tirs au but », et sous le score une ligne précise « Qualifié aux tirs au but » ou « Éliminé aux tirs au but ». Le score affiché reste celui du match, sans les tirs au but.</p>"
+      "html": "<p>Quand le dernier match de l'OL est un match de coupe terminé à égalité (1-1 par exemple) et décidé aux tirs au but, la carte « Dernier résultat » du tableau de bord ne dit plus « Match nul ».</p>\n<p>Le badge indique « Victoire aux tirs au but » ou « Défaite aux tirs au but », et sous le score une ligne précise « Qualifié aux tirs au but » ou « Éliminé aux tirs au but ». Le score affiché reste celui du match, sans les tirs au but.</p>\n<p>La capture montre un match d'exemple (Rennes 1-1 OL en Coupe de France) : exemple, aucun match de la saison n'a encore été décidé aux tirs au but.</p>"
     },
     {
       "slug": "2026-10-13-composition-le-numero-reste-colle-au-nom-sur-la-ligne-du-ban",

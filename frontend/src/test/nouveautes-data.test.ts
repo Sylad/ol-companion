@@ -103,6 +103,22 @@ describe('données des Nouveautés (public/nouveautes-data)', () => {
     }
   });
 
+  // L141 — les captures des tirs au but (L135, L138, L139) montrent des matchs d'exemple :
+  // aucun match de la saison n'a encore été décidé aux tirs au but. Le texte et le texte
+  // alternatif le disent, pour qu'on ne lise pas un résultat réel.
+  it("les Nouveautés L135, L138 et L139 disent que leur capture montre un match d'exemple", () => {
+    const EXEMPLE = /exemple, aucun match de la saison n.a encore été décidé aux tirs au but/i;
+    const entries = readJson().entries as (Entry & { lots: string[]; alts: string[]; html: string })[];
+    for (const lot of ['L135', 'L138', 'L139']) {
+      const e = entries.find((x) => x.lots.includes(lot));
+      expect(e, `${lot} : entrée Nouveautés absente`).toBeDefined();
+      expect(e!.html, `${lot} : le texte ne dit pas que la capture est un exemple`).toMatch(EXEMPLE);
+      for (const alt of e!.alts) {
+        expect(alt, `${lot} : le texte alternatif ne dit pas que la capture est un exemple`).toMatch(EXEMPLE);
+      }
+    }
+  });
+
   it.skipIf(!cadenceAvailable())('le JSON versionné est à jour avec docs/nouveautes/ (sinon : npm run news)', () => {
     const tmp = mkdtempSync(join(tmpdir(), 'ol-news-'));
     try {
