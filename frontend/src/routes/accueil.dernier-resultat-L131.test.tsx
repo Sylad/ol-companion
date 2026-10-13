@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Outlet, RouterProvider, createMemoryHistory, createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { DashboardPage } from './index';
+import { seasonTeamLogoUrl } from '@/lib/calendar';
 
 // L131 — le dernier résultat de l'accueil lit /api/season-matches (toutes compétitions), comme le bandeau.
 
@@ -57,6 +58,13 @@ describe('L131 — dernier résultat toutes compétitions', () => {
     expect(card).toHaveTextContent('Ligue Europa · J2');
     expect(card).toHaveTextContent('Défaite');
     expect(card).not.toHaveTextContent('Lens');
+  });
+  it('prend les écussons au CDN 365scores par identifiant, pas sur wiki-image', async () => {
+    season = [NEXT, LENS, PALACE];
+    renderPage();
+    const card = await screen.findByTestId('dernier-resultat', undefined, { timeout: 3000 });
+    expect(within(card).getByAltText('Crystal Palace')).toHaveAttribute('src', seasonTeamLogoUrl(1));
+    expect(within(card).getByAltText('Olympique Lyonnais')).toHaveAttribute('src', seasonTeamLogoUrl(523));
   });
   it('ne lit plus /api/fixtures', async () => {
     season = [NEXT, LENS, PALACE];

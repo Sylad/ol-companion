@@ -5,6 +5,7 @@ import { TeamLogo } from './team-logo';
 import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
 import { cn } from '@/lib/utils';
+import { seasonTeamLogoUrl } from '@/lib/calendar';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
@@ -95,14 +96,14 @@ export function LastResult() {
               <span className={cn('font-semibold', 'text-fg-bright', !won && draw === false && 'opacity-60')}>
                 Olympique Lyonnais
               </span>
-              <TeamLogo teamId={OL_TEAM_ID} name="Olympique Lyonnais" size={28} />
+              <TeamLogo teamId={OL_TEAM_ID} name="Olympique Lyonnais" size={28} src={seasonTeamLogoUrl(OL_TEAM_ID)} />
             </>
           ) : (
             <>
               <span className={cn('truncate font-medium', !won && draw === false && 'opacity-60')}>
                 {teamShortName(opponentName)}
               </span>
-              <TeamLogo teamId={opponentId} name={opponentName} size={28} />
+              <TeamLogo teamId={opponentId} name={opponentName} size={28} src={seasonTeamLogoUrl(opponentId)} />
             </>
           )}
         </div>
@@ -112,14 +113,14 @@ export function LastResult() {
         <div className="flex items-center gap-3">
           {olIsHome ? (
             <>
-              <TeamLogo teamId={opponentId} name={opponentName} size={28} />
+              <TeamLogo teamId={opponentId} name={opponentName} size={28} src={seasonTeamLogoUrl(opponentId)} />
               <span className={cn('truncate font-medium', !won && draw === false && 'opacity-60')}>
                 {teamShortName(opponentName)}
               </span>
             </>
           ) : (
             <>
-              <TeamLogo teamId={OL_TEAM_ID} name="Olympique Lyonnais" size={28} />
+              <TeamLogo teamId={OL_TEAM_ID} name="Olympique Lyonnais" size={28} src={seasonTeamLogoUrl(OL_TEAM_ID)} />
               <span className={cn('font-semibold', 'text-fg-bright', !won && draw === false && 'opacity-60')}>
                 Olympique Lyonnais
               </span>
