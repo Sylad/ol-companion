@@ -1416,6 +1416,7 @@ lots:
     visible: true
     created: 2026-10-13
     started: 2026-10-13
+    review: { date: 2026-10-13, verdict: "compliant (0 blocking, 0 major, 2 minor notes) — orchestré (vague 2026-10-13-1200, 0 passe(s) de correction)", commit: a0cbdf882dff892cbeec60dcc986972310a9c065 }
   - id: L139
     title: "Tirs au but, cohérence : /fixtures compte encore un 1-1 gagné aux tirs au but comme nul (teinte et bilan, fixtures.tsx:303/568) ; matchesChanged ignore shootoutWinnerId (pas d'événement SSE si isQualified arrive après le score) ; la détection s'applique aussi aux matchs à journée de la phase de ligue européenne (season-matches.service.ts:451) (constats revue L135)"
     public: "Tirs au but : le calendrier les compte aussi"
