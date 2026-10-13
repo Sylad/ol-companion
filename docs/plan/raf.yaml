@@ -1388,10 +1388,11 @@ lots:
   - id: L136
     title: "Banc de la composition : le numéro de maillot se sépare du nom au retour à la ligne (« Tagliafico, 2 ⏎ Bidstrup » à 390 et 1440 px) et se lit comme celui du joueur précédent — numéro et nom insécables (lineup-card.tsx:60, constat UX L133)"
     public: "Composition : le numéro reste collé au nom sur la ligne du banc"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-13
+    started: 2026-10-13
   - id: L137
     title: "Composition probable : 4 remplaçants de Crystal Palace (Benetton, Chilwell, Williams, Osorio) toujours sans numéro sur /match/4828743 le 13-10 — chercher plus loin dans les matchs précédents ou dans l'effectif 365scores (/web/squads/) (constat revue L133)"
     status: dropped
