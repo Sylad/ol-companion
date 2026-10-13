@@ -41,7 +41,7 @@ describe('useEventStream', () => {
     FakeEventSource.last!.onmessage!({ data: JSON.stringify({ type: 'fixtures-changed' }) });
 
     const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
-    expect(keys).toContainEqual(['fixtures']);
+    expect(keys).not.toContainEqual(['fixtures']);
     expect(keys).toContainEqual(['season-matches']);
   });
 });
