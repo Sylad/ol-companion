@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 10:25",
+  "generated": "2026-10-13 10:31",
   "entries": [
+    {
+      "slug": "2026-10-13-page-match-a-venir-les-numeros-de-maillot-de-la-composition",
+      "title": "Page match à venir : les numéros de maillot de la composition probable",
+      "date": "2026-10-13",
+      "lots": [
+        "L133"
+      ],
+      "captures": [
+        "captures/L133-composition-probable.png"
+      ],
+      "alts": [
+        "Composition probable de Lyon avec le numéro 11 devant Nakamura"
+      ],
+      "html": "<p>Sur la page d'un match à venir, la composition probable affiche maintenant le numéro de maillot de tous les joueurs, titulaires comme remplaçants, des deux équipes. Quand la source des données ne donne pas encore le numéro d'un joueur, c'est celui qu'il portait lors du dernier match de son club qui est repris. Un joueur dont on ne connaît aucun match précédent, par exemple une recrue, reste sans numéro.</p>"
+    },
     {
       "slug": "2026-10-13-dernier-resultat-la-date-ne-se-coupe-plus-sur-telephone",
       "title": "Dernier résultat : la date ne se coupe plus sur téléphone",
