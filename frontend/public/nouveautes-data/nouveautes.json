@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 09:02",
+  "generated": "2026-10-13 10:25",
   "entries": [
+    {
+      "slug": "2026-10-13-dernier-resultat-la-date-ne-se-coupe-plus-sur-telephone",
+      "title": "Dernier résultat : la date ne se coupe plus sur téléphone",
+      "date": "2026-10-13",
+      "lots": [
+        "L134"
+      ],
+      "captures": [
+        "captures/dernier-resultat-date-390.png"
+      ],
+      "alts": [
+        "Carte Dernier résultat sur téléphone : le tour de qualification passe à la ligne, la date « Mar. 13/10 » reste entière"
+      ],
+      "html": "<p>Sur téléphone, le pied de la carte « Dernier résultat » affiche toujours la date en entier (« Mar. 13/10 »), même pour un tour long comme « Ligue Europa · 3e tour de qualification · retour » : c'est le nom du tour qui passe à la ligne, plus la date qui se coupe en deux.</p>"
+    },
     {
       "slug": "2026-10-13-accueil-le-dernier-resultat-toutes-competitions-confondues",
       "title": "Accueil : le dernier résultat, toutes compétitions confondues",

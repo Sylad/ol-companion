@@ -129,10 +129,11 @@ export function LastResult() {
         </div>
       </div>
 
-      <div className="px-5 py-2.5 bg-surface-2/30 border-t border-border text-xs text-fg-dim flex items-center justify-between">
-        <span>{lastFinished.competition}{lastFinished.matchday ? ` · J${lastFinished.matchday}` : lastFinished.round ? ` · ${lastFinished.round}` : ''}</span>
-        <span>{dateLabel}</span>
-      </div>
+      {/* L134 : la date ne se coupe jamais — c'est le tour (long) qui passe à la ligne. */}
+      <footer className="px-5 py-2.5 bg-surface-2/30 border-t border-border text-xs text-fg-dim flex items-center justify-between gap-3">
+        <span className="min-w-0">{lastFinished.competition}{lastFinished.matchday ? ` · J${lastFinished.matchday}` : lastFinished.round ? ` · ${lastFinished.round}` : ''}</span>
+        <span className="shrink-0 whitespace-nowrap">{dateLabel}</span>
+      </footer>
     </section>
   );
 }
