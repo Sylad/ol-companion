@@ -1439,9 +1439,10 @@ lots:
     created: 2026-10-13
   - id: L141
     title: "Nouveautés L135, L138 et L139 : les captures montrent des matchs d'exemple (Rennes 1-1 OL en Coupe de France, Lyon 1-1 Rennes en barrages C3) qui n'existent pas — le dire dans le texte et le texte alternatif (« exemple, aucun match de la saison n'a encore été décidé aux tirs au but »)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-13
+    started: 2026-10-13
   - id: L142
     title: "Fiche joueur : badges de résultat V/N/D en text-loss/text-win sur fond à 20 % (player.$athleteId.tsx:41-43), contraste ~3,6:1 < 4,5:1 — reprendre les jetons -fg de L138 (WCAG 1.4.3)"
     public: "Fiche joueur : résultats plus lisibles"
