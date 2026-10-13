@@ -396,14 +396,21 @@
     {
       "id": "L138",
       "title": "Dernier résultat : badge lisible sur téléphone",
-      "status": "doing",
-      "started": "2026-10-13"
+      "status": "done",
+      "started": "2026-10-13",
+      "finished": "2026-10-13"
     },
     {
       "id": "L139",
       "title": "Tirs au but : le calendrier les compte aussi",
-      "status": "doing",
-      "started": "2026-10-13"
+      "status": "done",
+      "started": "2026-10-13",
+      "finished": "2026-10-13"
+    },
+    {
+      "id": "L140",
+      "title": "Tirs au but : la page Coupes et la vue rapide aussi",
+      "status": "todo"
     }
   ]
 }

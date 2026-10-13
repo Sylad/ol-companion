@@ -1411,21 +1411,44 @@ lots:
   - id: L138
     title: "Badge du dernier résultat à 390 px : « Défaite aux tirs au but » passe sur deux lignes et coupe « Dernier résultat » en deux (43 px de haut) ; contraste du badge Défaite 3,64:1 < 4,5:1 (WCAG 1.4.3, rgb(221,34,34) sur bg-loss/10) — libellé court ou badge sous le titre, contraste ≥ 4,5:1 (constats UX L135)"
     public: "Dernier résultat : badge lisible sur téléphone"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "compliant (0 blocking, 0 major, 2 minor notes) — orchestré (vague 2026-10-13-1200, 0 passe(s) de correction)", commit: a0cbdf882dff892cbeec60dcc986972310a9c065 }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-1200 (2 mineurs) et capture 390 regardée par le lead : badge « Défaite aux tirs au but » sous le titre, titre sur une ligne, contraste ≥ 4,5:1 (jeton --loss-fg 4,86:1)" }
+    finished: 2026-10-13
   - id: L139
     title: "Tirs au but, cohérence : /fixtures compte encore un 1-1 gagné aux tirs au but comme nul (teinte et bilan, fixtures.tsx:303/568) ; matchesChanged ignore shootoutWinnerId (pas d'événement SSE si isQualified arrive après le score) ; la détection s'applique aussi aux matchs à journée de la phase de ligue européenne (season-matches.service.ts:451) (constats revue L135)"
     public: "Tirs au but : le calendrier les compte aussi"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-13
     started: 2026-10-13
     review: { date: 2026-10-13, verdict: "conforme : 3 notes mineures (carte « Dernier résultat » sans « t.a.b. », bilan de la page Coupes resté en N, capture Nouveauté sur un match fictif Lyon-Rennes en C3) — orchestré (vague 2026-10-13-1200, 2 passe(s) de correction)", commit: 0480b15d7980e9adee0686461c7ef9c737a49fcf }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-1200 (3 mineurs) et capture regardée par le lead : « t.a.b. » sous « Terminé », vainqueur en clair ; Coupes, vue rapide et captures d'exemple reprises en lots" }
+    finished: 2026-10-13
+  - id: L140
+    title: "Tirs au but, suite : la page Coupes (bilan V N D cups.tsx:197 et badge cup-match-row.tsx:37) compte encore un nul gagné aux tirs au but comme N, et la carte « Dernier résultat » de la vue rapide de /fixtures (SummaryMatch, fixtures.tsx:335-359) n'affiche que « 1-1 » sans « t.a.b. » — utiliser olQualified / shootoutWinnerId partout (constats revue L139)"
+    public: "Tirs au but : la page Coupes et la vue rapide aussi"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-13
+  - id: L141
+    title: "Nouveautés L135, L138 et L139 : les captures montrent des matchs d'exemple (Rennes 1-1 OL en Coupe de France, Lyon 1-1 Rennes en barrages C3) qui n'existent pas — le dire dans le texte et le texte alternatif (« exemple, aucun match de la saison n'a encore été décidé aux tirs au but »)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-13
+  - id: L142
+    title: "Fiche joueur : badges de résultat V/N/D en text-loss/text-win sur fond à 20 % (player.$athleteId.tsx:41-43), contraste ~3,6:1 < 4,5:1 — reprendre les jetons -fg de L138 (WCAG 1.4.3)"
+    public: "Fiche joueur : résultats plus lisibles"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-13
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
