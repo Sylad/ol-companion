@@ -8,7 +8,7 @@ ecran:
 etats: [vide, chargement, erreur, charge]
 
 champs:
-  - { id: carte-prochain-match, libelle: Carte du prochain match (dashboard-hero), type: carte, source: "GET /api/fixtures → prochain match SCHEDULED/TIMED/IN_PLAY", obligatoire: true }
+  - { id: carte-prochain-match, libelle: Carte du prochain match (dashboard-hero), type: carte, source: "GET /api/season-matches → prochain match SCHEDULED/TIMED/IN_PLAY, toutes compétitions suivies (L45)", obligatoire: true }
   - { id: squelette-prochain-match, libelle: Squelette du prochain match, type: carte, source: statique, obligatoire: false }
   - { id: message-aucun-match, libelle: Message « aucun match programmé », type: texte, source: statique, obligatoire: false }
   - { id: lien-calendrier, libelle: Lien vers le calendrier, type: lien, source: statique, obligatoire: false }
@@ -43,7 +43,7 @@ regles:
   - id: R2
     etat: erreur
     enonce: >-
-      Si la requête des matchs échoue et qu'aucune donnée n'est en cache (isError), la carte du prochain match est remplacée par le message d'erreur et un bouton « Réessayer » qui relance l'appel (refetch). Une erreur de rafraîchissement avec des données déjà là n'efface rien.
+      Si la requête des matchs du bandeau (/api/season-matches, toutes compétitions, L45) échoue et qu'aucune donnée n'est en cache (isError), la carte du prochain match est remplacée par le message d'erreur et un bouton « Réessayer » qui relance l'appel (refetch). Une erreur de rafraîchissement avec des données déjà là n'efface rien.
     message: "Impossible de charger le prochain match."
     champs: [message-erreur-prochain-match, bouton-reessayer-prochain-match]
     statut: sourcee
@@ -61,7 +61,7 @@ regles:
   - id: R4
     etat: erreur
     enonce: >-
-      Si la requête des matchs échoue, le dernier résultat affiche à son tour un message avec « Réessayer » (même requête que R2 : un clic sur l'un ou l'autre relance l'appel et ramène les deux blocs à l'état de chargement).
+      Si la requête des matchs échoue, le dernier résultat affiche à son tour un message avec « Réessayer » (L45 : le bandeau lit /api/season-matches et le dernier résultat /api/fixtures, deux requêtes distinctes ; « Réessayer » du dernier résultat relance /api/fixtures et ne touche pas au bandeau).
     message: "Impossible de charger le dernier résultat."
     champs: [message-erreur-dernier-resultat, bouton-reessayer-dernier-resultat]
     statut: hypothese
@@ -70,7 +70,7 @@ regles:
   - id: R5
     etat: vide
     enonce: >-
-      Si les matchs sont chargés mais qu'aucun n'est à venir, la carte affiche « Aucun match programmé. » avec un lien « Voir le calendrier » vers /fixtures. Ce message n'apparaît plus ni au chargement ni en erreur.
+      Si les matchs du bandeau (toutes compétitions) sont chargés mais qu'aucun n'est à venir, la carte affiche « Aucun match programmé. » avec un lien « Voir le calendrier » vers /fixtures. Ce message n'apparaît plus ni au chargement ni en erreur.
     message: "Aucun match programmé."
     champs: [message-aucun-match, lien-calendrier]
     masque: [carte-prochain-match, squelette-prochain-match]
@@ -115,9 +115,10 @@ regles:
     tests: ["R9 — OL en chiffres en erreur affiche un message et « Réessayer », qui relance l’appel", "R9 — tracker de classement en erreur affiche un message et « Réessayer », qui relance l’appel", "R9 — données en cache puis échec du refetch : rien n’est effacé, aucun message"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/fixtures", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
-  - { id: A2, declencheur: bouton-reessayer-prochain-match, appel: "GET /api/fixtures", regles: [R2] }
+  - { id: A1, declencheur: ~, appel: "GET /api/fixtures", regles: [R1, R3, R4, R6, R7, R8] }
+  - { id: A2, declencheur: bouton-reessayer-prochain-match, appel: "GET /api/season-matches", regles: [R2] }
   - { id: A3, declencheur: bouton-reessayer-stats, appel: "GET /api/standings", regles: [R3] }
   - { id: A4, declencheur: bouton-reessayer-dernier-resultat, appel: "GET /api/fixtures", regles: [R4] }
   - { id: A5, declencheur: bouton-reessayer-season-summary, appel: "GET /api/season-matches/team-stats", regles: [R9] }
   - { id: A6, declencheur: bouton-reessayer-position-tracker, appel: "GET /api/standings/season-rankings", regles: [R9] }
+  - { id: A7, declencheur: ~, appel: "GET /api/season-matches", regles: [R1, R2, R5, R8] }
