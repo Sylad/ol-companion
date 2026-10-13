@@ -225,11 +225,12 @@ describe('<DashboardHero /> — toutes compétitions (L45)', () => {
     vi.stubGlobal('fetch', fetchMock);
     renderHero();
 
-    const logo = await screen.findByAltText('Crystal Palace FC');
+    const logo = await screen.findByAltText('Crystal Palace');
     expect(logo).toHaveAttribute('src', seasonTeamLogoUrl(354));
     expect(screen.getByAltText('Olympique Lyonnais')).toHaveAttribute('src', seasonTeamLogoUrl(OL_TEAM_ID));
-    const wikiCalls = fetchMock.mock.calls.filter(([url]) => String(url).startsWith('/api/wiki-image'));
-    expect(wikiCalls).toHaveLength(0);
+    // Le stade garde sa recherche Wikipédia ; aucun écusson n'en demande une.
+    const clubCalls = fetchMock.mock.calls.filter(([url]) => /^\/api\/wiki-image.*(Palace|Lyonnais)/.test(decodeURIComponent(String(url))));
+    expect(clubCalls).toHaveLength(0);
   });
 
   it('un match sans journée affiche son tour et sa manche à la place de « J… »', async () => {
