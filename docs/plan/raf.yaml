@@ -1359,10 +1359,11 @@ lots:
   - id: L133
     title: "Page match à venir : numéro de maillot absent dans la composition probable quand 365scores envoie 0 (Nakamura, n° 11 au match précédent, affiché sans numéro ; 7 joueurs sur 42 le 13-10 sur Lyon – Crystal Palace) — reprendre le numéro de l'effectif (/api/lineup ou match précédent), et ajouter la ligne shows correspondante dans docs/qa/expectations.md (QA L45)"
     public: "Page match à venir : les numéros de maillot de la composition probable"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-13
+    started: 2026-10-13
   - id: L134
     title: "Carte « Dernier résultat » à 390 px : avec un tour long (« Ligue Europa · 3e tour de qualification · retour »), le pied passe sur deux lignes et la date se coupe en « Mar. » / « 13/10 » — la date ne se coupe jamais (constat revue L131, last-result.tsx:131)"
     public: "Dernier résultat : la date ne se coupe plus sur téléphone"
