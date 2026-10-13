@@ -498,7 +498,7 @@ lots:
   - id: L45
     title: "Tableau de bord : « prochain rendez-vous » toutes compétitions (aujourd'hui Ligue 1 seule : après Lens le 09/10 il annoncera Nice le 18/10 et sautera Lyon – Crystal Palace du 15/10, alors que le calendrier dit l'inverse)"
     public: "Tableau de bord : le prochain rendez-vous, toutes compétitions confondues"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-03
@@ -506,6 +506,8 @@ lots:
     notes:
       - { date: 2026-10-13, text: "13-10 : ACCORD DE SYLVAIN — la règle de L85 évolue : le bandeau « prochain rendez-vous » de l'accueil est lu dans /api/season-matches (toutes compétitions), plus dans l'ancienne source Ligue 1. Voie à suivre (exception « lot livré » du verrou, README cadence) : modifier dans un commit qui cite L45 la fiche de l'écran docs/specs/accueil/fiche.yaml (la règle du bandeau et sa source) ET le test scellé frontend/src/routes/accueil.acceptation-L85.test.tsx, ensemble ; cadence spec check doit rester vert. Ne pas créer de nouveau fichier d'acceptation pour L85, ne pas toucher acceptation-L85.json." }
     review: { date: 2026-10-13, verdict: "conforme (3 notes mineures : texte Nouveautés inexact, « ne touche pas au bandeau » de R4 sans vérification, « Dernier résultat » encore limité à la Ligue 1) — orchestré (vague 2026-10-13-0900, 1 passe(s) de correction)", commit: 9b36ea8e8540ababdb26e4dc8a15d602c81405d5 }
+    ux: { date: 2026-10-13, verdict: "conforme — agent UX de la vague 2026-10-13-0900 (0 bloquant, 0 majeur, 3 mineurs) et captures 1440/390 regardées par le lead : bandeau « Ligue Europa · J2 », Crystal Palace, jeudi 15 octobre 18h45, vrais écussons ; texte Nouveautés inexact et dernier résultat Ligue 1 seule repris en lots" }
+    finished: 2026-10-13
   - id: L46
     title: "Calendrier, suites de la relecture de code du 03-10 : test du repli par journée refusé quand SCHEDULED répond 200 sans match ; test « aucun match à venir » du tableau de bord qui passe sur l'état de chargement ; tests du tour (journée + manche, « 1er tour ») ; tests des libellés C1 du bilan et de la page joueur ; borner l'âge des matchs gardés du cache football-data ou rendre l'échec durable visible ; comparer l'heure 365scores à celle de football-data avant de l'afficher comme fixée"
     status: todo
@@ -1331,6 +1333,18 @@ lots:
     notes:
       - { date: 2026-10-12, text: "Mineur de revue (note) : la liste tests: de R8 (fiche.yaml:88) ne cite pas le test « R8 — élargissement sans recharger : la taille remonte »." }
     finished: 2026-10-12
+  - id: L131
+    title: "Accueil : « Dernier résultat » toutes compétitions (lu dans /api/season-matches comme le bandeau) — aujourd'hui Ligue 1 seule : du 16 au 18/10 il montrera Lens (09/10) et sautera Lyon – Crystal Palace (constat UX L45, Nielsen 4)"
+    public: "Accueil : le dernier résultat, toutes compétitions confondues"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-13
+  - id: L132
+    title: "Nouveautés L45 : texte corrigé — la compétition est à côté de « Prochain rendez-vous », pas de la date ; un match de phase de ligue européenne affiche sa journée (J2), pas un tour ; renforcer le test R4 (le bandeau reste affiché après « Réessayer » du dernier résultat)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-13
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

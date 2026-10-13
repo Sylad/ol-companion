@@ -114,8 +114,9 @@
     {
       "id": "L45",
       "title": "Tableau de bord : le prochain rendez-vous, toutes compétitions confondues",
-      "status": "doing",
-      "started": "2026-10-12"
+      "status": "done",
+      "started": "2026-10-12",
+      "finished": "2026-10-13"
     },
     {
       "id": "L47",
@@ -356,6 +357,11 @@
       "status": "done",
       "started": "2026-10-12",
       "finished": "2026-10-12"
+    },
+    {
+      "id": "L131",
+      "title": "Accueil : le dernier résultat, toutes compétitions confondues",
+      "status": "todo"
     }
   ]
 }
