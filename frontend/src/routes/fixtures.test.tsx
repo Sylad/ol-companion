@@ -573,8 +573,22 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       await screen.findAllByRole('article');
 
       const carte = screen.getByTestId('carte-dernier-resultat');
-      expect(within(carte).getByTestId('tirs-au-but-carte')).toHaveTextContent('t.a.b.');
+      expect(within(carte).getByTestId('tirs-au-but-carte')).toHaveTextContent('Qualifié aux tirs au but');
       expect(within(carte).getByRole('link', { name: /qualifié aux tirs au but/ })).toBeInTheDocument();
+    });
+
+    it('L140 — la carte « Dernier résultat » dit « Éliminé aux tirs au but » quand l\'adversaire est qualifié', async () => {
+      const tab = season.map((m) =>
+        m.status === 'FINISHED'
+          ? { ...m, homeScore: 1, awayScore: 1, shootoutWinnerId: m.homeTeamId === 523 ? m.awayTeamId : m.homeTeamId }
+          : m,
+      );
+      vi.stubGlobal('fetch', serve(tab as typeof season));
+      renderPage();
+      await screen.findAllByRole('article');
+      expect(within(screen.getByTestId('carte-dernier-resultat')).getByTestId('tirs-au-but-carte')).toHaveTextContent(
+        'Éliminé aux tirs au but',
+      );
     });
 
     it('L140 — pas de « t.a.b. » sur la carte pour un nul sans qualifié', async () => {

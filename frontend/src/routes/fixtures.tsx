@@ -361,10 +361,7 @@ function SummaryMatch({
             <div className="num text-lg font-bold text-fg-bright">{score}</div>
             {shootoutName && (
               <div data-testid="tirs-au-but-carte" className="text-[11px] font-semibold text-fg-muted">
-                <abbr title="Qualifié aux tirs au but" className="no-underline">
-                  <span aria-hidden="true">t.a.b.</span>
-                  <span className="sr-only">tirs au but</span>
-                </abbr>
+                {fixture.shootoutWinnerId === OL_TEAM_ID ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}
               </div>
             )}
           </div>
