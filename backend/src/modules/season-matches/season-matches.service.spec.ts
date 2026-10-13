@@ -259,5 +259,17 @@ describe('SeasonMatchesService', () => {
       const shootout = await run([first(1, 1), second]); // cumul 2-2
       expect(shootout.find((m) => m.id === 11)!.shootoutWinnerId).toBe(523);
     });
+
+    it('manche retour nulle dont l’aller est introuvable : null, jamais un tir au but supposé', async () => {
+      const second = game({ id: 11, competitionId: 573, legNum: 2, startTime: inSeasonIso, homeCompetitor: ol(1, true), awayCompetitor: adv(1, false) });
+      const [m] = await run([second]);
+      expect(m.shootoutWinnerId).toBeNull();
+    });
+
+    it('manche aller nulle : jamais de tirs au but, même si un côté porte isQualified', async () => {
+      const first = game({ id: 10, competitionId: 573, legNum: 1, startTime: inSeasonIso, homeCompetitor: ol(1, true), awayCompetitor: adv(1, false) });
+      const [m] = await run([first]);
+      expect(m.shootoutWinnerId).toBeNull();
+    });
   });
 });

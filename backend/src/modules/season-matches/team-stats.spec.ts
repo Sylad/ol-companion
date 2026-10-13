@@ -18,6 +18,7 @@ function fixture(partial: Partial<SeasonMatch> & { date: string }): SeasonMatch 
     matchday: null,
     round: null,
     timeConfirmed: true,
+    shootoutWinnerId: null,
     ...partial,
   };
 }

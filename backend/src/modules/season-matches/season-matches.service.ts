@@ -449,6 +449,8 @@ export class SeasonMatchesService implements OnModuleInit {
     const home = g.homeCompetitor;
     const away = g.awayCompetitor;
     if (status !== 'FINISHED' || g.competitionId === LIGUE1_365SCORES_ID) return null;
+    // Une manche aller ne se joue pas aux tirs au but, quoi que dise isQualified.
+    if (g.legNum === 1) return null;
     if (home?.score === undefined || away?.score === undefined || home.score !== away.score) return null;
     const winner = home.isQualified === true ? home : away.isQualified === true ? away : null;
     if (!winner) return null;
