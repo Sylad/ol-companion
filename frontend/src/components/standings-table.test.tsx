@@ -197,3 +197,18 @@ describe('<StandingsTable /> — forme V/N/D (L147)', () => {
     expect(loss).toHaveTextContent(/^D$/);
   });
 });
+
+// L153 — revue UX L4 : le wrapper `overflow-x-auto` faisait du <div> le conteneur de
+// défilement des <th sticky top-0> : l'en-tête se collait à ce div (qui ne défile jamais
+// en vertical) et non à la fenêtre. Le tableau tient déjà sans défilement à 320/390 px (L37) :
+// aucun ancêtre ne doit être un conteneur de défilement.
+describe('StandingsTable — en-tête collant (L153)', () => {
+  it('aucun ancêtre de l’en-tête collant ne crée un conteneur de défilement', () => {
+    const { container } = renderTable();
+    const th = container.querySelector('th')!;
+    expect(th.className).toMatch(/(^| )sticky( |$)/);
+    for (let el = th.parentElement; el && el !== document.body; el = el.parentElement) {
+      expect(el.className).not.toMatch(/overflow-(x-)?(auto|scroll|hidden)/);
+    }
+  });
+});

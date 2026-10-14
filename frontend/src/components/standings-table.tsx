@@ -94,7 +94,7 @@ function PositionDot({ position }: { position: number }) {
 
 export function StandingsTable({ rows }: StandingsTableProps) {
   return (
-    <div className="overflow-x-auto -mx-1">
+    <div className="-mx-1">
       <table className="w-full text-sm border-separate border-spacing-0">
         <thead>
           <tr className="text-fg-dim">
