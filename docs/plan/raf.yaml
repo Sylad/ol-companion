@@ -1494,6 +1494,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "compliant — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 0b4c01aa5aaab2091746fdf868a2a58370a848cf }
   - id: L146
     title: "Classement : bouton Actualiser nommé « Rafraîchir » pour l'accessibilité (WCAG 2.5.3) — aria-label « Actualiser le classement » (revue UX L4)"
     status: todo
