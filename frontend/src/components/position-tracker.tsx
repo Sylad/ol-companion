@@ -64,11 +64,22 @@ export function PositionTracker() {
             Tracker de classement
           </h2>
         </div>
-        <div
-          className="text-fg-dim hover:text-fg cursor-help"
-          title="Position de l'OL au fil des journées de Ligue 1"
-        >
-          <Info className="h-4 w-4" />
+        <div className="group relative">
+          <button
+            type="button"
+            aria-label="Position de l'OL au fil des journées de Ligue 1"
+            aria-describedby="info-position-tracker"
+            className="text-fg-dim hover:text-fg cursor-help rounded p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b5dc9]"
+          >
+            <Info className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <span
+            id="info-position-tracker"
+            role="tooltip"
+            className="pointer-events-none absolute right-0 top-full z-10 mt-1 hidden w-56 rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs text-fg shadow-lg group-hover:block group-focus-within:block"
+          >
+            Position de l'OL au fil des journées de Ligue 1
+          </span>
         </div>
       </header>
 
@@ -106,7 +117,7 @@ function Chart({ data }: { data: ChartPoint[] }) {
 
   return (
     <>
-      <div className="h-[280px] w-full">
+      <div className="h-[280px] w-full" aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
@@ -154,6 +165,32 @@ function Chart({ data }: { data: ChartPoint[] }) {
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+      <p className="sr-only" data-testid="resume-position-tracker">
+        Évolution de l'OL au classement de Ligue 1 : {lastPoint.position}
+        {lastPoint.position === 1 ? 'er' : 'e'} place après la journée {lastPoint.matchday},{' '}
+        {lastPoint.points} pts. Départ : {data[0].position}
+        {data[0].position === 1 ? 'er' : 'e'} place à la journée {data[0].matchday}.
+      </p>
+      <table className="sr-only">
+        <caption>Évolution de l'OL au classement de Ligue 1, journée par journée</caption>
+        <thead>
+          <tr>
+            <th scope="col">Journée</th>
+            <th scope="col">Place</th>
+            <th scope="col">Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((d) => (
+            <tr key={d.matchday}>
+              <th scope="row">{d.matchday}</th>
+              <td>{d.position}</td>
+              <td>{d.points}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       <div className="mt-3 flex items-center justify-between text-xs text-fg-dim">
         <span>
