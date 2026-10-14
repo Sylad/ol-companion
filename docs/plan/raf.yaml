@@ -1551,10 +1551,11 @@ lots:
     created: 2026-10-14
   - id: L153
     title: "Classement : en-tête sticky inopérant à cause du wrapper overflow-x-auto, sans débordement mesuré à 320/390 (revue UX L4)"
-    status: todo
+    status: doing
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
+    started: 2026-10-14
   - id: L154
     title: "Titre de page par route : document.title « OL Companion » partout (WCAG 2.4.2), transverse à l'app (revue UX L4)"
     status: todo
