@@ -1554,11 +1554,12 @@ lots:
     finished: 2026-10-14
   - id: L152
     title: "Tracker de classement : graphique sans alternative texte ni clavier, info-bulle i non focusable (WCAG 1.1.1, 2.1.1) (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "conforme, 3 constats mineurs (info-bulle sans test de visibilité au focus, nom et description identiques, Échap non géré) — orchestré (vague 2026-10-14-2015, 0 passe(s) de correction)", commit: 7504e5d2df084372b49f1d97df9759d7a4bf734c }
+    finished: 2026-10-14
   - id: L153
     title: "Classement : en-tête sticky inopérant à cause du wrapper overflow-x-auto, sans débordement mesuré à 320/390 (revue UX L4)"
     status: done
@@ -1570,19 +1571,21 @@ lots:
     finished: 2026-10-14
   - id: L154
     title: "Titre de page par route : document.title « OL Companion » partout (WCAG 2.4.2), transverse à l'app (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "conforme : aucun constat. Commit 2cfe34d relu, tests du lot verts (7/7), tsc propre. — orchestré (vague 2026-10-14-2015, 0 passe(s) de correction)", commit: 2cfe34d18f790a3ac8602a8bb7b0ce8b62259d5c }
+    finished: 2026-10-14
   - id: L155
     title: "Attentes QA /standings : la ligne api /api/wiki-image « 200 pour chaque club » est périmée, les écussons viennent de imagecache.365scores.com (18/18 chargés le 14-10) — reformuler en « 18 écussons chargés, 200, aucun 429 »"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "conforme : aucun constat bloquant ni majeur. Reformulation fidèle au titre du lot et à l'état du code. Une note mineure sur l'appel `/api/wiki-image` du bandeau, qui n'est plus surveillé. — orchestré (vague 2026-10-14-2015, 0 passe(s) de correction)", commit: null }
+    finished: 2026-10-14
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
