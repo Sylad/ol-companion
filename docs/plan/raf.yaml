@@ -1481,38 +1481,43 @@ lots:
     finished: 2026-10-13
   - id: L144
     title: "Classement : zones LdC/Europa/relégation portées par la couleur seule (WCAG 1.4.1) — sr-only dans la cellule position + filets entre zones (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant (1 minor note: legend and ZONES duplicate labels and colors) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 72a00b43a03c39d6f4e3019fdc083cc29a55be7f }
+    finished: 2026-10-14
   - id: L145
     title: "Classement : DB négatif 3,85:1 et lettre L 4,07:1 sous 4,5:1 (WCAG 1.4.3) — passer sur le token loss-fg, lettre blanche sur la pastille (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 0b4c01aa5aaab2091746fdf868a2a58370a848cf }
+    finished: 2026-10-14
   - id: L146
     title: "Classement : bouton Actualiser nommé « Rafraîchir » pour l'accessibilité (WCAG 2.5.3) — aria-label « Actualiser le classement » (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 5cc68fec95ffceb611b5cec0a0c1b83ddf4b8e7b }
+    finished: 2026-10-14
   - id: L147
     title: "Classement : forme W/D/L en anglais (D lu Défaite), aria-label sur span sans rôle — lettres V/N/D + role=img (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant (1 commit 5e1d28a, 0 bloquant, 0 majeur, 1 mineur : la bande de forme de la tuile du tableau de bord garde W/D/L, déjà planifiée en L88 ; vitest 566/566, tsc ok) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 5e1d28ae9a1c9073246e6518760b684e3ca72038 }
+    finished: 2026-10-14
   - id: L148
     title: "Classement : échec de rafraîchissement affiche erreur ET tableau, cache périmé non signalé — bandeau d'état role=status selon maquette (revue UX L4)"
+    public: "Classement : erreur de rafraîchissement et données périmées signalées sans masquer le tableau"
     status: todo
     estimate: 0.25
     visible: true
@@ -1522,28 +1527,31 @@ lots:
       - { date: 2026-10-14, text: "maquette UX (14-10) : données présentes + échec de rafraîchissement ou cache > 1 h → pas de bloc rouge, une bande de 36 px sous l'en-tête de la carte, fond surface-2, filet border-b, texte 12 px fg-muted avec icône AlertTriangle 14 px : « Rafraîchissement impossible — classement du 14 oct. à 16:25 » (ou « Classement d'il y a 3 j »), role=status, tableau intact dessous, la méta de l'en-tête montre la date du cache. Aucune donnée + erreur → RetryMessage « Impossible de charger le classement. » + Réessayer 44 px, role=alert. Chargement → role=status. Captures refetch-fail-1440-section, stale-390, error-390." }
   - id: L149
     title: "Classement : erreur sans Réessayer ni role=alert, message jargon 365scores — réutiliser RetryMessage, role=status sur le chargement (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant (1 commit 18f0ee7, 0 bloquant, 0 majeur, 1 mineur : une erreur de rafraîchissement avec données déjà là n'est plus signalée avant L148 ; vitest 569/569, tsc ok) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 18f0ee767697f3ac00a179662a6085d1d81c8d88 }
+    finished: 2026-10-14
   - id: L150
     title: "Tracker de classement : pied « Journée x → y / Actuellement » tronqué de 7 px aux deux largeurs (pied rendu dans le bloc h-280 overflow-hidden) (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant (1 commit df63cf7, 0 bloquant, 0 majeur, 0 mineur ; le pied sort du bloc h-[280px] overflow-hidden, test structurel L150 vert ; vitest 570/570, tsc ok ; rendu navigateur non vérifié) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: df63cf7b47554b01d62d82ea554a71aade609b73 }
+    finished: 2026-10-14
   - id: L151
     title: "Tracker de classement : axe Journée n'affiche qu'un tick sur deux (recharts interval=1), J6 sans étiquette (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "compliant (commit 57e6b37, 0 bloquant, 0 majeur, 0 mineur ; les 3 choix de l'auteur tiennent : ticks explicites + interval=0, seuil de 20 conservé, pas de CHANGELOG dans le dépôt, README à jour ; vitest position-tracker 4/4, tsc ok ; rendu navigateur non vérifié) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 57e6b3784d9a263fd18df11f4f5d4cfa9ce891b3 }
+    finished: 2026-10-14
   - id: L152
     title: "Tracker de classement : graphique sans alternative texte ni clavier, info-bulle i non focusable (WCAG 1.1.1, 2.1.1) (revue UX L4)"
     status: todo
@@ -1551,12 +1559,13 @@ lots:
     created: 2026-10-14
   - id: L153
     title: "Classement : en-tête sticky inopérant à cause du wrapper overflow-x-auto, sans débordement mesuré à 320/390 (revue UX L4)"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
     review: { date: 2026-10-14, verdict: "conforme, 2 constats mineurs (en-tête recouvert par le bandeau du mode démo, test d'ancêtres en double) — orchestré (vague 2026-10-14-1900, 1 passe(s) de correction)", commit: 4d6cad18a41b18c1ac619cb3d1ad8f6f633e184b }
+    finished: 2026-10-14
   - id: L154
     title: "Titre de page par route : document.title « OL Companion » partout (WCAG 2.4.2), transverse à l'app (revue UX L4)"
     status: todo
