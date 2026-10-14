@@ -1574,6 +1574,7 @@ lots:
     estimate: 0.1
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "conforme : aucun constat. Commit 2cfe34d relu, tests du lot verts (7/7), tsc propre. — orchestré (vague 2026-10-14-2015, 0 passe(s) de correction)", commit: 2cfe34d18f790a3ac8602a8bb7b0ce8b62259d5c }
   - id: L155
     title: "Attentes QA /standings : la ligne api /api/wiki-image « 200 pour chaque club » est périmée, les écussons viennent de imagecache.365scores.com (18/18 chargés le 14-10) — reformuler en « 18 écussons chargés, 200, aucun 429 »"
     status: todo
