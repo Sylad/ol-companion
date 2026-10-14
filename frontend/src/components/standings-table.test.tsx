@@ -172,3 +172,28 @@ describe('<StandingsTable /> — contrastes (L145)', () => {
     expect(dot).not.toHaveClass('text-bg');
   });
 });
+
+// L147 — la forme s'affichait en lettres anglaises (W/D/L : « D » se lisait Défaite) sur un span
+// sans rôle portant un aria-label (ignoré). Lettres françaises V/N/D, role=img (WCAG 1.1.1, 4.1.2).
+describe('<StandingsTable /> — forme V/N/D (L147)', () => {
+  const formRows: StandingEntry[] = [{ ...rows[0], recentForm: ['W', 'D', 'L'] }];
+  function renderForm() {
+    vi.stubGlobal('fetch', vi.fn());
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return render(
+      <QueryClientProvider client={client}>
+        <StandingsTable rows={formRows} />
+      </QueryClientProvider>,
+    );
+  }
+
+  it('chaque pastille est une image nommée, avec la lettre française', () => {
+    renderForm();
+    const win = screen.getByRole('img', { name: 'Victoire' });
+    const draw = screen.getByRole('img', { name: 'Match nul' });
+    const loss = screen.getByRole('img', { name: 'Défaite' });
+    expect(win).toHaveTextContent(/^V$/);
+    expect(draw).toHaveTextContent(/^N$/);
+    expect(loss).toHaveTextContent(/^D$/);
+  });
+});

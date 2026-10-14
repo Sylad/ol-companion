@@ -22,6 +22,8 @@ const COLUMNS = [
 ];
 
 const FORM_LABEL: Record<FormOutcome, string> = { W: 'Victoire', D: 'Match nul', L: 'Défaite' };
+// L147 — lettres françaises : le « D » anglais (draw) se lisait Défaite.
+const FORM_LETTER: Record<FormOutcome, string> = { W: 'V', D: 'N', L: 'D' };
 
 function FormDot({ outcome }: { outcome: FormOutcome }) {
   const cls =
@@ -37,10 +39,11 @@ function FormDot({ outcome }: { outcome: FormOutcome }) {
         'inline-flex items-center justify-center w-[18px] h-[18px] rounded-full text-[10px] font-bold leading-none',
         cls,
       )}
+      role="img"
       title={FORM_LABEL[outcome]}
       aria-label={FORM_LABEL[outcome]}
     >
-      {outcome}
+      {FORM_LETTER[outcome]}
     </span>
   );
 }
