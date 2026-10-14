@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
+import postcss from 'postcss';
+import tailwindcss from 'tailwindcss';
+import baseConfig from '../../tailwind.config';
 
 // L152 — WCAG 1.1.1 / 2.1.1 : le graphique a une alternative texte (tableau lisible),
 // l'info-bulle « i » est un bouton focusable, nommé.
@@ -43,6 +46,20 @@ describe('PositionTracker — accessibilité (L152)', () => {
     expect(table.className).not.toMatch(/sr-only/);
     expect(table.parentElement?.tagName).toBe('DIV');
     expect(table.parentElement?.className).toMatch(/\bsr-only\b/);
+  });
+
+  it('L156 : le CSS Tailwind réel du div.sr-only le borne à 1 px, rogné, hors flux — la table ne peut pas élargir la page', async () => {
+    render(<PositionTracker />);
+    const table = screen.getByRole('table', { name: /évolution.*classement/i });
+    const wrapper = table.parentElement as HTMLElement;
+    const { css } = await postcss([
+      tailwindcss({ ...baseConfig, content: [{ raw: wrapper.className }] }),
+    ]).process('@tailwind utilities;', { from: undefined });
+    const rule = css.match(/\.sr-only\s*\{([^}]*)\}/)?.[1] ?? '';
+    expect(rule).toMatch(/position:\s*absolute/);
+    expect(rule).toMatch(/width:\s*1px/);
+    expect(rule).toMatch(/height:\s*1px/);
+    expect(rule).toMatch(/overflow:\s*hidden/);
   });
 
   it('un résumé texte dit la place actuelle', () => {
