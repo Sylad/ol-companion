@@ -45,7 +45,7 @@ export function StandingsPage() {
               onClick={() => refetch()}
               disabled={isFetching}
               className="flex items-center gap-1.5 rounded-sm border border-border-strong px-2.5 py-1.5 text-fg-muted hover:text-fg hover:border-fg-dim transition-colors disabled:opacity-50"
-              aria-label="Rafraîchir"
+              aria-label="Actualiser le classement"
             >
               <RefreshCw
                 className={isFetching ? 'h-3 w-3 animate-spin' : 'h-3 w-3'}
