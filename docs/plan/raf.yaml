@@ -1527,6 +1527,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "compliant (1 commit 18f0ee7, 0 bloquant, 0 majeur, 1 mineur : une erreur de rafraîchissement avec données déjà là n'est plus signalée avant L148 ; vitest 569/569, tsc ok) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 18f0ee767697f3ac00a179662a6085d1d81c8d88 }
   - id: L150
     title: "Tracker de classement : pied « Journée x → y / Actuellement » tronqué de 7 px aux deux largeurs (pied rendu dans le bloc h-280 overflow-hidden) (revue UX L4)"
     status: todo
