@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 import { Sidebar } from './sidebar';
 import { BottomNav } from './bottom-nav';
 import { PageBackdrop } from '@/components/page-backdrop';
 import { DemoBanner } from '@/components/demo-banner';
+import { pageTitle } from '@/lib/page-title';
 import { useEventStream } from '@/hooks/use-event-stream';
 import { useMatchNotifications } from '@/hooks/use-match-notifications';
 import { LiveConnectionBadge } from '@/components/live-connection-badge';
@@ -15,6 +17,9 @@ export function AppShell() {
   const eventStreamStatus = useEventStream();
   useMatchNotifications();
   const { location } = useRouterState();
+  useEffect(() => {
+    document.title = pageTitle(location.pathname);
+  }, [location.pathname]);
   const wide = WIDE_ROUTE_PREFIXES.some((p) => location.pathname.startsWith(p));
   return (
     <div className="min-h-full relative">

@@ -19,16 +19,21 @@ vi.mock('./bottom-nav', () => ({ BottomNav: () => null }));
 
 afterEach(cleanup);
 
-async function renderShell() {
+async function renderShell(path = '/') {
   const root = createRootRoute({ component: AppShell });
   const index = createRoute({
     getParentRoute: () => root,
     path: '/',
     component: () => <h1>Olympique Lyonnais</h1>,
   });
+  const standings = createRoute({
+    getParentRoute: () => root,
+    path: '/standings',
+    component: () => <h1>Classement</h1>,
+  });
   const router = createRouter({
-    routeTree: root.addChildren([index]),
-    history: createMemoryHistory({ initialEntries: ['/'] }),
+    routeTree: root.addChildren([index, standings]),
+    history: createMemoryHistory({ initialEntries: [path] }),
   });
   render(
     <QueryClientProvider client={new QueryClient()}>
@@ -54,5 +59,12 @@ describe('AppShell — pastille du direct sur téléphone (L30)', () => {
     const title = screen.getByRole('heading', { name: 'Olympique Lyonnais' });
     expect(badge.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(badge.closest('.lg\\:hidden')).not.toBeNull();
+  });
+});
+
+describe('AppShell — titre du document (L154, WCAG 2.4.2)', () => {
+  it('pose le titre de la route courante', async () => {
+    await renderShell('/standings');
+    expect(document.title).toBe('Classement · OL Companion');
   });
 });
