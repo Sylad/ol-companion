@@ -1517,7 +1517,7 @@ lots:
     finished: 2026-10-14
   - id: L148
     title: "Classement : échec de rafraîchissement affiche erreur ET tableau, cache périmé non signalé — bandeau d'état role=status selon maquette (revue UX L4)"
-    public: "Classement : erreur de rafraîchissement et données périmées signalées sans masquer le tableau"
+    public: "Classement : erreur de rafraîchissement et données périmées signalées"
     status: todo
     estimate: 0.25
     visible: true
