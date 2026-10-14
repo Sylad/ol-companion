@@ -172,25 +172,27 @@ function Chart({ data }: { data: ChartPoint[] }) {
         {lastPoint.points} pts. Départ : {data[0].position}
         {data[0].position === 1 ? 'er' : 'e'} place à la journée {data[0].matchday}.
       </p>
-      <table className="sr-only">
-        <caption>Évolution de l'OL au classement de Ligue 1, journée par journée</caption>
-        <thead>
-          <tr>
-            <th scope="col">Journée</th>
-            <th scope="col">Place</th>
-            <th scope="col">Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((d) => (
-            <tr key={d.matchday}>
-              <th scope="row">{d.matchday}</th>
-              <td>{d.position}</td>
-              <td>{d.points}</td>
+      <div className="sr-only">
+        <table>
+          <caption>Évolution de l'OL au classement de Ligue 1, journée par journée</caption>
+          <thead>
+            <tr>
+              <th scope="col">Journée</th>
+              <th scope="col">Place</th>
+              <th scope="col">Points</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((d) => (
+              <tr key={d.matchday}>
+                <th scope="row">{d.matchday}</th>
+                <td>{d.position}</td>
+                <td>{d.points}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mt-3 flex items-center justify-between text-xs text-fg-dim">
         <span>

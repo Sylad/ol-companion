@@ -37,6 +37,14 @@ describe('PositionTracker — accessibilité (L152)', () => {
     expect(lignes[2].textContent).toMatch(/2.*1.*6/);
   });
 
+  it('L156 : la table est dans un div.sr-only (une table sr-only seule garde sa largeur de contenu et fait défiler la page)', () => {
+    render(<PositionTracker />);
+    const table = screen.getByRole('table', { name: /évolution.*classement/i });
+    expect(table.className).not.toMatch(/sr-only/);
+    expect(table.parentElement?.tagName).toBe('DIV');
+    expect(table.parentElement?.className).toMatch(/\bsr-only\b/);
+  });
+
   it('un résumé texte dit la place actuelle', () => {
     render(<PositionTracker />);
     expect(screen.getByTestId('resume-position-tracker').textContent).toMatch(/1er.*6 pts/);

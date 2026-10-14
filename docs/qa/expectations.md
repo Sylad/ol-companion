@@ -13,6 +13,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - api: /api/events — flux SSE, sans taille
 - api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche
 - shows: les textes secondaires (jeton fg-dim) posés sur une photo, un halo ou un panneau semi-transparent (bandeau de /, légende de /map, surtitre de /about, le premier `<p>` de son `<header>` : aucun `.eyebrow` sur cette page) à ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390
+- shows: scrollWidth = clientWidth de la page, à 1440 comme à 390 (aucun défilement horizontal ; L156 : une table `sr-only` hors d'un `div.sr-only` gardait sa largeur de contenu, 480 px, et poussait la page à 520 px sur / et /standings)
 
 ## /
 - shows: « Prochain rendez-vous » avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (6 le 10-10) ; le lieu du prochain match est un nom de stade, ou rien
