@@ -1588,11 +1588,13 @@ lots:
     finished: 2026-10-14
   - id: L156
     title: "Tracker de classement : la table sr-only de L152 (position-tracker.tsx) fait 480 px à 390 px et crée un défilement horizontal de 130 px sur / et /standings (scrollWidth 520 / clientWidth 390, QA 14-10) — envelopper la table dans un div.sr-only ; ajouter à docs/qa/expectations.md ## * « scrollWidth = clientWidth à 1440 et 390 »"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "conforme (code-reviewer Sonnet, HEAD 2b2d349) : mesure Chromium sur build local 390/390 après, 520/390 avant ; tests structure + CSS Tailwind ; attentes et README à jour", commit: 2b2d34939a343bb1327e98677b43e945e4d87785 }
+    finished: 2026-10-14
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
