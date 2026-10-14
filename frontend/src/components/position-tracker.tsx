@@ -40,6 +40,18 @@ function PositionTooltip({ active, payload }: TooltipProps<number, string>) {
   );
 }
 
+// L151 : `interval={1}` de recharts saute un tick sur deux (J6 sans étiquette) ; on
+// fixe donc les journées étiquetées. ≤ 20 points : toutes ; au-delà : première,
+// multiples de 5 et dernière (un multiple à moins de 2 de la dernière est écarté).
+export function matchdayTicks(data: { matchday: number }[]): number[] {
+  const jours = data.map((d) => d.matchday);
+  if (jours.length <= 20) return jours;
+  const first = jours[0];
+  const last = jours[jours.length - 1];
+  const milieu = jours.filter((m) => m > first && m < last && m % 5 === 0 && last - m > 1);
+  return [first, ...milieu, last];
+}
+
 export function PositionTracker() {
   const { data, isLoading, isError, refetch } = useSeasonRankings();
 
@@ -107,7 +119,8 @@ function Chart({ data }: { data: ChartPoint[] }) {
               tick={{ fill: AXIS_COLOR, fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              interval={data.length > 20 ? 2 : 1}
+              ticks={matchdayTicks(data)}
+              interval={0}
               label={{ value: 'Journée', position: 'insideBottom', fill: AXIS_COLOR, fontSize: 10, dy: 8 }}
             />
             <YAxis
