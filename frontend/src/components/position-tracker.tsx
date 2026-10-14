@@ -93,52 +93,54 @@ function Chart({ data }: { data: ChartPoint[] }) {
   const yTicks = [1, 5, 10, 15, 18].filter((t) => t <= Math.max(maxPosition, 18));
 
   return (
-    <div className="h-[280px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 12, right: 12, left: -10, bottom: 4 }}
-        >
-          <CartesianGrid stroke={GRID_COLOR} strokeDasharray="3 4" vertical={false} />
-          <XAxis
-            dataKey="matchday"
-            stroke={AXIS_COLOR}
-            tick={{ fill: AXIS_COLOR, fontSize: 11 }}
-            tickLine={false}
-            axisLine={false}
-            interval={data.length > 20 ? 2 : 1}
-            label={{ value: 'Journée', position: 'insideBottom', fill: AXIS_COLOR, fontSize: 10, dy: 8 }}
-          />
-          <YAxis
-            reversed
-            domain={[1, 18]}
-            ticks={yTicks}
-            stroke={AXIS_COLOR}
-            tick={{ fill: AXIS_COLOR, fontSize: 11 }}
-            tickLine={false}
-            axisLine={false}
-            width={32}
-          />
-          <Tooltip content={<PositionTooltip />} cursor={{ stroke: GRID_COLOR, strokeDasharray: '3 4' }} />
-          <Line
-            type="monotone"
-            dataKey="position"
-            stroke={POSITION_COLOR}
-            strokeWidth={2.5}
-            dot={{ fill: POSITION_COLOR, r: 3, strokeWidth: 0 }}
-            activeDot={{ r: 5, fill: POSITION_COLOR, stroke: 'hsl(var(--bg))', strokeWidth: 2 }}
-            isAnimationActive={false}
-          />
-          <ReferenceDot
-            x={lastPoint.matchday}
-            y={lastPoint.position}
-            r={6}
-            fill={HIGHLIGHT_COLOR}
-            stroke="hsl(var(--bg))"
-            strokeWidth={3}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <>
+      <div className="h-[280px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={data}
+            margin={{ top: 12, right: 12, left: -10, bottom: 4 }}
+          >
+            <CartesianGrid stroke={GRID_COLOR} strokeDasharray="3 4" vertical={false} />
+            <XAxis
+              dataKey="matchday"
+              stroke={AXIS_COLOR}
+              tick={{ fill: AXIS_COLOR, fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+              interval={data.length > 20 ? 2 : 1}
+              label={{ value: 'Journée', position: 'insideBottom', fill: AXIS_COLOR, fontSize: 10, dy: 8 }}
+            />
+            <YAxis
+              reversed
+              domain={[1, 18]}
+              ticks={yTicks}
+              stroke={AXIS_COLOR}
+              tick={{ fill: AXIS_COLOR, fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+              width={32}
+            />
+            <Tooltip content={<PositionTooltip />} cursor={{ stroke: GRID_COLOR, strokeDasharray: '3 4' }} />
+            <Line
+              type="monotone"
+              dataKey="position"
+              stroke={POSITION_COLOR}
+              strokeWidth={2.5}
+              dot={{ fill: POSITION_COLOR, r: 3, strokeWidth: 0 }}
+              activeDot={{ r: 5, fill: POSITION_COLOR, stroke: 'hsl(var(--bg))', strokeWidth: 2 }}
+              isAnimationActive={false}
+            />
+            <ReferenceDot
+              x={lastPoint.matchday}
+              y={lastPoint.position}
+              r={6}
+              fill={HIGHLIGHT_COLOR}
+              stroke="hsl(var(--bg))"
+              strokeWidth={3}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
       <div className="mt-3 flex items-center justify-between text-xs text-fg-dim">
         <span>
@@ -154,6 +156,6 @@ function Chart({ data }: { data: ChartPoint[] }) {
           · {lastPoint.points} pts
         </span>
       </div>
-    </div>
+    </>
   );
 }
