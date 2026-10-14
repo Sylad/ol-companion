@@ -28,7 +28,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - never: « Aucune donnée disponible. » ; « Impossible de récupérer les données 365scores. » ; une ligne sans nom de club ; moins de 18 lignes
 - api: /api/standings — `table` de 18 entrées
 - api: /api/standings/season-rankings
-- api: /api/wiki-image — 200 pour chaque club, aucun 429
+- api: imagecache.365scores.com — 18 écussons chargés, 200, aucun 429 (le classement prend ses écussons au CDN 365scores, plus à `/api/wiki-image`)
 
 ## /players
 - shows: « Dernier match » avec un score ; 11 titulaires sur le terrain ; un banc non vide, qui compte autant de joueurs que le banc de la page du même match ; onglet Effectif : au moins 18 liens vers une fiche joueur ; onglet Stats saison : au moins 18 lignes
