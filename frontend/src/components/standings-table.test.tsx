@@ -142,3 +142,33 @@ describe('<StandingsTable /> — zones sans la couleur (L144)', () => {
     for (const n of [1, 2, 3, 5, 8, 15, 18]) expect(hasRule(n), `ligne ${n}`).toBe(false);
   });
 });
+
+// L145 — DB négatif (text-loss, 3,85:1) et lettre L (text-bg sur bg-loss, 4,07:1) sous 4,5:1 (WCAG 1.4.3).
+describe('<StandingsTable /> — contrastes (L145)', () => {
+  const lossRows: StandingEntry[] = [
+    { ...rows[0], goalDifference: -7, recentForm: ['L', 'W', 'D'] },
+  ];
+  function renderLoss() {
+    vi.stubGlobal('fetch', vi.fn());
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return render(
+      <QueryClientProvider client={client}>
+        <StandingsTable rows={lossRows} />
+      </QueryClientProvider>,
+    );
+  }
+
+  it('la différence de buts négative passe sur le token text-loss-fg', () => {
+    renderLoss();
+    const cell = screen.getByText('-7').closest('td')!;
+    expect(cell).toHaveClass('text-loss-fg');
+    expect(cell).not.toHaveClass('text-loss');
+  });
+
+  it('la lettre L est blanche sur la pastille rouge', () => {
+    renderLoss();
+    const dot = screen.getByLabelText('Défaite');
+    expect(dot).toHaveClass('bg-loss', 'text-white');
+    expect(dot).not.toHaveClass('text-bg');
+  });
+});

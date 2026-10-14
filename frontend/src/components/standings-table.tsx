@@ -28,7 +28,7 @@ function FormDot({ outcome }: { outcome: FormOutcome }) {
     outcome === 'W'
       ? 'bg-win text-bg'
       : outcome === 'L'
-      ? 'bg-loss text-bg'
+      ? 'bg-loss text-white'
       : 'bg-transparent border border-fg-dim text-fg-dim';
 
   return (
@@ -175,7 +175,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                     row.goalDifference > 0
                       ? 'text-win'
                       : row.goalDifference < 0
-                      ? 'text-loss'
+                      ? 'text-loss-fg'
                       : 'text-fg-muted',
                   )}
                 >
