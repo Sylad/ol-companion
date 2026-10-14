@@ -1570,9 +1570,10 @@ lots:
     finished: 2026-10-14
   - id: L154
     title: "Titre de page par route : document.title « OL Companion » partout (WCAG 2.4.2), transverse à l'app (revue UX L4)"
-    status: todo
+    status: doing
     estimate: 0.1
     created: 2026-10-14
+    started: 2026-10-14
   - id: L155
     title: "Attentes QA /standings : la ligne api /api/wiki-image « 200 pour chaque club » est périmée, les écussons viennent de imagecache.365scores.com (18/18 chargés le 14-10) — reformuler en « 18 écussons chargés, 200, aucun 429 »"
     status: todo
