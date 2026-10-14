@@ -1556,6 +1556,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "conforme, 2 constats mineurs (en-tête recouvert par le bandeau du mode démo, test d'ancêtres en double) — orchestré (vague 2026-10-14-1900, 1 passe(s) de correction)", commit: 4d6cad18a41b18c1ac619cb3d1ad8f6f633e184b }
   - id: L154
     title: "Titre de page par route : document.title « OL Companion » partout (WCAG 2.4.2), transverse à l'app (revue UX L4)"
     status: todo
