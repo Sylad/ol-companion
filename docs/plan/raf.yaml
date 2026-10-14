@@ -1543,6 +1543,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "compliant (commit 57e6b37, 0 bloquant, 0 majeur, 0 mineur ; les 3 choix de l'auteur tiennent : ticks explicites + interval=0, seuil de 20 conservé, pas de CHANGELOG dans le dépôt, README à jour ; vitest position-tracker 4/4, tsc ok ; rendu navigateur non vérifié) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 57e6b3784d9a263fd18df11f4f5d4cfa9ce891b3 }
   - id: L152
     title: "Tracker de classement : graphique sans alternative texte ni clavier, info-bulle i non focusable (WCAG 1.1.1, 2.1.1) (revue UX L4)"
     status: todo
