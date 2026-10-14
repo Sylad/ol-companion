@@ -1558,6 +1558,7 @@ lots:
     estimate: 0.1
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "conforme, 3 constats mineurs (info-bulle sans test de visibilité au focus, nom et description identiques, Échap non géré) — orchestré (vague 2026-10-14-2015, 0 passe(s) de correction)", commit: 7504e5d2df084372b49f1d97df9759d7a4bf734c }
   - id: L153
     title: "Classement : en-tête sticky inopérant à cause du wrapper overflow-x-auto, sans débordement mesuré à 320/390 (revue UX L4)"
     status: done
