@@ -1522,10 +1522,11 @@ lots:
       - { date: 2026-10-14, text: "maquette UX (14-10) : données présentes + échec de rafraîchissement ou cache > 1 h → pas de bloc rouge, une bande de 36 px sous l'en-tête de la carte, fond surface-2, filet border-b, texte 12 px fg-muted avec icône AlertTriangle 14 px : « Rafraîchissement impossible — classement du 14 oct. à 16:25 » (ou « Classement d'il y a 3 j »), role=status, tableau intact dessous, la méta de l'en-tête montre la date du cache. Aucune donnée + erreur → RetryMessage « Impossible de charger le classement. » + Réessayer 44 px, role=alert. Chargement → role=status. Captures refetch-fail-1440-section, stale-390, error-390." }
   - id: L149
     title: "Classement : erreur sans Réessayer ni role=alert, message jargon 365scores — réutiliser RetryMessage, role=status sur le chargement (revue UX L4)"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
+    started: 2026-10-14
   - id: L150
     title: "Tracker de classement : pied « Journée x → y / Actuellement » tronqué de 7 px aux deux largeurs (pied rendu dans le bloc h-280 overflow-hidden) (revue UX L4)"
     status: todo
