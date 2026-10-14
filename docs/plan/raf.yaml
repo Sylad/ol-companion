@@ -1486,6 +1486,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "compliant (1 minor note: legend and ZONES duplicate labels and colors) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 72a00b43a03c39d6f4e3019fdc083cc29a55be7f }
   - id: L145
     title: "Classement : DB négatif 3,85:1 et lettre L 4,07:1 sous 4,5:1 (WCAG 1.4.3) — passer sur le token loss-fg, lettre blanche sur la pastille (revue UX L4)"
     status: todo
