@@ -59,15 +59,34 @@ function FormStrip({ form }: { form: FormOutcome[] | undefined }) {
   );
 }
 
-function PositionDot({ position }: { position: number }) {
-  let bg = 'bg-transparent';
-  if (position <= 3) bg = 'bg-win';
-  else if (position <= 5) bg = 'bg-ol-blue-bright';
-  else if (position === 6) bg = 'bg-cyan-500';
-  else if (position === 16) bg = 'bg-draw';
-  else if (position >= 17) bg = 'bg-loss';
+// L144 — la zone est dite en texte (lecteurs d'écran) et séparée par un filet : la couleur
+// de la barre ne la porte plus seule (WCAG 1.4.1). La légende reprend les mêmes libellés.
+const ZONES = [
+  { label: 'Ligue des champions', color: 'bg-win', test: (p: number) => p <= 3 },
+  { label: 'Ligue Europa', color: 'bg-ol-blue-bright', test: (p: number) => p >= 4 && p <= 5 },
+  { label: 'Ligue Conférence', color: 'bg-cyan-500', test: (p: number) => p === 6 },
+  { label: 'Barrage de relégation', color: 'bg-draw', test: (p: number) => p === 16 },
+  { label: 'Relégation', color: 'bg-loss', test: (p: number) => p >= 17 },
+];
 
-  return <span className={cn('inline-block w-1 h-5 rounded-sm mr-1 md:mr-2 align-middle', bg)} />;
+function zoneOf(position: number) {
+  return ZONES.find((z) => z.test(position));
+}
+
+function PositionDot({ position }: { position: number }) {
+  const zone = zoneOf(position);
+  return (
+    <>
+      <span
+        aria-hidden="true"
+        className={cn(
+          'inline-block w-1 h-5 rounded-sm mr-1 md:mr-2 align-middle',
+          zone?.color ?? 'bg-transparent',
+        )}
+      />
+      {zone && <span className="sr-only">{zone.label} : </span>}
+    </>
+  );
 }
 
 export function StandingsTable({ rows }: StandingsTableProps) {
@@ -93,7 +112,9 @@ export function StandingsTable({ rows }: StandingsTableProps) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => {
+          {rows.map((row, i) => {
+            const prev = i > 0 ? zoneOf(rows[i - 1].position) : undefined;
+            const rule = i > 0 && zoneOf(row.position) !== prev ? 'border-t border-border' : '';
             const isOL = row.teamId === OL_TEAM_ID;
             const dgSign =
               row.goalDifference > 0 ? '+' : row.goalDifference < 0 ? '' : '';
@@ -110,6 +131,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
               >
                 <td
                   className={cn(
+                    rule,
                     'px-1 md:px-2 py-3 text-center num text-fg-muted relative whitespace-nowrap',
                     isOL && 'text-ol-red-bright font-semibold',
                   )}
@@ -120,7 +142,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                   <PositionDot position={row.position} />
                   <span className="align-middle">{row.position}</span>
                 </td>
-                <td className="px-2 py-3 max-w-0 min-w-[7.25rem]">
+                <td className={cn("px-2 py-3 max-w-0 min-w-[7.25rem]", rule)}>
                   <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
                     <TeamLogo teamId={row.teamId} name={row.team} size={22} src={seasonTeamLogoUrl(row.teamId)} />
                     <span
@@ -134,20 +156,21 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                     </span>
                   </div>
                 </td>
-                <td className="hidden md:table-cell px-2 py-3 text-center num text-fg-muted">
+                <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
                   {row.played}
                 </td>
-                <td className="px-1 md:px-2 py-3 text-center num text-fg-muted">{row.won}</td>
-                <td className="px-1 md:px-2 py-3 text-center num text-fg-muted">{row.draw}</td>
-                <td className="px-1 md:px-2 py-3 text-center num text-fg-muted">{row.lost}</td>
-                <td className="hidden md:table-cell px-2 py-3 text-center num text-fg-muted">
+                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule)}>{row.won}</td>
+                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule)}>{row.draw}</td>
+                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule)}>{row.lost}</td>
+                <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
                   {row.goalsFor}
                 </td>
-                <td className="hidden md:table-cell px-2 py-3 text-center num text-fg-muted">
+                <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
                   {row.goalsAgainst}
                 </td>
                 <td
                   className={cn(
+                    rule,
                     'px-1 md:px-2 py-3 text-center num',
                     row.goalDifference > 0
                       ? 'text-win'
@@ -161,13 +184,14 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 </td>
                 <td
                   className={cn(
+                    rule,
                     'px-1 md:px-2 py-3 text-center num font-bold',
                     isOL ? 'text-fg-bright' : 'text-fg',
                   )}
                 >
                   {row.points}
                 </td>
-                <td className="hidden md:table-cell px-2 py-3">
+                <td className={cn("hidden md:table-cell px-2 py-3", rule)}>
                   <FormStrip form={row.recentForm} />
                 </td>
               </tr>

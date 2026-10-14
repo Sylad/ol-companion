@@ -101,3 +101,44 @@ describe('<StandingsTable /> — écussons (L32)', () => {
     expect(logo.getAttribute('src')).toContain('/Competitors/524');
   });
 });
+
+// L144 — WCAG 1.4.1 : la zone (LdC, Europa…) ne tient plus à la seule couleur de la barre.
+describe('<StandingsTable /> — zones sans la couleur (L144)', () => {
+  const mk = (position: number): StandingEntry => ({
+    position, team: `Club ${position}`, teamId: 1000 + position, played: 9, won: 1, draw: 1,
+    lost: 1, goalsFor: 1, goalsAgainst: 1, goalDifference: 0, points: 4,
+  });
+  const all = Array.from({ length: 18 }, (_, i) => mk(i + 1));
+
+  function renderAll() {
+    vi.stubGlobal('fetch', vi.fn());
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return render(
+      <QueryClientProvider client={client}>
+        <StandingsTable rows={all} />
+      </QueryClientProvider>,
+    );
+  }
+
+  const rowOf = (n: number) => screen.getByText(`Club ${n}`).closest('tr')!;
+
+  it('la cellule position porte la zone en texte sr-only, et rien pour le milieu de tableau', () => {
+    renderAll();
+    const zoneOf = (n: number) => rowOf(n).querySelector('td .sr-only')?.textContent?.replace(/ : $/, '') ?? null;
+    expect(zoneOf(1)).toBe('Ligue des champions');
+    expect(zoneOf(3)).toBe('Ligue des champions');
+    expect(zoneOf(4)).toBe('Ligue Europa');
+    expect(zoneOf(6)).toBe('Ligue Conférence');
+    expect(zoneOf(10)).toBeNull();
+    expect(zoneOf(16)).toBe('Barrage de relégation');
+    expect(zoneOf(17)).toBe('Relégation');
+    expect(zoneOf(18)).toBe('Relégation');
+  });
+
+  it('un filet sépare deux zones voisines, aucun à l’intérieur d’une zone ni sur la première ligne', () => {
+    renderAll();
+    const hasRule = (n: number) => rowOf(n).querySelector('td')!.classList.contains('border-t');
+    for (const n of [4, 6, 7, 16, 17]) expect(hasRule(n), `ligne ${n}`).toBe(true);
+    for (const n of [1, 2, 3, 5, 8, 15, 18]) expect(hasRule(n), `ligne ${n}`).toBe(false);
+  });
+});

@@ -61,7 +61,7 @@ Le bracket apparaît dès les **1/4 de finale** (Coupe de France) ou les **1/8**
 
 ![Classement Ligue 1 avec qualifications EU](./docs/screenshots/standings.png)
 
-Différence de buts, buts marqués, départage selon les règles LFP (et pas l'ordre d'appel football-data qui ignore le tie-break). Bandes colorées sur la gauche pour la qualification européenne / barrage / relégation.
+Différence de buts, buts marqués, départage selon les règles LFP (et pas l'ordre d'appel football-data qui ignore le tie-break). Bandes colorées sur la gauche pour la qualification européenne / barrage / relégation ; la zone n'est pas portée par la couleur seule (L144, WCAG 1.4.1) : la cellule de position la dit en texte pour les lecteurs d'écran (« Ligue des champions : 1 », barre masquée à l'accessibilité) et un filet sépare deux zones voisines.
 
 ### Effectif — formation + banc
 
