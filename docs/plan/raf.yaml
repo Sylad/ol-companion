@@ -1502,6 +1502,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "compliant — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 5cc68fec95ffceb611b5cec0a0c1b83ddf4b8e7b }
   - id: L147
     title: "Classement : forme W/D/L en anglais (D lu Défaite), aria-label sur span sans rôle — lettres V/N/D + role=img (revue UX L4)"
     status: todo
