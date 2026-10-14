@@ -1538,10 +1538,11 @@ lots:
     review: { date: 2026-10-14, verdict: "compliant (1 commit df63cf7, 0 bloquant, 0 majeur, 0 mineur ; le pied sort du bloc h-[280px] overflow-hidden, test structurel L150 vert ; vitest 570/570, tsc ok ; rendu navigateur non vérifié) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: df63cf7b47554b01d62d82ea554a71aade609b73 }
   - id: L151
     title: "Tracker de classement : axe Journée n'affiche qu'un tick sur deux (recharts interval=1), J6 sans étiquette (revue UX L4)"
-    status: todo
+    status: doing
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
+    started: 2026-10-14
   - id: L152
     title: "Tracker de classement : graphique sans alternative texte ni clavier, info-bulle i non focusable (WCAG 1.1.1, 2.1.1) (revue UX L4)"
     status: todo
