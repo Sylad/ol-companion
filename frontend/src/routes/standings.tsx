@@ -2,6 +2,7 @@ import { useStandings } from '@/hooks/use-standings';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { StandingsTable } from '@/components/standings-table';
 import { PositionTracker } from '@/components/position-tracker';
+import { RetryMessage } from '@/components/retry-message';
 import { Loader2, RefreshCw } from 'lucide-react';
 
 function formatRelative(iso: string): string {
@@ -58,16 +59,19 @@ export function StandingsPage() {
 
         <div className="p-2 sm:p-5">
           {isLoading && (
-            <div className="flex items-center justify-center py-20 text-fg-dim">
+            <div role="status" className="flex items-center justify-center py-20 text-fg-dim">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
               <span>Chargement du classement…</span>
             </div>
           )}
-          {isError && (
-            <div className="py-20 text-center">
-              <p className="text-loss font-medium mb-2">Erreur de chargement</p>
-              <p className="text-fg-muted text-sm">Impossible de récupérer les données 365scores.</p>
-            </div>
+          {isError && !data && (
+            <RetryMessage
+              className="flex flex-col items-center gap-3 py-20 text-center"
+              message="Impossible de charger le classement."
+              onRetry={() => void refetch()}
+              messageTestId="standings-error"
+              buttonTestId="standings-retry"
+            />
           )}
           {data && data.table.length > 0 && <StandingsTable rows={data.table} />}
           {data && data.table.length === 0 && (
