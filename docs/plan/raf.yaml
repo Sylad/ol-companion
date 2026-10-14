@@ -1577,10 +1577,11 @@ lots:
     review: { date: 2026-10-14, verdict: "conforme : aucun constat. Commit 2cfe34d relu, tests du lot verts (7/7), tsc propre. — orchestré (vague 2026-10-14-2015, 0 passe(s) de correction)", commit: 2cfe34d18f790a3ac8602a8bb7b0ce8b62259d5c }
   - id: L155
     title: "Attentes QA /standings : la ligne api /api/wiki-image « 200 pour chaque club » est périmée, les écussons viennent de imagecache.365scores.com (18/18 chargés le 14-10) — reformuler en « 18 écussons chargés, 200, aucun 429 »"
-    status: todo
+    status: doing
     estimate: 0.05
     quickwin: true
     created: 2026-10-14
+    started: 2026-10-14
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
