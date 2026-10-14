@@ -1510,6 +1510,7 @@ lots:
     quickwin: true
     created: 2026-10-14
     started: 2026-10-14
+    review: { date: 2026-10-14, verdict: "compliant (1 commit 5e1d28a, 0 bloquant, 0 majeur, 1 mineur : la bande de forme de la tuile du tableau de bord garde W/D/L, déjà planifiée en L88 ; vitest 566/566, tsc ok) — orchestré (vague 2026-10-14-1900, 0 passe(s) de correction)", commit: 5e1d28ae9a1c9073246e6518760b684e3ca72038 }
   - id: L148
     title: "Classement : échec de rafraîchissement affiche erreur ET tableau, cache périmé non signalé — bandeau d'état role=status selon maquette (revue UX L4)"
     status: todo
