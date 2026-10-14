@@ -1481,10 +1481,11 @@ lots:
     finished: 2026-10-13
   - id: L144
     title: "Classement : zones LdC/Europa/relégation portées par la couleur seule (WCAG 1.4.1) — sr-only dans la cellule position + filets entre zones (revue UX L4)"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-14
+    started: 2026-10-14
   - id: L145
     title: "Classement : DB négatif 3,85:1 et lettre L 4,07:1 sous 4,5:1 (WCAG 1.4.3) — passer sur le token loss-fg, lettre blanche sur la pastille (revue UX L4)"
     status: todo
