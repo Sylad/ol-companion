@@ -1607,7 +1607,7 @@ lots:
     created: 2026-10-15
   - id: L158
     title: "Page du match : le bloc « Classement en direct » affiche la Ligue 1 sous un match de coupe d'Europe (Lyon – Crystal Palace, capture 15-10) ; attendu : le classement de la compétition du match quand football-data.org le publie (phase de ligue), sinon le bloc est masqué ou dit clairement qu'il s'agit de la Ligue 1 ; jamais un classement d'une autre compétition sans le dire"
-    public: "Page du match : le classement affiché est celui de la compétition du match"
+    public: "Page du match : le classement en direct est réservé aux matchs de Ligue 1"
     status: doing
     estimate: 0.5
     visible: true

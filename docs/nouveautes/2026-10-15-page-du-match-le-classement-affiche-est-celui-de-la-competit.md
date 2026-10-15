@@ -1,5 +1,5 @@
 ---
-title: "Page du match : le classement affiché est celui de la compétition du match"
+title: "Page du match : le classement en direct est réservé aux matchs de Ligue 1"
 date: 2026-10-15
 created: 2026-10-15T21:26+02:00
 lots: [L158]
