@@ -1630,6 +1630,7 @@ lots:
     ux: { date: 2026-10-15, verdict: "conforme — capture 1440 regardée par le lead : trois colonnes alignées (121 px d'écart), classement sous la carte des tirs, joueurs en vue sans troncature ; mineurs en note" }
     notes:
       - { date: 2026-10-15, text: "mineurs de la revue courte 15-10 laissés en note : titre de test trompeur, débordement de 8 px de la ligne de stat à 320 px, double liste « Tests : » dans le README" }
+      - { date: 2026-10-15, text: "QA prod 15-10 (7f3c99f) : 5/5 pages conformes, colonnes à 71 px (Lens – Lyon) et 108 px (Lyon – Crystal Palace) d'écart, aucune troncature ; suspect mineur : le classement en direct est en colonne de droite sous Statistiques, pas « sous la carte des tirs » comme le disait le commit cb07860 — attente QA /match à fixer (placement + écart < 150 px)" }
     finished: 2026-10-15
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
