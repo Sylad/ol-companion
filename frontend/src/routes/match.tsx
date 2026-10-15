@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
@@ -161,11 +162,26 @@ type Block = { key: string; col: number; node: ReactNode };
 const COLUMN_NAMES = ['colonne-gauche', 'colonne-centre', 'colonne-droite'];
 const COLUMN_GAP = 16;
 
-/** Trois colonnes égales à partir de xl ; les blocs sont mesurés puis répartis (L159). */
+/**
+ * Trois colonnes égales à partir de xl ; les blocs sont mesurés puis répartis (L159).
+ * Chaque bloc vit dans un conteneur créé une fois, rendu par portail : changer de colonne
+ * déplace ce nœud sans démonter le bloc (état conservé) et sans perdre son observateur.
+ */
 function BalancedColumns({ blocks }: { blocks: Block[] }) {
-  const refs = useRef<Record<string, HTMLDivElement | null>>({});
+  const wrappers = useRef(new Map<string, HTMLDivElement>());
+  const hosts = useRef<(HTMLDivElement | null)[]>([null, null, null]);
   const [heights, setHeights] = useState<Record<string, number>>({});
   const [wide, setWide] = useState(false);
+
+  const wrapperOf = (key: string) => {
+    let el = wrappers.current.get(key);
+    if (!el) {
+      el = document.createElement('div');
+      el.dataset.bloc = key;
+      wrappers.current.set(key, el);
+    }
+    return el;
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
@@ -176,39 +192,61 @@ function BalancedColumns({ blocks }: { blocks: Block[] }) {
     return () => mq.removeEventListener('change', update);
   }, []);
 
+  const keys = blocks.map((b) => b.key).join('|');
   useEffect(() => {
     if (!wide || typeof ResizeObserver === 'undefined') return;
     const measure = () =>
       setHeights((prev) => {
         const next: Record<string, number> = {};
-        for (const [k, el] of Object.entries(refs.current)) if (el) next[k] = Math.round(el.offsetHeight);
+        for (const k of keys.split('|')) {
+          const el = wrappers.current.get(k);
+          if (el) next[k] = Math.round(el.offsetHeight);
+        }
         const same = Object.keys(next).length === Object.keys(prev).length && Object.entries(next).every(([k, v]) => prev[k] === v);
         return same ? prev : next;
       });
     measure();
     const ro = new ResizeObserver(measure);
-    for (const el of Object.values(refs.current)) if (el) ro.observe(el);
+    for (const k of keys.split('|')) {
+      const el = wrappers.current.get(k);
+      if (el) ro.observe(el);
+    }
     return () => ro.disconnect();
-  }, [wide, blocks.length]);
+  }, [wide, keys]);
 
   const fallback = blocks.map((b) => b.col);
   const assignment = wide
     ? balanceColumns(blocks.map((b) => heights[b.key] ?? 0), fallback, COLUMN_GAP)
     : fallback;
 
+  // Place les conteneurs dans leur colonne, dans l'ordre de lecture, sans toucher à ceux déjà bien placés.
+  useLayoutEffect(() => {
+    COLUMN_NAMES.forEach((_, c) => {
+      const host = hosts.current[c];
+      if (!host) return;
+      const wanted = blocks.filter((_b, i) => assignment[i] === c).map((b) => wrapperOf(b.key));
+      const ok = host.children.length === wanted.length && wanted.every((el, i) => host.children[i] === el);
+      if (!ok) for (const el of wanted) host.appendChild(el);
+    });
+    for (const [k, el] of wrappers.current) {
+      if (!blocks.some((b) => b.key === k)) {
+        el.remove();
+        wrappers.current.delete(k);
+      }
+    }
+  });
+
   return (
     <div className="grid gap-4 xl:grid-cols-3 xl:items-start">
       {COLUMN_NAMES.map((name, c) => (
-        <div key={name} data-testid={name} className="space-y-4 min-w-0">
-          {blocks.map((b, i) =>
-            assignment[i] === c ? (
-              <div key={b.key} ref={(el) => { refs.current[b.key] = el; }}>
-                {b.node}
-              </div>
-            ) : null,
-          )}
-        </div>
+        <div
+          key={name}
+          data-testid={name}
+          className="space-y-4 min-w-0"
+          ref={(el) => { hosts.current[c] = el; }}
+        />
       ))}
+      {blocks.map((b) => createPortal(b.node, wrapperOf(b.key), b.key))}
     </div>
   );
 }
