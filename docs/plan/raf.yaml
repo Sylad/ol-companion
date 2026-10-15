@@ -1618,11 +1618,12 @@ lots:
   - id: L159
     title: "Page du match à 1440 px, bas de page déséquilibré (capture 15-10) : la colonne droite s'arrête à la composition visiteuse pendant que la gauche continue sur 600 px (composition Lyon puis classement), la colonne centrale est vide sous la carte des tirs ; « Joueurs en vue » tronque les noms (Keito Naka…, Jørgen Stra…) et casse les libellés (« Buts attendus : » sur deux lignes) ; attendu : les trois colonnes se terminent à moins de 150 px l'une de l'autre, noms complets ou abrégés prénom-initiale, libellés sur une ligne"
     public: "Page du match : bas de page rééquilibré et joueurs en vue lisibles"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-15
+    started: 2026-10-15
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
