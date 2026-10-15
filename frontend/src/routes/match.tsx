@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
@@ -10,6 +11,7 @@ import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
+import { balanceColumns } from '@/lib/balance-columns';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 
 const EVENT_LABEL: Record<string, string> = {
@@ -154,6 +156,63 @@ interface MatchSearch {
   matchupId?: string;
 }
 
+type Block = { key: string; col: number; node: ReactNode };
+
+const COLUMN_NAMES = ['colonne-gauche', 'colonne-centre', 'colonne-droite'];
+const COLUMN_GAP = 16;
+
+/** Trois colonnes égales à partir de xl ; les blocs sont mesurés puis répartis (L159). */
+function BalancedColumns({ blocks }: { blocks: Block[] }) {
+  const refs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [heights, setHeights] = useState<Record<string, number>>({});
+  const [wide, setWide] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(min-width: 1280px)');
+    const update = () => setWide(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    if (!wide || typeof ResizeObserver === 'undefined') return;
+    const measure = () =>
+      setHeights((prev) => {
+        const next: Record<string, number> = {};
+        for (const [k, el] of Object.entries(refs.current)) if (el) next[k] = Math.round(el.offsetHeight);
+        const same = Object.keys(next).length === Object.keys(prev).length && Object.entries(next).every(([k, v]) => prev[k] === v);
+        return same ? prev : next;
+      });
+    measure();
+    const ro = new ResizeObserver(measure);
+    for (const el of Object.values(refs.current)) if (el) ro.observe(el);
+    return () => ro.disconnect();
+  }, [wide, blocks.length]);
+
+  const fallback = blocks.map((b) => b.col);
+  const assignment = wide
+    ? balanceColumns(blocks.map((b) => heights[b.key] ?? 0), fallback, COLUMN_GAP)
+    : fallback;
+
+  return (
+    <div className="grid gap-4 xl:grid-cols-3 xl:items-start">
+      {COLUMN_NAMES.map((name, c) => (
+        <div key={name} data-testid={name} className="space-y-4 min-w-0">
+          {blocks.map((b, i) =>
+            assignment[i] === c ? (
+              <div key={b.key} ref={(el) => { refs.current[b.key] = el; }}>
+                {b.node}
+              </div>
+            ) : null,
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function MatchPage() {
   const { gameId } = useParams({ from: '/match/$gameId' });
   const { matchupId } = useSearch({ from: '/match/$gameId' }) as MatchSearch;
@@ -285,100 +344,120 @@ export function MatchPage() {
         </div>
       </section>
 
-      {/* Grille tableau de bord : faits + joueurs | carte des tirs + compo OL | stats + compo adverse + classement.
-          En dessous de xl, empilement dans l'ordre de lecture. */}
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,4fr)_minmax(0,6fr)_minmax(0,4fr)] 2xl:grid-cols-[minmax(0,3fr)_minmax(0,5fr)_minmax(0,4fr)] xl:items-start">
-      <div data-testid="colonne-gauche" className="space-y-4 min-w-0">
-      {/* Timeline */}
-      {data.events.length > 0 && (
-        <section className="rounded-md bg-surface border border-border overflow-hidden">
-          <header className="px-5 py-3 border-b border-border">
-            <div className="eyebrow">Faits du match</div>
-          </header>
-          <div className="px-5 py-2 divide-y divide-border">
-            {data.events.map((e, i) => (
-              <TimelineRow
-                key={`${e.gameTime}-${i}`}
-                event={e}
+      {/* Grille tableau de bord : trois colonnes de même largeur, blocs répartis pour que
+          leurs bas se rejoignent (L159). Répartition par défaut : faits + joueurs | carte des
+          tirs + compo OL | stats + compo adverse + classement. Sous xl, empilement. */}
+      <BalancedColumns
+        blocks={([
+          data.events.length > 0 && {
+            key: 'faits',
+            col: 0,
+            node: (
+              <section className="rounded-md bg-surface border border-border overflow-hidden">
+                <header className="px-5 py-3 border-b border-border">
+                  <div className="eyebrow">Faits du match</div>
+                </header>
+                <div className="px-5 py-2 divide-y divide-border">
+                  {data.events.map((e, i) => (
+                    <TimelineRow
+                      key={`${e.gameTime}-${i}`}
+                      event={e}
+                      homeId={data.home.id}
+                      homeSymbol={data.home.symbolicName}
+                      awaySymbol={data.away.symbolicName}
+                    />
+                  ))}
+                </div>
+              </section>
+            ),
+          },
+          data.topPerformers.length > 0 && {
+            key: 'joueurs',
+            col: 0,
+            node: (
+              <section className="rounded-md bg-surface border border-border overflow-hidden">
+                <header className="px-5 py-3 border-b border-border">
+                  <div className="eyebrow">Joueurs en vue</div>
+                </header>
+                <div className="px-5 py-2 divide-y divide-border">
+                  {data.topPerformers.map((tp, i) => (
+                    <div key={i} className="py-1.5">
+                      <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
+                        {tp.role}
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <PerformerCell player={tp.homePlayer} align="right" />
+                        <PerformerCell player={tp.awayPlayer} align="left" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ),
+          },
+          !!(data.momentum && data.momentum.length > 0) && {
+            key: 'momentum',
+            col: 1,
+            node: (
+              <MomentumChart
+                points={data.momentum!}
+                homeName={data.home.name}
+                awayName={data.away.name}
+                goalMinutes={goalMinutes}
+              />
+            ),
+          },
+          data.shots.length > 0 && {
+            key: 'tirs',
+            col: 1,
+            node: (
+              <ShotMap
+                shots={data.shots}
                 homeId={data.home.id}
+                homeName={data.home.name}
+                awayName={data.away.name}
                 homeSymbol={data.home.symbolicName}
                 awaySymbol={data.away.symbolicName}
+                playerNames={playerNames}
               />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Top performers */}
-      {data.topPerformers.length > 0 && (
-        <section className="rounded-md bg-surface border border-border overflow-hidden">
-          <header className="px-5 py-3 border-b border-border">
-            <div className="eyebrow">Joueurs en vue</div>
-          </header>
-          <div className="px-5 py-2 divide-y divide-border">
-            {data.topPerformers.map((tp, i) => (
-              <div key={i} className="py-1.5">
-                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
-                  {tp.role}
+            ),
+          },
+          !!olLineup && {
+            key: 'compo-ol',
+            col: 1,
+            node: <LineupCard lineup={olLineup!} teamName={olSide.name} accent="red" />,
+          },
+          {
+            key: 'stats',
+            col: 2,
+            node: (
+              <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
+                <header className="px-5 py-3 border-b border-border">
+                  <div className="eyebrow">Statistiques</div>
+                </header>
+                <div className="px-5 py-3 space-y-2">
+                  {statRows.map((s) => (
+                    <StatRow
+                      key={s.key}
+                      label={s.label}
+                      home={data.teamStats.home[s.key] ?? 0}
+                      away={data.teamStats.away[s.key] ?? 0}
+                      fmt={s.fmt}
+                    />
+                  ))}
+                  {statRows.length === 0 && <p className="text-xs text-fg-dim py-4 text-center">Pas encore de statistiques.</p>}
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <PerformerCell player={tp.homePlayer} align="right" />
-                  <PerformerCell player={tp.awayPlayer} align="left" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      </div>
-
-      {/* Shot map + momentum */}
-      <div data-testid="colonne-centre" className="min-w-0 space-y-4">
-      {data.momentum && data.momentum.length > 0 && (
-        <MomentumChart
-          points={data.momentum}
-          homeName={data.home.name}
-          awayName={data.away.name}
-          goalMinutes={goalMinutes}
-        />
-      )}
-      {data.shots.length > 0 && (
-        <ShotMap
-          shots={data.shots}
-          homeId={data.home.id}
-          homeName={data.home.name}
-          awayName={data.away.name}
-          homeSymbol={data.home.symbolicName}
-          awaySymbol={data.away.symbolicName}
-          playerNames={playerNames}
-        />
-      )}
-      {olLineup && <LineupCard lineup={olLineup} teamName={olSide.name} accent="red" />}
-      </div>
-
-      {/* Stats + compo adverse */}
-      <div data-testid="colonne-droite" className="space-y-4 min-w-0">
-      <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
-        <header className="px-5 py-3 border-b border-border">
-          <div className="eyebrow">Statistiques</div>
-        </header>
-        <div className="px-5 py-3 space-y-2">
-          {statRows.map((s) => (
-            <StatRow
-              key={s.key}
-              label={s.label}
-              home={data.teamStats.home[s.key] ?? 0}
-              away={data.teamStats.away[s.key] ?? 0}
-              fmt={s.fmt}
-            />
-          ))}
-          {statRows.length === 0 && <p className="text-xs text-fg-dim py-4 text-center">Pas encore de statistiques.</p>}
-        </div>
-      </section>
-      {oppLineup && <LineupCard lineup={oppLineup} teamName={oppSide.name} accent="blue" />}
-      {data.standings && <MiniStandings rows={data.standings} />}
-      </div>
-      </div>
+              </section>
+            ),
+          },
+          !!oppLineup && {
+            key: 'compo-adverse',
+            col: 2,
+            node: <LineupCard lineup={oppLineup!} teamName={oppSide.name} accent="blue" />,
+          },
+          !!data.standings && { key: 'classement', col: 2, node: <MiniStandings rows={data.standings!} /> },
+        ] as (Block | false)[]).filter((b): b is Block => !!b)}
+      />
     </div>
   );
 }
