@@ -48,12 +48,15 @@ vi.mock('@/components/match-event-burst', () => ({ MatchEventBurst: () => null }
 import { MatchPage } from './match';
 
 describe('<MatchPage /> — équilibre des colonnes (L159)', () => {
-  it('le classement est dans la colonne centrale, sous la carte des tirs', () => {
+  it('la composition de Lyon passe sous la carte des tirs, le classement sous la compo adverse', () => {
     render(<MatchPage />);
     const centre = screen.getByTestId('colonne-centre');
     expect(within(centre).getByTestId('carte-tirs')).toBeInTheDocument();
-    expect(within(centre).getByTestId('classement')).toBeInTheDocument();
-    expect(within(screen.getByTestId('colonne-gauche')).queryByTestId('classement')).toBeNull();
+    expect(within(centre).getAllByTestId('compo')).toHaveLength(1);
+    expect(within(screen.getByTestId('colonne-droite')).getByTestId('classement')).toBeInTheDocument();
+    const gauche = screen.getByTestId('colonne-gauche');
+    expect(within(gauche).queryByTestId('classement')).toBeNull();
+    expect(within(gauche).queryByTestId('compo')).toBeNull();
   });
 
   it('« Joueurs en vue » : noms complets non tronqués, libellé de statistique sur une ligne', () => {

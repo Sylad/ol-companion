@@ -91,7 +91,7 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
     : '';
   const tooltip = event.playerName ? `${event.playerName}${extra}` : undefined;
   return (
-    <div className="grid grid-cols-[1fr_60px_1fr] items-center gap-3 py-1">
+    <div className="grid grid-cols-[1fr_60px_1fr] items-center gap-3 py-0.5">
       <div className={cn('text-right text-sm', !isHome && 'text-fg-dim')}>
         {isHome && <span className="font-medium" title={tooltip}>{label}</span>}
       </div>
@@ -214,7 +214,7 @@ export function MatchPage() {
   }
   const homeScorers = scorersFor(data.events, data.home.id, data.away.id);
   const awayScorers = scorersFor(data.events, data.away.id, data.home.id);
-  // Compos : OL à gauche (sous « Joueurs en vue »), adversaire à droite (sous les stats).
+  // Compos : OL au centre (sous la carte des tirs), adversaire à droite (sous les stats).
   const olLineup = data.lineups ? (olIsHome ? data.lineups.home : data.lineups.away) : null;
   const oppLineup = data.lineups ? (olIsHome ? data.lineups.away : data.lineups.home) : null;
   const olSide = olIsHome ? data.home : data.away;
@@ -285,9 +285,9 @@ export function MatchPage() {
         </div>
       </section>
 
-      {/* Grille tableau de bord : faits + joueurs + compo OL | carte des tirs + classement | stats + compo adverse.
+      {/* Grille tableau de bord : faits + joueurs | carte des tirs + compo OL | stats + compo adverse + classement.
           En dessous de xl, empilement dans l'ordre de lecture. */}
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,4fr)_minmax(0,5fr)_minmax(0,4fr)] 2xl:grid-cols-[minmax(0,3fr)_minmax(0,5fr)_minmax(0,4fr)] xl:items-start">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,4fr)_minmax(0,6fr)_minmax(0,4fr)] 2xl:grid-cols-[minmax(0,3fr)_minmax(0,5fr)_minmax(0,4fr)] xl:items-start">
       <div data-testid="colonne-gauche" className="space-y-4 min-w-0">
       {/* Timeline */}
       {data.events.length > 0 && (
@@ -317,8 +317,8 @@ export function MatchPage() {
           </header>
           <div className="px-5 py-2 divide-y divide-border">
             {data.topPerformers.map((tp, i) => (
-              <div key={i} className="py-2">
-                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-1 whitespace-nowrap">
+              <div key={i} className="py-1.5">
+                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
                   {tp.role}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -330,7 +330,6 @@ export function MatchPage() {
           </div>
         </section>
       )}
-      {olLineup && <LineupCard lineup={olLineup} teamName={olSide.name} accent="red" />}
       </div>
 
       {/* Shot map + momentum */}
@@ -354,7 +353,7 @@ export function MatchPage() {
           playerNames={playerNames}
         />
       )}
-      {data.standings && <MiniStandings rows={data.standings} />}
+      {olLineup && <LineupCard lineup={olLineup} teamName={olSide.name} accent="red" />}
       </div>
 
       {/* Stats + compo adverse */}
@@ -377,6 +376,7 @@ export function MatchPage() {
         </div>
       </section>
       {oppLineup && <LineupCard lineup={oppLineup} teamName={oppSide.name} accent="blue" />}
+      {data.standings && <MiniStandings rows={data.standings} />}
       </div>
       </div>
     </div>
