@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-13 13:46",
+  "generated": "2026-10-15 07:51",
   "entries": [
+    {
+      "slug": "2026-10-15-classement-erreur-de-rafraichissement-et-donnees-perimees-si",
+      "title": "Classement : un message clair quand les données ne sont pas à jour",
+      "date": "2026-10-15",
+      "lots": [
+        "L148"
+      ],
+      "captures": [
+        "captures/classement-bandeau-refetch-L148.png"
+      ],
+      "alts": [
+        "Page Classement : bandeau gris « Rafraîchissement impossible » sous l'en-tête, tableau toujours affiché"
+      ],
+      "html": "<p>Sur la page Classement, quand l'actualisation échoue alors qu'un classement est déjà affiché, le tableau reste en place et un discret bandeau gris l'indique : « Rafraîchissement impossible — classement du 14 oct. à 16:25 ». Quand les données ont plus d'une heure, le bandeau dit « Classement d'il y a 3 j ». La date du classement affiché apparaît aussi en haut de la carte. Il n'y a plus de bloc d'erreur rouge au-dessus du tableau.</p>"
+    },
     {
       "slug": "2026-10-13-nouveautes-des-captures-mieux-decrites",
       "title": "Nouveautés : des captures mieux décrites",

@@ -3,7 +3,7 @@ import { KnowledgeHeader } from '@/components/knowledge-header';
 import { StandingsTable } from '@/components/standings-table';
 import { PositionTracker } from '@/components/position-tracker';
 import { RetryMessage } from '@/components/retry-message';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { AlertTriangle, Loader2, RefreshCw } from 'lucide-react';
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -15,8 +15,31 @@ function formatRelative(iso: string): string {
   return `il y a ${Math.floor(h / 24)} j`;
 }
 
+const STALE_MS = 60 * 60 * 1000;
+
+const PARIS = { timeZone: 'Europe/Paris' } as const;
+
+// « 14 oct. à 16:25 » (heure de Paris, quel que soit le fuseau du navigateur)
+function formatCacheDate(iso: string): string {
+  const d = new Date(iso);
+  const jour = new Intl.DateTimeFormat('fr-FR', { ...PARIS, day: 'numeric', month: 'short' })
+    .format(d);
+  const heure = new Intl.DateTimeFormat('fr-FR', { ...PARIS, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(d);
+  return `${jour} à ${heure}`;
+}
+
 export function StandingsPage() {
   const { data, isLoading, isError, refetch, isFetching } = useStandings();
+  const dated = !!data && !Number.isNaN(new Date(data.updatedAt).getTime());
+  const age = dated ? Date.now() - new Date(data.updatedAt).getTime() : 0;
+  const refreshFailed = isError && !!data;
+  const bandeau = data && dated
+    ? refreshFailed
+      ? `Rafraîchissement impossible — classement du ${formatCacheDate(data.updatedAt)}`
+      : age > STALE_MS
+        ? `Classement ${formatRelative(data.updatedAt).replace('il y a', "d'il y a")}`
+        : null
+    : null;
 
   return (
     <div className="space-y-8">
@@ -39,7 +62,7 @@ export function StandingsPage() {
                   Journée <span className="num text-fg">{data.currentMatchday}</span>
                 </span>
                 <span className="hidden sm:inline">·</span>
-                <span>{formatRelative(data.updatedAt)}</span>
+                {dated && <span>{bandeau ? formatCacheDate(data.updatedAt) : formatRelative(data.updatedAt)}</span>}
               </>
             )}
             <button
@@ -56,6 +79,16 @@ export function StandingsPage() {
             </button>
           </div>
         </header>
+
+        {bandeau && (
+          <div
+            role="status"
+            className="flex min-h-9 items-center gap-2 border-b border-border bg-surface-2 px-5 py-2 text-xs text-fg-muted"
+          >
+            <AlertTriangle className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
+            <span>{bandeau}</span>
+          </div>
+        )}
 
         <div className="p-2 sm:p-5">
           {isLoading && (
