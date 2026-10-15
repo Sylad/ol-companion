@@ -1614,6 +1614,7 @@ lots:
     screen: component
     created: 2026-10-15
     started: 2026-10-15
+    review: { date: 2026-10-15, verdict: "conforme après 1 correction : capture de la Nouveauté à refaire sur le vrai Lyon – Crystal Palace (3 mineurs) — orchestré (vague 2026-10-15-2130, 0 passe(s) de correction + passe des mineurs)", commit: 183bfc98b29b9fb30dc8f0e21180ca8b5738c708 }
   - id: L159
     title: "Page du match à 1440 px, bas de page déséquilibré (capture 15-10) : la colonne droite s'arrête à la composition visiteuse pendant que la gauche continue sur 600 px (composition Lyon puis classement), la colonne centrale est vide sous la carte des tirs ; « Joueurs en vue » tronque les noms (Keito Naka…, Jørgen Stra…) et casse les libellés (« Buts attendus : » sur deux lignes) ; attendu : les trois colonnes se terminent à moins de 150 px l'une de l'autre, noms complets ou abrégés prénom-initiale, libellés sur une ligne"
     public: "Page du match : bas de page rééquilibré et joueurs en vue lisibles"
