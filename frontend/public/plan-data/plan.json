@@ -427,6 +427,16 @@
       "status": "done",
       "started": "2026-10-15",
       "finished": "2026-10-15"
+    },
+    {
+      "id": "L158",
+      "title": "Page du match : le classement affiché est celui de la compétition du match",
+      "status": "todo"
+    },
+    {
+      "id": "L159",
+      "title": "Page du match : bas de page rééquilibré et joueurs en vue lisibles",
+      "status": "todo"
     }
   ]
 }
