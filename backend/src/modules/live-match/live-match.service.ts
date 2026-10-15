@@ -116,9 +116,11 @@ export class LiveMatchService implements OnModuleInit {
     if (momentum) payload.momentum = momentum;
     else if (cached?.payload.momentum) payload.momentum = cached.payload.momentum;
 
-    const standings = await this.fetchStandingsAroundOl();
+    // L158 : le seul classement lu est celui de la Ligue 1. Sous un match d'une autre
+    // compétition (coupe d'Europe, Coupe de France), pas de bloc plutôt qu'un classement étranger.
+    const standings = payload.competitionId === LIGUE1_365SCORES_ID ? await this.fetchStandingsAroundOl() : undefined;
     if (standings) payload.standings = standings;
-    else if (cached?.payload.standings) payload.standings = cached.payload.standings;
+    else if (payload.competitionId === LIGUE1_365SCORES_ID && cached?.payload.standings) payload.standings = cached.payload.standings;
 
     this.cachedStatsByGame.set(gameId, { payload, fetchedAt: Date.now() });
     return payload;

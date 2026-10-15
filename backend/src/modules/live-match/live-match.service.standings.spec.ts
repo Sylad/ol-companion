@@ -99,6 +99,24 @@ describe('LiveMatchService — mini-classement et rendus dégradés de 365scores
     expect(fromDegraded).toEqual(fromComplete);
   });
 
+  it('L158 — match d\'une autre compétition : jamais le classement de la Ligue 1, pas même appelé', async () => {
+    standingsBody = fixture('365_standings_ligue1_complete.json');
+    const euro = GAME.replace('"competitionId":35', '"competitionId":573');
+    const calls: string[] = [];
+    globalThis.fetch = (input: unknown) => {
+      const { pathname } = new URL(String(input));
+      calls.push(pathname);
+      if (pathname === '/web/game/') return Promise.resolve(json(euro));
+      return Promise.resolve(new Response('', { status: 404 }));
+    };
+
+    const payload = await stats();
+
+    expect(payload?.competitionId).toBe(573);
+    expect(payload?.standings).toBeUndefined();
+    expect(calls).not.toContain('/web/standings/');
+  });
+
   it('enveloppe vide : pas de mini-classement, ET un log qui dit pourquoi', async () => {
     standingsBody = fixture('365_standings_ligue1_empty_envelope.json');
 
