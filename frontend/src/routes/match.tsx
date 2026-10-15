@@ -10,7 +10,7 @@ import { MatchEventBurst } from '@/components/match-event-burst';
 import { deriveClock } from '@/lib/match-clock';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
-import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent } from '@/types/api';
+import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 
 const EVENT_LABEL: Record<string, string> = {
   goal: '⚽ But',
@@ -101,6 +101,18 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
       </div>
       <div className={cn('text-left text-sm', isHome && 'text-fg-dim')}>
         {!isHome && <span className="font-medium" title={tooltip}>{label}</span>}
+      </div>
+    </div>
+  );
+}
+
+function PerformerCell({ player, align }: { player: LiveMatchTopPerformer['homePlayer']; align: 'right' | 'left' }) {
+  if (!player) return <span className={cn('text-fg-dim text-xs', align === 'right' ? 'text-right' : 'text-left')}>—</span>;
+  return (
+    <div className={cn('min-w-0', align === 'right' ? 'text-right' : 'text-left')}>
+      <div className="font-semibold text-fg text-sm break-words">{player.name}</div>
+      <div data-stat-ligne className="text-xs text-fg-muted whitespace-nowrap">
+        {player.statName} : <span className="num tabular-nums font-semibold text-fg">{player.statValue}</span>
       </div>
     </div>
   );
@@ -273,10 +285,10 @@ export function MatchPage() {
         </div>
       </section>
 
-      {/* Grille tableau de bord : faits + joueurs | carte des tirs | stats.
+      {/* Grille tableau de bord : faits + joueurs + compo OL | carte des tirs + classement | stats + compo adverse.
           En dessous de xl, empilement dans l'ordre de lecture. */}
       <div className="grid gap-4 xl:grid-cols-[minmax(0,4fr)_minmax(0,5fr)_minmax(0,4fr)] 2xl:grid-cols-[minmax(0,3fr)_minmax(0,5fr)_minmax(0,4fr)] xl:items-start">
-      <div className="space-y-4 min-w-0">
+      <div data-testid="colonne-gauche" className="space-y-4 min-w-0">
       {/* Timeline */}
       {data.events.length > 0 && (
         <section className="rounded-md bg-surface border border-border overflow-hidden">
@@ -305,25 +317,13 @@ export function MatchPage() {
           </header>
           <div className="px-5 py-2 divide-y divide-border">
             {data.topPerformers.map((tp, i) => (
-              <div key={i} className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 py-2">
-                <div className="text-right min-w-0">
-                  {tp.homePlayer ? (
-                    <>
-                      <div className="font-semibold text-fg text-sm truncate">{tp.homePlayer.name}</div>
-                      <div className="text-xs text-fg-muted">{tp.homePlayer.statName}: <span className="num tabular-nums font-semibold text-fg">{tp.homePlayer.statValue}</span></div>
-                    </>
-                  ) : <span className="text-fg-dim text-xs">—</span>}
-                </div>
-                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center px-2 whitespace-nowrap">
+              <div key={i} className="py-2">
+                <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-1 whitespace-nowrap">
                   {tp.role}
                 </div>
-                <div className="text-left min-w-0">
-                  {tp.awayPlayer ? (
-                    <>
-                      <div className="font-semibold text-fg text-sm truncate">{tp.awayPlayer.name}</div>
-                      <div className="text-xs text-fg-muted">{tp.awayPlayer.statName}: <span className="num tabular-nums font-semibold text-fg">{tp.awayPlayer.statValue}</span></div>
-                    </>
-                  ) : <span className="text-fg-dim text-xs">—</span>}
+                <div className="grid grid-cols-2 gap-3">
+                  <PerformerCell player={tp.homePlayer} align="right" />
+                  <PerformerCell player={tp.awayPlayer} align="left" />
                 </div>
               </div>
             ))}
@@ -331,11 +331,10 @@ export function MatchPage() {
         </section>
       )}
       {olLineup && <LineupCard lineup={olLineup} teamName={olSide.name} accent="red" />}
-      {data.standings && <MiniStandings rows={data.standings} />}
       </div>
 
       {/* Shot map + momentum */}
-      <div className="min-w-0 space-y-4">
+      <div data-testid="colonne-centre" className="min-w-0 space-y-4">
       {data.momentum && data.momentum.length > 0 && (
         <MomentumChart
           points={data.momentum}
@@ -355,10 +354,11 @@ export function MatchPage() {
           playerNames={playerNames}
         />
       )}
+      {data.standings && <MiniStandings rows={data.standings} />}
       </div>
 
       {/* Stats + compo adverse */}
-      <div className="space-y-4 min-w-0">
+      <div data-testid="colonne-droite" className="space-y-4 min-w-0">
       <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-3 border-b border-border">
           <div className="eyebrow">Statistiques</div>
