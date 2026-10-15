@@ -431,14 +431,16 @@
     {
       "id": "L158",
       "title": "Page du match : le classement en direct est réservé aux matchs de Ligue 1",
-      "status": "doing",
-      "started": "2026-10-15"
+      "status": "done",
+      "started": "2026-10-15",
+      "finished": "2026-10-15"
     },
     {
       "id": "L159",
       "title": "Page du match : bas de page rééquilibré et joueurs en vue lisibles",
-      "status": "doing",
-      "started": "2026-10-15"
+      "status": "done",
+      "started": "2026-10-15",
+      "finished": "2026-10-15"
     }
   ]
 }

@@ -1608,23 +1608,29 @@ lots:
   - id: L158
     title: "Page du match : le bloc « Classement en direct » affiche la Ligue 1 sous un match de coupe d'Europe (Lyon – Crystal Palace, capture 15-10) ; attendu : le classement de la compétition du match quand football-data.org le publie (phase de ligue), sinon le bloc est masqué ou dit clairement qu'il s'agit de la Ligue 1 ; jamais un classement d'une autre compétition sans le dire"
     public: "Page du match : le classement en direct est réservé aux matchs de Ligue 1"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-15
     started: 2026-10-15
     review: { date: 2026-10-15, verdict: "conforme après 1 correction : capture de la Nouveauté à refaire sur le vrai Lyon – Crystal Palace (3 mineurs) — orchestré (vague 2026-10-15-2130, 0 passe(s) de correction + passe des mineurs)", commit: 183bfc98b29b9fb30dc8f0e21180ca8b5738c708 }
+    ux: { date: 2026-10-15, verdict: "conforme — capture 1440 regardée par le lead (vague 2026-10-15-2130) : sous Lyon – Crystal Palace (Europa League) le bloc Classement en direct n'apparaît plus, sous Lens – Lyon (Ligue 1) il reste ; capture de la Nouveauté refaite par L159 sur le vrai match" }
+    finished: 2026-10-15
   - id: L159
     title: "Page du match à 1440 px, bas de page déséquilibré (capture 15-10) : la colonne droite s'arrête à la composition visiteuse pendant que la gauche continue sur 600 px (composition Lyon puis classement), la colonne centrale est vide sous la carte des tirs ; « Joueurs en vue » tronque les noms (Keito Naka…, Jørgen Stra…) et casse les libellés (« Buts attendus : » sur deux lignes) ; attendu : les trois colonnes se terminent à moins de 150 px l'une de l'autre, noms complets ou abrégés prénom-initiale, libellés sur une ligne"
     public: "Page du match : bas de page rééquilibré et joueurs en vue lisibles"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-15
     started: 2026-10-15
     review: { date: 2026-10-15, verdict: "conforme : 3 mineurs (titre de test trompeur, débordement de 8 px de la ligne de stat à 320 px, double liste « Tests : » dans le README) — orchestré (vague 2026-10-15-2130, 2 passe(s) de correction)", commit: 473a89d9c2f8fbf2172e029902c7c94eb23c1156 }
+    ux: { date: 2026-10-15, verdict: "conforme — capture 1440 regardée par le lead : trois colonnes alignées (121 px d'écart), classement sous la carte des tirs, joueurs en vue sans troncature ; mineurs en note" }
+    notes:
+      - { date: 2026-10-15, text: "mineurs de la revue courte 15-10 laissés en note : titre de test trompeur, débordement de 8 px de la ligne de stat à 320 px, double liste « Tests : » dans le README" }
+    finished: 2026-10-15
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
