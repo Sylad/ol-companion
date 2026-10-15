@@ -424,8 +424,9 @@
     {
       "id": "L148",
       "title": "Classement : erreur de rafraîchissement et données périmées signalées",
-      "status": "doing",
-      "started": "2026-10-15"
+      "status": "done",
+      "started": "2026-10-15",
+      "finished": "2026-10-15"
     }
   ]
 }
