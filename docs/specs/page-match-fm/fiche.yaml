@@ -5,7 +5,7 @@ ecran:
   lot: L160
   largeurs: [1440, 390]
   maquette: docs/specs/page-match-fm/maquette.html
-etats: [vide, chargement, erreur, charge, exterieur, probable]
+etats: [vide, chargement, erreur, charge, exterieur, probable, probable-mixte]
 
 champs:
   - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
@@ -25,6 +25,7 @@ champs:
   - { id: stats-equipe-visiteur, libelle: Statistiques de l'équipe visiteuse (valeurs seules), type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats.away", obligatoire: false }
   - { id: faits-match, libelle: Faits du match, type: liste, source: "GET /api/live-match/{gameId}/stats → events", obligatoire: false }
   - { id: elan, libelle: Momentum (barres par minute, légende des clubs, légende de direction), type: carte, source: "GET /api/live-match/{gameId}/stats → momentum", obligatoire: false }
+  - { id: bande-reservee, libelle: Bande de 24 px réservée (vide) dans une composition confirmée voisine d'une probable, type: texte, source: statique, obligatoire: false }
   - { id: etiquette-probable, libelle: Étiquette « Composition probable », type: texte, source: "GET /api/live-match/{gameId}/stats → lineups.probable", obligatoire: false }
   - { id: carte-tirs, libelle: Carte des tirs, type: carte, source: "GET /api/live-match/{gameId}/stats → shots", obligatoire: false }
   - { id: bloc-statistiques, libelle: Statistiques comparées (barres), type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats", obligatoire: true }
@@ -34,7 +35,7 @@ champs:
 regles:
   - id: R1
     etat: chargement
-    enonce: Pendant le chargement, la page affiche le message d'attente existant, sans grille.
+    enonce: Pendant le chargement, la page affiche le message d'attente existant, sans grille et sans squelette (aucun squelette n'est ajouté par le lot).
     message: "Chargement du match…"
     champs: [message-chargement]
     statut: sourcee
@@ -50,12 +51,12 @@ regles:
     tests: ["R2 — erreur : message, aucune colonne", "R2 — le message d'erreur porte la classe text-loss-fg (contraste ≥ 4,5:1)"]
   - id: R3
     etat: vide
-    enonce: "Sans composition publiée, ni fait, tir ou momentum (match à venir sans composition même probable), l'en-tête reste, les blocs absents ne s'affichent pas (aucun cadre vide), les colonnes latérales sont vides et le centre garde sa largeur ; le bloc Statistiques annonce l'absence de chiffres."
+    enonce: "Sans composition publiée, ni fait, tir ou momentum (match à venir sans composition même probable), l'en-tête reste, les blocs absents ne s'affichent pas (aucun cadre vide), les colonnes latérales sont vides et le centre garde sa largeur ; le bloc Statistiques annonce l'absence de chiffres. L'en-tête d'un match à venir reste celui d'aujourd'hui : « À venir », la compétition, « vs » à la place du score et l'horloge « À VENIR » ; il n'affiche ni date ni heure de coup d'envoi."
     message: "Pas encore de statistiques."
     champs: [entete-score, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
     masque: [bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, faits-match, elan, carte-tirs, joueurs-en-vue, classement-direct]
     statut: sourcee
-    source: "match.tsx (blocs conditionnés à leurs données, message « Pas encore de statistiques. » de statRows) ; docs/specs/composition-match R3 : « sans composition publiée, son bloc n'est pas affiché »"
+    source: "match.tsx (blocs conditionnés à leurs données, message « Pas encore de statistiques. » de statRows ; en-tête : isUpcoming, deriveClock → « À VENIR », MatchScore → « vs ») ; docs/specs/composition-match R3 : « sans composition publiée, son bloc n'est pas affiché »"
     tests: ["R3 — vide : en-tête et message, aucun bloc absent, centre à la même largeur qu'avec données"]
   - id: R4
     etat: charge
@@ -67,15 +68,16 @@ regles:
     tests: ["R4 — 1440 : trois colonnes, domicile à gauche, visiteur à droite, centre au milieu", "R4 — 1440 : les deux blocs de statistiques d'équipe commencent à la même ordonnée (±1 px) et les deux compositions ont la même hauteur (±1 px), même si un banc tient sur deux lignes et l'autre sur une", "R4 — 1440 : un bloc qui grandit ne change pas de colonne", "R4 — BalancedColumns n'est plus importé par match.tsx"]
   - id: R5
     etat: charge
-    enonce: "Chaque côté porte sa composition puis ses statistiques d'équipe : colonne de gauche = équipe à domicile (data.home), colonne de droite = équipe visiteuse (data.away), que ce soit l'OL ou non. Une seule règle de couleur pour tout ce qui porte une équipe — composition (pastille, bordure, numéros), barres comparées, points de la carte des tirs, barres du Momentum, légendes : la couleur suit le CLUB, pas le côté (OL toujours rouge, adversaire toujours bleu), que l'OL joue à domicile ou à l'extérieur. Le Momentum se dessine comme le composant actuel (momentum-chart.tsx) : barres vers le haut pour l'équipe à domicile, vers le bas pour la visiteuse, chacune à la couleur de son club ; légende aux noms des clubs (domicile puis visiteur), légende de direction « Vers le haut : <domicile>, vers le bas : <visiteur>. » et équivalent textuel (role=\"img\", aria-label « Momentum »). Variante « OL à l'extérieur » montrée dans #etat-exterieur."
+    enonce: "Chaque côté porte sa composition puis ses statistiques d'équipe : colonne de gauche = équipe à domicile (data.home), colonne de droite = équipe visiteuse (data.away), que ce soit l'OL ou non. Une seule règle de couleur pour tout ce qui porte une équipe : la couleur suit le CLUB, pas le côté (OL toujours rouge, adversaire toujours bleu), que l'OL joue à domicile ou à l'extérieur, avec la même teinte pour un même club dans tous les blocs. (a) Éléments graphiques (barres comparées, barres et pastilles de but du Momentum, points et marqueurs de la carte des tirs, pastilles de légende des clubs) : OL = --ol-red (hsl 0 73% 50%, 3,85:1 sur --surface), adversaire = --ol-blue-bright (hsl 226 56% 51%, 3,20:1 sur --surface, 3,10:1 sur le fond du terrain de la carte des tirs), opacité 1 partout (WCAG 1.4.11 : 3:1 ; à l'opacité 0,85 du composant actuel le bleu tombe à 2,63:1, et --ol-blue, 1,83:1 sur --surface, est interdit pour un élément graphique). Calcul : luminance relative WCAG 2.x L = 0,2126 R + 0,7152 G + 0,0722 B (R, G, B linéarisés), rapport (L1 + 0,05) / (L2 + 0,05), --surface = hsl 228 21% 8%. (b) Texte qui porte une équipe (libellés « ← RCL attaque » / « OL attaque → » de la carte des tirs, numéros de pastille de composition) : OL = --ol-red-bright (4,95:1), adversaire = hsl(226 70% 70%) (6,59:1), WCAG 1.4.3 (4,5:1) ; le libellé actuel, text-ol-blue en 9 px à 1,83:1, est corrigé. (c) Composition (bordure de pastille, pastille de formation) : tokens de docs/specs/composition-match inchangés, décoratifs (le nom et le numéro portent le sens). Le Momentum se dessine comme le composant actuel (momentum-chart.tsx) : barres vers le haut pour l'équipe à domicile, vers le bas pour la visiteuse, pastille de but (rond cerclé de blanc) sur la barre de la minute du but, chacune à la couleur de son club ; légende aux noms des clubs (domicile puis visiteur), légende de direction « Vers le haut : <domicile>, vers le bas : <visiteur>. » et équivalent textuel (role=\"img\", aria-label « Momentum »). Carte des tirs : légende des clubs « symbole + nom » (OL Lyon, RCL Lens), un point par tir (forme par issue : rond plein = cadré, rond plein cerclé de blanc avec halo = but, croix = bloqué, rond vide = manqué ; taille = xG), légende des issues en gris neutre (elle ne porte aucun club), fond du terrain neutre (--surface-2 à 50 %) et non le rgba(20,32,28,0.5) actuel, légèrement vert (CLAUDE.md : pas de vert décoratif). L'implémentation applique les mêmes couleurs aux vrais MomentumChart et ShotMap quand ils sont placés dans la nouvelle disposition : MomentumChart passe de --ol-blue à --ol-blue-bright, de l'opacité 0,85 à 1 et de la couleur par côté à la couleur par club (pastilles de but comprises) ; ShotMap passe de la couleur par côté à la couleur par club, de --ol-blue à --ol-blue-bright, de #62a8e3 à la teinte du club pour les contours, et colore ses libellés d'attaque comme en (b) ; StatRow (barres comparées) passe de --ol-blue à --ol-blue-bright, avec un séparateur de 2 px de la couleur de --surface entre les deux segments. Variante « OL à l'extérieur » montrée dans #etat-exterieur."
     message: ~
-    champs: [bloc-composition, titre-composition, formation-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur]
+    champs: [bloc-composition, titre-composition, formation-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur, elan, carte-tirs, bloc-statistiques]
     statut: sourcee
-    source: "demande du lot L160 : « chaque équipe a son côté (domicile à gauche, visiteur à droite) avec sa composition et ses statistiques d'équipe » ; couleur par club : lineup-card.tsx (accent red|blue suit l'OL), CLAUDE.md palette (OL rouge, marqueur OL de la carte rouge). Étendre cette règle aux barres, tirs et élan (aujourd'hui par côté dans StatRow, ShotMap, MomentumChart) est un choix de la revue UX : changement de présentation seul, aucune donnée"
-    tests: ["R5 — OL à domicile : OL à gauche, accent rouge", "R5 — OL en déplacement : OL à droite en rouge, adversaire à gauche en bleu, et barres, points de tirs et barres du Momentum de l'OL en rouge", "R5 — Momentum : barres vers le haut (domicile) et vers le bas (visiteur) à la couleur du club, légende des noms puis « Vers le haut : X, vers le bas : Y », aria-label « Momentum »", "R5 — chaque côté contient sa composition puis ses statistiques", "R5 — l'ordre du DOM est celui de R10"]
+    source: "demande du lot L160 : « chaque équipe a son côté (domicile à gauche, visiteur à droite) avec sa composition et ses statistiques d'équipe » ; couleur par club : lineup-card.tsx (accent red|blue suit l'OL), CLAUDE.md palette stricte rouge + bleu OL (OL rouge, marqueur OL de la carte rouge, pas de vert décoratif). Étendre cette règle aux barres, tirs et élan (aujourd'hui par côté dans StatRow, ShotMap, MomentumChart) et changer le bleu des éléments graphiques sont des choix de la revue UX : changement de présentation seul, aucune donnée. Contrastes calculés le 2026-10-16 par luminance relative : rouge 3,85:1, bleu 3,20:1 sur --surface ; constats de la revue UX de la maquette sur momentum-chart.tsx:12 (opacité 0,85) et shot-map.tsx:45-49"
+    tests: ["R5 — OL à domicile : OL à gauche, accent rouge", "R5 — OL en déplacement : OL à droite en rouge, adversaire à gauche en bleu, et barres, points de tirs et barres du Momentum de l'OL en rouge", "R5 — Momentum : barres vers le haut (domicile) et vers le bas (visiteur) à la couleur du club, légende des noms puis « Vers le haut : X, vers le bas : Y », aria-label « Momentum »", "R5 — contraste : les barres du Momentum, les barres comparées et les marqueurs de la carte des tirs mesurent au moins 3:1 sur --surface (rouge OL et bleu adverse, opacité 1) ; les libellés d'attaque et numéros de pastille au moins 4,5:1", "R5 — un même club a la même teinte dans les barres comparées, le Momentum, la carte des tirs et leurs légendes (OL à domicile, puis à l'extérieur)", "R5 — chaque côté contient sa composition puis ses statistiques", "R5 — l'ordre du DOM est celui de R10"]
+
   - id: R6
     etat: charge
-    enonce: "Les deux terrains de composition ont la même hauteur quelle que soit la formation (4-2-3-1 à 5 rangées, 4-4-2 à 4 rangées) : les rangées se répartissent verticalement dans cette hauteur fixe. Les rangées, pastilles, repli « formation inconnue » et banc restent ceux de docs/specs/composition-match (R4 à R8)."
+    enonce: "Les deux terrains de composition ont la même hauteur quelle que soit la formation (4-2-3-1 à 5 rangées, 4-4-2 à 4 rangées) : les rangées se répartissent verticalement dans cette hauteur fixe. Les rangées, pastilles, repli « formation inconnue » et banc restent ceux de docs/specs/composition-match (R4 à R8), y compris la réduction de police des noms longs (fitNameFont, lineup-card.tsx) que la maquette ne reproduit pas : à 320-390 px, Frankowski, Lacazette et Tessmann y débordent de leur pastille, ce qui n'est pas à reprendre."
     message: ~
     champs: [terrain-composition, rangee-composition, bloc-composition]
     statut: sourcee
@@ -107,15 +109,15 @@ regles:
     tests: ["R9 — les 4 mesures du centre ne sont pas répétées dans les blocs latéraux", "R9 — une mesure à 0 des deux côtés n'apparaît nulle part"]
   - id: R10
     etat: charge
-    enonce: "Sous xl, tout s'empile en une colonne, dans l'ordre : en-tête du score, Faits du match, Momentum, Carte des tirs, Statistiques comparées, composition puis statistiques de l'équipe à domicile, composition puis statistiques de l'équipe visiteuse, Joueurs en vue, Classement en direct. Le DOM est écrit dans cet ordre (pas de display:contents ni order qui le réordonnent : un lecteur d'écran lit comme l'œil, WCAG 1.3.2) et c'est la grille à 1440 qui place les blocs (grid-column / grid-row). Les colonnes latérales font 320 px et Joueurs en vue et Classement sont au bas du centre à 1440."
+    enonce: "Sous xl, tout s'empile en une colonne, dans l'ordre : en-tête du score, Faits du match, Momentum, Carte des tirs, Statistiques comparées, composition puis statistiques de l'équipe à domicile, composition puis statistiques de l'équipe visiteuse, Joueurs en vue, Classement en direct. Le DOM est écrit dans cet ordre, qui est aussi l'ordre affiché sous xl : ni order, ni flex-direction inversé, ni grid-row / grid-column ne le réordonnent sous xl (un lecteur d'écran lit comme l'œil, WCAG 1.3.2). display:contents est autorisé uniquement sur des div neutres (les enveloppes du centre haut, du centre bas et des cellules latérales) pour les aplatir sous xl sans changer l'ordre, jamais sur un élément qui porte un rôle ou une sémantique (section, ul, table, button) ; à xl la grille place les blocs avec grid-column / grid-row sans modifier le DOM, qui reste la séquence de lecture. Les colonnes latérales font 320 px et Joueurs en vue et Classement sont au bas du centre à 1440."
     message: ~
     champs: [grille-match, colonne-centre, colonne-centre-bas]
     statut: hypothese
     si_faux: "Si l'ordre empilé doit changer (compositions avant les faits, par exemple) ou les colonnes latérales avoir une autre largeur, seuls l'ordre CSS et la largeur changent ; la disposition à 1440 de R4 reste valable."
-    tests: ["R10 — 390 : ordre des blocs de haut en bas", "R10 — ordre du DOM = ordre affiché à 390 (compositions de Lyon avant celles de Lens, Joueurs en vue et Classement en dernier)", "R10 — 390 : pas de défilement horizontal (scrollWidth = clientWidth)"]
+    tests: ["R10 — 390 : ordre des blocs de haut en bas", "R10 — ordre du DOM = ordre affiché à 390 (compositions de Lyon avant celles de Lens, Joueurs en vue et Classement en dernier)", "R10 — display:contents n'est posé que sur des div sans rôle ; ni order ni grid-row / grid-column sous xl", "R10 — 390 : pas de défilement horizontal (scrollWidth = clientWidth)"]
   - id: R11
     etat: charge
-    enonce: "Les contenus, libellés (titre « Momentum » compris : aucun renommage en « Élan ») et données des blocs ne changent pas : aucun nouvel appel API, aucun champ ajouté ; la page lit toujours GET /api/live-match/{gameId}/stats. Les attendus de docs/qa/expectations.md (/match/$gameId : en-tête avec deux clubs, Faits du match, Statistiques, deux blocs Composition de 11, Classement en direct avec 5 lignes) restent vrais."
+    enonce: "Les contenus, libellés (titre « Momentum » compris : aucun renommage en « Élan ») et données des blocs ne changent pas : aucun nouvel appel API, aucun champ ajouté ; la page lit toujours GET /api/live-match/{gameId}/stats. Les attendus de docs/qa/expectations.md (/match/$gameId : en-tête avec deux clubs, Faits du match, Statistiques, deux blocs Composition de 11, Classement en direct avec 5 lignes) restent vrais. La maquette abrège le bloc Classement en direct (liste simple) : il garde ses colonnes #, J, Diff, Pts et son lien « Ligue 1 → » (MiniStandings), la maquette n'est pas la référence de ce bloc. Le score de l'en-tête garde son séparateur « · » (MatchScore)."
     message: ~
     champs: [entete-score, faits-match, bloc-statistiques, bloc-composition, classement-direct]
     statut: sourcee
@@ -132,21 +134,30 @@ regles:
     tests: ["R12 — 10 titres h2 en charge, dont « Momentum », un seul h1", "R12 — l'apparence des titres est inchangée (mêmes classes)"]
   - id: R13
     etat: exterieur
-    enonce: "Quand l'OL joue à l'extérieur, l'équipe à domicile (adversaire) est à gauche et l'OL à droite ; l'en-tête, les faits (côté de chaque fait) et la carte des tirs suivent le côté domicile / visiteur, la couleur suit le club (R5) : adversaire bleu à gauche, OL rouge à droite, y compris barres, points de tirs et barres du Momentum ; les alignements de R4 et R6 sont inchangés."
+    enonce: "Quand l'OL joue à l'extérieur, l'équipe à domicile (adversaire) est à gauche et l'OL à droite ; l'en-tête, les faits (côté de chaque fait) et la carte des tirs suivent le côté domicile / visiteur, la couleur suit le club (R5) : adversaire bleu à gauche, OL rouge à droite, y compris barres, points de tirs, libellés d'attaque (« ← OL attaque » rouge à gauche, « RCL attaque → » bleu à droite), barres et pastilles de but du Momentum, et la cellule de chaque joueur de Joueurs en vue (domicile à gauche, visiteur à droite) ; les alignements de R4 et R6 sont inchangés."
     message: ~
-    champs: [entete-score, grille-match, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, faits-match, elan, carte-tirs, bloc-statistiques]
+    champs: [entete-score, grille-match, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, faits-match, elan, carte-tirs, bloc-statistiques, joueurs-en-vue]
     statut: sourcee
     source: "demande du lot L160 : « domicile à gauche, visiteur à droite » ; couleur par club : R5 ; revue UX de la maquette (variante OL à l'extérieur)"
-    tests: ["R13 — OL à l'extérieur : adversaire à gauche, OL à droite en rouge", "R13 — OL à l'extérieur : barres et points de tirs de l'OL en rouge"]
+    tests: ["R13 — OL à l'extérieur : adversaire à gauche, OL à droite en rouge", "R13 — OL à l'extérieur : barres et points de tirs de l'OL en rouge", "R13 — OL à l'extérieur : Joueurs en vue, domicile à gauche et visiteur à droite", "R13 — OL à l'extérieur : libellés d'attaque, OL en rouge à gauche et adversaire en bleu à droite"]
 
   - id: R14
     etat: probable
-    enonce: "Un match à venir avec compositions probables (365scores non « Confirmé ») affiche les deux compositions sur leurs côtés, chacune avec l'étiquette « Composition probable » ; le centre n'a que le bloc Statistiques et son message, sans faits, tirs ni momentum, et les statistiques d'équipe latérales sont absentes. L'étiquette est placée entre l'en-tête du bloc et le terrain, dans une bande de 24 px de haut réservée dans les DEUX compositions dès que l'une est probable (une composition confirmée voisine garde une bande vide) : les deux terrains restent à la même ordonnée (R4, R6). Sous xl, l'étiquette reste sous l'en-tête de son bloc."
+    enonce: "Un match à venir avec compositions probables (365scores non « Confirmé ») affiche les deux compositions sur leurs côtés, chacune avec l'étiquette « Composition probable » ; le centre n'a que le bloc Statistiques et son message, sans faits, tirs ni momentum, et les statistiques d'équipe latérales sont absentes. L'étiquette est placée entre l'en-tête du bloc et le terrain, dans une bande de 24 px de haut réservée dans les DEUX compositions dès que l'une est probable (une composition confirmée voisine garde une bande vide, montrée en pointillés dans #etat-probable-mixte, où Lyon est probable et Lens confirmée) : les deux terrains restent à la même ordonnée (R4, R6). #etat-probable montre le cas où les deux compositions sont probables. Sous xl, l'étiquette reste sous l'en-tête de son bloc."
     message: "Composition probable"
-    champs: [entete-score, grille-match, colonne-centre, bloc-composition, etiquette-probable, terrain-composition, bloc-statistiques, message-stats-vide]
+    champs: [entete-score, grille-match, colonne-centre, bloc-composition, etiquette-probable, bande-reservee, terrain-composition, bloc-statistiques, message-stats-vide]
     statut: sourcee
     source: "docs/qa/expectations.md:53-54 (étiquette « Composition probable » sur un match à venir, jamais sans elle) ; lineup-card.tsx:41-44 (data-testid etiquette-probable) ; hauteur de la bande, 24 px, et réservation dans les deux blocs : hypothèse de la maquette, si fausse seule la valeur ou la règle de réservation change"
     tests: ["R14 — à venir probable : deux compositions, chacune avec l'étiquette « Composition probable »", "R14 — terrains à la même ordonnée (±1 px) même si une seule composition est probable", "R14 — centre : message « Pas encore de statistiques. », pas de faits ni de tirs"]
 
+  - id: R15
+    etat: charge
+    enonce: "Les nombres décimaux des statistiques (xG) gardent la présentation actuelle, un point et deux décimales (« 1.87 », n.toFixed(2) de match.tsx) ; le passage à la virgule française (« 1,87 ») n'est pas fait par ce lot."
+    message: ~
+    champs: [bloc-statistiques]
+    statut: hypothese
+    si_faux: "Si la virgule est voulue, c'est un changement de présentation à ajouter au lot (fmt de statRows dans match.tsx et la maquette) ; les autres règles sont inchangées."
+    tests: ["R15 — le xG s'affiche avec un point et deux décimales"]
+
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14] }
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15] }
