@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "f0c7ce64276eb746ec72519e168cb8bff9b7f620"
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "4ae83c8a77fc814d8c9d6989df351ed1c77a093b"
   },
   "resceaux": [
     {
@@ -23,6 +23,14 @@
       "avant": "f7e33fe46302f1cad62b8179b93ad7747a212ea7",
       "apres": "f0c7ce64276eb746ec72519e168cb8bff9b7f620",
       "ficheAmendee": "ffddcbe"
+    },
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "le test R12 suivait l'ancienne règle (curseur --bg) alors que la fiche R12 amendée par ebd90fa demande un curseur --ol-blue bordé de --ol-red sur piste bordée de --ol-blue-bright ; R1, R3, R5, R6, R10 et R11 vérifient désormais la feuille index.css par analyse de déclarations et cascade (1440/390/389/320), contrastes calculés, un vrai appel compté, absence d'overscroll-behavior contain/none et de gestionnaire wheel ; les titres ne revendiquent plus de mesure navigateur (revue de la vague 2026-10-16-1245)",
+      "date": "2026-10-16",
+      "avant": "f0c7ce64276eb746ec72519e168cb8bff9b7f620",
+      "apres": "4ae83c8a77fc814d8c9d6989df351ed1c77a093b",
+      "ficheAmendee": "ebd90fa"
     }
   ]
 }
