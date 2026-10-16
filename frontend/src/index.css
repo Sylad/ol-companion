@@ -685,3 +685,74 @@
     scroll-padding-bottom: 72px;
   }
 }
+
+/* L161 — bloc Faits du match borné à CINQ lignes (décision de Sylvain, 16-10). --ligne-fait : hauteur fixe d'un
+   fait, 44 px (deux lignes de texte à 14 px / 1,2, remplissage 4 px, filet 1 px) ; la borne s'écrit en lignes.
+   Départ en bas (column-reverse : le DOM reste chronologique, les plus récents sont visibles sans script).
+   overscroll-behavior reste à auto : arrivée en butée, le geste passe à la page. */
+:root {
+  --ligne-fait: 44px;
+}
+@media (max-width: 389px) {
+  :root {
+    --ligne-fait: 60px;
+  }
+  /* Reflow à 320 px (WCAG 1.4.10) : le nom d'un joueur n'est jamais coupé, `minute · équipe` au-dessus du libellé. */
+  .faits-liste .ev { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; font-size: 13px; }
+  .faits-liste .ev > :empty { display: none; }
+  .faits-liste .evm { order: -1; display: flex; align-items: baseline; gap: 6px; text-align: left; }
+  .faits-liste .evm small { display: inline; margin: 0; }
+  .faits-liste .evm small::before { content: '\00b7'; margin-right: 6px; }
+  .faits-liste .evl, .faits-liste .evr { text-align: left; width: 100%; }
+  .faits-liste .evl .fw, .faits-liste .evr .fw { display: block; -webkit-line-clamp: unset; overflow: visible; line-height: 1.25; }
+}
+
+/* Bordure néon : mêmes teintes et ombres que les bords néon de la barre latérale, rouge en haut, bleu en bas. */
+.faits-bloc {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(hsl(var(--surface)), hsl(var(--surface))) padding-box,
+    linear-gradient(180deg, hsl(0 95% 65% / 0.95) 0%, hsl(0 90% 60% / 0.7) 35%, hsl(224 90% 60% / 0.7) 65%, hsl(224 95% 65% / 0.95) 100%) border-box;
+  box-shadow:
+    0 -2px 8px 0.5px hsl(0 95% 60% / 0.7), 0 2px 8px 0.5px hsl(224 95% 60% / 0.7),
+    0 -4px 18px 1px hsl(0 95% 55% / 0.45), 0 4px 18px 1px hsl(224 95% 55% / 0.45),
+    0 -8px 36px 2px hsl(0 90% 50% / 0.2), 0 8px 36px 2px hsl(224 90% 50% / 0.2);
+}
+@media (forced-colors: active) {
+  .faits-bloc { border-color: CanvasText; }
+}
+
+.faits-repere {
+  display: flex; align-items: center; gap: 6px; width: 100%; height: 32px; margin: 0; padding: 0 20px;
+  border: 0; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--surface-2) / 0.5);
+  color: hsl(var(--fg-muted)); font-size: 12px; font-weight: 600; text-align: left; cursor: pointer;
+}
+.faits-repere:hover { color: hsl(var(--fg)); }
+.faits-repere[aria-disabled='true'] { cursor: default; }
+.faits-repere[aria-disabled='true']:hover { color: hsl(var(--fg-muted)); }
+.faits-repere:focus-visible,
+.faits-liste:focus-visible { outline: 2px solid hsl(var(--ol-red-bright)); outline-offset: -2px; }
+
+/* Barre de défilement aux couleurs du site : curseur --ol-red-bright sur piste bleue assombrie (3,44:1, WCAG 1.4.11). */
+.faits-liste {
+  display: flex; flex-direction: column-reverse; max-height: calc(5 * var(--ligne-fait)); overflow-y: auto;
+  scrollbar-color: hsl(0 84% 60%) hsl(224 64% 25%);
+}
+.faits-liste::-webkit-scrollbar { width: 12px; }
+.faits-liste::-webkit-scrollbar-track { background: hsl(224 64% 25%); }
+.faits-liste::-webkit-scrollbar-thumb { background: hsl(0 84% 60%); border: 2px solid hsl(224 64% 25%); border-radius: 6px; }
+.faits-liste::-webkit-scrollbar-thumb:hover { background: hsl(0 95% 65%); }
+.faits-liste-in { padding: 0 20px; }
+.faits-liste .ev {
+  display: grid; grid-template-columns: 1fr 60px 1fr; gap: 12px; align-items: center;
+  height: var(--ligne-fait); padding: 4px 0; font-size: 14px; border-bottom: 1px solid hsl(var(--border));
+}
+.faits-liste .evl { text-align: right; }
+.faits-liste .evm { text-align: center; }
+.faits-liste .evm small { display: block; font-size: 10px; letter-spacing: 0.08em; color: hsl(var(--fg-dim)); }
+.faits-liste .fw { font-weight: 500; }
+.faits-liste .evl .fw, .faits-liste .evr .fw { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; }
+@media (max-width: 599px) {
+  .faits-liste .ev { grid-template-columns: 1fr 44px 1fr; gap: 8px; font-size: 13px; }
+  .faits-liste-in { padding: 0 12px; }
+}

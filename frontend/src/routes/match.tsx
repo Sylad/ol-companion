@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
@@ -96,19 +96,107 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
     ? ` — ${event.type === 'substitution' ? 'entrant' : 'passe'} : ${event.extraPlayerName}`
     : '';
   const tooltip = event.playerName ? `${event.playerName}${extra}` : undefined;
+  const dim = 'text-fg-dim';
   return (
-    <div className="[display:grid] [grid-template-columns:1fr_60px_1fr] items-center gap-3 py-0.5">
-      <div className={cn('text-right text-sm', !isHome && 'text-fg-dim')}>
-        {isHome && <span className="font-medium" title={tooltip}>{label}</span>}
+    <div className="ev">
+      <div className={cn('evl', !isHome && dim)}>
+        {isHome && <span className="fw" title={tooltip}>{label}</span>}
       </div>
-      <div className="text-center">
+      <div className="evm">
         <span className="num tabular-nums text-xs font-bold text-fg-bright">{event.gameTimeDisplay}</span>
-        <div className="text-[10px] uppercase tracking-wider text-fg-dim">{isHome ? homeSymbol : awaySymbol}</div>
+        <small>{isHome ? homeSymbol : awaySymbol}</small>
       </div>
-      <div className={cn('text-left text-sm', isHome && 'text-fg-dim')}>
-        {!isHome && <span className="font-medium" title={tooltip}>{label}</span>}
+      <div className={cn('evr', isHome && dim)}>
+        {!isHome && <span className="fw" title={tooltip}>{label}</span>}
       </div>
     </div>
+  );
+}
+
+/** Nombre de faits entièrement au-dessus du bord haut de la liste (R3). */
+function hiddenAbove(list: HTMLElement): number {
+  const top = list.getBoundingClientRect().top;
+  let n = 0;
+  list.querySelectorAll('.ev').forEach((ev) => {
+    if (ev.getBoundingClientRect().bottom <= top + 0.5) n += 1;
+  });
+  return n;
+}
+
+/**
+ * Faits du match (L161) : la liste est bornée à cinq lignes (CSS `.faits-liste`) et s'ouvre sur les plus
+ * récents (column-reverse, le DOM reste chronologique). Le repère au-dessus dit combien de faits sont hors
+ * de la vue en haut et remonte la liste d'une hauteur de liste au clic.
+ */
+function FaitsMatch({ events, homeId, homeSymbol, awaySymbol }: {
+  events: LiveMatchTimelineEvent[]; homeId: number; homeSymbol: string; awaySymbol: string;
+}) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState(false);
+  const [above, setAbove] = useState(0);
+
+  const measure = useCallback(() => {
+    const list = listRef.current;
+    if (!list) return;
+    setOverflow(list.scrollHeight > list.clientHeight + 1);
+    setAbove(hiddenAbove(list));
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+    const list = listRef.current;
+    if (!list || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, [measure, events.length]);
+
+  const remonter = () => {
+    const list = listRef.current;
+    if (!list || above === 0) return;
+    list.scrollBy({ top: -list.clientHeight, behavior: 'smooth' });
+  };
+
+  return (
+    <section data-testid="faits-match" className="faits-bloc rounded-md bg-surface">
+      <header className="px-5 py-3 border-b border-border flex items-center justify-between gap-3">
+        <h2 className="eyebrow min-w-0">Faits du match</h2>
+        <span data-testid="compte-faits" className="num text-xs text-fg-dim">
+          {events.length} {events.length > 1 ? 'faits' : 'fait'}
+        </span>
+      </header>
+      {overflow && (
+        <button
+          type="button"
+          data-testid="repere-faits-anciens"
+          aria-disabled={above === 0}
+          onClick={remonter}
+          className="faits-repere"
+        >
+          {above === 0 ? (
+            <span>Début du match</span>
+          ) : (
+            <>
+              <span aria-hidden="true">↑</span>
+              <span>{above} {above > 1 ? 'faits plus anciens' : 'fait plus ancien'}</span>
+            </>
+          )}
+        </button>
+      )}
+      <div
+        ref={listRef}
+        data-testid="liste-faits"
+        className="faits-liste"
+        onScroll={measure}
+        {...(overflow ? { tabIndex: 0, role: 'region', 'aria-label': 'Faits du match, du plus ancien au plus récent' } : {})}
+      >
+        <div className="faits-liste-in">
+          {events.map((e, i) => (
+            <TimelineRow key={`${e.gameTime}-${i}`} event={e} homeId={homeId} homeSymbol={homeSymbol} awaySymbol={awaySymbol} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -348,22 +436,12 @@ export function MatchPage() {
       >
         <div data-testid="colonne-centre" className={cn('flex flex-col gap-4 min-w-0', 'min-[1440px]:col-start-2 min-[1440px]:row-start-1')}>
           {data.events.length > 0 && (
-            <section data-testid="faits-match" className="rounded-md bg-surface border border-border overflow-hidden">
-              <header className="px-5 py-3 border-b border-border">
-                <h2 className="eyebrow min-w-0">Faits du match</h2>
-              </header>
-              <div className="px-5 py-2 divide-y divide-border">
-                {data.events.map((e, i) => (
-                  <TimelineRow
-                    key={`${e.gameTime}-${i}`}
-                    event={e}
-                    homeId={data.home.id}
-                    homeSymbol={clubSymbol(data.home.symbolicName, data.home.name, olIsHome)}
-                    awaySymbol={clubSymbol(data.away.symbolicName, data.away.name, !olIsHome)}
-                  />
-                ))}
-              </div>
-            </section>
+            <FaitsMatch
+              events={data.events}
+              homeId={data.home.id}
+              homeSymbol={clubSymbol(data.home.symbolicName, data.home.name, olIsHome)}
+              awaySymbol={clubSymbol(data.away.symbolicName, data.away.name, !olIsHome)}
+            />
           )}
           {!!data.momentum && data.momentum.length > 0 && (
             <MomentumChart
