@@ -719,15 +719,20 @@
 .faits-repere:focus-visible,
 .faits-liste:focus-visible { outline: 2px solid hsl(var(--ol-red-bright)); outline-offset: -2px; }
 
-/* Barre de défilement aux couleurs du site : curseur --ol-red-bright sur piste bleue assombrie (3,44:1, WCAG 1.4.11). */
+/* Barre de défilement fine (R12) : piste --surface, curseur --bg à bordure 1 px --ol-red (3,85:1 sur la piste, WCAG 1.4.11),
+   halo rouge néon au survol, aucun bouton fléché. scrollbar-color n'est posé que pour Firefox : Chrome 121+ et Safari 18.2+
+   ignoreraient ::-webkit-scrollbar (donc la bordure rouge) s'ils le voyaient. */
 .faits-liste {
   display: flex; flex-direction: column-reverse; max-height: calc(5 * var(--ligne-fait)); overflow-y: auto;
-  scrollbar-color: hsl(0 84% 60%) hsl(224 64% 25%);
 }
-.faits-liste::-webkit-scrollbar { width: 12px; }
-.faits-liste::-webkit-scrollbar-track { background: hsl(224 64% 25%); }
-.faits-liste::-webkit-scrollbar-thumb { background: hsl(0 84% 60%); border: 2px solid hsl(224 64% 25%); border-radius: 6px; }
-.faits-liste::-webkit-scrollbar-thumb:hover { background: hsl(0 95% 65%); }
+.faits-liste::-webkit-scrollbar { width: 10px; }
+.faits-liste::-webkit-scrollbar-button { display: none; }
+.faits-liste::-webkit-scrollbar-track { background: hsl(var(--surface)); }
+.faits-liste::-webkit-scrollbar-thumb { background: hsl(var(--bg)); border: 1px solid hsl(var(--ol-red)); border-radius: 5px; }
+.faits-liste::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 6px 1px hsl(0 95% 60% / 0.7), inset 0 0 4px hsl(0 95% 60% / 0.7); }
+@supports not selector(::-webkit-scrollbar) {
+  .faits-liste { scrollbar-width: thin; scrollbar-color: hsl(var(--bg)) hsl(var(--surface)); }
+}
 .faits-liste-in { padding: 0 20px; }
 .faits-liste .ev {
   display: grid; grid-template-columns: 1fr 60px 1fr; gap: 12px; align-items: center;
