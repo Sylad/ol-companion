@@ -74,7 +74,7 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
             })}
           </svg>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
+        <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] sm:[grid-template-columns:repeat(4,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
           <OutcomeLegend label="But" kind="goal" />
           <OutcomeLegend label="Cadré" kind="on-target" />
           <OutcomeLegend label="Bloqué" kind="blocked" />

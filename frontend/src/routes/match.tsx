@@ -68,7 +68,7 @@ function StatRow({
   const f = fmt ?? ((n: number) => `${Math.round(n)}`);
 
   return (
-    <div className="grid grid-cols-[60px_1fr_60px] items-center gap-3">
+    <div className="[display:grid] [grid-template-columns:60px_1fr_60px] items-center gap-3">
       <span className="text-right num tabular-nums font-bold text-fg-bright">{f(home)}</span>
       <div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted text-center mb-1">{label}</div>
@@ -96,7 +96,7 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
     : '';
   const tooltip = event.playerName ? `${event.playerName}${extra}` : undefined;
   return (
-    <div className="grid grid-cols-[1fr_60px_1fr] items-center gap-3 py-0.5">
+    <div className="[display:grid] [grid-template-columns:1fr_60px_1fr] items-center gap-3 py-0.5">
       <div className={cn('text-right text-sm', !isHome && 'text-fg-dim')}>
         {isHome && <span className="font-medium" title={tooltip}>{label}</span>}
       </div>
@@ -242,7 +242,7 @@ export function MatchPage() {
   const olIsHome = data.home.id === OL_ID;
   const isLive = data.status === 'live';
   const isUpcoming = data.status === 'upcoming';
-  const clock = deriveClock(data);
+  const clock = isUpcoming ? { phase: 'upcoming' as const, label: 'À VENIR', isActive: false } : deriveClock(data);
   const isPaused = clock.phase === 'half-time';
 
   // Buts pour marquer le momentum : un csc profite à l'adversaire.
@@ -454,7 +454,7 @@ export function MatchPage() {
                       <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
                         {tp.role}
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-3">
                         <PerformerCell player={tp.homePlayer} align="right" />
                         <PerformerCell player={tp.awayPlayer} align="left" />
                       </div>
