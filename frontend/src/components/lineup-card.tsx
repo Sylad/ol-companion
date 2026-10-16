@@ -8,20 +8,15 @@ interface Props {
   teamName: string;
   /** Rouge = OL, bleu = adversaire (même convention que les stats et la carte des tirs). */
   accent: 'red' | 'blue';
-  /** Une composition voisine est probable : réserve la bande de l'étiquette pour que les terrains restent alignés (L160 R14). */
-  reserveBand?: boolean;
 }
-
-/** Hauteur du terrain : la même quelle que soit la formation, les rangées s'y répartissent (L160 R6, R7). */
-const PITCH_HEIGHT = 'h-[360px]';
 
 /**
  * Composition compacte : une rangée par nombre de la formation annoncée
  * (attaque en haut, gardien en bas), rangées centrées, pastilles de même
- * largeur, banc sur une ligne. Le terrain a une hauteur fixe pour que les
- * deux compositions de la page /match s'alignent.
+ * largeur, banc sur une ligne. Pensée pour tenir sous « Joueurs en vue » /
+ * « Statistiques » sans faire scroller la page /match.
  */
-export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Props) {
+export function LineupCard({ lineup, teamName, accent }: Props) {
   const { rows, known } = buildRows(lineup);
   const widest = Math.max(1, ...rows.map((r) => r.length));
   const chipWidth = `calc((100% - ${(widest - 1) * 4}px) / ${widest})`;
@@ -31,9 +26,9 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
   const numClass = accent === 'red' ? 'text-ol-red-bright' : 'text-[hsl(226_70%_70%)]';
 
   return (
-    <section data-testid="bloc-composition" className="h-full rounded-md bg-surface border border-border overflow-hidden">
+    <section data-testid="bloc-composition" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between gap-2">
-        <h2 data-testid="titre-composition" className="eyebrow truncate min-w-0">Composition · {teamName}</h2>
+        <div data-testid="titre-composition" className="eyebrow truncate min-w-0">Composition · {teamName}</div>
         {known && lineup.formation && (
           <span
             data-testid="formation-composition"
@@ -43,26 +38,19 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
           </span>
         )}
       </header>
-      {lineup.probable ? (
-        <p data-testid="etiquette-probable" className="h-6 px-5 flex items-center text-[11px] text-fg-dim">
+      {lineup.probable && (
+        <p data-testid="etiquette-probable" className="px-5 pt-2 text-[11px] text-fg-dim">
           Composition probable
         </p>
-      ) : (
-        reserveBand && <div data-testid="bande-reservee" aria-hidden="true" className="h-6" />
       )}
       <div className="px-3 py-3 space-y-2">
-        <div
-          data-testid="terrain-composition"
-          className={cn(PITCH_HEIGHT, 'flex flex-col justify-around rounded-sm border border-border bg-surface-2/50 px-1 py-1.5')}
-        >
-          {rows.map((row, i) => (
-            <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
-              {row.map((p) => (
-                <PlayerChip key={p.id} player={p} width={chipWidth} borderColor={chipBorder} numClass={numClass} />
-              ))}
-            </div>
-          ))}
-        </div>
+        {rows.map((row, i) => (
+          <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
+            {row.map((p) => (
+              <PlayerChip key={p.id} player={p} width={chipWidth} borderColor={chipBorder} numClass={numClass} />
+            ))}
+          </div>
+        ))}
         {lineup.bench.length > 0 && (
           <p data-testid="banc-composition" className="pt-2 border-t border-border text-[11px] text-fg-muted leading-relaxed">
             <span className="uppercase tracking-wider text-[10px] text-fg-dim mr-1.5">Banc</span>
@@ -106,12 +94,14 @@ function PlayerChip({
   useLayoutEffect(() => {
     const el = nameRef.current;
     if (!el) return;
+    const chip = el.parentElement;
     const fit = () => fitNameFont(el);
     fit();
-    // La largeur de la pastille ne change qu'avec la fenêtre (colonnes de 280 px à 1440, pleine largeur dessous) :
-    // on réécoute `resize` plutôt qu'un observateur par pastille (22 par page).
-    window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    if (typeof ResizeObserver === 'undefined' || !chip) return;
+    // La pastille, pas le span : celui-ci est dimensionné par son contenu et ne bouge pas quand l'écran s'élargit.
+    const ro = new ResizeObserver(fit);
+    ro.observe(chip);
+    return () => ro.disconnect();
   }, [player.shortName, width]);
   return (
     <span
