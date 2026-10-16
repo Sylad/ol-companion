@@ -1703,6 +1703,13 @@ lots:
     created: 2026-10-16
     notes:
       - { date: 2026-10-16, text: "brouillon QA 16-10 : shows « Faits du match » avec le compte « N faits » = events.length de /api/live-match/<id>/stats ; sur un match terminé de plus de 5 faits, [data-testid=liste-faits] = 5 lignes de 44 px (clientHeight 220, scrollHeight > 220) à 1440 et 390, ouverte sur les 5 plus récents (scrollTop 0, DOM chronologique) ; bouton [data-testid=repere-faits-anciens] « ↑ N−5 faits plus anciens » (« 1 fait plus ancien »), « Début du match » aria-disabled=true une fois remontée, 32 px ; liste tabindex=0 role=region ; ≤ 5 faits : ni repère ni tabindex ; sans fait : pas de bloc (may be absent when le match n'a pas commencé) ; Momentum bottom < 900 à 1440 × 900 et top < 786 à 390 × 844, titre « Carte des tirs » < 900 (1440 only) ; never : ::-webkit-scrollbar-button display ≠ none, teinte verte, libellé tronqué sous 390, « Classement en direct » hors Ligue 1" }
+  - id: L166
+    title: "Page du match, barre de défilement des faits (L161, R12) : la piste doit être arrondie aux extrémités avec le même rayon que le curseur (5 px), pour que piste et curseur aient la même forme — remarque de Sylvain 16-10 ; ::-webkit-scrollbar-track border-radius, bordure bleue néon conservée, contrastes inchangés ; L163 reprend ce style pour tout le site"
+    status: todo
+    estimate: 0.1
+    visible: true
+    screen: component
+    created: 2026-10-16
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
