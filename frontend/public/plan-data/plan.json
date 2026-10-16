@@ -447,6 +447,11 @@
       "title": "Page du match : chaque équipe de son côté, le match au centre",
       "status": "doing",
       "started": "2026-10-16"
+    },
+    {
+      "id": "L161",
+      "title": "Page du match : le momentum et la carte des tirs visibles sans défiler",
+      "status": "todo"
     }
   ]
 }
