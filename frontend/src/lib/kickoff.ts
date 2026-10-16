@@ -27,6 +27,14 @@ const MONTH_LONG = [
 
 const pad = (n: number): string => n.toString().padStart(2, '0');
 
+const WEEKDAY_SHORT = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+
+/** « Sam. 10/10 » : la date courte de /equipe-de-france (L113), reprise par la page du match des Bleus (L167). */
+export function shortDate(iso: string): string {
+  const d = new Date(iso);
+  return `${WEEKDAY_SHORT[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
+}
+
 export function hasKickoffTime(match: WithKickoff): boolean {
   return match.timeConfirmed !== false;
 }

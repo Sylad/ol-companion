@@ -4,18 +4,10 @@ import { Loader2, Radio } from 'lucide-react';
 import { useFrance } from '@/hooks/use-france';
 import { TeamLogo } from '@/components/team-logo';
 import { clubLogoUrl } from '@/lib/ligue1-clubs-coords';
-import { KICKOFF_TBD, kickoffTime } from '@/lib/kickoff';
+import { KICKOFF_TBD, kickoffTime, shortDate } from '@/lib/kickoff';
 import { cn } from '@/lib/utils';
 import type { FranceNextMatch, FrancePlayer, FranceResult, FranceTeam } from '@/types/api';
 
-const WEEKDAY_SHORT = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
-const pad = (n: number): string => n.toString().padStart(2, '0');
-const dayMonth = (d: Date): string => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
-/** « Sam. 10/10 » */
-const shortDate = (iso: string): string => {
-  const d = new Date(iso);
-  return `${WEEKDAY_SHORT[d.getDay()]} ${dayMonth(d)}`;
-};
 
 /** Durée pendant laquelle un match reste « en direct » après son coup d'envoi (même borne que le back, L167 R1). */
 const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;

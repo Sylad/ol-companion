@@ -10,6 +10,7 @@ import { MiniStandings } from '@/components/mini-standings';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { clubSymbol } from '@/lib/club-symbol';
 import { deriveClock } from '@/lib/match-clock';
+import { kickoffTime, shortDate } from '@/lib/kickoff';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
@@ -258,12 +259,9 @@ const NOM_EQUIPE_OL = 'text-2xl';
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[359px]:px-[6px] max-[359px]:gap-x-1';
 const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl';
 
-const pad = (n: number): string => n.toString().padStart(2, '0');
-const WEEKDAY_SHORT = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
-/** « Jeu. 12/11 · 21:00 » : même date courte que /equipe-de-france (L113), heure à deux points. */
+/** « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`). */
 function kickoffLabel(iso: string): string {
-  const d = new Date(iso);
-  return `${WEEKDAY_SHORT[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth() + 1)} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${shortDate(iso)} · ${kickoffTime({ date: iso })}`;
 }
 
 interface MatchSearch {
