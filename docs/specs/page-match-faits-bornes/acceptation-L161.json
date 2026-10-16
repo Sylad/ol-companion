@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "f7e33fe46302f1cad62b8179b93ad7747a212ea7"
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "f0c7ce64276eb746ec72519e168cb8bff9b7f620"
   },
   "resceaux": [
     {
@@ -15,6 +15,14 @@
       "date": "2026-10-16",
       "avant": "d8d50a75a0978f589969af4bd6670d05597e2a04",
       "apres": "f7e33fe46302f1cad62b8179b93ad7747a212ea7"
+    },
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "R12 amendée le 16-10 sur décision de Sylvain (barre fine, curseur noir bordé de rouge, sans flèches, commit ffddcbe) : les assertions R12 du test suivaient l'ancienne règle (curseur rouge sur piste bleue) ; elles vérifient maintenant la nouvelle",
+      "date": "2026-10-16",
+      "avant": "f7e33fe46302f1cad62b8179b93ad7747a212ea7",
+      "apres": "f0c7ce64276eb746ec72519e168cb8bff9b7f620",
+      "ficheAmendee": "ffddcbe"
     }
   ]
 }

@@ -324,30 +324,63 @@ describe('page-match-faits-bornes (L161)', () => {
     expect(SRC).toMatch(/outline-offset\s*:\s*-2px/);
   });
 
-  it('R12 — la liste porte scrollbar-color curseur rouge, piste bleue', () => {
-    // R12 — « scrollbar-color: hsl(0 84% 60%) hsl(224 64% 25%) » (curseur --ol-red-bright, piste bleue)
-    expect(SRC).toMatch(/scrollbar-color\s*:\s*[^;]*?(0\s+84%\s+60%|ol-red-bright|ef4343)[^;]*?(224\s+64%\s+25%|172d69|piste)/i);
-    // R12 — « ::-webkit-scrollbar (12 px de large), ::-webkit-scrollbar-track et ::-webkit-scrollbar-thumb »
-    expect(SRC).toMatch(/::-webkit-scrollbar-thumb/);
-    expect(SRC).toMatch(/::-webkit-scrollbar-track/);
+  // R12 — la barre est décrite par la feuille de style : on lit les règles `.faits-liste` de src/ et on résout les jetons --x
+  // (« --surface », « --bg », « --ol-red ») depuis :root, comme le fait le navigateur.
+  const jeton = (nom: string) => SRC.match(new RegExp(`--${nom}\\s*:\\s*(\\d+)\\s+(\\d+)%\\s+(\\d+)%\\s*;`))?.slice(1).map(Number) as [number, number, number];
+  const SRC_HORS_SUPPORTS = SRC.replace(/@supports\s+not\s+selector\([^)]*\)\s*\{[^}]*\{[^}]*\}\s*\}/g, '');
+  const regle = (sel: string) => {
+    const esc = sel.replace(/[.:()-]/g, '\\$&');
+    return [...SRC_HORS_SUPPORTS.matchAll(new RegExp(`\\.faits-liste${esc}\\s*\\{([^}]*)\\}`, 'g'))].map((m) => m[1]).join(';');
+  };
+  const couleur = (decl: string, prop: string): [number, number, number] | undefined => {
+    const v = decl.match(new RegExp(`(?:^|[;\\s])${prop}\\s*:\\s*([^;]*)`))?.[1] ?? '';
+    const t = v.match(/hsl\(\s*var\(--([a-z-]+)\)\s*\)/)?.[1];
+    if (t) return jeton(t);
+    const h = v.match(/hsl\(\s*(\d+)\s+(\d+)%\s+(\d+)%\s*\)/);
+    return h ? [+h[1], +h[2], +h[3]] : undefined;
+  };
+  const lumHsl = ([h, s, l]: [number, number, number]) => {
+    s /= 100; l /= 100;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n: number) => { const k = (n + h / 30) % 12; return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); };
+    const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * lin(f(0)) + 0.7152 * lin(f(8)) + 0.0722 * lin(f(4));
+  };
+  const rapport = (x: [number, number, number], y: [number, number, number]) => {
+    const [p, q] = [lumHsl(x), lumHsl(y)];
+    return (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05);
+  };
+
+  it('R12 — la barre est fine (8 à 10 px), piste --surface, curseur --bg à bordure 1 px --ol-red, sans bouton fléché, halo rouge au survol, scrollbar-color + scrollbar-width thin pour Firefox', () => {
+    // R12 — « Largeur 10 px (::-webkit-scrollbar, plage voulue 8 à 10 px) »
+    const largeur = regle('::-webkit-scrollbar').match(/width\s*:\s*(\d+)px/)?.[1];
+    expect(Number(largeur)).toBeGreaterThanOrEqual(8);
+    expect(Number(largeur)).toBeLessThanOrEqual(10);
+    // R12 — « piste de la couleur de la surface du bloc, --surface »
+    expect(couleur(regle('::-webkit-scrollbar-track'), 'background')).toEqual(jeton('surface'));
+    // R12 — « curseur arrondi dont l'intérieur est noir, --bg, cerné d'une bordure de 1 px --ol-red »
+    const curseur = regle('::-webkit-scrollbar-thumb');
+    expect(couleur(curseur, 'background')).toEqual(jeton('bg'));
+    expect(curseur).toMatch(/border\s*:\s*1px\s+solid\s+hsl\(\s*var\(--ol-red\)\s*\)/);
+    expect(curseur).toMatch(/border-radius\s*:\s*[1-9]\d*px/);
+    // R12 — « AUCUN bouton fléché : ::-webkit-scrollbar-button { display: none } »
+    expect(regle('::-webkit-scrollbar-button')).toMatch(/display\s*:\s*none/);
+    // R12 — « Au survol du curseur, un léger halo rouge : box-shadow du rouge néon du site » (teinte 0)
+    expect(regle('::-webkit-scrollbar-thumb:hover')).toMatch(/box-shadow\s*:[^;]*hsl\(\s*0\s+9\d%\s+60%\s*\/\s*0?\.7\)/);
+    // R12 — « scrollbar-width: thin et scrollbar-color: <curseur> <piste> » pour Firefox, hors du cas ::-webkit-scrollbar
+    expect(SRC).toMatch(/@supports\s+not\s+selector\(\s*::-webkit-scrollbar\s*\)\s*\{[^}]*\.faits-liste\s*\{[^}]*scrollbar-width\s*:\s*thin/);
+    expect(SRC).toMatch(/@supports\s+not\s+selector\(\s*::-webkit-scrollbar\s*\)\s*\{[^}]*\.faits-liste\s*\{[^}]*scrollbar-color\s*:\s*hsl\(\s*var\(--bg\)\s*\)\s+hsl\(\s*var\(--surface\)\s*\)/);
+    // R12 — « n'est PAS posée pour Chrome 121+ et Safari 18.2+ » : aucun scrollbar-color sur la règle principale
+    expect(regle('')).not.toMatch(/scrollbar-color/);
   });
 
-  it('R12 — contraste curseur / piste >= 3:1 calculé depuis les deux couleurs', () => {
-    const decl = SRC.match(/scrollbar-color\s*:\s*([^;}]*)/i)?.[1] ?? '';
-    // R12 — « scrollbar-color » doit déclarer les deux couleurs (lues ici, pas supposées)
-    expect(decl).not.toBe('');
-    const lum = (h: number, s: number, l: number) => {
-      s /= 100; l /= 100;
-      const a = s * Math.min(l, 1 - l);
-      const f = (n: number) => { const k = (n + h / 30) % 12; return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); };
-      const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-      return 0.2126 * lin(f(0)) + 0.7152 * lin(f(8)) + 0.0722 * lin(f(4));
-    };
-    const triples = [...decl.matchAll(/hsl\(\s*(\d+)\s+(\d+)%\s+(\d+)%\s*\)/g)].map((m) => lum(+m[1], +m[2], +m[3]));
-    // R12 — « Contraste du curseur sur la piste : (...) au moins 3:1 (WCAG 1.4.11) »
-    expect(triples.length).toBe(2);
-    const [a, b] = triples;
-    expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThanOrEqual(3);
+  it('R12 — contraste de la bordure du curseur sur la piste >= 3:1 calculé depuis les deux couleurs', () => {
+    const bordure = regle('::-webkit-scrollbar-thumb').match(/border\s*:\s*1px\s+solid\s+hsl\(\s*var\(--([a-z-]+)\)\s*\)/)?.[1];
+    const piste = couleur(regle('::-webkit-scrollbar-track'), 'background');
+    // R12 — « Contraste de la bordure du curseur sur la piste : 3,85:1 (...) au moins 3:1 (WCAG 1.4.11) » : les deux couleurs sont lues ici
+    expect(bordure).toBe('ol-red');
+    expect(piste).toBeDefined();
+    expect(rapport(jeton('ol-red'), piste!)).toBeGreaterThanOrEqual(3);
   });
 
   it('R13 — le bloc Faits a une bordure de 1 px et un box-shadow composé des teintes rouge (0) et bleue (224) du néon', () => {
@@ -367,10 +400,13 @@ describe('page-match-faits-bornes (L161)', () => {
     // R13 — « Aucun vert. » : ni le bloc ni la liste ne portent de classe verte
     const classes = `${screen.getByTestId('faits-match').className} ${liste().className}`;
     expect(classes).not.toMatch(/green|lime|emerald|teal/);
-    // R12 — la barre de défilement déclarée (scrollbar-color) existe et n'a aucune teinte entre 80 et 170
-    const decl = SRC.match(/scrollbar-color\s*:\s*([^;}]*)/i)?.[1] ?? '';
-    expect(decl).not.toBe('');
-    for (const m of decl.matchAll(/hsl\(\s*(\d+)\s/g)) expect(+m[1] < 80 || +m[1] > 170).toBe(true);
+    // R12 — la barre de défilement (règles ::-webkit-scrollbar* et scrollbar-color) n'a aucune teinte entre 80 et 170
+    const decl = ['', '::-webkit-scrollbar', '::-webkit-scrollbar-track', '::-webkit-scrollbar-thumb', '::-webkit-scrollbar-thumb:hover']
+      .map(regle).join(';') + ';' + (SRC.match(/scrollbar-color\s*:\s*([^;}]*)/i)?.[1] ?? '');
+    expect(decl).toMatch(/scrollbar|border/);
+    const teintes = [...decl.matchAll(/hsl\(\s*(\d+)\s/g)].map((m) => +m[1]);
+    for (const nom of ['surface', 'bg', 'ol-red']) teintes.push(jeton(nom)[0]);
+    for (const h of teintes) expect(h < 80 || h > 170).toBe(true);
   });
 
   // ---------- ajouts de la seconde passe ----------
