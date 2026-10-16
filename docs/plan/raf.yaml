@@ -1716,6 +1716,7 @@ lots:
     finished: 2026-10-16
   - id: L167
     title: "Page de match de l'équipe de France : la même page que /match (L160, L161 : en-tête du score, faits bornés, Momentum, carte des tirs, statistiques, compositions, joueurs en vue) pour un match des Bleus quand ils jouent, accessible depuis /equipe-de-france, au thème bleu-blanc-rouge (couleurs de l'équipe à la place du rouge/bleu OL : barres, Momentum, tirs, bordure néon, barre de défilement) — demande de Sylvain 16-10 ; fiche écran et maquette avant le code, données 365scores de l'équipe de France (ids à repérer), classement en direct absent hors Ligue 1 (L158)"
+    public: "Équipe de France : la page du match aux couleurs des Bleus"
     status: todo
     estimate: 1
     visible: true
