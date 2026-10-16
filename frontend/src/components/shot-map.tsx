@@ -1,5 +1,5 @@
 import type { LiveMatchShot } from '@/types/api';
-import { clubSymbol } from '@/lib/club-symbol';
+import { clubLegendLabel, clubSymbol } from '@/lib/club-symbol';
 import { cn } from '@/lib/utils';
 
 // Horizontal (landscape) pitch — uses full available width.
@@ -32,16 +32,16 @@ interface Props {
 
 export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol: homeSymbolRaw, awaySymbol: awaySymbolRaw, playerNames = {} }: Props) {
   if (!shots.length) return null;
-  const homeSymbol = clubSymbol(homeSymbolRaw, homeName);
-  const awaySymbol = clubSymbol(awaySymbolRaw, awayName);
+  const homeSymbol = clubSymbol(homeSymbolRaw, homeName, homeIsOl);
+  const awaySymbol = clubSymbol(awaySymbolRaw, awayName, !homeIsOl);
 
   return (
     <section data-testid="carte-tirs" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
         <h2 className="eyebrow truncate min-w-0">Carte des tirs</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
-          <LegendDot isOl={homeIsOl} label={`${homeSymbol} ${homeName}`} />
-          <LegendDot isOl={!homeIsOl} label={`${awaySymbol} ${awayName}`} />
+          <LegendDot isOl={homeIsOl} label={clubLegendLabel(homeSymbolRaw, homeName, homeIsOl)} />
+          <LegendDot isOl={!homeIsOl} label={clubLegendLabel(awaySymbolRaw, awayName, !homeIsOl)} />
         </div>
       </header>
       <div className="p-4">

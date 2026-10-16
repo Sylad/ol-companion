@@ -358,8 +358,8 @@ export function MatchPage() {
                     key={`${e.gameTime}-${i}`}
                     event={e}
                     homeId={data.home.id}
-                    homeSymbol={clubSymbol(data.home.symbolicName, data.home.name)}
-                    awaySymbol={clubSymbol(data.away.symbolicName, data.away.name)}
+                    homeSymbol={clubSymbol(data.home.symbolicName, data.home.name, olIsHome)}
+                    awaySymbol={clubSymbol(data.away.symbolicName, data.away.name, !olIsHome)}
                   />
                 ))}
               </div>
