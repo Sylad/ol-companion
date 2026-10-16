@@ -86,6 +86,11 @@ const CACHE_TTL_MS = 10 * 60 * 1000;
 const RETRY_AFTER_FAILURE_MS = 60 * 1000;
 const TIME_CONFIRMED_HORIZON_MS = 14 * 24 * 60 * 60 * 1000;
 
+/** Un match reste « en cours » 3 h après son coup d'envoi (filtre de `toNextMatch`, fenêtre du lien « Voir le match »). */
+const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
+/** Avant le coup d'envoi, 365scores peut déjà avoir retiré le match de `fixtures` (incidents du 16/09 et du 19/09). */
+const KICKOFF_MARGIN_MS = 15 * 60 * 1000;
+
 type Fetcher = typeof fetch;
 
 /**
@@ -101,7 +106,8 @@ export class FranceService {
   /** Attente avant le nouvel essai d'un appel en échec — remise à 0 par les specs. */
   retryDelayMs = 1_000;
 
-  private cache: { at: number; data: FranceOverview } | null = null;
+  /** `until` : fin de validité de la copie (TTL, ou la fin de la fenêtre du prochain match si elle vient avant). */
+  private cache: { until: number; data: FranceOverview } | null = null;
   /** Dernier échec sans copie à servir : pendant 1 min, 503 sans relire 365scores. */
   private failedAt: number | null = null;
 
@@ -117,7 +123,7 @@ export class FranceService {
 
   private async load(): Promise<FranceOverview> {
     const now = Date.now();
-    if (this.cache && now - this.cache.at < CACHE_TTL_MS) return this.cache.data;
+    if (this.cache && now < this.cache.until) return this.cache.data;
     if (!this.cache && this.failedAt !== null && now - this.failedAt < RETRY_AFTER_FAILURE_MS) {
       throw new ServiceUnavailableException('365scores indisponible');
     }
@@ -131,7 +137,7 @@ export class FranceService {
       const resultsRes = parseExternal(Scores365GamesResponseSchema, results, '365scores France results');
       const squadsRes = parseExternal(SquadsResponseSchema, squads, '365scores France squads');
       const data: FranceOverview = {
-        nextMatch: fixturesRes.games ? this.toNextMatch(fixturesRes.games, now) : this.keptNextMatch(now),
+        nextMatch: this.toServedNextMatch(fixturesRes.games, resultsRes.games, now),
         results: this.toResults(resultsRes.games ?? []),
         squad: this.toSquad(squadsRes),
       };
@@ -141,7 +147,7 @@ export class FranceService {
       // Idem pour l'effectif : sans « squads », ni vidé 10 min ni substitué à la copie.
       if (!squadsRes.squads) throw new Error('365scores France : effectif en 200 sans « squads »');
       this.failedAt = null;
-      this.cache = { at: fixturesRes.games ? now : now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS, data };
+      this.cache = { until: this.validUntil(data, now + (fixturesRes.games ? CACHE_TTL_MS : RETRY_AFTER_FAILURE_MS)), data };
       return data;
     } catch (err) {
       this.logger.warn(`France : lecture 365scores en échec — ${(err as Error)?.message ?? err}`);
@@ -149,7 +155,7 @@ export class FranceService {
       // (jamais `{ results: [] … }`, qui voudrait dire « aucune donnée »). La copie est
       // réhorodatée pour ne pas relancer 3 lectures × 2 essais à chaque requête.
       if (this.cache) {
-        this.cache.at = now - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS;
+        this.cache.until = this.validUntil(this.cache.data, now + RETRY_AFTER_FAILURE_MS);
         return this.cache.data;
       }
       // L'heure de l'échec, pas celle du début de la requête : la fenêtre d'1 min court depuis le 503.
@@ -158,10 +164,26 @@ export class FranceService {
     }
   }
 
-  /** Sans « games » (rendu dégradé), le prochain match de la copie reste tant qu'il est à venir. */
-  private keptNextMatch(now: number): FranceNextMatch | null {
+  /**
+   * Le prochain match servi (L167 R1). 365scores retire un match de `fixtures` juste avant le direct et ne le met
+   * dans `results` qu'une fois terminé : sans garde, la page des Bleus n'aurait pas de match pendant le direct.
+   * Le prochain match de la copie reste donc servi, tel quel, de 15 min avant son coup d'envoi (même marge que
+   * KICKOFF_WINDOW de live-match) jusqu'à 3 h après, tant que `fixtures` ne le renvoie plus et que `results` ne le
+   * contient pas. Une réponse de `fixtures` sans « games » (rendu dégradé) garde aussi le match avant l'heure.
+   */
+  private toServedNextMatch(fixtures: Scores365Game[] | undefined, results: Scores365Game[] | undefined, now: number): FranceNextMatch | null {
+    const fromFixtures = fixtures ? this.toNextMatch(fixtures, now) : null;
     const kept = this.cache?.data.nextMatch;
-    return kept && new Date(kept.date).getTime() >= now - 3 * 60 * 60 * 1000 ? kept : null;
+    if (!kept || kept.id === fromFixtures?.id) return fromFixtures;
+    const start = new Date(kept.date).getTime();
+    const gone = !fixtures?.some((g) => g.id === kept.id) && !results?.some((g) => g.id === kept.id);
+    const inWindow = now < start + LIVE_WINDOW_MS && (!fixtures || now >= start - KICKOFF_MARGIN_MS);
+    return gone && inWindow ? kept : fromFixtures;
+  }
+
+  /** La copie ne sert pas un prochain match au-delà de son coup d'envoi + 3 h : elle est relue à ce moment (L167 R1). */
+  private validUntil(data: FranceOverview, until: number): number {
+    return data.nextMatch ? Math.min(until, new Date(data.nextMatch.date).getTime() + LIVE_WINDOW_MS) : until;
   }
 
   private async fetchJson(url: string, what: string): Promise<unknown> {
@@ -203,7 +225,7 @@ export class FranceService {
 
   private toNextMatch(games: Scores365Game[], now: number): FranceNextMatch | null {
     const next = games
-      .filter((g) => g.homeCompetitor && g.awayCompetitor && new Date(g.startTime).getTime() >= now - 3 * 60 * 60 * 1000)
+      .filter((g) => g.homeCompetitor && g.awayCompetitor && new Date(g.startTime).getTime() >= now - LIVE_WINDOW_MS)
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0];
     if (!next) return null;
     return {
