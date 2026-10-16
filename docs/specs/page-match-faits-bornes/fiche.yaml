@@ -1,0 +1,100 @@
+ecran:
+  id: page-match-faits-bornes
+  titre: Page du match — bloc Faits du match à hauteur bornée
+  route: /match/$gameId
+  lot: L161
+  largeurs: [1440, 390]
+  maquette: docs/specs/page-match-faits-bornes/maquette.html
+etats: [vide, chargement, erreur, charge, peu-de-faits]
+
+champs:
+  - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: message-erreur, libelle: Message d'erreur de la page, type: texte, source: statique, obligatoire: true }
+  - { id: message-stats-vide, libelle: Message sans statistiques, type: texte, source: statique, obligatoire: false }
+  - { id: entete-score, libelle: En-tête du score, type: carte, source: "GET /api/live-match/{gameId}/stats → status, home, away, events", obligatoire: true }
+  - { id: grille-match, libelle: Grille de la page (L160), type: liste, source: statique, obligatoire: true }
+  - { id: colonne-centre, libelle: Colonne centrale haute, type: liste, source: "GET /api/live-match/{gameId}/stats", obligatoire: true }
+  - { id: faits-match, libelle: Bloc Faits du match, type: carte, source: "GET /api/live-match/{gameId}/stats → events", obligatoire: false }
+  - { id: compte-faits, libelle: Nombre de faits dans l'en-tête du bloc, type: texte, source: "GET /api/live-match/{gameId}/stats → events.length", obligatoire: false }
+  - { id: liste-faits, libelle: Liste des faits, hauteur bornée et défilante, type: liste, source: "GET /api/live-match/{gameId}/stats → events", obligatoire: false }
+  - { id: elan, libelle: Momentum, type: carte, source: "GET /api/live-match/{gameId}/stats → momentum", obligatoire: false }
+  - { id: carte-tirs, libelle: Carte des tirs, type: carte, source: "GET /api/live-match/{gameId}/stats → shots", obligatoire: false }
+  - { id: bloc-statistiques, libelle: Statistiques comparées, type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats", obligatoire: true }
+
+regles:
+  - id: R1
+    etat: charge
+    enonce: "Le bloc Faits du match a une hauteur bornée : la liste des faits (sous l'en-tête du bloc) fait au plus 320 px, de l'ordre d'une composition (bloc de 480 px) ; au-delà, elle défile verticalement dans le bloc (barre de défilement), à 1440 comme à 390 px. Avec 18 faits le bloc passe de 939 px à 361 px ; à 1440 le Momentum (y = 626 au lieu de 1222) est entièrement au-dessus du pli de 900 px et la carte des tirs (y = 858 au lieu de 1470) y commence ; à 390 le Momentum est à y = 610 au lieu de 1336."
+    message: ~
+    champs: [faits-match, liste-faits, elan, carte-tirs]
+    statut: sourcee
+    source: "note du lot L161 (décision de Sylvain, 16-10) : « le bloc Faits du match garde une hauteur bornée avec une barre de défilement » ; la valeur de 320 px est mesurée sur la maquette (hypothèse R5)"
+    tests: ["R1 — 18 faits à 1440 : la liste fait 320 px au plus et défile (scrollHeight > clientHeight)", "R1 — 18 faits à 390 : même borne, pas de défilement horizontal de la page", "R1 — le Momentum commence au-dessus de 900 px à 1440"]
+  - id: R2
+    etat: charge
+    enonce: "La liste s'ouvre sur les faits les plus récents : l'ordre chronologique reste (plus ancien en haut, plus récent en bas) et la liste est positionnée en bas ; on remonte pour lire les plus anciens. Un nouveau fait d'un match en direct reste visible tant que le lecteur n'a pas remonté la liste."
+    message: ~
+    champs: [liste-faits]
+    statut: sourcee
+    source: "note du lot L161 : « n'affiche par défaut que les événements les plus récents (défilé en bas, ou les plus récents en tête) » ; choix « défilé en bas » : hypothèse R5"
+    tests: ["R2 — 18 faits : le dernier fait (90+4') est visible à l'ouverture", "R2 — l'ordre du DOM reste chronologique"]
+  - id: R3
+    etat: charge
+    enonce: "L'en-tête du bloc porte le nombre de faits (« 18 faits ») ; une ombre en haut de la liste n'apparaît que lorsque des faits plus anciens sont cachés. La liste est une région au clavier (tabindex 0, rôle region, nom « Faits du match, du plus ancien au plus récent »), avec un anneau de focus visible."
+    message: "18 faits"
+    champs: [compte-faits, liste-faits]
+    statut: hypothese
+    si_faux: "Si le compteur ou l'ombre sont jugés superflus, on les retire : la borne et le défilement (R1, R2) restent valables ; aucune donnée en jeu."
+    tests: ["R3 — le compteur affiche le nombre d'événements", "R3 — la liste a tabindex 0, role region et un nom accessible"]
+  - id: R4
+    etat: peu-de-faits
+    enonce: "Avec peu de faits (5 ici), la liste tient dans la borne : le bloc garde sa hauteur naturelle, sans barre ni ombre, et le compteur dit « 5 faits »."
+    message: "5 faits"
+    champs: [faits-match, compte-faits, liste-faits]
+    statut: sourcee
+    source: "comportement de la borne de R1 (max-height, pas height) ; pas de fait : le bloc n'est pas affiché (L160 R3)"
+    tests: ["R4 — 5 faits : hauteur de la liste inférieure à 320 px, pas de défilement"]
+  - id: R5
+    etat: charge
+    enonce: "La borne est de 320 px (hypothèse de la maquette : 360 px laisse la carte des tirs sous le pli) ; le départ en bas se fait en CSS (flex-direction column-reverse), sans JavaScript de défilement."
+    message: ~
+    champs: [liste-faits]
+    statut: hypothese
+    si_faux: "Si la borne doit être 360 px ou autre, ou le départ en bas posé par scrollTop, seule une valeur ou une technique change ; la décision de Sylvain (bloc borné, défilant) reste vraie."
+    tests: ["R5 — la borne vaut 320 px à 1440 et à 390"]
+  - id: R6
+    etat: charge
+    enonce: "Rien d'autre ne change : ordre des blocs du centre (Faits, Momentum, Carte des tirs, Statistiques), lignes de faits, libellés, couleurs, colonnes latérales et appel API (GET /api/live-match/{gameId}/stats, aucun champ ajouté)."
+    message: ~
+    champs: [entete-score, grille-match, colonne-centre, bloc-statistiques]
+    statut: sourcee
+    source: "note du lot L161 : « l'ordre des blocs du centre ne change pas » ; docs/specs/page-match-fm R8 et R11"
+    tests: ["R6 — l'ordre des blocs du centre est inchangé", "R6 — un seul appel /api/live-match/{gameId}/stats"]
+  - id: R7
+    etat: chargement
+    enonce: "Pendant le chargement, le message d'attente existant s'affiche, sans grille."
+    message: "Chargement du match…"
+    champs: [message-chargement]
+    statut: sourcee
+    source: "docs/specs/page-match-fm R1 (inchangé)"
+    tests: ["R7 — chargement : message, aucun bloc"]
+  - id: R8
+    etat: erreur
+    enonce: "Si le match ne se charge pas, l'erreur existante s'affiche avec un lien de retour."
+    message: "Match introuvable"
+    champs: [message-erreur]
+    statut: sourcee
+    source: "docs/specs/page-match-fm R2 (inchangé)"
+    tests: ["R8 — erreur : message, aucun bloc"]
+  - id: R9
+    etat: vide
+    enonce: "Sans fait, le bloc Faits du match n'est pas affiché ; le bloc Statistiques annonce l'absence de chiffres."
+    message: "Pas encore de statistiques."
+    champs: [entete-score, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
+    masque: [faits-match, compte-faits, liste-faits, elan, carte-tirs]
+    statut: sourcee
+    source: "docs/specs/page-match-fm R3 (inchangé) ; match.tsx : events.length > 0"
+    tests: ["R9 — vide : aucun bloc Faits, message de statistiques"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9] }
