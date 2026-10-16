@@ -42,13 +42,13 @@ champs:
 regles:
   - id: R1
     etat: acces
-    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match » seulement le jour du match (date du coup d’envoi = aujourd’hui, heure de Paris) ou quand le match est en direct ; au-delà, pas de bouton et la date reste affichée (« Jeu. 12/11 · Horaire à confirmer »). Les lignes de résultat sont des <li data-testid=resultat-ligne> d’une <ul>, chacune contenant le lien ; les testid de L113 (resultat-badge, resultat-rencontre, resultat-competition, resultat-date, resultat-score) sont conservés. Le reste de la page (L113) est inchangé."
+    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match » seulement dans une fenêtre calculée sur nextMatch.date seule (aucun statut servi, aucun champ nouveau) : de 00:00 (heure de Paris) le jour du coup d’envoi jusqu’à 3 h après le coup d’envoi (même borne que toNextMatch, france.service.ts:206) ; hors fenêtre (veille, ou autre jour) et la date reste affichée (« Jeu. 12/11 · Horaire à confirmer »). Les lignes de résultat sont des <li data-testid=resultat-ligne> d’une <ul>, chacune contenant le lien ; les testid de L113 (resultat-badge, resultat-rencontre, resultat-competition, resultat-date, resultat-score) sont conservés. Le reste de la page (L113) est inchangé."
     message: "Voir le match"
     champs: [lien-resultat-match, lien-prochain-match, derniers-resultats, prochain-match]
     statut: hypothese
     si_faux: "Si le bouton doit toujours être là, seule la condition d’affichage change (le match à venir affiche alors la date dans son en-tête, R11) ; aucune donnée en jeu."
     source: "demande du lot : « accessible depuis /equipe-de-france » ; la forme (ligne entière cliquable + bouton) et la condition du bouton (revue UX : éviter une page vide un mois avant) sont des choix de la maquette"
-    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — le jour du match ou en direct, le prochain match a un lien « Voir le match »", "R1 — match dans plus de 24 h : pas de bouton, date conservée", "R1 — les résultats restent une liste <ul>/<li> avec les testid de L113"]
+    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — dans la fenêtre (00:00 Paris le jour J → coup d’envoi + 3 h), le prochain match a un lien « Voir le match »", "R1 — hors fenêtre (demain 20:45 vu aujourd’hui 21:00, ou veille du match) : pas de bouton, date conservée", "R1 — les résultats restent une liste <ul>/<li> avec les testid de L113"]
   - id: R2
     etat: acces
     enonce: "Le lien ouvre la route existante /match/$gameId, avec le matchupId au format du contrôleur : /match/<id>?matchupId=<idDomicile>-<idExtérieur>-<id>, lu dans /api/france (id du match, home.id, away.id). Aucune route, aucun appel d’API ni champ nouveau."
