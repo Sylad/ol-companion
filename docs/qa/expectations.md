@@ -47,8 +47,14 @@ Visiter 2185, ou n'importe quel lien de l'onglet Effectif de /players.
 Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 /match/<gameId de /api/lineup>?matchupId=<homeId>-<awayId>-<gameId> : 465 (l'OL) et opponentId de /api/lineup,
 dans l'ordre que donne isHome.
-- shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; « Classement en direct » avec 5 lignes dont Lyon
+- shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; sur un match de Ligue 1 seulement, « Classement en direct » avec 5 lignes dont Lyon (sur un match de coupe ou d'Europe, le bloc est absent : /api/live-match/<gameId>/stats rend `standings` null, vu sur Lyon – Crystal Palace le 16-10, L158)
 - never: « Match introuvable » ; « Lien incomplet »
+- shows: « Faits du match » avec le compte « N faits » égal au nombre d'`events` de /api/live-match/<gameId>/stats (L161)
+- shows: sur un match terminé de plus de 5 faits, [data-testid=liste-faits] = 5 lignes de 44 px (clientHeight 220, scrollHeight > 220) à 1440 et à 390, ouverte sur les 5 faits les plus récents (scrollTop 0, DOM en ordre chronologique) ; liste focalisable (tabindex=0, role=region) ; bouton [data-testid=repere-faits-anciens] « ↑ N faits plus anciens » (N = faits − 5, « 1 fait plus ancien » au singulier) ; une fois la liste remontée, le repère devient « Début du match », aria-disabled=true ; 32 px de haut
+- shows: à 5 faits ou moins, ni repère ni tabindex sur la liste ; sans fait (match pas commencé), pas de bloc « Faits du match » — may be absent
+- shows: « Momentum » visible sans défiler trop loin : bottom < 900 à 1440 × 900 et top < 786 à 390 × 844 ; à 1440 seulement, le titre « Carte des tirs » aussi au-dessus de 900
+- never: dans la liste des faits, un bouton fléché (::-webkit-scrollbar-button avec display ≠ none) ou une teinte verte ; un libellé tronqué à 390 px et en dessous
+- never: « Classement en direct » sur un match qui n'est pas de Ligue 1
 - never: à 320 px, une formation de la pastille « Composition » coupée sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 »), même avec un nom de club long (Anderlecht, Fenerbahçe SK)
 - never: sur un match à venir, une composition non « Confirmé » par 365scores sans l'étiquette « Composition probable » ; un numéro de maillot « 0 » (titulaire ou banc)
 - shows: sur un match à venir, un numéro de maillot sur chaque titulaire et chaque remplaçant des deux compositions, y compris quand 365scores envoie 0 (reprise du numéro des 5 derniers matchs du club, le plus récent d'abord, L133) — tolérance : un joueur absent de ces 5 matchs (recrue, blessé de longue durée) peut rester sans numéro
