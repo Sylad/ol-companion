@@ -19,6 +19,8 @@ const SPOT_DIST = 75;
 interface Props {
   shots: LiveMatchShot[];
   homeId: number;
+  /** La couleur suit le club, pas le côté : rouge pour l'OL, bleu pour l'adversaire (L160 R5). */
+  homeIsOl: boolean;
   homeName: string;
   awayName: string;
   homeSymbol: string;
@@ -27,25 +29,25 @@ interface Props {
   playerNames?: Record<number, string>;
 }
 
-export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySymbol, playerNames = {} }: Props) {
+export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol, awaySymbol, playerNames = {} }: Props) {
   if (!shots.length) return null;
 
   return (
-    <div className="rounded-md bg-surface border border-border overflow-hidden">
+    <section data-testid="carte-tirs" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
-        <div className="eyebrow">Carte des tirs</div>
+        <h2 className="eyebrow truncate min-w-0">Carte des tirs</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
-          <LegendDot color="ol-red" label={`${homeSymbol} ${homeName}`} />
-          <LegendDot color="ol-blue" label={`${awaySymbol} ${awayName}`} />
+          <LegendDot isOl={homeIsOl} label={`${homeSymbol} ${homeName}`} />
+          <LegendDot isOl={!homeIsOl} label={`${awaySymbol} ${awayName}`} />
         </div>
       </header>
       <div className="p-4">
         <div className="relative w-full">
           {/* Direction labels on touchlines */}
-          <div className="absolute top-1/2 left-1 -translate-y-1/2 text-[9px] uppercase tracking-wider text-ol-blue font-bold pointer-events-none [writing-mode:vertical-rl] rotate-180">
+          <div className={cn('absolute top-1/2 left-1 -translate-y-1/2 text-[9px] uppercase tracking-wider font-bold pointer-events-none [writing-mode:vertical-rl] rotate-180', labelTone(!homeIsOl))}>
             ← {awaySymbol} attaque
           </div>
-          <div className="absolute top-1/2 right-1 -translate-y-1/2 text-[9px] uppercase tracking-wider text-ol-red-bright font-bold pointer-events-none [writing-mode:vertical-rl]">
+          <div className={cn('absolute top-1/2 right-1 -translate-y-1/2 text-[9px] uppercase tracking-wider font-bold pointer-events-none [writing-mode:vertical-rl]', labelTone(homeIsOl))}>
             {homeSymbol} attaque →
           </div>
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Shot map">
@@ -63,7 +65,7 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
                   x={x}
                   y={y}
                   r={r}
-                  isHome={isHome}
+                  isOl={isHome === homeIsOl}
                   outcome={s.outcome}
                   shot={s}
                   playerName={playerNames[s.playerId]}
@@ -82,13 +84,16 @@ export function ShotMap({ shots, homeId, homeName, awayName, homeSymbol, awaySym
           Taille du marqueur = qualité du tir (xG). Le rond avec un halo = but.
         </p>
       </div>
-    </div>
+    </section>
   );
 }
 
+/** Texte qui porte une équipe (≥ 4,5:1 sur --surface) : rouge OL clair, bleu adverse clair. */
+const labelTone = (isOl: boolean) => (isOl ? 'text-ol-red-bright' : 'text-[hsl(226_70%_70%)]');
+
 function Pitch() {
   const stroke = 'rgba(255,255,255,0.18)';
-  const grass = 'rgba(20,32,28,0.5)';
+  const grass = 'hsl(var(--surface-2) / 0.5)';
   return (
     <g>
       {/* Grass */}
@@ -115,7 +120,7 @@ function ShotMarker({
   x,
   y,
   r,
-  isHome,
+  isOl,
   outcome,
   shot,
   playerName,
@@ -123,13 +128,13 @@ function ShotMarker({
   x: number;
   y: number;
   r: number;
-  isHome: boolean;
+  isOl: boolean;
   outcome: string;
   shot: LiveMatchShot;
   playerName?: string;
 }) {
-  const fill = isHome ? 'hsl(var(--ol-red))' : 'hsl(var(--ol-blue))';
-  const stroke = isHome ? 'hsl(var(--ol-red-bright))' : '#62a8e3';
+  const fill = isOl ? 'hsl(var(--ol-red))' : 'hsl(var(--ol-blue-bright))';
+  const stroke = fill;
   const isGoal = outcome === 'But';
   const isBlocked = outcome === 'Bloqué' || outcome === 'Blocked';
   const isMissed = outcome === 'Manqué' || outcome === 'Missed' || outcome === 'Hors cadre';
@@ -174,40 +179,36 @@ function ShotMarker({
   return (
     <g aria-label={title}>
       <title>{title}</title>
-      <circle cx={x} cy={y} r={r} fill={fill} fillOpacity={0.85} stroke={stroke} strokeWidth={1.5} />
+      <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={1.5} />
     </g>
   );
 }
 
-function LegendDot({ color, label }: { color: string; label: string }) {
+function LegendDot({ isOl, label }: { isOl: boolean; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className={cn('inline-block w-2.5 h-2.5 rounded-full', color === 'ol-red' ? 'bg-ol-red' : 'bg-ol-blue')} />
+      <span className={cn('inline-block w-2.5 h-2.5 rounded-full', isOl ? 'bg-ol-red' : 'bg-ol-blue-bright')} />
       <span>{label}</span>
     </span>
   );
 }
 
+/** La légende des issues ne porte aucun club : gris neutre. */
 function OutcomeLegend({ label, kind }: { label: string; kind: 'goal' | 'on-target' | 'blocked' | 'off-target' }) {
   const size = 14;
+  const ink = 'hsl(var(--fg-muted))';
   return (
     <span className="inline-flex items-center gap-1.5">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        {kind === 'goal' && (
-          <circle cx={size / 2} cy={size / 2} r={size / 2 - 1} fill="hsl(var(--ol-red))" stroke="white" strokeWidth={1.5} />
-        )}
-        {kind === 'on-target' && (
-          <circle cx={size / 2} cy={size / 2} r={size / 2 - 1} fill="hsl(var(--ol-red))" fillOpacity={0.85} stroke="hsl(var(--ol-red-bright))" strokeWidth={1.5} />
-        )}
+        {kind === 'goal' && <circle cx={size / 2} cy={size / 2} r={size / 2 - 1} fill={ink} stroke="white" strokeWidth={1.5} />}
+        {kind === 'on-target' && <circle cx={size / 2} cy={size / 2} r={size / 2 - 1} fill={ink} />}
         {kind === 'blocked' && (
           <>
-            <line x1={3} y1={3} x2={size - 3} y2={size - 3} stroke="hsl(var(--ol-red-bright))" strokeWidth={2} />
-            <line x1={3} y1={size - 3} x2={size - 3} y2={3} stroke="hsl(var(--ol-red-bright))" strokeWidth={2} />
+            <line x1={3} y1={3} x2={size - 3} y2={size - 3} stroke={ink} strokeWidth={2} />
+            <line x1={3} y1={size - 3} x2={size - 3} y2={3} stroke={ink} strokeWidth={2} />
           </>
         )}
-        {kind === 'off-target' && (
-          <circle cx={size / 2} cy={size / 2} r={size / 2 - 2} fill="none" stroke="hsl(var(--ol-red-bright))" strokeWidth={1.5} />
-        )}
+        {kind === 'off-target' && <circle cx={size / 2} cy={size / 2} r={size / 2 - 2} fill="none" stroke={ink} strokeWidth={1.5} />}
       </svg>
       <span>{label}</span>
     </span>

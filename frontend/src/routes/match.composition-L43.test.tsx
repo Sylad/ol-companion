@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import type { LiveMatchLineup, LiveMatchLineupPlayer, LiveMatchStats } from '@/types/api';
 
 // L43 — acceptation de l'écran composition-match (docs/specs/composition-match/fiche.yaml).
@@ -311,15 +311,7 @@ describe('Page match — blocs Composition (L43)', () => {
     }
   });
 
-  it('R8 — élargissement sans recharger : la taille remonte (observer la pastille, pas le span du nom)', () => {
-    const callbacks: Array<{ cb: () => void; target: Element }> = [];
-    class FakeRO {
-      constructor(private cb: () => void) {}
-      observe(target: Element) { callbacks.push({ cb: this.cb, target }); }
-      disconnect() {}
-      unobserve() {}
-    }
-    vi.stubGlobal('ResizeObserver', FakeRO);
+  it('R8 — élargissement sans recharger : la taille remonte (réécoute de resize, la largeur de la pastille est relue)', () => {
     let chipWidth = 40; // pastille étroite (rotation avant)
     const wide = (el: HTMLElement) => (parseFloat(el.style.fontSize) || 11) * el.textContent!.length * 0.55;
     // Le span du nom est dimensionné par son contenu : sa clientWidth suit le texte, pas la pastille.
@@ -338,9 +330,8 @@ describe('Page match — blocs Composition (L43)', () => {
       render(<MatchPage />);
       const el = screen.getByText('Augustinsson');
       expect(parseFloat(el.style.fontSize)).toBeLessThan(11);
-      expect(callbacks.some((c) => c.target === el.parentElement)).toBe(true);
       chipWidth = 200; // fenêtre élargie sans recharger
-      callbacks.filter((c) => c.target === el.parentElement).forEach((c) => c.cb());
+      act(() => { window.dispatchEvent(new Event('resize')); });
       expect(el.style.fontSize).toBe('11px');
     } finally {
       sw.mockRestore();

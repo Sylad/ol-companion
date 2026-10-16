@@ -5,11 +5,20 @@ import type { LiveMatchMomentumPoint } from '@/types/api';
  * lissé). Composant généré en local (qwen3-coder) le 19/09/2026, relu.
  */
 
-export function MomentumChart(props: { points: LiveMatchMomentumPoint[]; homeName: string; awayName: string; goalMinutes: { minute: number; home: boolean }[] }) {
+export function MomentumChart(props: {
+  points: LiveMatchMomentumPoint[];
+  homeName: string;
+  awayName: string;
+  goalMinutes: { minute: number; home: boolean }[];
+  /** La couleur suit le club, pas le côté : rouge pour l'OL, bleu pour l'adversaire (L160 R5). */
+  homeIsOl: boolean;
+}) {
   if (!props.points.length) return null;
 
-  const HOME = 'hsl(var(--ol-red))';
-  const AWAY = 'hsl(var(--ol-blue))';
+  const OL = 'hsl(var(--ol-red))';
+  const OPPONENT = 'hsl(var(--ol-blue-bright))';
+  const HOME = props.homeIsOl ? OL : OPPONENT;
+  const AWAY = props.homeIsOl ? OPPONENT : OL;
   const W = 700;
   const H = 160;
   const MID = 80;
@@ -21,9 +30,9 @@ export function MomentumChart(props: { points: LiveMatchMomentumPoint[]; homeNam
 
 
   return (
-    <section className="rounded-md bg-surface border border-border overflow-hidden">
+    <section data-testid="elan" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between">
-        <div className="eyebrow">Momentum</div>
+        <h2 className="eyebrow truncate min-w-0">Momentum</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
           <span className="inline-flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full" style={{ background: HOME }} />
@@ -54,7 +63,6 @@ export function MomentumChart(props: { points: LiveMatchMomentumPoint[]; homeNam
                   width={barWidth}
                   height={h}
                   fill={HOME}
-                  opacity={0.85}
                 />
               );
             } else {
@@ -66,7 +74,6 @@ export function MomentumChart(props: { points: LiveMatchMomentumPoint[]; homeNam
                   width={barWidth}
                   height={h}
                   fill={AWAY}
-                  opacity={0.85}
                 />
               );
             }
