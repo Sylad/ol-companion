@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "4ae83c8a77fc814d8c9d6989df351ed1c77a093b"
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "c9f42347a7ddabdccf945a0f170f58b6a153ebe9"
   },
   "resceaux": [
     {
@@ -31,6 +31,13 @@
       "avant": "f0c7ce64276eb746ec72519e168cb8bff9b7f620",
       "apres": "4ae83c8a77fc814d8c9d6989df351ed1c77a093b",
       "ficheAmendee": "ebd90fa"
+    },
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "le test R13 cherchait les ombres néon dans l'ensemble des sources (SRC) et les trouvait dans sidebar.tsx : vert sans néon sur le bloc (revue Opus du 16-10, mutation vérifiée) ; il lit maintenant box-shadow et le dégradé border-box de .faits-bloc dans index.css (valeur()), et échoue dès que les ombres du bloc sont retirées",
+      "date": "2026-10-16",
+      "avant": "4ae83c8a77fc814d8c9d6989df351ed1c77a093b",
+      "apres": "c9f42347a7ddabdccf945a0f170f58b6a153ebe9"
     }
   ]
 }

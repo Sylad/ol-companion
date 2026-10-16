@@ -534,11 +534,16 @@ describe('page-match-faits-bornes (L161)', () => {
     expect(valeur('.faits-bloc', 'border')).toBe('1px solid transparent');
     expect(screen.getByTestId('faits-match').className).not.toMatch(/overflow-hidden/);
     // R13 — « les trois ombres des bords néon (...) hsl(0 95% 60% / 0,7) (...) et leurs trois équivalents bleus à la teinte 224 »
-    expect(SRC).toMatch(/hsl\(0 95% 60%\s*\/\s*0?\.7\)[^;]*hsl\(224 95% 60%\s*\/\s*0?\.7\)|hsl\(224 95% 60%\s*\/\s*0?\.7\)[^;]*hsl\(0 95% 60%\s*\/\s*0?\.7\)/);
-    expect(SRC).toMatch(/hsl\(0 95% 55%\s*\/\s*0?\.45\)/);
-    expect(SRC).toMatch(/hsl\(224 95% 55%\s*\/\s*0?\.45\)/);
-    expect(SRC).toMatch(/hsl\(0 90% 50%\s*\/\s*0?\.2\)/);
-    expect(SRC).toMatch(/hsl\(224 90% 50%\s*\/\s*0?\.2\)/);
+    // lues sur la déclaration box-shadow de .faits-bloc elle-même (pas dans l'ensemble des sources : la barre latérale porte les mêmes ombres)
+    const ombres = valeur('.faits-bloc', 'box-shadow') ?? '';
+    expect(ombres).toMatch(/hsl\(0 95% 60%\s*\/\s*0?\.7\)[^;]*hsl\(224 95% 60%\s*\/\s*0?\.7\)|hsl\(224 95% 60%\s*\/\s*0?\.7\)[^;]*hsl\(0 95% 60%\s*\/\s*0?\.7\)/);
+    expect(ombres).toMatch(/hsl\(0 95% 55%\s*\/\s*0?\.45\)/);
+    expect(ombres).toMatch(/hsl\(224 95% 55%\s*\/\s*0?\.45\)/);
+    expect(ombres).toMatch(/hsl\(0 90% 50%\s*\/\s*0?\.2\)/);
+    expect(ombres).toMatch(/hsl\(224 90% 50%\s*\/\s*0?\.2\)/);
+    // R13 — « Bordure de 1 px en dégradé vertical » : le dégradé rouge (0) vers bleu (224) est posé en border-box sur .faits-bloc
+    const fond = valeur('.faits-bloc', 'background') ?? '';
+    expect(fond).toMatch(/linear-gradient\(180deg,\s*hsl\(0 [^)]*\)[^;]*hsl\(224 [^)]*\)[^;]*\)\s*border-box/);
   });
 
   it('R13 — aucune teinte verte dans la bordure ni la barre de défilement', () => {
