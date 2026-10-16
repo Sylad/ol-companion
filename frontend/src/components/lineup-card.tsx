@@ -8,15 +8,20 @@ interface Props {
   teamName: string;
   /** Rouge = OL, bleu = adversaire (même convention que les stats et la carte des tirs). */
   accent: 'red' | 'blue';
+  /** Une composition voisine est probable : réserve la bande de l'étiquette pour que les terrains restent alignés (L160 R14). */
+  reserveBand?: boolean;
 }
+
+/** Hauteur du terrain : la même quelle que soit la formation, les rangées s'y répartissent (L160 R6, R7). */
+const PITCH_HEIGHT = 'h-[360px]';
 
 /**
  * Composition compacte : une rangée par nombre de la formation annoncée
  * (attaque en haut, gardien en bas), rangées centrées, pastilles de même
- * largeur, banc sur une ligne. Pensée pour tenir sous « Joueurs en vue » /
- * « Statistiques » sans faire scroller la page /match.
+ * largeur, banc sur une ligne. Le terrain a une hauteur fixe pour que les
+ * deux compositions de la page /match s'alignent.
  */
-export function LineupCard({ lineup, teamName, accent }: Props) {
+export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Props) {
   const { rows, known } = buildRows(lineup);
   const widest = Math.max(1, ...rows.map((r) => r.length));
   const chipWidth = `calc((100% - ${(widest - 1) * 4}px) / ${widest})`;
@@ -26,9 +31,9 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
   const numClass = accent === 'red' ? 'text-ol-red-bright' : 'text-[hsl(226_70%_70%)]';
 
   return (
-    <section data-testid="bloc-composition" className="rounded-md bg-surface border border-border overflow-hidden">
+    <section data-testid="bloc-composition" className="h-full rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between gap-2">
-        <div data-testid="titre-composition" className="eyebrow truncate min-w-0">Composition · {teamName}</div>
+        <h2 data-testid="titre-composition" className="eyebrow truncate min-w-0">Composition · {teamName}</h2>
         {known && lineup.formation && (
           <span
             data-testid="formation-composition"
@@ -38,19 +43,26 @@ export function LineupCard({ lineup, teamName, accent }: Props) {
           </span>
         )}
       </header>
-      {lineup.probable && (
-        <p data-testid="etiquette-probable" className="px-5 pt-2 text-[11px] text-fg-dim">
+      {lineup.probable ? (
+        <p data-testid="etiquette-probable" className="h-6 px-5 flex items-center text-[11px] text-fg-dim">
           Composition probable
         </p>
+      ) : (
+        reserveBand && <div data-testid="bande-reservee" aria-hidden="true" className="h-6" />
       )}
       <div className="px-3 py-3 space-y-2">
-        {rows.map((row, i) => (
-          <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
-            {row.map((p) => (
-              <PlayerChip key={p.id} player={p} width={chipWidth} borderColor={chipBorder} numClass={numClass} />
-            ))}
-          </div>
-        ))}
+        <div
+          data-testid="terrain-composition"
+          className={cn(PITCH_HEIGHT, 'flex flex-col justify-around rounded-sm border border-border bg-surface-2/50 px-1 py-1.5')}
+        >
+          {rows.map((row, i) => (
+            <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
+              {row.map((p) => (
+                <PlayerChip key={p.id} player={p} width={chipWidth} borderColor={chipBorder} numClass={numClass} />
+              ))}
+            </div>
+          ))}
+        </div>
         {lineup.bench.length > 0 && (
           <p data-testid="banc-composition" className="pt-2 border-t border-border text-[11px] text-fg-muted leading-relaxed">
             <span className="uppercase tracking-wider text-[10px] text-fg-dim mr-1.5">Banc</span>
