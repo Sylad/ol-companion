@@ -1,0 +1,144 @@
+ecran:
+  id: page-match-equipe-de-france
+  titre: Page de match de l’équipe de France
+  route: /match/$gameId
+  lot: L167
+  largeurs: [1440, 390]
+  maquette: docs/specs/page-match-equipe-de-france/maquette.html
+etats: [vide, chargement, erreur, charge, acces]
+
+champs:
+  - { id: lien-retour-equipe, libelle: "Lien de retour « ← Équipe de France »", type: lien, source: statique, obligatoire: true }
+  - { id: lien-retour-erreur, libelle: "Lien de retour de l’erreur", type: lien, source: statique, obligatoire: false }
+  - { id: message-chargement, libelle: "Message de chargement", type: texte, source: statique, obligatoire: true }
+  - { id: message-erreur, libelle: "Message d’erreur de la page", type: texte, source: statique, obligatoire: true }
+  - { id: message-stats-vide, libelle: "Message sans statistiques", type: texte, source: statique, obligatoire: false }
+  - { id: entete-score, libelle: "En-tête du score", type: carte, source: "GET /api/live-match/{gameId}/stats → status, home, away, events", obligatoire: true }
+  - { id: grille-match, libelle: "Grille de la page (L160)", type: liste, source: statique, obligatoire: true }
+  - { id: colonne-centre, libelle: "Colonne centrale haute", type: liste, source: "GET /api/live-match/{gameId}/stats", obligatoire: true }
+  - { id: faits-match, libelle: "Bloc Faits du match (L161)", type: carte, source: "GET /api/live-match/{gameId}/stats → events", obligatoire: false }
+  - { id: compte-faits, libelle: "Nombre de faits", type: texte, source: "GET /api/live-match/{gameId}/stats → events.length", obligatoire: false }
+  - { id: liste-faits, libelle: "Liste des faits, hauteur bornée et défilante", type: liste, source: "GET /api/live-match/{gameId}/stats → events", obligatoire: false }
+  - { id: repere-faits-anciens, libelle: "Repère « N faits plus anciens »", type: texte, source: "GET /api/live-match/{gameId}/stats → events", obligatoire: false }
+  - { id: elan, libelle: "Momentum", type: carte, source: "GET /api/live-match/{gameId}/stats → momentum", obligatoire: false }
+  - { id: carte-tirs, libelle: "Carte des tirs", type: carte, source: "GET /api/live-match/{gameId}/stats → shots", obligatoire: false }
+  - { id: bloc-statistiques, libelle: "Statistiques comparées", type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats", obligatoire: true }
+  - { id: bloc-composition, libelle: "Bloc Composition", type: carte, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: false }
+  - { id: titre-composition, libelle: "Titre du bloc Composition", type: texte, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: false }
+  - { id: formation-composition, libelle: "Formation", type: texte, source: "GET /api/live-match/{gameId}/stats → lineups.formation", obligatoire: false }
+  - { id: terrain-composition, libelle: "Terrain de la composition", type: carte, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: false }
+  - { id: rangee-composition, libelle: "Rangée du terrain", type: liste, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: false }
+  - { id: banc-composition, libelle: "Banc", type: texte, source: "GET /api/live-match/{gameId}/stats → lineups.bench", obligatoire: false }
+  - { id: stats-equipe-domicile, libelle: "Statistiques de l’équipe à domicile", type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats.home", obligatoire: false }
+  - { id: stats-equipe-visiteur, libelle: "Statistiques de l’équipe visiteuse", type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats.away", obligatoire: false }
+  - { id: colonne-centre-bas, libelle: "Colonne centrale basse", type: liste, source: "GET /api/live-match/{gameId}/stats → topPerformers", obligatoire: false }
+  - { id: joueurs-en-vue, libelle: "Joueurs en vue", type: carte, source: "GET /api/live-match/{gameId}/stats → topPerformers", obligatoire: false }
+  - { id: prochain-match, libelle: "Bloc du prochain match de /equipe-de-france (L113)", type: carte, source: "GET /api/france → nextMatch", obligatoire: true }
+  - { id: lien-prochain-match, libelle: "Bouton-lien « Voir le match »", type: lien, source: "GET /api/france → nextMatch.id, home.id, away.id", obligatoire: false }
+  - { id: derniers-resultats, libelle: "Liste des derniers résultats (L113)", type: liste, source: "GET /api/france → results", obligatoire: true }
+  - { id: lien-resultat-match, libelle: "Ligne de résultat devenue lien vers le match", type: lien, source: "GET /api/france → results[].id, home.id, away.id", obligatoire: true }
+
+regles:
+  - id: R1
+    etat: acces
+    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match ». Le reste de la page (L113) est inchangé."
+    message: "Voir le match"
+    champs: [lien-resultat-match, lien-prochain-match, derniers-resultats, prochain-match]
+    statut: sourcee
+    source: "demande du lot : « accessible depuis /equipe-de-france » ; la forme (ligne entière cliquable + bouton) est un choix de la maquette"
+    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — le prochain match a un lien « Voir le match »"]
+  - id: R2
+    etat: acces
+    enonce: "Le lien ouvre la route existante /match/$gameId, avec le matchupId au format du contrôleur : /match/<id>?matchupId=<idDomicile>-<idExtérieur>-<id>, lu dans /api/france (id du match, home.id, away.id). Aucune route, aucun appel d’API ni champ nouveau."
+    message: ~
+    champs: [lien-resultat-match, lien-prochain-match]
+    statut: sourcee
+    source: "frontend/src/router.tsx:134 (route /match/$gameId, validateSearch matchupId) ; backend/src/modules/live-match/live-match.controller.ts:15 (matchupId « homeId-awayId-gameId ») ; backend/src/modules/france/france.service.ts:192-196 et :210-215 (id, home.id, away.id déjà servis)"
+    tests: ["R2 — le lien d’un résultat pointe vers /match/<id>?matchupId=<home>-<away>-<id>", "R2 — le lien du prochain match suit le même format"]
+  - id: R3
+    etat: charge
+    enonce: "La page est « aux couleurs des Bleus » dès que le matchupId de l’URL contient l’identifiant 365scores de la France (5061) : la page pose body.theme-bleus (déjà utilisé par /equipe-de-france, L163) et le retire en la quittant. Décidé sur l’URL et non sur la réponse, pour que le thème soit là dès le chargement, sans bascule rouge puis bleue. Un match de l’OL (465) garde sa page actuelle à l’identique."
+    message: ~
+    champs: [entete-score, grille-match]
+    statut: hypothese
+    si_faux: "Si la détection doit se faire sur la réponse (home.id / away.id), seule la source de la décision change et le thème apparaît au premier rendu des données ; aucune donnée ni route en jeu."
+    tests: ["R3 — matchupId 5061-2373-4672325 : body a la classe theme-bleus", "R3 — matchupId d’un match de l’OL : pas de classe theme-bleus", "R3 — en quittant la page, la classe est retirée"]
+  - id: R4
+    etat: charge
+    enonce: "Couleur par équipe, une seule règle (prolonge L160 R5) : la France est bleue hsl(224 80% 58%) (4,04:1 sur --surface, 3,92:1 sur la carte des tirs, ≥ 3:1 WCAG 1.4.11), l’adversaire est blanc hsl(0 0% 96%) (17,15:1), quel que soit le côté (domicile à gauche comme avant). Cela vaut pour les barres comparées, le Momentum, les points de la carte des tirs, leurs légendes, les puces de composition, le nom de l’équipe de France dans l’en-tête et les repères de sens (texte France : bleu clair hsl(224 90% 75%), 7,78:1). Le rouge reste l’accent (pastille LIVE, bordure néon du bas, bordure du curseur). Le bleu et le rouge OL ne sont plus utilisés pour une équipe sur cette page ; jamais de vert."
+    message: ~
+    champs: [elan, carte-tirs, bloc-statistiques, bloc-composition, formation-composition, terrain-composition, titre-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur, entete-score]
+    statut: hypothese
+    si_faux: "Si l’adversaire doit être rouge (ou une autre teinte), seules des valeurs de couleur changent ; mêmes classes, aucune donnée en jeu. Contrastes à recalculer."
+    tests: ["R4 — la France (domicile ou extérieur) est en bleu, l’adversaire en blanc dans les barres, le Momentum et les tirs", "R4 — contraste du bleu et du blanc sur --surface ≥ 3:1 calculé", "R4 — aucune teinte verte ni rouge OL d’équipe"]
+  - id: R5
+    etat: charge
+    enonce: "Le bloc Faits du match garde sa bordure néon (L161 R13) aux couleurs du drapeau : bleu en haut, blanc au milieu, rouge en bas (dégradé vertical hsl(224 95% 65% / .95) → blanc → hsl(0 95% 65% / .95), halos bleus vers le haut et rouges vers le bas, mêmes rayons). Sa barre de défilement prend les jetons du thème des Bleus (L163, index.css:125) : piste --surface cernée de bleu hsl(224 80% 58%), curseur blanc cerné de rouge hsl(0 73% 50%), halo bleu au survol, repli Firefox scrollbar-color blanc sur bleu foncé. Sur un match de l’OL, rien ne change. Au clavier, l’anneau de focus reste celui du site (rouge --ol-red-bright)."
+    message: ~
+    champs: [faits-match, liste-faits, repere-faits-anciens, compte-faits]
+    statut: sourcee
+    source: "demande du lot : « bordure néon, barre de défilement » aux couleurs de l’équipe ; jetons de frontend/src/index.css:125-133 (theme-bleus, L163) ; structure du bloc : docs/specs/page-match-faits-bornes R1-R13 (inchangée)"
+    tests: ["R5 — sur un match des Bleus, la bordure du bloc Faits est bleue en haut, rouge en bas", "R5 — le curseur de la liste est blanc à bordure rouge (jetons --sb-*)", "R5 — sur un match de l’OL, bordure et barre inchangées"]
+  - id: R6
+    etat: charge
+    enonce: "Le « Classement en direct » est absent sur un match des Bleus : la compétition n’est pas la Ligue 1 et la réponse n’a pas de clé standings. Aucun classement étranger n’est affiché."
+    message: ~
+    champs: [grille-match]
+    statut: sourcee
+    source: "backend/src/modules/live-match/live-match.service.ts:118-124 (L158 : standings seulement si competitionId = Ligue 1) ; demande du lot"
+    tests: ["R6 — match des Bleus : pas de bloc « Classement en direct »"]
+  - id: R7
+    etat: charge
+    enonce: "Le contenu est celui de /match (L160, L161) sans changement de structure : en-tête du score, faits bornés à 5 lignes, Momentum, carte des tirs, statistiques comparées, compositions avec banc, statistiques par équipe, joueurs en vue ; même ordre, mêmes libellés. Un seul appel : GET /api/live-match/{gameId}/stats (aucun champ ajouté). Vérifié sur le match réel France – Belgique 4–1 du 05/10/2026 (gameId 4672325, matchupId 5061-2373-4672325, compétition 7016) : l’agrégation existante renvoie 19 faits, 28 tirs, deux compositions 4-3-3, 3 duels de joueurs en vue, sans classement ni dépendance à l’OL."
+    message: ~
+    champs: [entete-score, grille-match, colonne-centre, faits-match, elan, carte-tirs, bloc-statistiques, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, colonne-centre-bas, joueurs-en-vue]
+    statut: sourcee
+    source: "demande du lot (« la même page que /match ») ; exécution de backend/src/modules/live-match/live-match.aggregator.ts sur la réponse 365scores du match 4672325 (16-10) ; docs/specs/page-match-fm et page-match-faits-bornes"
+    tests: ["R7 — match des Bleus : tous les blocs de /match sont présents, dans le même ordre", "R7 — un seul appel /api/live-match/4672325/stats"]
+  - id: R8
+    etat: charge
+    enonce: "Le lien de retour de la page dit « ← Équipe de France » et mène à /equipe-de-france quand le match est celui des Bleus (au lieu de « ← Accueil »)."
+    message: "← Équipe de France"
+    champs: [lien-retour-equipe]
+    statut: hypothese
+    si_faux: "Si « ← Accueil » doit rester, seul le libellé et la cible du lien changent."
+    tests: ["R8 — match des Bleus : le lien de retour dit « ← Équipe de France » et mène à /equipe-de-france"]
+  - id: R9
+    etat: chargement
+    enonce: "Pendant le chargement, le message existant s’affiche, sans grille."
+    message: "Chargement du match…"
+    champs: [message-chargement]
+    statut: sourcee
+    source: "docs/specs/page-match-fm R1 (inchangé)"
+    tests: ["R9 — chargement : message, aucun bloc"]
+  - id: R10
+    etat: erreur
+    enonce: "Si le match ne se charge pas, l’erreur existante s’affiche ; le lien de retour dit « Retour à l’équipe de France » et y mène (« Retour à l’accueil » pour un match de l’OL)."
+    message: "Match introuvable"
+    champs: [message-erreur, lien-retour-erreur]
+    statut: hypothese
+    si_faux: "Si le lien doit rester « Retour à l’accueil », seul son libellé et sa cible changent. Le message « Match introuvable » est celui de docs/specs/page-match-fm R2."
+    tests: ["R10 — erreur : message et lien « Retour à l’équipe de France »"]
+  - id: R11
+    etat: vide
+    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec l’équipe de France en bleu du côté où elle joue, et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
+    message: "Pas encore de statistiques."
+    champs: [entete-score, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
+    masque: [faits-match, compte-faits, liste-faits, elan, carte-tirs]
+    statut: sourcee
+    source: "docs/specs/page-match-fm R3 (inchangé) ; match.tsx : events.length > 0"
+    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques"]
+  - id: R12
+    etat: charge
+    enonce: "Hors page d’un match des Bleus, rien ne change : /match d’un match de l’OL (rouge OL, bleu adverse, « ← Accueil »), /equipe-de-france hors liens (L113), barre de défilement du site (L163) ; le fond de page et les filets du corps ne sont pas modifiés par ce lot."
+    message: ~
+    champs: [grille-match]
+    statut: sourcee
+    source: "demande du lot (le thème des Bleus remplace les couleurs OL sur la page des Bleus seulement) ; docs/specs/page-match-faits-bornes (OL inchangé)"
+    tests: ["R12 — match de l’OL : rendu inchangé"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R3, R4, R5, R6, R7, R8, R9, R10, R11, R12] }
+  - { id: A2, declencheur: ~, appel: "GET /api/france", regles: [R1, R2] }
+  - { id: A3, declencheur: lien-resultat-match, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3] }
+  - { id: A4, declencheur: lien-prochain-match, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R11] }
