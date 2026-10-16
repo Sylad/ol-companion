@@ -6,6 +6,15 @@
   ],
   "vert": false,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "d8d50a75a0978f589969af4bd6670d05597e2a04"
-  }
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "f7e33fe46302f1cad62b8179b93ad7747a212ea7"
+  },
+  "resceaux": [
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "le test R1 320 px attendait « 81' · OL » (exemple de la maquette) alors que sa propre fixture met le fait de 81' à l'adversaire : la fiche ne fixe que la forme « minute · sigle de l'équipe du fait » ; le sigle attendu est maintenant calculé depuis la fixture",
+      "date": "2026-10-16",
+      "avant": "d8d50a75a0978f589969af4bd6670d05597e2a04",
+      "apres": "f7e33fe46302f1cad62b8179b93ad7747a212ea7"
+    }
+  ]
 }

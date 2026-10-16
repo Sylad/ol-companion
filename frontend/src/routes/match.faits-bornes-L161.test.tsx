@@ -153,7 +153,11 @@ describe('page-match-faits-bornes (L161)', () => {
     expect(SRC).toMatch(LIGNE_60_SOUS_390);
     // R1 — « minute · équipe (12 px, ex. « 81' · OL ») au-dessus du libellé » : la minute et l'équipe sont lues dans la ligne
     const ligne81 = [...liste().querySelectorAll('.ev')].find((e) => e.textContent?.includes("81'"));
-    expect(ligne81?.textContent).toMatch(/81'[\s\S]*OL/);
+    // le sigle attendu est celui de l'équipe de CE fait selon la fixture (competitorId vs home/away), pas un « OL » fixe
+    const fx = stats(18);
+    const fait81 = fx.events.find((e) => e.gameTimeDisplay === "81'");
+    const sigle81 = fait81?.competitorId === fx.home.id ? fx.home.symbolicName : fx.away.symbolicName;
+    expect(ligne81?.textContent).toMatch(new RegExp(`81'[\\s\\S]*${sigle81}`));
     // R1 — « la liste s'ouvre sur les 5 faits les plus récents » : borne de 5 lignes de 60 px
     expect(hauteurs(liste()).ch).toBe(300);
     expect(SRC).toMatch(MAX_HEIGHT_5_LIGNES);
