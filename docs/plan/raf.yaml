@@ -1643,6 +1643,7 @@ lots:
     started: 2026-10-16
     notes:
       - { date: 2026-10-16, text: "test d'acceptation rescellé (frontend/src/routes/match.disposition-L160.test.tsx, fiche inchangée) : l'assertion « aucun ResizeObserver construit » dépasse la fiche : R4 n'interdit que la mesure et la répartition des colonnes (BalancedColumns, balanceColumns), pas l'observateur de taille des pastilles de LineupCard (L130, R8 de L43) ; le test vérifie maintenant qu'aucun observateur ne vise un conteneur de disposition et que balance-columns a disparu" }
+      - { date: 2026-10-16, text: "QA prod 16-10 (livraison da5c6b8) : verte — 7 pages conformes, 3 colonnes 280/544/280, terrains 360 px alignés, sigle OL, 0 défilement horizontal à 390, API 200 ; 2 lignes d'attentes à ajuster (L162, L157)" }
     ux: { date: 2026-10-16, verdict: "conforme — captures 1440 et 390 regardées par le lead sur de vrais matchs (Lyon 4-0 Rennes, Lyon 3-2 Crystal Palace) : trois colonnes 280/544/280, domicile à gauche, visiteur à droite, terrains de même hauteur, gouttières de 16 px, pas de défilement horizontal à 390 ; réserve unique portée par L161 (faits du match bornés avec défilement, décision de Sylvain) ; 1 mineur en note (casse des légendes du Momentum et de la carte des tirs)" }
     review: { date: 2026-10-16, verdict: "conforme : les constats mineurs sont traités et aucun nouveau défaut n'est apparu — revue Opus 16-10 (vague 1115 : revue 2 conforme 4 mineurs, mineurs corrigés, revue courte conforme) ; re-vérifié par le lead : 652 tests, acceptation 45/45, build sans fuite, raf check", commit: 6b68f4cf3ad2291901697ddb5ed67309f9d97a99 }
     finished: 2026-10-16
@@ -1657,7 +1658,14 @@ lots:
     created: 2026-10-16
     notes:
       - { date: 2026-10-16, text: "16-10 décision de Sylvain : le bloc Faits du match garde une hauteur bornée avec une barre de défilement, et n'affiche par défaut que les événements les plus récents (défilé en bas, ou les plus récents en tête) ; la maquette part de cette règle, l'ordre des blocs du centre ne change pas" }
+      - { date: 2026-10-16, text: "16-10 précisions de Sylvain : (1) CINQ faits visibles par défaut, le reste par défilement (la borne est la hauteur de 5 lignes, pas une hauteur en px) ; (2) barre de défilement aux couleurs du site — piste bleue et curseur rouge (ou rouge sur rouge), curseur ≥ 3:1 sur la piste (WCAG 1.4.11), scrollbar-color + ::-webkit-scrollbar — et bordure du bloc avec l'effet néon des bandeaux du site ; jamais de vert" }
     started: 2026-10-16
+  - id: L162
+    title: "QA : attentes /match — conditionner « Classement en direct avec 5 lignes dont Lyon » aux matchs de Ligue 1 (absent en Ligue Europa depuis L158, mesuré Lyon – Crystal Palace, QA L160 16-10) ; relire la ligne shows de /match pour un match à venir sans composition publiée (Hoffenheim – Lyon : Statistiques + Joueurs en vue, pas de colonnes)"
+    status: todo
+    estimate: 0.1
+    quickwin: true
+    created: 2026-10-16
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
