@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-16 17:31",
+  "generated": "2026-10-16 19:12",
   "entries": [
+    {
+      "slug": "2026-10-16-barres-de-defilement-aux-couleurs-du-site-fc-noobz-et-bleus",
+      "title": "Barres de défilement aux couleurs du site, FC Noobz et Bleus compris",
+      "date": "2026-10-16",
+      "lots": [
+        "L163"
+      ],
+      "captures": [
+        "captures/barre-defilement-bleus-L163.png"
+      ],
+      "alts": [
+        "Page Équipe de France aux couleurs des Bleus, dont la barre de défilement"
+      ],
+      "html": "<p>La barre de défilement a maintenant le même aspect partout sur le site : celle de la page comme celles des listes, tableaux et panneaux qui défilent. Elle est fine, sans flèches, avec une piste arrondie bordée de bleu et un curseur bleu bordé de rouge qui s'illumine d'un halo rouge quand on le survole.</p>\n<p>Sur la page FC Noobz, la barre prend les couleurs de la page (lime et bleu électrique). Sur la page Équipe de France, elle passe au bleu, blanc et rouge.</p>"
+    },
     {
       "slug": "2026-10-16-faits-du-match-la-barre-de-defilement-a-des-bouts-arrondis",
       "title": "Faits du match : la barre de défilement a des bouts arrondis",
