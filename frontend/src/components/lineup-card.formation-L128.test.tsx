@@ -5,7 +5,7 @@ import { LineupCard } from './lineup-card';
 
 // L128 — à 320 px, un nom de club long (Fenerbahçe SK) ne doit pas couper « 4-2-3-1 » sur 2 lignes.
 // jsdom ne mesure rien : on vérifie que la pastille déclare « ne pas casser, ne pas rétrécir »
-// et que le titre, lui, cède la place (truncate + min-w-0).
+// et que le titre, lui, cède la place en passant à la ligne (min-w-0, sans truncate : L160 ne tronque plus le nom du club).
 const pl = (id: number, yardLine: number, yardSide: number): LiveMatchLineupPlayer => ({
   id, name: `J${id}`, shortName: `J${id}`, jerseyNumber: id, positionShort: 'CM', yardLine, yardSide, ranking: null,
 });
@@ -29,7 +29,7 @@ describe('L128 — pastille de formation sur une ligne', () => {
     expect(chip.className).toContain('whitespace-nowrap');
     expect(chip.className).toContain('shrink-0');
     const title = screen.getByTestId('titre-composition');
-    expect(title.className).toContain('truncate');
+    expect(title.className).not.toContain('truncate');
     expect(title.className).toContain('min-w-0');
   });
 });

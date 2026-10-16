@@ -12,7 +12,7 @@ export function MiniStandings({ rows }: { rows: LiveStandingRow[] }) {
   return (
     <section data-testid="classement-direct" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between">
-        <h2 className="eyebrow truncate min-w-0">Classement en direct</h2>
+        <h2 className="eyebrow min-w-0">Classement en direct</h2>
         <Link to="/standings" className="text-[10px] uppercase tracking-wider text-fg-dim hover:text-fg">
           Ligue 1 →
         </Link>

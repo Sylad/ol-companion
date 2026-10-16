@@ -32,7 +32,7 @@ export function MomentumChart(props: {
   return (
     <section data-testid="elan" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between">
-        <h2 className="eyebrow truncate min-w-0">Momentum</h2>
+        <h2 className="eyebrow min-w-0">Momentum</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
           <span className="inline-flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full" style={{ background: HOME }} />

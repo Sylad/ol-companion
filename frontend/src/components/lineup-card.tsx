@@ -32,8 +32,11 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
 
   return (
     <section data-testid="bloc-composition" className="h-full rounded-md bg-surface border border-border overflow-hidden">
-      <header className="px-5 py-3 border-b border-border flex items-center justify-between gap-2">
-        <h2 data-testid="titre-composition" className="eyebrow truncate min-w-0">Composition · {teamName}</h2>
+      {/* Le titre passe à la ligne plutôt que d'être tronqué (L160) : à 1440 la colonne fait 280 px, le nom d'un club
+          dépasse vite la place laissée par la pastille. En-tête de deux lignes réservé pour que les deux terrains
+          restent à la même ordonnée même si un seul titre se coupe. */}
+      <header className="px-5 py-3 border-b border-border flex items-center justify-between gap-2 min-[1440px]:min-h-[3.75rem]">
+        <h2 data-testid="titre-composition" className="eyebrow min-w-0">Composition · {teamName}</h2>
         {known && lineup.formation && (
           <span
             data-testid="formation-composition"

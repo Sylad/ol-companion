@@ -188,7 +188,7 @@ function TeamStats({ testId, teamName, values, rows }: { testId: string; teamNam
   return (
     <section data-testid={testId} className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border">
-        <h2 className="eyebrow truncate min-w-0">Statistiques · {teamName}</h2>
+        <h2 className="eyebrow min-w-0">Statistiques · {teamName}</h2>
       </header>
       <dl className="px-5 py-2 divide-y divide-border">
         {rows.map((s) => (
@@ -350,7 +350,7 @@ export function MatchPage() {
           {data.events.length > 0 && (
             <section data-testid="faits-match" className="rounded-md bg-surface border border-border overflow-hidden">
               <header className="px-5 py-3 border-b border-border">
-                <h2 className="eyebrow truncate min-w-0">Faits du match</h2>
+                <h2 className="eyebrow min-w-0">Faits du match</h2>
               </header>
               <div className="px-5 py-2 divide-y divide-border">
                 {data.events.map((e, i) => (
@@ -388,7 +388,7 @@ export function MatchPage() {
           )}
           <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
             <header className="px-5 py-3 border-b border-border">
-              <h2 className="eyebrow truncate min-w-0">Statistiques</h2>
+              <h2 className="eyebrow min-w-0">Statistiques</h2>
             </header>
             <div className="px-5 py-3 space-y-2">
               {comparedRows.map((s) => (
@@ -447,7 +447,7 @@ export function MatchPage() {
             {data.topPerformers.length > 0 && (
               <section data-testid="joueurs-en-vue" className="rounded-md bg-surface border border-border overflow-hidden">
                 <header className="px-5 py-3 border-b border-border">
-                  <h2 className="eyebrow truncate min-w-0">Joueurs en vue</h2>
+                  <h2 className="eyebrow min-w-0">Joueurs en vue</h2>
                 </header>
                 <div className="px-5 py-2 divide-y divide-border">
                   {data.topPerformers.map((tp, i) => (

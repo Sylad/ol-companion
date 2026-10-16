@@ -38,7 +38,7 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
   return (
     <section data-testid="carte-tirs" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
-        <h2 className="eyebrow truncate min-w-0">Carte des tirs</h2>
+        <h2 className="eyebrow min-w-0">Carte des tirs</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
           <LegendDot isOl={homeIsOl} label={clubLegendLabel(homeSymbolRaw, homeName, homeIsOl)} />
           <LegendDot isOl={!homeIsOl} label={clubLegendLabel(awaySymbolRaw, awayName, !homeIsOl)} />
