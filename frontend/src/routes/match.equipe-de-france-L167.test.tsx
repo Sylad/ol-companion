@@ -43,7 +43,7 @@ const lineup = (base: number) => ({
     p(base + 6, 'Mil1', 6, 3, 25), p(base + 7, 'Mil2', 7, 3, 50), p(base + 8, 'Mil3', 8, 3, 75), p(base + 9, 'Att1', 9, 4, 20), p(base + 10, 'Att2', 10, 4, 50), p(base + 11, 'Att3', 11, 4, 80)],
   bench: [p(base + 12, 'Remplaçant', 12, 0, 0)],
 });
-const TEAM = (k: number) => ({ Touches: 600 + k, 'Tirs au total': 14 - k, 'Tirs cadrés': 6 - k, 'Buts attendus': 1.87 - k });
+const TEAM = (k: number) => ({ Touches: 600 + k, 'Tirs au total': 14 - k, 'Tirs cadrés': 6 - k, 'Buts attendus': 1.87 - k, 'Passes Completed': 500 - 50 * k });
 
 function stats(over: { homeId: number; awayId: number; status?: 'upcoming' | 'ended'; empty?: boolean; competitionId?: number; standings?: boolean }): LiveMatchStats {
   const { homeId, awayId, status = 'ended', empty = false, competitionId = 7016 } = over;
