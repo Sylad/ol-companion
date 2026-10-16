@@ -8,7 +8,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "47d0e711a40f4a9f92c6faaa02173a0ebc8d0506",
+    "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "c647193542350060dcce1b895951dc0b4c2271ee",
     "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
     "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "90e3a3a07b450f714d9f72547c6ca8592eb565ce"
   },
@@ -41,6 +41,13 @@
       "date": "2026-10-16",
       "avant": "4ef1e54fc323230c1770e9965a2a6e5a4cb2f9b4",
       "apres": "90e3a3a07b450f714d9f72547c6ca8592eb565ce"
+    },
+    {
+      "test": "frontend/src/routes/match.equipe-de-france-L167.test.tsx",
+      "raison": "test R11 : attendait « Jeu. 12/11 · 21:00 » alors que la fiche amendée (530a404) et le format de L113 donnent « 21h00 » ; chaîne attendue corrigée, assertion inchangée",
+      "date": "2026-10-16",
+      "avant": "47d0e711a40f4a9f92c6faaa02173a0ebc8d0506",
+      "apres": "c647193542350060dcce1b895951dc0b4c2271ee"
     }
   ]
 }

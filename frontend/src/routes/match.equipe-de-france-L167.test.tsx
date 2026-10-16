@@ -272,10 +272,10 @@ describe('R11 — match des Bleus à venir', () => {
     Object.defineProperty(window, 'innerWidth', { configurable: true, writable: true, value: 390 });
     venir();
     const date = await screen.findByTestId('coup-envoi');
-    // R11 — « l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21:00 »… »
+    // R11 — « l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21h00 »… »
     expect(screen.getByTestId('entete-score')).toContainElement(date);
     expect(screen.getByTestId('entete-score')).toHaveTextContent('À venir');
-    expect(date.textContent?.trim()).toBe('Jeu. 12/11 · 21:00');
+    expect(date.textContent?.trim()).toBe('Jeu. 12/11 · 21h00');
     // R11 — « sur une seule ligne : jamais coupée »
     expect(date.querySelector('br')).toBeNull();
   });
