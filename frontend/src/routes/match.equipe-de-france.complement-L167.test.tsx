@@ -192,7 +192,7 @@ describe('R4 — une couleur par équipe sur la page des Bleus', () => {
     await screen.findByTestId('elan');
     // R4 — « Le bleu et le rouge OL ne sont plus utilisés pour une équipe sur cette page ; jamais de vert. »
     for (const id of BLOCS) {
-      const html = norm(await screen.findByTestId(id));
+      const html = (await screen.findAllByTestId(id)).map(norm).join(' ');
       expect([id, /ol-blue|ol-red/.test(html)]).toEqual([id, false]);
       expect([id, /green|emerald|lime|hsl\(\s*(?:9\d|1\d\d)\b/.test(html)]).toEqual([id, false]);
     }

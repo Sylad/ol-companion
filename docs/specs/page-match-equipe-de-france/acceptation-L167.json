@@ -10,7 +10,7 @@
   "empreintes": {
     "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "47d0e711a40f4a9f92c6faaa02173a0ebc8d0506",
     "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
-    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "4ef1e54fc323230c1770e9965a2a6e5a4cb2f9b4"
+    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "90e3a3a07b450f714d9f72547c6ca8592eb565ce"
   },
   "resceaux": [
     {
@@ -34,6 +34,13 @@
       "date": "2026-10-16",
       "avant": "4232a365fd5d262d64bd0f7dd0527c586444608d",
       "apres": "47d0e711a40f4a9f92c6faaa02173a0ebc8d0506"
+    },
+    {
+      "test": "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx",
+      "raison": "test R4 : findByTestId('bloc-composition') alors que la page rend deux blocs composition (un par équipe) ; findAllByTestId, HTML des deux blocs concaténé, assertions inchangées",
+      "date": "2026-10-16",
+      "avant": "4ef1e54fc323230c1770e9965a2a6e5a4cb2f9b4",
+      "apres": "90e3a3a07b450f714d9f72547c6ca8592eb565ce"
     }
   ]
 }
