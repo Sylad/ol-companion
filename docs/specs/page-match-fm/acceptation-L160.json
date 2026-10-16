@@ -4,7 +4,7 @@
   "fichiers": [
     "frontend/src/routes/match.disposition-L160.test.tsx"
   ],
-  "vert": false,
+  "vert": true,
   "empreintes": {
     "frontend/src/routes/match.disposition-L160.test.tsx": "287c77a6dbf99dfffe10438972ed6a7ed3e259af"
   },
