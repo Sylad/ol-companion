@@ -86,9 +86,7 @@ describe('L163 — barre de défilement uniformisée', () => {
     expect(rouge[0] <= 10 || rouge[0] >= 350).toBe(true);
     expect(bleu[0]).toBeGreaterThanOrEqual(215);
     expect(bleu[0]).toBeLessThanOrEqual(235);
-    const page = readFileSync(path.join(SRC, 'routes/equipe-de-france.tsx'), 'utf8');
-    expect(page).toContain("classList.add('theme-bleus')");
-    expect(page).toContain("classList.remove('theme-bleus')");
+    // la pose et le retrait de la classe sont vérifiés par le rendu : routes/equipe-de-france.theme-bleus-L163.test.tsx
   });
 
   it.each(Object.keys(themes))('R5 — %s : bordure du curseur ≥ 3:1 sur la piste et bordure de la piste ≥ 3:1 sur le fond (WCAG 1.4.11)', (nom) => {
