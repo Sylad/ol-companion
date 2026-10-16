@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Link } from '@tanstack/react-router';
+import { Loader2, Radio } from 'lucide-react';
 import { useFrance } from '@/hooks/use-france';
 import { TeamLogo } from '@/components/team-logo';
 import { clubLogoUrl } from '@/lib/ligue1-clubs-coords';
@@ -15,6 +16,45 @@ const shortDate = (iso: string): string => {
   const d = new Date(iso);
   return `${WEEKDAY_SHORT[d.getDay()]} ${dayMonth(d)}`;
 };
+
+/** Durée pendant laquelle un match reste « en direct » après son coup d'envoi (même borne que le back, L167 R1). */
+const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
+const parisDay = (ms: number): string => new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(ms);
+
+/**
+ * Fenêtre du lien « Voir le match » (L167 R1), calculée sur la date du match seule : de 00:00 (Paris)
+ * le jour du coup d'envoi jusqu'à 3 h après. `live` : le coup d'envoi est passé.
+ */
+function matchWindow(iso: string, now: number): { open: boolean; live: boolean } {
+  const kickoff = new Date(iso).getTime();
+  const open = parisDay(now) >= parisDay(kickoff) && now < kickoff + LIVE_WINDOW_MS;
+  return { open, live: open && now >= kickoff };
+}
+
+/** Maintenant, relu chaque minute : le bouton et la pastille apparaissent sans recharger la page. */
+function useNow(): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
+}
+
+/** Page du match : même route que /match, `matchupId` au format du contrôleur (« domicile-extérieur-id », L167 R2). */
+function MatchLink({ match, testId, className, children }: { match: { id: number; home: FranceTeam; away: FranceTeam }; testId: string; className: string; children: React.ReactNode }) {
+  return (
+    <Link
+      to="/match/$gameId"
+      params={{ gameId: String(match.id) }}
+      search={{ matchupId: `${match.home.id}-${match.away.id}-${match.id}` }}
+      data-testid={testId}
+      className={className}
+    >
+      {children}
+    </Link>
+  );
+}
 
 const POSITION_GROUPS = [
   { api: 'Goalkeeper', label: 'Gardiens' },
@@ -146,6 +186,8 @@ function Panel({ testId, eyebrow, title, children }: { testId?: string; eyebrow:
 }
 
 function NextMatchPanel({ match }: { match: FranceNextMatch | null }) {
+  const now = useNow();
+  const fenetre = match ? matchWindow(match.date, now) : { open: false, live: false };
   return (
     <Panel
       testId="prochain-match"
@@ -160,7 +202,16 @@ function NextMatchPanel({ match }: { match: FranceNextMatch | null }) {
             <Side testId="prochain-match-exterieur" team={match.away} />
           </div>
           <div className="text-center text-sm text-fg">
-            <NextMatchDate match={match} />
+            <NextMatchDate match={match} live={fenetre.live} />
+            {fenetre.open && (
+              <MatchLink
+                match={match}
+                testId="lien-prochain-match"
+                className="mt-3 inline-flex min-h-[44px] items-center justify-center rounded-md border border-ol-blue-bright bg-ol-blue px-5 text-sm font-semibold text-fg-bright"
+              >
+                Voir le match
+              </MatchLink>
+            )}
             <small data-testid="prochain-match-competition" className="mt-1 block text-xs text-fg-muted">
               {match.competition}
             </small>
@@ -191,7 +242,18 @@ function Side({ testId, team }: { testId: string; team: FranceTeam }) {
  * peut être « à confirmer » (L117). La règle L47 (jour de remplissage d'une journée de
  * Ligue 1) ne s'applique pas ici.
  */
-function NextMatchDate({ match }: { match: FranceNextMatch }) {
+function NextMatchDate({ match, live }: { match: FranceNextMatch; live: boolean }) {
+  if (live) {
+    return (
+      <span
+        data-testid="prochain-match-en-direct"
+        className="inline-flex items-center gap-1.5 rounded-full bg-ol-red px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
+      >
+        <Radio className="h-3 w-3 animate-pulse" strokeWidth={2.5} aria-hidden="true" />
+        En direct
+      </span>
+    );
+  }
   const time = kickoffTime(match);
   return (
     <span data-testid="prochain-match-date">
@@ -222,7 +284,12 @@ function ResultRow({ result }: { result: FranceResult }) {
         ? { word: 'Défaite', letter: 'D', cls: 'bg-loss text-fg-bright' }
         : { word: 'Match nul', letter: 'N', cls: 'bg-draw text-bg' };
   return (
-    <li data-testid="resultat-ligne" className="flex items-center gap-3 border-t border-border px-4 py-3 first:border-t-0">
+    <li data-testid="resultat-ligne" className="border-t border-border first:border-t-0">
+      <MatchLink
+        match={result}
+        testId="lien-resultat-match"
+        className="flex min-h-[44px] items-center gap-3 px-4 py-3 hover:bg-surface-2/50 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ol-red-bright"
+      >
       <span
         data-testid="resultat-badge"
         className={cn('flex h-5 w-5 shrink-0 items-center justify-center rounded text-[11px] font-bold', outcome.cls)}
@@ -242,6 +309,8 @@ function ResultRow({ result }: { result: FranceResult }) {
       <span data-testid="resultat-score" className="num text-base font-semibold text-fg-bright">
         {result.homeScore}-{result.awayScore}
       </span>
+      <span aria-hidden="true" className="shrink-0 text-lg leading-none text-fg-dim">›</span>
+      </MatchLink>
     </li>
   );
 }
