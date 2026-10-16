@@ -20,53 +20,65 @@ champs:
   - { id: elan, libelle: Momentum, type: carte, source: "GET /api/live-match/{gameId}/stats → momentum", obligatoire: false }
   - { id: carte-tirs, libelle: Carte des tirs, type: carte, source: "GET /api/live-match/{gameId}/stats → shots", obligatoire: false }
   - { id: bloc-statistiques, libelle: Statistiques comparées, type: carte, source: "GET /api/live-match/{gameId}/stats → teamStats", obligatoire: true }
+  - { id: repere-faits-anciens, libelle: Repère « N faits plus anciens » au-dessus de la liste, type: texte, source: "GET /api/live-match/{gameId}/stats → events (faits hors de la vue de la liste)", obligatoire: false }
+  - { id: bloc-composition, libelle: "Bloc Composition (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: titre-composition, libelle: "Titre du bloc Composition (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: formation-composition, libelle: "Formation (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: terrain-composition, libelle: "Terrain de la composition (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: rangee-composition, libelle: "Rangée du terrain (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: banc-composition, libelle: "Banc (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: stats-equipe-domicile, libelle: "Statistiques de l'équipe à domicile (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: stats-equipe-visiteur, libelle: "Statistiques de l'équipe visiteuse (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: colonne-centre-bas, libelle: "Colonne centrale basse (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: joueurs-en-vue, libelle: "Joueurs en vue (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
+  - { id: classement-direct, libelle: "Classement en direct (L160)", type: carte, source: "docs/specs/page-match-fm (hérité de L160, inchangé et hors du périmètre des tests de L161)", obligatoire: false }
 
 regles:
   - id: R1
     etat: charge
-    enonce: "Le bloc Faits du match a une hauteur bornée : la liste des faits (sous l'en-tête du bloc) fait au plus 320 px, de l'ordre d'une composition (bloc de 480 px) ; au-delà, elle défile verticalement dans le bloc (barre de défilement), à 1440 comme à 390 px. Avec 18 faits le bloc passe de 939 px à 361 px ; à 1440 le Momentum (y = 626 au lieu de 1222) est entièrement au-dessus du pli de 900 px et la carte des tirs (y = 858 au lieu de 1470) y commence ; à 390 le Momentum est à y = 610 au lieu de 1336."
+    enonce: "La liste des faits (sous l'en-tête du bloc et du repère de R3) est bornée à CINQ lignes de faits, pas à une hauteur en pixels. Chaque ligne de fait a une hauteur fixe, la variable --ligne-fait, valant 44 px à 1440 comme à 390 px (deux lignes de texte au plus à 14 px, interligne 1,2, soit 33,6 px, plus 4 px de remplissage haut et bas et le filet de 1 px, arrondi à 44 ; un libellé plus long est tronqué à deux lignes par une ellipse, le texte entier restant dans le DOM). La borne s'écrit max-height: calc(5 * var(--ligne-fait)), soit 220 px mesurés (client height = 220 sur la maquette), et la liste s'ouvre sur les 5 faits les plus récents (R2) ; au-delà, elle défile verticalement dans le bloc, à 1440 comme à 390 px. Avec 18 faits le bloc passe de 833 px à 293 px (en-tête, repère de 32 px, liste de 220 px, bordures). Mesure à 1440 x 900 avec barre de défilement de page : le Momentum commence à y = 558 au lieu de 1098 et finit à 771, donc entièrement au-dessus du pli de 900 px, et la carte des tirs commence à y = 787 au lieu de 1327. À 390 x 844 : Momentum à y = 542 au lieu de 1082 (fin à 724), carte des tirs à y = 740 au lieu de 1280, donc son titre est visible sans défiler."
     message: ~
     champs: [faits-match, liste-faits, elan, carte-tirs]
     statut: sourcee
-    source: "note du lot L161 (décision de Sylvain, 16-10) : « le bloc Faits du match garde une hauteur bornée avec une barre de défilement » ; la valeur de 320 px est mesurée sur la maquette (hypothèse R5)"
-    tests: ["R1 — 18 faits à 1440 : la liste fait 320 px au plus et défile (scrollHeight > clientHeight)", "R1 — 18 faits à 390 : même borne, pas de défilement horizontal de la page", "R1 — le Momentum commence au-dessus de 900 px à 1440"]
+    source: "note du lot L161, décisions de Sylvain du 16-10 : « le bloc Faits du match garde une hauteur bornée avec une barre de défilement » et « CINQ faits visibles par défaut, le reste par défilement (la borne est la hauteur de 5 lignes, pas une hauteur en px) » ; la valeur de 44 px par ligne est mesurée sur la maquette (hypothèse R5)"
+    tests: ["R1 — 18 faits à 1440 : la liste fait exactement 5 fois la hauteur d'une ligne de fait (client height = 5 × hauteur d'un .ev) et défile (scrollHeight > clientHeight)", "R1 — 18 faits à 390 : même borne, toutes les lignes de même hauteur, pas de défilement horizontal de la page", "R1 — 5 lignes de faits sont entièrement visibles à l'ouverture, la sixième est hors de la vue", "R1 — le Momentum finit au-dessus de 900 px à 1440 et la carte des tirs commence au-dessus de 900 px"]
   - id: R2
     etat: charge
-    enonce: "La liste s'ouvre sur les faits les plus récents : l'ordre chronologique reste (plus ancien en haut, plus récent en bas) et la liste est positionnée en bas ; on remonte pour lire les plus anciens. Un nouveau fait d'un match en direct reste visible tant que le lecteur n'a pas remonté la liste."
+    enonce: "La liste s'ouvre sur les faits les plus récents : l'ordre chronologique reste (plus ancien en haut, plus récent en bas) et la liste est positionnée en bas ; les 5 derniers faits (ici 81' à 90+4') sont visibles à l'ouverture et on remonte pour lire les plus anciens. Un nouveau fait d'un match en direct reste visible tant que le lecteur n'a pas remonté la liste."
     message: ~
     champs: [liste-faits]
     statut: sourcee
     source: "note du lot L161 : « n'affiche par défaut que les événements les plus récents (défilé en bas, ou les plus récents en tête) » ; choix « défilé en bas » : hypothèse R5"
-    tests: ["R2 — 18 faits : le dernier fait (90+4') est visible à l'ouverture", "R2 — l'ordre du DOM reste chronologique"]
+    tests: ["R2 — 18 faits : le dernier fait (90+4') est visible à l'ouverture, les 5 derniers faits sont les 5 lignes visibles", "R2 — l'ordre du DOM reste chronologique"]
   - id: R3
     etat: charge
-    enonce: "L'en-tête du bloc porte le nombre de faits (« 18 faits ») ; une ombre en haut de la liste n'apparaît que lorsque des faits plus anciens sont cachés. La liste est une région au clavier (tabindex 0, rôle region, nom « Faits du match, du plus ancien au plus récent »), avec un anneau de focus visible."
-    message: "18 faits"
-    champs: [compte-faits, liste-faits]
+    enonce: "L'en-tête du bloc porte le nombre de faits (« 18 faits »). Sous l'en-tête, tant que la liste déborde, une ligne de repère de 32 px, qui est un bouton, dit combien de faits sont hors de la vue en haut : « ↑ 13 faits plus anciens » (flèche masquée aux lecteurs d'écran ; « 1 fait plus ancien » au singulier). N = nombre de faits entièrement au-dessus du bord haut de la liste, recalculé à chaque défilement ; N = 0 (liste tout en haut) donne « Début du match » sans flèche. La ligne garde sa hauteur dans tous les cas de défilement (pas de saut de mise en page). Un clic ou Entrée sur le bouton remonte la liste d'une hauteur de liste (5 faits). La ligne n'est pas annoncée au fil du défilement (pas de région live). Texte --fg-muted sur le fond du repère : 7,11:1 mesuré (WCAG 1.4.3 exige 4,5:1). Ce repère remplace l'ombre de la première maquette (1,06:1, invisible) ; il est indispensable au téléphone et sous macOS, où la barre de défilement est masquée tant qu'on ne défile pas, et la borne tombant juste sur 5 lignes aucune ligne coupée ne trahit la suite."
+    message: "13 faits plus anciens"
+    champs: [compte-faits, repere-faits-anciens, liste-faits]
     statut: hypothese
-    si_faux: "Si le compteur ou l'ombre sont jugés superflus, on les retire : la borne et le défilement (R1, R2) restent valables ; aucune donnée en jeu."
-    tests: ["R3 — le compteur affiche le nombre d'événements", "R3 — la liste a tabindex 0, role region et un nom accessible"]
+    si_faux: "Si le repère est jugé superflu ou préféré en fondu du contenu (mask-image sur 24 px), on le remplace : la borne et le défilement (R1, R2, R10) restent valables ; aucune donnée en jeu. Le compteur de l'en-tête reste."
+    tests: ["R3 — le compteur de l'en-tête affiche le nombre d'événements", "R3 — 18 faits : le repère dit « 13 faits plus anciens » ; 6 faits : « 1 fait plus ancien »", "R3 — liste remontée tout en haut : le repère dit « Début du match » et garde la même hauteur", "R3 — un clic sur le repère remonte la liste de 5 faits", "R3 — le repère est un bouton, hors de la zone défilante, de contraste texte >= 4,5:1"]
   - id: R4
     etat: peu-de-faits
-    enonce: "Avec peu de faits (5 ici), la liste tient dans la borne : le bloc garde sa hauteur naturelle, sans barre ni ombre, et le compteur dit « 5 faits »."
+    enonce: "Avec 5 faits ou moins (5 sur la maquette), la liste tient dans la borne de 5 lignes : le bloc garde sa hauteur naturelle, sans barre de défilement et sans ligne de repère ; la liste n'est alors ni focusable ni une région (pas de tabindex, pas de role, pas d'aria-label : rien à défiler, R11) et le compteur dit « 5 faits ». Dès 6 faits la liste défile, le repère dit « 1 fait plus ancien » et le tabindex apparaît."
     message: "5 faits"
     champs: [faits-match, compte-faits, liste-faits]
     statut: sourcee
-    source: "comportement de la borne de R1 (max-height, pas height) ; pas de fait : le bloc n'est pas affiché (L160 R3)"
-    tests: ["R4 — 5 faits : hauteur de la liste inférieure à 320 px, pas de défilement"]
+    source: "comportement de la borne de R1 (max-height, pas height) ; pas de fait : le bloc n'est pas affiché (L160 R3) ; constat de la revue de la maquette (tabulation inutile sur une liste qui ne défile pas)"
+    tests: ["R4 — 5 faits : hauteur de la liste = 5 lignes, scrollHeight = clientHeight, pas de repère", "R4 — 5 faits : la liste n'a ni tabindex ni role region", "R4 — 6 faits : la liste défile, le repère dit « 1 fait plus ancien » et la liste a tabindex 0"]
   - id: R5
     etat: charge
-    enonce: "La borne est de 320 px (hypothèse de la maquette : 360 px laisse la carte des tirs sous le pli) ; le départ en bas se fait en CSS (flex-direction column-reverse), sans JavaScript de défilement."
+    enonce: "Choix de mise en oeuvre de la maquette : hauteur de ligne fixe de 44 px (R1), départ en bas par flex-direction column-reverse sans JavaScript de défilement, repère de R3 recalculé par un écouteur de défilement ; la borne reste exprimée en lignes (calc(5 * var(--ligne-fait)))."
     message: ~
-    champs: [liste-faits]
+    champs: [liste-faits, repere-faits-anciens]
     statut: hypothese
-    si_faux: "Si la borne doit être 360 px ou autre, ou le départ en bas posé par scrollTop, seule une valeur ou une technique change ; la décision de Sylvain (bloc borné, défilant) reste vraie."
-    tests: ["R5 — la borne vaut 320 px à 1440 et à 390"]
+    si_faux: "Si la hauteur de ligne doit être autre (ligne à hauteur libre, mesurée par JavaScript) ou le départ en bas posé par scrollTop, seule une valeur ou une technique change ; les décisions de Sylvain (5 faits visibles, bloc borné et défilant) restent vraies."
+    tests: ["R5 — la variable --ligne-fait vaut 44 px à 1440 et à 390 et la max-height de la liste vaut 5 fois cette valeur"]
   - id: R6
     etat: charge
-    enonce: "Rien d'autre ne change : ordre des blocs du centre (Faits, Momentum, Carte des tirs, Statistiques), lignes de faits, libellés, couleurs, colonnes latérales et appel API (GET /api/live-match/{gameId}/stats, aucun champ ajouté)."
+    enonce: "Rien d'autre ne change : ordre des blocs du centre (Faits, Momentum, Carte des tirs, Statistiques), contenu et libellés des lignes de faits, couleurs, compositions et statistiques latérales (champs hérités de L160 listés plus haut) et appel API (GET /api/live-match/{gameId}/stats, aucun champ ajouté)."
     message: ~
-    champs: [entete-score, grille-match, colonne-centre, bloc-statistiques]
+    champs: [entete-score, grille-match, colonne-centre, bloc-statistiques, bloc-composition, titre-composition, formation-composition, terrain-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur, colonne-centre-bas, joueurs-en-vue, classement-direct]
     statut: sourcee
     source: "note du lot L161 : « l'ordre des blocs du centre ne change pas » ; docs/specs/page-match-fm R8 et R11"
     tests: ["R6 — l'ordre des blocs du centre est inchangé", "R6 — un seul appel /api/live-match/{gameId}/stats"]
@@ -95,6 +107,38 @@ regles:
     statut: sourcee
     source: "docs/specs/page-match-fm R3 (inchangé) ; match.tsx : events.length > 0"
     tests: ["R9 — vide : aucun bloc Faits, message de statistiques"]
+  - id: R10
+    etat: charge
+    enonce: "Le défilement de la liste ne piège ni la molette ni le balayage : overscroll-behavior garde sa valeur par défaut (auto), jamais contain ni none. Liste ouverte en bas (état initial), un défilement vers le bas commencé sur la liste fait défiler la page tout de suite ; un défilement vers le haut remonte la liste ; arrivée en butée haute, un défilement vers le haut passe à la page. Mesuré sur la maquette à 1440 (Playwright) : molette +400 sur la liste ouverte, la page passe de 0 à 440 ; liste remontée en butée, molette -300, la page passe de 500 à 200 ; au tactile à 390 (balayage simulé), le doigt qui monte sur la liste ouverte fait défiler la page de 24 à 199, le doigt qui descend fait remonter la liste (scrollTop 0 à -126). Un même geste continu commencé sur la liste y reste jusqu'au relâchement (comportement du navigateur) : c'est la butée qui passe la main au geste suivant."
+    message: ~
+    champs: [liste-faits]
+    statut: sourcee
+    source: "revue de la maquette (majeur : la molette et le balayage restaient bloqués sur la liste ; Nielsen n° 3 contrôle et liberté, n° 4 convention de la plateforme)"
+    tests: ["R10 — la liste n'a pas d'overscroll-behavior contain ni none", "R10 — souris au centre de la liste ouverte, molette vers le bas : la page défile (scrollY > 0)", "R10 — liste en butée haute, molette vers le haut : la page remonte"]
+  - id: R11
+    etat: charge
+    enonce: "Au clavier, quand la liste déborde : elle est focusable (tabindex 0), porte role region et aria-label « Faits du match, du plus ancien au plus récent », et son anneau de focus visible est un contour de 2 px en --ol-red-bright (la convention de focus du site, 4,95:1 sur --surface), décalé de -2 px vers l'intérieur pour ne pas être rogné par le bloc. Les flèches, Page précédente / suivante, Début et Fin la font défiler (comportement natif, vérifié : Début va au plus ancien, Fin au plus récent). Le bouton du repère (R3) est l'autre arrêt de tabulation et porte le même anneau. Quand la liste ne déborde pas, ni l'un ni l'autre (R4)."
+    message: ~
+    champs: [liste-faits, repere-faits-anciens]
+    statut: sourcee
+    source: "revue de la maquette (mineur : tabindex sur une liste sans défilement) ; WCAG 2.1.1, 2.4.7 et 2.4.11 ; note du lot L161 (la barre et le focus doivent être aux couleurs du site)"
+    tests: ["R11 — la liste qui déborde a tabindex 0, role region et un nom accessible", "R11 — au focus clavier, contour de 2 px en --ol-red-bright", "R11 — Fin puis Début au clavier font défiler la liste"]
+  - id: R12
+    etat: charge
+    enonce: "La barre de défilement de la liste est aux couleurs du site : piste bleue, curseur rouge. Piste hsl(224 64% 25%) (#172d69, le bleu OL --ol-blue assombri de 33 % à 25 % de clarté pour tenir le contraste) ; curseur --ol-red-bright hsl(0 84% 60%) (#ef4343), au survol hsl(0 95% 65%). Contraste du curseur sur la piste : 3,44:1 mesuré sur la capture (3,45:1 calculé), donc au moins 3:1 (WCAG 1.4.11) ; avec la piste bleue du site non assombrie (33 %) le rapport tombait à 2,71:1, d'où le choix. Le contraste piste sur fond du bloc, 1,45:1, n'est pas exigé : le curseur seul identifie le composant. Deux déclarations : scrollbar-color: hsl(0 84% 60%) hsl(224 64% 25%) (Chrome 121+, Firefox, Safari 18.2+, qui ignorent alors ::-webkit-scrollbar) et ::-webkit-scrollbar (12 px de large), ::-webkit-scrollbar-track et ::-webkit-scrollbar-thumb (2 px de la couleur de la piste autour du curseur, rayon 6 px) pour les WebKit plus anciens. Au téléphone et sous macOS la barre est masquée tant qu'on ne défile pas : le repère de R3 porte alors seul l'information."
+    message: ~
+    champs: [liste-faits]
+    statut: sourcee
+    source: "note du lot L161, décision de Sylvain du 16-10 : « barre de défilement aux couleurs du site — piste bleue et curseur rouge, curseur >= 3:1 sur la piste (WCAG 1.4.11), scrollbar-color + ::-webkit-scrollbar » ; jamais de vert"
+    tests: ["R12 — la liste porte scrollbar-color curseur rouge, piste bleue", "R12 — contraste curseur / piste >= 3:1 calculé depuis les deux couleurs"]
+  - id: R13
+    etat: charge
+    enonce: "Le bloc Faits du match porte la bordure néon du site, rouge en haut et bleu en bas. Bordure de 1 px en dégradé vertical hsl(0 95% 65% / 0,95), hsl(0 90% 60% / 0,7) à 35 %, hsl(224 90% 60% / 0,7) à 65 %, hsl(224 95% 65% / 0,95) (mêmes teintes que les bords néon de la barre latérale, sidebar.tsx, et des filets du corps, index.css body::before et body::after), sur le fond --surface. Halo : les trois ombres des bords néon de la barre latérale, 0 0 8px 0.5px hsl(0 95% 60% / 0,7), 0 0 18px 1px hsl(0 95% 55% / 0,45), 0 0 36px 2px hsl(0 90% 50% / 0,2), et leurs trois équivalents bleus à la teinte 224 (hsl(224 95% 60% / 0,7), hsl(224 95% 55% / 0,45), hsl(224 90% 50% / 0,2)) ; rayons et étalements inchangés, seul un décalage vertical de 2, 4 et 8 px envoie le rouge vers le haut et le bleu vers le bas. Le bloc n'est donc plus en overflow: hidden. Contraste des deux extrémités de la bordure sur --surface : 5,69:1 (rouge) et 5,11:1 (bleu). Mode contraste forcé : bordure en CanvasText. Aucun vert."
+    message: ~
+    champs: [faits-match]
+    statut: sourcee
+    source: "note du lot L161, décision de Sylvain du 16-10 : « bordure du bloc avec l'effet néon des bandeaux du site » ; teintes et ombres reprises de frontend/src/components/layout/sidebar.tsx et frontend/src/index.css"
+    tests: ["R13 — le bloc Faits a une bordure de 1 px et un box-shadow composé des teintes rouge (0) et bleue (224) du néon", "R13 — aucune teinte verte dans la bordure ni la barre de défilement"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9] }
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13] }
