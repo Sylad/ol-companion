@@ -1650,7 +1650,7 @@ lots:
   - id: L161
     title: "Page du match à 1440 sur un vrai match : avec 16 à 20 faits, le bloc Faits du match fait 939 px et repousse le Momentum (y = 1222) et la carte des tirs (y = 1470) sous le pli d'un écran de 900 px, alors que la référence FM27 borne le panneau des événements et le fait défiler (revue UX L160 16-10, capture conf-charge-rennes-1440.png) — maquette avant le code : hauteur bornée du bloc Faits (de l'ordre de celle d'une composition) avec défilement interne, ou ordre Momentum puis Faits ; à 390 aussi (Momentum à y = 1336)"
     public: "Page du match : le momentum et la carte des tirs visibles sans défiler"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: page
@@ -1666,6 +1666,9 @@ lots:
       - { date: 2026-10-16, text: "test d'acceptation rescellé (frontend/src/routes/match.faits-bornes-L161.test.tsx, fiche inchangée) : le test R13 cherchait les ombres néon dans l'ensemble des sources (SRC) et les trouvait dans sidebar.tsx : vert sans néon sur le bloc (revue Opus du 16-10, mutation vérifiée) ; il lit maintenant box-shadow et le dégradé border-box de .faits-bloc dans index.css (valeur()), et échoue dès que les ombres du bloc sont retirées" }
       - { date: 2026-10-16, text: "test d'acceptation rescellé (frontend/src/routes/match.faits-bornes-L161.test.tsx, fiche inchangée) : constante SRC devenue inutilisée par le rescellement précédent (a15bf57) : tsc -b échouait (TS6133, noUnusedLocals) et cassait npm run build et l'image frontend (revue Opus du 16-10) ; la constante est retirée, aucune assertion ne change" }
     started: 2026-10-16
+    review: { date: 2026-10-16, verdict: "conforme — 0 bloquant, 0 majeur ; trois majeurs de la vague 1245 réglés (README, Nouveauté + capture, tests scellés R1/R3/R6/R10 renforcés), test R13 rescellé pour lire .faits-bloc (mutations vérifiées), TS6133 corrigé ; tsc -b, 687/687 tests, 33/33 acceptation, empreinte 414c1d9 — 3 revues Opus 16-10, re-vérifié par le lead (build vite vers tmp)", commit: 24aa2f54011b9476c64abb827026cf345f48f576 }
+    ux: { date: 2026-10-16, verdict: "conforme — 0 bloquant, 0 majeur ; R1–R13 vérifiés sur l'app (Chromium) à 1440, 390, 389, 360 et 320 px, captures regardées par le lead (5 faits, repère, barre fine bleue à curseur bordé de rouge, bordure néon, Momentum sous le pli) ; rendu Firefox de la barre non vérifiable en headless (feuille de repli appliquée) ; 4 notes mineures, aucune sous-tâche — ux-reviewer 16-10, verdict posé par le lead (lead.ux: lead)" }
+    finished: 2026-10-16
   - id: L162
     title: "QA : attentes /match — conditionner « Classement en direct avec 5 lignes dont Lyon » aux matchs de Ligue 1 (absent en Ligue Europa depuis L158, mesuré Lyon – Crystal Palace, QA L160 16-10) ; relire la ligne shows de /match pour un match à venir sans composition publiée (Hoffenheim – Lyon : Statistiques + Joueurs en vue, pas de colonnes)"
     status: todo
