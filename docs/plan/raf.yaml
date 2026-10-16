@@ -1726,11 +1726,12 @@ lots:
   - id: L167
     title: "Page de match de l'équipe de France : la même page que /match (L160, L161 : en-tête du score, faits bornés, Momentum, carte des tirs, statistiques, compositions, joueurs en vue) pour un match des Bleus quand ils jouent, accessible depuis /equipe-de-france, au thème bleu-blanc-rouge (couleurs de l'équipe à la place du rouge/bleu OL : barres, Momentum, tirs, bordure néon, barre de défilement) — demande de Sylvain 16-10 ; fiche écran et maquette avant le code, données 365scores de l'équipe de France (ids à repérer), classement en direct absent hors Ligue 1 (L158)"
     public: "Équipe de France : la page du match aux couleurs des Bleus"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     screen: page
     created: 2026-10-16
+    started: 2026-10-16
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
