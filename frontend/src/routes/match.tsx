@@ -8,6 +8,7 @@ import { MomentumChart } from '@/components/momentum-chart';
 import { LineupCard } from '@/components/lineup-card';
 import { MiniStandings } from '@/components/mini-standings';
 import { MatchEventBurst } from '@/components/match-event-burst';
+import { clubSymbol } from '@/lib/club-symbol';
 import { deriveClock } from '@/lib/match-clock';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
@@ -357,8 +358,8 @@ export function MatchPage() {
                     key={`${e.gameTime}-${i}`}
                     event={e}
                     homeId={data.home.id}
-                    homeSymbol={data.home.symbolicName}
-                    awaySymbol={data.away.symbolicName}
+                    homeSymbol={clubSymbol(data.home.symbolicName, data.home.name)}
+                    awaySymbol={clubSymbol(data.away.symbolicName, data.away.name)}
                   />
                 ))}
               </div>

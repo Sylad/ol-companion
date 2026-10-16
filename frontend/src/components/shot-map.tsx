@@ -1,4 +1,5 @@
 import type { LiveMatchShot } from '@/types/api';
+import { clubSymbol } from '@/lib/club-symbol';
 import { cn } from '@/lib/utils';
 
 // Horizontal (landscape) pitch — uses full available width.
@@ -29,8 +30,10 @@ interface Props {
   playerNames?: Record<number, string>;
 }
 
-export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol, awaySymbol, playerNames = {} }: Props) {
+export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol: homeSymbolRaw, awaySymbol: awaySymbolRaw, playerNames = {} }: Props) {
   if (!shots.length) return null;
+  const homeSymbol = clubSymbol(homeSymbolRaw, homeName);
+  const awaySymbol = clubSymbol(awaySymbolRaw, awayName);
 
   return (
     <section data-testid="carte-tirs" className="rounded-md bg-surface border border-border overflow-hidden">
