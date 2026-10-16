@@ -1703,11 +1703,12 @@ lots:
     created: 2026-10-16
   - id: L165
     title: "QA — docs/qa/expectations.md, /match/$gameId : conditionner « Classement en direct » aux matchs de Ligue 1 (absent sur un match de coupe depuis L158, QA L161 16-10 : Lyon – Crystal Palace, standings null) et ajouter les attentes du bloc Faits borné (L161 : compte « N faits », liste 5 × 44 px, repère « ↑ N faits plus anciens » / « Début du match » aria-disabled, Momentum sous le pli à 1440 × 900 et 390 × 844, jamais de bouton fléché ni de vert) — brouillon du qa-reviewer dans la note"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-16
     notes:
       - { date: 2026-10-16, text: "brouillon QA 16-10 : shows « Faits du match » avec le compte « N faits » = events.length de /api/live-match/<id>/stats ; sur un match terminé de plus de 5 faits, [data-testid=liste-faits] = 5 lignes de 44 px (clientHeight 220, scrollHeight > 220) à 1440 et 390, ouverte sur les 5 plus récents (scrollTop 0, DOM chronologique) ; bouton [data-testid=repere-faits-anciens] « ↑ N−5 faits plus anciens » (« 1 fait plus ancien »), « Début du match » aria-disabled=true une fois remontée, 32 px ; liste tabindex=0 role=region ; ≤ 5 faits : ni repère ni tabindex ; sans fait : pas de bloc (may be absent when le match n'a pas commencé) ; Momentum bottom < 900 à 1440 × 900 et top < 786 à 390 × 844, titre « Carte des tirs » < 900 (1440 only) ; never : ::-webkit-scrollbar-button display ≠ none, teinte verte, libellé tronqué sous 390, « Classement en direct » hors Ligue 1" }
+    started: 2026-10-16
   - id: L166
     title: "Page du match, barre de défilement des faits (L161, R12) : la piste doit être arrondie aux extrémités avec le même rayon que le curseur (5 px), pour que piste et curseur aient la même forme — remarque de Sylvain 16-10 ; ::-webkit-scrollbar-track border-radius, bordure bleue néon conservée, contrastes inchangés ; L163 reprend ce style pour tout le site"
     status: done
