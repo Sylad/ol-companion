@@ -445,8 +445,9 @@
     {
       "id": "L160",
       "title": "Page du match : chaque équipe de son côté, le match au centre",
-      "status": "doing",
-      "started": "2026-10-16"
+      "status": "done",
+      "started": "2026-10-16",
+      "finished": "2026-10-16"
     },
     {
       "id": "L161",

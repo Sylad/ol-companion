@@ -1635,7 +1635,7 @@ lots:
   - id: L160
     title: "Page du match disposée comme un écran de match de Football Manager (référence : capture FM27 fournie par Sylvain le 16-10, tmp/fm27-match-reference-2026-10-16.webp, à copier dans docs/specs) : chaque équipe a son côté (domicile à gauche, visiteur à droite) avec sa composition et ses statistiques d'équipe ; le centre porte l'en-tête du score, les faits du match, la carte des tirs ou l'élan, et les statistiques globales ou comparées ; les deux compositions ont le même gabarit (même hauteur de terrain quelle que soit la formation) pour un alignement propre ; la répartition par mesure de L159 (BalancedColumns) est remplacée par cette disposition fixe à 1440, empilement ordonné sous xl ; fiche écran et maquette avant le code, revue UX"
     public: "Page du match : chaque équipe de son côté, le match au centre"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     screen: page
@@ -1643,6 +1643,9 @@ lots:
     started: 2026-10-16
     notes:
       - { date: 2026-10-16, text: "test d'acceptation rescellé (frontend/src/routes/match.disposition-L160.test.tsx, fiche inchangée) : l'assertion « aucun ResizeObserver construit » dépasse la fiche : R4 n'interdit que la mesure et la répartition des colonnes (BalancedColumns, balanceColumns), pas l'observateur de taille des pastilles de LineupCard (L130, R8 de L43) ; le test vérifie maintenant qu'aucun observateur ne vise un conteneur de disposition et que balance-columns a disparu" }
+    ux: { date: 2026-10-16, verdict: "conforme — captures 1440 et 390 regardées par le lead sur de vrais matchs (Lyon 4-0 Rennes, Lyon 3-2 Crystal Palace) : trois colonnes 280/544/280, domicile à gauche, visiteur à droite, terrains de même hauteur, gouttières de 16 px, pas de défilement horizontal à 390 ; réserve unique portée par L161 (faits du match bornés avec défilement, décision de Sylvain) ; 1 mineur en note (casse des légendes du Momentum et de la carte des tirs)" }
+    review: { date: 2026-10-16, verdict: "conforme : les constats mineurs sont traités et aucun nouveau défaut n'est apparu — revue Opus 16-10 (vague 1115 : revue 2 conforme 4 mineurs, mineurs corrigés, revue courte conforme) ; re-vérifié par le lead : 652 tests, acceptation 45/45, build sans fuite, raf check", commit: 6b68f4cf3ad2291901697ddb5ed67309f9d97a99 }
+    finished: 2026-10-16
   - id: L161
     title: "Page du match à 1440 sur un vrai match : avec 16 à 20 faits, le bloc Faits du match fait 939 px et repousse le Momentum (y = 1222) et la carte des tirs (y = 1470) sous le pli d'un écran de 900 px, alors que la référence FM27 borne le panneau des événements et le fait défiler (revue UX L160 16-10, capture conf-charge-rennes-1440.png) — maquette avant le code : hauteur bornée du bloc Faits (de l'ordre de celle d'une composition) avec défilement interne, ou ordre Momentum puis Faits ; à 390 aussi (Momentum à y = 1336)"
     public: "Page du match : le momentum et la carte des tirs visibles sans défiler"
