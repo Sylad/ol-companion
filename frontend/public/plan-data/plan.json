@@ -452,8 +452,9 @@
     {
       "id": "L161",
       "title": "Page du match : le momentum et la carte des tirs visibles sans défiler",
-      "status": "doing",
-      "started": "2026-10-16"
+      "status": "done",
+      "started": "2026-10-16",
+      "finished": "2026-10-16"
     },
     {
       "id": "L164",
