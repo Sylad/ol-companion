@@ -1680,7 +1680,7 @@ lots:
   - id: L163
     title: "Barre de défilement uniformisée sur tout le site (demande de Sylvain 16-10) : la règle posée par L161 sur le bloc des faits (scrollbar-color + ::-webkit-scrollbar, curseur rouge sur piste bleue assombrie, curseur ≥ 3:1 sur la piste, WCAG 1.4.11) s'applique à la page et à tous les conteneurs défilants (listes, tableaux, panneaux) ; sous body.theme-fcnoobz la palette lime et bleu électrique de la page FC Noobz ; sur /equipe-de-france un thème bleu blanc rouge ; une seule source CSS (tokens dans index.css), captures 1440 et 390 des pages concernées, Firefox et Chrome"
     public: Barres de défilement aux couleurs du site, FC Noobz et Bleus compris
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
@@ -1688,8 +1688,11 @@ lots:
     created: 2026-10-16
     notes:
       - { date: 2026-10-16, text: "16-10 Sylvain : l'effet néon va sur le CURSEUR de la barre de défilement (halo rouge/bleu du thumb), pas sur la bordure de chaque conteneur défilant ; la bordure néon du bloc des faits (L161) reste une exception voulue" }
+      - { date: 2026-10-16, text: "mineurs en note 16-10 (revue) : (1) .faits-liste garde ses valeurs littérales (tests scellés de L161), doublon assumé de la règle globale ; sous Firefox le bloc des faits reste bleu sur /match quand le reste est rouge ; (2) CLAUDE.md:109 dit encore que body.theme-fcnoobz est la seule exception à la palette OL, body.theme-bleus (/equipe-de-france, bleu 224 80% 58%, curseur blanc) manque : à mettre à jour avec L167 ; (3) rendu Firefox et Safari non vus (headless)" }
     started: 2026-10-16
     review: { date: 2026-10-16, verdict: "conforme, 3 notes mineures — orchestré (vague 2026-10-16-2115, 1 passe(s) de correction + passe des mineurs)", commit: 786fbb475d0f3203f48d36a7339173199f2d62a0 }
+    ux: { date: 2026-10-16, verdict: "conforme — verdict du lead sur les captures de la vague 2026-10-16-2115 (accueil, FC Noobz, Équipe de France à 1440 et 390 px, zoom du curseur Bleus au repos et au survol) : barre aux couleurs de chaque thème, halo néon sur le curseur seulement, contrastes ≥ 3:1 mesurés par les tests ; non vérifié : rendu réel sous Firefox (headless masque les barres, seules les couleurs calculées mesurées) et Safari" }
+    finished: 2026-10-16
   - id: L164
     title: "Page du match à 320 px : l'en-tête du score est rogné (« Lyon 2 – 1 Len… »), sans défilement horizontal (vu en maquette L161 16-10, en-tête hérité de L160, cf. L65 à 320 px) — réduire la police ou passer les noms sur deux lignes"
     public: "Page du match : score et noms entiers sur les petits écrans"
