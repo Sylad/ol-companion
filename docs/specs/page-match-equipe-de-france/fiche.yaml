@@ -8,7 +8,7 @@ ecran:
 etats: [vide, chargement, erreur, charge, acces]
 
 champs:
-  - { id: lien-retour-equipe, libelle: "Lien de retour « ← Équipe de France »", type: lien, source: statique, obligatoire: true }
+  - { id: lien-retour-equipe, libelle: "Lien de retour (icône flèche ArrowLeft + texte « Équipe de France »)", type: lien, source: statique, obligatoire: true }
   - { id: lien-retour-erreur, libelle: "Lien de retour de l’erreur", type: lien, source: statique, obligatoire: false }
   - { id: message-chargement, libelle: "Message de chargement", type: texte, source: statique, obligatoire: true }
   - { id: message-erreur, libelle: "Message d’erreur de la page", type: texte, source: statique, obligatoire: true }
@@ -42,13 +42,13 @@ champs:
 regles:
   - id: R1
     etat: acces
-    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match » seulement dans une fenêtre calculée sur nextMatch.date seule (aucun statut servi, aucun champ nouveau) : de 00:00 (heure de Paris) le jour du coup d’envoi jusqu’à 3 h après le coup d’envoi (même borne que toNextMatch, france.service.ts:206) ; hors fenêtre (veille, ou autre jour) et la date reste affichée (« Jeu. 12/11 · Horaire à confirmer »). Les lignes de résultat sont des <li data-testid=resultat-ligne> d’une <ul>, chacune contenant le lien ; les testid de L113 (resultat-badge, resultat-rencontre, resultat-competition, resultat-date, resultat-score) sont conservés. Le reste de la page (L113) est inchangé."
+    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match » seulement dans une fenêtre calculée sur nextMatch.date seule (aucun statut servi, aucun champ nouveau) : de 00:00 (heure de Paris) le jour du coup d’envoi jusqu’à 3 h après le coup d’envoi ; avant le coup d’envoi la date reste affichée au format de L113, jamais « Aujourd’hui » (« Jeu. 12/11 · 21:00 »), et une fois le coup d’envoi passé la pastille « En direct » la remplace (déduite de nextMatch.date seule, comme le bouton) ; hors fenêtre (veille, ou autre jour) la date reste affichée (« Dim. 15/11 · Horaire à confirmer »). RÈGLE DU BACK, sans laquelle la fenêtre après le coup d’envoi est vide : 365scores retire le match de /web/games/fixtures/ juste avant le direct (live-match.service.ts:23-27, incidents du 16/09 et du 19/09) et /web/games/results/ ne contient que des matchs terminés (live-match.service.ts:364) ; le filtre de 3 h de toNextMatch (france.service.ts:206) ne joue que sur les matchs que fixtures renvoie encore, et keptNextMatch (france.service.ts:~230) ne sert que si la réponse n’a pas de « games ». FranceService garde donc le nextMatch connu (copie en mémoire) jusqu’à son coup d’envoi + 3 h même s’il a disparu de fixtures, à chaque relecture (même principe que KICKOFF_WINDOW de live-match) ; le match gardé est servi tel quel (même id, date, équipes, aucun champ nouveau) et marqué en direct par le front dès le coup d’envoi ; il cède la place au match suivant dès que son id apparaît dans results (match terminé : la ligne de résultat prend le relais) ou au-delà de +3 h. Cas : fixtures sans le match, heure entre le coup d’envoi et +3 h, id absent de results → nextMatch est ce match et le bouton « Voir le match » est présent. Les lignes de résultat sont des <li data-testid=resultat-ligne> d’une <ul>, chacune contenant le lien ; les testid de L113 (resultat-badge, resultat-rencontre, resultat-competition, resultat-date, resultat-score) sont conservés. Le reste de la page (L113) est inchangé."
     message: "Voir le match"
     champs: [lien-resultat-match, lien-prochain-match, derniers-resultats, prochain-match]
     statut: hypothese
-    si_faux: "Si le bouton doit toujours être là, seule la condition d’affichage change (le match à venir affiche alors la date dans son en-tête, R11) ; aucune donnée en jeu."
-    source: "demande du lot : « accessible depuis /equipe-de-france » ; la forme (ligne entière cliquable + bouton) et la condition du bouton (revue UX : éviter une page vide un mois avant) sont des choix de la maquette"
-    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — dans la fenêtre (00:00 Paris le jour J → coup d’envoi + 3 h), le prochain match a un lien « Voir le match »", "R1 — hors fenêtre (demain 20:45 vu aujourd’hui 21:00, ou veille du match) : pas de bouton, date conservée", "R1 — les résultats restent une liste <ul>/<li> avec les testid de L113"]
+    si_faux: "Si le bouton doit toujours être là, seule la condition d’affichage change (le match à venir affiche alors la date dans son en-tête, R11) ; aucune donnée en jeu. Si le match ne doit pas être gardé au-delà du coup d’envoi, la page des Bleus n’est plus joignable pendant le match depuis /equipe-de-france (seule la ligne de résultat, après la fin) : à décider avant le code. Un match reporté ou annulé reste affiché jusqu’à son heure initiale + 3 h (effet accepté)."
+    source: "demande du lot : « accessible depuis /equipe-de-france » et « quand ils jouent » ; la forme (ligne entière cliquable + bouton), la condition du bouton (revue UX : éviter une page vide un mois avant) et la garde du match pendant le direct (revue UX 3) sont des choix de la maquette ; backend/src/modules/france/france.service.ts:206 (toNextMatch) et :~230 (keptNextMatch), backend/src/modules/live-match/live-match.service.ts:23-27 (KICKOFF_WINDOW, retrait du match de fixtures) et :364 (results = matchs terminés)"
+    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — dans la fenêtre (00:00 Paris le jour J → coup d’envoi + 3 h), le prochain match a un lien « Voir le match »", "R1 — hors fenêtre (demain 20:45 vu aujourd’hui 21:00, ou veille du match) : pas de bouton, date conservée", "R1 — avant le coup d’envoi, la date est « Jeu. 12/11 · 21:00 » (format L113, jamais « Aujourd’hui »), après : pastille « En direct »", "R1 — back, scénario à deux lectures (horloge simulée) : lecture 1, fixtures contient le match M (coup d’envoi T) ; lecture 2 à T + 5 min, cache expiré, fixtures SANS M (avec le match suivant N) et results sans M → nextMatch.id = M (échoue avec le code actuel, qui sert N)", "R1 — back : à T + 2 h 59 min, M est encore gardé ; à T + 3 h 01 min, nextMatch = N", "R1 — back : à T + 2 h, results contient M (match terminé) → nextMatch = N et la ligne de résultat de M est un lien", "R1 — les résultats restent une liste <ul>/<li> avec les testid de L113"]
   - id: R2
     etat: acces
     enonce: "Le lien ouvre la route existante /match/$gameId, avec le matchupId au format du contrôleur : /match/<id>?matchupId=<idDomicile>-<idExtérieur>-<id>, lu dans /api/france (id du match, home.id, away.id). Aucune route, aucun appel d’API ni champ nouveau."
@@ -99,12 +99,12 @@ regles:
     tests: ["R7 — match des Bleus : tous les blocs de /match sont présents, dans le même ordre", "R7 — un seul appel /api/live-match/4672325/stats"]
   - id: R8
     etat: charge
-    enonce: "Le lien de retour de la page dit « ← Équipe de France » et mène à /equipe-de-france quand le match est celui des Bleus (au lieu de « ← Accueil »)."
-    message: "← Équipe de France"
+    enonce: "Le lien de retour de la page est une icône flèche ArrowLeft (lucide, décorative, aria-hidden) suivie du texte « Équipe de France », et mène à /equipe-de-france quand le match est celui des Bleus (au lieu de l’icône + « Accueil », match.tsx:368). La flèche n’est pas un caractère du texte : le nom accessible du lien est « Équipe de France »."
+    message: "Équipe de France"
     champs: [lien-retour-equipe]
     statut: hypothese
-    si_faux: "Si « ← Accueil » doit rester, seul le libellé et la cible du lien changent."
-    tests: ["R8 — match des Bleus : le lien de retour dit « ← Équipe de France » et mène à /equipe-de-france"]
+    si_faux: "Si « Accueil » doit rester, seul le libellé et la cible du lien changent."
+    tests: ["R8 — match des Bleus : le lien de retour a pour nom accessible « Équipe de France » (sans caractère « ← »), contient une icône svg et mène à /equipe-de-france"]
   - id: R9
     etat: chargement
     enonce: "Pendant le chargement, le message existant s’affiche, sans grille."
@@ -115,25 +115,25 @@ regles:
     tests: ["R9 — chargement : message, aucun bloc"]
   - id: R10
     etat: erreur
-    enonce: "Si le match ne se charge pas, l’erreur existante s’affiche ; le lien de retour dit « Retour à l’équipe de France » et y mène (« Retour à l’accueil » pour un match de l’OL)."
+    enonce: "Si le match ne se charge pas, l’erreur existante s’affiche ; le lien de retour dit « Retour à l'équipe de France » (apostrophe droite U+0027, comme le code actuel « Retour à l'accueil », match.tsx:326) et y mène (« Retour à l'accueil » pour un match de l’OL)."
     message: "Match introuvable"
     champs: [message-erreur, lien-retour-erreur]
     statut: hypothese
-    si_faux: "Si le lien doit rester « Retour à l’accueil », seul son libellé et sa cible changent. Le message « Match introuvable » est celui de docs/specs/page-match-fm R2."
-    tests: ["R10 — erreur : message et lien « Retour à l’équipe de France »"]
+    si_faux: "Si le lien doit rester « Retour à l'accueil », seul son libellé et sa cible changent. Le message « Match introuvable » est celui de docs/specs/page-match-fm R2."
+    tests: ["R10 — erreur : message et lien « Retour à l'équipe de France » (apostrophe droite)"]
   - id: R11
     etat: vide
-    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21:00 ») et l’équipe de France en bleu du côté où elle joue, et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
+    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21:00 », sur une seule ligne : jamais coupée, elle passe sous le statut quand la ligne manque de place sous 600 px) et l’équipe de France en bleu du côté où elle joue ; l’en-tête n’a pas de hauteur réservée (il suit son contenu), et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
     message: "Les statistiques apparaîtront au coup d’envoi."
     champs: [entete-score, coup-envoi, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
     masque: [faits-match, compte-faits, liste-faits, elan, carte-tirs]
     statut: hypothese
     si_faux: "Si le message ou l’affichage de la date doivent rester ceux de /match (« Pas encore de statistiques. », sans date), seuls ce texte et l’en-tête changent ; startTime est déjà servi (live-match.types.ts:67)."
     source: "docs/specs/page-match-fm R3 (structure) ; match.tsx : events.length > 0 ; revue UX : dire quand les chiffres arriveront"
-    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête"]
+    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête, sur une seule ligne à 390 px"]
   - id: R12
     etat: charge
-    enonce: "Hors page d’un match des Bleus, rien ne change : /match d’un match de l’OL (rouge OL, bleu adverse, « ← Accueil »), /equipe-de-france hors liens (L113), barre de défilement du site (L163) ; le fond de page et les filets du corps ne sont pas modifiés par ce lot."
+    enonce: "Hors page d’un match des Bleus, rien ne change : /match d’un match de l’OL (rouge OL, bleu adverse, icône + « Accueil »), /equipe-de-france hors liens (L113), barre de défilement du site (L163) ; le fond de page et les filets du corps ne sont pas modifiés par ce lot."
     message: ~
     champs: [grille-match]
     statut: sourcee
@@ -141,12 +141,12 @@ regles:
     tests: ["R12 — match de l’OL : rendu inchangé"]
   - id: R13
     etat: charge
-    enonce: "Les noms d’équipe de l’en-tête ne sont jamais coupés ni cachés : la grille est minmax(0,1fr) auto minmax(0,1fr), les noms passent à la ligne (overflow-wrap:anywhere, césure automatique) et sont à 18 px sous 600 px, 24 px au-dessus ; les buteurs reviennent à la ligne sous 390 px. Vérifié avec « Angleterre » et « Bosnie-Herzégovine » à 390 px et « Belgique » à 320 px."
+    enonce: "Les noms d’équipe de l’en-tête ne sont jamais coupés ni cachés : la grille est minmax(0,1fr) auto minmax(0,1fr), les noms passent à la ligne par overflow-wrap:anywhere (la césure automatique hyphens:auto n’agit pas dans Chromium sous Linux : un nom plus long que sa colonne peut être coupé entre deux lettres, sans trait d’union, sans perdre aucun caractère) et sont à 24 px au-dessus de 600 px, 18 px sous 600 px, 16 px sous 390 px ; les buteurs reviennent à la ligne sous 390 px. Mesuré : « Angleterre » et « Bosnie-Herzégovine » à 390 px (deux lignes), « Belgique » à 320 px en 16 px sur une ligne, sans dépassement (scrollWidth = largeur)."
     message: ~
     champs: [entete-score]
     statut: sourcee
     source: "revue UX de la maquette (WCAG 1.4.10 reflow) ; mesures de la revue"
-    tests: ["R13 — à 390 px, « Bosnie-Herzégovine » est entièrement lisible dans l’en-tête", "R13 — à 320 px, « Belgique » et « Lukébakio 35' » ne sont pas coupés"]
+    tests: ["R13 — à 390 px, « Bosnie-Herzégovine » est entièrement lisible dans l’en-tête (deux lignes, aucun caractère perdu)", "R13 — à 320 px, « Belgique » tient sur une ligne à 16 px et « Lukébakio 35' » n’est pas coupé ; aucun dépassement horizontal de la page"]
 
 actions:
   - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13] }
