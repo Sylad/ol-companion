@@ -1,0 +1,9 @@
+{
+  "lot": "L167",
+  "fiche": "docs/specs/page-match-equipe-de-france/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/match.equipe-de-france-L167.test.tsx",
+    "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx"
+  ],
+  "vert": false
+}
