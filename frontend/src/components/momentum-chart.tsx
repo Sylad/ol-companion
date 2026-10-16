@@ -1,4 +1,5 @@
 import type { LiveMatchMomentumPoint } from '@/types/api';
+import { teamColors, type MatchPalette } from '@/lib/match-palette';
 
 /**
  * Momentum minute par minute (backend : play-by-play 365scores pondéré et
@@ -10,15 +11,16 @@ export function MomentumChart(props: {
   homeName: string;
   awayName: string;
   goalMinutes: { minute: number; home: boolean }[];
-  /** La couleur suit le club, pas le côté : rouge pour l'OL, bleu pour l'adversaire (L160 R5). */
+  /** La couleur suit l'équipe suivie, pas le côté (L160 R5) : `homeIsOl` dit si c'est le domicile. */
   homeIsOl: boolean;
+  /** `bleus` : France bleue, adversaire blanc (L167 R4). */
+  palette?: MatchPalette;
 }) {
   if (!props.points.length) return null;
 
-  const OL = 'hsl(var(--ol-red))';
-  const OPPONENT = 'hsl(var(--ol-blue-bright))';
-  const HOME = props.homeIsOl ? OL : OPPONENT;
-  const AWAY = props.homeIsOl ? OPPONENT : OL;
+  const palette = props.palette ?? 'ol';
+  const HOME = teamColors(palette, props.homeIsOl).fill;
+  const AWAY = teamColors(palette, !props.homeIsOl).fill;
   const W = 700;
   const H = 160;
   const MID = 80;

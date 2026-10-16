@@ -1,5 +1,6 @@
 import type { LiveMatchShot } from '@/types/api';
 import { clubLegendLabel, clubSymbol } from '@/lib/club-symbol';
+import { teamColors, type MatchPalette, type TeamColors } from '@/lib/match-palette';
 import { cn } from '@/lib/utils';
 
 // Horizontal (landscape) pitch — uses full available width.
@@ -20,8 +21,10 @@ const SPOT_DIST = 75;
 interface Props {
   shots: LiveMatchShot[];
   homeId: number;
-  /** La couleur suit le club, pas le côté : rouge pour l'OL, bleu pour l'adversaire (L160 R5). */
+  /** La couleur suit l'équipe suivie, pas le côté (L160 R5) : `homeIsOl` dit si c'est le domicile. */
   homeIsOl: boolean;
+  /** `bleus` : France bleue, adversaire blanc, sigle tiré du nom et non « OL » (L167 R4). */
+  palette?: MatchPalette;
   homeName: string;
   awayName: string;
   homeSymbol: string;
@@ -30,18 +33,21 @@ interface Props {
   playerNames?: Record<number, string>;
 }
 
-export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol: homeSymbolRaw, awaySymbol: awaySymbolRaw, playerNames = {} }: Props) {
+export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol: homeSymbolRaw, awaySymbol: awaySymbolRaw, playerNames = {}, palette = 'ol' }: Props) {
   if (!shots.length) return null;
-  const homeSymbol = clubSymbol(homeSymbolRaw, homeName, homeIsOl);
-  const awaySymbol = clubSymbol(awaySymbolRaw, awayName, !homeIsOl);
+  // « OL » est le sigle fixe du seul club suivi de la palette OL.
+  const homeIsClub = palette === 'ol' && homeIsOl;
+  const awayIsClub = palette === 'ol' && !homeIsOl;
+  const homeSymbol = clubSymbol(homeSymbolRaw, homeName, homeIsClub);
+  const awaySymbol = clubSymbol(awaySymbolRaw, awayName, awayIsClub);
 
   return (
     <section data-testid="carte-tirs" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
         <h2 className="eyebrow min-w-0">Carte des tirs</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
-          <LegendDot isOl={homeIsOl} label={clubLegendLabel(homeSymbolRaw, homeName, homeIsOl)} />
-          <LegendDot isOl={!homeIsOl} label={clubLegendLabel(awaySymbolRaw, awayName, !homeIsOl)} />
+          <LegendDot colors={teamColors(palette, homeIsOl)} label={clubLegendLabel(homeSymbolRaw, homeName, homeIsClub)} />
+          <LegendDot colors={teamColors(palette, !homeIsOl)} label={clubLegendLabel(awaySymbolRaw, awayName, awayIsClub)} />
         </div>
       </header>
       <div className="p-4">
@@ -61,7 +67,7 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
                   x={x}
                   y={y}
                   r={r}
-                  isOl={isHome === homeIsOl}
+                  colors={teamColors(palette, isHome === homeIsOl)}
                   outcome={s.outcome}
                   shot={s}
                   playerName={playerNames[s.playerId]}
@@ -72,8 +78,8 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
         </div>
         {/* Sens d'attaque : une ligne sous le terrain, jamais posée dessus (les tirs se concentrent dans les surfaces). */}
         <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 text-[10px] uppercase tracking-wider font-bold">
-          <span className={labelTone(!homeIsOl)}>← {awaySymbol} attaque</span>
-          <span className={cn('text-right', labelTone(homeIsOl))}>{homeSymbol} attaque →</span>
+          <span className={teamColors(palette, !homeIsOl).text}>← {awaySymbol} attaque</span>
+          <span className={cn('text-right', teamColors(palette, homeIsOl).text)}>{homeSymbol} attaque →</span>
         </div>
         <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] sm:[grid-template-columns:repeat(4,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
           <OutcomeLegend label="But" kind="goal" />
@@ -88,9 +94,6 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
     </section>
   );
 }
-
-/** Texte qui porte une équipe (≥ 4,5:1 sur --surface) : rouge OL clair, bleu adverse clair. */
-const labelTone = (isOl: boolean) => (isOl ? 'text-ol-red-bright' : 'text-[hsl(226_70%_70%)]');
 
 function Pitch() {
   const stroke = 'rgba(255,255,255,0.18)';
@@ -121,7 +124,7 @@ function ShotMarker({
   x,
   y,
   r,
-  isOl,
+  colors,
   outcome,
   shot,
   playerName,
@@ -129,12 +132,12 @@ function ShotMarker({
   x: number;
   y: number;
   r: number;
-  isOl: boolean;
+  colors: TeamColors;
   outcome: string;
   shot: LiveMatchShot;
   playerName?: string;
 }) {
-  const fill = isOl ? 'hsl(var(--ol-red))' : 'hsl(var(--ol-blue-bright))';
+  const fill = colors.fill;
   const stroke = fill;
   const isGoal = outcome === 'But';
   const isBlocked = outcome === 'Bloqué' || outcome === 'Blocked';
@@ -185,10 +188,10 @@ function ShotMarker({
   );
 }
 
-function LegendDot({ isOl, label }: { isOl: boolean; label: string }) {
+function LegendDot({ colors, label }: { colors: TeamColors; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className={cn('inline-block w-2.5 h-2.5 rounded-full', isOl ? 'bg-ol-red' : 'bg-ol-blue-bright')} />
+      <span className={cn('inline-block w-2.5 h-2.5 rounded-full', colors.bg)} />
       <span>{label}</span>
     </span>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
@@ -12,6 +12,7 @@ import { clubSymbol } from '@/lib/club-symbol';
 import { deriveClock } from '@/lib/match-clock';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
+import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 
 const EVENT_LABEL: Record<string, string> = {
@@ -57,12 +58,14 @@ function StatRow({
   away,
   fmt,
   homeIsOl,
+  palette,
 }: {
   label: string;
   home: number;
   away: number;
   fmt?: (n: number) => string;
   homeIsOl: boolean;
+  palette: MatchPalette;
 }) {
   const total = home + away;
   const pctHome = total > 0 ? (home / total) * 100 : 50;
@@ -73,10 +76,10 @@ function StatRow({
       <span className="text-right num tabular-nums font-bold text-fg-bright">{f(home)}</span>
       <div>
         <div className="text-[10px] uppercase tracking-wider text-fg-muted text-center mb-1">{label}</div>
-        {/* La couleur suit le club (OL rouge, adversaire bleu), pas le côté ; 2 px de --surface entre les segments. */}
+        {/* La couleur suit l'équipe suivie (OL rouge, adversaire bleu ; France bleue, adversaire blanc), pas le côté ; 2 px de --surface entre les segments. */}
         <div className="flex gap-0.5 h-2 rounded-full bg-surface overflow-hidden">
-          {home > 0 && <div className={cn('transition-all', homeIsOl ? 'bg-ol-red' : 'bg-ol-blue-bright')} style={{ flexGrow: pctHome, flexBasis: 0 }} />}
-          {away > 0 && <div className={cn('transition-all', homeIsOl ? 'bg-ol-blue-bright' : 'bg-ol-red')} style={{ flexGrow: 100 - pctHome, flexBasis: 0 }} />}
+          {home > 0 && <div className={cn('transition-all', teamColors(palette, homeIsOl).bg)} style={{ flexGrow: pctHome, flexBasis: 0 }} />}
+          {away > 0 && <div className={cn('transition-all', teamColors(palette, !homeIsOl).bg)} style={{ flexGrow: 100 - pctHome, flexBasis: 0 }} />}
         </div>
       </div>
       <span className="text-left num tabular-nums font-bold text-fg-bright">{f(away)}</span>
@@ -230,18 +233,37 @@ function scorersFor(events: LiveMatchTimelineEvent[], teamId: number, opponentId
   return [...byPlayer.entries()].map(([name, marks]) => ({ name, marks: marks.join(', ') }));
 }
 
-function Scorers({ items, align }: { items: { name: string; marks: string }[]; align: 'right' | 'left' }) {
+function Scorers({ items, align, reflow = false }: { items: { name: string; marks: string }[]; align: 'right' | 'left'; reflow?: boolean }) {
   if (!items.length) return <div />;
   return (
     <ul className={cn('space-y-0.5 text-xs text-fg-muted', align === 'right' ? 'text-right' : 'text-left')}>
       {items.map((s) => (
         <li key={s.name}>
           <span className="text-fg">{s.name}</span>{' '}
-          <span className="num tabular-nums text-fg-dim">{s.marks}</span>
+          {/* Sous 390 px, les minutes passent à la ligne sous le nom : « Lukébakio 35' » n'est jamais coupé (L167 R13). */}
+          <span className={cn('num tabular-nums text-fg-dim', reflow && 'whitespace-nowrap max-[389px]:block')}>{s.marks}</span>
         </li>
       ))}
     </ul>
   );
+}
+
+const NOM_EQUIPE = 'font-display font-bold leading-none';
+const NOM_EQUIPE_OL = 'text-2xl';
+/**
+ * En-tête d'un match des Bleus (L167 R13) : noms jamais coupés ni cachés. Grille minmax(0,1fr) auto minmax(0,1fr), noms qui
+ * passent à la ligne (`overflow-wrap:anywhere`) à 24 px au-dessus de 600 px, 18 px dessous, 16 px sous 390 px ; sous 360 px
+ * marge latérale 6 px, écart 4 px (le score descend à 32 px, plus haut) pour libérer ~6 px par colonne.
+ */
+const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[359px]:px-[6px] max-[359px]:gap-x-1';
+const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl';
+
+const pad = (n: number): string => n.toString().padStart(2, '0');
+const WEEKDAY_SHORT = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+/** « Jeu. 12/11 · 21:00 » : même date courte que /equipe-de-france (L113), heure à deux points. */
+function kickoffLabel(iso: string): string {
+  const d = new Date(iso);
+  return `${WEEKDAY_SHORT[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth() + 1)} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 interface MatchSearch {
@@ -299,6 +321,13 @@ export function MatchPage() {
     matchupId ?? null,
   );
   const burst = useMatchEventBurst(data);
+  // Décidé sur l'URL et non sur la réponse : le thème est là dès le chargement, sans bascule rouge puis bleue (L167 R3).
+  const bleus = isFranceMatchup(matchupId);
+  useEffect(() => {
+    if (!bleus) return;
+    document.body.classList.add('theme-bleus');
+    return () => document.body.classList.remove('theme-bleus');
+  }, [bleus]);
 
   if (!matchupId) {
     // Le backend exige matchupId (format homeId-awayId-gameId) : sans lui la
@@ -323,12 +352,19 @@ export function MatchPage() {
     return (
       <div className="space-y-3 max-w-md mx-auto text-center py-20">
         <p data-testid="message-erreur" className="text-loss-fg font-semibold">Match introuvable</p>
-        <Link to="/" className="text-fg-muted underline text-sm">Retour à l'accueil</Link>
+        {bleus ? (
+          <Link to="/equipe-de-france" data-testid="lien-retour-erreur" className="text-fg-muted underline text-sm">Retour à l'équipe de France</Link>
+        ) : (
+          <Link to="/" data-testid="lien-retour-erreur" className="text-fg-muted underline text-sm">Retour à l'accueil</Link>
+        )}
       </div>
     );
   }
 
-  const olIsHome = data.home.id === OL_ID;
+  const palette: MatchPalette = bleus ? 'bleus' : 'ol';
+  // L'équipe suivie (OL, ou France sur un match des Bleus) porte la couleur « principale » ; « OL » reste le sigle du seul club OL.
+  const trackedIsHome = data.home.id === (bleus ? FRANCE_365SCORES_ID : OL_ID);
+  const symbolIsOl = !bleus;
   const isLive = data.status === 'live';
   const isUpcoming = data.status === 'upcoming';
   const clock = isUpcoming ? { phase: 'upcoming' as const, label: 'À VENIR', isActive: false } : deriveClock(data);
@@ -364,13 +400,19 @@ export function MatchPage() {
     <div className="space-y-4">
       {burst && <MatchEventBurst key={burst.id} type={burst.type} />}
       <h1 className="sr-only">{data.home.name} – {data.away.name}</h1>
-      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
-        <ArrowLeft className="h-4 w-4" /> Accueil
-      </Link>
+      {bleus ? (
+        <Link to="/equipe-de-france" data-testid="lien-retour-equipe" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Équipe de France
+        </Link>
+      ) : (
+        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
+          <ArrowLeft className="h-4 w-4" /> Accueil
+        </Link>
+      )}
 
       {/* Header */}
       <section data-testid="entete-score" className="rounded-md bg-surface border border-border overflow-hidden">
-        <header className="px-5 py-3 flex items-center justify-between border-b border-border">
+        <header className={cn('px-5 py-3 flex items-center justify-between border-b border-border', bleus && 'flex-wrap gap-x-3 gap-y-1')}>
           <div className="flex items-center gap-2">
             {isPaused ? (
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-fg-muted/20 text-fg text-[10px] font-bold uppercase tracking-wider">
@@ -395,30 +437,36 @@ export function MatchPage() {
             )}
             <span className="text-xs text-fg-muted">{data.competitionName}</span>
           </div>
-          <span className={cn(
-            'text-xs num tabular-nums font-semibold',
-            clock.isActive ? 'text-fg-bright' : 'text-fg-muted',
-          )}>{clock.label}</span>
+          {bleus && isUpcoming ? (
+            <span data-testid="coup-envoi" className="text-xs num tabular-nums font-semibold text-fg-muted whitespace-nowrap">
+              {kickoffLabel(data.startTime)}
+            </span>
+          ) : (
+            <span className={cn(
+              'text-xs num tabular-nums font-semibold',
+              clock.isActive ? 'text-fg-bright' : 'text-fg-muted',
+            )}>{clock.label}</span>
+          )}
         </header>
-        <div className="px-5 py-3 grid grid-cols-[1fr_auto_1fr] items-center gap-x-4 gap-y-1">
+        <div className={cn('px-5 py-3 grid items-center gap-x-4 gap-y-1', bleus ? ENTETE_BLEUS : 'grid-cols-[1fr_auto_1fr]')}>
           <div className="text-right">
-            <div className={cn('font-display font-bold text-2xl leading-none', olIsHome && 'text-ol-red-bright')}>
+            <div className={cn(NOM_EQUIPE, bleus ? NOM_EQUIPE_BLEUS : NOM_EQUIPE_OL, trackedIsHome && teamColors(palette, true).text)}>
               {data.home.name}
             </div>
           </div>
-          <div className="text-5xl font-bold tabular-nums num text-fg-bright">
+          <div className={cn('text-5xl font-bold tabular-nums num text-fg-bright', bleus && 'max-[359px]:text-[32px]')}>
             <MatchScore home={data.home} away={data.away} status={data.status} sepClass="mx-2" />
           </div>
           <div>
-            <div className={cn('font-display font-bold text-2xl leading-none', !olIsHome && 'text-ol-red-bright')}>
+            <div className={cn(NOM_EQUIPE, bleus ? NOM_EQUIPE_BLEUS : NOM_EQUIPE_OL, !trackedIsHome && teamColors(palette, true).text)}>
               {data.away.name}
             </div>
           </div>
           {(homeScorers.length > 0 || awayScorers.length > 0) && (
             <>
-              <Scorers items={homeScorers} align="right" />
+              <Scorers items={homeScorers} align="right" reflow={bleus} />
               <div className="text-center text-fg-dim">⚽</div>
-              <Scorers items={awayScorers} align="left" />
+              <Scorers items={awayScorers} align="left" reflow={bleus} />
             </>
           )}
         </div>
@@ -439,8 +487,8 @@ export function MatchPage() {
             <FaitsMatch
               events={data.events}
               homeId={data.home.id}
-              homeSymbol={clubSymbol(data.home.symbolicName, data.home.name, olIsHome)}
-              awaySymbol={clubSymbol(data.away.symbolicName, data.away.name, !olIsHome)}
+              homeSymbol={clubSymbol(data.home.symbolicName, data.home.name, symbolIsOl && trackedIsHome)}
+              awaySymbol={clubSymbol(data.away.symbolicName, data.away.name, symbolIsOl && !trackedIsHome)}
             />
           )}
           {!!data.momentum && data.momentum.length > 0 && (
@@ -449,14 +497,16 @@ export function MatchPage() {
               homeName={data.home.name}
               awayName={data.away.name}
               goalMinutes={goalMinutes}
-              homeIsOl={olIsHome}
+              homeIsOl={trackedIsHome}
+              palette={palette}
             />
           )}
           {data.shots.length > 0 && (
             <ShotMap
               shots={data.shots}
               homeId={data.home.id}
-              homeIsOl={olIsHome}
+              homeIsOl={trackedIsHome}
+              palette={palette}
               homeName={data.home.name}
               awayName={data.away.name}
               homeSymbol={data.home.symbolicName}
@@ -476,11 +526,14 @@ export function MatchPage() {
                   home={data.teamStats.home[s.key] ?? 0}
                   away={data.teamStats.away[s.key] ?? 0}
                   fmt={s.fmt}
-                  homeIsOl={olIsHome}
+                  homeIsOl={trackedIsHome}
+                  palette={palette}
                 />
               ))}
               {comparedRows.length === 0 && (
-                <p data-testid="message-stats-vide" className="text-xs text-fg-dim py-4 text-center">Pas encore de statistiques.</p>
+                <p data-testid="message-stats-vide" className="text-xs text-fg-dim py-4 text-center">
+                  {bleus && isUpcoming ? 'Les statistiques apparaîtront au coup d’envoi.' : 'Pas encore de statistiques.'}
+                </p>
               )}
             </div>
           </section>
@@ -496,7 +549,7 @@ export function MatchPage() {
           >
             {homeLineup && (
               <SideCell col={1} row={1}>
-                <LineupCard lineup={homeLineup} teamName={data.home.name} accent={olIsHome ? 'red' : 'blue'} reserveBand={reserveBand} />
+                <LineupCard lineup={homeLineup} teamName={data.home.name} accent={bleus ? (trackedIsHome ? 'france' : 'adverse') : trackedIsHome ? 'red' : 'blue'} reserveBand={reserveBand} />
               </SideCell>
             )}
             {teamRows.length > 0 && (
@@ -506,7 +559,7 @@ export function MatchPage() {
             )}
             {awayLineup && (
               <SideCell col={3} row={1}>
-                <LineupCard lineup={awayLineup} teamName={data.away.name} accent={olIsHome ? 'blue' : 'red'} reserveBand={reserveBand} />
+                <LineupCard lineup={awayLineup} teamName={data.away.name} accent={bleus ? (trackedIsHome ? 'adverse' : 'france') : trackedIsHome ? 'blue' : 'red'} reserveBand={reserveBand} />
               </SideCell>
             )}
             {teamRows.length > 0 && (

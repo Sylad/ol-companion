@@ -6,11 +6,18 @@ import { cn } from '@/lib/utils';
 interface Props {
   lineup: LiveMatchLineup;
   teamName: string;
-  /** Rouge = OL, bleu = adversaire (même convention que les stats et la carte des tirs). */
-  accent: 'red' | 'blue';
+  /** Rouge = OL, bleu = adversaire (même convention que les stats et la carte des tirs) ; `france` bleu et `adverse` blanc sur un match des Bleus (L167 R4). */
+  accent: 'red' | 'blue' | 'france' | 'adverse';
   /** Une composition voisine est probable : réserve la bande de l'étiquette pour que les terrains restent alignés (L160 R14). */
   reserveBand?: boolean;
 }
+
+const ACCENTS = {
+  red: { chipClass: 'border-ol-red/50 text-fg', chipBorder: 'hsl(var(--ol-red) / 0.5)', numClass: 'text-ol-red-bright' },
+  blue: { chipClass: 'border-ol-blue/60 text-fg', chipBorder: 'hsl(var(--ol-blue) / 0.6)', numClass: 'text-[hsl(226_70%_70%)]' },
+  france: { chipClass: 'border-[hsl(224_80%_58%/0.6)] text-fg', chipBorder: 'hsl(224 80% 58% / 0.6)', numClass: 'text-[hsl(224_90%_75%)]' },
+  adverse: { chipClass: 'border-[hsl(0_0%_96%/0.5)] text-fg', chipBorder: 'hsl(0 0% 96% / 0.5)', numClass: 'text-[hsl(0_0%_96%)]' },
+} as const;
 
 /** Hauteur du terrain : la même quelle que soit la formation, les rangées s'y répartissent (L160 R6, R7). */
 const PITCH_HEIGHT = 'h-[360px]';
@@ -25,10 +32,7 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
   const { rows, known } = buildRows(lineup);
   const widest = Math.max(1, ...rows.map((r) => r.length));
   const chipWidth = `calc((100% - ${(widest - 1) * 4}px) / ${widest})`;
-  const chipClass = accent === 'red' ? 'border-ol-red/50 text-fg' : 'border-ol-blue/60 text-fg';
-  // Bordure des pastilles en style en ligne : la classe reste identique d'un bloc à l'autre (R7).
-  const chipBorder = accent === 'red' ? 'hsl(var(--ol-red) / 0.5)' : 'hsl(var(--ol-blue) / 0.6)';
-  const numClass = accent === 'red' ? 'text-ol-red-bright' : 'text-[hsl(226_70%_70%)]';
+  const { chipClass, chipBorder, numClass } = ACCENTS[accent];
 
   return (
     <section data-testid="bloc-composition" className="h-full rounded-md bg-surface border border-border overflow-hidden">

@@ -783,6 +783,23 @@
 @supports not selector(::-webkit-scrollbar) {
   .faits-liste { scrollbar-width: thin; scrollbar-color: hsl(var(--ol-blue-bright)) hsl(var(--surface)); }
 }
+/* L167 R5 — match des Bleus : bordure néon aux couleurs du drapeau (bleu en haut, blanc au milieu, rouge en bas ; halos
+   bleus vers le haut, rouges vers le bas, mêmes rayons) et barre de défilement aux jetons --sb-* du thème des Bleus. */
+body.theme-bleus .faits-bloc {
+  background:
+    linear-gradient(hsl(var(--surface)), hsl(var(--surface))) padding-box,
+    linear-gradient(180deg, hsl(224 95% 65% / .95) 0%, hsl(0 0% 100% / .85) 50%, hsl(0 95% 65% / .95) 100%) border-box;
+  box-shadow:
+    0 -2px 8px 0.5px hsl(224 95% 60% / 0.7), 0 2px 8px 0.5px hsl(0 95% 60% / 0.7),
+    0 -4px 18px 1px hsl(224 95% 55% / 0.45), 0 4px 18px 1px hsl(0 95% 55% / 0.45),
+    0 -8px 36px 2px hsl(224 90% 50% / 0.2), 0 8px 36px 2px hsl(0 90% 50% / 0.2);
+}
+body.theme-bleus .faits-liste::-webkit-scrollbar-track { background: hsl(var(--surface)); border-color: hsl(var(--sb-track-edge)); box-shadow: inset 0 0 6px hsl(var(--sb-track-edge) / 0.55); }
+body.theme-bleus .faits-liste::-webkit-scrollbar-thumb { background: hsl(var(--sb-thumb)); border-color: hsl(var(--sb-thumb-edge)); }
+body.theme-bleus .faits-liste::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 6px 1px hsl(var(--sb-glow) / 0.7), inset 0 0 4px hsl(var(--sb-glow) / 0.7); }
+@supports not selector(::-webkit-scrollbar) {
+  body.theme-bleus .faits-liste { scrollbar-color: hsl(var(--sb-ff-thumb)) hsl(var(--sb-ff-track)); }
+}
 .faits-liste-in { padding: 0 20px; }
 .faits-liste .ev {
   display: grid; grid-template-columns: 1fr 60px 1fr; gap: 12px; align-items: center;
