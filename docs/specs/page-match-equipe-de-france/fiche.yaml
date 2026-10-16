@@ -12,6 +12,7 @@ champs:
   - { id: lien-retour-erreur, libelle: "Lien de retour de l’erreur", type: lien, source: statique, obligatoire: false }
   - { id: message-chargement, libelle: "Message de chargement", type: texte, source: statique, obligatoire: true }
   - { id: message-erreur, libelle: "Message d’erreur de la page", type: texte, source: statique, obligatoire: true }
+  - { id: coup-envoi, libelle: "Date et heure du coup d’envoi (match à venir)", type: texte, source: "GET /api/live-match/{gameId}/stats → startTime", obligatoire: false }
   - { id: message-stats-vide, libelle: "Message sans statistiques", type: texte, source: statique, obligatoire: false }
   - { id: entete-score, libelle: "En-tête du score", type: carte, source: "GET /api/live-match/{gameId}/stats → status, home, away, events", obligatoire: true }
   - { id: grille-match, libelle: "Grille de la page (L160)", type: liste, source: statique, obligatoire: true }
@@ -41,12 +42,13 @@ champs:
 regles:
   - id: R1
     etat: acces
-    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match ». Le reste de la page (L113) est inchangé."
+    enonce: "Depuis /equipe-de-france, chaque ligne des « Derniers résultats » est un lien (toute la ligne, 44 px de haut au moins, chevron « › ») vers la page du match, et le bloc « Prochain match » porte un bouton-lien « Voir le match » seulement le jour du match (date du coup d’envoi = aujourd’hui, heure de Paris) ou quand le match est en direct ; au-delà, pas de bouton et la date reste affichée (« Jeu. 12/11 · Horaire à confirmer »). Les lignes de résultat sont des <li data-testid=resultat-ligne> d’une <ul>, chacune contenant le lien ; les testid de L113 (resultat-badge, resultat-rencontre, resultat-competition, resultat-date, resultat-score) sont conservés. Le reste de la page (L113) est inchangé."
     message: "Voir le match"
     champs: [lien-resultat-match, lien-prochain-match, derniers-resultats, prochain-match]
-    statut: sourcee
-    source: "demande du lot : « accessible depuis /equipe-de-france » ; la forme (ligne entière cliquable + bouton) est un choix de la maquette"
-    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — le prochain match a un lien « Voir le match »"]
+    statut: hypothese
+    si_faux: "Si le bouton doit toujours être là, seule la condition d’affichage change (le match à venir affiche alors la date dans son en-tête, R11) ; aucune donnée en jeu."
+    source: "demande du lot : « accessible depuis /equipe-de-france » ; la forme (ligne entière cliquable + bouton) et la condition du bouton (revue UX : éviter une page vide un mois avant) sont des choix de la maquette"
+    tests: ["R1 — chaque ligne de résultat est un lien d’au moins 44 px", "R1 — le jour du match ou en direct, le prochain match a un lien « Voir le match »", "R1 — match dans plus de 24 h : pas de bouton, date conservée", "R1 — les résultats restent une liste <ul>/<li> avec les testid de L113"]
   - id: R2
     etat: acces
     enonce: "Le lien ouvre la route existante /match/$gameId, avec le matchupId au format du contrôleur : /match/<id>?matchupId=<idDomicile>-<idExtérieur>-<id>, lu dans /api/france (id du match, home.id, away.id). Aucune route, aucun appel d’API ni champ nouveau."
@@ -89,7 +91,7 @@ regles:
     tests: ["R6 — match des Bleus : pas de bloc « Classement en direct »"]
   - id: R7
     etat: charge
-    enonce: "Le contenu est celui de /match (L160, L161) sans changement de structure : en-tête du score, faits bornés à 5 lignes, Momentum, carte des tirs, statistiques comparées, compositions avec banc, statistiques par équipe, joueurs en vue ; même ordre, mêmes libellés. Un seul appel : GET /api/live-match/{gameId}/stats (aucun champ ajouté). Vérifié sur le match réel France – Belgique 4–1 du 05/10/2026 (gameId 4672325, matchupId 5061-2373-4672325, compétition 7016) : l’agrégation existante renvoie 19 faits, 28 tirs, deux compositions 4-3-3, 3 duels de joueurs en vue, sans classement ni dépendance à l’OL."
+    enonce: "Le contenu est celui de /match (L160, L161) sans changement de structure : en-tête du score, faits bornés à 5 lignes, Momentum, carte des tirs, statistiques comparées, compositions avec banc, statistiques par équipe, joueurs en vue ; même ordre du DOM que match.tsx (en-tête, faits, Momentum, tirs, statistiques, compositions et statistiques par équipe, puis joueurs en vue), mêmes libellés. Un seul appel : GET /api/live-match/{gameId}/stats (aucun champ ajouté). Vérifié sur le match réel France – Belgique 4–1 du 05/10/2026 (gameId 4672325, matchupId 5061-2373-4672325, compétition 7016) : l’agrégation existante renvoie 19 faits, 28 tirs, deux compositions 4-3-3, 3 duels de joueurs en vue, sans classement ni dépendance à l’OL."
     message: ~
     champs: [entete-score, grille-match, colonne-centre, faits-match, elan, carte-tirs, bloc-statistiques, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, colonne-centre-bas, joueurs-en-vue]
     statut: sourcee
@@ -121,13 +123,14 @@ regles:
     tests: ["R10 — erreur : message et lien « Retour à l’équipe de France »"]
   - id: R11
     etat: vide
-    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec l’équipe de France en bleu du côté où elle joue, et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
-    message: "Pas encore de statistiques."
-    champs: [entete-score, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
+    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21:00 ») et l’équipe de France en bleu du côté où elle joue, et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
+    message: "Les statistiques apparaîtront au coup d’envoi."
+    champs: [entete-score, coup-envoi, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
     masque: [faits-match, compte-faits, liste-faits, elan, carte-tirs]
-    statut: sourcee
-    source: "docs/specs/page-match-fm R3 (inchangé) ; match.tsx : events.length > 0"
-    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques"]
+    statut: hypothese
+    si_faux: "Si le message ou l’affichage de la date doivent rester ceux de /match (« Pas encore de statistiques. », sans date), seuls ce texte et l’en-tête changent ; startTime est déjà servi (live-match.types.ts:67)."
+    source: "docs/specs/page-match-fm R3 (structure) ; match.tsx : events.length > 0 ; revue UX : dire quand les chiffres arriveront"
+    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête"]
   - id: R12
     etat: charge
     enonce: "Hors page d’un match des Bleus, rien ne change : /match d’un match de l’OL (rouge OL, bleu adverse, « ← Accueil »), /equipe-de-france hors liens (L113), barre de défilement du site (L163) ; le fond de page et les filets du corps ne sont pas modifiés par ce lot."
@@ -136,9 +139,17 @@ regles:
     statut: sourcee
     source: "demande du lot (le thème des Bleus remplace les couleurs OL sur la page des Bleus seulement) ; docs/specs/page-match-faits-bornes (OL inchangé)"
     tests: ["R12 — match de l’OL : rendu inchangé"]
+  - id: R13
+    etat: charge
+    enonce: "Les noms d’équipe de l’en-tête ne sont jamais coupés ni cachés : la grille est minmax(0,1fr) auto minmax(0,1fr), les noms passent à la ligne (overflow-wrap:anywhere, césure automatique) et sont à 18 px sous 600 px, 24 px au-dessus ; les buteurs reviennent à la ligne sous 390 px. Vérifié avec « Angleterre » et « Bosnie-Herzégovine » à 390 px et « Belgique » à 320 px."
+    message: ~
+    champs: [entete-score]
+    statut: sourcee
+    source: "revue UX de la maquette (WCAG 1.4.10 reflow) ; mesures de la revue"
+    tests: ["R13 — à 390 px, « Bosnie-Herzégovine » est entièrement lisible dans l’en-tête", "R13 — à 320 px, « Belgique » et « Lukébakio 35' » ne sont pas coupés"]
 
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R3, R4, R5, R6, R7, R8, R9, R10, R11, R12] }
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13] }
   - { id: A2, declencheur: ~, appel: "GET /api/france", regles: [R1, R2] }
   - { id: A3, declencheur: lien-resultat-match, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3] }
   - { id: A4, declencheur: lien-prochain-match, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R11] }
