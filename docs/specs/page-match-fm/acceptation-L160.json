@@ -6,6 +6,15 @@
   ],
   "vert": false,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "a5d82a4036faf5a76baee024777043540886ffd8"
-  }
+    "frontend/src/routes/match.disposition-L160.test.tsx": "287c77a6dbf99dfffe10438972ed6a7ed3e259af"
+  },
+  "resceaux": [
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "l'assertion « aucun ResizeObserver construit » dépasse la fiche : R4 n'interdit que la mesure et la répartition des colonnes (BalancedColumns, balanceColumns), pas l'observateur de taille des pastilles de LineupCard (L130, R8 de L43) ; le test vérifie maintenant qu'aucun observateur ne vise un conteneur de disposition et que balance-columns a disparu",
+      "date": "2026-10-16",
+      "avant": "a5d82a4036faf5a76baee024777043540886ffd8",
+      "apres": "287c77a6dbf99dfffe10438972ed6a7ed3e259af"
+    }
+  ]
 }

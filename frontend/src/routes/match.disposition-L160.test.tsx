@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { LiveMatchLineup, LiveMatchLineupPlayer, LiveMatchStats } from '@/types/api';
 
@@ -13,7 +13,14 @@ import type { LiveMatchLineup, LiveMatchLineupPlayer, LiveMatchStats } from '@/t
 type HookResult = { isLoading: boolean; isError: boolean; data: LiveMatchStats | undefined };
 let hook: HookResult;
 const calls: string[] = [];
-let observers = 0;
+const observed: Element[] = [];
+const COLONNE_OU_GRILLE = '[data-testid^="colonne-"], [data-testid="grille-match"]';
+// R4 ne vise que le placement des blocs : un observateur de taille posé sur une colonne, la grille,
+// l'un de leurs enfants directs ou un bloc (section) serait de la répartition par la hauteur.
+const estConteneurDeDisposition = (el: Element) =>
+  el.matches(`${COLONNE_OU_GRILLE}, section[data-testid], [data-testid^="bloc-"]`) ||
+  !!el.parentElement?.matches(COLONNE_OU_GRILLE) ||
+  !!el.querySelector(COLONNE_OU_GRILLE);
 
 vi.mock('@tanstack/react-router', () => ({
   useParams: () => ({ gameId: '10' }),
@@ -173,8 +180,8 @@ const token = (name: string) => {
 beforeEach(() => {
   nextId = 1000;
   calls.length = 0;
-  observers = 0;
-  vi.stubGlobal('ResizeObserver', class { constructor() { observers++; } observe() {} unobserve() {} disconnect() {} });
+  observed.length = 0;
+  vi.stubGlobal('ResizeObserver', class { constructor() {} observe(el: Element) { observed.push(el); } unobserve() {} disconnect() {} });
   setWidth(1440);
 });
 
@@ -299,7 +306,7 @@ describe('Page match en écran FM (L160)', () => {
     show({ nEvents: 40, homeBench: BENCH_LONG });
     expect(colFaits()).toBe(tid('colonne-centre'));
     expect(chainCss(all('bloc-composition')[0], tid('grille-match'))).toBe(homeAvant);
-    expect(observers).toBe(0);
+    expect(observed.filter(estConteneurDeDisposition)).toEqual([]);
   });
 
   const ETATS: [string, Opts, string[]][] = [
@@ -366,7 +373,8 @@ describe('Page match en écran FM (L160)', () => {
 
   it('R4 — BalancedColumns n\'est plus importé par match.tsx', () => {
     const src = readFileSync(path.resolve(__dirname, 'match.tsx'), 'utf8');
-    expect(src).not.toMatch(/BalancedColumns|balanceColumns/);
+    expect(src).not.toMatch(/BalancedColumns|balanceColumns|balance-columns/);
+    expect(existsSync(path.resolve(__dirname, '../lib/balance-columns.ts'))).toBe(false);
     show();
     expect(screen.queryByTestId('colonne-gauche')).toBeNull();
     expect(tid('grille-match')).toBeInTheDocument();
