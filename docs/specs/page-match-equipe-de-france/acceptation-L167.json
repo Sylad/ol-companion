@@ -6,5 +6,10 @@
     "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx",
     "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx"
   ],
-  "vert": false
+  "vert": false,
+  "empreintes": {
+    "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "4232a365fd5d262d64bd0f7dd0527c586444608d",
+    "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "f2963e6117d678362def63c4a7b336f705633ff4",
+    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "3adac6394b1030abafc809a931276dddf117fd18"
+  }
 }
