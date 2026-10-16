@@ -4,5 +4,8 @@
   "fichiers": [
     "frontend/src/routes/match.disposition-L160.test.tsx"
   ],
-  "vert": false
+  "vert": false,
+  "empreintes": {
+    "frontend/src/routes/match.disposition-L160.test.tsx": "a5d82a4036faf5a76baee024777043540886ffd8"
+  }
 }
