@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { LiveMatchStats } from '@/types/api';
