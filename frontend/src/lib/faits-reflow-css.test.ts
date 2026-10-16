@@ -23,3 +23,10 @@ describe('L161 — reflow des faits sous 390 px', () => {
     }
   });
 });
+
+describe('L161 — défilement de la liste des faits', () => {
+  it("R10 — la feuille ne déclare aucun overscroll-behavior contain ni none (ni sur la liste ni sur le bloc)", () => {
+    const declarations = css.match(/overscroll-behavior[a-z-]*\s*:[^;}]*/g) ?? [];
+    for (const d of declarations) expect(d).not.toMatch(/\b(contain|none)\b/);
+  });
+});
