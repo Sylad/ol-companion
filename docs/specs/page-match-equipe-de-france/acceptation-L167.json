@@ -9,7 +9,17 @@
   "vert": false,
   "empreintes": {
     "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "4232a365fd5d262d64bd0f7dd0527c586444608d",
-    "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "f2963e6117d678362def63c4a7b336f705633ff4",
+    "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
     "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "3adac6394b1030abafc809a931276dddf117fd18"
-  }
+  },
+  "resceaux": [
+    {
+      "test": "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx",
+      "raison": "le test attendait « 21:00 » alors que la page (L113, test scellé equipe-de-france.acceptation.test.tsx:295) rend l'heure en « 21h00 » et que la fiche dit « format de L113, le reste de la page inchangé » : le test contredisait la fiche, corrigé en « 21h00 » ; fiche amendée au même format par un commit du lot",
+      "date": "2026-10-16",
+      "avant": "f2963e6117d678362def63c4a7b336f705633ff4",
+      "apres": "7251a8127e69760166038d00d5237fc752025bb0",
+      "ficheAmendee": "530a404"
+    }
+  ]
 }

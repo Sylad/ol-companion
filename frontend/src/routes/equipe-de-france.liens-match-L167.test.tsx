@@ -86,10 +86,10 @@ describe('R1 — accès depuis /equipe-de-france', () => {
     }
   });
 
-  it('R1 — avant le coup d’envoi, la date est « Jeu. 12/11 · 21:00 » (format L113, jamais « Aujourd’hui »), après : pastille « En direct »', async () => {
+  it('R1 — avant le coup d’envoi, la date est « Jeu. 12/11 · 21h00 » (format L113, jamais « Aujourd’hui »), après : pastille « En direct »', async () => {
     let bloc = await renderPage(KICKOFF, '2026-11-12T10:00:00Z');
-    // R1 — « avant le coup d’envoi la date reste affichée au format de L113, jamais « Aujourd’hui » (« Jeu. 12/11 · 21:00 ») »
-    expect(within(bloc).getByTestId('prochain-match-date')).toHaveTextContent('Jeu. 12/11 · 21:00');
+    // R1 — « avant le coup d’envoi la date reste affichée au format de L113, jamais « Aujourd’hui » (« Jeu. 12/11 · 21h00 ») »
+    expect(within(bloc).getByTestId('prochain-match-date')).toHaveTextContent('Jeu. 12/11 · 21h00');
     expect(bloc).not.toHaveTextContent('Aujourd’hui');
     expect(within(bloc).queryByTestId('prochain-match-en-direct')).toBeNull();
     document.body.innerHTML = '';
