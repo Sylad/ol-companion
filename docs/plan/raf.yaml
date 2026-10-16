@@ -1705,13 +1705,15 @@ lots:
       - { date: 2026-10-16, text: "brouillon QA 16-10 : shows « Faits du match » avec le compte « N faits » = events.length de /api/live-match/<id>/stats ; sur un match terminé de plus de 5 faits, [data-testid=liste-faits] = 5 lignes de 44 px (clientHeight 220, scrollHeight > 220) à 1440 et 390, ouverte sur les 5 plus récents (scrollTop 0, DOM chronologique) ; bouton [data-testid=repere-faits-anciens] « ↑ N−5 faits plus anciens » (« 1 fait plus ancien »), « Début du match » aria-disabled=true une fois remontée, 32 px ; liste tabindex=0 role=region ; ≤ 5 faits : ni repère ni tabindex ; sans fait : pas de bloc (may be absent when le match n'a pas commencé) ; Momentum bottom < 900 à 1440 × 900 et top < 786 à 390 × 844, titre « Carte des tirs » < 900 (1440 only) ; never : ::-webkit-scrollbar-button display ≠ none, teinte verte, libellé tronqué sous 390, « Classement en direct » hors Ligue 1" }
   - id: L166
     title: "Page du match, barre de défilement des faits (L161, R12) : la piste doit être arrondie aux extrémités avec le même rayon que le curseur (5 px), pour que piste et curseur aient la même forme — remarque de Sylvain 16-10 ; ::-webkit-scrollbar-track border-radius, bordure bleue néon conservée, contrastes inchangés ; L163 reprend ce style pour tout le site"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     screen: component
     created: 2026-10-16
     started: 2026-10-16
-    review: { date: 2026-10-16, verdict: "compliant — orchestré (vague 2026-10-16-1818, 0 passe(s) de correction)", commit: d692bcc373e52d1d355e54fd4794dfa883d468a2 }
+    review: { date: 2026-10-16, verdict: "conforme — 0 bloquant, 0 majeur ; piste ::-webkit-scrollbar-track border-radius 5 px, test scellé L161 vert (33/33), Nouveauté sur le bloc réel ; revue légère de la vague 1818 + revue courte Sonnet 16-10, re-vérifié par le lead (tsc, 688 tests)", commit: 28ba1e71da73f8ee944a359858e6d073f1a09ebc }
+    ux: { date: 2026-10-16, verdict: "conforme — piste arrondie au même rayon que le curseur (5 px, mesuré ×3 à 1440 et 390, profils de coin identiques), bordure bleue, curseur bleu/rouge, halo rouge au survol et contrastes R12 (3,85:1 et 3,20:1) inchangés ; captures regardées par le lead ; aucune réserve — ux-reviewer 16-10, verdict posé par le lead (lead.ux: lead)" }
+    finished: 2026-10-16
   - id: L167
     title: "Page de match de l'équipe de France : la même page que /match (L160, L161 : en-tête du score, faits bornés, Momentum, carte des tirs, statistiques, compositions, joueurs en vue) pour un match des Bleus quand ils jouent, accessible depuis /equipe-de-france, au thème bleu-blanc-rouge (couleurs de l'équipe à la place du rouge/bleu OL : barres, Momentum, tirs, bordure néon, barre de défilement) — demande de Sylvain 16-10 ; fiche écran et maquette avant le code, données 365scores de l'équipe de France (ids à repérer), classement en direct absent hors Ligue 1 (L158)"
     status: todo

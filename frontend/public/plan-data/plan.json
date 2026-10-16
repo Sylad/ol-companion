@@ -464,8 +464,9 @@
     {
       "id": "L166",
       "title": "Faits du match : la barre de défilement a des bouts arrondis",
-      "status": "doing",
-      "started": "2026-10-16"
+      "status": "done",
+      "started": "2026-10-16",
+      "finished": "2026-10-16"
     }
   ]
 }
