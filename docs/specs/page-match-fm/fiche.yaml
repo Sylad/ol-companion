@@ -5,7 +5,7 @@ ecran:
   lot: L160
   largeurs: [1440, 390]
   maquette: docs/specs/page-match-fm/maquette.html
-etats: [vide, chargement, erreur, charge]
+etats: [vide, chargement, erreur, charge, exterieur]
 
 champs:
   - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
@@ -13,9 +13,8 @@ champs:
   - { id: message-stats-vide, libelle: Message sans statistiques, type: texte, source: statique, obligatoire: false }
   - { id: entete-score, libelle: En-tête du score (statut, compétition, horloge, clubs, score, buteurs), type: carte, source: "GET /api/live-match/{gameId}/stats → status, competitionName, home, away, events", obligatoire: true }
   - { id: grille-match, libelle: Grille à trois colonnes fixes à partir de xl, type: liste, source: statique, obligatoire: true }
-  - { id: colonne-domicile, libelle: Colonne de gauche (équipe à domicile), type: liste, source: "GET /api/live-match/{gameId}/stats → lineups.home, teamStats.home", obligatoire: true }
-  - { id: colonne-centre, libelle: Colonne centrale (le match), type: liste, source: "GET /api/live-match/{gameId}/stats", obligatoire: true }
-  - { id: colonne-visiteur, libelle: Colonne de droite (équipe visiteuse), type: liste, source: "GET /api/live-match/{gameId}/stats → lineups.away, teamStats.away", obligatoire: true }
+  - { id: colonne-centre, libelle: Colonne centrale haute (faits, élan, tirs, statistiques comparées), type: liste, source: "GET /api/live-match/{gameId}/stats", obligatoire: true }
+  - { id: colonne-centre-bas, libelle: Colonne centrale basse (joueurs en vue, classement), type: liste, source: "GET /api/live-match/{gameId}/stats → topPerformers, standings", obligatoire: false }
   - { id: bloc-composition, libelle: Bloc Composition d'une équipe, type: carte, source: "GET /api/live-match/{gameId}/stats → lineups", obligatoire: false }
   - { id: titre-composition, libelle: Titre « Composition · club », type: texte, source: "GET /api/live-match/{gameId}/stats → équipe", obligatoire: false }
   - { id: formation-composition, libelle: Pastille de la formation, type: texte, source: "GET /api/live-match/{gameId}/stats → lineup.formation", obligatoire: false }
@@ -46,8 +45,8 @@ regles:
     message: "Match introuvable"
     champs: [message-erreur]
     statut: sourcee
-    source: "frontend/src/routes/match.tsx (isError) ; état inchangé par le lot"
-    tests: ["R2 — erreur : message, aucune colonne"]
+    source: "frontend/src/routes/match.tsx (isError) ; texte inchangé. Couleur : jeton --loss-fg (hsl 0 84% 63%, frontend/src/index.css:30, créé en L138, 5,64:1), classe text-loss-fg, jamais text-loss (3,85:1 sur le panneau, sous 4,5:1, WCAG 1.4.3) — revue UX de la maquette"
+    tests: ["R2 — erreur : message, aucune colonne", "R2 — le message d'erreur porte la classe text-loss-fg (contraste ≥ 4,5:1)"]
   - id: R3
     etat: vide
     enonce: "Sans composition, fait, tir ni élan publiés (match à venir), l'en-tête reste, les blocs absents ne s'affichent pas (aucun cadre vide), les colonnes latérales sont vides et le centre garde sa largeur ; le bloc Statistiques annonce l'absence de chiffres."
@@ -59,20 +58,20 @@ regles:
     tests: ["R3 — vide : en-tête et message, aucun bloc absent, centre à la même largeur qu'avec données"]
   - id: R4
     etat: charge
-    enonce: "À partir de xl (1280 px), la page est une grille fixe de trois colonnes : équipe à domicile à gauche, match au centre, équipe visiteuse à droite (colonnes latérales 320 px, centre = le reste). BalancedColumns (mesure, répartition, observateur de taille) et balanceColumns ne sont plus utilisés par la page : aucun bloc ne change de colonne selon sa hauteur."
+    enonce: "À partir de xl (1280 px), la page est une grille fixe de trois colonnes : équipe à domicile à gauche, match au centre, équipe visiteuse à droite (colonnes latérales 320 px, centre = le reste ; grille extérieure à rangées auto / auto / 1fr : compositions en rangée 1, statistiques d'équipe en rangée 2, centre haut sur les rangées 1 et 2, centre bas en rangée 3). BalancedColumns (mesure, répartition, observateur de taille) et balanceColumns ne sont plus utilisés par la page : aucun bloc ne change de colonne selon sa hauteur."
     message: ~
-    champs: [grille-match, colonne-domicile, colonne-centre, colonne-visiteur]
+    champs: [grille-match, colonne-centre, colonne-centre-bas]
     statut: sourcee
     source: "demande du lot L160 : « disposition fixe à 1440 », « domicile à gauche, visiteur à droite », « remplacée par cette disposition fixe » ; capture FM27 docs/specs/page-match-fm/reference-fm27.webp ; largeur 320 px : hypothèse R10"
-    tests: ["R4 — 1440 : trois colonnes, domicile à gauche, visiteur à droite, centre au milieu", "R4 — 1440 : un bloc qui grandit ne change pas de colonne", "R4 — BalancedColumns n'est plus importé par match.tsx"]
+    tests: ["R4 — 1440 : trois colonnes, domicile à gauche, visiteur à droite, centre au milieu", "R4 — 1440 : les deux blocs de statistiques d'équipe commencent à la même ordonnée (±1 px) et les deux compositions ont la même hauteur (±1 px), même si un banc tient sur deux lignes et l'autre sur une", "R4 — 1440 : un bloc qui grandit ne change pas de colonne", "R4 — BalancedColumns n'est plus importé par match.tsx"]
   - id: R5
     etat: charge
-    enonce: "Chaque côté porte sa composition puis ses statistiques d'équipe : colonne de gauche = équipe à domicile (data.home), colonne de droite = équipe visiteuse (data.away), que ce soit l'OL ou non. Les couleurs gardent la convention : rouge OL, bleu adversaire (pastille, bordure des pastilles, numéros, barres)."
+    enonce: "Chaque côté porte sa composition puis ses statistiques d'équipe : colonne de gauche = équipe à domicile (data.home), colonne de droite = équipe visiteuse (data.away), que ce soit l'OL ou non. Une seule règle de couleur pour tout ce qui porte une équipe — composition (pastille, bordure, numéros), barres comparées, points de la carte des tirs, courbe de l'élan, légendes : la couleur suit le CLUB, pas le côté (OL toujours rouge, adversaire toujours bleu), que l'OL joue à domicile ou à l'extérieur. Variante « OL à l'extérieur » montrée dans #etat-exterieur."
     message: ~
-    champs: [colonne-domicile, colonne-visiteur, bloc-composition, titre-composition, formation-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur]
+    champs: [bloc-composition, titre-composition, formation-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur]
     statut: sourcee
-    source: "demande du lot L160 : « chaque équipe a son côté (domicile à gauche, visiteur à droite) avec sa composition et ses statistiques d'équipe » ; couleurs : frontend/src/components/lineup-card.tsx (accent red|blue), CLAUDE.md palette"
-    tests: ["R5 — OL à domicile : OL à gauche, accent rouge", "R5 — OL en déplacement : OL à droite, accent rouge, adversaire à gauche en bleu", "R5 — chaque colonne latérale contient sa composition puis ses statistiques"]
+    source: "demande du lot L160 : « chaque équipe a son côté (domicile à gauche, visiteur à droite) avec sa composition et ses statistiques d'équipe » ; couleur par club : lineup-card.tsx (accent red|blue suit l'OL), CLAUDE.md palette (OL rouge, marqueur OL de la carte rouge). Étendre cette règle aux barres, tirs et élan (aujourd'hui par côté dans StatRow, ShotMap, MomentumChart) est un choix de la revue UX : changement de présentation seul, aucune donnée"
+    tests: ["R5 — OL à domicile : OL à gauche, accent rouge", "R5 — OL en déplacement : OL à droite en rouge, adversaire à gauche en bleu, et barres, points de tirs et courbe d'élan de l'OL en rouge", "R5 — chaque côté contient sa composition puis ses statistiques", "R5 — l'ordre du DOM est celui de R10"]
   - id: R6
     etat: charge
     enonce: "Les deux terrains de composition ont la même hauteur quelle que soit la formation (4-2-3-1 à 5 rangées, 4-4-2 à 4 rangées) : les rangées se répartissent verticalement dans cette hauteur fixe. Les rangées, pastilles, repli « formation inconnue » et banc restent ceux de docs/specs/composition-match (R4 à R8)."
@@ -93,7 +92,7 @@ regles:
     etat: charge
     enonce: "Le centre empile, dans l'ordre : Faits du match, Élan du match, Carte des tirs, Statistiques comparées, Joueurs en vue, Classement en direct. L'en-tête du score (statut, compétition, horloge, clubs, score, buteurs) est au-dessus des trois colonnes, sur toute la largeur. Un bloc sans donnée n'est pas affiché."
     message: ~
-    champs: [entete-score, colonne-centre, faits-match, elan, carte-tirs, bloc-statistiques, joueurs-en-vue, classement-direct]
+    champs: [entete-score, colonne-centre, colonne-centre-bas, faits-match, elan, carte-tirs, bloc-statistiques, joueurs-en-vue, classement-direct]
     statut: sourcee
     source: "demande du lot L160 : « le centre porte l'en-tête du score, les faits du match, la carte des tirs ou l'élan, et les statistiques globales ou comparées » ; contenu des blocs : match.tsx actuel ; place de Joueurs en vue et du Classement en direct (bas du centre) : hypothèse R10"
     tests: ["R8 — 1440 : le centre contient faits, élan, tirs, statistiques dans cet ordre", "R8 — sans tir : la carte des tirs n'est pas affichée, l'élan reste"]
@@ -107,12 +106,12 @@ regles:
     tests: ["R9 — les 4 mesures du centre ne sont pas répétées dans les blocs latéraux", "R9 — une mesure à 0 des deux côtés n'apparaît nulle part"]
   - id: R10
     etat: charge
-    enonce: "Sous xl, tout s'empile en une colonne, dans l'ordre : en-tête du score, Faits du match, Élan, Carte des tirs, Statistiques comparées, composition puis statistiques de l'équipe à domicile, composition puis statistiques de l'équipe visiteuse, Joueurs en vue, Classement en direct. Les colonnes latérales font 320 px et Joueurs en vue et Classement sont au bas du centre à 1440."
+    enonce: "Sous xl, tout s'empile en une colonne, dans l'ordre : en-tête du score, Faits du match, Élan, Carte des tirs, Statistiques comparées, composition puis statistiques de l'équipe à domicile, composition puis statistiques de l'équipe visiteuse, Joueurs en vue, Classement en direct. Le DOM est écrit dans cet ordre (pas de display:contents ni order qui le réordonnent : un lecteur d'écran lit comme l'œil, WCAG 1.3.2) et c'est la grille à 1440 qui place les blocs (grid-column / grid-row). Les colonnes latérales font 320 px et Joueurs en vue et Classement sont au bas du centre à 1440."
     message: ~
-    champs: [grille-match, colonne-domicile, colonne-centre, colonne-visiteur]
+    champs: [grille-match, colonne-centre, colonne-centre-bas]
     statut: hypothese
     si_faux: "Si l'ordre empilé doit changer (compositions avant les faits, par exemple) ou les colonnes latérales avoir une autre largeur, seuls l'ordre CSS et la largeur changent ; la disposition à 1440 de R4 reste valable."
-    tests: ["R10 — 390 : ordre des blocs de haut en bas", "R10 — 390 : pas de défilement horizontal (scrollWidth = clientWidth)"]
+    tests: ["R10 — 390 : ordre des blocs de haut en bas", "R10 — ordre du DOM = ordre affiché à 390 (compositions de Lyon avant celles de Lens, Joueurs en vue et Classement en dernier)", "R10 — 390 : pas de défilement horizontal (scrollWidth = clientWidth)"]
   - id: R11
     etat: charge
     enonce: "Les contenus, libellés et données des blocs ne changent pas : aucun nouvel appel API, aucun champ ajouté ; la page lit toujours GET /api/live-match/{gameId}/stats. Les attendus de docs/qa/expectations.md (/match/$gameId : en-tête avec deux clubs, Faits du match, Statistiques, deux blocs Composition de 11, Classement en direct avec 5 lignes) restent vrais."
@@ -122,5 +121,22 @@ regles:
     source: "docs/qa/expectations.md section /match/$gameId ; demande du lot (disposition seulement)"
     tests: ["R11 — deux blocs Composition de 11 titulaires, Faits, Statistiques, Classement de 5 lignes présents", "R11 — un seul appel /api/live-match/{gameId}/stats"]
 
+  - id: R12
+    etat: charge
+    enonce: "Le titre de chaque bloc (Composition · club, Faits du match, Élan du match, Carte des tirs, Statistiques, Statistiques · club, Joueurs en vue, Classement en direct) est un titre h2, sans changement d'apparence ; la page a un seul h1 (les deux clubs), de sorte qu'on navigue de bloc en bloc au lecteur d'écran."
+    message: ~
+    champs: [titre-composition, faits-match, bloc-statistiques, joueurs-en-vue, classement-direct]
+    statut: sourcee
+    source: "revue UX de la maquette : WCAG 1.3.1, technique H42 (titres balisés) ; les 10 blocs de la maquette"
+    tests: ["R12 — 10 titres h2 en charge, un seul h1", "R12 — l'apparence des titres est inchangée (mêmes classes)"]
+  - id: R13
+    etat: exterieur
+    enonce: "Quand l'OL joue à l'extérieur, l'équipe à domicile (adversaire) est à gauche et l'OL à droite ; l'en-tête, les faits (côté de chaque fait) et la carte des tirs suivent le côté domicile / visiteur, la couleur suit le club (R5) : adversaire bleu à gauche, OL rouge à droite, y compris barres, points de tirs et courbe d'élan ; les alignements de R4 et R6 sont inchangés."
+    message: ~
+    champs: [entete-score, grille-match, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, faits-match, elan, carte-tirs, bloc-statistiques]
+    statut: sourcee
+    source: "demande du lot L160 : « domicile à gauche, visiteur à droite » ; couleur par club : R5 ; revue UX de la maquette (variante OL à l'extérieur)"
+    tests: ["R13 — OL à l'extérieur : adversaire à gauche, OL à droite en rouge", "R13 — OL à l'extérieur : barres et points de tirs de l'OL en rouge"]
+
 actions:
-  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11] }
+  - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13] }
