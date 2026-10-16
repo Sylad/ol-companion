@@ -21,7 +21,7 @@ describe('LineupCard — titre jamais tronqué (L160)', () => {
     expect(screen.getByTestId('titre-composition').className).toBe('eyebrow min-w-0');
   });
 
-  it('R6 — l\'en-tête réserve la place de deux lignes à 1440, pour que les deux terrains restent à la même ordonnée quand un seul titre passe à la ligne', () => {
+  it('R12 — l\'en-tête réserve la place de deux lignes à 1440, pour que les deux terrains restent à la même ordonnée quand un seul titre passe à la ligne', () => {
     render(<LineupCard lineup={lineup} teamName="Lyon" accent="red" />);
     const header = screen.getByTestId('titre-composition').closest('header') as HTMLElement;
     expect(header.className).toMatch(/min-\[1440px\]:min-h-\[/);
