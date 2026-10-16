@@ -46,13 +46,6 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
       </header>
       <div className="p-4">
         <div className="relative w-full">
-          {/* Direction labels on touchlines */}
-          <div className={cn('absolute top-1/2 left-1 -translate-y-1/2 text-[9px] uppercase tracking-wider font-bold pointer-events-none [writing-mode:vertical-rl] rotate-180', labelTone(!homeIsOl))}>
-            ← {awaySymbol} attaque
-          </div>
-          <div className={cn('absolute top-1/2 right-1 -translate-y-1/2 text-[9px] uppercase tracking-wider font-bold pointer-events-none [writing-mode:vertical-rl]', labelTone(homeIsOl))}>
-            {homeSymbol} attaque →
-          </div>
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Shot map">
             <Pitch />
             {shots.map((s) => {
@@ -76,6 +69,11 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
               );
             })}
           </svg>
+        </div>
+        {/* Sens d'attaque : une ligne sous le terrain, jamais posée dessus (les tirs se concentrent dans les surfaces). */}
+        <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 text-[10px] uppercase tracking-wider font-bold">
+          <span className={labelTone(!homeIsOl)}>← {awaySymbol} attaque</span>
+          <span className={cn('text-right', labelTone(homeIsOl))}>{homeSymbol} attaque →</span>
         </div>
         <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] sm:[grid-template-columns:repeat(4,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
           <OutcomeLegend label="But" kind="goal" />
