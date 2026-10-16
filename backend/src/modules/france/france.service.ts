@@ -147,7 +147,7 @@ export class FranceService {
       // Idem pour l'effectif : sans « squads », ni vidé 10 min ni substitué à la copie.
       if (!squadsRes.squads) throw new Error('365scores France : effectif en 200 sans « squads »');
       this.failedAt = null;
-      this.cache = { until: this.validUntil(data, now + (fixturesRes.games ? CACHE_TTL_MS : RETRY_AFTER_FAILURE_MS)), data };
+      this.cache = { until: this.validUntil(data, now + (fixturesRes.games ? CACHE_TTL_MS : RETRY_AFTER_FAILURE_MS), now), data };
       return data;
     } catch (err) {
       this.logger.warn(`France : lecture 365scores en échec — ${(err as Error)?.message ?? err}`);
@@ -155,7 +155,7 @@ export class FranceService {
       // (jamais `{ results: [] … }`, qui voudrait dire « aucune donnée »). La copie est
       // réhorodatée pour ne pas relancer 3 lectures × 2 essais à chaque requête.
       if (this.cache) {
-        this.cache.until = this.validUntil(this.cache.data, now + RETRY_AFTER_FAILURE_MS);
+        this.cache.until = this.validUntil(this.cache.data, now + RETRY_AFTER_FAILURE_MS, now);
         return this.cache.data;
       }
       // L'heure de l'échec, pas celle du début de la requête : la fenêtre d'1 min court depuis le 503.
@@ -181,9 +181,14 @@ export class FranceService {
     return gone && inWindow ? kept : fromFixtures;
   }
 
-  /** La copie ne sert pas un prochain match au-delà de son coup d'envoi + 3 h : elle est relue à ce moment (L167 R1). */
-  private validUntil(data: FranceOverview, until: number): number {
-    return data.nextMatch ? Math.min(until, new Date(data.nextMatch.date).getTime() + LIVE_WINDOW_MS) : until;
+  /**
+   * La copie ne sert pas un prochain match au-delà de son coup d'envoi + 3 h : elle est relue à ce moment (L167 R1).
+   * Borne déjà passée (copie périmée réhorodatée après un échec) : sans effet, sinon chaque requête relancerait 365scores.
+   */
+  private validUntil(data: FranceOverview, until: number, now: number): number {
+    if (!data.nextMatch) return until;
+    const bound = new Date(data.nextMatch.date).getTime() + LIVE_WINDOW_MS;
+    return bound > now ? Math.min(until, bound) : until;
   }
 
   private async fetchJson(url: string, what: string): Promise<unknown> {

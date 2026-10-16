@@ -205,6 +205,30 @@ describe('FranceService', () => {
     expect(calls).toBeGreaterThan(afterFirst);
   });
 
+  it('L167 — 365scores en panne après coup d’envoi + 3 h : la copie réhorodatée n’est relancée qu’une fois par minute', async () => {
+    jest.setSystemTime(NOW);
+    const { svc } = service();
+    await svc.getFrance();
+    let calls = 0;
+    svc.fetcher = (async () => {
+      calls++;
+      throw new Error('boom');
+    }) as never;
+    const kickoff = new Date('2026-10-14T20:45:00+02:00').getTime();
+    jest.setSystemTime(new Date(kickoff + 3 * 3600_000 + 60_000));
+    await svc.getFrance();
+    const afterFirst = calls;
+    expect(afterFirst).toBe(3 * 2);
+    jest.setSystemTime(new Date(kickoff + 3 * 3600_000 + 60_000 + 30_000));
+    await svc.getFrance();
+    jest.setSystemTime(new Date(kickoff + 3 * 3600_000 + 60_000 + 45_000));
+    await svc.getFrance();
+    expect(calls).toBe(afterFirst);
+    jest.setSystemTime(new Date(kickoff + 3 * 3600_000 + 60_000 + 61_000));
+    await svc.getFrance();
+    expect(calls).toBeGreaterThan(afterFirst);
+  });
+
   it('L119 — un 200 sans « squads » n’est pas gardé : 503 sans copie, effectif et copie conservés sinon', async () => {
     const T0 = Date.now();
     await expect(service({ squads: () => ({}) }).svc.getFrance()).rejects.toBeInstanceOf(ServiceUnavailableException);
