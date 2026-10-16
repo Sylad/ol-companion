@@ -97,9 +97,25 @@ describe('L163 — barre de défilement uniformisée', () => {
     expect(contraste(lire(corps, 'sb-track-edge'), fond)).toBeGreaterThanOrEqual(3);
   });
 
-  it('R6 — Firefox : repli scrollbar-color sur les mêmes jetons, sous @supports not selector(::-webkit-scrollbar)', () => {
+  it('R6 — Firefox : repli scrollbar-color sur les jetons --sb-ff-thumb / --sb-ff-track, sous @supports not selector(::-webkit-scrollbar)', () => {
     const m = css.match(/@supports not selector\(\s*::-webkit-scrollbar\s*\)\s*\{\s*\*\s*\{([^}]*)\}/);
-    expect(m?.[1]).toMatch(/scrollbar-color:\s*hsl\(var\(--sb-thumb-edge\)\)\s+hsl\(var\(--sb-track\)\)/);
+    expect(m?.[1]).toMatch(/scrollbar-color:\s*hsl\(var\(--sb-ff-thumb\)\)\s+hsl\(var\(--sb-ff-track\)\)/);
+  });
+
+  it.each(Object.keys(themes))('R6 — %s : curseur Firefox ≥ 3:1 sur la piste Firefox', (nom) => {
+    const { corps } = themes[nom as keyof typeof themes];
+    expect(contraste(lire(corps, 'sb-ff-thumb'), lire(corps, 'sb-ff-track'))).toBeGreaterThanOrEqual(3);
+  });
+
+  it('R6 — Firefox : chaque thème a son couple de jetons, distinct de celui des autres (le thème Bleus se voit sous Firefox)', () => {
+    const couple = (c: string) => `${lire(c, 'sb-ff-thumb')}/${lire(c, 'sb-ff-track')}`;
+    const couples = Object.values(themes).map((t) => couple(t.corps));
+    expect(new Set(couples).size).toBe(couples.length);
+    const blanc = lire(themes.Bleus.corps, 'sb-ff-thumb');
+    expect(blanc[2]).toBeGreaterThanOrEqual(90);
+    const lime = lire(themes['FC Noobz'].corps, 'sb-ff-thumb');
+    expect(lime[0]).toBeGreaterThanOrEqual(70);
+    expect(lime[0]).toBeLessThanOrEqual(110);
   });
 
   it('R7 — aucun composant ne pose son propre scrollbar-width / scrollbar-color (Chrome 121+ ignorerait ::-webkit-scrollbar)', () => {

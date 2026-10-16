@@ -38,6 +38,8 @@
     --sb-thumb: 224 64% 33%;
     --sb-thumb-edge: 0 73% 50%;
     --sb-glow: 0 95% 60%;
+    --sb-ff-thumb: 0 73% 50%;
+    --sb-ff-track: 228 21% 8%;
   }
 
   * {
@@ -117,6 +119,8 @@
     --sb-thumb: 218 80% 28%;
     --sb-thumb-edge: 84 81% 44%;
     --sb-glow: 84 90% 55%;
+    --sb-ff-thumb: 84 81% 44%;
+    --sb-ff-track: 220 45% 6%;
   }
   :root:has(body.theme-bleus), body.theme-bleus {
     --sb-track: 228 21% 8%;
@@ -124,6 +128,8 @@
     --sb-thumb: 0 0% 96%;
     --sb-thumb-edge: 0 73% 50%;
     --sb-glow: 224 95% 65%;
+    --sb-ff-thumb: 0 0% 96%;
+    --sb-ff-track: 226 60% 24%;
   }
 
   ::-webkit-scrollbar {
@@ -150,11 +156,11 @@
   ::-webkit-scrollbar-thumb:hover {
     box-shadow: 0 0 6px 1px hsl(var(--sb-glow) / 0.7), inset 0 0 4px hsl(var(--sb-glow) / 0.7);
   }
-  /* Firefox (pas de ::-webkit-scrollbar) : barre fine, curseur de la bordure du curseur sur la piste. */
+  /* Firefox (pas de ::-webkit-scrollbar) : barre fine, un couple curseur/piste propre à chaque thème (jetons --sb-ff-*). */
   @supports not selector(::-webkit-scrollbar) {
     * {
       scrollbar-width: thin;
-      scrollbar-color: hsl(var(--sb-thumb-edge)) hsl(var(--sb-track));
+      scrollbar-color: hsl(var(--sb-ff-thumb)) hsl(var(--sb-ff-track));
     }
   }
 }
