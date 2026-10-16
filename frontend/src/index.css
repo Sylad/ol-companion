@@ -719,7 +719,7 @@
 .faits-repere:focus-visible,
 .faits-liste:focus-visible { outline: 2px solid hsl(var(--ol-red-bright)); outline-offset: -2px; }
 
-/* Barre de défilement (R12) : 10 px, piste --surface cernée de 1 px --ol-blue-bright avec un léger halo bleu néon, curseur --ol-blue
+/* Barre de défilement (R12) : 10 px, piste --surface arrondie (rayon 5 px, comme le curseur) et cernée de 1 px --ol-blue-bright avec un léger halo bleu néon, curseur --ol-blue
    (rayon 5 px) cerné de 1 px --ol-red, halo rouge néon au survol, aucun bouton fléché. La bordure rouge du curseur (3,85:1 sur la
    piste) et la bordure bleue de la piste (3,20:1 sur le fond du bloc) portent le 3:1 de WCAG 1.4.11. scrollbar-color n'est posé que
    pour Firefox : Chrome 121+ et Safari 18.2+ ignoreraient ::-webkit-scrollbar (donc les bordures) s'ils le voyaient. */
@@ -728,7 +728,7 @@
 }
 .faits-liste::-webkit-scrollbar { width: 10px; }
 .faits-liste::-webkit-scrollbar-button { display: none; }
-.faits-liste::-webkit-scrollbar-track { background: hsl(var(--surface)); border: 1px solid hsl(var(--ol-blue-bright)); box-shadow: inset 0 0 6px hsl(var(--ol-blue-bright) / 0.55); }
+.faits-liste::-webkit-scrollbar-track { background: hsl(var(--surface)); border: 1px solid hsl(var(--ol-blue-bright)); box-shadow: inset 0 0 6px hsl(var(--ol-blue-bright) / 0.55); border-radius: 5px; }
 .faits-liste::-webkit-scrollbar-thumb { background: hsl(var(--ol-blue)); border: 1px solid hsl(var(--ol-red)); border-radius: 5px; }
 .faits-liste::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 6px 1px hsl(0 95% 60% / 0.7), inset 0 0 4px hsl(0 95% 60% / 0.7); }
 @supports not selector(::-webkit-scrollbar) {
