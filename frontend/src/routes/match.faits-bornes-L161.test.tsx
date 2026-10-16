@@ -47,10 +47,6 @@ function walk(dir: string, out: string[] = []): string[] {
   }
   return out;
 }
-const SRC = walk(path.resolve(__dirname, '..'))
-  .map((f) => readFileSync(f, 'utf8'))
-  .join('\n')
-  .replace(/_/g, ' ');
 
 // ---------- géométrie simulée ----------
 const LIST = '[data-testid="liste-faits"]';

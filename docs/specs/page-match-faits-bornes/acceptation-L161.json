@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "c9f42347a7ddabdccf945a0f170f58b6a153ebe9"
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "414c1d9b271300cc153bde9d2e1c0989f3ae2292"
   },
   "resceaux": [
     {
@@ -38,6 +38,13 @@
       "date": "2026-10-16",
       "avant": "4ae83c8a77fc814d8c9d6989df351ed1c77a093b",
       "apres": "c9f42347a7ddabdccf945a0f170f58b6a153ebe9"
+    },
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "constante SRC devenue inutilisée par le rescellement précédent (a15bf57) : tsc -b échouait (TS6133, noUnusedLocals) et cassait npm run build et l'image frontend (revue Opus du 16-10) ; la constante est retirée, aucune assertion ne change",
+      "date": "2026-10-16",
+      "avant": "c9f42347a7ddabdccf945a0f170f58b6a153ebe9",
+      "apres": "414c1d9b271300cc153bde9d2e1c0989f3ae2292"
     }
   ]
 }
