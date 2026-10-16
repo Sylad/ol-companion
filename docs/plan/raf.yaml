@@ -1689,6 +1689,7 @@ lots:
     notes:
       - { date: 2026-10-16, text: "16-10 Sylvain : l'effet néon va sur le CURSEUR de la barre de défilement (halo rouge/bleu du thumb), pas sur la bordure de chaque conteneur défilant ; la bordure néon du bloc des faits (L161) reste une exception voulue" }
     started: 2026-10-16
+    review: { date: 2026-10-16, verdict: "conforme, 3 notes mineures — orchestré (vague 2026-10-16-2115, 1 passe(s) de correction + passe des mineurs)", commit: 786fbb475d0f3203f48d36a7339173199f2d62a0 }
   - id: L164
     title: "Page du match à 320 px : l'en-tête du score est rogné (« Lyon 2 – 1 Len… »), sans défilement horizontal (vu en maquette L161 16-10, en-tête hérité de L160, cf. L65 à 320 px) — réduire la police ou passer les noms sur deux lignes"
     public: "Page du match : score et noms entiers sur les petits écrans"
