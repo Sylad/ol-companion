@@ -46,7 +46,7 @@ export function CupsPage() {
                 Parcours en coupes
               </h2>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
+            <div className="flex gap-2 overflow-x-auto pb-1">
               {data.map((cup) => (
                 <CupTab
                   key={cup.competitionId}

@@ -49,6 +49,10 @@ export function EquipeDeFrancePage() {
       titreRef.current?.focus();
     }
   }, [failed, reussi]);
+  useEffect(() => {
+    document.body.classList.add('theme-bleus');
+    return () => document.body.classList.remove('theme-bleus');
+  }, []);
   const empty = !!data && !isError && !data.nextMatch && data.results.length === 0 && data.squad.length === 0;
 
   return (
