@@ -1,0 +1,8 @@
+{
+  "lot": "L160",
+  "fiche": "docs/specs/page-match-fm/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/match.disposition-L160.test.tsx"
+  ],
+  "vert": false
+}
