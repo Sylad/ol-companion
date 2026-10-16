@@ -693,20 +693,6 @@
 :root {
   --ligne-fait: 44px;
 }
-@media (max-width: 389px) {
-  :root {
-    --ligne-fait: 60px;
-  }
-  /* Reflow à 320 px (WCAG 1.4.10) : le nom d'un joueur n'est jamais coupé, `minute · équipe` au-dessus du libellé. */
-  .faits-liste .ev { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; font-size: 13px; }
-  .faits-liste .ev > :empty { display: none; }
-  .faits-liste .evm { order: -1; display: flex; align-items: baseline; gap: 6px; text-align: left; }
-  .faits-liste .evm small { display: inline; margin: 0; }
-  .faits-liste .evm small::before { content: '\00b7'; margin-right: 6px; }
-  .faits-liste .evl, .faits-liste .evr { text-align: left; width: 100%; }
-  .faits-liste .evl .fw, .faits-liste .evr .fw { display: block; -webkit-line-clamp: unset; overflow: visible; line-height: 1.25; }
-}
-
 /* Bordure néon : mêmes teintes et ombres que les bords néon de la barre latérale, rouge en haut, bleu en bas. */
 .faits-bloc {
   border: 1px solid transparent;
@@ -755,4 +741,18 @@
 @media (max-width: 599px) {
   .faits-liste .ev { grid-template-columns: 1fr 44px 1fr; gap: 8px; font-size: 13px; }
   .faits-liste-in { padding: 0 12px; }
+}
+
+@media (max-width: 389px) {
+  :root {
+    --ligne-fait: 60px;
+  }
+  /* Reflow à 320 px (WCAG 1.4.10) : le nom d'un joueur n'est jamais coupé, `minute · équipe` au-dessus du libellé. */
+  .faits-liste .ev { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; font-size: 13px; }
+  .faits-liste .ev > :empty { display: none; }
+  .faits-liste .evm { order: -1; display: flex; align-items: baseline; gap: 6px; text-align: left; }
+  .faits-liste .evm small { display: inline; margin: 0; }
+  .faits-liste .evm small::before { content: '\00b7'; margin-right: 6px; }
+  .faits-liste .evl, .faits-liste .evr { text-align: left; width: 100%; }
+  .faits-liste .evl .fw, .faits-liste .evr .fw { display: block; -webkit-line-clamp: unset; overflow: visible; line-height: 1.25; }
 }
