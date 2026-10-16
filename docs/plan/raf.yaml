@@ -1632,6 +1632,14 @@ lots:
       - { date: 2026-10-15, text: "mineurs de la revue courte 15-10 laissés en note : titre de test trompeur, débordement de 8 px de la ligne de stat à 320 px, double liste « Tests : » dans le README" }
       - { date: 2026-10-15, text: "QA prod 15-10 (7f3c99f) : 5/5 pages conformes, colonnes à 71 px (Lens – Lyon) et 108 px (Lyon – Crystal Palace) d'écart, aucune troncature ; suspect mineur : le classement en direct est en colonne de droite sous Statistiques, pas « sous la carte des tirs » comme le disait le commit cb07860 — attente QA /match à fixer (placement + écart < 150 px)" }
     finished: 2026-10-15
+  - id: L160
+    title: "Page du match disposée comme un écran de match de Football Manager (référence : capture FM27 fournie par Sylvain le 16-10, tmp/fm27-match-reference-2026-10-16.webp, à copier dans docs/specs) : chaque équipe a son côté (domicile à gauche, visiteur à droite) avec sa composition et ses statistiques d'équipe ; le centre porte l'en-tête du score, les faits du match, la carte des tirs ou l'élan, et les statistiques globales ou comparées ; les deux compositions ont le même gabarit (même hauteur de terrain quelle que soit la formation) pour un alignement propre ; la répartition par mesure de L159 (BalancedColumns) est remplacée par cette disposition fixe à 1440, empilement ordonné sous xl ; fiche écran et maquette avant le code, revue UX"
+    public: "Page du match : chaque équipe de son côté, le match au centre"
+    status: todo
+    estimate: 1
+    visible: true
+    screen: page
+    created: 2026-10-16
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
