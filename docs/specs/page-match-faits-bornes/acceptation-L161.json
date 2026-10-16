@@ -1,0 +1,8 @@
+{
+  "lot": "L161",
+  "fiche": "docs/specs/page-match-faits-bornes/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx"
+  ],
+  "vert": false
+}
