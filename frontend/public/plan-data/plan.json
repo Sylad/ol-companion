@@ -485,12 +485,14 @@
     {
       "id": "L172",
       "title": "Page de match : date et heure d'un match à venir",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-17"
     },
     {
       "id": "L173",
       "title": "Page de match : joueurs en vue même loin du match",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-17"
     }
   ]
 }
