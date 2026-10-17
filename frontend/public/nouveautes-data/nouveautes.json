@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-17 10:16",
+  "generated": "2026-10-17 13:33",
   "entries": [
+    {
+      "slug": "2026-10-17-match-des-bleus-a-venir-l-heure-non-confirmee-est-annoncee-c",
+      "title": "Match des Bleus à venir : l'heure non confirmée est annoncée comme telle",
+      "date": "2026-10-17",
+      "lots": [
+        "L168"
+      ],
+      "captures": [
+        "captures/match-bleus-heure-a-confirmer-1440.png",
+        "captures/match-bleus-heure-a-confirmer-390.png"
+      ],
+      "alts": [
+        "En-tête d'un match des Bleus à venir : « Jeu. 12/11 · Horaire à confirmer », écran large",
+        "Le même en-tête sur téléphone"
+      ],
+      "html": "<p>Sur la page d'un match des Bleus à venir, l'en-tête n'affiche plus une heure de coup d'envoi qui n'est pas encore fixée : à plus de 14 jours du match, il indique « Jeu. 12/11 · Horaire à confirmer », comme la page de l'équipe de France. Dans les 14 jours, l'heure reste affichée (« Jeu. 12/11 · 21h00 »).</p>"
+    },
     {
       "slug": "2026-10-16-equipe-de-france-la-page-du-match-aux-couleurs-des-bleus",
       "title": "Équipe de France : la page du match aux couleurs des Bleus",

@@ -478,7 +478,8 @@
     {
       "id": "L168",
       "title": "Match des Bleus à venir : l'heure non confirmée est annoncée comme telle",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-17"
     }
   ]
 }

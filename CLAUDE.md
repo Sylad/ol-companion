@@ -19,7 +19,7 @@ App perso pour suivre l'Olympique Lyonnais (Ligue 1). Frontend React + TanStack,
 Endpoints clés :
 - `GET /api/fixtures` — Ligue 1 selon football-data : matchs joués + toute la fin de saison (`limit=100`, cache 1h, refresh 30 min) ; dit au calendrier si l'heure d'une journée est fixée
 - `GET /api/season-matches` — toute la saison, toutes compétitions suivies (365scores, cache 30 min) ; sert la page Calendrier, le « dernier résultat » et le « prochain rendez-vous » du tableau de bord (L45, toutes compétitions), la carte, les statistiques d'équipe et de joueurs
-- `GET /api/france` — équipe de France A (L113) : `nextMatch`, 5 derniers `results`, `squad`, en un appel (365scores `competitorId` 5061 ; copie 10 min, dernière réponse connue si 365scores échoue, sinon 503) ; `nextMatch.timeConfirmed` = faux au-delà de 14 jours (365scores seul, pas de football-data)
+- `GET /api/france` — équipe de France A (L113) : `nextMatch`, 5 derniers `results`, `squad`, en un appel (365scores `competitorId` 5061 ; copie 10 min, dernière réponse connue si 365scores échoue, sinon 503) ; `nextMatch.timeConfirmed` = faux au-delà de 14 jours (365scores seul, pas de football-data) ; même règle (`config/kickoff-horizon.ts`) pour `timeConfirmed` de `GET /api/live-match/{gameId}/stats`, lu par l'en-tête de la page de match des Bleus (L168)
 - `GET /api/standings`, `/api/standings/history`, `/api/standings/season-rankings` (365scores)
 - `GET /api/news` — flux RSS multi-sources (cache 15 min)
 - `GET /api/cups` — coupes (Coupe de France, Europa)

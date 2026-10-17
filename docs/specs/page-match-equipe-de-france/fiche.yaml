@@ -12,7 +12,7 @@ champs:
   - { id: lien-retour-erreur, libelle: "Lien de retour de l’erreur", type: lien, source: statique, obligatoire: false }
   - { id: message-chargement, libelle: "Message de chargement", type: texte, source: statique, obligatoire: true }
   - { id: message-erreur, libelle: "Message d’erreur de la page", type: texte, source: statique, obligatoire: true }
-  - { id: coup-envoi, libelle: "Date et heure du coup d’envoi (match à venir)", type: texte, source: "GET /api/live-match/{gameId}/stats → startTime", obligatoire: false }
+  - { id: coup-envoi, libelle: "Date et heure du coup d’envoi (match à venir)", type: texte, source: "GET /api/live-match/{gameId}/stats → startTime, timeConfirmed", obligatoire: false }
   - { id: message-stats-vide, libelle: "Message sans statistiques", type: texte, source: statique, obligatoire: false }
   - { id: entete-score, libelle: "En-tête du score", type: carte, source: "GET /api/live-match/{gameId}/stats → status, home, away, events", obligatoire: true }
   - { id: grille-match, libelle: "Grille de la page (L160)", type: liste, source: statique, obligatoire: true }
@@ -92,7 +92,7 @@ regles:
     tests: ["R6 — match des Bleus : pas de bloc « Classement en direct »"]
   - id: R7
     etat: charge
-    enonce: "Le contenu est celui de /match (L160, L161) sans changement de structure : en-tête du score, faits bornés à 5 lignes, Momentum, carte des tirs, statistiques comparées, compositions avec banc, statistiques par équipe, joueurs en vue ; même ordre du DOM que match.tsx (en-tête, faits, Momentum, tirs, statistiques, compositions et statistiques par équipe, puis joueurs en vue), mêmes libellés. Un seul appel : GET /api/live-match/{gameId}/stats (aucun champ ajouté). Vérifié sur le match réel France – Belgique 4–1 du 05/10/2026 (gameId 4672325, matchupId 5061-2373-4672325, compétition 7016) : l’agrégation existante renvoie 19 faits, 28 tirs, deux compositions 4-3-3, 3 duels de joueurs en vue, sans classement ni dépendance à l’OL."
+    enonce: "Le contenu est celui de /match (L160, L161) sans changement de structure : en-tête du score, faits bornés à 5 lignes, Momentum, carte des tirs, statistiques comparées, compositions avec banc, statistiques par équipe, joueurs en vue ; même ordre du DOM que match.tsx (en-tête, faits, Momentum, tirs, statistiques, compositions et statistiques par équipe, puis joueurs en vue), mêmes libellés. Un seul appel : GET /api/live-match/{gameId}/stats (un seul champ ajouté par L168 : timeConfirmed, faux quand le coup d’envoi est à plus de 14 jours — même règle que GET /api/france → nextMatch.timeConfirmed ; absent d’un backend antérieur, l’heure est alors affichée). Vérifié sur le match réel France – Belgique 4–1 du 05/10/2026 (gameId 4672325, matchupId 5061-2373-4672325, compétition 7016) : l’agrégation existante renvoie 19 faits, 28 tirs, deux compositions 4-3-3, 3 duels de joueurs en vue, sans classement ni dépendance à l’OL."
     message: ~
     champs: [entete-score, grille-match, colonne-centre, faits-match, elan, carte-tirs, bloc-statistiques, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, colonne-centre-bas, joueurs-en-vue]
     statut: sourcee
@@ -124,14 +124,14 @@ regles:
     tests: ["R10 — erreur : message et lien « Retour à l'équipe de France » (apostrophe droite)"]
   - id: R11
     etat: vide
-    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21h00 », sur une seule ligne : jamais coupée, elle passe sous le statut quand la ligne manque de place sous 600 px) et l’équipe de France en bleu du côté où elle joue ; l’en-tête n’a pas de hauteur réservée (il suit son contenu), et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
+    enonce: "Pour un match des Bleus à venir (aucun fait, aucun tir, aucune composition), l’en-tête annonce « À venir » avec la date et l’heure du coup d’envoi (startTime, « Jeu. 12/11 · 21h00 », ou « Jeu. 12/11 · Horaire à confirmer » quand timeConfirmed est faux (L168, comme la page /equipe-de-france), sur une seule ligne : jamais coupée, elle passe sous le statut quand la ligne manque de place sous 600 px) et l’équipe de France en bleu du côté où elle joue ; l’en-tête n’a pas de hauteur réservée (il suit son contenu), et le bloc Statistiques dit l’absence de chiffres ; les blocs Faits, Momentum et tirs ne sont pas affichés."
     message: "Les statistiques apparaîtront au coup d’envoi."
     champs: [entete-score, coup-envoi, grille-match, colonne-centre, bloc-statistiques, message-stats-vide]
     masque: [faits-match, compte-faits, liste-faits, elan, carte-tirs]
     statut: hypothese
     si_faux: "Si le message ou l’affichage de la date doivent rester ceux de /match (« Pas encore de statistiques. », sans date), seuls ce texte et l’en-tête changent ; startTime est déjà servi (live-match.types.ts:67)."
     source: "docs/specs/page-match-fm R3 (structure) ; match.tsx : events.length > 0 ; revue UX : dire quand les chiffres arriveront"
-    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête, sur une seule ligne à 390 px"]
+    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête, sur une seule ligne à 390 px", "R11 — timeConfirmed faux : « Jeu. 12/11 · Horaire à confirmer », jamais l’heure de remplissage (L168)", "R11 — un match à plus de 14 jours : timeConfirmed est faux (back, L168)"]
   - id: R12
     etat: charge
     enonce: "Hors page d’un match des Bleus, rien ne change : /match d’un match de l’OL (rouge OL, bleu adverse, icône + « Accueil »), /equipe-de-france hors liens (L113), barre de défilement du site (L163) ; le fond de page et les filets du corps ne sont pas modifiés par ce lot."
