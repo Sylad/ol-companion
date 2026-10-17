@@ -167,3 +167,50 @@ describe('L5/t7 — Google News', () => {
     expect(screen.getByRole('button', { name: 'Google News' })).toBeInTheDocument();
   });
 });
+
+describe('L5 — revue : erreur de rafraîchissement et message vide', () => {
+  function renderWithClient(fetchMock: ReturnType<typeof serve>) {
+    vi.stubGlobal('fetch', fetchMock);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <NewsPage />
+      </QueryClientProvider>,
+    );
+    return client;
+  }
+
+  it('un refetch en échec garde les articles et n\'affiche pas l\'alerte (données déjà en cache)', async () => {
+    const client = renderWithClient(serve());
+    await screen.findByRole('link', { name: 'OL gagne (nouvel onglet)' });
+    vi.stubGlobal('fetch', serve({ news: 'ERR', channels: 'ERR' }));
+    await client.refetchQueries();
+    await vi.waitFor(() => expect(client.getQueryCache().getAll().some((q) => q.state.status === 'error')).toBe(true));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(screen.getByRole('link', { name: 'OL gagne (nouvel onglet)' })).toBeInTheDocument();
+    expect(screen.queryByTestId('news-erreur')).toBeNull();
+    expect(screen.queryByTestId('chaines-erreur')).toBeNull();
+  });
+
+  it('un cache vide suivi d\'un refetch en échec : le message vide seul, sans alerte', async () => {
+    const client = renderWithClient(serve({ news: [] }));
+    await screen.findByTestId('news-vide');
+    vi.stubGlobal('fetch', serve({ news: 'ERR' }));
+    await client.refetchQueries();
+    await vi.waitFor(() => expect(client.getQueryCache().getAll().some((q) => q.state.status === 'error')).toBe(true));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(screen.getByTestId('news-vide')).toBeInTheDocument();
+    expect(screen.queryByTestId('news-erreur')).toBeNull();
+  });
+
+  it('source choisie puis liste vide au rechargement : pas de consigne vers une pastille « Tous » absente', async () => {
+    const client = renderWithClient(serve());
+    await userEvent.click(await screen.findByRole('button', { name: 'Google News' }));
+    vi.stubGlobal('fetch', serve({ news: [] }));
+    await client.refetchQueries();
+    const vide = await screen.findByTestId('news-vide');
+    expect(screen.queryByRole('group', { name: 'Filtrer par source' })).toBeNull();
+    expect(vide).toHaveTextContent(/Aucun article pour le moment/);
+    expect(vide).not.toHaveTextContent('Tous');
+  });
+});

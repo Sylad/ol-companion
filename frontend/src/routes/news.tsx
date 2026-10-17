@@ -82,7 +82,7 @@ export function NewsPage() {
               <span>Chargement des articles…</span>
             </div>
           )}
-          {newsError && (
+          {newsError && !news && (
             <RetryMessage
               message="Impossible de charger les articles."
               onRetry={() => void refetchNews()}
@@ -93,9 +93,9 @@ export function NewsPage() {
           )}
           {news && filtered.length === 0 && (
             <p data-testid="news-vide" className="py-20 text-center text-fg-muted">
-              {activeSource === ALL
-                ? 'Aucun article pour le moment. Revenez dans quelques minutes.'
-                : `Aucun article pour la source « ${activeSource} ». Choisissez « ${ALL} » pour voir les autres sources.`}
+              {news.length > 0 && activeSource !== ALL
+                ? `Aucun article pour la source « ${activeSource} ». Choisissez « ${ALL} » pour voir les autres sources.`
+                : 'Aucun article pour le moment. Revenez dans quelques minutes.'}
             </p>
           )}
           {filtered.length > 0 && (
@@ -132,7 +132,7 @@ export function NewsPage() {
               <span>Chargement…</span>
             </div>
           )}
-          {chError && (
+          {chError && !channels && (
             <RetryMessage
               message="Impossible de charger les chaînes YouTube."
               onRetry={() => void refetchChannels()}
