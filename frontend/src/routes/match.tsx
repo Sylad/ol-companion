@@ -586,17 +586,22 @@ export function MatchPage() {
           </div>
         )}
 
-        {(data.topPerformers.length > 0 || !!data.standings) && (
+        {(data.topPerformers.length > 0 || isUpcoming || !!data.standings) && (
           <div
             data-testid="colonne-centre-bas"
             className={cn('contents', 'min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-4 min-[1440px]:min-w-0 min-[1440px]:mt-4 min-[1440px]:col-start-2 min-[1440px]:row-start-2')}
           >
-            {data.topPerformers.length > 0 && (
+            {(data.topPerformers.length > 0 || isUpcoming) && (
               <section data-testid="joueurs-en-vue" className="rounded-md bg-surface border border-border overflow-hidden">
                 <header className="px-5 py-3 border-b border-border">
                   <h2 className="eyebrow min-w-0">Joueurs en vue</h2>
                 </header>
                 <div className="px-5 py-2 divide-y divide-border">
+                  {data.topPerformers.length === 0 && (
+                    <p data-testid="message-joueurs-en-vue-vide" className="text-xs text-fg-dim py-4 text-center">
+                      Les joueurs en vue apparaîtront avec les statistiques du match.
+                    </p>
+                  )}
                   {data.topPerformers.map((tp, i) => (
                     <div key={i} className="py-1.5">
                       <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
