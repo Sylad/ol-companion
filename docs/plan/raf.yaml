@@ -68,20 +68,24 @@ lots:
     finished: 2026-10-17
   - id: L6
     title: Revue UX — Coupes
-    status: doing
+    status: done
     estimate: 0.75
     created: 2026-09-28
     started: 2026-10-17
     tasks:
-      - { id: t1, title: "Coupes : l'échec de /api/cups affiche « Erreur de chargement des données coupes. » sans Réessayer, contraste 2,5:1 sur la photo. Fin : RetryMessage (role=alert, bouton 44 px, refetch) dans le panneau, texte ≥ 4,5:1, texte QA « never » absent.", status: todo }
-      - { id: t2, title: "Coupes : contrastes AA ratés — score du perdant 3,02:1, compteur D 3,80:1, pastille D 4,07:1, tableau OL atténué 4,35:1, chargement 3,73:1. Fin : chacun de ces textes ≥ 4,5:1 mesuré à 1440 et 390 px.", status: todo }
-      - { id: t3, title: "Coupes : aucune carte de match ne mène à /match (0 lien dans main) alors que /fixtures lie les mêmes matchs. Fin : chaque carte = lien étiré /match/<id>?matchupId=<dom>-<ext>-<id>, nommé « A 1, B 2 — détail du match », focus visible, 8 liens en prod.", status: todo }
-      - { id: t4, title: "Coupes : 3 adversaires sur 8 ont une photo de ville au lieu de l'écusson (Anderlecht, Hoffenheim, Lillestrom, via /api/wiki-image). Fin : écussons du CDN 365scores (seasonTeamLogoUrl) comme le calendrier, 0 appel /api/wiki-image pour les cartes.", status: todo }
-      - { id: t5, title: "Coupes : le tableau plein écran passe sous la barre latérale (165 px masqués à 1440, quarts cachés à 1024) et n'est pas un dialogue. Fin : rendu dans body au-dessus de tout, role=dialog aria-modal, focus sur Fermer, Tab piégé, focus rendu au bouton.", status: todo }
-      - { id: t6, title: "Coupes : avec deux coupes, la rangée d'onglets (448 px) déborde à 390 et 320 px, la 2e coupe presque cachée. Fin : à 320 px les deux onglets entièrement visibles sans défilement horizontal, groupe nommé (role=group + aria-label) comme /news.", status: todo }
-      - { id: t7, title: "Coupes : au téléphone le 1er match arrive à 570 px (390) : en-tête non compact (89 px contre 40 sur /news), nom/statut/phase/nb de matchs répétés 3 fois. Fin : KnowledgeHeader compact sous lg, chaque info affichée une fois, 1re carte ≤ 420 px à 390.", status: todo }
+      - { id: t1, title: "Coupes : l'échec de /api/cups affiche « Erreur de chargement des données coupes. » sans Réessayer, contraste 2,5:1 sur la photo. Fin : RetryMessage (role=alert, bouton 44 px, refetch) dans le panneau, texte ≥ 4,5:1, texte QA « never » absent.", status: done }
+      - { id: t2, title: "Coupes : contrastes AA ratés — score du perdant 3,02:1, compteur D 3,80:1, pastille D 4,07:1, tableau OL atténué 4,35:1, chargement 3,73:1. Fin : chacun de ces textes ≥ 4,5:1 mesuré à 1440 et 390 px.", status: done }
+      - { id: t3, title: "Coupes : aucune carte de match ne mène à /match (0 lien dans main) alors que /fixtures lie les mêmes matchs. Fin : chaque carte = lien étiré /match/<id>?matchupId=<dom>-<ext>-<id>, nommé « A 1, B 2 — détail du match », focus visible, 8 liens en prod.", status: done }
+      - { id: t4, title: "Coupes : 3 adversaires sur 8 ont une photo de ville au lieu de l'écusson (Anderlecht, Hoffenheim, Lillestrom, via /api/wiki-image). Fin : écussons du CDN 365scores (seasonTeamLogoUrl) comme le calendrier, 0 appel /api/wiki-image pour les cartes.", status: done }
+      - { id: t5, title: "Coupes : le tableau plein écran passe sous la barre latérale (165 px masqués à 1440, quarts cachés à 1024) et n'est pas un dialogue. Fin : rendu dans body au-dessus de tout, role=dialog aria-modal, focus sur Fermer, Tab piégé, focus rendu au bouton.", status: done }
+      - { id: t6, title: "Coupes : avec deux coupes, la rangée d'onglets (448 px) déborde à 390 et 320 px, la 2e coupe presque cachée. Fin : à 320 px les deux onglets entièrement visibles sans défilement horizontal, groupe nommé (role=group + aria-label) comme /news.", status: done }
+      - { id: t7, title: "Coupes : au téléphone le 1er match arrive à 570 px (390) : en-tête non compact (89 px contre 40 sur /news), nom/statut/phase/nb de matchs répétés 3 fois. Fin : KnowledgeHeader compact sous lg, chaque info affichée une fois, 1re carte ≤ 420 px à 390.", status: done }
     notes:
       - { date: 2026-10-17, text: "Revue UX 17-10 (captures regardées par le lead) : 2 bloquants + 5 majeurs → 7 sous-tâches ; QUESTION À SYLVAIN : les 4 matchs de qualification de Ligue des champions (compétition 332, éliminé le 26/08) doivent-ils figurer au « Parcours en coupes » (bloc « Éliminé ») ? Mineurs (note) : texte de liste vide faux en début de saison et hors panneau ; pastille V/N/D nommée par aria-label sur un span ; bilan « 2 V 0 N 0 D » lu lettre par lettre ; alt des écussons redondant ; « Ligue Europa » en h2 au lieu de h3 ; focus de l'onglet sans contour rouge ; bandeau « Prochain : » sans date et noms incohérents ; tableau sans tirs au but, en-têtes A/R 9 px, noms tronqués ; bouton Plein écran 20 px de haut" }
+      - { date: 2026-10-17, text: "Décisions du lead 17-10 : (1) t7 « 1re carte ≤ 420 px » ramené à « dans le premier écran » (446 px avec deux coupes, scénario absent de la prod aujourd'hui) ; (2) le texte d'erreur reste « Erreur de chargement des données coupes. » — la ligne never des attentes QA sert à détecter une page en erreur en prod, la garder intacte vaut mieux que changer le texte. Mineurs (note) : bracket.ux-L6.test.tsx:21 mesure sur surface au lieu de surface-2 ; pas de verrou du défilement derrière le dialogue ; question LdC (332) toujours en attente de Sylvain" }
+    review: { date: 2026-10-17, verdict: "conforme après décision du lead — revue Fable (mutations rejouées, vrai navigateur) : t1–t7 tenus, WCAG 2.5.3, contraste tableau 6,45:1 sur le fond réel ; seul écart : t7 à 446 px avec deux coupes (critère ≤ 420) — critère ramené par le lead à « 1re carte dans le premier écran » (446 sur 786), tenu ; 800 + 405 tests", commit: 98ea5d0ea89d4e444a0b3fd651c84aa0b83e8816 }
+    ux: { date: 2026-10-17, verdict: "conforme — captures de la revue Fable regardées par le lead (deux onglets entiers à 390, erreur dans le panneau + Réessayer 44 px) ; liens /match, écussons CDN, dialogue du tableau, en-tête compact mesurés en navigateur" }
+    finished: 2026-10-17
   - id: L7
     title: Revue UX — Joueurs (liste + fiche)
     status: todo
