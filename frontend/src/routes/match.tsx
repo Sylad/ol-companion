@@ -249,8 +249,11 @@ function Scorers({ items, align, reflow = false }: { items: { name: string; mark
   );
 }
 
-const NOM_EQUIPE = 'font-display font-bold leading-none';
-const NOM_EQUIPE_OL = 'text-2xl';
+// `leading-none` vient APRÈS la classe de taille : tailwind-merge (`cn`) supprime l'interligne posé avant un `text-*` (L167 R12).
+// Mode Bleus : `min-[390px]:text-lg` et `min-[600px]:text-2xl` portent leur propre interligne (28 et 32 px) et battent le
+// `leading-none` de base dans leur media query — d'où un `leading-none` par palier.
+const NOM_EQUIPE = 'font-display font-bold';
+const NOM_EQUIPE_OL = 'text-2xl leading-none';
 /**
  * En-tête d'un match des Bleus (L167 R13) : noms jamais coupés ni cachés. Grille minmax(0,1fr) auto minmax(0,1fr), noms qui
  * passent à la ligne (`overflow-wrap:anywhere`) à 24 px au-dessus de 600 px, 18 px dessous, 16 px sous 390 px. Comme la
@@ -261,7 +264,7 @@ const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:p
 /** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
 const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
 const SCORE_OL = 'text-5xl font-bold tabular-nums num text-fg-bright';
-const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl';
+const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl leading-none min-[390px]:leading-none min-[600px]:leading-none';
 
 /** « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`). */
 function kickoffLabel(iso: string): string {
