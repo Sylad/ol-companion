@@ -27,7 +27,7 @@ export function CupsPage() {
           <span>Chargement des coupes…</span>
         </div>
       )}
-      {isError && (
+      {isError && !data && (
         <section className="rounded-md bg-surface border border-border px-5 py-12">
           <RetryMessage
             message="Erreur de chargement des données coupes."

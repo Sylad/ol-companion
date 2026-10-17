@@ -35,6 +35,15 @@ describe('L6 t1 — échec de /api/cups', () => {
     expect(refetch).toHaveBeenCalledTimes(1);
   });
 
+  it('t1 — erreur de rafraîchissement avec des coupes en cache : pas de panneau d’erreur, les coupes restent affichées', () => {
+    state = { data: [cup()], isLoading: false, isError: true };
+    render(<CupsPage />);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.queryByText('Erreur de chargement des données coupes.')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+    expect(screen.getByRole('group', { name: 'Choisir une coupe' })).toBeInTheDocument();
+  });
+
   it('t1 — le message est ≥ 4,5:1 sur le fond du panneau (ol-red-bright sur surface)', () => {
     expect(contrast(token('ol-red-bright'), token('surface'))).toBeGreaterThanOrEqual(4.5);
     state = { isLoading: false, isError: true };
