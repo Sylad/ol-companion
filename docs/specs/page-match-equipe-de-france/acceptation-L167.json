@@ -10,7 +10,7 @@
   "empreintes": {
     "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "c647193542350060dcce1b895951dc0b4c2271ee",
     "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
-    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "2ef841cb01481a05b4726ca87ea5ae544487d295"
+    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "bad83bbaf0a14bc7e6b652c1290b94b061621d57"
   },
   "resceaux": [
     {
@@ -55,6 +55,13 @@
       "date": "2026-10-17",
       "avant": "90e3a3a07b450f714d9f72547c6ca8592eb565ce",
       "apres": "2ef841cb01481a05b4726ca87ea5ae544487d295"
+    },
+    {
+      "test": "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx",
+      "raison": "bloquant de la revue 17-10 : le fichier importait ../../../backend/src/modules/france/france.service, absent du contexte Docker frontend/ de la CI (TS2307 au tsc -b du build) ; les trois tests R1 back sont déplacés tels quels dans la suite Jest du backend (france.service.acceptation-L167.spec.ts), l'import et le bloc sont retirés ici, les tests R4 et R13 sont inchangés",
+      "date": "2026-10-17",
+      "avant": "2ef841cb01481a05b4726ca87ea5ae544487d295",
+      "apres": "bad83bbaf0a14bc7e6b652c1290b94b061621d57"
     }
   ]
 }
