@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-17 17:35",
+  "generated": "2026-10-17 19:10",
   "entries": [
     {
       "slug": "2026-10-17-page-de-match-joueurs-en-vue-meme-loin-du-match",
@@ -28,14 +28,10 @@
       ],
       "captures": [
         "captures/L172-match-a-venir-1440.png",
-        "captures/L172-match-a-venir-390.png",
-        "captures/L172-match-a-venir-1440.png",
         "captures/L172-match-a-venir-390.png"
       ],
       "alts": [
-        "En-tête d'un match de l'OL à venir : À venir, Ligue Europa, Jeu. 22/10 · 21h00",
-        "Le même en-tête sur téléphone",
-        "En-tête d'un match de l'OL à venir : À venir, Ligue Europa, Jeu. 22/10 · 21h00",
+        "En-tête d'un match de l'OL à venir : À venir, Ligue Europa, Week-end du 05/12 · Horaire à confirmer",
         "Le même en-tête sur téléphone"
       ],
       "html": "<p>Sur la page d'un match à venir de l'OL, l'en-tête indique maintenant le jour et l'heure du coup d'envoi (par exemple « Jeu. 22/10 · 21h00 »), comme sur la carte de la page Coupes. Quand l'heure n'est pas encore fixée, il affiche « Horaire à confirmer » au lieu d'une heure qui pourrait être fausse. C'est aussi le cas pour les matchs de coupe d'Europe.</p>"
