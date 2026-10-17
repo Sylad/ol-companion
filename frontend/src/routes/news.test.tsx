@@ -153,3 +153,17 @@ describe('L5/t6 — lien de carte d\'article', () => {
     for (const l of screen.getAllByRole('link')) expect(l.textContent!.length).toBeLessThan(120);
   });
 });
+
+describe('L5/t7 — Google News', () => {
+  it('l\'éditeur est la source de la carte, le titre est sans éditeur, aucune description ne répète le titre', async () => {
+    renderPage();
+    const lien = await screen.findByRole('link', { name: 'Mercato : une piste (nouvel onglet)' });
+    const carte = lien.closest('article')!;
+    expect(within(carte).getByText('Le Progrès')).toBeInTheDocument();
+    expect(within(carte).queryByText(/Mercato : une piste\s+Le Progrès/)).toBeNull();
+    const autre = screen.getByRole('link', { name: "Autre sujet (nouvel onglet)" }).closest('article')!;
+    expect(within(autre).getByText('Un vrai résumé distinct')).toBeInTheDocument();
+    // le filtre garde la source du flux
+    expect(screen.getByRole('button', { name: 'Google News' })).toBeInTheDocument();
+  });
+});

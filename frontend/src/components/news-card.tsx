@@ -1,6 +1,7 @@
 import { ExternalLink } from 'lucide-react';
 import type { NewsItem } from '@/types/api';
 import { cn } from '@/lib/utils';
+import { displayNews } from '@/lib/news-display';
 
 interface NewsCardProps {
   item: NewsItem;
@@ -28,6 +29,7 @@ const SOURCE_TONE: Record<string, string> = {
 
 export function NewsCard({ item, featured = false }: NewsCardProps) {
   const tone = SOURCE_TONE[item.source] ?? SOURCE_TONE['Google News'];
+  const { title, source, description } = displayNews(item);
 
   return (
     <article
@@ -60,7 +62,7 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
       <div className="flex flex-col flex-1 p-4 lg:p-5 gap-2">
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider">
           <span className={cn('px-2 py-0.5 rounded-sm border font-semibold', tone)}>
-            {item.source}
+            {source}
           </span>
           {item.category && (
             <span className="text-fg-dim font-medium">· {item.category}</span>
@@ -82,19 +84,19 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
             rel="noopener noreferrer"
             className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
           >
-            {item.title}
+            {title}
             <span className="sr-only"> (nouvel onglet)</span>
           </a>
         </h3>
 
-        {item.description && (
+        {description && (
           <p
             className={cn(
               'text-fg-muted leading-relaxed flex-1',
               featured ? 'text-sm line-clamp-3' : 'text-sm line-clamp-2',
             )}
           >
-            {item.description}
+            {description}
           </p>
         )}
 
