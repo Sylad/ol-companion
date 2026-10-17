@@ -64,6 +64,16 @@ describe('<CupMatchRow /> — tirs au but (L140)', () => {
     const lost = await renderRow(done({ olQualified: false }));
     expect(lost.container.querySelector('abbr')).toHaveAttribute('title', 'Éliminé aux tirs au but');
   });
+  // jsdom ne pose pas la mise en page : on vérifie que les porteurs d'infobulle sont positionnés
+  // au-dessus du lien étiré (z-10), sinon la souris ne les atteint pas (elementFromPoint → le lien).
+  it('la pastille et « t.a.b. » passent au-dessus du lien étiré : leurs infobulles restent atteignables', async () => {
+    const { getByLabelText, container } = await renderRow(done({ olQualified: true }));
+    for (const el of [getByLabelText('Victoire'), container.querySelector('abbr')!]) {
+      expect(el).toHaveClass('relative');
+      expect(el).toHaveClass('z-20');
+    }
+    expect(getByLabelText('Victoire')).toHaveAttribute('title', 'Qualifié aux tirs au but');
+  });
   it('un nul sans qualifié : badge « Match nul », pas de « t.a.b. »', async () => {
     const { getByLabelText, container } = await renderRow(done({}));
     expect(getByLabelText('Match nul')).toHaveTextContent('N');

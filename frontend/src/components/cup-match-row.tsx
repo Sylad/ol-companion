@@ -59,7 +59,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
       )}
     >
       <div className="flex items-center gap-3 px-4 py-2 border-b border-border bg-surface-2/40">
-        {/* Lien étiré sur toute la carte par un pseudo-élément : le contenu reste lu hors du lien. */}
+        {/* Lien étiré sur toute la carte par un pseudo-élément (z-10) : le contenu reste lu hors du lien ; la pastille et « t.a.b. » (z-20) passent au-dessus pour garder leur infobulle. */}
         <Link
           to="/match/$gameId"
           params={{ gameId: String(match.id) }}
@@ -72,7 +72,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
         {resultBadge && (
           <span
             className={cn(
-              'inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-sm',
+              'relative z-20 inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-sm',
               resultBadge.cls,
             )}
             aria-label={resultBadge.label === 'V' ? 'Victoire' : resultBadge.label === 'N' ? 'Match nul' : 'Défaite'}
@@ -86,7 +86,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
           {shootout && (
             <>
               {' · '}
-              <abbr title={olAhead ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}className="no-underline">
+              <abbr title={olAhead ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'} className="relative z-20 no-underline">
                 <span aria-hidden="true">t.a.b.</span>
                 <span className="sr-only">tirs au but</span>
               </abbr>
