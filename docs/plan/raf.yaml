@@ -1804,6 +1804,11 @@ lots:
     notes:
       - { date: 2026-10-17, text: "Mineurs de revue 17-10 (note) : le câblage getStats/fetchOne → peekFixtures() n'est couvert par aucun test de service (les 4 specs passent un stub vide) ; Europa/LdC gardent la règle des 14 jours alors que /api/season-matches les tient pour fixées (alignement hors lot, suivi possible)" }
     finished: 2026-10-17
+  - id: L171
+    title: "Actualités : une carte Google News dont la description regroupe plusieurs titres (« Titre… 20 MinutesTitre2 Le Figaro… ») répète son titre et affiche une ligne illisible — news-display.ts ne retire la description que si elle égale le titre ; masquer une description qui commence par le titre (ou tronquer au premier éditeur) et ajouter la ligne never correspondante sous /news dans docs/qa/expectations.md (conformité UX et QA prod de L5, 17-10)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
