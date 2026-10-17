@@ -253,10 +253,12 @@ const NOM_EQUIPE = 'font-display font-bold leading-none';
 const NOM_EQUIPE_OL = 'text-2xl';
 /**
  * En-tête d'un match des Bleus (L167 R13) : noms jamais coupés ni cachés. Grille minmax(0,1fr) auto minmax(0,1fr), noms qui
- * passent à la ligne (`overflow-wrap:anywhere`) à 24 px au-dessus de 600 px, 18 px dessous, 16 px sous 390 px ; sous 360 px
- * marge latérale 6 px, écart 4 px (le score descend à 32 px, plus haut) pour libérer ~6 px par colonne.
+ * passent à la ligne (`overflow-wrap:anywhere`) à 24 px au-dessus de 600 px, 18 px dessous, 16 px sous 390 px. Comme la
+ * maquette (`.sc`) : jusqu'à 599 px marge latérale 12 px, écart 8 px, score à 36 px ; sous 360 px marge 6 px, écart 4 px,
+ * score à 32 px — à 390 px « Bosnie-Herzégovine » tient sur deux lignes, sans coupure dans le mot.
  */
-const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[359px]:px-[6px] max-[359px]:gap-x-1';
+const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
+const SCORE_BLEUS = 'max-[599px]:text-[36px] max-[359px]:text-[32px]';
 const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl';
 
 /** « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`). */
@@ -452,7 +454,7 @@ export function MatchPage() {
               {data.home.name}
             </div>
           </div>
-          <div className={cn('text-5xl font-bold tabular-nums num text-fg-bright', bleus && 'max-[359px]:text-[32px]')}>
+          <div className={cn('text-5xl font-bold tabular-nums num text-fg-bright', bleus && SCORE_BLEUS)}>
             <MatchScore home={data.home} away={data.away} status={data.status} sepClass="mx-2" />
           </div>
           <div>
