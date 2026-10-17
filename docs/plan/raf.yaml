@@ -1755,13 +1755,17 @@ lots:
   - id: L168
     title: "Match des Bleus à venir : l'en-tête affiche l'heure 365scores comme fixée (« Jeu. 12/11 · 20h45 ») alors que la page équipe dit « Horaire à confirmer » (timeConfirmed faux au-delà de 14 jours) — afficher « Horaire à confirmer » comme la page équipe : champ dans la réponse stats et amendement de la fiche de la page de match des Bleus (R7, R11) ; réserve de la revue UX du 17-10, cas atteignable par URL seulement"
     public: "Match des Bleus à venir : l'heure non confirmée est annoncée comme telle"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     screen: component
     created: 2026-10-17
     started: 2026-10-17
     review: { date: 2026-10-17, verdict: "conforme : constat mineur corrigé (la fiche cite les 11 titres réels des tests de R7 et R11), aucun nouveau constat ; back 400/400, e2e 5/5, front 739/739, acceptation L167 29/29, tests scellés inchangés — orchestré (vague 2026-10-17-1328, 0 passe(s) de correction + passe des mineurs)", commit: 1b0daee063dcff71c995ea821aa63c0f22deb519 }
+    ux: { date: 2026-10-17, verdict: "conforme — en-tête « Jeu. 12/11 · Horaire à confirmer » vu sur les captures 1440 et 390 par le lead ; 0 bloquant, 0 majeur ; mineurs en note" }
+    notes:
+      - { date: 2026-10-17, text: "Mineurs UX 17-10 (non bloquants) : (1) « Horaire à confirmer » de l'en-tête en chasse fixe Geist Mono 12 px alors que /equipe-de-france l'écrit en Inter 14 px (match.tsx:452) — garder num pour la date, police du texte pour le libellé ; (2) hors lot, antérieur : à 390 px le statut « À VENIR » passe sur deux lignes avec un long nom de compétition (whitespace-nowrap)" }
+    finished: 2026-10-17
   - id: L169
     title: "CI rouge sur f14ba7b : deux tests scellés de la page de match des Bleus attendent « 21h00 » pour un coup d'envoi à 20:00 UTC et rendent « 20h00 » sur le runner GitHub en UTC (kickoff.test.ts fixe déjà process.env.TZ dans le test) — fixer TZ=Europe/Paris dans vitest.config.ts et vitest.acceptation.config.ts (l'app est en heure de Paris), aucun test scellé modifié ; livraison bloquée tant que la CI est rouge"
     status: done
