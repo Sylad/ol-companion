@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-17 17:30",
+  "generated": "2026-10-17 17:32",
   "entries": [
     {
       "slug": "2026-10-17-page-de-match-date-et-heure-d-un-match-a-venir",
@@ -9,8 +9,19 @@
       "lots": [
         "L172"
       ],
-      "captures": [],
-      "html": "<p>Sur la page d'un match à venir de l'OL, l'en-tête indique maintenant le jour et l'heure du coup d'envoi (par exemple « Jeu. 22/10 · 21h00 »), comme sur la carte de la page Coupes. Quand l'heure n'est pas encore fixée, il affiche « Horaire à confirmer » au lieu d'une heure qui pourrait être fausse. C'est aussi le cas pour les matchs de coupe d'Europe.</p>"
+      "captures": [
+        "captures/L172-match-a-venir-1440.png",
+        "captures/L172-match-a-venir-390.png",
+        "captures/L172-match-a-venir-1440.png",
+        "captures/L172-match-a-venir-390.png"
+      ],
+      "alts": [
+        "En-tête d'un match de l'OL à venir : À venir, Ligue Europa, Jeu. 22/10 · 21h00",
+        "Le même en-tête sur téléphone",
+        "En-tête d'un match de l'OL à venir : À venir, Ligue Europa, Jeu. 22/10 · 21h00",
+        "Le même en-tête sur téléphone"
+      ],
+      "html": "<p>Sur la page d'un match à venir de l'OL, l'en-tête indique maintenant le jour et l'heure du coup d'envoi (par exemple « Jeu. 22/10 · 21h00 »), comme sur la carte de la page Coupes. Quand l'heure n'est pas encore fixée, il affiche « Horaire à confirmer » au lieu d'une heure qui pourrait être fausse. C'est aussi le cas pour les matchs de coupe d'Europe.</p>"
     },
     {
       "slug": "2026-10-17-match-des-bleus-a-venir-l-heure-non-confirmee-est-annoncee-c",
