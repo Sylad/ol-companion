@@ -44,7 +44,9 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
   const awayName = displayName(match.awayTeam, awayIsOL);
   // Tirs au but : la teinte seule ne dit pas l'issue (WCAG 1.4.1), le nom du lien la dit (comme /fixtures).
   const qualified = shootout ? (olAhead ? 'Olympique Lyonnais' : homeIsOL ? awayName : homeName) : null;
+  // WCAG 2.5.3 : le lien enveloppe le libellé de la phase, son nom accessible (aria-label) la reprend en tête, comme /fixtures (prefix).
   const linkName =
+    `${match.stage}, ` +
     (hasScore
       ? `${homeName} ${match.homeScore}, ${awayName} ${match.awayScore}`
       : `${homeName} contre ${awayName}`) +

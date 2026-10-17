@@ -52,12 +52,12 @@ describe('L6 t3 — la carte mène au détail du match', () => {
 
   it('t3 — match joué : nom « A 2, B 1 — détail du match »', async () => {
     await renderRow(game());
-    expect(screen.getByRole('link', { name: 'Olympique Lyonnais 2, Anderlecht 1 — détail du match' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Phase de ligue — J1, Olympique Lyonnais 2, Anderlecht 1 — détail du match' })).toBeInTheDocument();
   });
 
   it('t3 — match à venir : nom « A contre B — détail du match »', async () => {
     await renderRow(game({ status: 'SCHEDULED', homeScore: null, awayScore: null }));
-    expect(screen.getByRole('link', { name: 'Olympique Lyonnais contre Anderlecht — détail du match' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Phase de ligue — J1, Olympique Lyonnais contre Anderlecht — détail du match' })).toBeInTheDocument();
   });
 
   it('t3 — le contenu de la carte (phase, date, issue) reste lu hors du lien étiré', async () => {
@@ -74,7 +74,7 @@ describe('L6 t3 — la carte mène au détail du match', () => {
     await renderRow(game({ homeScore: 1, awayScore: 1, olQualified: true }));
     expect(
       screen.getByRole('link', {
-        name: 'Olympique Lyonnais 1, Anderlecht 1, Olympique Lyonnais qualifié aux tirs au but — détail du match',
+        name: 'Phase de ligue — J1, Olympique Lyonnais 1, Anderlecht 1, Olympique Lyonnais qualifié aux tirs au but — détail du match',
       }),
     ).toBeInTheDocument();
   });
@@ -83,9 +83,28 @@ describe('L6 t3 — la carte mène au détail du match', () => {
     await renderRow(game({ homeScore: 1, awayScore: 1, olQualified: false }));
     expect(
       screen.getByRole('link', {
-        name: 'Olympique Lyonnais 1, Anderlecht 1, Anderlecht qualifié aux tirs au but — détail du match',
+        name: 'Phase de ligue — J1, Olympique Lyonnais 1, Anderlecht 1, Anderlecht qualifié aux tirs au but — détail du match',
       }),
     ).toBeInTheDocument();
+  });
+
+  // WCAG 2.5.3 : le texte visible du lien étiré (la phase) est dans son nom accessible, qui le remplace sinon.
+  it.each([
+    'Phase de ligue — J1',
+    '1/8 de finale · aller',
+    'Barrages · retour',
+  ])('t3 — « %s » : le nom du lien contient sa phase visible, en tête (WCAG 2.5.3)', async (stage) => {
+    await renderRow(game({ stage }));
+    const lien = screen.getByRole('link');
+    expect(lien.textContent).toBe(stage);
+    const nom = lien.getAttribute('aria-label')!;
+    expect(nom).toContain(lien.textContent!);
+    expect(nom.startsWith(stage)).toBe(true);
+  });
+
+  it('t3 — match à venir ou nul aux tirs au but : le nom garde la phase visible', async () => {
+    await renderRow(game({ stage: 'Barrages · retour', status: 'SCHEDULED', homeScore: null, awayScore: null }));
+    expect(screen.getByRole('link').getAttribute('aria-label')).toContain('Barrages · retour');
   });
 
   it('t3 — le contour de focus est visible (focus-visible:outline)', async () => {
@@ -124,8 +143,15 @@ describe('L6 t2 — contrastes ≥ 4,5:1 des cartes', () => {
     expect(contrast(token('bg'), token('loss-fg'))).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('t2 — l’en-tête de la carte (date, phase) reste ≥ 4,5:1', () => {
-    expect(contrast(token('fg-dim'), entete)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(token('fg-muted'), entete)).toBeGreaterThanOrEqual(4.5);
+  // Lit la classe de couleur RÉELLEMENT rendue (text-fg-dim, text-fg-muted…) : change la classe, le test échoue.
+  it('t2 — l’en-tête rendu (phase, date) est ≥ 4,5:1 sur son fond, d’après les classes posées', async () => {
+    const { container } = await renderRow(game());
+    const entetes = [screen.getByRole('link'), [...container.querySelectorAll('span')].find((s) => s.textContent?.includes('Terminé'))!];
+    expect(entetes).toHaveLength(2);
+    for (const el of entetes) {
+      const nom = el.className.match(/\btext-(fg(?:-[a-z]+)?)\b/)?.[1];
+      expect(nom, `classe de couleur de « ${el.textContent} »`).toBeDefined();
+      expect(contrast(token(nom!), entete), `${nom} sur l’en-tête`).toBeGreaterThanOrEqual(4.5);
+    }
   });
 });
