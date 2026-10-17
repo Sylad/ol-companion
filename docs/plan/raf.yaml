@@ -1761,6 +1761,7 @@ lots:
     screen: component
     created: 2026-10-17
     started: 2026-10-17
+    review: { date: 2026-10-17, verdict: "conforme : constat mineur corrigé (la fiche cite les 11 titres réels des tests de R7 et R11), aucun nouveau constat ; back 400/400, e2e 5/5, front 739/739, acceptation L167 29/29, tests scellés inchangés — orchestré (vague 2026-10-17-1328, 0 passe(s) de correction + passe des mineurs)", commit: 1b0daee063dcff71c995ea821aa63c0f22deb519 }
   - id: L169
     title: "CI rouge sur f14ba7b : deux tests scellés de la page de match des Bleus attendent « 21h00 » pour un coup d'envoi à 20:00 UTC et rendent « 20h00 » sur le runner GitHub en UTC (kickoff.test.ts fixe déjà process.env.TZ dans le test) — fixer TZ=Europe/Paris dans vitest.config.ts et vitest.acceptation.config.ts (l'app est en heure de Paris), aucun test scellé modifié ; livraison bloquée tant que la CI est rouge"
     status: done
