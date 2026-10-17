@@ -89,7 +89,7 @@ export interface SeasonMatch extends StoredSeasonMatch {
  * à part (332) : même code et même nom que la Ligue des champions (572), le
  * tour les distingue (`round`).
  */
-const TRACKED_COMPETITIONS: Record<
+export const TRACKED_COMPETITIONS: Record<
   number,
   { code: CompetitionCode; name: string }
 > = {

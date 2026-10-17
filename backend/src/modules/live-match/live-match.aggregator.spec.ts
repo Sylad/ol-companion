@@ -326,7 +326,8 @@ describe('événements — noms des joueurs résolus depuis game.members[]', () 
 
 describe('R7/R11 (L168) — timeConfirmed de la réponse stats, même règle que /api/france', () => {
   const NOW = new Date('2026-10-17T12:00:00Z');
-  const startIn = (ms: number) => ({ ...fixture.game, startTime: new Date(NOW.getTime() + ms).toISOString() });
+  // La fixture est un match de Ligue Europa (suivie, donc fixée : L172) : les Bleus ne le sont pas.
+  const startIn = (ms: number) => ({ ...fixture.game, competitionId: 5930, startTime: new Date(NOW.getTime() + ms).toISOString() });
   const DAY = 24 * 3600_000;
 
   it('R11 — un match à plus de 14 jours : timeConfirmed est faux (heure de remplissage de 365scores)', () => {
@@ -377,9 +378,7 @@ describe('L170 — timeConfirmed d’un match de Ligue 1 à venir : football-dat
     expect(summarize(upcomingL1(14.3 * DAY, { roundNum: undefined }), NOW, said(32, true)).timeConfirmed).toBe(false);
   });
 
-  it('L170/R4 — hors Ligue 1 (coupes d’Europe, Bleus) et match commencé : football-data n’est pas consulté', () => {
-    const europa = { ...upcomingL1(20 * DAY), competitionId: 573 };
-    expect(summarize(europa, NOW, said(32, true)).timeConfirmed).toBe(false);
+  it('L170/R4 — un match commencé : football-data n’est pas consulté', () => {
     const live = { ...upcomingL1(-3600_000), statusGroup: 3 };
     expect(summarize(live, NOW, said(32, false)).timeConfirmed).toBe(true);
   });
@@ -387,5 +386,32 @@ describe('L170 — timeConfirmed d’un match de Ligue 1 à venir : football-dat
   it('L170/R5 — aggregate() transmet ce que dit football-data à la réponse stats', () => {
     const raw = { game: upcomingL1(14.3 * DAY) } as never;
     expect(aggregate(raw, NOW, said(32, true)).timeConfirmed).toBe(true);
+  });
+});
+
+describe('L172 — timeConfirmed d’un match à venir d’une compétition suivie : même valeur que /api/season-matches', () => {
+  const NOW = new Date('2026-10-17T12:00:00Z');
+  const DAY = 24 * 3600_000;
+  const upcoming = (competitionId: number, ms: number) => ({
+    ...fixture.game,
+    statusGroup: 2,
+    competitionId,
+    startTime: new Date(NOW.getTime() + ms).toISOString(),
+  });
+
+  it('L172/R1 — Ligue Europa, Coupe de France, Ligue des champions (et qualifications) à plus de 14 jours : vrai (Lyon – Lillestrom)', () => {
+    for (const id of [573, 37, 572, 332]) {
+      expect(summarize(upcoming(id, 20 * DAY), NOW).timeConfirmed).toBe(true);
+    }
+  });
+
+  it('L172/R2 — une compétition non suivie (Bleus, amical) à plus de 14 jours : faux, règle des 14 jours de /api/france', () => {
+    expect(summarize(upcoming(5930, 20 * DAY), NOW).timeConfirmed).toBe(false);
+    expect(summarize(upcoming(5930, 2 * DAY), NOW).timeConfirmed).toBe(true);
+  });
+
+  it('L172/R3 — un match de coupe est aligné sur season-matches quelle que soit la réponse de football-data', () => {
+    const fd = [{ competition: 'Ligue 1', matchday: 32, timeConfirmed: false }];
+    expect(summarize({ ...upcoming(573, 20 * DAY), roundNum: 32 }, NOW, fd).timeConfirmed).toBe(true);
   });
 });

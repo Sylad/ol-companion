@@ -13,6 +13,7 @@ import type {
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
 import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
 import { footballDataSaysKickoff } from '../season-matches/kickoff-confirmation';
+import { TRACKED_COMPETITIONS } from '../season-matches/season-matches.service';
 import type { Match } from '../fixtures/fixtures.service';
 import type {
   Scores365Competitor,
@@ -266,8 +267,11 @@ type FootballDataFixtures = Pick<Match, 'competition' | 'matchday' | 'timeConfir
 /**
  * Heure du coup d'envoi fixée ? Un match de Ligue 1 à venir suit ce que football-data
  * dit de sa journée (même règle que `/api/season-matches`, `isKickoffTimeConfirmed`) ;
- * s'il n'en dit rien, et pour toute autre compétition (Bleus, coupes), seule la règle
- * des 14 jours s'applique. Un match commencé ou terminé est toujours fixé (passé : dans l'horizon).
+ * s'il n'en dit rien, la règle des 14 jours s'applique. Une autre compétition suivie
+ * (coupes, Europe) est tenue pour fixée, comme dans `/api/season-matches` : 365scores
+ * est la seule source et ne signale rien. Seuls les matchs hors de ces compétitions
+ * (Bleus, amicaux) suivent la règle des 14 jours de `/api/france`. Un match commencé
+ * ou terminé est toujours fixé (passé : dans l'horizon).
  */
 function kickoffTimeConfirmed(
   g: Scores365GameDetailed,
@@ -277,6 +281,9 @@ function kickoffTimeConfirmed(
   if (g.competitionId === LIGUE1_365SCORES_ID && deriveStatus(g.statusGroup ?? 0) === 'upcoming') {
     const said = footballDataSaysKickoff(g.roundNum ?? null, footballData);
     if (said !== undefined) return said;
+  }
+  if (g.competitionId !== LIGUE1_365SCORES_ID && g.competitionId !== undefined && g.competitionId in TRACKED_COMPETITIONS) {
+    return true;
   }
   return isKickoffTimeWithinHorizon(g.startTime, now.getTime());
 }
