@@ -42,26 +42,33 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
 
   const homeName = displayName(match.homeTeam, homeIsOL);
   const awayName = displayName(match.awayTeam, awayIsOL);
-  const linkName = hasScore
-    ? `${homeName} ${match.homeScore}, ${awayName} ${match.awayScore} — détail du match`
-    : `${homeName} contre ${awayName} — détail du match`;
+  // Tirs au but : la teinte seule ne dit pas l'issue (WCAG 1.4.1), le nom du lien la dit (comme /fixtures).
+  const qualified = shootout ? (olAhead ? 'Olympique Lyonnais' : homeIsOL ? awayName : homeName) : null;
+  const linkName =
+    (hasScore
+      ? `${homeName} ${match.homeScore}, ${awayName} ${match.awayScore}`
+      : `${homeName} contre ${awayName}`) +
+    (qualified ? `, ${qualified} qualifié aux tirs au but` : '') +
+    ' — détail du match';
 
   return (
-    <Link
-      to="/match/$gameId"
-      params={{ gameId: String(match.id) }}
-      search={{ matchupId: matchupId(match) }}
-      aria-label={linkName}
+    <div
       className={cn(
-        'block rounded-md border border-border bg-surface overflow-hidden hover:border-border-strong transition-colors',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright',
+        'relative rounded-md border border-border bg-surface overflow-hidden hover:border-border-strong transition-colors',
         isLive && 'border-l-[3px] border-l-live',
       )}
     >
       <div className="flex items-center gap-3 px-4 py-2 border-b border-border bg-surface-2/40">
-        <span className="text-[11px] uppercase tracking-wider font-semibold text-fg-muted">
+        {/* Lien étiré sur toute la carte par un pseudo-élément : le contenu reste lu hors du lien. */}
+        <Link
+          to="/match/$gameId"
+          params={{ gameId: String(match.id) }}
+          search={{ matchupId: matchupId(match) }}
+          aria-label={linkName}
+          className="text-[11px] uppercase tracking-wider font-semibold text-fg-muted after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+        >
           {match.stage}
-        </span>
+        </Link>
         {resultBadge && (
           <span
             className={cn(
@@ -106,7 +113,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
           hasScore={hasScore}
         />
       </div>
-    </Link>
+    </div>
   );
 }
 

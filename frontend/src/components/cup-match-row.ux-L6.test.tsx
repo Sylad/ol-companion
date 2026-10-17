@@ -60,6 +60,34 @@ describe('L6 t3 — la carte mène au détail du match', () => {
     expect(screen.getByRole('link', { name: 'Olympique Lyonnais contre Anderlecht — détail du match' })).toBeInTheDocument();
   });
 
+  it('t3 — le contenu de la carte (phase, date, issue) reste lu hors du lien étiré', async () => {
+    const { container } = await renderRow(game());
+    const lien = screen.getByRole('link');
+    expect(lien.className).toMatch(/after:absolute/);
+    expect(lien.className).toMatch(/after:inset-0/);
+    expect(lien.closest('.relative')).not.toBeNull();
+    expect(container.textContent).toContain('Terminé');
+    expect(screen.getByLabelText('Victoire')).toBeInTheDocument();
+  });
+
+  it('t3 — tirs au but : le nom du lien ajoute « , <club> qualifié aux tirs au but » (WCAG 1.4.1)', async () => {
+    await renderRow(game({ homeScore: 1, awayScore: 1, olQualified: true }));
+    expect(
+      screen.getByRole('link', {
+        name: 'Olympique Lyonnais 1, Anderlecht 1, Olympique Lyonnais qualifié aux tirs au but — détail du match',
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('t3 — tirs au but perdus : le qualifié est l’adversaire', async () => {
+    await renderRow(game({ homeScore: 1, awayScore: 1, olQualified: false }));
+    expect(
+      screen.getByRole('link', {
+        name: 'Olympique Lyonnais 1, Anderlecht 1, Anderlecht qualifié aux tirs au but — détail du match',
+      }),
+    ).toBeInTheDocument();
+  });
+
   it('t3 — le contour de focus est visible (focus-visible:outline)', async () => {
     await renderRow(game());
     expect(screen.getByRole('link').className).toMatch(/focus-visible:outline-ol-red-bright/);
