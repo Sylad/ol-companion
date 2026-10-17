@@ -39,4 +39,15 @@ describe('L5/t7 — affichage d\'un article', () => {
   it('description distincte : gardée', () => {
     expect(displayNews({ ...base, title: 'Mercato - Le Progrès', description: 'Un vrai résumé' }).description).toBe('Un vrai résumé');
   });
+
+  it('L171 — description Google News qui regroupe plusieurs titres et commence par le titre : supprimée', () => {
+    const titre = 'OL : la piste Mbappé s\'éloigne';
+    const groupee = `${titre}… 20 MinutesOL : un autre titre Le Figaro…`;
+    expect(displayNews({ ...base, title: `${titre} - Le Progrès`, description: groupee }).description).toBe('');
+    expect(displayNews({ ...base, title: `${titre} - Le Progrès`, description: `${titre} - Le Progrès… 20 MinutesAutre Le Figaro…` }).description).toBe('');
+  });
+
+  it('L171 — une description qui contient le titre sans commencer par lui est gardée', () => {
+    expect(displayNews({ ...base, title: 'Mercato - Le Progrès', description: 'Selon nos infos, Mercato reste ouvert' }).description).toBe('Selon nos infos, Mercato reste ouvert');
+  });
 });

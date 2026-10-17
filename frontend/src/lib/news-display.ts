@@ -1,9 +1,9 @@
 import type { NewsItem } from '@/types/api';
 
 // L5/t7 — Google News met l'éditeur en fin de titre (« Titre - Éditeur ») et répète le titre
-// en description. On les remet à leur place pour l'affichage : titre seul, éditeur comme
-// source de la carte, pas de description qui redit le titre. Module pur ; le filtre par
-// source de la page garde la source du flux (« Google News »).
+// en description (parfois groupée avec d'autres titres : masquée dès qu'elle commence par le
+// titre). On les remet à leur place pour l'affichage : titre seul, éditeur comme source de la
+// carte, pas de description qui redit le titre. Module pur ; le filtre par source de la page garde la source du flux (« Google News »).
 
 const GOOGLE_NEWS = 'Google News';
 const SEPARATEUR = ' - ';
@@ -27,6 +27,12 @@ function repeteLeTitre(description: string, ...connus: string[]): boolean {
   return reste.replace(/[^\p{L}\p{N}]/gu, '') === '';
 }
 
+/** Vrai si la description commence par le titre (carte Google News groupée : « Titre… Éditeur Titre2 Éditeur… »). */
+function commenceParLeTitre(description: string, ...titres: string[]): boolean {
+  const d = normalise(description);
+  return titres.map(normalise).some((t) => t !== '' && d.startsWith(t));
+}
+
 export function displayNews(item: NewsItem): NewsDisplay {
   let { title, source } = item;
   let editeur = '';
@@ -38,6 +44,8 @@ export function displayNews(item: NewsItem): NewsDisplay {
       source = editeur;
     }
   }
-  const description = repeteLeTitre(item.description, item.title, title, editeur) ? '' : item.description;
+  const description =
+    repeteLeTitre(item.description, item.title, title, editeur) || commenceParLeTitre(item.description, item.title, title)
+      ? '' : item.description;
   return { title, source, description };
 }

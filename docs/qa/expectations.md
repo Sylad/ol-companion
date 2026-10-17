@@ -71,7 +71,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 
 ## /news
 - shows: « Chaînes YouTube recommandées » avec au moins une carte ; « À la une » avec au moins 10 liens d'articles
-- never: « Erreur de chargement. » ; « Aucun article pour la source »
+- never: « Erreur de chargement. » ; « Aucun article pour la source » ; sur une carte d'article, une description qui commence par le titre de la carte (Google News groupé : « Titre… 20 MinutesTitre2 Le Figaro… », L171)
 - api: /api/news
 - api: /api/youtube-channels
 
