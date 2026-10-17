@@ -191,10 +191,13 @@ describe('R4 — une couleur par équipe sur la page des Bleus', () => {
     show(data(5061, 2373, 'France', 'Belgique'));
     await screen.findByTestId('elan');
     // R4 — « Le bleu et le rouge OL ne sont plus utilisés pour une équipe sur cette page ; jamais de vert. »
+    // R4 et R5 gardent le rouge comme accent (anneau de focus, bordure néon, bordure du curseur) : ces jetons ne colorent pas une équipe
+    const sansAccents = (html: string) => html.replace(/\S*(?:focus(?:-visible|-within)?:|ring-|outline-|border(?:-[trblxy])?-)\S*ol-(?:blue|red)\S*/g, '');
     for (const id of BLOCS) {
       const html = (await screen.findAllByTestId(id)).map(norm).join(' ');
-      expect([id, /ol-blue|ol-red/.test(html)]).toEqual([id, false]);
-      expect([id, /green|emerald|lime|hsl\(\s*(?:9\d|1\d\d)\b/.test(html)]).toEqual([id, false]);
+      expect([id, /ol-blue|ol-red/.test(sansAccents(html))]).toEqual([id, false]);
+      // vert = teintes 90 à 165 ; le cyan et le turquoise (166 à 199) ne sont pas du vert
+      expect([id, /green|emerald|lime|hsl\(\s*(?:9\d|1[0-5]\d|16[0-5])\b/.test(html)]).toEqual([id, false]);
     }
     // et la France y est bien en bleu (témoin : sans lui, l'absence ci-dessus ne prouve rien)
     expect(norm(await screen.findByTestId('elan'))).toMatch(BLEU);

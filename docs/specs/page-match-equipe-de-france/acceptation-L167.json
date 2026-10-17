@@ -10,7 +10,7 @@
   "empreintes": {
     "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "c647193542350060dcce1b895951dc0b4c2271ee",
     "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
-    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "90e3a3a07b450f714d9f72547c6ca8592eb565ce"
+    "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "2ef841cb01481a05b4726ca87ea5ae544487d295"
   },
   "resceaux": [
     {
@@ -48,6 +48,13 @@
       "date": "2026-10-16",
       "avant": "47d0e711a40f4a9f92c6faaa02173a0ebc8d0506",
       "apres": "c647193542350060dcce1b895951dc0b4c2271ee"
+    },
+    {
+      "test": "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx",
+      "raison": "test R4 plus fort que sa règle (revue 16-10) : il refusait tout ol-blue/ol-red dans les blocs, alors que R4 et R5 gardent le rouge comme accent (anneau de focus, bordures), et comptait comme vert les teintes 166 à 199 (cyan, turquoise) ; les jetons d'accent sont retirés avant le contrôle et le vert se limite aux teintes 90 à 165, assertions inchangées",
+      "date": "2026-10-17",
+      "avant": "90e3a3a07b450f714d9f72547c6ca8592eb565ce",
+      "apres": "2ef841cb01481a05b4726ca87ea5ae544487d295"
     }
   ]
 }
