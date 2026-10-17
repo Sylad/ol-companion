@@ -1607,6 +1607,7 @@ lots:
     created: 2026-10-15
     notes:
       - { date: 2026-10-16, text: "QA L161 16-10 : étendre l'exception de /nouveautes de « un titre » à la prose des entrées — 7 entrées citent « Chargement… » / « Chargement de … » dans leur texte, aucun titre" }
+      - { date: 2026-10-17, text: "QA L167 17-10 (prod conforme, 0 défaut) : ajouter aux attentes /equipe-de-france et /match — les 5 lignes de « Derniers résultats » sont des liens [data-testid=lien-resultat-match] vers /match/<id>?matchupId=<home>-<away>-<id> ; sur un match des Bleus (5061 dans le matchupId) : body.theme-bleus, lien de retour « Équipe de France », France en bleu hsl(224 90% 75%) et adversaire en blanc dans l'en-tête et les légendes Momentum/Carte des tirs, bordure néon bleu-blanc-rouge sur .faits-bloc, noms ≤ 2 lignes sans rognage à 390 ; sur un match de l'OL rien ne change. Et ## * : définir « proche » pour /api/live-match/current (null mesuré ~32 h avant OL – Nice pendant que / annonce « dans 1 jour ») en heures de la fenêtre du backend" }
   - id: L158
     title: "Page du match : le bloc « Classement en direct » affiche la Ligue 1 sous un match de coupe d'Europe (Lyon – Crystal Palace, capture 15-10) ; attendu : le classement de la compétition du match quand football-data.org le publie (phase de ligue), sinon le bloc est masqué ou dit clairement qu'il s'agit de la Ligue 1 ; jamais un classement d'une autre compétition sans le dire"
     public: "Page du match : le classement en direct est réservé aux matchs de Ligue 1"
