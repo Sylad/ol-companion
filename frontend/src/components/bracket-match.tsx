@@ -37,7 +37,7 @@ function Row({ name, score, won, dim, highlight }: { name: string; score: number
     <div className={cn(
       'flex items-center justify-between gap-2 leading-tight py-0.5',
       won && 'text-fg-bright font-semibold',
-      dim && 'text-fg-dim',
+      dim && 'text-fg-muted',
       highlight && 'font-semibold',
     )}>
       <span className="truncate">{name || '—'}</span>

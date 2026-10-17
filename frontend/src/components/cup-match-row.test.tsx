@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import { CupMatchRow } from './cup-match-row';
 import type { CupMatch } from '@/types/api';
 
@@ -19,47 +20,52 @@ const match = (status: CupMatch['status'], date: Date): CupMatch => ({
   stageFr: 'Quarts de finale',
 });
 
-function renderRow(m: CupMatch) {
+// La carte est un lien vers /match (L6 t3) : elle vit dans un routeur.
+async function renderRow(m: CupMatch) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(
+  const root = createRootRoute({ component: () => <CupMatchRow match={m} /> });
+  const router = createRouter({ routeTree: root, history: createMemoryHistory({ initialEntries: ['/'] }) });
+  const view = render(
     <QueryClientProvider client={client}>
-      <CupMatchRow match={m} />
+      <RouterProvider router={router} />
     </QueryClientProvider>,
   );
+  await screen.findByRole('link');
+  return view;
 }
 
 describe('<CupMatchRow /> (L101)', () => {
-  it('écrit l\'heure d\'un match à venir « 21h00 », jamais « 21:00 »', () => {
-    const { container } = renderRow(match('SCHEDULED', new Date(2026, 10, 3, 21, 0)));
+  it('écrit l\'heure d\'un match à venir « 21h00 », jamais « 21:00 »', async () => {
+    const { container } = await renderRow(match('SCHEDULED', new Date(2026, 10, 3, 21, 0)));
     expect(container.textContent).toContain('21h00');
     expect(container.textContent).not.toMatch(/\d{2}:\d{2}/);
   });
-  it('garde les minutes sur deux chiffres « 18h05 »', () => {
-    const { container } = renderRow(match('SCHEDULED', new Date(2026, 10, 3, 18, 5)));
+  it('garde les minutes sur deux chiffres « 18h05 »', async () => {
+    const { container } = await renderRow(match('SCHEDULED', new Date(2026, 10, 3, 18, 5)));
     expect(container.textContent).toContain('18h05');
   });
 });
 
 describe('<CupMatchRow /> — tirs au but (L140)', () => {
   const done = (o: Partial<CupMatch>) => ({ ...match('FINISHED', new Date(2026, 1, 3, 21, 0)), homeScore: 1, awayScore: 1, ...o });
-  it('un nul gagné aux tirs au but : badge « Victoire », « t.a.b. » écrit', () => {
-    const { getByLabelText, container } = renderRow(done({ olQualified: true }));
+  it('un nul gagné aux tirs au but : badge « Victoire », « t.a.b. » écrit', async () => {
+    const { getByLabelText, container } = await renderRow(done({ olQualified: true }));
     expect(getByLabelText('Victoire')).toHaveTextContent('V');
     expect(container.textContent).toContain('t.a.b.');
   });
-  it('un nul perdu aux tirs au but : badge « Défaite »', () => {
-    const { getByLabelText } = renderRow(done({ olQualified: false }));
+  it('un nul perdu aux tirs au but : badge « Défaite »', async () => {
+    const { getByLabelText } = await renderRow(done({ olQualified: false }));
     expect(getByLabelText('Défaite')).toHaveTextContent('D');
   });
-  it('l\'infobulle de « t.a.b. » dit la même chose que la pastille', () => {
-    const won = renderRow(done({ olQualified: true }));
+  it('l\'infobulle de « t.a.b. » dit la même chose que la pastille', async () => {
+    const won = await renderRow(done({ olQualified: true }));
     expect(won.container.querySelector('abbr')).toHaveAttribute('title', 'Qualifié aux tirs au but');
     won.unmount();
-    const lost = renderRow(done({ olQualified: false }));
+    const lost = await renderRow(done({ olQualified: false }));
     expect(lost.container.querySelector('abbr')).toHaveAttribute('title', 'Éliminé aux tirs au but');
   });
-  it('un nul sans qualifié : badge « Match nul », pas de « t.a.b. »', () => {
-    const { getByLabelText, container } = renderRow(done({}));
+  it('un nul sans qualifié : badge « Match nul », pas de « t.a.b. »', async () => {
+    const { getByLabelText, container } = await renderRow(done({}));
     expect(getByLabelText('Match nul')).toHaveTextContent('N');
     expect(container.textContent).not.toContain('t.a.b.');
   });

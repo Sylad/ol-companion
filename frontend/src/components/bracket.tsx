@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Maximize2, X } from 'lucide-react';
 import type { BracketInfo, BracketMatch as BracketMatchType, BracketStage } from '@/types/api';
 import { BracketMatch } from './bracket-match';
@@ -79,12 +80,27 @@ function BracketDesktopLayout({ stagesWithItems, columnWidthClass }: {
 
 export function Bracket({ bracket }: Props) {
   const [fullscreen, setFullscreen] = useState(false);
+  const openRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Dialogue modal (L6 t5) : focus sur « Fermer » à l'ouverture, Tab piégé, focus rendu au bouton à la fermeture.
   useEffect(() => {
     if (!fullscreen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setFullscreen(false); };
+    const opener = openRef.current;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFullscreen(false);
+      // « Fermer » est le seul élément focalisable du dialogue : Tab et Maj+Tab y restent.
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        closeRef.current?.focus();
+      }
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      opener?.focus();
+    };
   }, [fullscreen]);
 
   if (!bracket.stages.length) return null;
@@ -97,6 +113,7 @@ export function Bracket({ bracket }: Props) {
         <div className="flex items-center justify-between mb-2">
           <div className="eyebrow">Tableau</div>
           <button
+            ref={openRef}
             type="button"
             onClick={() => setFullscreen(true)}
             className="hidden md:inline-flex items-center gap-1 text-xs text-fg-dim hover:text-fg transition-colors px-1.5 py-0.5 rounded"
@@ -133,18 +150,22 @@ export function Bracket({ bracket }: Props) {
         </div>
       </div>
 
-      {fullscreen && (
+      {fullscreen && createPortal(
         <div
           className="fixed inset-0 z-[300] bg-bg/90 backdrop-blur-md flex items-center justify-center p-4"
           onClick={() => setFullscreen(false)}
         >
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Tableau en plein écran"
             className="relative w-[95vw] max-w-7xl max-h-[90vh] overflow-auto rounded-lg border border-border bg-surface-2 p-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="eyebrow">Tableau — Plein écran</div>
               <button
+                ref={closeRef}
                 type="button"
                 onClick={() => setFullscreen(false)}
                 className="inline-flex items-center gap-1 text-xs text-fg-dim hover:text-fg transition-colors p-1 rounded"
@@ -156,7 +177,8 @@ export function Bracket({ bracket }: Props) {
             </div>
             <BracketDesktopLayout stagesWithItems={stagesWithItems} columnWidthClass="w-56" />
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

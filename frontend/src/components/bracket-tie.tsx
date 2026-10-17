@@ -89,7 +89,7 @@ function TeamRow({
       className={cn(
         'grid grid-cols-[1fr_auto_auto] gap-x-2 items-center leading-tight py-0.5',
         won && 'text-fg-bright font-semibold',
-        dim && 'text-fg-dim',
+        dim && 'text-fg-muted',
         highlight && 'font-semibold',
       )}
     >

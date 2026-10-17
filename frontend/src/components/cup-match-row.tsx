@@ -1,10 +1,12 @@
+import { Link } from '@tanstack/react-router';
 import { isOlTeamName } from '@/lib/ol-name';
 import { TeamLogo } from './team-logo';
-import { OL_TEAM_ID, type CupMatch } from '@/types/api';
+import type { CupMatch } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { cupResult } from '@/lib/cup-result';
 import { kickoffTime } from '@/lib/kickoff';
+import { matchupId, seasonTeamLogoUrl } from '@/lib/calendar';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
@@ -12,11 +14,6 @@ function formatDate(iso: string): { day: string; time: string } {
   const d = new Date(iso);
   const day = `${WEEKDAY[d.getDay()]} ${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
   return { day, time: kickoffTime({ date: iso }) ?? '' };
-}
-
-function teamIdForLogo(teamName: string, teamId: number): number {
-  if (teamName.toLowerCase() === 'lyon') return OL_TEAM_ID;
-  return teamId;
 }
 
 export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] }) {
@@ -41,12 +38,23 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
   let resultBadge: { label: string; cls: string } | null = null;
   if (outcome?.result === 'W') resultBadge = { label: 'V', cls: 'bg-win text-bg' };
   else if (outcome?.result === 'D') resultBadge = { label: 'N', cls: 'bg-draw text-bg' };
-  else if (outcome?.result === 'L') resultBadge = { label: 'D', cls: 'bg-loss text-bg' };
+  else if (outcome?.result === 'L') resultBadge = { label: 'D', cls: 'bg-loss-fg text-bg' };
+
+  const homeName = displayName(match.homeTeam, homeIsOL);
+  const awayName = displayName(match.awayTeam, awayIsOL);
+  const linkName = hasScore
+    ? `${homeName} ${match.homeScore}, ${awayName} ${match.awayScore} — détail du match`
+    : `${homeName} contre ${awayName} — détail du match`;
 
   return (
-    <div
+    <Link
+      to="/match/$gameId"
+      params={{ gameId: String(match.id) }}
+      search={{ matchupId: matchupId(match) }}
+      aria-label={linkName}
       className={cn(
-        'rounded-md border border-border bg-surface overflow-hidden hover:border-border-strong transition-colors',
+        'block rounded-md border border-border bg-surface overflow-hidden hover:border-border-strong transition-colors',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright',
         isLive && 'border-l-[3px] border-l-live',
       )}
     >
@@ -82,24 +90,29 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
 
       <div className="px-4 py-3 space-y-2">
         <TeamLine
-          name={match.homeTeam}
-          teamId={teamIdForLogo(match.homeTeam, match.homeTeamId)}
+          name={homeName}
+          teamId={match.homeTeamId}
           score={match.homeScore}
           won={homeWon}
           isOL={homeIsOL}
           hasScore={hasScore}
         />
         <TeamLine
-          name={match.awayTeam}
-          teamId={teamIdForLogo(match.awayTeam, match.awayTeamId)}
+          name={awayName}
+          teamId={match.awayTeamId}
           score={match.awayScore}
           won={awayWon}
           isOL={awayIsOL}
           hasScore={hasScore}
         />
       </div>
-    </div>
+    </Link>
   );
+}
+
+/** Nom affiché d'un camp : « Olympique Lyonnais » pour l'OL, sinon le nom court. */
+function displayName(name: string, isOL: boolean): string {
+  return isOL ? 'Olympique Lyonnais' : teamShortName(name);
 }
 
 interface TeamLineProps {
@@ -111,20 +124,16 @@ interface TeamLineProps {
   hasScore: boolean;
 }
 
-function TeamLine({ name, teamId, score, won, isOL, hasScore }: TeamLineProps) {
-  const display = isOL ? 'Olympique Lyonnais' : teamShortName(name);
+// Le perdant n'est plus atténué par `opacity` (3,02:1 sur son score) : ses textes passent en fg-muted (≥ 4,5:1).
+function TeamLine({ name: display, teamId, score, won, isOL, hasScore }: TeamLineProps) {
+  const lost = hasScore && !won;
   return (
-    <div
-      className={cn(
-        'flex items-center gap-3',
-        hasScore && !won && 'opacity-55',
-      )}
-    >
-      <TeamLogo teamId={teamId} name={display} size={20} />
+    <div className="flex items-center gap-3">
+      <TeamLogo teamId={teamId} name={display} size={20} src={seasonTeamLogoUrl(teamId)} />
       <span
         className={cn(
           'flex-1 truncate text-sm',
-          isOL ? 'font-semibold text-fg-bright' : 'text-fg',
+          isOL ? 'font-semibold text-fg-bright' : lost ? 'text-fg-muted' : 'text-fg',
         )}
       >
         {display}
