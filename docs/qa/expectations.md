@@ -8,15 +8,15 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 ## *
 - shows: un h1 non vide — le bandeau du club ou le titre propre de la page ; la navigation — barre latérale à 1440, barre du bas à 5 entrées (4 liens + bouton « Plus ») à 390
 - shows: le bundle chargé par la page (script[src]) est celui que référence /index.html relu sans cache
-- never: « Erreur de chargement », « Too Many Requests », un élément .animate-spin ou .animate-pulse visible, ou un texte d'état « Chargement… », « Chargement de … », « Chargement du … » ou « Chargement des … » (jamais le mot seul : la prose de /about, « chargement progressif des routes », et un titre de /nouveautes le contiennent), 8 s après le chargement
+- never: « Erreur de chargement », « Too Many Requests », un élément .animate-spin ou .animate-pulse visible, ou un texte d'état « Chargement… », « Chargement de … », « Chargement du … » ou « Chargement des … » (jamais le mot seul : la prose de /about, « chargement progressif des routes », le titre ou le corps d'une entrée de /nouveautes le contiennent — 7 entrées citent « Chargement… » ou « Chargement de … » dans leur texte, L157), 8 s après le chargement ; sur /nouveautes, ne compter que les textes hors de tout `<article>`
 - api: /api/demo/status
 - api: /api/events — flux SSE, sans taille
-- api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche
+- api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche ; « proche » = la fenêtre du backend (`live-match.service.ts`) : coup d'envoi dans les 24 h à venir, ou de 15 min avant à 3 h après le coup d'envoi, ou match fini depuis moins de 2 h. Au-delà de 24 h la réponse est vide (null mesuré ~32 h avant OL – Nice pendant que / annonçait « dans 1 jour » : conforme) ; ne la réclamer qu'à moins de 24 h
 - shows: les textes secondaires (jeton fg-dim) posés sur une photo, un halo ou un panneau semi-transparent (bandeau de /, légende de /map, surtitre de /about, le premier `<p>` de son `<header>` : aucun `.eyebrow` sur cette page) à ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390
 - shows: scrollWidth = clientWidth de la page, à 1440 comme à 390 (aucun défilement horizontal ; L156 : une table `sr-only` hors d'un `div.sr-only` gardait sa largeur de contenu, 480 px, et poussait la page à 520 px sur / et /standings)
 
 ## /
-- shows: « Prochain rendez-vous » avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (6 le 10-10) ; le lieu du prochain match est un nom de stade, ou rien
+- shows: le bandeau titré « Prochain rendez-vous », ou « Approche du coup d'envoi » (match à moins de 36 h), ou « Jour de match » (match le jour même, L157 complète L73), ou « Match en direct » ; avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (6 le 10-10) ; le lieu du prochain match est un nom de stade, ou rien
 - never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 » ou « 02h00 » (minuit UTC)
 - api: /api/standings
 - api: /api/season-matches — lu par le bandeau « Prochain rendez-vous » et par « Dernier résultat » (toutes compétitions) ; `/api/fixtures` n'est plus appelé par `/`
@@ -46,13 +46,15 @@ Visiter 2185, ou n'importe quel lien de l'onglet Effectif de /players.
 ## /match/$gameId
 Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 /match/<gameId de /api/lineup>?matchupId=<homeId>-<awayId>-<gameId> : 465 (l'OL) et opponentId de /api/lineup,
-dans l'ordre que donne isHome.
-- shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; sur un match de Ligue 1 seulement, « Classement en direct » avec 5 lignes dont Lyon (sur un match de coupe ou d'Europe, le bloc est absent : /api/live-match/<gameId>/stats rend `standings` null, vu sur Lyon – Crystal Palace le 16-10, L158)
+dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-france (5061 dans le matchupId).
+- shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 ; sur un match de Ligue 1 seulement, « Classement en direct » avec 5 lignes dont Lyon (sur un match de coupe ou d'Europe, le bloc est absent : la réponse de /api/live-match/<gameId>/stats n'a pas de clé `standings`, undefined et non null, vu sur Lyon – Crystal Palace le 16-10, L158)
 - never: « Match introuvable » ; « Lien incomplet »
-- shows: « Faits du match » avec le compte « N faits » égal au nombre d'`events` de /api/live-match/<gameId>/stats (L161)
+- shows: sur un match des Bleus (5061 dans le matchupId, L167) : `body.theme-bleus` ; un lien de retour « Équipe de France » ; la France en bleu hsl(224 90% 75%) et l'adversaire en blanc dans l'en-tête et les légendes du Momentum et de la Carte des tirs ; une bordure néon bleu-blanc-rouge sur `.faits-bloc` ; des noms d'équipe sur 2 lignes au plus, sans rognage, à 390
+- never: sur un match de l'OL (sans 5061 dans le matchupId), `body.theme-bleus`, le lien « Équipe de France » ou une couleur des Bleus : rien ne change
+- shows: « Faits du match » avec le compte « N faits » (« 1 fait » au singulier) égal au nombre d'`events` de /api/live-match/<gameId>/stats (L161)
 - shows: sur un match terminé de plus de 5 faits, [data-testid=liste-faits] = 5 lignes de 44 px (clientHeight 220, scrollHeight > 220) à 1440 et à 390, ouverte sur les 5 faits les plus récents (scrollTop 0, DOM en ordre chronologique) ; liste focalisable (tabindex=0, role=region) ; bouton [data-testid=repere-faits-anciens] « ↑ N faits plus anciens » (N = faits − 5, « 1 fait plus ancien » au singulier) ; une fois la liste remontée, le repère devient « Début du match », aria-disabled=true ; 32 px de haut
 - shows: à 5 faits ou moins, ni repère ni tabindex sur la liste ; sans fait (match pas commencé), pas de bloc « Faits du match » — may be absent
-- shows: « Momentum » visible sans défiler trop loin : bottom < 900 à 1440 × 900 et top < 786 à 390 × 844 ; à 1440 seulement, le titre « Carte des tirs » aussi au-dessus de 900
+- shows: « Momentum » (may be absent tant que `momentum` est vide : match à venir) visible sans défiler trop loin : bottom < 900 à 1440 × 900 et top < 786 à 390 × 844 ; à 1440 seulement, le titre « Carte des tirs » (may be absent tant que `shots` est vide) aussi au-dessus de 900
 - never: dans la liste des faits, un bouton fléché (::-webkit-scrollbar-button avec display ≠ none) ou une teinte verte ; un libellé tronqué sous 390 px (389 px et moins ; à 390 px et au-delà, un libellé long clampé à deux lignes par une ellipse est conforme)
 - never: « Classement en direct » sur un match qui n'est pas de Ligue 1
 - never: à 320 px, une formation de la pastille « Composition » coupée sur 2 lignes (« 4-4-/2 », « 4-2-/3-1 »), même avec un nom de club long (Anderlecht, Fenerbahçe SK)
@@ -82,7 +84,7 @@ dans l'ordre que donne isHome.
 - never: « Chargement de la carte… » après 8 s
 
 ## /equipe-de-france
-- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur ») et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; le prochain match donne toujours son jour (« Jeu. 12/11 ») puis l'heure ou « Horaire à confirmer » ; au téléphone, le bouton « Plus » actif
+- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur », chacune un lien [data-testid=lien-resultat-match] vers /match/<id>?matchupId=<home>-<away>-<id>, L167) et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; le prochain match donne toujours son jour (« Jeu. 12/11 ») puis l'heure ou « Horaire à confirmer » ; au téléphone, le bouton « Plus » actif
 - never: « Impossible de charger l’équipe de France. » ; « Aucune donnée sur l’équipe de France pour le moment. » ; une heure de coup d'envoi présentée comme sûre quand elle est « à confirmer » ; « Date et horaire à confirmer » ou « Week-end du … » pour le prochain match des Bleus (le jour est connu)
 - api: /api/france
 
