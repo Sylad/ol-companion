@@ -1829,6 +1829,22 @@ lots:
     notes:
       - { date: 2026-10-17, text: "Mineur de revue 17-10 (note) : commenceParLeTitre (news-display.ts:30) compare par simple préfixe sans frontière de mot et s'applique à toutes les sources — un titre court (« Mercato ») pourrait masquer une description légitime qui commence par ce mot" }
     finished: 2026-10-17
+  - id: L172
+    title: "Page match à venir (OL) : l'en-tête n'affiche ni date ni heure (« À venir » seul) alors que la carte de /cups dit « Jeu. 22/10 · 21h00 » — kickoffLabel réservé aux Bleus (match.tsx ~l.451) : afficher date + heure ou « Horaire à confirmer » pour tout match à venir ; aligner timeConfirmed de /api/live-match/{id}/stats sur /api/season-matches au-delà de la Ligue 1 (Lyon – Lillestrom, Ligue Europa : false contre true) et ajouter la ligne d'attente (QA de L6, 17-10)"
+    public: "Page de match : date et heure d'un match à venir"
+    status: todo
+    estimate: 0.5
+    visible: true
+    screen: component
+    created: 2026-10-17
+  - id: L173
+    title: "Page match à venir lointain (J5–J8 Ligue Europa) : « Joueurs en vue » disparaît quand topPerformers est vide, la page ne garde que « Pas encore de statistiques. » — état vide explicite dans le bloc, et ligne L162 des attentes en accord (QA de L6, 17-10)"
+    public: "Page de match : joueurs en vue même loin du match"
+    status: todo
+    estimate: 0.25
+    visible: true
+    screen: component
+    created: 2026-10-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
