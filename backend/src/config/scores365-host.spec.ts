@@ -254,6 +254,7 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
 
   describe('URL demandées par les services', () => {
     const bus = () => ({ emit: jest.fn() }) as never;
+    const noFixtures = () => ({ peekFixtures: () => [] }) as never;
 
     it('LineupService — derniers résultats puis détail du match', async () => {
       const { LineupService } =
@@ -338,7 +339,7 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
       const { LiveMatchService } =
         require('../modules/live-match/live-match.service') as typeof import('../modules/live-match/live-match.service');
 
-      await new LiveMatchService(bus()).getCurrent({ force: true });
+      await new LiveMatchService(bus(), noFixtures()).getCurrent({ force: true });
 
       expect(pathsAndQueries()).toEqual([
         '/web/games/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&onlyLiveGames=true&competitors=465',
@@ -352,7 +353,7 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
       const { LiveMatchService } =
         require('../modules/live-match/live-match.service') as typeof import('../modules/live-match/live-match.service');
 
-      const stats = await new LiveMatchService(bus()).getStats(GAME_ID, 'm1', {
+      const stats = await new LiveMatchService(bus(), noFixtures()).getStats(GAME_ID, 'm1', {
         force: true,
       });
 

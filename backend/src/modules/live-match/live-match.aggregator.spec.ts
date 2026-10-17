@@ -347,3 +347,45 @@ describe('R7/R11 (L168) — timeConfirmed de la réponse stats, même règle que
     expect(aggregate(raw).timeConfirmed).toBeDefined();
   });
 });
+
+describe('L170 — timeConfirmed d’un match de Ligue 1 à venir : football-data décide, comme /api/season-matches', () => {
+  const NOW = new Date('2026-10-17T12:00:00Z');
+  const DAY = 24 * 3600_000;
+  const upcomingL1 = (ms: number, extra: object = {}) => ({
+    ...fixture.game,
+    statusGroup: 2,
+    competitionId: 35,
+    roundNum: 32,
+    startTime: new Date(NOW.getTime() + ms).toISOString(),
+    ...extra,
+  });
+  const said = (matchday: number, timeConfirmed: boolean) => [
+    { competition: 'Ligue 1', matchday, timeConfirmed },
+  ];
+
+  it('L170/R1 — football-data date la journée de façon ferme : vrai même au-delà de 14 jours (Lyon – Angers à J+14,3)', () => {
+    expect(summarize(upcomingL1(14.3 * DAY), NOW, said(32, true)).timeConfirmed).toBe(true);
+  });
+
+  it('L170/R2 — football-data dit « à confirmer » : faux même dans les 14 jours', () => {
+    expect(summarize(upcomingL1(2 * DAY), NOW, said(32, false)).timeConfirmed).toBe(false);
+  });
+
+  it('L170/R3 — football-data ne parle pas de cette journée : la règle des 14 jours s’applique', () => {
+    expect(summarize(upcomingL1(14.3 * DAY), NOW, said(31, true)).timeConfirmed).toBe(false);
+    expect(summarize(upcomingL1(2 * DAY), NOW, said(31, false)).timeConfirmed).toBe(true);
+    expect(summarize(upcomingL1(14.3 * DAY, { roundNum: undefined }), NOW, said(32, true)).timeConfirmed).toBe(false);
+  });
+
+  it('L170/R4 — hors Ligue 1 (coupes d’Europe, Bleus) et match commencé : football-data n’est pas consulté', () => {
+    const europa = { ...upcomingL1(20 * DAY), competitionId: 573 };
+    expect(summarize(europa, NOW, said(32, true)).timeConfirmed).toBe(false);
+    const live = { ...upcomingL1(-3600_000), statusGroup: 3 };
+    expect(summarize(live, NOW, said(32, false)).timeConfirmed).toBe(true);
+  });
+
+  it('L170/R5 — aggregate() transmet ce que dit football-data à la réponse stats', () => {
+    const raw = { game: upcomingL1(14.3 * DAY) } as never;
+    expect(aggregate(raw, NOW, said(32, true)).timeConfirmed).toBe(true);
+  });
+});

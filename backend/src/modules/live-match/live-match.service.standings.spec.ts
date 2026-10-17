@@ -3,6 +3,7 @@ import * as path from 'path';
 import { Logger } from '@nestjs/common';
 import { LiveMatchService } from './live-match.service';
 import { EventBusService } from '../events/event-bus.service';
+import { FixturesService } from '../fixtures/fixtures.service';
 
 /**
  * L35 — mini-classement de la page live face aux rendus dégradés de 365scores
@@ -37,7 +38,7 @@ describe('LiveMatchService — mini-classement et rendus dégradés de 365scores
   const stats = () =>
     new LiveMatchService({
       emit: jest.fn(),
-    } as unknown as EventBusService).getStats(GAME_ID, 'm1', { force: true });
+    } as unknown as EventBusService, { peekFixtures: () => [] } as unknown as FixturesService).getStats(GAME_ID, 'm1', { force: true });
 
   /** Logs qui parlent du classement (le play-by-play, en 404 ici, a les siens). */
   const standingsLogs = () =>

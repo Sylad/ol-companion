@@ -1,5 +1,6 @@
 import { LiveMatchService } from './live-match.service';
 import { EventBusService } from '../events/event-bus.service';
+import { FixturesService } from '../fixtures/fixtures.service';
 
 /**
  * Régression du blackout au coup d'envoi (19/09/2026, Lyon-Rennes, 20:45→21:00 ;
@@ -42,7 +43,7 @@ function routeOf(url: string): Route {
 
 function build(answers: () => Record<Route, Answer>) {
   const bus = { emit: jest.fn() } as unknown as EventBusService;
-  const svc = new LiveMatchService(bus);
+  const svc = new LiveMatchService(bus, { peekFixtures: () => [] } as unknown as FixturesService);
   const calls: Route[] = [];
   svc.fetcher = jest.fn((input: string | URL | Request) => {
     const url =

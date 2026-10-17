@@ -10,8 +10,10 @@ import type {
   LiveMatchSide,
   LiveMatchStatus,
 } from './live-match.types';
-import { OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
+import { LIGUE1_365SCORES_ID, OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
 import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
+import { footballDataSaysKickoff } from '../season-matches/kickoff-confirmation';
+import type { Match } from '../fixtures/fixtures.service';
 import type {
   Scores365Competitor,
   Scores365Event,
@@ -259,7 +261,31 @@ function toTopPerformers(g: Scores365GameDetailed): LiveMatchTopPerformer[] {
   });
 }
 
-export function summarize(rawGame: Scores365GameDetailed, now: Date = new Date()): LiveMatchSummary {
+type FootballDataFixtures = Pick<Match, 'competition' | 'matchday' | 'timeConfirmed'>[];
+
+/**
+ * Heure du coup d'envoi fixée ? Un match de Ligue 1 à venir suit ce que football-data
+ * dit de sa journée (même règle que `/api/season-matches`, `isKickoffTimeConfirmed`) ;
+ * s'il n'en dit rien, et pour toute autre compétition (Bleus, coupes), seule la règle
+ * des 14 jours s'applique. Un match commencé ou terminé est toujours fixé (passé : dans l'horizon).
+ */
+function kickoffTimeConfirmed(
+  g: Scores365GameDetailed,
+  now: Date,
+  footballData: FootballDataFixtures,
+): boolean {
+  if (g.competitionId === LIGUE1_365SCORES_ID && deriveStatus(g.statusGroup ?? 0) === 'upcoming') {
+    const said = footballDataSaysKickoff(g.roundNum ?? null, footballData);
+    if (said !== undefined) return said;
+  }
+  return isKickoffTimeWithinHorizon(g.startTime, now.getTime());
+}
+
+export function summarize(
+  rawGame: Scores365GameDetailed,
+  now: Date = new Date(),
+  footballData: FootballDataFixtures = [],
+): LiveMatchSummary {
   const home = rawGame.homeCompetitor;
   const away = rawGame.awayCompetitor;
   return {
@@ -273,16 +299,20 @@ export function summarize(rawGame: Scores365GameDetailed, now: Date = new Date()
     gameTime: typeof rawGame.gameTime === 'number' ? rawGame.gameTime : 0,
     gameTimeDisplay: rawGame.gameTimeDisplay ?? '',
     startTime: rawGame.startTime,
-    timeConfirmed: isKickoffTimeWithinHorizon(rawGame.startTime, now.getTime()),
+    timeConfirmed: kickoffTimeConfirmed(rawGame, now, footballData),
     home: toSide(home),
     away: toSide(away),
   };
 }
 
-export function aggregate(raw365Response: Scores365GameDetailResponse): LiveMatchStats {
+export function aggregate(
+  raw365Response: Scores365GameDetailResponse,
+  now: Date = new Date(),
+  footballData: FootballDataFixtures = [],
+): LiveMatchStats {
   const game = raw365Response?.game;
   if (!game) throw new Error('Missing game in 365scores response');
-  const summary = summarize(game);
+  const summary = summarize(game, now, footballData);
   return {
     ...summary,
     teamStats: {

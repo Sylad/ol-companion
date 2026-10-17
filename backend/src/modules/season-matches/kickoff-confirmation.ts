@@ -20,6 +20,22 @@ const FOOTBALL_DATA_LIGUE1 = 'Ligue 1';
 export const KICKOFF_WINDOW_MS = 14 * 24 * 3600_000;
 
 /**
+ * Ce que football-data dit de l'heure de la journée `matchday` de Ligue 1 :
+ * `true` (fixée) ou `false` (à confirmer), ou `undefined` s'il n'en dit rien
+ * (pas de clé, pas de cache, appel en échec, journée au-delà de sa réponse,
+ * match sans journée). Partagé avec la réponse de `/api/live-match/{id}/stats`.
+ */
+export function footballDataSaysKickoff(
+  matchday: number | null,
+  footballData: Pick<Match, 'competition' | 'matchday' | 'timeConfirmed'>[],
+): boolean | undefined {
+  if (matchday === null) return undefined;
+  return footballData.find(
+    (f) => f.competition === FOOTBALL_DATA_LIGUE1 && f.matchday === matchday,
+  )?.timeConfirmed;
+}
+
+/**
  * L'heure du coup d'envoi d'un match de la saison est-elle fixée ?
  *
  * 365scores ne le dit pas. Mesuré le 2026-10-03 sur la charge réelle : J13
@@ -53,14 +69,7 @@ export function isKickoffTimeConfirmed(
 ): boolean {
   if (match.status !== 'SCHEDULED') return true;
   if (match.competitionCode !== 'L1') return true;
-  const said =
-    match.matchday === null
-      ? undefined
-      : footballData.find(
-          (f) =>
-            f.competition === FOOTBALL_DATA_LIGUE1 &&
-            f.matchday === match.matchday,
-        );
-  if (said) return said.timeConfirmed;
+  const said = footballDataSaysKickoff(match.matchday, footballData);
+  if (said !== undefined) return said;
   return new Date(match.date).getTime() - now.getTime() <= KICKOFF_WINDOW_MS;
 }

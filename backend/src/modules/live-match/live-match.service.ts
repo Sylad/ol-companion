@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { EventBusService } from '../events/event-bus.service';
+import { FixturesService } from '../fixtures/fixtures.service';
 import { aggregate, summarize, LIVE_MATCH_OL_ID } from './live-match.aggregator';
 import type { LiveMatchSummary, LiveMatchStats, LiveMatchChangedPayload } from './live-match.types';
 import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
@@ -60,7 +61,10 @@ export class LiveMatchService implements OnModuleInit {
   /** Injectable pour les tests (cf. season-matches). */
   fetcher: Fetcher = (input, init) => fetch(input, init);
 
-  constructor(private readonly bus: EventBusService) {}
+  constructor(
+    private readonly bus: EventBusService,
+    private readonly fixtures: FixturesService,
+  ) {}
 
   onModuleInit() {
     this.refreshCurrent().catch((err) =>
@@ -104,7 +108,7 @@ export class LiveMatchService implements OnModuleInit {
 
     let payload: LiveMatchStats;
     try {
-      payload = aggregate(raw);
+      payload = aggregate(raw, new Date(), this.fixtures.peekFixtures());
     } catch (err) {
       this.logger.warn(`Could not aggregate game ${gameId}: ${(err as Error).message}`);
       return cached?.payload ?? null;
@@ -396,7 +400,7 @@ export class LiveMatchService implements OnModuleInit {
       const d = parseExternal(Scores365GamesResponseSchema, await res.json(), '365scores live-match candidate');
       for (const g of d.games ?? []) {
         if (g.statusGroup === undefined || !statusGroups.includes(g.statusGroup)) continue;
-        const summary = summarize(g);
+        const summary = summarize(g, new Date(), this.fixtures.peekFixtures());
         if (opts.onlyRecent && !this.withinPostMatchWindow(summary)) continue;
         if (opts.onlyUpcoming && !this.withinUpcomingWindow(summary)) continue;
         return { ok: true, summary };

@@ -3,6 +3,7 @@ import * as path from 'path';
 import { Logger } from '@nestjs/common';
 import { LiveMatchService } from './live-match.service';
 import { EventBusService } from '../events/event-bus.service';
+import { FixturesService } from '../fixtures/fixtures.service';
 
 /**
  * L133 — avant le match, 365scores envoie 0 comme numéro de maillot pour une partie
@@ -35,7 +36,7 @@ describe('LiveMatchService — numéros de maillot de la composition probable (L
   };
 
   const stats = () =>
-    new LiveMatchService({ emit: jest.fn() } as unknown as EventBusService).getStats(UPCOMING_ID, 'm1', { force: true });
+    new LiveMatchService({ emit: jest.fn() } as unknown as EventBusService, { peekFixtures: () => [] } as unknown as FixturesService).getStats(UPCOMING_ID, 'm1', { force: true });
 
   beforeEach(() => {
     resultsCalls = [];
