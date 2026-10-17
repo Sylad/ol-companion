@@ -1682,6 +1682,7 @@ lots:
     quickwin: true
     created: 2026-10-16
     started: 2026-10-17
+    review: { date: 2026-10-17, verdict: "compliant: 1 minor noted (la ligne des numéros de maillot d'un match à venir n'a pas reçu l'exception « sans composition ») — orchestré (vague 2026-10-17-1413, 0 passe(s) de correction)", commit: null }
   - id: L163
     title: "Barre de défilement uniformisée sur tout le site (demande de Sylvain 16-10) : la règle posée par L161 sur le bloc des faits (scrollbar-color + ::-webkit-scrollbar, curseur rouge sur piste bleue assombrie, curseur ≥ 3:1 sur la piste, WCAG 1.4.11) s'applique à la page et à tous les conteneurs défilants (listes, tableaux, panneaux) ; sous body.theme-fcnoobz la palette lime et bleu électrique de la page FC Noobz ; sur /equipe-de-france un thème bleu blanc rouge ; une seule source CSS (tokens dans index.css), captures 1440 et 390 des pages concernées, Firefox et Chrome"
     public: Barres de défilement aux couleurs du site, FC Noobz et Bleus compris
