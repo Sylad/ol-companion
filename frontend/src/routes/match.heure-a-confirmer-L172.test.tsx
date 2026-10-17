@@ -55,4 +55,12 @@ describe('R3 — match de l’OL à venir : date et heure ou « Horaire à confi
     render(<MatchPage />);
     expect((await screen.findByTestId('coup-envoi')).textContent).toBe('Jeu. 12/11 · 21h00');
   });
+
+  it('R3 — la ligne d’en-tête passe à la ligne (flex-wrap) : sous 390 px le texte du coup d’envoi ne rogne pas l’horloge « À VENIR »', async () => {
+    data = aVenir(false);
+    render(<MatchPage />);
+    const ligne = (await screen.findByTestId('coup-envoi')).closest('header') as HTMLElement;
+    expect(ligne.className).toContain('flex-wrap');
+    expect(ligne.className).toContain('gap-x-3');
+  });
 });

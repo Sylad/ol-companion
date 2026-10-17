@@ -423,7 +423,7 @@ export function MatchPage() {
 
       {/* Header */}
       <section data-testid="entete-score" className="rounded-md bg-surface border border-border overflow-hidden">
-        <header className={cn('px-5 py-3 flex items-center justify-between border-b border-border', bleus && 'flex-wrap gap-x-3 gap-y-1')}>
+        <header className="px-5 py-3 flex items-center justify-between flex-wrap gap-x-3 gap-y-1 border-b border-border">
           <div className="flex items-center gap-2">
             {isPaused ? (
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-fg-muted/20 text-fg text-[10px] font-bold uppercase tracking-wider">
