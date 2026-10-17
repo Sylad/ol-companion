@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "b1df9bc6c1eeeac7e04b2a04ab7a6245429d3583"
+    "frontend/src/routes/match.disposition-L160.test.tsx": "654b0db4f95c54dbe78ca5acb9ef177ce0f09841"
   },
   "resceaux": [
     {
@@ -24,6 +24,15 @@
       "apres": "b1df9bc6c1eeeac7e04b2a04ab7a6245429d3583",
       "porteur": "L172",
       "ficheAmendee": "61de81f"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "Fiche page-match-fm R3 précisée (ee91ea0) : sans horaire fixé, le jour suit la règle L47 du calendrier (« Week-end du 10/10 · Horaire à confirmer ») au lieu de la date de remplissage « Dim. 11/10 » ; l'ancienne assertion contredisait L47",
+      "date": "2026-10-17",
+      "avant": "b1df9bc6c1eeeac7e04b2a04ab7a6245429d3583",
+      "apres": "654b0db4f95c54dbe78ca5acb9ef177ce0f09841",
+      "porteur": "L172",
+      "ficheAmendee": "ee91ea0"
     }
   ]
 }

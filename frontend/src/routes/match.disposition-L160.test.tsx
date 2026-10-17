@@ -244,11 +244,12 @@ describe('Page match en écran FM (L160)', () => {
       expect(screen.queryByTestId(id)).toBeNull();
     }
     expect(tid('colonne-centre').getAttribute('class')).toBe(classesCharge);
-    // L172 : heure non confirmée → « Horaire à confirmer », jamais une heure
+    // L172 : heure non confirmée → jour non ferme de L47 (dimanche 11/10 → « Week-end du 10/10 ») + « Horaire à confirmer », jamais une heure ni la date de remplissage
     cleanup();
     hook = { isLoading: false, isError: false, data: { ...stats({ status: 'upcoming', lineups: 'none', events: false, shots: false, momentum: false, performers: false, standings: false, team: false }), timeConfirmed: false } };
     render(<MatchPage />);
-    expect(screen.getByText('Dim. 11/10 · Horaire à confirmer')).toBeInTheDocument();
+    expect(screen.getByText('Week-end du 10/10 · Horaire à confirmer')).toBeInTheDocument();
+    expect(screen.queryByText(/Dim\. 11\/10/)).toBeNull();
     expect(screen.queryByText(/\d{1,2}h\d{2}/)).toBeNull();
   });
 
