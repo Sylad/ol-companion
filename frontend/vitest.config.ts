@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { acceptationIgnored } from './tests/acceptation-runner.mjs';
 
+// L'app affiche l'heure de Paris : les tests la lisent dans ce fuseau quel que soit celui de
+// la machine (le runner GitHub est en UTC). Posé avant le démarrage des workers, qui l'héritent.
+process.env.TZ = 'Europe/Paris';
+
 // Config Vitest à part (modèle finance-tracker) : le build (tsc -b && vite build)
 // ne voit pas les champs de test. Lancer : npm test.
 export default defineConfig({

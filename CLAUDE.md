@@ -53,6 +53,8 @@ Livraison : commit + push sur `main` → la CI (`.github/workflows/build.yml`) c
 lance `scripts/deploy.sh` (bump du tag dans `developpeur-gitops/charts/ol-companion/values.yaml`,
 ArgoCD synchronise) puis `scripts/verify-rollout.sh`, les URL de santé et `scripts/verify-cache.sh`.
 
+**Fuseau des tests frontend (L169)** — `vitest.config.ts` et `vitest.acceptation.config.ts` posent `process.env.TZ = 'Europe/Paris'` : l'app affiche l'heure de Paris, et le runner GitHub est en UTC (un coup d'envoi à 20:00 UTC s'y lisait « 20h00 » au lieu de « 21h00 »). Vérifier : `TZ=UTC npm test`.
+
 **Cache HTTP du frontend (L54)** — `frontend/nginx.conf` : `index.html` (`/`, `/index.html`, repli des
 routes) et les fichiers de `public/`, aux noms fixes (`sw.js`, manifeste, icônes, `plan-data/`,
 `nouveautes-data/`), partent en `Cache-Control: no-cache` (revalidés à chaque visite, 304 possible) ;

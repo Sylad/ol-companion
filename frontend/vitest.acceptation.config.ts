@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { acceptationOnly } from './tests/acceptation-runner.mjs';
 
+// L'app affiche l'heure de Paris : les tests la lisent dans ce fuseau quel que soit celui de
+// la machine (le runner GitHub est en UTC). Posé avant le démarrage des workers, qui l'héritent.
+process.env.TZ = 'Europe/Paris';
+
 // Commande dédiée (orchestrate.accept) : seulement les fichiers du lot (CADENCE_ACCEPTATION).
 // Les chemins de l'acceptation sont relatifs à la racine du dépôt.
 const root = path.resolve(__dirname, '..');
