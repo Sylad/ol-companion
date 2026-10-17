@@ -131,3 +131,25 @@ describe('L5/t5 — premier écran au téléphone', () => {
     expect(titres).toEqual(['À la une', 'Chaînes YouTube recommandées']);
   });
 });
+
+describe('L5/t6 — lien de carte d\'article', () => {
+  it('nom = titre + (nouvel onglet), carte entière cliquable, repère externe visible au focus clavier et sous lg', async () => {
+    renderPage();
+    const lien = await screen.findByRole('link', { name: 'OL gagne (nouvel onglet)' });
+    expect(lien).toHaveAttribute('href', 'https://ol.fr/1');
+    expect(lien).toHaveAttribute('target', '_blank');
+    // lien étiré : son pseudo-élément couvre la carte
+    expect(lien.className).toMatch(/after:absolute/);
+    expect(lien.className).toMatch(/after:inset-0/);
+    const carte = lien.closest('article')!;
+    expect(carte.className).toMatch(/(^| )relative( |$)/);
+    expect(carte.className).toMatch(/has-\[:focus-visible\]:ring-2/);
+    const repere = within(carte).getByText("Lire l'article").parentElement!;
+    expect(repere.className).toMatch(/lg:opacity-0/);
+    expect(repere.className).toMatch(/lg:group-hover:opacity-100/);
+    expect(repere.className).toMatch(/lg:group-has-\[:focus-visible\]:opacity-100/);
+    expect(repere).toHaveAttribute('aria-hidden', 'true');
+    // plus aucun nom de lien de plusieurs centaines de caractères
+    for (const l of screen.getAllByRole('link')) expect(l.textContent!.length).toBeLessThan(120);
+  });
+});

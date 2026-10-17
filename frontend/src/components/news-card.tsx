@@ -30,12 +30,11 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
   const tone = SOURCE_TONE[item.source] ?? SOURCE_TONE['Google News'];
 
   return (
-    <a
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
+    <article
       className={cn(
+        // Lien étiré (le titre porte le lien, son ::after couvre la carte) : le nom du lien est le titre seul.
         'group relative flex flex-col rounded-md border border-border bg-surface overflow-hidden hover:border-border-strong transition-all',
+        'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ol-red-bright',
         featured && 'sm:flex-row',
       )}
     >
@@ -77,7 +76,15 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
             featured ? 'text-lg lg:text-xl' : 'text-base',
           )}
         >
-          {item.title}
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+          >
+            {item.title}
+            <span className="sr-only"> (nouvel onglet)</span>
+          </a>
         </h3>
 
         {item.description && (
@@ -91,11 +98,14 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
           </p>
         )}
 
-        <div className="flex items-center gap-1 text-fg-dim text-xs pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div
+          aria-hidden="true"
+          className="flex items-center gap-1 text-fg-dim text-xs pt-1 lg:opacity-0 lg:group-hover:opacity-100 lg:group-has-[:focus-visible]:opacity-100 transition-opacity"
+        >
           <span>Lire l'article</span>
           <ExternalLink className="h-3 w-3" strokeWidth={2} />
         </div>
       </div>
-    </a>
+    </article>
   );
 }
