@@ -97,7 +97,7 @@ regles:
     champs: [entete-score, grille-match, colonne-centre, faits-match, elan, carte-tirs, bloc-statistiques, bloc-composition, stats-equipe-domicile, stats-equipe-visiteur, colonne-centre-bas, joueurs-en-vue]
     statut: sourcee
     source: "demande du lot (« la même page que /match ») ; exécution de backend/src/modules/live-match/live-match.aggregator.ts sur la réponse 365scores du match 4672325 (16-10) ; docs/specs/page-match-fm et page-match-faits-bornes"
-    tests: ["R7 — match des Bleus : tous les blocs de /match sont présents, dans le même ordre", "R7 — un seul appel /api/live-match/4672325/stats"]
+    tests: ["R7 — match des Bleus : tous les blocs de /match sont présents, dans le même ordre", "R7 — un seul appel /api/live-match/4672325/stats", "R7 — un match en cours ou terminé : timeConfirmed est vrai", "R7 — aggregate() sert le champ dans la réponse stats", "R7 — champ absent (backend antérieur) : l’heure est affichée"]
   - id: R8
     etat: charge
     enonce: "Le lien de retour de la page est une icône flèche ArrowLeft (lucide, décorative, aria-hidden) suivie du texte « Équipe de France », et mène à /equipe-de-france quand le match est celui des Bleus (au lieu de l’icône + « Accueil », match.tsx:368). La flèche n’est pas un caractère du texte : le nom accessible du lien est « Équipe de France »."
@@ -131,7 +131,7 @@ regles:
     statut: hypothese
     si_faux: "Si le message ou l’affichage de la date doivent rester ceux de /match (« Pas encore de statistiques. », sans date), seuls ce texte et l’en-tête changent ; startTime est déjà servi (live-match.types.ts:67)."
     source: "docs/specs/page-match-fm R3 (structure) ; match.tsx : events.length > 0 ; revue UX : dire quand les chiffres arriveront"
-    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête, sur une seule ligne à 390 px", "R11 — timeConfirmed faux : « Jeu. 12/11 · Horaire à confirmer », jamais l’heure de remplissage (L168)", "R11 — un match à plus de 14 jours : timeConfirmed est faux (back, L168)"]
+    tests: ["R11 — match à venir : aucun bloc Faits, message de statistiques", "R11 — match à venir : date et heure du coup d’envoi dans l’en-tête, sur une seule ligne à 390 px", "R11 — timeConfirmed faux : « Jeu. 12/11 · Horaire à confirmer », jamais l’heure de remplissage", "R11 — timeConfirmed vrai : l’heure est affichée (« Jeu. 12/11 · 21h00 »)", "R11 — un match à plus de 14 jours : timeConfirmed est faux (heure de remplissage de 365scores)", "R11 — un match à 14 jours pile ou moins : timeConfirmed est vrai (borne comprise)"]
   - id: R12
     etat: charge
     enonce: "Hors page d’un match des Bleus, rien ne change : /match d’un match de l’OL (rouge OL, bleu adverse, icône + « Accueil »), /equipe-de-france hors liens (L113), barre de défilement du site (L163) ; le fond de page et les filets du corps ne sont pas modifiés par ce lot."
