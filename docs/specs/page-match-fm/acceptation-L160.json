@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "287c77a6dbf99dfffe10438972ed6a7ed3e259af"
+    "frontend/src/routes/match.disposition-L160.test.tsx": "b1df9bc6c1eeeac7e04b2a04ab7a6245429d3583"
   },
   "resceaux": [
     {
@@ -15,6 +15,15 @@
       "date": "2026-10-16",
       "avant": "a5d82a4036faf5a76baee024777043540886ffd8",
       "apres": "287c77a6dbf99dfffe10438972ed6a7ed3e259af"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "Fiche R3 amendée (61de81f, décision du lead 17-10) : un match à venir affiche la date et l'heure du coup d'envoi ou « Horaire à confirmer » (L172), et Joueurs en vue reste affiché avec un état vide sur un match à venir (L173) — l'ancien test R3 exigeait l'inverse",
+      "date": "2026-10-17",
+      "avant": "287c77a6dbf99dfffe10438972ed6a7ed3e259af",
+      "apres": "b1df9bc6c1eeeac7e04b2a04ab7a6245429d3583",
+      "porteur": "L172",
+      "ficheAmendee": "61de81f"
     }
   ]
 }

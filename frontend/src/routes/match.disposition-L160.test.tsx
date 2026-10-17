@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { LiveMatchLineup, LiveMatchLineupPlayer, LiveMatchStats } from '@/types/api';
@@ -233,14 +233,23 @@ describe('Page match en écran FM (L160)', () => {
     expect(entete).toHaveTextContent('À venir');
     expect(entete).toHaveTextContent('vs');
     expect(entete).toHaveTextContent('À VENIR');
-    expect(entete.textContent).not.toMatch(/\d{1,2}[h:]\d{2}/);
+    // L172 : date courte et heure du coup d'envoi (fixture : 2026-10-11T20:00:00Z, TZ Europe/Paris → 22h00)
+    expect(screen.getByText('Dim. 11/10 · 22h00')).toBeInTheDocument();
     expect(tid('grille-match')).toBeInTheDocument();
     expect(tid('message-stats-vide')).toHaveTextContent('Pas encore de statistiques.');
     expect(within(tid('colonne-centre')).getByTestId('bloc-statistiques')).toBeInTheDocument();
-    for (const id of ['bloc-composition', 'stats-equipe-domicile', 'stats-equipe-visiteur', 'faits-match', 'elan', 'carte-tirs', 'joueurs-en-vue', 'classement-direct']) {
+    // L173 : Joueurs en vue reste affiché (état vide explicite) sur un match à venir, texte fixé par L173
+    expect(tid('joueurs-en-vue')).toBeInTheDocument();
+    for (const id of ['bloc-composition', 'stats-equipe-domicile', 'stats-equipe-visiteur', 'faits-match', 'elan', 'carte-tirs', 'classement-direct']) {
       expect(screen.queryByTestId(id)).toBeNull();
     }
     expect(tid('colonne-centre').getAttribute('class')).toBe(classesCharge);
+    // L172 : heure non confirmée → « Horaire à confirmer », jamais une heure
+    cleanup();
+    hook = { isLoading: false, isError: false, data: { ...stats({ status: 'upcoming', lineups: 'none', events: false, shots: false, momentum: false, performers: false, standings: false, team: false }), timeConfirmed: false } };
+    render(<MatchPage />);
+    expect(screen.getByText('Dim. 11/10 · Horaire à confirmer')).toBeInTheDocument();
+    expect(screen.queryByText(/\d{1,2}h\d{2}/)).toBeNull();
   });
 
   // ---------------------------------------------------------------- R4
