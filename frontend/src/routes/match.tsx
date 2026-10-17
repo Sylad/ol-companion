@@ -459,7 +459,7 @@ export function MatchPage() {
             </span>
           ) : isUpcoming ? (
             <span className="flex items-center gap-2 text-xs num tabular-nums font-semibold text-fg-muted">
-              <span data-testid="coup-envoi" className="min-w-0 min-[390px]:whitespace-nowrap">{kickoffLabel(data, bleus)}</span>
+              <span data-testid="coup-envoi" className="min-w-0">{kickoffLabel(data, bleus)}</span>
               <span className="shrink-0 whitespace-nowrap">{clock.label}</span>
             </span>
           ) : (

@@ -72,12 +72,12 @@ describe('R3 — match de l’OL à venir : date et heure ou « Horaire à confi
     expect(ligne.className).toContain('gap-x-3');
   });
 
-  it('R3 — sous 390 px le libellé long du coup d’envoi peut passer à la ligne (« Week-end du 05/12 · Horaire à confirmer » débordait l’en-tête à 320 px)', async () => {
+  it('R3 — à toute largeur le libellé long du coup d’envoi peut passer à la ligne (« Week-end du 05/12 · Horaire à confirmer » débordait l’en-tête à 320 px)', async () => {
     data = aVenir(false, '2026-12-05T15:00:00Z');
     render(<MatchPage />);
     const libelle = await screen.findByTestId('coup-envoi');
-    expect(libelle.className).toContain('min-[390px]:whitespace-nowrap');
-    expect(libelle.className).not.toMatch(/(^|\s)whitespace-nowrap/);
+    expect(libelle.className).toContain('min-w-0');
+    expect(libelle.className).not.toMatch(/whitespace-nowrap/);
   });
 
   it('R3 — l’horloge « À VENIR » reste sur une seule ligne et ne rétrécit pas, même avec le libellé long (Troyes – Lyon, Horaire à confirmer)', async () => {
