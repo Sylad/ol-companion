@@ -79,4 +79,13 @@ describe('R3 — match de l’OL à venir : date et heure ou « Horaire à confi
     expect(libelle.className).toContain('min-[390px]:whitespace-nowrap');
     expect(libelle.className).not.toMatch(/(^|\s)whitespace-nowrap/);
   });
+
+  it('R3 — l’horloge « À VENIR » reste sur une seule ligne et ne rétrécit pas, même avec le libellé long (Troyes – Lyon, Horaire à confirmer)', async () => {
+    data = aVenir(false, '2026-12-05T15:00:00Z');
+    render(<MatchPage />);
+    const horloge = (await screen.findByTestId('coup-envoi')).nextElementSibling as HTMLElement;
+    expect(horloge.textContent).toBe('À VENIR');
+    expect(horloge.className).toContain('whitespace-nowrap');
+    expect(horloge.className).toContain('shrink-0');
+  });
 });
