@@ -263,6 +263,8 @@ const NOM_EQUIPE_OL = 'text-2xl leading-none';
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 /** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
 const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
+/** Séparateur du score des Bleus : 4 px par côté sous 600 px (les colonnes de nom gagnent 8 px : « Bosnie-Herzégovine » sur deux lignes même à 0·0), 8 px au-dessus (L167 R13). */
+const SEP_SCORE_BLEUS = 'mx-1 min-[600px]:mx-2';
 const SCORE_OL = 'text-5xl font-bold tabular-nums num text-fg-bright';
 const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl leading-none min-[390px]:leading-none min-[600px]:leading-none';
 
@@ -460,7 +462,7 @@ export function MatchPage() {
             </div>
           </div>
           <div className={bleus ? SCORE_BLEUS : SCORE_OL}>
-            <MatchScore home={data.home} away={data.away} status={data.status} sepClass="mx-2" />
+            <MatchScore home={data.home} away={data.away} status={data.status} sepClass={bleus ? SEP_SCORE_BLEUS : 'mx-2'} />
           </div>
           <div>
             <div className={cn(NOM_EQUIPE, bleus ? NOM_EQUIPE_BLEUS : NOM_EQUIPE_OL, !trackedIsHome && teamColors(palette, true).text)}>
