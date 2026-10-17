@@ -22,10 +22,10 @@ import { MatchPage } from './match';
 
 (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 
-const aVenir = (timeConfirmed?: boolean): LiveMatchStats => ({
+const aVenir = (timeConfirmed?: boolean, startTime = '2026-11-12T20:00:00Z'): LiveMatchStats => ({
   gameId: 4672325, matchupId: '523-1234-4672325', competitionId: 573, competitionName: 'Ligue Europa',
   status: 'upcoming', statusGroup: 1, statusText: 'Programmé', gameTime: 0, gameTimeDisplay: '',
-  startTime: '2026-11-12T20:00:00Z', ...(timeConfirmed === undefined ? {} : { timeConfirmed }),
+  startTime, ...(timeConfirmed === undefined ? {} : { timeConfirmed }),
   home: { id: 465, name: 'Lyon', symbolicName: 'LYO', imageVersion: 1, score: null },
   away: { id: 1234, name: 'Lillestrom', symbolicName: 'LIL', imageVersion: 1, score: null },
   teamStats: { home: {}, away: {} }, events: [], topPerformers: [], shots: [], updatedAt: '2026-10-17T12:00:00Z',
@@ -36,12 +36,20 @@ beforeEach(() => {
 });
 
 describe('R3 — match de l’OL à venir : date et heure ou « Horaire à confirmer » (L172)', () => {
-  it('R3 — timeConfirmed faux : « Jeu. 12/11 · Horaire à confirmer », jamais l’heure de remplissage', async () => {
+  it('R3 — timeConfirmed faux un jeudi : « Date et horaire à confirmer » (jour non ferme, L47), jamais la date ni l’heure de remplissage', async () => {
     data = aVenir(false);
     render(<MatchPage />);
     const date = await screen.findByTestId('coup-envoi');
-    expect(date.textContent).toBe('Jeu. 12/11 · Horaire à confirmer');
-    expect(date.textContent).not.toMatch(/\d{2}h\d{2}/);
+    expect(date.textContent).toBe('Date et horaire à confirmer');
+    expect(date.textContent).not.toMatch(/\d{2}h\d{2}|12\/11/);
+  });
+
+  it('R3 — timeConfirmed faux un dimanche : « Week-end du 10/10 · Horaire à confirmer » (L47), jamais « Dim. 11/10 »', async () => {
+    data = aVenir(false, '2026-10-11T15:00:00Z');
+    render(<MatchPage />);
+    const date = await screen.findByTestId('coup-envoi');
+    expect(date.textContent).toBe('Week-end du 10/10 · Horaire à confirmer');
+    expect(date.textContent).not.toContain('Dim.');
   });
 
   it('R3 — timeConfirmed vrai : l’heure est affichée (« Jeu. 12/11 · 21h00 »)', async () => {

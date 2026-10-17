@@ -10,7 +10,7 @@ import { MiniStandings } from '@/components/mini-standings';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { clubSymbol } from '@/lib/club-symbol';
 import { deriveClock } from '@/lib/match-clock';
-import { KICKOFF_TBD, kickoffTime, shortDate } from '@/lib/kickoff';
+import { DATE_AND_KICKOFF_TBD, KICKOFF_TBD, formatKickoffDayShort, kickoffTime, shortDate, unconfirmedDay } from '@/lib/kickoff';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
@@ -270,11 +270,16 @@ const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg
 
 /**
  * « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`) ;
- * « Jeu. 12/11 · Horaire à confirmer » quand la réponse dit l'heure non fixée (L168).
+ * « Jeu. 12/11 · Horaire à confirmer » pour les Bleus quand la réponse dit l'heure non fixée (L168).
+ * Match de l'OL sans horaire fixé : le jour de remplissage n'est jamais affiché, la règle L47 du
+ * calendrier s'applique (« Week-end du 10/10 · Horaire à confirmer », sinon « Date et horaire à confirmer »).
  */
-function kickoffLabel(match: { startTime: string; timeConfirmed?: boolean }): string {
-  const iso = match.startTime;
-  return `${shortDate(iso)} · ${kickoffTime({ date: iso, timeConfirmed: match.timeConfirmed }) ?? KICKOFF_TBD}`;
+function kickoffLabel(match: { startTime: string; timeConfirmed?: boolean }, bleus: boolean): string {
+  const k = { date: match.startTime, timeConfirmed: match.timeConfirmed };
+  const unconfirmed = bleus ? null : unconfirmedDay(k);
+  if (unconfirmed?.kind === 'unknown') return DATE_AND_KICKOFF_TBD;
+  if (unconfirmed) return `${formatKickoffDayShort(k)} · ${KICKOFF_TBD}`;
+  return `${shortDate(match.startTime)} · ${kickoffTime(k) ?? KICKOFF_TBD}`;
 }
 
 interface MatchSearch {
@@ -450,11 +455,11 @@ export function MatchPage() {
           </div>
           {isUpcoming && bleus ? (
             <span data-testid="coup-envoi" className="text-xs num tabular-nums font-semibold text-fg-muted whitespace-nowrap">
-              {kickoffLabel(data)}
+              {kickoffLabel(data, bleus)}
             </span>
           ) : isUpcoming ? (
             <span className="flex items-center gap-2 text-xs num tabular-nums font-semibold text-fg-muted">
-              <span data-testid="coup-envoi" className="whitespace-nowrap">{kickoffLabel(data)}</span>
+              <span data-testid="coup-envoi" className="whitespace-nowrap">{kickoffLabel(data, bleus)}</span>
               <span>{clock.label}</span>
             </span>
           ) : (
