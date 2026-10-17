@@ -56,3 +56,41 @@ describe('L5/t1 — cartes de chaînes YouTube contenues dans leur section', () 
     expect(nom.className).toMatch(/break-words/);
   });
 });
+
+describe('L5/t2 — erreur des articles', () => {
+  it('/api/news en 500 : un seul message en role=alert, Réessayer relance l\'appel, aucun message « Aucun article »', async () => {
+    const fetchMock = renderPage(serve({ news: 'ERR' }));
+    const alerte = await screen.findByTestId('news-erreur');
+    expect(alerte).toHaveAttribute('role', 'alert');
+    expect(alerte).toHaveTextContent('Impossible de charger les articles.');
+    expect(screen.queryByText(/Aucun article/)).toBeNull();
+    const avant = fetchMock.mock.calls.filter(([u]) => u === '/api/news').length;
+    const bouton = screen.getByTestId('news-reessayer');
+    expect(bouton.className).toMatch(/min-h-\[44px\]/);
+    await userEvent.click(bouton);
+    await vi.waitFor(() => expect(fetchMock.mock.calls.filter(([u]) => u === '/api/news').length).toBe(avant + 1));
+  });
+});
+
+describe('L5/t4 — chaînes YouTube en erreur ou vides, articles vides', () => {
+  it('chaînes en erreur : message + Réessayer qui relance', async () => {
+    const fetchMock = renderPage(serve({ channels: 'ERR' }));
+    const alerte = await screen.findByTestId('chaines-erreur');
+    expect(alerte).toHaveAttribute('role', 'alert');
+    const avant = fetchMock.mock.calls.filter(([u]) => u === '/api/youtube-channels').length;
+    await userEvent.click(screen.getByTestId('chaines-reessayer'));
+    await vi.waitFor(() => expect(fetchMock.mock.calls.filter(([u]) => u === '/api/youtube-channels').length).toBe(avant + 1));
+  });
+
+  it('chaînes vides : un message qui dit quoi faire', async () => {
+    renderPage(serve({ channels: [] }));
+    expect(await screen.findByTestId('chaines-vide')).toHaveTextContent(/Aucune chaîne.*reviens|revenez/i);
+  });
+
+  it('articles vides : un message qui dit quoi faire, sans parler de la source « Tous »', async () => {
+    renderPage(serve({ news: [] }));
+    const vide = await screen.findByTestId('news-vide');
+    expect(vide).toHaveTextContent(/Aucun article pour le moment/);
+    expect(vide).not.toHaveTextContent('Tous');
+  });
+});

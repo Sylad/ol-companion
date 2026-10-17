@@ -4,13 +4,14 @@ import { useNews, useYoutubeChannels } from '@/hooks/use-news';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { NewsCard } from '@/components/news-card';
 import { YoutubeChannelCard } from '@/components/youtube-channel-card';
+import { RetryMessage } from '@/components/retry-message';
 import { cn } from '@/lib/utils';
 
 const ALL = 'Tous';
 
 export function NewsPage() {
-  const { data: news, isLoading: newsLoading, isError: newsError } = useNews();
-  const { data: channels, isLoading: chLoading } = useYoutubeChannels();
+  const { data: news, isLoading: newsLoading, isError: newsError, refetch: refetchNews } = useNews();
+  const { data: channels, isLoading: chLoading, isError: chError, refetch: refetchChannels } = useYoutubeChannels();
   const [activeSource, setActiveSource] = useState<string>(ALL);
 
   const sources = useMemo(() => {
@@ -50,10 +51,24 @@ export function NewsPage() {
 
         <div className="p-5">
           {chLoading && (
-            <div className="flex items-center justify-center py-10 text-fg-dim">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+            <div role="status" className="flex items-center justify-center py-10 text-fg-dim">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" aria-hidden="true" />
               <span>Chargement…</span>
             </div>
+          )}
+          {chError && (
+            <RetryMessage
+              message="Impossible de charger les chaînes YouTube."
+              onRetry={() => void refetchChannels()}
+              messageTestId="chaines-erreur"
+              buttonTestId="chaines-reessayer"
+              className="flex flex-col items-center gap-3 py-6 text-center"
+            />
+          )}
+          {channels?.length === 0 && (
+            <p data-testid="chaines-vide" className="py-6 text-center text-sm text-fg-muted">
+              Aucune chaîne à afficher pour le moment. Revenez plus tard.
+            </p>
           )}
           {channels && channels.length > 0 && (
             <div className="space-y-5">
@@ -111,15 +126,25 @@ export function NewsPage() {
 
         <div className="p-5">
           {newsLoading && (
-            <div className="flex items-center justify-center py-20 text-fg-dim">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+            <div role="status" className="flex items-center justify-center py-20 text-fg-dim">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" aria-hidden="true" />
               <span>Chargement des articles…</span>
             </div>
           )}
-          {newsError && <p className="py-20 text-center text-loss">Erreur de chargement.</p>}
-          {filtered.length === 0 && !newsLoading && (
-            <p className="py-20 text-center text-fg-muted">
-              Aucun article pour la source « {activeSource} ».
+          {newsError && (
+            <RetryMessage
+              message="Impossible de charger les articles."
+              onRetry={() => void refetchNews()}
+              messageTestId="news-erreur"
+              buttonTestId="news-reessayer"
+              className="flex flex-col items-center gap-3 py-20 text-center"
+            />
+          )}
+          {news && filtered.length === 0 && (
+            <p data-testid="news-vide" className="py-20 text-center text-fg-muted">
+              {activeSource === ALL
+                ? 'Aucun article pour le moment. Revenez dans quelques minutes.'
+                : `Aucun article pour la source « ${activeSource} ». Choisissez « ${ALL} » pour voir les autres sources.`}
             </p>
           )}
           {filtered.length > 0 && (
