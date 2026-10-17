@@ -10,7 +10,7 @@ import { MiniStandings } from '@/components/mini-standings';
 import { MatchEventBurst } from '@/components/match-event-burst';
 import { clubSymbol } from '@/lib/club-symbol';
 import { deriveClock } from '@/lib/match-clock';
-import { kickoffTime, shortDate } from '@/lib/kickoff';
+import { KICKOFF_TBD, kickoffTime, shortDate } from '@/lib/kickoff';
 import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
@@ -268,9 +268,13 @@ const SEP_SCORE_BLEUS = 'mx-1 min-[600px]:mx-2';
 const SCORE_OL = 'text-5xl font-bold tabular-nums num text-fg-bright';
 const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl leading-none min-[390px]:leading-none min-[600px]:leading-none';
 
-/** « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`). */
-function kickoffLabel(iso: string): string {
-  return `${shortDate(iso)} · ${kickoffTime({ date: iso })}`;
+/**
+ * « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`) ;
+ * « Jeu. 12/11 · Horaire à confirmer » quand la réponse dit l'heure non fixée (L168).
+ */
+function kickoffLabel(match: { startTime: string; timeConfirmed?: boolean }): string {
+  const iso = match.startTime;
+  return `${shortDate(iso)} · ${kickoffTime({ date: iso, timeConfirmed: match.timeConfirmed }) ?? KICKOFF_TBD}`;
 }
 
 interface MatchSearch {
@@ -446,7 +450,7 @@ export function MatchPage() {
           </div>
           {bleus && isUpcoming ? (
             <span data-testid="coup-envoi" className="text-xs num tabular-nums font-semibold text-fg-muted whitespace-nowrap">
-              {kickoffLabel(data.startTime)}
+              {kickoffLabel(data)}
             </span>
           ) : (
             <span className={cn(
