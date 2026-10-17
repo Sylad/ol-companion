@@ -49,9 +49,19 @@ lots:
   - id: L5
     title: Revue UX — Actualités
     status: doing
-    estimate: 0.25
+    estimate: 0.75
     created: 2026-09-28
     started: 2026-10-17
+    tasks:
+      - { id: t1, title: "Actu : à 320/390 px les cartes Chaînes YouTube (359 px de large) débordent la section et sont rognées (WCAG 1.4.10). Fin : à 320 et 390 px, bord droit de chaque carte ≤ bord intérieur de la section, nom et badge entiers", status: todo }
+      - { id: t2, title: "Actu : erreur des articles en 3,85:1, sans role=alert ni Réessayer, suivie de « Aucun article pour la source Tous ». Fin : /api/news en 500 → un seul message ≥ 4,5:1 en role=alert + Réessayer 44 px qui relance, aucun message vide affiché", status: todo }
+      - { id: t3, title: "Actu : pastilles de source sans aria-pressed, état choisi à 1,07:1, Google News coupé à 390/320 px. Fin : aria-pressed juste, anneau ≥ 3:1, flex-wrap (scrollWidth = clientWidth à 320 px), cibles ≥ 40 px sous lg, comme les pastilles du calendrier", status: todo }
+      - { id: t4, title: "Actu : chaînes YouTube en erreur ou vides = cadre vide de 40 px sans message ; articles vides = « Aucun article pour la source Tous ». Fin : erreur → message + Réessayer, vide → message qui dit quoi faire, dans les deux blocs", status: todo }
+      - { id: t5, title: "Actu au téléphone : premier article à 989 px pour 786 px visibles (390×844). Fin : à 390×844, haut de la première carte d'article < 786 px (en-tête compact, chaînes repliées ou placées après les articles)", status: todo }
+      - { id: t6, title: "Actu : nom des liens de carte de 58 à 377 caractères, nouvel onglet jamais annoncé (0/36), repère externe visible au survol seulement. Fin : nom = titre + (nouvel onglet), repère visible au focus clavier et sous lg", status: todo }
+      - { id: t7, title: "Actu : 19 cartes Google News sur 20 répètent le titre en description et cachent l'éditeur en fin de titre. Fin : aucune description identique au titre, éditeur affiché comme source de la carte", status: todo }
+    notes:
+      - { date: 2026-10-17, text: "Revue UX 17-10 (ux-reviewer, captures regardées par le lead) : 3 bloquants + 4 majeurs → 7 sous-tâches. Mineurs (note) : image en échec laisse un bloc gris 476×193 ; grille irrégulière (20 cartes sur 30 sans image) ; article de spam streaming venu de Google News (filterFn) ; chargement sans role=status, spinners sans aria-hidden ; « ▸ » du summary lu dans le nom ; nom de chaîne tronqué à 1440 sans title ; pastille « Tous » seule en chargement/erreur/vide ; badges 9–10 px ; hors lot : h1 « Olympique Lyonnais » sans titre « Actu », pas de lien d'évitement ; non vérifié : source L'Équipe absente du flux" }
   - id: L6
     title: Revue UX — Coupes
     status: todo
