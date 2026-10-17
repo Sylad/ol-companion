@@ -48,7 +48,7 @@ lots:
     finished: 2026-10-14
   - id: L5
     title: Revue UX — Actualités
-    status: doing
+    status: done
     estimate: 0.75
     created: 2026-09-28
     started: 2026-10-17
@@ -62,7 +62,10 @@ lots:
       - { id: t7, title: "Actu : 19 cartes Google News sur 20 répètent le titre en description et cachent l'éditeur en fin de titre. Fin : aucune description identique au titre, éditeur affiché comme source de la carte", status: done }
     notes:
       - { date: 2026-10-17, text: "Revue UX 17-10 (ux-reviewer, captures regardées par le lead) : 3 bloquants + 4 majeurs → 7 sous-tâches. Mineurs (note) : image en échec laisse un bloc gris 476×193 ; grille irrégulière (20 cartes sur 30 sans image) ; article de spam streaming venu de Google News (filterFn) ; chargement sans role=status, spinners sans aria-hidden ; « ▸ » du summary lu dans le nom ; nom de chaîne tronqué à 1440 sans title ; pastille « Tous » seule en chargement/erreur/vide ; badges 9–10 px ; hors lot : h1 « Olympique Lyonnais » sans titre « Actu », pas de lien d'évitement ; non vérifié : source L'Équipe absente du flux" }
+      - { date: 2026-10-17, text: "Mineurs de conformité 17-10 (note) : (1) description « agrégat » Google News (20 Minutes) qui commence par le titre puis enchaîne d'autres titres — tester aussi « commence par le titre » ; (2) trous de grille plus visibles (cartes Google News sans description ni image étirées à ~210 px) ; (3) pastille « Google News » alors que les cartes affichent l'éditeur, doublon « Olympique et Lyonnais » / « Olympique & Lyonnais » ; (4) antérieur : à 320 la date de la carte à la une déborde de 11 px, le titre spam de 5 px ; commentaire news-card.tsx périmé (« nom = titre seul ») ; backend/data/youtube-channels.json absent en local" }
     review: { date: 2026-10-17, verdict: "conforme (1 mineur noté : pastille choisie qui disparaît du flux sans repli sur « Tous ») — orchestré (vague 2026-10-17-1455, 0 passe(s) de correction + passe des mineurs)", commit: a5d2453cf4b2c62f06cad2afedf317b330cb6392 }
+    ux: { date: 2026-10-17, verdict: "conforme — t1 à t7 mesurés à 1440/390/320 par le ux-reviewer (conformité), captures regardées par le lead (cartes de chaînes entières à 320, premier article à 334 px sur 390×844) ; aucune régression bloquante ni majeure" }
+    finished: 2026-10-17
   - id: L6
     title: Revue UX — Coupes
     status: todo
