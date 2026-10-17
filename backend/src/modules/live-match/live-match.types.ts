@@ -65,6 +65,8 @@ export interface LiveMatchSummary {
   gameTime: number;              // minute
   gameTimeDisplay: string;       // "21'", ""
   startTime: string;             // ISO
+  /** Faux quand l'heure est un remplissage de 365scores (à plus de 14 jours) : même règle que /api/france. */
+  timeConfirmed: boolean;
   home: LiveMatchSide;
   away: LiveMatchSide;
 }

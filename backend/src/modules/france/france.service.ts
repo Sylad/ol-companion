@@ -2,6 +2,7 @@ import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { z } from 'zod';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { FRANCE_365SCORES_ID } from '../../config/constants';
+import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
 
@@ -24,7 +25,7 @@ export interface FranceResult {
 export interface FranceNextMatch {
   id: number;
   date: string;
-  /** Faux quand l'heure n'est pas fixée : voir `TIME_CONFIRMED_HORIZON_MS`. */
+  /** Faux quand l'heure n'est pas fixée : voir `config/kickoff-horizon.ts`. */
   timeConfirmed: boolean;
   home: FranceTeam;
   away: FranceTeam;
@@ -77,14 +78,8 @@ const RESULTS_COUNT = 5;
 const POSITION_BY_ID: Record<number, string> = { 1: 'Goalkeeper', 2: 'Defender', 3: 'Midfielder', 4: 'Attacker' };
 /** Durée de la copie en mémoire : la page se lit à la demande, pas par cron. */
 const CACHE_TTL_MS = 10 * 60 * 1000;
-/**
- * 365scores ne signale pas une heure non fixée (il met une heure de remplissage) et
- * football-data ne suit pas les Bleus : au-delà de 14 jours (seuil de CLAUDE.md « L39 »),
- * l'heure est tenue pour non fixée.
- */
 /** Nouvel essai après une réponse inutilisable (365scores en panne, 200 sans « games ») : 1 min, pas 10. */
 const RETRY_AFTER_FAILURE_MS = 60 * 1000;
-const TIME_CONFIRMED_HORIZON_MS = 14 * 24 * 60 * 60 * 1000;
 
 /** Un match reste « en cours » 3 h après son coup d'envoi (filtre de `toNextMatch`, fenêtre du lien « Voir le match »). */
 const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
@@ -236,7 +231,7 @@ export class FranceService {
     return {
       id: next.id,
       date: next.startTime,
-      timeConfirmed: new Date(next.startTime).getTime() - now <= TIME_CONFIRMED_HORIZON_MS,
+      timeConfirmed: isKickoffTimeWithinHorizon(next.startTime, now),
       home: this.toTeam(next.homeCompetitor!),
       away: this.toTeam(next.awayCompetitor!),
       competition: next.competitionDisplayName ?? '',

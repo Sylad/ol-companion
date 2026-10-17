@@ -215,6 +215,8 @@ export interface LiveMatchSummary {
   gameTime: number;
   gameTimeDisplay: string;
   startTime: string;
+  /** Absent d'un backend antérieur au champ : l'heure est alors affichée. */
+  timeConfirmed?: boolean;
   home: LiveMatchSide;
   away: LiveMatchSide;
 }

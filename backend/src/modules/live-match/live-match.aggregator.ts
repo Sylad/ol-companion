@@ -11,6 +11,7 @@ import type {
   LiveMatchStatus,
 } from './live-match.types';
 import { OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
+import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
 import type {
   Scores365Competitor,
   Scores365Event,
@@ -258,7 +259,7 @@ function toTopPerformers(g: Scores365GameDetailed): LiveMatchTopPerformer[] {
   });
 }
 
-export function summarize(rawGame: Scores365GameDetailed): LiveMatchSummary {
+export function summarize(rawGame: Scores365GameDetailed, now: Date = new Date()): LiveMatchSummary {
   const home = rawGame.homeCompetitor;
   const away = rawGame.awayCompetitor;
   return {
@@ -272,6 +273,7 @@ export function summarize(rawGame: Scores365GameDetailed): LiveMatchSummary {
     gameTime: typeof rawGame.gameTime === 'number' ? rawGame.gameTime : 0,
     gameTimeDisplay: rawGame.gameTimeDisplay ?? '',
     startTime: rawGame.startTime,
+    timeConfirmed: isKickoffTimeWithinHorizon(rawGame.startTime, now.getTime()),
     home: toSide(home),
     away: toSide(away),
   };

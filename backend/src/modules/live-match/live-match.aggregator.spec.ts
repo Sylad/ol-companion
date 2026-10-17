@@ -323,3 +323,27 @@ describe('événements — noms des joueurs résolus depuis game.members[]', () 
     expect(goal.playerName).toBeNull();
   });
 });
+
+describe('R7/R11 (L168) — timeConfirmed de la réponse stats, même règle que /api/france', () => {
+  const NOW = new Date('2026-10-17T12:00:00Z');
+  const startIn = (ms: number) => ({ ...fixture.game, startTime: new Date(NOW.getTime() + ms).toISOString() });
+  const DAY = 24 * 3600_000;
+
+  it('R11 — un match à plus de 14 jours : timeConfirmed est faux (heure de remplissage de 365scores)', () => {
+    expect(summarize(startIn(14 * DAY + 1), NOW).timeConfirmed).toBe(false);
+  });
+
+  it('R11 — un match à 14 jours pile ou moins : timeConfirmed est vrai (borne comprise)', () => {
+    expect(summarize(startIn(14 * DAY), NOW).timeConfirmed).toBe(true);
+    expect(summarize(startIn(2 * DAY), NOW).timeConfirmed).toBe(true);
+  });
+
+  it('R7 — un match en cours ou terminé : timeConfirmed est vrai', () => {
+    expect(summarize(startIn(-2 * 3600_000), NOW).timeConfirmed).toBe(true);
+  });
+
+  it('R7 — aggregate() sert le champ dans la réponse stats', () => {
+    const raw = { game: startIn(30 * DAY) } as never;
+    expect(aggregate(raw).timeConfirmed).toBeDefined();
+  });
+});
