@@ -55,7 +55,7 @@ export function BracketTie({ matches }: Props) {
       )}
     >
       {/* Header: leg dates as column titles */}
-      <div className="grid grid-cols-[1fr_auto_auto] gap-x-2 text-[9px] uppercase tracking-wider text-fg-dim mb-1">
+      <div className="grid grid-cols-[1fr_auto_auto] gap-x-2 text-[9px] uppercase tracking-wider text-fg-muted mb-1">
         <span />
         <span className="text-center w-6">A</span>
         <span className="text-center w-6">R</span>
@@ -65,7 +65,7 @@ export function BracketTie({ matches }: Props) {
       <TeamRow team={teamB} won={bWon} dim={aWon} highlight={hasOL && teamB.id === OL_365SCORES_ID} />
 
       {/* Leg dates / status footer */}
-      <div className="flex justify-between text-[10px] uppercase tracking-wider text-fg-dim mt-1.5">
+      <div className="flex justify-between text-[10px] uppercase tracking-wider text-fg-muted mt-1.5">
         <span>{formatShortDate(leg1.date)}</span>
         <span>{leg2.status === 'SCHEDULED' ? `Retour ${formatShortDate(leg2.date)}` : formatShortDate(leg2.date)}</span>
       </div>

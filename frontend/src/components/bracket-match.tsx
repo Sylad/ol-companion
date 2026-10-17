@@ -24,7 +24,7 @@ export function BracketMatch({ match }: Props) {
       <Row name={homeTeam} score={homeScore} won={homeWon} dim={isFinished && !homeWon} highlight={hasOL && homeTeam.toLowerCase() === 'lyon'} />
       <Row name={awayTeam} score={awayScore} won={awayWon} dim={isFinished && !awayWon} highlight={hasOL && awayTeam.toLowerCase() === 'lyon'} />
       {!isFinished && (
-        <div className="text-[10px] uppercase tracking-wider text-fg-dim mt-1">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted mt-1">
           {formatShortDate(match.date)}
         </div>
       )}

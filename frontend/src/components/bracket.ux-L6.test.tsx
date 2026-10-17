@@ -23,6 +23,70 @@ describe('L6 t2 — le texte atténué du tableau', () => {
   });
 });
 
+// Contraste de CHAQUE texte rendu d'une tuile, d'après sa classe de couleur réelle, sur le fond réel :
+// tuile de l'OL = bg-ol-red/10 (translucide) posé sur le fond du tableau (surface-2), sinon bg-surface.
+function contrastesDeLaTuile(tuile: Element, olRouge: boolean): { texte: string; nom: string; ratio: number }[] {
+  const fond = olRouge ? blend(token('ol-red'), token('surface-2'), 0.1) : token('surface');
+  const sortie: { texte: string; nom: string; ratio: number }[] = [];
+  const walker = document.createTreeWalker(tuile, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const texte = n.textContent?.trim();
+    if (!texte) continue;
+    let el: Element | null = n.parentElement;
+    let nom = 'fg';
+    for (; el && el !== tuile.parentElement; el = el.parentElement) {
+      const c = el.className.toString().match(/(?:^|\s)text-(fg(?:-[a-z]+)?)(?:\s|$)/)?.[1];
+      if (c) { nom = c; break; }
+    }
+    sortie.push({ texte, nom, ratio: contrast(token(nom), fond) });
+  }
+  return sortie;
+}
+
+describe('L6 t2 — tous les textes des tuiles du tableau tiennent 4,5:1 sur leur fond réel', () => {
+  const aller = m(1, { date: '2026-03-01T20:00:00Z' });
+  const retour = m(2, { date: '2026-03-08T20:00:00Z', homeTeam: 'Lille', homeTeamId: 79, awayTeam: 'Lyon', awayTeamId: 465, homeScore: null, awayScore: null, status: 'SCHEDULED' });
+  const avenir = m(3, { homeTeam: 'Lyon', awayTeam: 'Nice', awayTeamId: 9, homeScore: null, awayScore: null, status: 'SCHEDULED', stageNum: 5, stageFr: 'Demi-finales' });
+  const jouee = m(4, { stageNum: 5, stageFr: 'Demi-finales' });
+  const tableau = (...stages: object[][]): BracketInfo => ({
+    stages: stages.map((matches, i) => ({ stageNum: 6 - i, stageFr: i ? 'Demi-finales' : 'Quarts de finale', matches })),
+  } as BracketInfo);
+
+  it.each([
+    ['confrontation aller-retour de l’OL (en-têtes A/R, dates aller et retour)', tableau([aller, retour]), 'A'],
+    ['match de l’OL à venir (date)', tableau([avenir]), '0'],
+  ])('t2 — %s', (_nom, br, attendu) => {
+    const { container } = render(<Bracket bracket={br} />);
+    // Disposition bureau (la tuile existe aussi en pile mobile) : première occurrence suffit, les deux ont les mêmes classes.
+    const tuile = container.querySelector('.border-ol-red')!;
+    expect(tuile).not.toBeNull();
+    expect(tuile.className).toMatch(/\bbg-ol-red\/10\b/);
+    const mesures = contrastesDeLaTuile(tuile, true);
+    expect(mesures.length).toBeGreaterThan(0);
+    if (attendu === 'A') expect(mesures.map((x) => x.texte)).toEqual(expect.arrayContaining(['A', 'R']));
+    for (const x of mesures) expect(x.ratio, `« ${x.texte} » en ${x.nom}`).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('t2 — match de l’OL joué : lignes gagnante et perdante', () => {
+    const { container } = render(<Bracket bracket={tableau([jouee])} />);
+    for (const x of contrastesDeLaTuile(container.querySelector('.border-ol-red')!, true)) {
+      expect(x.ratio, `« ${x.texte} » en ${x.nom}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('t2 — tuile d’un autre club (bg-surface) : même exigence', () => {
+    const autre = m(5, { homeTeam: 'Nice', homeTeamId: 9, awayTeam: 'Brest', awayTeamId: 8, hasOL: false });
+    const autreRetour = m(6, { homeTeam: 'Brest', homeTeamId: 8, awayTeam: 'Nice', awayTeamId: 9, hasOL: false, date: '2026-03-08T20:00:00Z', homeScore: null, awayScore: null, status: 'SCHEDULED' });
+    const { container } = render(<Bracket bracket={tableau([autre, autreRetour])} />);
+    const tuile = container.querySelector('.rounded-md.border.border-border.bg-surface')!;
+    for (const x of contrastesDeLaTuile(tuile, false)) expect(x.ratio, `« ${x.texte} » en ${x.nom}`).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('t2 — le calcul voit bien le défaut : fg-dim sur le fond rouge teinté de l’OL (surface-2) fait 4,35:1', () => {
+    expect(contrast(token('fg-dim'), blend(token('ol-red'), token('surface-2'), 0.1))).toBeLessThan(4.5);
+  });
+});
+
 describe('L6 t5 — le tableau plein écran est un dialogue', () => {
   const ouvrir = () => {
     const view = render(<Bracket bracket={bracket} />);
