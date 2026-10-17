@@ -258,7 +258,9 @@ const NOM_EQUIPE_OL = 'text-2xl';
  * score à 32 px — à 390 px « Bosnie-Herzégovine » tient sur deux lignes, sans coupure dans le mot.
  */
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
-const SCORE_BLEUS = 'max-[599px]:text-[36px] max-[359px]:text-[32px]';
+/** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
+const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
+const SCORE_OL = 'text-5xl font-bold tabular-nums num text-fg-bright';
 const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl';
 
 /** « Jeu. 12/11 · 21h00 » : le format de /equipe-de-france (L113, `shortDate` + `kickoffTime`). */
@@ -454,7 +456,7 @@ export function MatchPage() {
               {data.home.name}
             </div>
           </div>
-          <div className={cn('text-5xl font-bold tabular-nums num text-fg-bright', bleus && SCORE_BLEUS)}>
+          <div className={bleus ? SCORE_BLEUS : SCORE_OL}>
             <MatchScore home={data.home} away={data.away} status={data.status} sepClass="mx-2" />
           </div>
           <div>
