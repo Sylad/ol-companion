@@ -106,22 +106,33 @@ export function NewsPage() {
               À la une
             </h2>
           </div>
-          <div className="flex items-center gap-1 rounded-full border border-border p-1 overflow-x-auto">
-            {sources.map((s) => (
-              <button
-                key={s}
-                onClick={() => setActiveSource(s)}
-                className={cn(
-                  'px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap transition-colors',
-                  activeSource === s
-                    ? 'bg-surface-2 text-fg-bright'
-                    : 'text-fg-muted hover:text-fg',
-                )}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+          {sources.length > 1 && (
+            <div
+              role="group"
+              aria-label="Filtrer par source"
+              className="flex flex-wrap items-center gap-1 rounded-2xl sm:rounded-full border border-border p-1"
+            >
+              {sources.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  aria-pressed={activeSource === s}
+                  onClick={() => setActiveSource(s)}
+                  className={cn(
+                    // Sous lg : cible de 40 px (comme les pastilles du calendrier) ; au bureau 24 px.
+                    'px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap transition-colors min-h-10 lg:min-h-0',
+                    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright',
+                    // Le fond seul fait 1,07:1 sur le groupe : l'anneau fg-muted porte l'état (≥ 3:1, WCAG 1.4.11).
+                    activeSource === s
+                      ? 'bg-surface-2 text-fg-bright ring-1 ring-fg-muted'
+                      : 'text-fg-muted hover:text-fg',
+                  )}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
         </header>
 
         <div className="p-5">

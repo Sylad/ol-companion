@@ -94,3 +94,29 @@ describe('L5/t4 — chaînes YouTube en erreur ou vides, articles vides', () => 
     expect(vide).not.toHaveTextContent('Tous');
   });
 });
+
+describe('L5/t3 — pastilles de source', () => {
+  it('groupe nommé, aria-pressed juste, anneau sur la pastille choisie, retour à la ligne, cibles 40 px sous lg', async () => {
+    renderPage();
+    const groupe = await screen.findByRole('group', { name: 'Filtrer par source' });
+    expect(groupe.className).toMatch(/flex-wrap/);
+    expect(groupe.className).not.toMatch(/overflow-x-auto/);
+    const tous = within(groupe).getByRole('button', { name: 'Tous' });
+    const gn = within(groupe).getByRole('button', { name: 'Google News' });
+    expect(tous).toHaveAttribute('aria-pressed', 'true');
+    expect(gn).toHaveAttribute('aria-pressed', 'false');
+    expect(tous.className).toMatch(/ring-1/);
+    expect(tous.className).toMatch(/ring-fg-muted/);
+    expect(gn.className).not.toMatch(/ring-1/);
+    expect(gn.className).toMatch(/min-h-10/);
+    await userEvent.click(gn);
+    expect(gn).toHaveAttribute('aria-pressed', 'true');
+    expect(tous).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('pas de pastille « Tous » seule : le groupe n\'existe qu\'avec des articles', async () => {
+    renderPage(serve({ news: 'ERR' }));
+    await screen.findByTestId('news-erreur');
+    expect(screen.queryByRole('group', { name: 'Filtrer par source' })).toBeNull();
+  });
+});
