@@ -1726,7 +1726,7 @@ lots:
   - id: L167
     title: "Page de match de l'équipe de France : la même page que /match (L160, L161 : en-tête du score, faits bornés, Momentum, carte des tirs, statistiques, compositions, joueurs en vue) pour un match des Bleus quand ils jouent, accessible depuis /equipe-de-france, au thème bleu-blanc-rouge (couleurs de l'équipe à la place du rouge/bleu OL : barres, Momentum, tirs, bordure néon, barre de défilement) — demande de Sylvain 16-10 ; fiche écran et maquette avant le code, données 365scores de l'équipe de France (ids à repérer), classement en direct absent hors Ligue 1 (L158)"
     public: "Équipe de France : la page du match aux couleurs des Bleus"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     screen: page
@@ -1741,6 +1741,20 @@ lots:
       - { date: 2026-10-16, text: "rendu 16-10 22 h 42 (vague 2135b, revue non conforme après 2 corrections) — à reprendre à la main (fix Sonnet neuf + revue Opus neuve) : (1) MAJEUR match.tsx:449 R13 non tenue à 390 px : « Bosnie-Herzégovine » sur 3 lignes coupé dans le mot (colonne 81,5 px, police 18 px) ; la maquette réduit l'en-tête dès 599 px (.sc gap 4px 8px, padding 12px, .big 36 px) et donne une colonne de 120 px → aligner le code sur la maquette ; (2) MAJEUR test scellé match.equipe-de-france.complement-L167.test.tsx:196-197 plus fort que R4 (refuse tout ol-blue/ol-red même hors couleur d'équipe, et les teintes 166-199 cyan/turquoise) → à corriger par le lead puis cadence spec reseal ; mineurs de la revue de maquette : anneau de focus .res rogné (outline-offset -2px), état « en direct » absent de la maquette, données d'exemple incohérentes (buts/tirs), contraste 3,78:1 du badge Défaite (antérieur, L113)" }
       - { date: 2026-10-17, text: "test d'acceptation rescellé (frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx, fiche inchangée) : test R4 plus fort que sa règle (revue 16-10) : il refusait tout ol-blue/ol-red dans les blocs, alors que R4 et R5 gardent le rouge comme accent (anneau de focus, bordures), et comptait comme vert les teintes 166 à 199 (cyan, turquoise) ; les jetons d'accent sont retirés avant le contrôle et le vert se limite aux teintes 90 à 165, assertions inchangées" }
       - { date: 2026-10-17, text: "test d'acceptation rescellé (frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx, fiche inchangée) : bloquant de la revue 17-10 : le fichier importait ../../../backend/src/modules/france/france.service, absent du contexte Docker frontend/ de la CI (TS2307 au tsc -b du build) ; les trois tests R1 back sont déplacés tels quels dans la suite Jest du backend (france.service.acceptation-L167.spec.ts), l'import et le bloc sont retirés ici, les tests R4 et R13 sont inchangés" }
+      - { date: 2026-10-17, text: "décisions du lead 17-10 : score en police proportionnelle retenu contre la maquette (en mono, elle ne tient que 106 px dans l'état 4·1 et contredit R13) ; séparateur du score à 4 px sous 600 px ; les 3 tests R1 back vivent dans la suite Jest du backend hors du sceau (le contexte Docker frontend/ n'a pas backend/)" }
+      - { date: 2026-10-17, text: "[L167/t1] abandonné : repris en lot autonome, un lot fermé ne porte pas de sous-tâche ouverte" }
+    review: { date: 2026-10-17, verdict: "conforme (3e revue Opus 17-10 : R12 et R13 corrigés et mesurés au demi-pixel ; 2 notes mineures : coupure de « Bosnie-Herzégovine » entre 360 et 365 px avec barre de 15 px, hors cas de R13 ; +2 erreurs prettier dans france.service sur une dette de lint antérieure)", commit: e64257efaaa6411badb503118f2e3e67bc545e60 }
+    ux: { date: 2026-10-17, verdict: "conforme à la maquette (revue de conformité 17-10, captures 1440 et 390 regardées par le lead : thème des Bleus, R4 R5 R13 mesurés, page OL inchangée) ; 1 réserve portée en sous-tâche (heure non confirmée d'un match à venir affichée comme fixée, cas atteignable par URL seulement) ; 2 mineurs en note : badge « À venir » sur deux lignes à 390 px, état erreur sans carte et lien de 17 px (antérieur, L160)" }
+    tasks:
+      - { id: t1, title: "Match des Bleus à venir : l'en-tête affiche l'heure 365scores comme fixée (« Jeu. 12/11 · 20h45 ») alors que la page équipe dit « Horaire à confirmer » (timeConfirmed faux au-delà de 14 jours) — afficher « Horaire à confirmer » comme la page équipe, ce qui demande un champ dans la réponse stats et un amendement de la fiche (R7, R11)", status: dropped }
+    finished: 2026-10-17
+  - id: L168
+    title: "Match des Bleus à venir : l'en-tête affiche l'heure 365scores comme fixée (« Jeu. 12/11 · 20h45 ») alors que la page équipe dit « Horaire à confirmer » (timeConfirmed faux au-delà de 14 jours) — afficher « Horaire à confirmer » comme la page équipe : champ dans la réponse stats et amendement de la fiche de la page de match des Bleus (R7, R11) ; réserve de la revue UX du 17-10, cas atteignable par URL seulement"
+    status: todo
+    estimate: 1
+    visible: true
+    screen: component
+    created: 2026-10-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

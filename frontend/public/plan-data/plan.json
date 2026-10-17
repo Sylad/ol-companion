@@ -471,8 +471,9 @@
     {
       "id": "L167",
       "title": "Équipe de France : la page du match aux couleurs des Bleus",
-      "status": "doing",
-      "started": "2026-10-16"
+      "status": "done",
+      "started": "2026-10-16",
+      "finished": "2026-10-17"
     }
   ]
 }
