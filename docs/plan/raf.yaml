@@ -1756,6 +1756,11 @@ lots:
     visible: true
     screen: component
     created: 2026-10-17
+  - id: L169
+    title: "CI rouge sur f14ba7b : deux tests scellés de la page de match des Bleus attendent « 21h00 » pour un coup d'envoi à 20:00 UTC et rendent « 20h00 » sur le runner GitHub en UTC (kickoff.test.ts fixe déjà process.env.TZ dans le test) — fixer TZ=Europe/Paris dans vitest.config.ts et vitest.acceptation.config.ts (l'app est en heure de Paris), aucun test scellé modifié ; livraison bloquée tant que la CI est rouge"
+    status: todo
+    estimate: 1
+    created: 2026-10-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
