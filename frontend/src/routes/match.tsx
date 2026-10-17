@@ -448,9 +448,14 @@ export function MatchPage() {
             )}
             <span className="text-xs text-fg-muted">{data.competitionName}</span>
           </div>
-          {bleus && isUpcoming ? (
+          {isUpcoming && bleus ? (
             <span data-testid="coup-envoi" className="text-xs num tabular-nums font-semibold text-fg-muted whitespace-nowrap">
               {kickoffLabel(data)}
+            </span>
+          ) : isUpcoming ? (
+            <span className="flex items-center gap-2 text-xs num tabular-nums font-semibold text-fg-muted">
+              <span data-testid="coup-envoi" className="whitespace-nowrap">{kickoffLabel(data)}</span>
+              <span>{clock.label}</span>
             </span>
           ) : (
             <span className={cn(
