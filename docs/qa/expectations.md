@@ -61,7 +61,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - never: sur un match à venir, une composition non « Confirmé » par 365scores sans l'étiquette « Composition probable » ; un numéro de maillot « 0 » (titulaire ou banc)
 - shows: sur un match à venir, un numéro de maillot sur chaque titulaire et chaque remplaçant des deux compositions, y compris quand 365scores envoie 0 (reprise du numéro des 5 derniers matchs du club, le plus récent d'abord, L133) — tolérance : un joueur absent de ces 5 matchs (recrue, blessé de longue durée) peut rester sans numéro
 - shows: sur un match de Ligue 1 à venir à plus de 14 jours dont l'heure est fixée côté `/api/season-matches` (`timeConfirmed` vrai, ex. Lyon – Angers du 31/10 à J+14,3), l'en-tête affiche l'heure et non « Horaire à confirmer » : `timeConfirmed` de `/api/live-match/<gameId>/stats` égale celui du même match dans `/api/season-matches` (L170)
-- shows: même égalité hors Ligue 1 : un match de Ligue Europa, de Ligue des champions ou de Coupe de France à plus de 14 jours (ex. Lyon – Lillestrom, Ligue Europa, jeu. 22/10) a `timeConfirmed` vrai dans `/api/live-match/<gameId>/stats` comme dans `/api/season-matches` (L172)
+- shows: même égalité hors Ligue 1 : un match de Ligue Europa, de Ligue des champions ou de Coupe de France à plus de 14 jours (ex. Lyon – Lillestrom, Ligue Europa, jeu. 26/11) a `timeConfirmed` vrai dans `/api/live-match/<gameId>/stats` comme dans `/api/season-matches` (L172)
 - api: /api/live-match/<gameId>/stats
 
 ## /fixtures
