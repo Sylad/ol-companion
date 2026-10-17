@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-17 19:23",
+  "generated": "2026-10-17 19:24",
   "entries": [
     {
       "slug": "2026-10-17-page-de-match-joueurs-en-vue-meme-loin-du-match",
@@ -38,7 +38,7 @@
         "En-tête de Troyes – Lyon, Ligue 1 : À venir, Week-end du 05/12 · Horaire à confirmer",
         "Le même en-tête sur téléphone : le libellé passe sur deux lignes, « À venir » reste sur une ligne"
       ],
-      "html": "<p>Sur la page d'un match à venir de l'OL, l'en-tête indique maintenant le jour et l'heure du coup d'envoi (par exemple « Jeu. 26/11 · 21h00 »), comme sur la carte de la page Coupes. Quand l'heure n'est pas encore fixée, il n'affiche pas une heure qui pourrait être fausse : « Week-end du 05/12 · Horaire à confirmer » si le jour est un vendredi, un samedi ou un dimanche, « Date et horaire à confirmer » sinon, comme dans le calendrier. Cela ne concerne que la Ligue 1 : les matchs de coupe d'Europe et de coupe de France affichent toujours leur heure, qui est tenue pour fixée.</p>"
+      "html": "<p>Sur la page d'un match à venir de l'OL, l'en-tête indique maintenant le jour et l'heure du coup d'envoi (par exemple « Jeu. 26/11 · 21h00 »), comme sur la carte de la page Coupes. Quand l'heure n'est pas encore fixée, il n'affiche pas une heure qui pourrait être fausse : « Week-end du 05/12 · Horaire à confirmer » si le jour est un vendredi, un samedi ou un dimanche, « Date et horaire à confirmer » sinon, comme dans le calendrier. Cela ne concerne que la Ligue 1 : les matchs de coupe d'Europe et de coupe de France affichent toujours leur heure, qui est tenue pour fixée.</p>"
     },
     {
       "slug": "2026-10-17-match-des-bleus-a-venir-l-heure-non-confirmee-est-annoncee-c",
