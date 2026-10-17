@@ -58,7 +58,7 @@ export function NewsPage() {
           {channels && channels.length > 0 && (
             <div className="space-y-5">
               {priorityChannels.length > 0 && (
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {priorityChannels.map((c) => (
                     <YoutubeChannelCard key={c.id} channel={c} />
                   ))}
@@ -70,7 +70,7 @@ export function NewsPage() {
                     <span className="group-open:rotate-90 transition-transform inline-block">▸</span>
                     Voir {otherChannels.length} autres chaînes
                   </summary>
-                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 mt-4">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 mt-4">
                     {otherChannels.map((c) => (
                       <YoutubeChannelCard key={c.id} channel={c} />
                     ))}
@@ -126,7 +126,7 @@ export function NewsPage() {
             <div className="space-y-5">
               {featuredArticle && <NewsCard item={featuredArticle} featured />}
               {restArticles.length > 0 && (
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {restArticles.map((n) => (
                     <NewsCard key={n.link} item={n} />
                   ))}

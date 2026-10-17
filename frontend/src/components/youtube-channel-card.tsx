@@ -20,15 +20,15 @@ export function YoutubeChannelCard({ channel }: { channel: YoutubeChannel }) {
       href={channel.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-start gap-4 rounded-md border border-border bg-surface p-4 hover:border-border-strong transition-all"
+      className="group flex min-w-0 items-start gap-4 rounded-md border border-border bg-surface p-4 hover:border-border-strong transition-all"
     >
       <div className="shrink-0 w-12 h-12 rounded-full bg-ol-red/10 border border-ol-red/30 flex items-center justify-center text-ol-red-bright group-hover:scale-105 transition-transform">
         <Youtube className="h-5 w-5" strokeWidth={2} />
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-semibold text-fg-bright group-hover:text-ol-red-bright transition-colors truncate">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+          <h3 className="font-semibold text-fg-bright group-hover:text-ol-red-bright transition-colors min-w-0 break-words">
             {channel.name}
           </h3>
           <span
