@@ -1750,6 +1750,7 @@ lots:
     finished: 2026-10-17
   - id: L168
     title: "Match des Bleus à venir : l'en-tête affiche l'heure 365scores comme fixée (« Jeu. 12/11 · 20h45 ») alors que la page équipe dit « Horaire à confirmer » (timeConfirmed faux au-delà de 14 jours) — afficher « Horaire à confirmer » comme la page équipe : champ dans la réponse stats et amendement de la fiche de la page de match des Bleus (R7, R11) ; réserve de la revue UX du 17-10, cas atteignable par URL seulement"
+    public: "Match des Bleus à venir : l'heure non confirmée est annoncée comme telle"
     status: todo
     estimate: 1
     visible: true
