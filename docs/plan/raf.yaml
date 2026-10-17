@@ -1677,10 +1677,11 @@ lots:
     finished: 2026-10-16
   - id: L162
     title: "QA : attentes /match — conditionner « Classement en direct avec 5 lignes dont Lyon » aux matchs de Ligue 1 (absent en Ligue Europa depuis L158, mesuré Lyon – Crystal Palace, QA L160 16-10) ; relire la ligne shows de /match pour un match à venir sans composition publiée (Hoffenheim – Lyon : Statistiques + Joueurs en vue, pas de colonnes)"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-16
+    started: 2026-10-17
   - id: L163
     title: "Barre de défilement uniformisée sur tout le site (demande de Sylvain 16-10) : la règle posée par L161 sur le bloc des faits (scrollbar-color + ::-webkit-scrollbar, curseur rouge sur piste bleue assombrie, curseur ≥ 3:1 sur la piste, WCAG 1.4.11) s'applique à la page et à tous les conteneurs défilants (listes, tableaux, panneaux) ; sous body.theme-fcnoobz la palette lime et bleu électrique de la page FC Noobz ; sur /equipe-de-france un thème bleu blanc rouge ; une seule source CSS (tokens dans index.css), captures 1440 et 390 des pages concernées, Firefox et Chrome"
     public: Barres de défilement aux couleurs du site, FC Noobz et Bleus compris
