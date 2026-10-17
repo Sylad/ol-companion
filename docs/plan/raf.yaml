@@ -617,6 +617,7 @@ lots:
     created: 2026-10-03
     notes:
       - { date: 2026-10-10, text: "Revue UX L3 10-10 : « Erreur de chargement. » en --loss 16 px = 3,85:1 (WCAG 1.4.3), sans Réessayer ni role=alert ; pendant le chargement pastilles « 0 » et filtre compétition absent — à couvrir dans ce lot (ol-red-bright 4,95:1 ou fg + icône)" }
+      - { date: 2026-10-17, text: "17-10 : « qualifications sur la page Coupes » décidé OUI par Sylvain → porté par L174 ; L51 garde le reste" }
   - id: L52
     title: Contraste du jeton fg-dim sur toute l'app (3,84–3,98:1 à 10–11 px) — viser rgb(115,131,153) ; carte du tableau de bord rognée à 390 px avec un nom long
     public: "Des textes secondaires plus lisibles"
@@ -1832,7 +1833,7 @@ lots:
   - id: L172
     title: "Page match à venir (OL) : l'en-tête n'affiche ni date ni heure (« À venir » seul) alors que la carte de /cups dit « Jeu. 22/10 · 21h00 » — kickoffLabel réservé aux Bleus (match.tsx ~l.451) : afficher date + heure ou « Horaire à confirmer » pour tout match à venir ; aligner timeConfirmed de /api/live-match/{id}/stats sur /api/season-matches au-delà de la Ligue 1 (Lyon – Lillestrom, Ligue Europa : false contre true) et ajouter la ligne d'attente (QA de L6, 17-10)"
     public: "Page de match : date et heure d'un match à venir"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
@@ -1842,17 +1843,30 @@ lots:
       - { date: 2026-10-17, text: "test d'acceptation rescellé (lot livré L160, frontend/src/routes/match.disposition-L160.test.tsx, fiche amendée en 61de81f) : Fiche R3 amendée (61de81f, décision du lead 17-10) : un match à venir affiche la date et l'heure du coup d'envoi ou « Horaire à confirmer » (L172), et Joueurs en vue reste affiché avec un état vide sur un match à venir (L173) — l'ancien test R3 exigeait l'inverse" }
       - { date: 2026-10-17, text: "test d'acceptation rescellé (lot livré L160, frontend/src/routes/match.disposition-L160.test.tsx, fiche amendée en ee91ea0) : Fiche page-match-fm R3 précisée (ee91ea0) : sans horaire fixé, le jour suit la règle L47 du calendrier (« Week-end du 10/10 · Horaire à confirmer ») au lieu de la date de remplissage « Dim. 11/10 » ; l'ancienne assertion contredisait L47" }
       - { date: 2026-10-17, text: "17-10 soir, décision du lead (question de la vague 2026-10-18-ol-cad) : fiche R3 précisée (ee91ea0) et test scellé L160 rescellé (7bc8652) — sans horaire fixé, l'en-tête dit le jour non ferme de L47 (unconfirmedDay / formatKickoffDayShort : « Week-end du 10/10 · Horaire à confirmer », un autre jour « Date et horaire à confirmer »), jamais la date de remplissage. Reste pour L172 : (1) en-tête aligné sur cette règle et test propre match.heure-a-confirmer-L172.test.tsx mis à jour ; (2) Nouveautés L172 : captures listées deux fois dans le front-matter (4 images sur /nouveautes, clé React en double) → retirer le doublon, régénérer ; (3) docs/qa/expectations.md:64 : exemple faux (le jeu. 22/10 est Hoffenheim – Lyon à 5 jours ; Lyon – Lillestrom est le 26/11) → prendre un match à plus de 14 jours ; (4) en-tête à 390 et 320 px : flex-wrap posé en 3518a29, à mesurer dans un navigateur réel" }
+      - { date: 2026-10-17, text: "Note mineure non traitée (pas un défaut de comportement) : à 1440 px le libellé du coup d'envoi et l'horloge « À VENIR » sont séparés de 8 px, même couleur et même police — se lit « … Horaire à confirmer À VENIR » ; et « À VENIR » figure aussi dans le badge de gauche (exigé par la fiche R3). À reprendre si une revue UX de /match le relève." }
     review: { date: 2026-10-17, verdict: "conforme : 0 bloquant, 0 majeur, 1 note mineure (libellé du coup d'envoi accolé à l'horloge « À VENIR » dans l'en-tête, Nielsen n° 8) — orchestré (vague 2026-10-18-ol-l172, 1 passe(s) de correction)", commit: b0555caa0546ab8df9335803f40132a99470706c }
+    ux: { date: 2026-10-17, verdict: "conforme (verdict du lead, captures Troyes – Lyon 1440/390/320 regardées) : en-tête d'un match à venir avec date et heure ou jour non ferme L47 (« Week-end du 05/12 · Horaire à confirmer »), horloge sur une ligne sans débordement à 390 et 320 px ; 1 note mineure Nielsen n° 8 (libellé accolé à l'horloge à 1440)" }
+    finished: 2026-10-17
   - id: L173
     title: "Page match à venir lointain (J5–J8 Ligue Europa) : « Joueurs en vue » disparaît quand topPerformers est vide, la page ne garde que « Pas encore de statistiques. » — état vide explicite dans le bloc, et ligne L162 des attentes en accord (QA de L6, 17-10)"
     public: "Page de match : joueurs en vue même loin du match"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     screen: component
     created: 2026-10-17
     started: 2026-10-17
     review: { date: 2026-10-17, verdict: "compliant — orchestré (vague 2026-10-18-ol-cad, 0 passe(s) de correction)", commit: 5e1ca8b3f5d3750c2385a5f512118e0dfe5e972d }
+    ux: { date: 2026-10-17, verdict: "conforme (verdict du lead, captures 1440/390 regardées) : Joueurs en vue reste affiché avec un état vide explicite sur un match à venir, lisible aux deux largeurs ; ux-reviewer compliant" }
+    finished: 2026-10-17
+  - id: L174
+    title: "Coupes : montrer les 4 matchs de qualification de Ligue des champions (compétition 332, OL éliminé le 26/08) sur /cups, avec leur tour et leur score — décision de Sylvain 17-10 (question de L6, tranche le « à décider » de L51)"
+    public: "Coupes : les matchs de qualification en Ligue des champions"
+    status: todo
+    estimate: 0.5
+    visible: true
+    screen: component
+    created: 2026-10-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

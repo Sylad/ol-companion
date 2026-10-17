@@ -485,14 +485,21 @@
     {
       "id": "L172",
       "title": "Page de match : date et heure d'un match à venir",
-      "status": "doing",
-      "started": "2026-10-17"
+      "status": "done",
+      "started": "2026-10-17",
+      "finished": "2026-10-17"
     },
     {
       "id": "L173",
       "title": "Page de match : joueurs en vue même loin du match",
-      "status": "doing",
-      "started": "2026-10-17"
+      "status": "done",
+      "started": "2026-10-17",
+      "finished": "2026-10-17"
+    },
+    {
+      "id": "L174",
+      "title": "Coupes : les matchs de qualification en Ligue des champions",
+      "status": "todo"
     }
   ]
 }
