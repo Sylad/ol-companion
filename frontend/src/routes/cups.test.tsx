@@ -24,28 +24,28 @@ vi.mock('@/components/cup-match-row', () => ({ CupMatchRow: () => null }));
 
 import { CupsPage } from './cups';
 
-// Un libellé de statut apparaît dans l'onglet et dans l'en-tête de la carte.
+// Un libellé de statut n'apparaît que dans l'onglet (L6 t7 : plus répété dans l'en-tête de la carte).
 const count = (label: string) => screen.queryAllByText(label).length;
 
 describe('<CupsPage /> — statut des coupes (L38)', () => {
-  it('« En lice » par défaut, onglet et carte', () => {
+  it('« En lice » par défaut, onglet', () => {
     cups = [cup({})];
     render(<CupsPage />);
-    expect(count('En lice')).toBe(2);
+    expect(count('En lice')).toBe(1);
     expect(count('En attente du tirage')).toBe(0);
   });
 
-  it('« En attente du tirage » quand awaitingDraw, onglet et carte', () => {
+  it('« En attente du tirage » quand awaitingDraw, onglet', () => {
     cups = [cup({ awaitingDraw: true })];
     render(<CupsPage />);
-    expect(count('En attente du tirage')).toBe(2);
+    expect(count('En attente du tirage')).toBe(1);
     expect(count('En lice')).toBe(0);
   });
 
   it('« Éliminé » prime sur awaitingDraw', () => {
     cups = [cup({ isEliminated: true, awaitingDraw: true })];
     render(<CupsPage />);
-    expect(count('Éliminé')).toBe(2);
+    expect(count('Éliminé')).toBe(1);
     expect(count('En attente du tirage')).toBe(0);
   });
 
@@ -53,14 +53,14 @@ describe('<CupsPage /> — statut des coupes (L38)', () => {
     cups = [cup({}), cup({ competitionId: 37, name: 'Coupe de France', awaitingDraw: true })];
     render(<CupsPage />);
     fireEvent.click(screen.getByRole('button', { name: /Coupe de France/ }));
-    expect(count('En attente du tirage')).toBe(2);
+    expect(count('En attente du tirage')).toBe(1);
     expect(count('En lice')).toBe(1);
   });
 
   it('le nom de la compétition n\'est pas tronqué (pas de truncate sur le titre ni l\'onglet)', () => {
     cups = [cup({ awaitingDraw: true })];
     render(<CupsPage />);
-    expect(screen.getByRole('heading', { level: 2, name: 'Ligue Europa' }).className).not.toMatch(/truncate/);
+    expect(screen.getByRole('heading', { level: 3, name: 'Ligue Europa' }).className).not.toMatch(/truncate/);
     expect(screen.getAllByText('Ligue Europa').every((el) => !/truncate/.test(el.className))).toBe(true);
   });
 });

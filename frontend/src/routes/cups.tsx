@@ -1,15 +1,16 @@
 import { useMemo, useState } from 'react';
-import { Loader2, Trophy, ShieldAlert } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useCups } from '@/hooks/use-cups';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { CupMatchRow } from '@/components/cup-match-row';
+import { RetryMessage } from '@/components/retry-message';
 import { Bracket } from '@/components/bracket';
 import { cupResult } from '@/lib/cup-result';
 import { cn } from '@/lib/utils';
 import type { CupInfo } from '@/types/api';
 
 export function CupsPage() {
-  const { data, isLoading, isError } = useCups();
+  const { data, isLoading, isError, refetch } = useCups();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const activeCup = useMemo(() => {
     if (!data?.length) return null;
@@ -18,18 +19,23 @@ export function CupsPage() {
 
   return (
     <div className="space-y-8">
-      <KnowledgeHeader />
+      <KnowledgeHeader compact />
 
       {isLoading && (
-        <div className="flex items-center justify-center py-20 text-fg-dim">
+        <div className="flex items-center justify-center py-20 text-fg">
           <Loader2 className="h-5 w-5 animate-spin mr-2" />
           <span>Chargement des coupes…</span>
         </div>
       )}
       {isError && (
-        <p className="py-20 text-center text-loss">
-          Erreur de chargement des données coupes.
-        </p>
+        <section className="rounded-md bg-surface border border-border px-5 py-12">
+          <RetryMessage
+            message="Erreur de chargement des données coupes."
+            onRetry={() => void refetch()}
+            messageTestId="cups-erreur"
+            buttonTestId="cups-reessayer"
+          />
+        </section>
       )}
       {data && data.length === 0 && (
         <p className="py-20 text-center text-fg-muted">
@@ -46,7 +52,7 @@ export function CupsPage() {
                 Parcours en coupes
               </h2>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div role="group" aria-label="Choisir une coupe" className="flex flex-wrap gap-2">
               {data.map((cup) => (
                 <CupTab
                   key={cup.competitionId}
@@ -79,7 +85,8 @@ function CupTab({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'min-w-[220px] rounded-md border px-3 py-2.5 text-left transition-colors',
+        'min-w-0 flex-1 basis-36 rounded-md border px-3 py-2.5 text-left transition-colors',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright',
         active
           ? 'border-ol-red-bright bg-ol-red/10 text-fg-bright'
           : 'border-border bg-surface-2/35 text-fg-muted hover:border-border-strong hover:text-fg',
@@ -117,41 +124,13 @@ function CupCard({ cup }: { cup: CupInfo }) {
 
   return (
     <div>
-      <header className="px-5 py-4 border-b border-border bg-surface-2/25">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <div
-            className={cn(
-              'shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
-              cup.isEliminated
-                ? 'bg-fg-dim/10 text-fg-dim'
-                : 'bg-ol-red/15 text-ol-red-bright',
-            )}
-          >
-            {cup.isEliminated ? (
-              <ShieldAlert className="h-5 w-5" strokeWidth={2} />
-            ) : (
-              <Trophy className="h-5 w-5" strokeWidth={2} />
-            )}
-          </div>
-          <div className="flex-1 min-w-[10rem]">
-            <div className="eyebrow mb-0.5">Compétition à élimination</div>
-            <h2 className="font-display text-lg font-bold text-fg-bright leading-tight">
-              {cup.name}
-            </h2>
-          </div>
-          <div className="max-sm:basis-full max-sm:pl-[3.25rem] sm:text-right sm:shrink-0">
-            <div className="text-[10px] uppercase tracking-wider text-fg-dim font-semibold">
-              {cupStatusLabel(cup)}
-            </div>
-            <div className="text-sm font-semibold text-fg mt-0.5">{cup.currentStageFr}</div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4 mt-3 text-xs">
+      {/* Nom, statut, phase et nombre de matchs sont dans l'onglet : affichés une fois (L6 t7). */}
+      <h3 className="sr-only">{cup.name}</h3>
+      <header className="px-5 py-3 border-b border-border bg-surface-2/25">
+        <div className="flex items-center gap-4 text-xs">
           <Stat label="V" value={wins} tone="text-win" />
           <Stat label="N" value={draws} tone="text-draw" />
-          <Stat label="D" value={losses} tone="text-loss" />
-          <span className="ml-auto text-fg-dim">{cup.matches.length} match{cup.matches.length > 1 ? 's' : ''}</span>
+          <Stat label="D" value={losses} tone="text-loss-fg" />
         </div>
 
         {upcomingMatch && (
