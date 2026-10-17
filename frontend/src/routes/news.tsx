@@ -35,67 +35,7 @@ export function NewsPage() {
 
   return (
     <div className="space-y-8">
-      <KnowledgeHeader />
-
-      {/* CHAÎNES YOUTUBE */}
-      <section className="rounded-md bg-surface border border-border overflow-hidden">
-        <header className="px-5 py-4 border-b border-border">
-          <div className="eyebrow mb-1">À suivre</div>
-          <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
-            Chaînes YouTube recommandées
-          </h2>
-          <p className="text-sm text-fg-muted mt-1.5">
-            La sélection officielle, médias et créateurs autour de l'OL.
-          </p>
-        </header>
-
-        <div className="p-5">
-          {chLoading && (
-            <div role="status" className="flex items-center justify-center py-10 text-fg-dim">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" aria-hidden="true" />
-              <span>Chargement…</span>
-            </div>
-          )}
-          {chError && (
-            <RetryMessage
-              message="Impossible de charger les chaînes YouTube."
-              onRetry={() => void refetchChannels()}
-              messageTestId="chaines-erreur"
-              buttonTestId="chaines-reessayer"
-              className="flex flex-col items-center gap-3 py-6 text-center"
-            />
-          )}
-          {channels?.length === 0 && (
-            <p data-testid="chaines-vide" className="py-6 text-center text-sm text-fg-muted">
-              Aucune chaîne à afficher pour le moment. Revenez plus tard.
-            </p>
-          )}
-          {channels && channels.length > 0 && (
-            <div className="space-y-5">
-              {priorityChannels.length > 0 && (
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {priorityChannels.map((c) => (
-                    <YoutubeChannelCard key={c.id} channel={c} />
-                  ))}
-                </div>
-              )}
-              {otherChannels.length > 0 && (
-                <details className="group">
-                  <summary className="cursor-pointer text-sm text-fg-muted hover:text-fg flex items-center gap-2 select-none">
-                    <span className="group-open:rotate-90 transition-transform inline-block">▸</span>
-                    Voir {otherChannels.length} autres chaînes
-                  </summary>
-                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 mt-4">
-                    {otherChannels.map((c) => (
-                      <YoutubeChannelCard key={c.id} channel={c} />
-                    ))}
-                  </div>
-                </details>
-              )}
-            </div>
-          )}
-        </div>
-      </section>
+      <KnowledgeHeader compact />
 
       {/* ARTICLES */}
       <section className="rounded-md bg-surface border border-border overflow-hidden">
@@ -167,6 +107,66 @@ export function NewsPage() {
                     <NewsCard key={n.link} item={n} />
                   ))}
                 </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CHAÎNES YOUTUBE */}
+      <section className="rounded-md bg-surface border border-border overflow-hidden">
+        <header className="px-5 py-4 border-b border-border">
+          <div className="eyebrow mb-1">À suivre</div>
+          <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
+            Chaînes YouTube recommandées
+          </h2>
+          <p className="text-sm text-fg-muted mt-1.5">
+            La sélection officielle, médias et créateurs autour de l'OL.
+          </p>
+        </header>
+
+        <div className="p-5">
+          {chLoading && (
+            <div role="status" className="flex items-center justify-center py-10 text-fg-dim">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" aria-hidden="true" />
+              <span>Chargement…</span>
+            </div>
+          )}
+          {chError && (
+            <RetryMessage
+              message="Impossible de charger les chaînes YouTube."
+              onRetry={() => void refetchChannels()}
+              messageTestId="chaines-erreur"
+              buttonTestId="chaines-reessayer"
+              className="flex flex-col items-center gap-3 py-6 text-center"
+            />
+          )}
+          {channels?.length === 0 && (
+            <p data-testid="chaines-vide" className="py-6 text-center text-sm text-fg-muted">
+              Aucune chaîne à afficher pour le moment. Revenez plus tard.
+            </p>
+          )}
+          {channels && channels.length > 0 && (
+            <div className="space-y-5">
+              {priorityChannels.length > 0 && (
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {priorityChannels.map((c) => (
+                    <YoutubeChannelCard key={c.id} channel={c} />
+                  ))}
+                </div>
+              )}
+              {otherChannels.length > 0 && (
+                <details className="group">
+                  <summary className="cursor-pointer text-sm text-fg-muted hover:text-fg flex items-center gap-2 select-none">
+                    <span className="group-open:rotate-90 transition-transform inline-block">▸</span>
+                    Voir {otherChannels.length} autres chaînes
+                  </summary>
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 mt-4">
+                    {otherChannels.map((c) => (
+                      <YoutubeChannelCard key={c.id} channel={c} />
+                    ))}
+                  </div>
+                </details>
               )}
             </div>
           )}

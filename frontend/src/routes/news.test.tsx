@@ -120,3 +120,14 @@ describe('L5/t3 — pastilles de source', () => {
     expect(screen.queryByRole('group', { name: 'Filtrer par source' })).toBeNull();
   });
 });
+
+describe('L5/t5 — premier écran au téléphone', () => {
+  it('en-tête compact et articles avant les chaînes YouTube (ordre du DOM = ordre visuel)', async () => {
+    renderPage();
+    await screen.findByRole('heading', { name: 'Chaînes YouTube recommandées' });
+    const h1 = screen.getByRole('heading', { level: 1 });
+    expect(h1.closest('header')).toHaveAttribute('data-compact');
+    const titres = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
+    expect(titres).toEqual(['À la une', 'Chaînes YouTube recommandées']);
+  });
+});
