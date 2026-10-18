@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { positionShortFr } from '@/lib/position-fr';
 import { Loader2, LayoutGrid, Users, BarChart3, ArrowUpDown } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
@@ -22,6 +22,9 @@ export function PlayersPage() {
   const lineup = useLineup();
   const { data } = lineup;
   const [tab, setTab] = useState<'formation' | 'squad' | 'stats'>('formation');
+  const baseId = useId();
+  const tabId = (t: string) => `${baseId}-onglet-${t}`;
+  const panelId = `${baseId}-panneau`;
 
   const allPlayers = useMemo(() => {
     if (!data) return [];
@@ -72,20 +75,20 @@ export function PlayersPage() {
               <h2 className="font-display text-xl font-bold text-fg-bright leading-none">Olympique Lyonnais</h2>
             </div>
           )}
-          <div className="flex items-center gap-1 rounded-full border border-border p-1">
-            <TabButton active={tab === 'formation'} onClick={() => setTab('formation')} icon={LayoutGrid}>
+          <div role="tablist" aria-label="Effectif" className="flex items-center gap-1 rounded-full border border-border p-1">
+            <TabButton id={tabId('formation')} panelId={panelId} active={tab === 'formation'} onClick={() => setTab('formation')} icon={LayoutGrid}>
               Composition
             </TabButton>
-            <TabButton active={tab === 'squad'} onClick={() => setTab('squad')} icon={Users}>
+            <TabButton id={tabId('squad')} panelId={panelId} active={tab === 'squad'} onClick={() => setTab('squad')} icon={Users}>
               Effectif
             </TabButton>
-            <TabButton active={tab === 'stats'} onClick={() => setTab('stats')} icon={BarChart3}>
+            <TabButton id={tabId('stats')} panelId={panelId} active={tab === 'stats'} onClick={() => setTab('stats')} icon={BarChart3}>
               Stats saison
             </TabButton>
           </div>
         </header>
 
-        <div className="p-5">
+        <div className="p-5" role="tabpanel" id={panelId} aria-labelledby={tabId(tab)}>
           {tab === 'formation' && (
             data ? (
               <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-5">
@@ -178,8 +181,12 @@ interface SortHeaderProps {
 function SortHeader({ label, sortKey, current, onSort, align = 'right' }: SortHeaderProps) {
   const active = current === sortKey;
   return (
-    <th className={cn('px-2 py-2 font-semibold', align === 'left' ? 'text-left' : 'text-right')}>
+    <th
+      className={cn('px-2 py-2 font-semibold', align === 'left' ? 'text-left' : 'text-right')}
+      aria-sort={active ? 'descending' : undefined}
+    >
       <button
+        type="button"
         onClick={() => onSort(sortKey)}
         className={cn(
           'inline-flex items-center gap-1 transition-colors',
@@ -308,15 +315,22 @@ function PlayerStatsRow({ player }: { player: PlayerSeasonStats }) {
 }
 
 interface TabButtonProps {
+  id: string;
+  panelId: string;
   active: boolean;
   onClick: () => void;
   icon: typeof LayoutGrid;
   children: React.ReactNode;
 }
 
-function TabButton({ active, onClick, icon: Icon, children }: TabButtonProps) {
+function TabButton({ id, panelId, active, onClick, icon: Icon, children }: TabButtonProps) {
   return (
     <button
+      type="button"
+      role="tab"
+      id={id}
+      aria-selected={active}
+      aria-controls={panelId}
       onClick={onClick}
       className={cn(
         'flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full transition-colors',
