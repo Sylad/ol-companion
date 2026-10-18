@@ -119,15 +119,17 @@ lots:
     finished: 2026-10-18
   - id: L9
     title: Revue UX — Match en direct (/match)
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-09-28
     tasks:
       - { id: t1, title: "Faits du match : type 365scores 3 (« Carton rouge ») affiché « ↔ Remplacement » (Udol 84', Lens – Lyon 4735252), type 1000 « Substitution » brut sans entrant ni sortant et info-bulle « passe : <sortant> », « Woodwork » et « But annulé — Var » bruts — eventTypeKey corrigé (live-match.aggregator.ts:110 : 3 = carton rouge, 1000 = remplacement), entrant ↔ sortant dans la ligne (pas seulement au survol), libellés FR (Poteau, But annulé (VAR)), animation du direct alignée, tests", status: done }
     notes:
       - { date: 2026-10-18, text: "revue UX du 18-10 (prod, captures ~/projects/developpeur/tmp/ux-ol-L9/, états à venir / terminé / sans id / introuvable vus, direct et mi-temps non vus) : non conforme, 1 bloquant déjà planifié (en-tête rogné à 320 → L65/L164, aussi colonnes déséquilibrées à 390), 4 majeurs → t1 ici (faits du match) + L179 (libellés et nombres FR) + L180 (page 404) + L181 (erreurs, Réessayer, h1) ; mineurs : statut écrit deux fois dans l'en-tête, match à venir à 390 commence par « Pas encore de statistiques » (L79 à recadrer), cibles Accueil 70×20 et LIGUE 1 52×15, graphiques sans résumé des données, 4,6 écrans au téléphone (stats d'équipe repliables), pastille LIVE CONNECTÉ rouge au-dessus d'un match terminé (L12), aucune zone aria-live pour les buts (à confirmer en direct)" }
+      - { date: 2026-10-18, text: "18-10 : la carte du direct de l'accueil (live-match-card.tsx:134) affiche encore la description brute (Woodwork, Substitution, But annulé — Var) — reprendre EVENT_LABEL de match.tsx, à traiter dans la revue UX de l'accueil" }
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "compliant (0 bloquant, 0 majeur, 2 notes mineures : libellés bruts dans live-match-card.tsx de l'accueil, branche « 2e » de l'id 3 non testée). Les six choix d'interprétation de l'auteur tiennent face au lot et au code. — orchestré (vague 2026-10-18-l9, 0 passe(s) de correction)", commit: e6375e1d51352d7a87a492673b8081cb3517da71 }
+    finished: 2026-10-18
   - id: L10
     title: Revue UX — Carte
     status: todo
@@ -1954,20 +1956,25 @@ lots:
     created: 2026-10-18
   - id: L180
     title: "Route inconnue (dont /match sans identifiant) : « Not Found » TanStack en anglais, sans h1 ni lien — notFoundComponent en français avec h1 et liens Accueil / Calendrier, ligne never « Not Found » dans docs/qa/expectations.md (revue UX L9)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-18
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "compliant (0 bloquant, 0 majeur, 1 note mineure : la ligne never « Not Found » de la section `*` ne s'applique qu'aux URL que l'agent QA visite). Les cinq choix d'interprétation de l'auteur tiennent face au lot et au code. Commit 34503b7 relu : tsc propre, 906 tests verts sur 112 fichiers dont les 2 nouveaux. — orchestré (vague 2026-10-18-l9, 0 passe(s) de correction)", commit: 34503b74f54113411bf8872a1a9b66e351fee866 }
+    finished: 2026-10-18
   - id: L181
     title: "Page match en erreur : toute erreur (réseau, 5xx) dit « Match introuvable » sans Réessayer ; états erreur / lien incomplet / chargement sans h1 — distinguer 404 et panne, bouton Réessayer (refetch), h1 sur chaque état, tests ; avec L80 (revue UX L9)"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     public: "Page match : une panne n'est plus « introuvable », avec Réessayer"
     created: 2026-10-18
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "conforme (0 bloquant, 0 majeur, 2 notes mineures : le test de nouvel essai sur un 503 du hook ne peut pas échouer, et l'assertion de R2 ne correspond pas à son titre) ; les onze choix d'interprétation tiennent face au lot et au code ; 904 tests frontend verts, tsc et build OK, aucune fuite dans plan-data, raf check vert — orchestré (vague 2026-10-18-l9, 2 passe(s) de correction)", commit: 34bbd10fad2440060205ec91b39d5ce27ad9d19d }
+    ux: { date: 2026-10-18, verdict: "conforme (lead, captures locales 390 px ~/projects/developpeur/tmp/ux-ol-L181/ : panne 503 → h1 « Impossible de charger le match » + Réessayer + retour ; 404 → « Match introuvable » sans Réessayer) ; mineurs en note : Réessayer ~30 px collé au lien, RetryMessage non réutilisé (focus après Réessayer, role=alert)" }
+    notes:
+      - { date: 2026-10-18, text: "mineurs revue 18-10 : réutiliser RetryMessage (focus rendu au bouton, 44 px, role=alert) au lieu du bouton écrit à part (match.tsx:385) ; test R2 titré « propose Réessayer » vérifie le lien, pas le bouton ; test 503 de use-live-match ne peut pas échouer (client de test retry:1)" }
+    finished: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

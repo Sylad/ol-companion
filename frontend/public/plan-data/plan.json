@@ -520,8 +520,9 @@
     {
       "id": "L181",
       "title": "Page match : une panne n'est plus « introuvable », avec Réessayer",
-      "status": "doing",
-      "started": "2026-10-18"
+      "status": "done",
+      "started": "2026-10-18",
+      "finished": "2026-10-18"
     }
   ]
 }
