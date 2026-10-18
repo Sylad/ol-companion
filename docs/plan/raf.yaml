@@ -122,6 +122,10 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-09-28
+    tasks:
+      - { id: t1, title: "Faits du match : type 365scores 3 (« Carton rouge ») affiché « ↔ Remplacement » (Udol 84', Lens – Lyon 4735252), type 1000 « Substitution » brut sans entrant ni sortant et info-bulle « passe : <sortant> », « Woodwork » et « But annulé — Var » bruts — eventTypeKey corrigé (live-match.aggregator.ts:110 : 3 = carton rouge, 1000 = remplacement), entrant ↔ sortant dans la ligne (pas seulement au survol), libellés FR (Poteau, But annulé (VAR)), animation du direct alignée, tests", status: todo }
+    notes:
+      - { date: 2026-10-18, text: "revue UX du 18-10 (prod, captures ~/projects/developpeur/tmp/ux-ol-L9/, états à venir / terminé / sans id / introuvable vus, direct et mi-temps non vus) : non conforme, 1 bloquant déjà planifié (en-tête rogné à 320 → L65/L164, aussi colonnes déséquilibrées à 390), 4 majeurs → t1 ici (faits du match) + L179 (libellés et nombres FR) + L180 (page 404) + L181 (erreurs, Réessayer, h1) ; mineurs : statut écrit deux fois dans l'en-tête, match à venir à 390 commence par « Pas encore de statistiques » (L79 à recadrer), cibles Accueil 70×20 et LIGUE 1 52×15, graphiques sans résumé des données, 4,6 écrans au téléphone (stats d'équipe repliables), pastille LIVE CONNECTÉ rouge au-dessus d'un match terminé (L12), aucune zone aria-live pour les buts (à confirmer en direct)" }
   - id: L10
     title: Revue UX — Carte
     status: todo
@@ -1766,6 +1770,8 @@ lots:
     visible: true
     screen: component
     created: 2026-10-16
+    notes:
+      - { date: 2026-10-18, text: "18-10 revue UX L9 : à 390 aussi, colonnes de l'en-tête déséquilibrées (Anderlecht 130 px, Lyon 60 px) — grille minmax(0,1fr) auto minmax(0,1fr) et minutes insécables comme L167 R13" }
   - id: L165
     title: "QA — docs/qa/expectations.md, /match/$gameId : conditionner « Classement en direct » aux matchs de Ligue 1 (absent sur un match de coupe depuis L158, QA L161 16-10 : Lyon – Crystal Palace, standings null) et ajouter les attentes du bloc Faits borné (L161 : compte « N faits », liste 5 × 44 px, repère « ↑ N faits plus anciens » / « Début du match » aria-disabled, Momentum sous le pli à 1440 × 900 et 390 × 844, jamais de bouton fléché ni de vert) — brouillon du qa-reviewer dans la note"
     status: done
@@ -1939,6 +1945,21 @@ lots:
     review: { date: 2026-10-18, verdict: "conforme (revue Opus à la main ; ec01266 : 404 de season-stats = état neutre, 5xx = erreur avec Réessayer ; e93e97e : poste des convoqués ramené depuis position avec les libellés longs réels) ; note : pendant une panne 365scores le rebuild vide rend 404 pour tous et la fiche dit « pas encore joué » (relève de L34)", commit: e93e97e60409e84fa69ec40b43b601f7b622bea7 }
     ux: { date: 2026-10-18, verdict: "conforme : captures regardées par le lead — Effectif de 29 joueurs (saison + 3 convoqués sans minute), aucun « Banc », postes GB/DEF/MIL/ATT en couleur, noms sur deux lignes, libellés expliqués, notes 7,3, Composition vers les fiches, retour selon l'onglet ; fiche 404 neutre (Bengui), 500 en erreur avec Réessayer ; mineurs : Maitland-Niles coupé à 320 px, bas des cartes décalés jusqu'à 48 px, nom accessible des cartes en double, erreur 500 sans indication de reprise" }
     finished: 2026-10-18
+  - id: L179
+    title: "Page match : libellés 365scores bruts (« Tackles », « Les interceptions ») et décimales à point (0.5, 0.24, xG 1.03) dans Joueurs en vue et Statistiques ; avant le coup d'envoi « Buts : 0 » sans période — glossaire FR des statName, nombres fr-FR (1,03), période dite pour un match à venir, aria-label « Shot map » → « Carte des tirs », tests (revue UX L9)"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-18
+  - id: L180
+    title: "Route inconnue (dont /match sans identifiant) : « Not Found » TanStack en anglais, sans h1 ni lien — notFoundComponent en français avec h1 et liens Accueil / Calendrier, ligne never « Not Found » dans docs/qa/expectations.md (revue UX L9)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-18
+  - id: L181
+    title: "Page match en erreur : toute erreur (réseau, 5xx) dit « Match introuvable » sans Réessayer ; états erreur / lien incomplet / chargement sans h1 — distinguer 404 et panne, bouton Réessayer (refetch), h1 sur chaque état, tests ; avec L80 (revue UX L9)"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
