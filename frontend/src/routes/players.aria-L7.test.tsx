@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import type { PlayerSeasonStats } from '@/types/api';
 
 // L7/t3 — onglets en tablist (role=tab, aria-selected, tabpanel relié) et aria-sort sur la colonne triée de Stats saison
 // (WCAG 4.1.2 et 1.3.1).
 
+let search: Record<string, string> = {};
 vi.mock('@tanstack/react-router', () => ({
-  useSearch: () => ({}),
+  useSearch: () => search,
   useNavigate: () => vi.fn(),
   Link: ({ children, to }: { children: React.ReactNode; to: string }) => <a href={to}>{children}</a>,
 }));
@@ -28,7 +29,7 @@ const joueur = (n: number, buts: number) => ({
   averageRating: 6.5, byMatch: [],
 }) as unknown as PlayerSeasonStats;
 
-beforeEach(() => { stats = [joueur(9, 3), joueur(7, 1)]; });
+beforeEach(() => { search = {}; stats = [joueur(9, 3), joueur(7, 1)]; });
 
 describe('<PlayersPage /> — ARIA (L7/t3)', () => {
   it('les trois onglets forment une tablist, un seul aria-selected, et le panneau est relié à son onglet', () => {
@@ -42,23 +43,25 @@ describe('<PlayersPage /> — ARIA (L7/t3)', () => {
     expect(onglets[0]).toHaveAttribute('aria-controls', panneau.id);
   });
 
-  it('activer un onglet déplace aria-selected et le panneau', () => {
+  it('l’onglet de l’URL porte aria-selected et le panneau', () => {
+    search = { onglet: 'stats' };
     render(<PlayersPage />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Stats saison' }));
     expect(screen.getByRole('tab', { name: 'Stats saison' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByRole('tab', { name: 'Composition' })).toHaveAttribute('aria-selected', 'false');
     expect(screen.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', screen.getByRole('tab', { name: 'Stats saison' }).id);
   });
 
   it('Stats saison : seule la colonne triée porte aria-sort="descending", les autres n’en portent pas', () => {
+    search = { onglet: 'stats' };
     render(<PlayersPage />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Stats saison' }));
     const entetes = screen.getAllByRole('columnheader');
     const triees = entetes.filter((h) => h.hasAttribute('aria-sort'));
     expect(triees).toHaveLength(1);
     expect(triees[0]).toHaveAttribute('aria-sort', 'descending');
     expect(triees[0]).toHaveTextContent('B+P');
-    fireEvent.click(within(entetes.find((h) => h.textContent === 'Buts')!).getByRole('button'));
+    search = { onglet: 'stats', tri: 'buts' };
+    cleanup();
+    render(<PlayersPage />);
     const apres = screen.getAllByRole('columnheader').filter((h) => h.hasAttribute('aria-sort'));
     expect(apres).toHaveLength(1);
     expect(apres[0]).toHaveTextContent('Buts');

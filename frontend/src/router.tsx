@@ -8,6 +8,7 @@ import {
 import { Loader2 } from 'lucide-react';
 import { AppShell } from './components/layout/app-shell';
 import { DashboardPage } from './routes/index';
+import { validatePlayersSearch } from './lib/players-search';
 
 const FixturesPage = lazyNamed(() => import('./routes/fixtures'), 'FixturesPage');
 const StandingsPage = lazyNamed(() => import('./routes/standings'), 'StandingsPage');
@@ -91,12 +92,15 @@ const playersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/players',
   component: withSuspense(PlayersPage),
+  validateSearch: validatePlayersSearch,
 });
 
 const playerDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/player/$athleteId',
   component: withSuspense(PlayerDetailPage),
+  // L7 : onglet et tri de la liste d'où l'on vient, rendus par « Retour à l'effectif ».
+  validateSearch: validatePlayersSearch,
 });
 
 const fcnoobzRoute = createRoute({

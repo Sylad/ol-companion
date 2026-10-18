@@ -8,6 +8,7 @@ import type { PlayerSeasonStats } from '@/types/api';
 
 vi.mock('@tanstack/react-router', () => ({
   useParams: () => ({ athleteId: '7' }),
+  useSearch: () => ({}),
   Link: ({ children }: { children: React.ReactNode }) => <a href="/">{children}</a>,
 }));
 vi.mock('recharts', () => {

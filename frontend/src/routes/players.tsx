@@ -1,7 +1,8 @@
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo } from 'react';
 import { positionShortFr } from '@/lib/position-fr';
 import { Loader2, LayoutGrid, Users, BarChart3, ArrowUpDown } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import type { Onglet, PlayersSearch, Tri } from '@/lib/players-search';
 import { useLineup } from '@/hooks/use-lineup';
 import { useSeasonStats } from '@/hooks/use-player-stats';
 import { KnowledgeHeader } from '@/components/knowledge-header';
@@ -21,7 +22,14 @@ function formatDate(iso: string): string {
 export function PlayersPage() {
   const lineup = useLineup();
   const { data } = lineup;
-  const [tab, setTab] = useState<'formation' | 'squad' | 'stats'>('formation');
+  // L7 : onglet et tri sont dans l'URL ; replace pour que le retour du navigateur quitte la page, pas l'onglet précédent.
+  const search = useSearch({ from: '/players' });
+  const navigate = useNavigate();
+  const tab: Onglet = search.onglet ?? 'composition';
+  const tri: Tri = search.tri ?? 'bp';
+  const go = (next: PlayersSearch) =>
+    void navigate({ to: '/players', search: { onglet: next.onglet, tri: next.tri }, replace: true });
+  const setTab = (onglet: Onglet) => go({ onglet, tri: search.tri });
   const baseId = useId();
   const tabId = (t: string) => `${baseId}-onglet-${t}`;
   const panelId = `${baseId}-panneau`;
@@ -76,10 +84,10 @@ export function PlayersPage() {
             </div>
           )}
           <div role="tablist" aria-label="Effectif" className="flex items-center gap-1 rounded-full border border-border p-1">
-            <TabButton id={tabId('formation')} panelId={panelId} active={tab === 'formation'} onClick={() => setTab('formation')} icon={LayoutGrid}>
+            <TabButton id={tabId('composition')} panelId={panelId} active={tab === 'composition'} onClick={() => setTab('composition')} icon={LayoutGrid}>
               Composition
             </TabButton>
-            <TabButton id={tabId('squad')} panelId={panelId} active={tab === 'squad'} onClick={() => setTab('squad')} icon={Users}>
+            <TabButton id={tabId('effectif')} panelId={panelId} active={tab === 'effectif'} onClick={() => setTab('effectif')} icon={Users}>
               Effectif
             </TabButton>
             <TabButton id={tabId('stats')} panelId={panelId} active={tab === 'stats'} onClick={() => setTab('stats')} icon={BarChart3}>
@@ -89,7 +97,7 @@ export function PlayersPage() {
         </header>
 
         <div className="p-5" role="tabpanel" id={panelId} aria-labelledby={tabId(tab)}>
-          {tab === 'formation' && (
+          {tab === 'composition' && (
             data ? (
               <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-5">
                 <div className="max-w-[560px] mx-auto w-full">
@@ -100,7 +108,7 @@ export function PlayersPage() {
             ) : lineupEtat
           )}
 
-          {tab === 'squad' && (
+          {tab === 'effectif' && (
             data ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {allPlayers.map((p) => (
@@ -108,6 +116,7 @@ export function PlayersPage() {
                     key={p.id}
                     to="/player/$athleteId"
                     params={{ athleteId: String(p.athleteId) }}
+                    search={{ onglet: search.onglet, tri: search.tri }}
                     className="block focus:outline-none focus:ring-2 focus:ring-ol-red/50 rounded-md"
                   >
                     <PlayerCard player={p} />
@@ -117,7 +126,7 @@ export function PlayersPage() {
             ) : lineupEtat
           )}
 
-          {tab === 'stats' && <SeasonStatsTab />}
+          {tab === 'stats' && <SeasonStatsTab tri={tri} onTri={(t) => go({ onglet: search.onglet, tri: t })} retour={{ onglet: search.onglet, tri: search.tri }} />}
         </div>
       </section>
     </div>
@@ -170,11 +179,21 @@ function LineupEtat({ isLoading, isError, onRetry }: EtatProps & { isLoading: bo
 
 type SortKey = 'goalContributions' | 'goals' | 'assists' | 'minutesPlayed' | 'matchesPlayed' | 'shots' | 'averageRating';
 
+const TRI_TO_KEY: Record<Tri, SortKey> = {
+  bp: 'goalContributions',
+  buts: 'goals',
+  passes: 'assists',
+  minutes: 'minutesPlayed',
+  matchs: 'matchesPlayed',
+  tirs: 'shots',
+  note: 'averageRating',
+};
+
 interface SortHeaderProps {
   label: string;
-  sortKey: SortKey;
-  current: SortKey;
-  onSort: (k: SortKey) => void;
+  sortKey: Tri;
+  current: Tri;
+  onSort: (k: Tri) => void;
   align?: 'left' | 'right';
 }
 
@@ -200,9 +219,9 @@ function SortHeader({ label, sortKey, current, onSort, align = 'right' }: SortHe
   );
 }
 
-function SeasonStatsTab() {
+function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => void; retour: PlayersSearch }) {
   const { data, isLoading, isError, refetch } = useSeasonStats();
-  const [sortKey, setSortKey] = useState<SortKey>('goalContributions');
+  const sortKey = TRI_TO_KEY[tri];
 
   const sorted = useMemo(() => {
     if (!data) return [];
@@ -243,18 +262,18 @@ function SeasonStatsTab() {
         <thead>
           <tr className="text-fg-dim text-[11px] uppercase tracking-wider font-semibold border-b border-border">
             <th className="text-left px-4 py-2 font-semibold">Joueur</th>
-            <SortHeader label="Matchs" sortKey="matchesPlayed" current={sortKey} onSort={setSortKey} />
-            <SortHeader label="Min" sortKey="minutesPlayed" current={sortKey} onSort={setSortKey} />
-            <SortHeader label="Buts" sortKey="goals" current={sortKey} onSort={setSortKey} />
-            <SortHeader label="Passes D." sortKey="assists" current={sortKey} onSort={setSortKey} />
-            <SortHeader label="B+P" sortKey="goalContributions" current={sortKey} onSort={setSortKey} />
-            <SortHeader label="Tirs" sortKey="shots" current={sortKey} onSort={setSortKey} />
-            <SortHeader label="Note" sortKey="averageRating" current={sortKey} onSort={setSortKey} />
+            <SortHeader label="Matchs" sortKey="matchs" current={tri} onSort={onTri} />
+            <SortHeader label="Min" sortKey="minutes" current={tri} onSort={onTri} />
+            <SortHeader label="Buts" sortKey="buts" current={tri} onSort={onTri} />
+            <SortHeader label="Passes D." sortKey="passes" current={tri} onSort={onTri} />
+            <SortHeader label="B+P" sortKey="bp" current={tri} onSort={onTri} />
+            <SortHeader label="Tirs" sortKey="tirs" current={tri} onSort={onTri} />
+            <SortHeader label="Note" sortKey="note" current={tri} onSort={onTri} />
           </tr>
         </thead>
         <tbody>
           {sorted.map((p) => (
-            <PlayerStatsRow key={p.athleteId} player={p} />
+            <PlayerStatsRow key={p.athleteId} player={p} retour={retour} />
           ))}
         </tbody>
       </table>
@@ -262,13 +281,14 @@ function SeasonStatsTab() {
   );
 }
 
-function PlayerStatsRow({ player }: { player: PlayerSeasonStats }) {
+function PlayerStatsRow({ player, retour }: { player: PlayerSeasonStats; retour: PlayersSearch }) {
   return (
     <tr className="border-b border-border/60 hover:bg-surface-2 transition-colors">
       <td className="px-4 py-2">
         <Link
           to="/player/$athleteId"
           params={{ athleteId: String(player.athleteId) }}
+          search={retour}
           className="flex items-center gap-2 group"
         >
           <span className="text-[10px] font-mono text-fg-dim w-6 tabular-nums shrink-0">

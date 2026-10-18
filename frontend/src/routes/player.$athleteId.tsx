@@ -1,4 +1,4 @@
-import { Link, useParams } from '@tanstack/react-router';
+import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { positionLabelFr } from '@/lib/position-fr';
 import { Loader2, ArrowLeft, Goal, Target, Clock, Award, Activity, ShieldCheck } from 'lucide-react';
 import {
@@ -166,6 +166,7 @@ function HeroStat({
 export function PlayerDetailPage() {
   const { athleteId: athleteIdRaw } = useParams({ from: '/player/$athleteId' });
   const athleteId = Number(athleteIdRaw);
+  const retour = useSearch({ from: '/player/$athleteId' });
   const { data: player, isLoading, isError } = usePlayerSeasonStats(
     Number.isFinite(athleteId) ? athleteId : null,
   );
@@ -184,6 +185,7 @@ export function PlayerDetailPage() {
       <div className="space-y-4">
         <Link
           to="/players"
+          search={retour}
           className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg"
         >
           <ArrowLeft className="h-4 w-4" /> Retour à l'effectif
@@ -214,6 +216,7 @@ export function PlayerDetailPage() {
     <div className="space-y-6">
       <Link
         to="/players"
+        search={retour}
         className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg-bright transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Retour à l'effectif
