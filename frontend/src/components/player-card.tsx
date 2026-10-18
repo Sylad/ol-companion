@@ -1,5 +1,6 @@
 import type { LineupPlayer } from '@/types/api';
 import { positionShortFr } from '@/lib/position-fr';
+import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
 
 function playerPhotoUrl(p: LineupPlayer): string | null {
@@ -33,9 +34,11 @@ function getPositionTone(short: string): string {
 interface PlayerCardProps {
   player: LineupPlayer;
   compact?: boolean;
+  /** Libellé de la note affichée : celle du dernier match par défaut, « Note moyenne » pour l'effectif de la saison. */
+  rankingLabel?: string;
 }
 
-export function PlayerCard({ player, compact = false }: PlayerCardProps) {
+export function PlayerCard({ player, compact = false, rankingLabel = 'Note dernier match' }: PlayerCardProps) {
   const photoUrl = playerPhotoUrl(player);
   const tone = getPositionTone(player.positionShort);
 
@@ -95,7 +98,7 @@ export function PlayerCard({ player, compact = false }: PlayerCardProps) {
         </div>
         <div
           className={cn(
-            'font-semibold text-fg-bright leading-tight truncate',
+            'font-semibold text-fg-bright leading-tight line-clamp-2 break-words',
             compact ? 'text-sm' : 'text-base',
           )}
           title={player.name}
@@ -104,9 +107,9 @@ export function PlayerCard({ player, compact = false }: PlayerCardProps) {
         </div>
         {player.ranking !== null && player.ranking > 0 && !compact && (
           <div className="mt-2 flex items-center gap-2 text-xs">
-            <span className="text-fg-dim">Note dernier match</span>
+            <span className="text-fg-dim">{rankingLabel}</span>
             <span className="font-mono tabular-nums font-bold text-fg-bright">
-              {player.ranking.toFixed(1)}
+              {noteFr(player.ranking)}
             </span>
           </div>
         )}

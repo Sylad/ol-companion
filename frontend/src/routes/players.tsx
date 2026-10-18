@@ -9,8 +9,9 @@ import { KnowledgeHeader } from '@/components/knowledge-header';
 import { FormationField } from '@/components/formation-field';
 import { PlayerCard } from '@/components/player-card';
 import { TeamLogo } from '@/components/team-logo';
+import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
-import type { PlayerSeasonStats } from '@/types/api';
+import type { LineupPlayer, PlayerSeasonStats } from '@/types/api';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
@@ -37,15 +38,6 @@ export function PlayersPage() {
   const baseId = useId();
   const tabId = (t: string) => `${baseId}-onglet-${t}`;
   const panelId = `${baseId}-panneau`;
-
-  const allPlayers = useMemo(() => {
-    if (!data) return [];
-    return [...data.starters, ...data.bench].sort((a, b) => {
-      if (a.isStarting && !b.isStarting) return -1;
-      if (!a.isStarting && b.isStarting) return 1;
-      return (a.jerseyNumber ?? 99) - (b.jerseyNumber ?? 99);
-    });
-  }, [data]);
 
   // L7 : la carte et ses onglets ne dépendent pas de /api/lineup ; seuls les panneaux Composition et Effectif en dépendent.
   const lineupEtat = data ? null : (
@@ -105,30 +97,14 @@ export function PlayersPage() {
             data ? (
               <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-5">
                 <div className="max-w-[560px] mx-auto w-full">
-                  <FormationField starters={data.starters} formation={data.formation} />
+                  <FormationField starters={data.starters} formation={data.formation} retour={{ onglet: search.onglet, tri: search.tri }} />
                 </div>
-                <BenchSection players={data.bench} />
+                <BenchSection players={data.bench} retour={{ onglet: search.onglet, tri: search.tri }} />
               </div>
             ) : lineupEtat
           )}
 
-          {tab === 'effectif' && (
-            data ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                {allPlayers.map((p) => (
-                  <Link
-                    key={p.id}
-                    to="/player/$athleteId"
-                    params={{ athleteId: String(p.athleteId) }}
-                    search={{ onglet: search.onglet, tri: search.tri }}
-                    className="block focus:outline-none focus:ring-2 focus:ring-ol-red/50 rounded-md"
-                  >
-                    <PlayerCard player={p} />
-                  </Link>
-                ))}
-              </div>
-            ) : lineupEtat
-          )}
+          {tab === 'effectif' && <EffectifTab retour={{ onglet: search.onglet, tri: search.tri }} />}
 
           {tab === 'stats' && <SeasonStatsTab tri={tri} onTri={(t) => go({ onglet: search.onglet, tri: t })} retour={{ onglet: search.onglet, tri: search.tri }} />}
         </div>
@@ -181,6 +157,61 @@ function LineupEtat({ isLoading, isError, onRetry }: EtatProps & { isLoading: bo
   );
 }
 
+// L178 : l'effectif est celui de la saison (tous ceux qui ont joué), pas de la dernière feuille de match.
+function enCarte(p: PlayerSeasonStats): LineupPlayer {
+  return {
+    id: p.athleteId, athleteId: p.athleteId, name: p.name, shortName: p.shortName, jerseyNumber: p.jerseyNumber,
+    position: p.position, positionShort: p.positionShort, imageVersion: p.imageVersion ?? undefined, yardLine: 0, yardSide: 0,
+    ranking: p.averageRating, isStarting: true,
+  };
+}
+
+function EffectifTab({ retour }: { retour: PlayersSearch }) {
+  const { data, isLoading, isError, refetch } = useSeasonStats();
+  const joueurs = useMemo(
+    () => [...(data ?? [])].sort((a, b) => (a.jerseyNumber ?? 99) - (b.jerseyNumber ?? 99) || a.name.localeCompare(b.name, 'fr')),
+    [data],
+  );
+  const etat = statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });
+  if (etat) return etat;
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+      {joueurs.map((p) => (
+        <Link
+          key={p.athleteId}
+          to="/player/$athleteId"
+          params={{ athleteId: String(p.athleteId) }}
+          search={retour}
+          className="block focus:outline-none focus:ring-2 focus:ring-ol-red/50 rounded-md"
+        >
+          <PlayerCard player={enCarte(p)} rankingLabel="Note moyenne" />
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+/** Chargement, erreur et vide des stats de saison, communs à l'Effectif et à Stats saison ; null quand il y a des joueurs. */
+function statsEtat({ data, isLoading, isError, onRetry, vide }: { data: PlayerSeasonStats[] | undefined; isLoading: boolean; isError: boolean; onRetry: () => void; vide: string }) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-10 text-fg-dim">
+        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Chargement des stats…
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <EtatPanneau onRetry={onRetry}>
+        <span className="text-loss-fg">Les stats de la saison n’ont pas pu être chargées.</span>{' '}
+        Vérifiez votre connexion puis réessayez.
+      </EtatPanneau>
+    );
+  }
+  if (!data || data.length === 0) return <EtatPanneau onRetry={onRetry}>{vide}</EtatPanneau>;
+  return null;
+}
+
 type SortKey = 'goalContributions' | 'goals' | 'assists' | 'minutesPlayed' | 'matchesPlayed' | 'shots' | 'averageRating';
 
 const TRI_TO_KEY: Record<Tri, SortKey> = {
@@ -194,7 +225,7 @@ const TRI_TO_KEY: Record<Tri, SortKey> = {
 };
 
 interface SortHeaderProps {
-  label: string;
+  label: React.ReactNode;
   sortKey: Tri;
   current: Tri;
   onSort: (k: Tri) => void;
@@ -239,29 +270,11 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
     });
   }, [data, sortKey]);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-10 text-fg-dim">
-        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Chargement des stats…
-      </div>
-    );
-  }
-  if (isError) {
-    return (
-      <EtatPanneau onRetry={() => void refetch()}>
-        <span className="text-loss-fg">Les stats de la saison n’ont pas pu être chargées.</span>{' '}
-        Vérifiez votre connexion puis réessayez.
-      </EtatPanneau>
-    );
-  }
-  if (!data || data.length === 0) {
-    return (
-      <EtatPanneau onRetry={() => void refetch()}>
-        Aucune statistique de la saison n’est disponible pour le moment : elles apparaissent après le premier match
-        terminé. Réessayez plus tard.
-      </EtatPanneau>
-    );
-  }
+  const etat = statsEtat({
+    data, isLoading, isError, onRetry: () => void refetch(),
+    vide: 'Aucune statistique de la saison n’est disponible pour le moment : elles apparaissent après le premier match terminé. Réessayez plus tard.',
+  });
+  if (etat) return etat;
 
   return (
     <>
@@ -275,7 +288,7 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
             <SortHeader label="Min" sortKey="minutes" current={tri} onSort={onTri} />
             <SortHeader label="Buts" sortKey="buts" current={tri} onSort={onTri} />
             <SortHeader label="Passes D." sortKey="passes" current={tri} onSort={onTri} />
-            <SortHeader label="B+P" sortKey="bp" current={tri} onSort={onTri} />
+            <SortHeader label={<abbr title="Buts + passes décisives" className="no-underline">B+P</abbr>} sortKey="bp" current={tri} onSort={onTri} />
             <SortHeader label="Tirs" sortKey="tirs" current={tri} onSort={onTri} />
             <SortHeader label="Note" sortKey="note" current={tri} onSort={onTri} />
           </tr>
@@ -287,6 +300,9 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
         </tbody>
       </table>
     </div>
+    <p data-testid="legende-stats" className="pt-3 text-xs text-fg-muted">
+      Matchs : joués (entre parenthèses, titularisations) · Tirs : tirs (entre parenthèses, tirs cadrés) · B+P : buts + passes décisives.
+    </p>
     </>
   );
 }
@@ -403,7 +419,7 @@ function PlayerStatsRow({ player, retour, tri }: { player: PlayerSeasonStats; re
         player.averageRating !== null ? 'text-fg' : 'text-fg-dim',
         colonne('note', tri),
       )}>
-        {player.averageRating !== null ? player.averageRating.toFixed(1) : '—'}
+        {player.averageRating !== null ? noteFr(player.averageRating) : '—'}
         {second('note')}
       </td>
     </tr>
@@ -439,14 +455,22 @@ function TabButton({ id, panelId, active, onClick, icon: Icon, children }: TabBu
   );
 }
 
-function BenchSection({ players }: { players: import('@/types/api').LineupPlayer[] }) {
+function BenchSection({ players, retour }: { players: LineupPlayer[]; retour: PlayersSearch }) {
   if (players.length === 0) return null;
   return (
     <div>
       <h3 className="eyebrow mb-3">Banc · {players.length} joueurs</h3>
       <div className="space-y-2">
         {players.map((p) => (
-          <PlayerCard key={p.id} player={p} compact />
+          <Link
+            key={p.id}
+            to="/player/$athleteId"
+            params={{ athleteId: String(p.athleteId) }}
+            search={retour}
+            className="block focus:outline-none focus:ring-2 focus:ring-ol-red/50 rounded-md"
+          >
+            <PlayerCard player={p} compact />
+          </Link>
         ))}
       </div>
     </div>

@@ -1,4 +1,7 @@
+import { Link } from '@tanstack/react-router';
 import type { LineupPlayer } from '@/types/api';
+import type { PlayersSearch } from '@/lib/players-search';
+import { noteFr } from '@/lib/note-fr';
 
 const LINE_TO_Y: Record<number, number> = {
   1: 88,
@@ -12,9 +15,11 @@ const LINE_TO_Y: Record<number, number> = {
 interface FormationFieldProps {
   starters: LineupPlayer[];
   formation: string;
+  /** Onglet et tri à rouvrir au retour de la fiche d'un joueur. */
+  retour: PlayersSearch;
 }
 
-export function FormationField({ starters, formation }: FormationFieldProps) {
+export function FormationField({ starters, formation, retour }: FormationFieldProps) {
   return (
     <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-md overflow-hidden border border-border-strong shadow-2xl">
       <div
@@ -27,7 +32,7 @@ export function FormationField({ starters, formation }: FormationFieldProps) {
       <PitchLines />
 
       {starters.map((p) => (
-        <PlayerOnField key={p.id} player={p} />
+        <PlayerOnField key={p.id} player={p} retour={retour} />
       ))}
 
       <div className="absolute top-3 right-3 z-10 bg-ol-red-deep px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm border border-ol-red-bright/60 shadow-lg">
@@ -63,7 +68,7 @@ function PitchLines() {
   );
 }
 
-function PlayerOnField({ player }: { player: LineupPlayer }) {
+function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: PlayersSearch }) {
   const x = clamp(player.yardSide, 4, 96);
   const y = LINE_TO_Y[player.yardLine] ?? 50;
   return (
@@ -75,7 +80,13 @@ function PlayerOnField({ player }: { player: LineupPlayer }) {
         transform: 'translate(-50%, -50%)',
       }}
     >
-      <div className="flex flex-col items-center gap-1.5 group">
+      <Link
+        to="/player/$athleteId"
+        params={{ athleteId: String(player.athleteId) }}
+        search={retour}
+        aria-label={`Fiche de ${player.name}`}
+        className="flex flex-col items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ol-red/60 rounded-md"
+      >
         <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-ol-blue-bright to-ol-blue border-2 border-white/90 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center transition-transform group-hover:scale-110">
           <span className="font-mono tabular-nums text-white font-bold text-xs sm:text-sm">
             {player.jerseyNumber ?? '?'}
@@ -98,12 +109,12 @@ function PlayerOnField({ player }: { player: LineupPlayer }) {
               backgroundColor: ratingColor(player.ranking),
               color: ratingTextColor(player.ranking),
             }}
-            title={`Note ${player.ranking}`}
+            title={`Note ${noteFr(player.ranking)}`}
           >
-            {player.ranking.toFixed(1)}
+            {noteFr(player.ranking)}
           </span>
         )}
-      </div>
+      </Link>
     </div>
   );
 }

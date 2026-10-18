@@ -50,7 +50,7 @@ describe('<PlayersPage /> — composition chargée (L7)', () => {
     render(<PlayersPage />);
     expect(screen.getByText('Dernier match')).toBeInTheDocument();
     expect(screen.getAllByText('4-3-3').length).toBeGreaterThan(0);
-    for (const [txt, note] of [['8.4', 8.4], ['6.2', 6.2]] as const) {
+    for (const [txt, note] of [['8,4', 8.4], ['6,2', 6.2]] as const) {
       const pastille = screen.getByText(txt);
       expect(pastille).toHaveStyle({ backgroundColor: ratingColor(note), color: ratingTextColor(note) });
     }
@@ -58,8 +58,9 @@ describe('<PlayersPage /> — composition chargée (L7)', () => {
 
   it('Effectif : les cartes vers la fiche emportent onglet et tri pour que « Retour à l\'effectif » rouvre Effectif', () => {
     search = { onglet: 'effectif', tri: 'buts' };
+    stats = [{ athleteId: 42, name: 'Joueur saison', shortName: 'J. S.', jerseyNumber: 7, positionShort: 'M', averageRating: 7 } as PlayerSeasonStats];
     render(<PlayersPage />);
-    const lien = screen.getByText('Titulaire 1').closest('a')!;
+    const lien = screen.getByText('Joueur saison').closest('a')!;
     expect(lien).toHaveAttribute('href', '/player/$athleteId');
     expect(JSON.parse(lien.getAttribute('data-search')!)).toEqual({ onglet: 'effectif', tri: 'buts' });
   });

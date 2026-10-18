@@ -15,6 +15,7 @@ import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
 import { TeamLogo } from '@/components/team-logo';
 import { CompetitionAbbr } from '@/components/competition-abbr';
 import { competitionLong, competitionShort } from '@/lib/competitions';
+import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
 import type { PlayerByMatch, PlayerSeasonStats } from '@/types/api';
 
@@ -266,11 +267,11 @@ export function PlayerDetailPage() {
               <HeroStat icon={Goal} label="Buts" value={player.goals} highlight={player.goals > 0} />
               <HeroStat icon={Target} label="Passes déc." value={player.assists} highlight={player.assists > 0} />
               <HeroStat icon={Clock} label="Minutes" value={player.minutesPlayed} />
-              <HeroStat icon={Activity} label="Tirs / cadrés" value={`${player.shots}/${player.shotsOnTarget}`} />
+              <HeroStat icon={Activity} label="Tirs (dont cadrés)" value={`${player.shots} (${player.shotsOnTarget})`} />
               <HeroStat
                 icon={Award}
                 label="Note moy."
-                value={player.averageRating !== null ? player.averageRating.toFixed(1) : '—'}
+                value={player.averageRating !== null ? noteFr(player.averageRating) : '—'}
               />
             </div>
 
@@ -355,7 +356,7 @@ export function PlayerDetailPage() {
                   <td className="px-4 py-2 text-fg-muted tabular-nums">{formatDate(m.date)}</td>
                   <td className="px-4 py-2">
                     <span className="text-fg-bright">{m.opponent}</span>
-                    <span className="ml-1 text-fg-dim text-xs">{m.isHome ? '(D)' : '(E)'}</span>
+                    <span className="ml-1 text-fg-dim text-xs">(<abbr title={m.isHome ? 'À domicile' : 'À l\'extérieur'} className="no-underline">{m.isHome ? 'D' : 'E'}</abbr>)</span>
                   </td>
                   <td className="hidden sm:table-cell px-2 py-2 text-center font-mono tabular-nums text-fg-bright">
                     {m.olScore !== null && m.opponentScore !== null
@@ -388,6 +389,9 @@ export function PlayerDetailPage() {
               ))}
             </tbody>
           </table>
+          <p data-testid="legende-domicile" className="px-4 py-2 text-xs text-fg-muted border-t border-border">
+            Adv. : D = à domicile, E = à l’extérieur.
+          </p>
           <p className="hidden sm:block px-4 py-2 text-xs text-fg-muted border-t border-border">
             Comp. : {(['L1', 'UCL', 'UEL', 'CDF'] as const).map((c) => `${competitionShort(c)} = ${competitionLong(c)}`).join(' · ')}
           </p>
