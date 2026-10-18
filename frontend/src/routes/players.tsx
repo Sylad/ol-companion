@@ -104,7 +104,7 @@ export function PlayersPage() {
             ) : lineupEtat
           )}
 
-          {tab === 'effectif' && <EffectifTab retour={{ onglet: search.onglet, tri: search.tri }} />}
+          {tab === 'effectif' && <EffectifTab retour={{ onglet: search.onglet, tri: search.tri }} feuille={data ? [...data.starters, ...data.bench] : []} />}
 
           {tab === 'stats' && <SeasonStatsTab tri={tri} onTri={(t) => go({ onglet: search.onglet, tri: t })} retour={{ onglet: search.onglet, tri: search.tri }} />}
         </div>
@@ -157,7 +157,8 @@ function LineupEtat({ isLoading, isError, onRetry }: EtatProps & { isLoading: bo
   );
 }
 
-// L178 : l'effectif est celui de la saison (tous ceux qui ont joué), pas de la dernière feuille de match.
+// L178 : l'effectif est celui de la saison (tous ceux qui ont joué) complété des convoqués de la dernière feuille
+// de match qui n'ont pas encore joué (troisième gardien, jeune, recrue), sans note moyenne (la note de la feuille est celle d'un match, pas une moyenne).
 function enCarte(p: PlayerSeasonStats): LineupPlayer {
   return {
     id: p.athleteId, athleteId: p.athleteId, name: p.name, shortName: p.shortName, jerseyNumber: p.jerseyNumber,
@@ -166,12 +167,13 @@ function enCarte(p: PlayerSeasonStats): LineupPlayer {
   };
 }
 
-function EffectifTab({ retour }: { retour: PlayersSearch }) {
+function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: LineupPlayer[] }) {
   const { data, isLoading, isError, refetch } = useSeasonStats();
-  const joueurs = useMemo(
-    () => [...(data ?? [])].sort((a, b) => (a.jerseyNumber ?? 99) - (b.jerseyNumber ?? 99) || a.name.localeCompare(b.name, 'fr')),
-    [data],
-  );
+  const joueurs = useMemo(() => {
+    const saison = new Set((data ?? []).map((p) => p.athleteId));
+    const tous = [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map((p) => ({ ...p, ranking: null }))];
+    return tous.sort((a, b) => (a.jerseyNumber ?? 99) - (b.jerseyNumber ?? 99) || a.name.localeCompare(b.name, 'fr'));
+  }, [data, feuille]);
   const etat = statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });
   if (etat) return etat;
   return (
@@ -184,7 +186,7 @@ function EffectifTab({ retour }: { retour: PlayersSearch }) {
           search={retour}
           className="block focus:outline-none focus:ring-2 focus:ring-ol-red/50 rounded-md"
         >
-          <PlayerCard player={enCarte(p)} rankingLabel="Note moyenne" />
+          <PlayerCard player={p} rankingLabel="Note moyenne" />
         </Link>
       ))}
     </div>

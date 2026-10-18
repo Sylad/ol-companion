@@ -63,11 +63,21 @@ describe('Effectif de la saison (L178)', () => {
     search = { onglet: 'effectif', tri: 'buts' };
     render(<PlayersPage />);
     const noms = screen.getAllByRole('link').map((a) => a.textContent ?? '');
-    expect(noms.map((t) => t.match(/Maitland-Niles|Openda|Fofana/)?.[0])).toEqual(['Maitland-Niles', 'Openda', 'Fofana']);
-    expect(screen.queryByText('Feuille 1')).toBeNull();
+    expect(noms.map((t) => t.match(/Maitland-Niles|Openda|Fofana|Feuille \d/)?.[0])).toEqual(['Feuille 1', 'Maitland-Niles', 'Feuille 3', 'Openda', 'Fofana']);
+    // convoqués qui n'ont pas encore joué : sur la feuille du dernier match, absents des stats de saison
+    expect(screen.getByText('Feuille 1')).toBeInTheDocument();
+    expect(screen.getByText('Feuille 3')).toBeInTheDocument();
     const lien = screen.getByText('Openda').closest('a')!;
     expect(lien).toHaveAttribute('href', '/player/9');
     expect(JSON.parse(lien.getAttribute('data-search')!)).toEqual({ onglet: 'effectif', tri: 'buts' });
+  });
+
+  it('Effectif : un joueur présent dans les stats ET sur la feuille n\'apparaît qu\'une fois (dédoublonné par athleteId)', () => {
+    lineup!.bench = [{ ...lp(9, false, null), athleteId: 9, name: 'Openda (feuille)' }];
+    search = { onglet: 'effectif' };
+    render(<PlayersPage />);
+    expect(screen.getAllByText('Openda')).toHaveLength(1);
+    expect(screen.queryByText('Openda (feuille)')).toBeNull();
   });
 
   it('Effectif : fonctionne sans feuille de match (lineup absent) et montre la note moyenne en français', () => {
@@ -88,6 +98,7 @@ describe('Effectif de la saison (L178)', () => {
     unmount();
     statsEtat = { isLoading: false, isError: false };
     stats = [];
+    lineup = undefined;
     render(<PlayersPage />);
     expect(screen.getByRole('status')).toHaveTextContent(/Aucun joueur/);
   });
