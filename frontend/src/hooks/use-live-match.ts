@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGet } from '@/lib/api';
+import { apiGet, estIntrouvable } from '@/lib/api';
 import type { LiveMatchStats, LiveMatchSummary } from '@/types/api';
 
 export function useCurrentLiveMatch() {
@@ -24,6 +24,7 @@ export function useLiveMatchStats(gameId: number | null, matchupId: string | nul
         signal,
       ),
     enabled: !!(gameId && matchupId),
+    retry: (count, error) => !estIntrouvable(error) && count < 1,
     staleTime: 5_000,
     refetchInterval: ({ state }) => (state.data?.status === 'live' ? 30_000 : false),
     refetchOnWindowFocus: true,

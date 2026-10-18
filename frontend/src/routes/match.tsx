@@ -15,6 +15,7 @@ import { MatchScore } from '@/components/match-score';
 import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
+import { estIntrouvable } from '@/lib/api';
 
 const EVENT_LABEL: Record<string, string> = {
   goal: '⚽ But',
@@ -339,7 +340,7 @@ export function MatchPage() {
   const { gameId } = useParams({ from: '/match/$gameId' });
   const { matchupId } = useSearch({ from: '/match/$gameId' }) as MatchSearch;
   const numericGameId = Number(gameId);
-  const { data, isLoading, isError } = useLiveMatchStats(
+  const { data, isLoading, isError, error, refetch } = useLiveMatchStats(
     Number.isFinite(numericGameId) ? numericGameId : null,
     matchupId ?? null,
   );
@@ -358,7 +359,7 @@ export function MatchPage() {
     // match valide (lien partagé sans query param). Review 2026-08-14.
     return (
       <div className="py-20 text-center text-fg-dim text-sm">
-        Lien incomplet — ouvre ce match depuis le tableau de bord ou le calendrier.
+        <h1>Lien incomplet — ouvre ce match depuis le tableau de bord ou le calendrier.</h1>
       </div>
     );
   }
@@ -367,14 +368,24 @@ export function MatchPage() {
     return (
       <div data-testid="message-chargement" className="flex items-center justify-center py-20 text-fg-dim">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
-        Chargement du match…
+        <h1>Chargement du match…</h1>
       </div>
     );
   }
   if (isError || !data) {
+    // 404 = match inconnu ; toute autre erreur (réseau, 5xx) est une panne, qu'un nouvel essai peut lever (L181).
+    // Sans objet d'erreur (cas non réseau), on garde « introuvable ».
+    const panne = error != null && !estIntrouvable(error);
     return (
       <div className="space-y-3 max-w-md mx-auto text-center py-20">
-        <p data-testid="message-erreur" className="text-loss-fg font-semibold">Match introuvable</p>
+        <h1 data-testid="message-erreur" className="text-loss-fg font-semibold">
+          {panne ? 'Impossible de charger le match' : 'Match introuvable'}
+        </h1>
+        {panne && (
+          <button type="button" onClick={() => void refetch()} className="rounded border border-border px-3 py-1.5 text-sm text-fg">
+            Réessayer
+          </button>
+        )}
         {bleus ? (
           <Link to="/equipe-de-france" data-testid="lien-retour-erreur" className="text-fg-muted underline text-sm">Retour à l'équipe de France</Link>
         ) : (
