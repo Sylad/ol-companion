@@ -77,9 +77,9 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - api: /api/youtube-channels
 
 ## /cups
-- shows: un bloc par compétition hors Ligue 1 de /api/season-matches (Ligue Europa le 03-10 ; qualifications de Ligue des champions : à décider) ; chaque bloc liste ses matchs joués
+- shows: un bloc par compétition hors Ligue 1 de /api/season-matches (Ligue Europa et Ligue des champions — qualifications : 2 onglets ; les qualifications listent 4 matchs joués avec tour, manche et score, statut Éliminé) ; chaque bloc liste ses matchs joués
 - never: « Erreur de chargement des données coupes. » ; « éliminé » tant que /api/season-matches a un match à venir dans cette compétition
-- api: /api/cups — may be empty when aucune coupe n'a commencé (à décider)
+- api: /api/cups — may be empty when aucune coupe n'a commencé
 
 ## /map
 - shows: 18 marqueurs sur la carte ; les tuiles de la carte chargées ; la légende « Aller / Retour »
