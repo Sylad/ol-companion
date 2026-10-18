@@ -2,6 +2,7 @@ import { OL_365SCORES_ID } from '../../config/constants';
 import type { CupMatch } from './cups.service';
 
 const LEAGUE_PHASE_STAGE = 'Phase de ligue';
+const PLAYOFFS_STAGE = 'Barrages';
 /**
  * Sans match à venir ni défaite lisible, l'OL est donné éliminé au bout de ce
  * délai : le tirage du tour suivant (ou des barrages après la phase de ligue)
@@ -69,4 +70,21 @@ export function isCupEliminated(matches: CupMatch[], now: Date = new Date(), upc
     if (aggregate(tie) < 0) return true;
   }
   return now.getTime() - new Date(last.date).getTime() > STALE_DAYS * 86_400_000;
+}
+
+/**
+ * Dernier tour des qualifications (barrages) gagné, rien à venir : l'OL entre en phase de
+ * ligue, qui n'est pas sur la page. Sans ce cas, la coupe resterait « en lice » puis
+ * passerait « éliminée » au bout de STALE_DAYS.
+ */
+export function isQualifiersWon(matches: CupMatch[]): boolean {
+  if (matches.some((m) => m.status === 'SCHEDULED' || m.status === 'IN_PLAY')) return false;
+  const finished = matches
+    .filter((m) => m.status === 'FINISHED')
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const last = finished[finished.length - 1];
+  if (last?.stageFr !== PLAYOFFS_STAGE) return false;
+  const tie = finished.filter((m) => m.stageFr === PLAYOFFS_STAGE);
+  const decided = tie.find((m) => m.olQualified !== undefined);
+  return decided ? decided.olQualified === true : aggregate(tie) > 0;
 }

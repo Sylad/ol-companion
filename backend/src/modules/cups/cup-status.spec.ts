@@ -1,4 +1,4 @@
-import { isCupEliminated, isLeaguePhaseComplete, leaguePhaseOutcome, STALE_DAYS } from './cup-status';
+import { isCupEliminated, isQualifiersWon, isLeaguePhaseComplete, leaguePhaseOutcome, STALE_DAYS } from './cup-status';
 import type { CupMatch } from './cups.service';
 import { OL_365SCORES_ID } from '../../config/constants';
 
@@ -140,5 +140,22 @@ describe('isCupEliminated', () => {
       expect(leaguePhaseOutcome(24)).toBe('Barrages');
       expect(leaguePhaseOutcome(25)).toBe('Éliminé');
     });
+  });
+});
+
+describe('isQualifiersWon — barrages de qualification gagnés', () => {
+  it('barrages gagnés (équipe qualifiée lue) = qualifié', () => {
+    expect(isQualifiersWon([m('FINISHED', 'Barrages', { ol: 1, opp: 1, qualified: true })])).toBe(true);
+  });
+  it('barrages gagnés au cumul des buts = qualifié', () => {
+    expect(isQualifiersWon([
+      m('FINISHED', 'Barrages', { daysAgo: 10, ol: 2, opp: 0 }),
+      m('FINISHED', 'Barrages', { daysAgo: 3, ol: 0, opp: 1 }),
+    ])).toBe(true);
+  });
+  it('barrages perdus, tour précédent gagné ou match à venir = pas qualifié', () => {
+    expect(isQualifiersWon([m('FINISHED', 'Barrages', { ol: 0, opp: 1, qualified: false })])).toBe(false);
+    expect(isQualifiersWon([m('FINISHED', '3e tour de qualification', { ol: 2, opp: 0 })])).toBe(false);
+    expect(isQualifiersWon([m('FINISHED', 'Barrages', { ol: 2, opp: 0 }), m('SCHEDULED', 'Barrages')])).toBe(false);
   });
 });

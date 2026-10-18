@@ -42,6 +42,13 @@ describe('<CupsPage /> — statut des coupes (L38)', () => {
     expect(count('En lice')).toBe(0);
   });
 
+  it('« Qualifié » quand les qualifications sont gagnées', () => {
+    cups = [cup({ qualified: true })];
+    render(<CupsPage />);
+    expect(count('Qualifié')).toBe(1);
+    expect(count('En lice')).toBe(0);
+  });
+
   it('« Éliminé » prime sur awaitingDraw', () => {
     cups = [cup({ isEliminated: true, awaitingDraw: true })];
     render(<CupsPage />);

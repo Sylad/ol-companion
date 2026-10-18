@@ -262,6 +262,17 @@ describe('CupsService — appel des matchs à venir en échec', () => {
       expect(cups.map((c) => c.competitionId)).toEqual([573, 332]);
     });
 
+    it('OL vainqueur des barrages : ni éliminé ni « en lice », qualifié pour la phase de ligue', async () => {
+      const svc = await load();
+      serve([
+        qualif(11, day(10), '3rd Round', 1, 1, 0), qualif(12, day(17), '3rd Round', 2, 2, 2),
+        qualif(13, day(24), 'Playoffs', 1, 2, 0), qualif(14, day(31), 'Playoffs', 2, 1, 1),
+      ]);
+      const cup = (await svc.getCups({ force: true })).find((c) => c.competitionId === 332)!;
+      expect(cup.isEliminated).toBe(false);
+      expect(cup.qualified).toBe(true);
+    });
+
     it('tour sans nom français connu : ni libellé anglais ni tour inventé', async () => {
       const svc = await load();
       serve([qualif(15, day(5), 'Final Stage', 1, 1, 0)]);

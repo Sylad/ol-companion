@@ -118,6 +118,8 @@ export interface CupInfo {
   isEliminated: boolean;
   /** Phase de ligue jouée, classement final illisible : ni en lice ni éliminé prouvé. */
   awaitingDraw?: boolean;
+  /** Qualifications de la Ligue des champions gagnées : l'OL est en phase de ligue, hors de cette page. */
+  qualified?: boolean;
   matches: CupMatch[];
   bracket?: BracketInfo;
 }

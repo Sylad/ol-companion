@@ -6,7 +6,7 @@ import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { getCurrentSeason } from '../scheduler/season.util';
 import { SeasonResetService } from '../scheduler/season-reset.service';
-import { isCupEliminated, isLeaguePhaseComplete, leaguePhaseOutcome } from './cup-status';
+import { isCupEliminated, isQualifiersWon, isLeaguePhaseComplete, leaguePhaseOutcome } from './cup-status';
 import { Scores365StandingsResponseSchema } from '../standings/standings.schema';
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID, CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID } from '../../config/constants';
@@ -38,6 +38,8 @@ export interface CupInfo {
   isEliminated: boolean;
   /** Phase de ligue jouée, classement final illisible : ni « En lice » ni « Éliminé » ne sont prouvés. */
   awaitingDraw?: boolean;
+  /** Qualifications de la Ligue des champions gagnées : l'OL est en phase de ligue, hors de cette page. */
+  qualified?: boolean;
   matches: CupMatch[];
   bracket?: BracketInfo;
 }
@@ -254,7 +256,8 @@ export class CupsService implements OnModuleInit {
       // Phase de ligue jouée, rien à venir : seul le classement final dit la suite (éliminé dès la dernière journée).
       const needsRank = cid === LEAGUE_PHASE_COMPETITION && upcomingKnown && upcoming.length === 0 && isLeaguePhaseComplete(matches);
       const rank = needsRank ? await this.fetchLeaguePhaseRank(cid) : undefined;
-      const isEliminated = isCupEliminated(matches, new Date(), upcomingKnown, rank);
+      const qualified = cid === CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID && upcomingKnown && isQualifiersWon(matches);
+      const isEliminated = !qualified && isCupEliminated(matches, new Date(), upcomingKnown, rank);
       const awaitingDraw = needsRank && rank === undefined && !isEliminated;
       const currentStage = upcoming[0]?.stageFr
         ?? (rank !== undefined && !isEliminated ? leaguePhaseOutcome(rank) : undefined)
@@ -262,7 +265,7 @@ export class CupsService implements OnModuleInit {
 
       results.push({
         competitionId: cid, name: compName, currentStageFr: currentStage, isEliminated,
-        ...(awaitingDraw ? { awaitingDraw } : {}), matches,
+        ...(awaitingDraw ? { awaitingDraw } : {}), ...(qualified ? { qualified } : {}), matches,
       });
       this.logger.log(`Cup: ${compName} — ${matches.length} matchs, éliminé=${isEliminated}`);
     }

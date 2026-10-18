@@ -115,6 +115,7 @@ function CupTab({
 /** Phase de ligue jouée sans classement lisible : on n'affirme ni « En lice » ni « Éliminé ». */
 function cupStatusLabel(cup: CupInfo): string {
   if (cup.isEliminated) return 'Éliminé';
+  if (cup.qualified) return 'Qualifié';
   return cup.awaitingDraw ? 'En attente du tirage' : 'En lice';
 }
 
