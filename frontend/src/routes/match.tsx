@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 import { estIntrouvable } from '@/lib/api';
+import { roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 
 const EVENT_LABEL: Record<string, string> = {
   goal: '⚽ But',
@@ -218,7 +219,7 @@ function PerformerCell({ player, align }: { player: LiveMatchTopPerformer['homeP
     <div className={cn('min-w-0', align === 'right' ? 'text-right' : 'text-left')}>
       <div className="font-semibold text-fg text-sm break-words">{player.name}</div>
       <div data-stat-ligne className="text-xs text-fg-muted whitespace-nowrap">
-        {player.statName} : <span className="num tabular-nums font-semibold text-fg">{player.statValue}</span>
+        {statNameFr(player.statName)} : <span className="num tabular-nums font-semibold text-fg">{statValueFr(player.statValue)}</span>
       </div>
     </div>
   );
@@ -644,10 +645,15 @@ export function MatchPage() {
                       Les joueurs en vue apparaîtront avec les statistiques du match.
                     </p>
                   )}
+                  {isUpcoming && data.topPerformers.length > 0 && (
+                    <p data-testid="periode-joueurs-en-vue" className="text-xs text-fg-dim py-2 text-center">
+                      Chiffres de la saison avant le coup d’envoi, pas de ce match.
+                    </p>
+                  )}
                   {data.topPerformers.map((tp, i) => (
                     <div key={i} className="py-1.5">
                       <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
-                        {tp.role}
+                        {roleFr(tp.role)}
                       </div>
                       <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-3">
                         <PerformerCell player={tp.homePlayer} align="right" />

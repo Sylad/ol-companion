@@ -2,6 +2,7 @@ import type { LiveMatchShot } from '@/types/api';
 import { clubLegendLabel, clubSymbol } from '@/lib/club-symbol';
 import { teamColors, type MatchPalette, type TeamColors } from '@/lib/match-palette';
 import { cn } from '@/lib/utils';
+import { decimalFr } from '@/lib/stat-fr';
 
 // Horizontal (landscape) pitch — uses full available width.
 // 365scores stores shot coords this way:
@@ -147,7 +148,7 @@ function ShotMarker({
     shot.time,
     playerName,
     outcome,
-    `xG ${shot.xg.toFixed(2)}${shot.xgot > 0 ? ` · xGOT ${shot.xgot.toFixed(2)}` : ''}`,
+    `xG ${decimalFr(shot.xg, 2)}${shot.xgot > 0 ? ` · xGOT ${decimalFr(shot.xgot, 2)}` : ''}`,
     shot.bodyPart,
   ].filter(Boolean).join(' · ');
 
