@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-18 08:59",
+  "generated": "2026-10-18 09:21",
   "entries": [
     {
       "slug": "2026-10-18-coupes-les-matchs-de-qualification-en-ligue-des-champions",
@@ -13,7 +13,7 @@
         "captures/L174-coupes-qualifications.png"
       ],
       "alts": [
-        "Page Coupes : l'onglet « Ligue des champions — qualifications », statut Éliminé, avec les quatre matchs du 3ᵉ tour de qualification et des barrages, leur manche et leur score (données d'illustration)"
+        "Page Coupes : l'onglet « Ligue des champions — qualifications », statut Éliminé, avec les quatre matchs du 3ᵉ tour de qualification et des barrages, leur manche et leur score, face au Sparta Prague et à Fenerbahçe"
       ],
       "html": "<p>La page Coupes montre désormais les matchs de qualification de la Ligue des champions, qui en étaient absents : un onglet « Ligue des champions — qualifications » les liste avec leur tour (3ᵉ tour de qualification, barrages), leur manche (aller ou retour) et leur score. L'OL, battu aux barrages le 26 août, y apparaît « Éliminé ».</p>"
     },
