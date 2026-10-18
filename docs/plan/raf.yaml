@@ -1951,9 +1951,10 @@ lots:
     finished: 2026-10-18
   - id: L179
     title: "Page match : libellés 365scores bruts (« Tackles », « Les interceptions ») et décimales à point (0.5, 0.24, xG 1.03) dans Joueurs en vue et Statistiques ; avant le coup d'envoi « Buts : 0 » sans période — glossaire FR des statName, nombres fr-FR (1,03), période dite pour un match à venir, aria-label « Shot map » → « Carte des tirs », tests (revue UX L9)"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-10-18
+    started: 2026-10-18
   - id: L180
     title: "Route inconnue (dont /match sans identifiant) : « Not Found » TanStack en anglais, sans h1 ni lien — notFoundComponent en français avec h1 et liens Accueil / Calendrier, ligne never « Not Found » dans docs/qa/expectations.md (revue UX L9)"
     status: done
