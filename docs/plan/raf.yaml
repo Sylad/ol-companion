@@ -89,8 +89,16 @@ lots:
   - id: L7
     title: Revue UX — Joueurs (liste + fiche)
     status: todo
-    estimate: 0.25
+    estimate: 0.75
     created: 2026-09-28
+    tasks:
+      - { id: t1, title: "Joueurs : la carte et ses onglets restent affichés quand /api/lineup échoue ou rend null (Stats saison lit son propre endpoint) ; erreur et vide dans le panneau de l'onglet concerné, avec Réessayer (refetch), role=status et un message qui dit quoi faire, sans « cache » (Nielsen 9)", status: todo }
+      - { id: t2, title: "Joueurs et fiche : contrastes sous 4,5:1 — chiffre des pastilles de note du terrain 2,94–3,56:1 (l'échelle vert/jaune/orange/rouge est GARDÉE, décision de Sylvain 18-10 : seul le chiffre change), badge de formation 4,45:1, « min total » 3,2:1, messages d'erreur text-loss 4,07:1 → loss-fg ; courbe des minutes 1,82:1 → bleu vif OL (WCAG 1.4.3 et 1.4.11) ; CLAUDE.md : ajouter l'échelle des notes aux usages autorisés du vert", status: todo }
+      - { id: t3, title: "Joueurs : onglets en tablist (role=tab, aria-selected) et aria-sort sur la colonne triée de Stats saison (WCAG 4.1.2 et 1.3.1)", status: todo }
+      - { id: t4, title: "Joueurs : onglet et tri dans l'URL (?onglet=stats&tri=buts, validateSearch), gardés par « Retour à l'effectif » et par le retour du navigateur — aujourd'hui retour sur Composition, tri B+P (Nielsen 3 et 6)", status: todo }
+      - { id: t5, title: "Fiche joueur : badges de résultat W/L/D → V/N/D avec aria-label Victoire / Match nul / Défaite, comme cup-match-row (D veut dire nul ici et défaite ailleurs, Nielsen 2 et 4)", status: todo }
+    notes:
+      - { date: 2026-10-18, text: "revue UX du 18-10 (prod, captures ~/projects/developpeur/tmp/ux-ol-L7/) : non conforme, 3 bloquants 5 majeurs 4 mineurs → 5 tâches ici, tableaux à 390 px et effectif de la saison en lots à part ; notes : fiche à 390 « Note moy. » seule sur sa ligne, titre de page sans le nom du joueur, chargement de la fiche sans Retour, « Stats saison » sur 2 lignes à 390, deux joueurs #11 (Nakamura, Fofana) à vérifier ; déjà couverts : L72 L53 L76 (+ pastilles 5.8 et 6.7 coupées) L78 L60 L126 L34 L88" }
   - id: L8
     title: Revue UX — FC Noobz
     status: todo
@@ -1892,6 +1900,22 @@ lots:
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "conforme : le commit 8be66f8 applique exactement le texte du lot dans docs/qa/expectations.md (ligne « shows » de /cups et « (à décider) » retiré de /api/cups), avec 1 note mineure sur l'en-tête désormais sans objet — orchestré (vague 2026-10-18-l176, 0 passe(s) de correction)", commit: null }
     finished: 2026-10-18
+  - id: L177
+    title: "Joueurs à 390 px : Stats saison est trié sur une colonne hors écran (tableau 640 px dans 348, B+P à x=486) et la fiche cache Buts / Passes D. / Tirs dans « Détail saison » (501 px pour 348) — maquette de la revue UX L7 : colonne Joueur fixe (sticky, numéro et nom sur une ligne, poste dessous) et une seule colonne de valeur choisie par des puces (B+P par défaut, Buts, PD, Min, Matchs, Tirs, Note) qui pilotent le tri, cibles 44 px, aria-pressed, valeur secondaire sous la principale ; fiche : Date et Adversaire fixes puis « Buts · PD » et Min ; au-delà de 640 px rien ne change"
+    public: "Joueurs : statistiques lisibles sur téléphone"
+    status: todo
+    estimate: 0.5
+    visible: true
+    screen: component
+    created: 2026-10-18
+  - id: L178
+    title: "Joueurs : l'onglet « Effectif » ne montre que les 23 de la dernière feuille de match (Openda, Maitland-Niles, Fofana, Tagliafico, Ouédraogo, de Carvalho absents) — décision de Sylvain 18-10 : effectif de la SAISON bâti sur /api/players/season-stats ; avec : 9 noms sur 23 tronqués à 390 px (line-clamp-2 au lieu de truncate) ; libellés (titularisations), (cadrés), B+P, (D)/(E) avec légende ou abbr, « Tirs / cadrés 21/11 » qui se lit comme une date, notes au format fr (7,3) ; joueurs du terrain et du banc de Composition qui mènent à leur fiche (revue UX L7)"
+    public: "Joueurs : tout l'effectif de la saison"
+    status: todo
+    estimate: 0.5
+    visible: true
+    screen: component
+    created: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

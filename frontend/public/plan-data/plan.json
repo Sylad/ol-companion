@@ -502,6 +502,16 @@
       "status": "done",
       "started": "2026-10-18",
       "finished": "2026-10-18"
+    },
+    {
+      "id": "L177",
+      "title": "Joueurs : statistiques lisibles sur téléphone",
+      "status": "todo"
+    },
+    {
+      "id": "L178",
+      "title": "Joueurs : tout l'effectif de la saison",
+      "status": "todo"
     }
   ]
 }
