@@ -1885,12 +1885,13 @@ lots:
     finished: 2026-10-18
   - id: L176
     title: "QA — docs/qa/expectations.md, /cups : remplacer « qualifications de Ligue des champions : à décider » par « Ligue Europa et Ligue des champions — qualifications : 2 onglets ; les qualifications listent 4 matchs joués avec tour, manche et score, statut Éliminé » ; retirer « (à décider) » de la ligne api /api/cups, tranché par L174 (QA du 18-10)"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-18
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "conforme : le commit 8be66f8 applique exactement le texte du lot dans docs/qa/expectations.md (ligne « shows » de /cups et « (à décider) » retiré de /api/cups), avec 1 note mineure sur l'en-tête désormais sans objet — orchestré (vague 2026-10-18-l176, 0 passe(s) de correction)", commit: null }
+    finished: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
