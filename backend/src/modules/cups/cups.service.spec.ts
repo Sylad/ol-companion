@@ -285,6 +285,24 @@ describe('CupsService — appel des matchs à venir en échec', () => {
       expect(cup.qualified).toBeUndefined();
     });
 
+    it('L175 — aller des barrages perdu seul, retour absent des matchs à venir comme des résultats : pas « Éliminé »', async () => {
+      const svc = await load();
+      const twoHoursAgo = new Date(Date.now() - 2 * 3_600_000).toISOString();
+      serve([
+        qualif(11, day(10), '3rd Round', 1, 1, 0), qualif(12, day(17), '3rd Round', 2, 2, 2),
+        qualif(13, twoHoursAgo, 'Playoffs', 1, 0, 1),
+      ]);
+      const cup = (await svc.getCups({ force: true })).find((c) => c.competitionId === 332)!;
+      expect(cup.isEliminated).toBe(false);
+    });
+
+    it('L175 — Ligue Europa : aller à élimination directe perdu seul, rien à venir : pas « Éliminé »', async () => {
+      const svc = await load();
+      serve([{ ...game(1, 4, recent, 0, 1), competitionId: 573, stageNum: 3, legNum: 1 }]);
+      const cup = (await svc.getCups({ force: true })).find((c) => c.competitionId === 573)!;
+      expect(cup.isEliminated).toBe(false);
+    });
+
     it('tour sans nom français connu : ni libellé anglais ni tour inventé', async () => {
       const svc = await load();
       serve([qualif(15, day(5), 'Final Stage', 1, 1, 0)]);
