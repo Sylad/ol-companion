@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "654b0db4f95c54dbe78ca5acb9ef177ce0f09841"
+    "frontend/src/routes/match.disposition-L160.test.tsx": "cc8d1afa35952a6dc76752d5979dba16eede1c69"
   },
   "resceaux": [
     {
@@ -33,6 +33,15 @@
       "apres": "654b0db4f95c54dbe78ca5acb9ef177ce0f09841",
       "porteur": "L172",
       "ficheAmendee": "ee91ea0"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "R15 amendée (revue UX L9, nombres fr-FR) : xG « 1,87 » au lieu de « 1.87 » ; la carte des tirs est nommée « Carte des tirs » au lieu de « Shot map » (aria-label demandé par L179) ; aucune autre assertion changée",
+      "date": "2026-10-18",
+      "avant": "654b0db4f95c54dbe78ca5acb9ef177ce0f09841",
+      "apres": "cc8d1afa35952a6dc76752d5979dba16eede1c69",
+      "porteur": "L179",
+      "ficheAmendee": "72964ff"
     }
   ]
 }

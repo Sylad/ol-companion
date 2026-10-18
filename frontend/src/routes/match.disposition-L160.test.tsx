@@ -475,7 +475,7 @@ describe('Page match en écran FM (L160)', () => {
       expect(legendeAdv.innerHTML).not.toMatch(/ol-red/);
       const entete = within(tid('elan')).getByText('Lyon').closest('span') ?? within(tid('elan')).getByText('Lyon').parentElement!;
       expect(entete.innerHTML).toMatch(/ol-red/);
-      const carte = within(tid('carte-tirs')).getByRole('img', { name: 'Shot map' }).innerHTML;
+      const carte = within(tid('carte-tirs')).getByRole('img', { name: 'Carte des tirs' }).innerHTML;
       expect(carte).toMatch(/ol-red/);
       expect(carte).toMatch(/ol-blue-bright/);
       const barres = tid('bloc-statistiques').innerHTML;
@@ -738,7 +738,7 @@ describe('Page match en écran FM (L160)', () => {
     show({ olHome: false });
     const barres = tid('bloc-statistiques').innerHTML;
     expect(barres.indexOf('ol-blue-bright')).toBeLessThan(barres.indexOf('ol-red'));
-    const carte = within(tid('carte-tirs')).getByRole('img', { name: 'Shot map' });
+    const carte = within(tid('carte-tirs')).getByRole('img', { name: 'Carte des tirs' });
     expect(carte.innerHTML).toMatch(/ol-red/);
     expect(carte.innerHTML).toMatch(/ol-blue-bright/);
     const mom = within(tid('elan')).getByRole('img', { name: 'Momentum' }).innerHTML;
@@ -806,12 +806,12 @@ describe('Page match en écran FM (L160)', () => {
   });
 
   // ---------------------------------------------------------------- R15
-  it('R15 — le xG s\'affiche avec un point et deux décimales', () => {
+  it('R15 — le xG s\'affiche avec une virgule et deux décimales', () => {
     show();
     const b = tid('bloc-statistiques');
-    expect(b).toHaveTextContent('1.87');
-    expect(b).toHaveTextContent('0.94');
-    expect(b.textContent).not.toContain('1,87');
+    expect(b).toHaveTextContent('1,87');
+    expect(b).toHaveTextContent('0,94');
+    expect(b.textContent).not.toContain('1.87');
     expect(tid('grille-match')).toBeInTheDocument();
   });
 });
