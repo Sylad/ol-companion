@@ -152,12 +152,12 @@ regles:
 
   - id: R15
     etat: charge
-    enonce: "Les nombres décimaux des statistiques (xG) gardent la présentation actuelle, un point et deux décimales (« 1.87 », n.toFixed(2) de match.tsx) ; le passage à la virgule française (« 1,87 ») n'est pas fait par ce lot."
+    enonce: "Les nombres décimaux des statistiques (xG) s'écrivent à la française, virgule et deux décimales (« 1,87 », decimalFr(n, 2)) ; amendée le 18-10 par L179 (revue UX L9 : nombres fr-FR), l'hypothèse « point » d'origine étant tombée."
     message: ~
     champs: [bloc-statistiques]
-    statut: hypothese
-    si_faux: "Si la virgule est voulue, c'est un changement de présentation à ajouter au lot (fmt de statRows dans match.tsx et la maquette) ; les autres règles sont inchangées."
-    tests: ["R15 — le xG s'affiche avec un point et deux décimales"]
+    statut: sourcee
+    source: "revue UX L9 du 18-10 (libellés et nombres non français, Nielsen 2), décision du lead ; lot L179"
+    tests: ["R15 — le xG s'affiche avec une virgule et deux décimales"]
 
 actions:
   - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15] }
