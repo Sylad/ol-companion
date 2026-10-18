@@ -339,7 +339,7 @@ function PlayerStatsRow({ player, retour, tri }: { player: PlayerSeasonStats; re
   const sous = secondaire(player, tri);
   // La valeur secondaire n'existe que dans la cellule du tri, sous la principale, et seulement sous 640 px.
   const second = (key: Tri) =>
-    key === tri && sous ? <span className="block sm:hidden text-xs font-normal text-fg-dim">{sous}</span> : null;
+    key === tri && sous ? <span className="block sm:hidden whitespace-nowrap text-xs font-normal text-fg-dim">{sous}</span> : null;
   return (
     <tr className="border-b border-border/60 hover:bg-surface-2 transition-colors">
       <td className="px-4 py-2 sticky left-0 bg-surface">
