@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { positionLabelFr, positionShortFr } from './position-fr';
+import { positionGroup, positionLabelFr, positionShortFr } from './position-fr';
 
 describe('postes en français (L56)', () => {
   it('traduit les libellés longs 365scores, quelle que soit la casse', () => {
@@ -22,5 +22,16 @@ describe('postes en français (L56)', () => {
     expect(positionShortFr('GOALKEEPER')).toBe('GB');
     expect(positionShortFr('COACH')).toBe('ENT');
     expect(positionShortFr('XYZ')).toBe('XYZ');
+  });
+});
+
+describe('ligne de poste de la feuille de match (L178)', () => {
+  it('ramène les postes détaillés à GK / DEF / MID / ATK, quelle que soit la casse, et laisse l\'inconnu', () => {
+    expect(positionGroup('GK')).toBe('GK');
+    for (const c of ['CB', 'RB', 'LB', 'LWB', 'RWB', 'DEF']) expect(positionGroup(c)).toBe('DEF');
+    for (const c of ['DM', 'CM', 'AM', 'LM', 'RM', 'MID']) expect(positionGroup(c)).toBe('MID');
+    for (const c of ['RW', 'LW', 'FW', 'ST', 'CF', 'SS', 'ATK']) expect(positionGroup(c)).toBe('ATK');
+    expect(positionGroup('cb')).toBe('DEF');
+    expect(positionGroup('XYZ')).toBe('XYZ');
   });
 });

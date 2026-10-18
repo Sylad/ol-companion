@@ -41,6 +41,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 Visiter 2185, ou n'importe quel lien de l'onglet Effectif de /players.
 - shows: le nom du joueur en titre ; les tuiles Buts, Passes déc., Minutes ; au moins une ligne dans le tableau des matchs joués
 - never: « Aucune statistique trouvée pour ce joueur. »
+- shows: pour un convoqué qui n'a pas encore joué (ex. 133157, Justin Bengui ; /api/players/<id>/season-stats rend 404, attendu) : « n'a pas encore joué cette saison » en neutre (ni `role=alert` ni rouge), son nom, et le lien de retour
 - api: /api/players/<id>/season-stats
 
 ## /match/$gameId

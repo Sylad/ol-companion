@@ -104,6 +104,21 @@ describe('Effectif de la saison (L178)', () => {
   });
 });
 
+describe('Convoqués de la feuille dans l\'Effectif (L178)', () => {
+  it('Effectif : un convoqué absent des stats n\'a ni badge « Banc » ni poste détaillé, comme les cartes de la saison', () => {
+    lineup!.bench = [{ ...lp(3, false, 6.1), positionShort: 'CB' }];
+    search = { onglet: 'effectif' };
+    render(<PlayersPage />);
+    const carte = screen.getByText('Feuille 3').closest('a')!;
+    expect(within(carte).queryByText('Banc')).toBeNull();
+    expect(within(carte).getByText('DEF')).toBeInTheDocument();
+    expect(within(carte).queryByText('DC')).toBeNull();
+    // la note du dernier match n'est pas une moyenne de saison
+    expect(within(carte).queryByText('6,1')).toBeNull();
+    expect(screen.queryByText('Banc')).toBeNull();
+  });
+});
+
 describe('Noms, libellés et notes (L178)', () => {
   it('noms sur deux lignes au lieu de tronqués (carte de l\'Effectif et du banc)', async () => {
     const { PlayerCard } = await import('@/components/player-card');

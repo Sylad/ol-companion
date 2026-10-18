@@ -99,7 +99,7 @@ const playerDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/player/$athleteId',
   component: withSuspense(PlayerDetailPage),
-  // L7 : onglet et tri de la liste d'où l'on vient, rendus par « Retour à l'effectif ».
+  // L7 : onglet et tri de la liste d'où l'on vient, rendus par le lien de retour de la fiche.
   validateSearch: validatePlayersSearch,
 });
 

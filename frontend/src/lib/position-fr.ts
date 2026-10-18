@@ -61,3 +61,18 @@ export function positionShortFr(value: string): string {
   const long = LONG_FR[key];
   return (long && SHORT_BY_LONG_FR[long]) ?? value;
 }
+
+const GROUPE: Record<string, string> = {
+  gk: 'GK',
+  def: 'DEF', cb: 'DEF', lb: 'DEF', rb: 'DEF', lwb: 'DEF', rwb: 'DEF',
+  mid: 'MID', dm: 'MID', cm: 'MID', am: 'MID', lm: 'MID', rm: 'MID',
+  atk: 'ATK', fw: 'ATK', lw: 'ATK', rw: 'ATK', cf: 'ATK', ss: 'ATK', st: 'ATK',
+};
+
+/**
+ * Poste détaillé de la feuille de match (CB, RB, AM…) ramené à l'une des quatre lignes (GK, DEF, MID, ATK)
+ * que portent les joueurs des stats de saison ; un code inconnu est rendu tel quel.
+ */
+export function positionGroup(value: string): string {
+  return GROUPE[value.trim().toLowerCase()] ?? value;
+}

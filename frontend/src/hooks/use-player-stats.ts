@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGet } from '@/lib/api';
+import { apiGet, estIntrouvable } from '@/lib/api';
 import type { PlayerSeasonStats } from '@/types/api';
 
 /**
@@ -20,7 +20,7 @@ export function useSeasonStats() {
 }
 
 /**
- * Cumulative season stats for one OL player.
+ * Cumulative season stats for one OL player. 404 = he has not played yet (see `estIntrouvable`).
  */
 export function usePlayerSeasonStats(athleteId: number | null | undefined) {
   return useQuery({
@@ -28,6 +28,7 @@ export function usePlayerSeasonStats(athleteId: number | null | undefined) {
     queryFn: ({ signal }) =>
       apiGet<PlayerSeasonStats>(`/players/${athleteId}/season-stats`, signal),
     enabled: typeof athleteId === 'number' && athleteId > 0,
+    retry: (count, error) => !estIntrouvable(error) && count < 1,
     staleTime: 5 * 60 * 1000,
   });
 }

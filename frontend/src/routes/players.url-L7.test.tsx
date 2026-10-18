@@ -96,10 +96,10 @@ describe('<PlayersPage /> — onglet et tri dans l’URL (L7/t4)', () => {
     for (const lien of liens) expect(JSON.parse(lien.getAttribute('data-search')!)).toEqual({ onglet: 'stats', tri: 'buts' });
   });
 
-  it('« Retour à l’effectif » de la fiche rend l’onglet et le tri reçus', () => {
+  it('le lien de retour de la fiche (« Retour aux stats de la saison ») rend l’onglet et le tri reçus', () => {
     search = { onglet: 'stats', tri: 'buts' };
     render(<PlayerDetailPage />);
-    const retour = screen.getByRole('link', { name: /Retour à l'effectif/ });
+    const retour = screen.getByRole('link', { name: /Retour aux stats de la saison/ });
     expect(JSON.parse(retour.getAttribute('data-search')!)).toEqual({ onglet: 'stats', tri: 'buts' });
   });
 });

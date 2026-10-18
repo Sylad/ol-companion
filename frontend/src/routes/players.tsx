@@ -1,5 +1,5 @@
 import { useId, useMemo } from 'react';
-import { positionShortFr } from '@/lib/position-fr';
+import { positionGroup, positionShortFr } from '@/lib/position-fr';
 import { Loader2, LayoutGrid, Users, BarChart3, ArrowUpDown } from 'lucide-react';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import type { Onglet, PlayersSearch, Tri } from '@/lib/players-search';
@@ -167,11 +167,17 @@ function enCarte(p: PlayerSeasonStats): LineupPlayer {
   };
 }
 
+// Un convoqué de la feuille n'est ni « banc » ni « titulaire » dans un effectif de saison : pas de badge « Banc »,
+// poste ramené à GB / DEF / MIL / ATT comme les cartes issues des stats, pas de note (celle d'un match n'est pas une moyenne).
+function enCarteFeuille(p: LineupPlayer): LineupPlayer {
+  return { ...p, ranking: null, isStarting: true, positionShort: positionGroup(p.positionShort) };
+}
+
 function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: LineupPlayer[] }) {
   const { data, isLoading, isError, refetch } = useSeasonStats();
   const joueurs = useMemo(() => {
     const saison = new Set((data ?? []).map((p) => p.athleteId));
-    const tous = [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map((p) => ({ ...p, ranking: null }))];
+    const tous = [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map(enCarteFeuille)];
     return tous.sort((a, b) => (a.jerseyNumber ?? 99) - (b.jerseyNumber ?? 99) || a.name.localeCompare(b.name, 'fr'));
   }, [data, feuille]);
   const etat = statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });

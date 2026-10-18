@@ -12,6 +12,9 @@ import {
   type TooltipProps,
 } from 'recharts';
 import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
+import { estIntrouvable } from '@/lib/api';
+import { useLineup } from '@/hooks/use-lineup';
+import type { PlayersSearch } from '@/lib/players-search';
 import { TeamLogo } from '@/components/team-logo';
 import { CompetitionAbbr } from '@/components/competition-abbr';
 import { competitionLong, competitionShort } from '@/lib/competitions';
@@ -165,11 +168,56 @@ function HeroStat({
   );
 }
 
+// Le lien de retour dit d'où l'on vient : Composition (défaut, absent de l'URL), Effectif ou Stats saison.
+function retourLibelle(onglet: PlayersSearch['onglet']): string {
+  if (onglet === 'effectif') return "Retour à l'effectif";
+  if (onglet === 'stats') return 'Retour aux stats de la saison';
+  return 'Retour à la composition';
+}
+
+function LienRetour({ retour, className }: { retour: PlayersSearch; className: string }) {
+  return (
+    <Link to="/players" search={retour} className={className}>
+      <ArrowLeft className="h-4 w-4" /> {retourLibelle(retour.onglet)}
+    </Link>
+  );
+}
+
+/**
+ * 404 de /api/players/<id>/season-stats : le joueur n'a pas encore de minute cette saison (convoqué, jeune, recrue).
+ * Ce n'est pas une erreur : état neutre, avec son nom et son poste quand la feuille du dernier match (déjà en cache
+ * depuis Composition et Effectif) le donne.
+ */
+function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: PlayersSearch }) {
+  const { data: feuille } = useLineup();
+  const joueur = feuille ? [...feuille.starters, ...feuille.bench, ...feuille.injured].find((p) => p.athleteId === athleteId) : undefined;
+  return (
+    <div className="space-y-4">
+      <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
+      <section data-testid="joueur-sans-stats" className="rounded-md bg-surface border border-border p-6 text-center space-y-2">
+        <div className="eyebrow">Saison en cours</div>
+        {joueur && (
+          <>
+            <h1 className="font-display text-2xl font-bold text-fg-bright leading-tight">{joueur.name}</h1>
+            <p className="text-sm text-fg-muted">
+              {positionLabelFr(joueur.position || joueur.positionShort)}
+              {joueur.jerseyNumber !== null && <> · <span className="font-mono tabular-nums">#{joueur.jerseyNumber}</span></>}
+            </p>
+          </>
+        )}
+        <p role="status" className="text-fg-muted">
+          {joueur ? `${joueur.name} n’a` : 'Ce joueur n’a'} pas encore joué cette saison. Ses statistiques apparaîtront dès son premier match.
+        </p>
+      </section>
+    </div>
+  );
+}
+
 export function PlayerDetailPage() {
   const { athleteId: athleteIdRaw } = useParams({ from: '/player/$athleteId' });
   const athleteId = Number(athleteIdRaw);
   const retour = useSearch({ from: '/player/$athleteId' });
-  const { data: player, isLoading, isError } = usePlayerSeasonStats(
+  const { data: player, isLoading, isError, error, refetch } = usePlayerSeasonStats(
     Number.isFinite(athleteId) ? athleteId : null,
   );
 
@@ -182,19 +230,22 @@ export function PlayerDetailPage() {
     );
   }
 
+  if (estIntrouvable(error)) return <JoueurSansMinute athleteId={athleteId} retour={retour} />;
+
   if (isError || !player) {
     return (
       <div className="space-y-4">
-        <Link
-          to="/players"
-          search={retour}
-          className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg"
-        >
-          <ArrowLeft className="h-4 w-4" /> Retour à l'effectif
-        </Link>
-        <p className="py-20 text-center text-loss-fg">
-          Aucune statistique trouvée pour ce joueur.
-        </p>
+        <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
+        <div role="alert" className="py-20 text-center space-y-3">
+          <p className="text-loss-fg">Les statistiques de ce joueur n’ont pas pu être chargées.</p>
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="inline-flex items-center rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-bright hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ol-red/50"
+          >
+            Réessayer
+          </button>
+        </div>
       </div>
     );
   }
@@ -216,13 +267,7 @@ export function PlayerDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to="/players"
-        search={retour}
-        className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg-bright transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" /> Retour à l'effectif
-      </Link>
+      <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg-bright transition-colors" />
 
       <section className="rounded-md bg-surface border border-border overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-5 p-5 md:p-6">

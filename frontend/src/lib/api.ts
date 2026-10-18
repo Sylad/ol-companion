@@ -14,3 +14,6 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
   }
   return res.json() as Promise<T>;
 }
+
+/** 404 : la ressource n'existe pas (pour une fiche joueur : pas encore de minute cette saison). Une réponse, pas une panne : on ne la rejoue pas. */
+export const estIntrouvable = (error: unknown): boolean => error instanceof ApiError && error.status === 404;
