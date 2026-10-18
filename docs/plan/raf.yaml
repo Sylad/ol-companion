@@ -110,6 +110,10 @@ lots:
     created: 2026-09-28
     notes:
       - { date: 2026-10-11, text: "QA L25 11-10 : pied de page « Section indépendante du suivi OL — purement personnelle. » (vert 50 % d'opacité, 12 px) à 3,15:1 sur son fond, sous 4,5:1 (WCAG 1.4.3) — préexistant à L25" }
+      - { date: 2026-10-18, text: "revue UX du 18-10 (prod, captures ~/projects/developpeur/tmp/ux-ol-L8/) : non conforme, 1 bloquant (pied de page 3,15:1) 1 majeur (tuile lien sans signe, sous la ligne de flottaison, tuiles inertes qui grossissent au survol) → 2 tâches ; choix du lead : Jeux vidéo en pleine largeur au-dessus des 3 tuiles « Bientôt » ; mineurs : badges À l'étude/À venir en 9 px (viser 10–11), logo du héros alt=« FC Noobz » doublé par le h1 → alt=\"\", icônes Lucide des FeatureTile sans aria-hidden, bande de 22 px du fond body sous la page à 390 px sur /fcnoobz et /fcnoobz/jeux-video (conteneur -my-6) ; si l'ordre des tuiles change, le reporter dans L123 (attentes QA)" }
+    tasks:
+      - { id: t1, title: "FC Noobz : pied de page « Section indépendante du suivi OL… » à 3,15:1 (vert 50 % sur rgb(3,4,11), 12 px) → ≥ 4,5:1 mesuré (text-fg-dim comme « Infos vérifiées » de Jeux vidéo, ou vert ≥ 0,7 d'opacité), test à l'appui (WCAG 1.4.3)", status: todo }
+      - { id: t2, title: "FC Noobz : tuile Jeux vidéo (seule active) en pleine largeur au-dessus des 3 tuiles « Bientôt », signe d'action visible au repos « Voir la page → » ; les 3 tuiles non cliquables ne grossissent plus au survol (transform none) ; plus de case vide à 1440 px, haut de la tuile dans le premier écran à 1440×900 (Nielsen 4/6)", status: todo }
   - id: L9
     title: Revue UX — Match en direct (/match)
     status: todo
