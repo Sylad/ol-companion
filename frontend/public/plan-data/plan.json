@@ -512,7 +512,8 @@
     {
       "id": "L178",
       "title": "Joueurs : tout l'effectif de la saison",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-18"
     }
   ]
 }
