@@ -53,7 +53,7 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
       </header>
       <div className="p-4">
         <div className="relative w-full">
-          <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Shot map">
+          <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Carte des tirs">
             <Pitch />
             {shots.map((s) => {
               const isHome = s.competitorId === homeId;

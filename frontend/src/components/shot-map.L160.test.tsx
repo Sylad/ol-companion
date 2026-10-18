@@ -32,7 +32,7 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
   it('R5 — les libellés d\'attaque ne sont pas posés sur le terrain : ni dans son conteneur, ni en position absolue', () => {
     renderMap({ homeIsOl: true, homeName: 'Lyon', awayName: 'Rennes' });
     const carte = screen.getByTestId('carte-tirs');
-    const terrain = within(carte).getByRole('img', { name: 'Shot map' });
+    const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
     const surface = terrain.parentElement as HTMLElement;
     for (const re of [/← .* attaque/, /.* attaque →/]) {
       const label = within(carte).getByText(re);
@@ -46,7 +46,7 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
   it('R5 — les libellés sont du texte horizontal, sur une seule ligne, sous le terrain', () => {
     renderMap({ homeIsOl: true, homeName: 'Lyon', awayName: 'Rennes' });
     const carte = screen.getByTestId('carte-tirs');
-    const terrain = within(carte).getByRole('img', { name: 'Shot map' });
+    const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
     const gauche = within(carte).getByText(/← .* attaque/);
     const droite = within(carte).getByText(/.* attaque →/);
     for (const el of [gauche, droite]) {

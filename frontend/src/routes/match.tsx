@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 import { estIntrouvable } from '@/lib/api';
-import { roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
+import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 
 const EVENT_LABEL: Record<string, string> = {
   goal: '⚽ But',
@@ -40,7 +40,7 @@ const COMPARED_STATS: StatDef[] = [
   { key: 'Touches', label: 'Possession (touches)' },
   { key: 'Tirs au total', label: 'Tirs' },
   { key: 'Tirs cadrés', label: 'Tirs cadrés' },
-  { key: 'Buts attendus', label: 'xG (buts attendus)', fmt: (n) => n.toFixed(2) },
+  { key: 'Buts attendus', label: 'xG (buts attendus)', fmt: (n) => decimalFr(n, 2) },
 ];
 
 /** Mesures listées seules (libellé, nombre) dans la colonne de chaque équipe (L160 R9). */

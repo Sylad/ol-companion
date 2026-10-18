@@ -95,4 +95,19 @@ describe('Page match — libellés et nombres en français (L179)', () => {
     expect(screen.queryByTestId('periode-joueurs-en-vue')).toBeNull();
   });
 
+  it('R2 — Statistiques comparées : le xG des barres a la virgule (1,03 et 0,50)', () => {
+    data = match('finished', []);
+    render(<MatchPage />);
+    const bloc = screen.getByText('xG (buts attendus)').parentElement!.parentElement!;
+    expect(bloc.textContent).toContain('1,03');
+    expect(bloc.textContent).toContain('0,50');
+    expect(bloc.textContent).not.toMatch(/\d\.\d/);
+  });
+
+  it('R4 — la carte des tirs est nommée « Carte des tirs » (rôle img), plus « Shot map »', () => {
+    data = match('finished', []);
+    render(<MatchPage />);
+    expect(screen.getByRole('img', { name: 'Carte des tirs' })).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: 'Shot map' })).toBeNull();
+  });
 });
