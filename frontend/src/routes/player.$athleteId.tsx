@@ -35,6 +35,13 @@ function formatDate(iso: string): string {
 }
 
 
+// L7 : mêmes lettres et mêmes libellés que cup-match-row (V / N / D), « D » ne veut jamais dire nul.
+const RESULT_LABEL = {
+  W: { letter: 'V', name: 'Victoire' },
+  D: { letter: 'N', name: 'Match nul' },
+  L: { letter: 'D', name: 'Défaite' },
+} as const;
+
 function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {
   if (!result) return <span className="text-fg-dim">—</span>;
   const tone =
@@ -47,8 +54,9 @@ function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {
         'inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded border tabular-nums',
         tone,
       )}
+      aria-label={RESULT_LABEL[result].name}
     >
-      {result}
+      {RESULT_LABEL[result].letter}
     </span>
   );
 }
