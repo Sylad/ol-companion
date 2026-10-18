@@ -107,8 +107,13 @@ function eventTypeKey(e: Scores365Event): string {
     if (subId === 3) return 'second_yellow_red';
     return 'card';
   }
-  if (id === 3) return 'substitution';
+  // Identifiants relevés sur des matchs réels : 3 = carton rouge (Udol 84', Lens – Lyon),
+  // 1000 = remplacement (playerId = entrant, extraPlayers[0] = sortant).
+  if (id === 3) return combined.includes('2e') || combined.includes('second') ? 'second_yellow_red' : 'red_card';
+  if (id === 1000) return 'substitution';
   if (id === 4) return 'var';
+  if (id === 11) return 'goal_cancelled';
+  if (id === 12) return 'woodwork';
   if (id === 16) return 'penalty_missed';
   return `event_${id}_${subId}`;
 }
@@ -138,6 +143,7 @@ function toTimelineEvents(g: Scores365GameDetailed): LiveMatchTimelineEvent[] {
         playerName: playerId !== null ? (nameById.get(playerId) ?? null) : null,
         playerShortName: playerId !== null ? (shortById.get(playerId) ?? null) : null,
         extraPlayerName: extraPlayerId !== null ? (nameById.get(extraPlayerId) ?? null) : null,
+        extraPlayerShortName: extraPlayerId !== null ? (shortById.get(extraPlayerId) ?? null) : null,
         description: describeEvent(e),
       };
     })

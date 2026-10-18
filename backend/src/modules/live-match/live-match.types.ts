@@ -17,11 +17,12 @@ export interface LiveMatchTimelineEvent {
   type: string;              // 'goal', 'yellow_card', 'red_card', 'second_yellow_red', 'substitution', 'penalty_missed', ...
   isMajor: boolean;
   playerId: number | null;
-  extraPlayerId: number | null;  // assist player or sub-in
+  extraPlayerId: number | null;  // passeur d'un but, sortant d'un remplacement (playerId = entrant)
   /** Noms résolus depuis game.members[] (null si inconnus). */
   playerName: string | null;
   playerShortName: string | null;
   extraPlayerName: string | null;
+  extraPlayerShortName?: string | null;
   description: string;            // human-readable label
   /**
    * True when this event was synthesized by the aggregator (not present in the

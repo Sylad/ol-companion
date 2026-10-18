@@ -415,3 +415,42 @@ describe('L172 — timeConfirmed d’un match à venir d’une compétition suiv
     expect(summarize({ ...upcoming(573, 20 * DAY), roundNum: 32 }, NOW, fd).timeConfirmed).toBe(true);
   });
 });
+
+describe('faits du match — types 365scores réels (L9 t1)', () => {
+  const raw = JSON.parse(
+    fs.readFileSync(
+      path.resolve(__dirname, '../../../test/fixtures/365_game_anderlecht_lyon_ended_member_without_id.json'),
+      'utf-8',
+    ),
+  );
+  const events = () => aggregate(parseExternal(Scores365GameDetailResponseSchema, raw, 'test')).events;
+
+  it('type 1000 « Substitution » → substitution : entrant = playerId, sortant = extraPlayers[0], avec noms courts', () => {
+    const sub = events().find((e) => e.type === 'substitution' && e.playerId === 32455478)!;
+    expect(sub).toMatchObject({
+      playerShortName: 'Kana',
+      extraPlayerId: 65082004,
+      extraPlayerName: 'Amane Romeo',
+      extraPlayerShortName: 'Romeo',
+    });
+  });
+
+  it('type 12 « Woodwork » → woodwork', () => {
+    expect(events().some((e) => e.type === 'woodwork' && e.gameTimeDisplay === "52'")).toBe(true);
+  });
+
+  it('type 11 « But annulé — Var » → goal_cancelled', () => {
+    expect(events().some((e) => e.type === 'goal_cancelled' && e.gameTimeDisplay === "53'")).toBe(true);
+  });
+
+  it('type 3 « Carton rouge » → red_card, et non plus substitution (Udol 84\', Lens – Lyon)', () => {
+    const g = JSON.parse(JSON.stringify(raw));
+    g.game.events.push({
+      competitorId: 465, gameTime: 84, gameTimeDisplay: "84'", playerId: 32455478, isMajor: true,
+      eventType: { id: 3, name: 'Carton rouge', subTypeId: -1 },
+    });
+    const out = aggregate(parseExternal(Scores365GameDetailResponseSchema, g, 'test')).events;
+    const red = out.find((e) => e.gameTimeDisplay === "84'")!;
+    expect(red.type).toBe('red_card');
+  });
+});
