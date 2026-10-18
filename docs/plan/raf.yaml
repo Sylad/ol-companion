@@ -2005,6 +2005,7 @@ lots:
     estimate: 0.25
     created: 2026-10-18
     started: 2026-10-18
+    review: { date: 2026-10-18, verdict: "compliant — 0 finding; 9 tests of the lot green, 934/934 for the whole frontend, tsc clean; the 6 interpretation choices of the author are consistent with the lot and no one of them changes its scope — orchestré (vague 2026-10-18-l184, 0 passe(s) de correction)", commit: 135a06c2f6e33a1f8585b94d80054daf094c5f6e }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
