@@ -43,9 +43,15 @@ function aggregate(matches: CupMatch[]): number {
   return diff;
 }
 
+/** Confrontation aller-retour (une manche porte `legNum`) dont l'aller ou le retour n'est pas dans les résultats. */
+function hasMissingLeg(tie: CupMatch[]): boolean {
+  if (!tie.some((m) => m.legNum !== undefined)) return false;
+  return [1, 2].some((leg) => !tie.some((m) => m.legNum === leg));
+}
+
 /**
  * Éliminé seulement sur preuve : la dernière confrontation à élimination directe
- * est perdue (équipe qualifiée lue chez 365scores, à défaut cumul des buts) et rien n'est à venir. Un tour gagné, une phase de ligue
+ * est perdue (équipe qualifiée lue chez 365scores, à défaut cumul des buts, les deux manches d'un aller-retour exigées) et rien n'est à venir. Un tour gagné, une phase de ligue
  * (sauf rang final connu, `leaguePhaseRank`) ou un score illisible ne prouvent rien : on
  * reste « en lice » jusqu'à STALE_DAYS sans match. `upcomingKnown` = false quand
  * l'appel des matchs à venir a échoué : l'absence de match ne veut alors rien dire.
@@ -67,7 +73,9 @@ export function isCupEliminated(matches: CupMatch[], now: Date = new Date(), upc
     // 365scores désigne l'équipe qualifiée : seul moyen de lire une issue aux tirs au but (cumul nul).
     const decided = tie.find((m) => m.olQualified !== undefined);
     if (decided) return !decided.olQualified;
-    if (aggregate(tie) < 0) return true;
+    // 365scores retire le retour des matchs à venir avant le coup d'envoi et ne le met dans
+    // les résultats qu'à la fin : un aller-retour dont une manche manque n'a pas de cumul.
+    if (!hasMissingLeg(tie) && aggregate(tie) < 0) return true;
   }
   return now.getTime() - new Date(last.date).getTime() > STALE_DAYS * 86_400_000;
 }

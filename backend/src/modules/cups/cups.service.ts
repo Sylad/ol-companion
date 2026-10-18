@@ -29,6 +29,8 @@ export interface CupMatch {
   stageFr: string;
   /** Issue de la confrontation lue sur sa dernière manche : vrai si l'OL est qualifié, faux si l'adversaire l'est ; absent sinon. */
   olQualified?: boolean;
+  /** Manche (1 aller, 2 retour) d'une confrontation aller-retour ; absent pour un match unique. */
+  legNum?: number;
 }
 
 export interface CupInfo {
@@ -371,6 +373,7 @@ export class CupsService implements OnModuleInit {
       homeTeamId: g.homeCompetitor?.id ?? 0,
       awayTeam: g.awayCompetitor?.name ?? '',
       awayTeamId: g.awayCompetitor?.id ?? 0,
+      ...(g.legNum === 1 || g.legNum === 2 ? { legNum: g.legNum } : {}),
       homeScore: homeScore ?? null,
       awayScore: awayScore ?? null,
       status,

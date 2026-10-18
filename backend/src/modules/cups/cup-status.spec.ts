@@ -8,7 +8,7 @@ const DAY = 86_400_000;
 function m(
   status: string,
   stageFr: string,
-  o: { daysAgo?: number; ol?: number; opp?: number; home?: boolean; qualified?: boolean } = {},
+  o: { daysAgo?: number; ol?: number; opp?: number; home?: boolean; qualified?: boolean; leg?: number } = {},
 ): CupMatch {
   const home = o.home ?? true;
   const ol = o.ol ?? null;
@@ -21,6 +21,7 @@ function m(
     homeScore: home ? ol : opp, awayScore: home ? opp : ol,
     status, stage: stageFr, stageFr,
     ...(o.qualified === undefined ? {} : { olQualified: o.qualified }),
+    ...(o.leg === undefined ? {} : { legNum: o.leg }),
   };
 }
 
@@ -76,7 +77,33 @@ describe('isCupEliminated', () => {
     expect(isCupEliminated(old, NOW)).toBe(true);
   });
 
-  describe('tirs au but (cumul nul)', () => {
+  describe('L175 — aller perdu pendant le match retour', () => {
+  it('R1 — aller perdu seul, rien à venir (le retour se joue) = pas éliminé', () => {
+    const aller = m('FINISHED', '1/8 de finale', { daysAgo: 7, ol: 0, opp: 2, leg: 1 });
+    expect(isCupEliminated([aller], NOW)).toBe(false);
+  });
+
+  it('R2 — les deux manches jouées et cumul perdu = éliminé ; cumul gagné = en lice', () => {
+    const aller = m('FINISHED', '1/8 de finale', { daysAgo: 7, ol: 0, opp: 2, leg: 1 });
+    expect(isCupEliminated([aller, m('FINISHED', '1/8 de finale', { daysAgo: 0, ol: 1, opp: 0, home: false, leg: 2 })], NOW)).toBe(true);
+    expect(isCupEliminated([aller, m('FINISHED', '1/8 de finale', { daysAgo: 0, ol: 3, opp: 0, home: false, leg: 2 })], NOW)).toBe(false);
+  });
+
+  it('R3 — le qualifié lu chez 365scores prime même sans les deux manches', () => {
+    expect(isCupEliminated([m('FINISHED', '1/8 de finale', { ol: 0, opp: 2, leg: 2, qualified: false })], NOW)).toBe(true);
+  });
+
+  it('R4 — match unique (sans manche, Coupe de France) perdu = éliminé', () => {
+    expect(isCupEliminated([m('FINISHED', '32ème de finale', { ol: 0, opp: 1 })], NOW)).toBe(true);
+  });
+
+  it(`R5 — un aller seul n'est pas conclu, mais plus de ${STALE_DAYS} jours sans match = éliminé`, () => {
+    const aller = m('FINISHED', '1/8 de finale', { daysAgo: STALE_DAYS + 1, ol: 0, opp: 2, leg: 1 });
+    expect(isCupEliminated([aller], NOW)).toBe(true);
+  });
+});
+
+describe('tirs au but (cumul nul)', () => {
     it('Coupe de France 1-1 t.a.b. perdus (adversaire qualifié) = éliminé', () => {
       expect(isCupEliminated([m('FINISHED', '32ème de finale', { ol: 1, opp: 1, qualified: false })], NOW)).toBe(true);
     });
