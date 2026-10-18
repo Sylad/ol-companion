@@ -340,12 +340,13 @@ export function PlayerDetailPage() {
               <tr className="text-fg-dim text-[11px] uppercase tracking-wider font-semibold border-b border-border">
                 <th className="text-left px-4 py-2 font-semibold">Date</th>
                 <th className="text-left px-4 py-2 font-semibold">Adv.</th>
-                <th className="text-center px-2 py-2 font-semibold">Score</th>
-                <th className="text-center px-2 py-2 font-semibold">Comp.</th>
+                <th className="hidden sm:table-cell text-center px-2 py-2 font-semibold">Score</th>
+                <th className="hidden sm:table-cell text-center px-2 py-2 font-semibold">Comp.</th>
+                <th className="sm:hidden text-right px-2 py-2 font-semibold">Buts · PD</th>
                 <th className="text-right px-2 py-2 font-semibold">Min</th>
-                <th className="text-right px-2 py-2 font-semibold">Buts</th>
-                <th className="text-right px-2 py-2 font-semibold">Passes D.</th>
-                <th className="text-right px-2 py-2 font-semibold">Tirs</th>
+                <th className="hidden sm:table-cell text-right px-2 py-2 font-semibold">Buts</th>
+                <th className="hidden sm:table-cell text-right px-2 py-2 font-semibold">Passes D.</th>
+                <th className="hidden sm:table-cell text-right px-2 py-2 font-semibold">Tirs</th>
               </tr>
             </thead>
             <tbody>
@@ -356,7 +357,7 @@ export function PlayerDetailPage() {
                     <span className="text-fg-bright">{m.opponent}</span>
                     <span className="ml-1 text-fg-dim text-xs">{m.isHome ? '(D)' : '(E)'}</span>
                   </td>
-                  <td className="px-2 py-2 text-center font-mono tabular-nums text-fg-bright">
+                  <td className="hidden sm:table-cell px-2 py-2 text-center font-mono tabular-nums text-fg-bright">
                     {m.olScore !== null && m.opponentScore !== null
                       ? m.isHome
                         ? `${m.olScore}-${m.opponentScore}`
@@ -364,26 +365,30 @@ export function PlayerDetailPage() {
                       : '—'}{' '}
                     <ResultBadge result={m.result} />
                   </td>
-                  <td className="px-2 py-2 text-center text-fg-muted text-xs font-semibold">
+                  <td className="hidden sm:table-cell px-2 py-2 text-center text-fg-muted text-xs font-semibold">
                     <CompetitionAbbr code={m.competitionCode} />
                   </td>
+                  <td className={cn(
+                    'sm:hidden px-2 py-2 text-right tabular-nums',
+                    m.goals + m.assists > 0 ? 'text-ol-red-bright font-bold' : 'text-fg-dim',
+                  )}>{m.goals} · {m.assists}</td>
                   <td className="px-2 py-2 text-right tabular-nums text-fg">{m.minutes}</td>
                   <td className={cn(
-                    'px-2 py-2 text-right tabular-nums',
+                    'hidden sm:table-cell px-2 py-2 text-right tabular-nums',
                     m.goals > 0 ? 'text-ol-red-bright font-bold' : 'text-fg-dim',
                   )}>{m.goals}</td>
                   <td className={cn(
-                    'px-2 py-2 text-right tabular-nums',
+                    'hidden sm:table-cell px-2 py-2 text-right tabular-nums',
                     m.assists > 0 ? 'text-ol-red-bright font-bold' : 'text-fg-dim',
                   )}>{m.assists}</td>
-                  <td className="px-2 py-2 text-right tabular-nums text-fg-muted">
+                  <td className="hidden sm:table-cell px-2 py-2 text-right tabular-nums text-fg-muted">
                     {m.shots}{m.shotsOnTarget > 0 ? ` (${m.shotsOnTarget})` : ''}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="px-4 py-2 text-xs text-fg-muted border-t border-border">
+          <p className="hidden sm:block px-4 py-2 text-xs text-fg-muted border-t border-border">
             Comp. : {(['L1', 'UCL', 'UEL', 'CDF'] as const).map((c) => `${competitionShort(c)} = ${competitionLong(c)}`).join(' · ')}
           </p>
         </div>

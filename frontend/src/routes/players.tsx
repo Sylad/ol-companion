@@ -198,14 +198,16 @@ interface SortHeaderProps {
   sortKey: Tri;
   current: Tri;
   onSort: (k: Tri) => void;
-  align?: 'left' | 'right';
 }
 
-function SortHeader({ label, sortKey, current, onSort, align = 'right' }: SortHeaderProps) {
+// L177 : sous 640 px une seule colonne de valeur reste affichée, celle du tri ; au-delà tout le tableau.
+const colonne = (key: Tri, current: Tri) => (key === current ? '' : 'hidden sm:table-cell');
+
+function SortHeader({ label, sortKey, current, onSort }: SortHeaderProps) {
   const active = current === sortKey;
   return (
     <th
-      className={cn('px-2 py-2 font-semibold', align === 'left' ? 'text-left' : 'text-right')}
+      className={cn('px-2 py-2 font-semibold text-right', colonne(sortKey, current))}
       aria-sort={active ? 'descending' : undefined}
     >
       <button
@@ -262,11 +264,13 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
   }
 
   return (
+    <>
+    <TriPuces tri={tri} onTri={onTri} />
     <div className="overflow-x-auto -mx-5">
-      <table className="w-full text-sm min-w-[640px]">
+      <table className="w-full text-sm sm:min-w-[640px]">
         <thead>
           <tr className="text-fg-dim text-[11px] uppercase tracking-wider font-semibold border-b border-border">
-            <th className="text-left px-4 py-2 font-semibold">Joueur</th>
+            <th className="text-left px-4 py-2 font-semibold sticky left-0 bg-surface">Joueur</th>
             <SortHeader label="Matchs" sortKey="matchs" current={tri} onSort={onTri} />
             <SortHeader label="Min" sortKey="minutes" current={tri} onSort={onTri} />
             <SortHeader label="Buts" sortKey="buts" current={tri} onSort={onTri} />
@@ -278,23 +282,72 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
         </thead>
         <tbody>
           {sorted.map((p) => (
-            <PlayerStatsRow key={p.athleteId} player={p} retour={retour} />
+            <PlayerStatsRow key={p.athleteId} player={p} retour={retour} tri={tri} />
           ))}
         </tbody>
       </table>
     </div>
+    </>
   );
 }
 
-function PlayerStatsRow({ player, retour }: { player: PlayerSeasonStats; retour: PlayersSearch }) {
+// Libellés courts des puces de tri (mobile) ; l'ordre est celui de la maquette de la revue UX L7.
+const PUCES: { tri: Tri; label: string }[] = [
+  { tri: 'bp', label: 'B+P' },
+  { tri: 'buts', label: 'Buts' },
+  { tri: 'passes', label: 'PD' },
+  { tri: 'minutes', label: 'Min' },
+  { tri: 'matchs', label: 'Matchs' },
+  { tri: 'tirs', label: 'Tirs' },
+  { tri: 'note', label: 'Note' },
+];
+
+function TriPuces({ tri, onTri }: { tri: Tri; onTri: (t: Tri) => void }) {
+  return (
+    <div role="group" aria-label="Trier par" className="sm:hidden flex flex-wrap gap-2 pb-4">
+      {PUCES.map((p) => (
+        <button
+          key={p.tri}
+          type="button"
+          aria-pressed={tri === p.tri}
+          onClick={() => onTri(p.tri)}
+          className={cn(
+            'min-h-11 min-w-11 px-4 rounded-full border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ol-red/50',
+            tri === p.tri ? 'border-ol-red-bright text-ol-red-bright bg-surface-2' : 'border-border text-fg-muted',
+          )}
+        >
+          {p.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Valeur secondaire, sous la principale, sur mobile seulement (le tableau complet montre déjà les autres colonnes).
+function secondaire(p: PlayerSeasonStats, tri: Tri): string | null {
+  switch (tri) {
+    case 'bp': return `${p.goals} B · ${p.assists} PD`;
+    case 'buts':
+    case 'passes':
+    case 'minutes':
+    case 'note': return `${p.matchesPlayed} match${p.matchesPlayed > 1 ? 's' : ''}`;
+    default: return null;
+  }
+}
+
+function PlayerStatsRow({ player, retour, tri }: { player: PlayerSeasonStats; retour: PlayersSearch; tri: Tri }) {
+  const sous = secondaire(player, tri);
+  // La valeur secondaire n'existe que dans la cellule du tri, sous la principale, et seulement sous 640 px.
+  const second = (key: Tri) =>
+    key === tri && sous ? <span className="block sm:hidden text-xs font-normal text-fg-dim">{sous}</span> : null;
   return (
     <tr className="border-b border-border/60 hover:bg-surface-2 transition-colors">
-      <td className="px-4 py-2">
+      <td className="px-4 py-2 sticky left-0 bg-surface">
         <Link
           to="/player/$athleteId"
           params={{ athleteId: String(player.athleteId) }}
           search={retour}
-          className="flex items-center gap-2 group"
+          className="flex flex-wrap sm:flex-nowrap items-center gap-x-2 group"
         >
           <span className="text-[10px] font-mono text-fg-dim w-6 tabular-nums shrink-0">
             {player.jerseyNumber !== null ? `#${player.jerseyNumber}` : '—'}
@@ -302,38 +355,56 @@ function PlayerStatsRow({ player, retour }: { player: PlayerSeasonStats; retour:
           <span className="font-semibold text-fg group-hover:text-ol-red-bright transition-colors">
             {player.name}
           </span>
-          <span className="text-[10px] uppercase tracking-wider text-fg-dim">
+          <span className="basis-full pl-8 sm:basis-auto sm:pl-0 text-[10px] uppercase tracking-wider text-fg-dim">
             {positionShortFr(player.positionShort)}
           </span>
         </Link>
       </td>
-      <td className="px-2 py-2 text-right tabular-nums text-fg">
+      <td className={cn('px-2 py-2 text-right tabular-nums text-fg', colonne('matchs', tri))}>
         {player.matchesPlayed}
         {player.matchesStarted > 0 && (
           <span className="text-fg-dim text-xs"> ({player.matchesStarted})</span>
         )}
+        {second('matchs')}
       </td>
-      <td className="px-2 py-2 text-right tabular-nums text-fg-muted">{player.minutesPlayed}</td>
+      <td className={cn('px-2 py-2 text-right tabular-nums text-fg-muted', colonne('minutes', tri))}>
+        {player.minutesPlayed}
+        {second('minutes')}
+      </td>
       <td className={cn(
         'px-2 py-2 text-right tabular-nums',
         player.goals > 0 ? 'text-ol-red-bright font-bold' : 'text-fg-dim',
-      )}>{player.goals}</td>
+        colonne('buts', tri),
+      )}>
+        {player.goals}
+        {second('buts')}
+      </td>
       <td className={cn(
         'px-2 py-2 text-right tabular-nums',
         player.assists > 0 ? 'text-ol-red-bright font-bold' : 'text-fg-dim',
-      )}>{player.assists}</td>
+        colonne('passes', tri),
+      )}>
+        {player.assists}
+        {second('passes')}
+      </td>
       <td className={cn(
         'px-2 py-2 text-right tabular-nums font-bold',
         player.goalContributions > 0 ? 'text-fg-bright' : 'text-fg-dim',
-      )}>{player.goalContributions}</td>
-      <td className="px-2 py-2 text-right tabular-nums text-fg-muted">
+        colonne('bp', tri),
+      )}>
+        {player.goalContributions}
+        {second('bp')}
+      </td>
+      <td className={cn('px-2 py-2 text-right tabular-nums text-fg-muted', colonne('tirs', tri))}>
         {player.shots}{player.shotsOnTarget > 0 ? ` (${player.shotsOnTarget})` : ''}
       </td>
       <td className={cn(
         'px-2 py-2 text-right tabular-nums',
         player.averageRating !== null ? 'text-fg' : 'text-fg-dim',
+        colonne('note', tri),
       )}>
         {player.averageRating !== null ? player.averageRating.toFixed(1) : '—'}
+        {second('note')}
       </td>
     </tr>
   );
