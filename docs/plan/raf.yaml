@@ -1907,11 +1907,12 @@ lots:
   - id: L177
     title: "Joueurs à 390 px : Stats saison est trié sur une colonne hors écran (tableau 640 px dans 348, B+P à x=486) et la fiche cache Buts / Passes D. / Tirs dans « Détail saison » (501 px pour 348) — maquette de la revue UX L7 : colonne Joueur fixe (sticky, numéro et nom sur une ligne, poste dessous) et une seule colonne de valeur choisie par des puces (B+P par défaut, Buts, PD, Min, Matchs, Tirs, Note) qui pilotent le tri, cibles 44 px, aria-pressed, valeur secondaire sous la principale ; fiche : Date et Adversaire fixes puis « Buts · PD » et Min ; au-delà de 640 px rien ne change"
     public: "Joueurs : statistiques lisibles sur téléphone"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-18
+    started: 2026-10-18
   - id: L178
     title: "Joueurs : l'onglet « Effectif » ne montre que les 23 de la dernière feuille de match (Openda, Maitland-Niles, Fofana, Tagliafico, Ouédraogo, de Carvalho absents) — décision de Sylvain 18-10 : effectif de la SAISON bâti sur /api/players/season-stats ; avec : 9 noms sur 23 tronqués à 390 px (line-clamp-2 au lieu de truncate) ; libellés (titularisations), (cadrés), B+P, (D)/(E) avec légende ou abbr, « Tirs / cadrés 21/11 » qui se lit comme une date, notes au format fr (7,3) ; joueurs du terrain et du banc de Composition qui mènent à leur fiche (revue UX L7)"
     public: "Joueurs : tout l'effectif de la saison"
