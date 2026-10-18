@@ -19,7 +19,8 @@ function formatDate(iso: string): string {
 }
 
 export function PlayersPage() {
-  const { data, isLoading, isError } = useLineup();
+  const lineup = useLineup();
+  const { data } = lineup;
   const [tab, setTab] = useState<'formation' | 'squad' | 'stats'>('formation');
 
   const allPlayers = useMemo(() => {
@@ -31,26 +32,18 @@ export function PlayersPage() {
     });
   }, [data]);
 
+  // L7 : la carte et ses onglets ne dépendent pas de /api/lineup ; seuls les panneaux Composition et Effectif en dépendent.
+  const lineupEtat = data ? null : (
+    <LineupEtat isLoading={lineup.isLoading} isError={lineup.isError} onRetry={() => void lineup.refetch()} />
+  );
+
   return (
     <div className="space-y-8">
       <KnowledgeHeader />
 
-      {isLoading && (
-        <div className="flex items-center justify-center py-20 text-fg-dim">
-          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-          <span>Chargement de l'effectif…</span>
-        </div>
-      )}
-      {isError && (
-        <p className="py-20 text-center text-loss-fg">Erreur de chargement.</p>
-      )}
-      {data === null && !isLoading && (
-        <p className="py-20 text-center text-fg-muted">Aucune compo récente trouvée.</p>
-      )}
-
-      {data && (
-        <section className="rounded-md bg-surface border border-border overflow-hidden">
-          <header className="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border">
+      <section className="rounded-md bg-surface border border-border overflow-hidden">
+        <header className="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border">
+          {data ? (
             <div>
               <div className="eyebrow mb-1">Dernier match</div>
               <div className="flex items-center gap-3">
@@ -73,30 +66,39 @@ export function PlayersPage() {
                 <span className="text-ol-red-bright font-semibold">{data.formation}</span>
               </p>
             </div>
-            <div className="flex items-center gap-1 rounded-full border border-border p-1">
-              <TabButton active={tab === 'formation'} onClick={() => setTab('formation')} icon={LayoutGrid}>
-                Composition
-              </TabButton>
-              <TabButton active={tab === 'squad'} onClick={() => setTab('squad')} icon={Users}>
-                Effectif
-              </TabButton>
-              <TabButton active={tab === 'stats'} onClick={() => setTab('stats')} icon={BarChart3}>
-                Stats saison
-              </TabButton>
+          ) : (
+            <div>
+              <div className="eyebrow mb-1">Saison en cours</div>
+              <h2 className="font-display text-xl font-bold text-fg-bright leading-none">Olympique Lyonnais</h2>
             </div>
-          </header>
+          )}
+          <div className="flex items-center gap-1 rounded-full border border-border p-1">
+            <TabButton active={tab === 'formation'} onClick={() => setTab('formation')} icon={LayoutGrid}>
+              Composition
+            </TabButton>
+            <TabButton active={tab === 'squad'} onClick={() => setTab('squad')} icon={Users}>
+              Effectif
+            </TabButton>
+            <TabButton active={tab === 'stats'} onClick={() => setTab('stats')} icon={BarChart3}>
+              Stats saison
+            </TabButton>
+          </div>
+        </header>
 
-          <div className="p-5">
-            {tab === 'formation' && (
+        <div className="p-5">
+          {tab === 'formation' && (
+            data ? (
               <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-5">
                 <div className="max-w-[560px] mx-auto w-full">
                   <FormationField starters={data.starters} formation={data.formation} />
                 </div>
                 <BenchSection players={data.bench} />
               </div>
-            )}
+            ) : lineupEtat
+          )}
 
-            {tab === 'squad' && (
+          {tab === 'squad' && (
+            data ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {allPlayers.map((p) => (
                   <Link
@@ -109,13 +111,57 @@ export function PlayersPage() {
                   </Link>
                 ))}
               </div>
-            )}
+            ) : lineupEtat
+          )}
 
-            {tab === 'stats' && <SeasonStatsTab />}
-          </div>
-        </section>
-      )}
+          {tab === 'stats' && <SeasonStatsTab />}
+        </div>
+      </section>
     </div>
+  );
+}
+
+interface EtatProps {
+  onRetry: () => void;
+}
+
+function EtatPanneau({ onRetry, children }: EtatProps & { children: React.ReactNode }) {
+  return (
+    <div role="status" className="py-10 text-center space-y-3">
+      <p className="text-fg-muted">{children}</p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="inline-flex items-center rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-bright hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ol-red/50"
+      >
+        Réessayer
+      </button>
+    </div>
+  );
+}
+
+function LineupEtat({ isLoading, isError, onRetry }: EtatProps & { isLoading: boolean; isError: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-10 text-fg-dim">
+        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+        <span>Chargement de l'effectif…</span>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <EtatPanneau onRetry={onRetry}>
+        <span className="text-loss-fg">La composition du dernier match n’a pas pu être chargée.</span>{' '}
+        Vérifiez votre connexion puis réessayez ; les stats de la saison restent consultables.
+      </EtatPanneau>
+    );
+  }
+  return (
+    <EtatPanneau onRetry={onRetry}>
+      Aucune composition de match récente n’est disponible pour le moment. Réessayez plus tard ;
+      les stats de la saison restent consultables.
+    </EtatPanneau>
   );
 }
 
@@ -148,7 +194,7 @@ function SortHeader({ label, sortKey, current, onSort, align = 'right' }: SortHe
 }
 
 function SeasonStatsTab() {
-  const { data, isLoading, isError } = useSeasonStats();
+  const { data, isLoading, isError, refetch } = useSeasonStats();
   const [sortKey, setSortKey] = useState<SortKey>('goalContributions');
 
   const sorted = useMemo(() => {
@@ -169,7 +215,12 @@ function SeasonStatsTab() {
     );
   }
   if (isError) {
-    return <p className="py-10 text-center text-loss-fg">Erreur de chargement des stats.</p>;
+    return (
+      <EtatPanneau onRetry={() => void refetch()}>
+        <span className="text-loss-fg">Les stats de la saison n’ont pas pu être chargées.</span>{' '}
+        Vérifiez votre connexion puis réessayez.
+      </EtatPanneau>
+    );
   }
   if (!data || data.length === 0) {
     return (
