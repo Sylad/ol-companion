@@ -1951,13 +1951,15 @@ lots:
     finished: 2026-10-18
   - id: L179
     title: "Page match : libellés 365scores bruts (« Tackles », « Les interceptions ») et décimales à point (0.5, 0.24, xG 1.03) dans Joueurs en vue et Statistiques ; avant le coup d'envoi « Buts : 0 » sans période — glossaire FR des statName, nombres fr-FR (1,03), période dite pour un match à venir, aria-label « Shot map » → « Carte des tirs », tests (revue UX L9)"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-18
     started: 2026-10-18
     notes:
       - { date: 2026-10-18, text: "test d'acceptation rescellé (lot livré L160, frontend/src/routes/match.disposition-L160.test.tsx, fiche amendée en 72964ff) : R15 amendée (revue UX L9, nombres fr-FR) : xG « 1,87 » au lieu de « 1.87 » ; la carte des tirs est nommée « Carte des tirs » au lieu de « Shot map » (aria-label demandé par L179) ; aucune autre assertion changée" }
       - { date: 2026-10-18, text: "18-10 (lead) : réponse à la question du conflit avec L160 — la fiche L160 R15 est amendée (xG « 1,87 », 72964ff) et le test scellé de L160 rescellé (2c212d8 : « 1,87 » et rôle img « Carte des tirs ») ; reste à faire dans ce lot : fmt de COMPARED_STATS dans match.tsx en decimalFr(n, 2) et aria-label « Carte des tirs » dans shot-map.tsx, test de page à jour ; ne pas toucher au test L160 rescellé" }
+    review: { date: 2026-10-18, verdict: "conforme (2 mineurs → lot à part) — glossaire statName et roleFr, virgule fr-FR (Joueurs en vue, barres comparées, infobulle), période avant le coup d'envoi, aria-label « Carte des tirs » ; fiche L160 R15 ↔ test rescellé ↔ code cohérents ; 922 tests, acceptation L160 45/45, build verts", commit: f2aacfff67163f2d9e2c1c16e96bcfe25ae6ad4a }
+    finished: 2026-10-18
   - id: L180
     title: "Route inconnue (dont /match sans identifiant) : « Not Found » TanStack en anglais, sans h1 ni lien — notFoundComponent en français avec h1 et liens Accueil / Calendrier, ligne never « Not Found » dans docs/qa/expectations.md (revue UX L9)"
     status: done
@@ -1981,11 +1983,17 @@ lots:
     finished: 2026-10-18
   - id: L182
     title: "Frontend : aucun package-lock.json suivi, la CI fait npm install et prend d'autres versions que Big-Blue (@tanstack/react-router 1.170.45 en CI contre 1.169.2 en local, test L180 bloqué en CI le 18-10) — suivre package-lock.json et passer frontend-checks.yml (et le Dockerfile) à npm ci ; vérifier que la suite passe avec les versions verrouillées"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-18
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "compliant: lockfile suivi (react-router 1.169.2), `npm ci` en CI et dans le Dockerfile, 906 tests verts et tsc OK sur une installation `npm ci` propre; 1 note mineure (193 entrées sans integrity) — orchestré (vague 2026-10-18-ol-soir, 0 passe(s) de correction)", commit: eb3badad3de7f73c324e9cf8621c8283857458db }
+    finished: 2026-10-18
+  - id: L183
+    title: "Accueil, carte du direct : xG à point (1.87) alors que la page du match écrit 1,87 (live-match-card.tsx:124 → decimalFr), descriptions brutes « Woodwork », « Substitution », « But annulé — Var » (live-match-card.tsx:134 → EVENT_LABEL de match.tsx) ; glossaire stat-fr sans « Pass. Décisiv. » (abréviation 365scores pendant le match, « Passes décisives » avant) — revue L179"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
