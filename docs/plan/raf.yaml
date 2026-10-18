@@ -1961,6 +1961,8 @@ lots:
     title: "Page match en erreur : toute erreur (réseau, 5xx) dit « Match introuvable » sans Réessayer ; états erreur / lien incomplet / chargement sans h1 — distinguer 404 et panne, bouton Réessayer (refetch), h1 sur chaque état, tests ; avec L80 (revue UX L9)"
     status: doing
     estimate: 0.5
+    visible: true
+    public: "Page match : une panne n'est plus « introuvable », avec Réessayer"
     created: 2026-10-18
     started: 2026-10-18
 acknowledged:
