@@ -16,22 +16,9 @@ import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 import { estIntrouvable } from '@/lib/api';
+import { eventLabelFr } from '@/lib/event-fr';
 import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 
-const EVENT_LABEL: Record<string, string> = {
-  goal: '⚽ But',
-  penalty_goal: '⚽ But sur penalty',
-  own_goal: '⚽ Csc',
-  yellow_card: '🟨 Carton jaune',
-  red_card: '🟥 Carton rouge',
-  second_yellow_red: '🟥 2e jaune',
-  card: '🟨 Carton',
-  substitution: '↔ Remplacement',
-  var: 'VAR',
-  goal_cancelled: '🚫 But annulé (VAR)',
-  woodwork: '🥅 Poteau',
-  penalty_missed: '❌ Penalty raté',
-};
 
 type StatDef = { key: string; label: string; fmt?: (n: number) => string };
 
@@ -96,7 +83,7 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
   event: LiveMatchTimelineEvent; homeId: number; homeSymbol: string; awaySymbol: string;
 }) {
   const isHome = event.competitorId === homeId;
-  const base = EVENT_LABEL[event.type] ?? event.description;
+  const base = eventLabelFr(event.type, event.description);
   const who = event.playerShortName ?? event.playerName;
   // Remplacement : playerId = entrant, extraPlayer = sortant (365scores type 1000).
   const isSub = event.type === 'substitution';

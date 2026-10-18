@@ -4,6 +4,7 @@ const STAT_NAME_FR: Record<string, string> = {
   'Les interceptions': 'Interceptions',
   Goals: 'Buts',
   Assists: 'Passes décisives',
+  'Pass. Décisiv.': 'Passes décisives',
   Appearances: 'Matchs joués',
   'Yellow:Red': 'Jaunes : rouges',
 };

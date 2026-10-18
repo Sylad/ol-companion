@@ -3,6 +3,8 @@ import { Radio, Trophy, Clock, Pause } from 'lucide-react';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import { deriveClock } from '@/lib/match-clock';
 import { MatchScore } from '@/components/match-score';
+import { eventLabelFr } from '@/lib/event-fr';
+import { decimalFr } from '@/lib/stat-fr';
 import { cn } from '@/lib/utils';
 import { OL_365SCORES_ID as OL_ID } from '@/types/api';
 
@@ -121,7 +123,7 @@ export function LiveMatchCard() {
         <div className="px-5 pb-4 space-y-3">
           <StatBar label="Possession (touches)" home={homePoss} away={awayPoss} />
           <StatBar label="Tirs au total" home={homeShots} away={awayShots} />
-          <StatBar label="Buts attendus (xG)" home={homeXg} away={awayXg} fmt={(n) => n.toFixed(2)} />
+          <StatBar label="Buts attendus (xG)" home={homeXg} away={awayXg} fmt={(n) => decimalFr(n, 2)} />
         </div>
       )}
 
@@ -131,7 +133,7 @@ export function LiveMatchCard() {
             <div key={i} className="text-xs flex items-center gap-2 text-fg-muted">
               <span className="num tabular-nums text-fg w-9">{e.gameTimeDisplay}</span>
               <span className="font-semibold uppercase tracking-wider text-[10px] text-ol-red-bright">
-                {e.type === 'goal' ? '⚽ But' : e.type === 'yellow_card' ? '🟨' : e.type === 'red_card' ? '🟥' : e.description}
+                {e.type === 'goal' ? '⚽ But' : e.type === 'yellow_card' ? '🟨' : e.type === 'red_card' ? '🟥' : eventLabelFr(e.type, e.description)}
               </span>
               <span className="ml-auto text-fg">
                 {e.competitorId === current.home.id ? current.home.symbolicName : current.away.symbolicName}

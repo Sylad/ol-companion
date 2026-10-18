@@ -11,6 +11,10 @@ describe('stat-fr — glossaire et nombres français (L179)', () => {
     expect(statNameFr('Yellow:Red')).toBe('Jaunes : rouges');
   });
 
+  it('L183 — « Pass. Décisiv. » (abréviation 365scores pendant le match) s’écrit « Passes décisives »', () => {
+    expect(statNameFr('Pass. Décisiv.')).toBe('Passes décisives');
+  });
+
   it('R1 — un libellé déjà français ou inconnu reste tel quel', () => {
     expect(statNameFr('Buts attendus')).toBe('Buts attendus');
     expect(statNameFr('Tirs cadrés')).toBe('Tirs cadrés');
