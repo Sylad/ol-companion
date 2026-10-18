@@ -72,10 +72,16 @@ export function isCupEliminated(matches: CupMatch[], now: Date = new Date(), upc
   return now.getTime() - new Date(last.date).getTime() > STALE_DAYS * 86_400_000;
 }
 
+/** Manches d'une confrontation de qualification (aller et retour). */
+const QUALIFIER_LEGS = 2;
+
 /**
  * Dernier tour des qualifications (barrages) gagné, rien à venir : l'OL entre en phase de
  * ligue, qui n'est pas sur la page. Sans ce cas, la coupe resterait « en lice » puis
  * passerait « éliminée » au bout de STALE_DAYS.
+ * Il faut les DEUX manches dans les résultats : 365scores retire un match des matchs à
+ * venir avant le coup d'envoi et ne le met dans les résultats qu'à la fin, donc pendant le
+ * retour l'aller seul est visible, sans rien à venir — son cumul ne prouve rien.
  */
 export function isQualifiersWon(matches: CupMatch[]): boolean {
   if (matches.some((m) => m.status === 'SCHEDULED' || m.status === 'IN_PLAY')) return false;
@@ -85,6 +91,7 @@ export function isQualifiersWon(matches: CupMatch[]): boolean {
   const last = finished[finished.length - 1];
   if (last?.stageFr !== PLAYOFFS_STAGE) return false;
   const tie = finished.filter((m) => m.stageFr === PLAYOFFS_STAGE);
+  if (tie.length < QUALIFIER_LEGS) return false;
   const decided = tie.find((m) => m.olQualified !== undefined);
   return decided ? decided.olQualified === true : aggregate(tie) > 0;
 }

@@ -144,8 +144,15 @@ describe('isCupEliminated', () => {
 });
 
 describe('isQualifiersWon — barrages de qualification gagnés', () => {
-  it('barrages gagnés (équipe qualifiée lue) = qualifié', () => {
-    expect(isQualifiersWon([m('FINISHED', 'Barrages', { ol: 1, opp: 1, qualified: true })])).toBe(true);
+  it('barrages gagnés (équipe qualifiée lue sur le retour) = qualifié', () => {
+    expect(isQualifiersWon([
+      m('FINISHED', 'Barrages', { daysAgo: 10, ol: 1, opp: 1 }),
+      m('FINISHED', 'Barrages', { daysAgo: 3, ol: 1, opp: 1, qualified: true }),
+    ])).toBe(true);
+  });
+  it('aller seul joué, retour absent des matchs à venir comme des résultats (365scores le retire avant le coup d\'envoi) = pas qualifié', () => {
+    expect(isQualifiersWon([m('FINISHED', 'Barrages', { ol: 2, opp: 0 })])).toBe(false);
+    expect(isQualifiersWon([m('FINISHED', 'Barrages', { ol: 1, opp: 1, qualified: true })])).toBe(false);
   });
   it('barrages gagnés au cumul des buts = qualifié', () => {
     expect(isQualifiersWon([
