@@ -77,6 +77,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
               'relative z-20 inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-sm',
               resultBadge.cls,
             )}
+            role="img"
             aria-label={resultBadge.label === 'V' ? 'Victoire' : resultBadge.label === 'N' ? 'Match nul' : 'Défaite'}
             title={shootout ? (resultBadge.label === 'V' ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but') : undefined}
           >

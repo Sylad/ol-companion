@@ -53,6 +53,7 @@ function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {
         'inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded border tabular-nums',
         tone,
       )}
+      role="img"
       aria-label={RESULT_LABEL[result].name}
     >
       {RESULT_LABEL[result].letter}

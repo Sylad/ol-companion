@@ -53,6 +53,10 @@ describe('<CupMatchRow /> — tirs au but (L140)', () => {
     expect(getByLabelText('Victoire')).toHaveTextContent('V');
     expect(container.textContent).toContain('t.a.b.');
   });
+  it('la pastille a un rôle (img) : son aria-label est lu par les lecteurs d\'écran', async () => {
+    const { getByRole } = await renderRow(done({ olQualified: false }));
+    expect(getByRole('img', { name: 'Défaite' })).toHaveTextContent('D');
+  });
   it('un nul perdu aux tirs au but : badge « Défaite »', async () => {
     const { getByLabelText } = await renderRow(done({ olQualified: false }));
     expect(getByLabelText('Défaite')).toHaveTextContent('D');

@@ -45,7 +45,7 @@ describe('<PlayerDetailPage /> — badges de résultat (L7/t5)', () => {
     const table = await screen.findByRole('table');
     const rows = within(table).getAllByRole('row').slice(1); // ordre inversé : L, D, W
     const badge = (i: number) => {
-      const el = within(rows[i]).getByLabelText(/Victoire|Match nul|Défaite/);
+      const el = within(rows[i]).getByRole('img', { name: /Victoire|Match nul|Défaite/ });
       return [el.textContent, el.getAttribute('aria-label')];
     };
     expect(badge(0)).toEqual(['D', 'Défaite']);

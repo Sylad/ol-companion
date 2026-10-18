@@ -116,7 +116,7 @@ describe('L6 t3 — la carte mène au détail du match', () => {
 describe('L6 t4 — écussons du CDN 365scores', () => {
   it('t4 — chaque écusson vient de seasonTeamLogoUrl, sans passer par /api/wiki-image', async () => {
     await renderRow(game());
-    const imgs = screen.getAllByRole('img');
+    const imgs = screen.getAllByRole('img').filter((i) => i.tagName === 'IMG');
     expect(imgs.map((i) => i.getAttribute('src'))).toEqual([seasonTeamLogoUrl(465), seasonTeamLogoUrl(1234)]);
   });
 });
