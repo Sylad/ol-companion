@@ -1916,11 +1916,12 @@ lots:
   - id: L178
     title: "Joueurs : l'onglet « Effectif » ne montre que les 23 de la dernière feuille de match (Openda, Maitland-Niles, Fofana, Tagliafico, Ouédraogo, de Carvalho absents) — décision de Sylvain 18-10 : effectif de la SAISON bâti sur /api/players/season-stats ; avec : 9 noms sur 23 tronqués à 390 px (line-clamp-2 au lieu de truncate) ; libellés (titularisations), (cadrés), B+P, (D)/(E) avec légende ou abbr, « Tirs / cadrés 21/11 » qui se lit comme une date, notes au format fr (7,3) ; joueurs du terrain et du banc de Composition qui mènent à leur fiche (revue UX L7)"
     public: "Joueurs : tout l'effectif de la saison"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-18
+    started: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
