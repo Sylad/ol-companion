@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-18 13:33",
+  "generated": "2026-10-18 19:35",
   "entries": [
+    {
+      "slug": "2026-10-18-page-du-match-une-panne-n-est-plus-introuvable",
+      "title": "Page du match : une panne n'est plus « introuvable »",
+      "date": "2026-10-18",
+      "lots": [
+        "L181"
+      ],
+      "captures": [
+        "captures/L181-match-panne-390.png"
+      ],
+      "alts": [
+        "Page d'un match sur téléphone quand le serveur ne répond pas : message « Impossible de charger le match », boutons « Réessayer » et « Retour à l'accueil »"
+      ],
+      "html": "<p>Sur la page d'un match, une panne n'est plus confondue avec un match qui n'existe pas. Quand le serveur ne répond pas ou que vous êtes hors ligne, la page écrit « Impossible de charger le match » et propose un bouton « Réessayer » à côté du retour à l'accueil. « Match introuvable » n'apparaît plus que pour une adresse qui ne mène vraiment à aucun match. Un chargement qui ne reçoit aucune réponse ne tourne plus indéfiniment : au bout de 15 secondes, la page passe elle aussi à « Impossible de charger le match ».</p>\n<p>Si le rafraîchissement automatique échoue alors qu'un match est déjà affiché, la page garde le match à l'écran au lieu de l'effacer. Chaque état de la page (chargement, panne, introuvable) a maintenant son titre, pour les lecteurs d'écran.</p>"
+    },
     {
       "slug": "2026-10-18-joueurs-tout-l-effectif-de-la-saison",
       "title": "Joueurs : tout l'effectif de la saison",
