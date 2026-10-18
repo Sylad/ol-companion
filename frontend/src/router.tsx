@@ -8,6 +8,7 @@ import {
 import { Loader2 } from 'lucide-react';
 import { AppShell } from './components/layout/app-shell';
 import { DashboardPage } from './routes/index';
+import { NotFoundPage } from './routes/not-found';
 import { validatePlayersSearch } from './lib/players-search';
 
 const FixturesPage = lazyNamed(() => import('./routes/fixtures'), 'FixturesPage');
@@ -56,6 +57,7 @@ function withSuspense(Page: ComponentType) {
 
 const rootRoute = createRootRoute({
   component: AppShell,
+  notFoundComponent: NotFoundPage,
 });
 
 const indexRoute = createRoute({
