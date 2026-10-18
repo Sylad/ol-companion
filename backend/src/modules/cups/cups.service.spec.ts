@@ -215,6 +215,62 @@ describe('CupsService — appel des matchs à venir en échec', () => {
     expect(cups[0].isEliminated).toBe(true);
   });
 
+  describe('Qualifications de la Ligue des champions (332)', () => {
+    const { getCurrentSeason } = require('../scheduler/season.util') as typeof import('../scheduler/season.util');
+    const day = (n: number) => new Date(getCurrentSeason().startDate.getTime() + n * 86_400_000).toISOString();
+    const qualif = (id: number, startTime: string, stageName: string, legNum: number, ol: number, opp: number, oppQualified = false) => ({
+      id, competitionId: 332, startTime, statusGroup: 4, stageName, legNum,
+      homeCompetitor: { id: legNum === 1 ? 465 : 9, name: legNum === 1 ? 'Lyon' : 'Adversaire', score: legNum === 1 ? ol : opp, ...(legNum === 2 && oppQualified ? { isQualified: true } : {}) },
+      awayCompetitor: { id: legNum === 1 ? 9 : 465, name: legNum === 1 ? 'Adversaire' : 'Lyon', score: legNum === 1 ? opp : ol },
+    });
+    const serve = (games: object[]) => {
+      global.fetch = jest.fn(async (url: string | URL | Request) =>
+        new Response(JSON.stringify({ games: FIXTURES.test(String(url)) ? [] : games }), { status: 200 }),
+      ) as unknown as typeof fetch;
+    };
+    const fourMatches = () => [
+      qualif(11, day(10), '3rd Round', 1, 1, 0),
+      qualif(12, day(17), '3rd Round', 2, 2, 2),
+      qualif(13, day(24), 'Playoffs', 1, 0, 1),
+      qualif(14, day(31), 'Playoffs', 2, 1, 1, true),
+    ];
+
+    it('les 4 matchs de qualification forment une coupe « Ligue des champions — qualifications », avec tour, manche et score', async () => {
+      const svc = await load();
+      serve(fourMatches());
+      const cups = await svc.getCups({ force: true });
+      const cup = cups.find((c) => c.competitionId === 332)!;
+      expect(cup.name).toBe('Ligue des champions — qualifications');
+      expect(cup.matches).toHaveLength(4);
+      expect(cup.matches.map((m) => m.stage)).toEqual([
+        '3e tour de qualification · aller', '3e tour de qualification · retour',
+        'Barrages · aller', 'Barrages · retour',
+      ]);
+      expect(cup.matches.map((m) => m.stageFr)).toEqual([
+        '3e tour de qualification', '3e tour de qualification', 'Barrages', 'Barrages',
+      ]);
+      expect([cup.matches[0].homeScore, cup.matches[0].awayScore]).toEqual([1, 0]);
+    });
+
+    it('OL battu aux barrages : éliminé, tour affiché « Barrages » ; coupe placée après la Ligue Europa', async () => {
+      const svc = await load();
+      serve([...fourMatches(), { ...game(1, 4, recent, 2, 0), competitionId: 573, stageNum: 1 }]);
+      const cups = await svc.getCups({ force: true });
+      const cup = cups.find((c) => c.competitionId === 332)!;
+      expect(cup.isEliminated).toBe(true);
+      expect(cup.currentStageFr).toBe('Barrages');
+      expect(cups.map((c) => c.competitionId)).toEqual([573, 332]);
+    });
+
+    it('tour sans nom français connu : ni libellé anglais ni tour inventé', async () => {
+      const svc = await load();
+      serve([qualif(15, day(5), 'Final Stage', 1, 1, 0)]);
+      const cup = (await svc.getCups({ force: true })).find((c) => c.competitionId === 332)!;
+      expect(cup.matches[0].stage).toBe('aller');
+      expect(cup.matches[0].stageFr).toBe('');
+    });
+  });
+
   describe('Ligue Europa — phase de ligue terminée', () => {
     const STANDINGS = /\/web\/standings\//;
     const elGame = (id: number, daysAgo: number) => ({

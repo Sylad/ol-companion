@@ -112,7 +112,7 @@ export const TRACKED_COMPETITIONS: Record<
  * qualifications de Ligue des champions. Un tour absent d'ici n'est pas
  * affiché — jamais de libellé anglais à l'écran.
  */
-function stageLabel(competitionId: number, stageName?: string): string | null {
+export function stageLabel(competitionId: number, stageName?: string): string | null {
   if (!stageName) return null;
   if (competitionId === CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID) {
     const nth = /^(\d)(?:st|nd|rd|th) Round$/.exec(stageName);
@@ -123,7 +123,7 @@ function stageLabel(competitionId: number, stageName?: string): string | null {
 }
 
 /** Manche d'une confrontation aller-retour (`legNum` 1 ou 2). */
-function legLabel(legNum?: number): string | null {
+export function legLabel(legNum?: number): string | null {
   return legNum === 1 ? 'aller' : legNum === 2 ? 'retour' : null;
 }
 

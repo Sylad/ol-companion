@@ -9,7 +9,8 @@ import { SeasonResetService } from '../scheduler/season-reset.service';
 import { isCupEliminated, isLeaguePhaseComplete, leaguePhaseOutcome } from './cup-status';
 import { Scores365StandingsResponseSchema } from '../standings/standings.schema';
 import { BracketService } from './bracket.service';
-import { OL_365SCORES_ID, LIGUE1_365SCORES_ID } from '../../config/constants';
+import { OL_365SCORES_ID, LIGUE1_365SCORES_ID, CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID } from '../../config/constants';
+import { legLabel, stageLabel } from '../season-matches/season-matches.service';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
@@ -68,6 +69,7 @@ export interface BracketInfo {
 const COMP_NAMES: Record<number, string> = {
   37: 'Coupe de France',
   573: 'Ligue Europa',
+  [CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID]: 'Ligue des champions — qualifications',
 };
 
 // Coupe de France: stageNum → French name
@@ -103,7 +105,7 @@ const BRACKET_FROM_STAGE: Record<number, number> = {
 };
 
 // Cup display order (first = most important)
-const COMP_ORDER = [37, 573];
+const COMP_ORDER = [37, 573, CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID];
 /** Compétition à phase de ligue (classement final lu chez 365scores). */
 const LEAGUE_PHASE_COMPETITION = 573;
 
@@ -332,10 +334,17 @@ export class CupsService implements OnModuleInit {
 
     const stageNum = g.stageNum ?? 0;
     const roundNum = g.roundNum ?? 0;
-    const stageFr = stageNames[stageNum] ?? (stageNum ? `Tour ${stageNum}` : '');
+    // Qualifications (332) : pas de stageNum utile, le tour se lit dans stageName (mêmes libellés que le calendrier).
+    const isQualifiers = compId === CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID;
+    const stageFr = isQualifiers
+      ? stageLabel(compId, g.stageName) ?? ''
+      : stageNames[stageNum] ?? (stageNum ? `Tour ${stageNum}` : '');
 
-    // EL league phase: append match day
+    // EL league phase: append match day ; qualifications: append the leg (the tie keeps `stageFr` alone)
     let stage = stageFr;
+    if (isQualifiers) {
+      stage = [stageFr, legLabel(g.legNum)].filter((part) => part !== '' && part !== null).join(' · ');
+    }
     if (compId === 573 && stageNum === 1 && roundNum) {
       stage = `Phase de ligue — J${roundNum}`;
     }
