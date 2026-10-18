@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import { createMemoryHistory } from '@tanstack/react-router';
+import { RouterProvider, createMemoryHistory, createRouter } from '@tanstack/react-router';
 
 // L180 — route inconnue (dont /match sans identifiant) : page en français avec h1 et liens, jamais « Not Found ».
 
@@ -9,15 +9,13 @@ vi.mock('./components/layout/app-shell', async () => {
   return { AppShell: () => <Outlet /> };
 });
 
-import { AppRouter, router } from './router';
+import { router as routeurApplication } from './router';
 
-// Budget de chaque test : monter le routeur de l'application (arbre complet, 14 routes) puis lire la page
-// prend ~50 ms sur Big-Blue, mais le runner GitHub (2 vCPU, workers vitest en parallèle) a calé R2 au-delà
-// des 5 s par défaut (CI du 18-10). Les requêtes par rôle ARIA (findByRole/getByRole) recalculent les noms
-// accessibles de tout le document, lent sous jsdom : on lit le DOM par sélecteur CSS, comme
-// navigation-current.test.tsx, et l'attente du h1 garde les 3 s des autres tests qui montent le routeur
-// (accueil.*-L131/L85/L135). Le délai du test lui-même est porté à 15 s : une marge pour un runner lent,
-// pas un moyen d'attendre une page qui ne vient pas (l'attente active échoue, elle, au bout de 3 s).
+// Budget de chaque test : monter l'arbre complet (14 routes) puis lire la page prend ~50 ms. Les requêtes
+// par rôle ARIA (findByRole/getByRole) recalculent les noms accessibles de tout le document, lent sous
+// jsdom : on lit le DOM par sélecteur CSS, comme navigation-current.test.tsx, et l'attente du h1 garde les
+// 3 s des autres tests qui montent un routeur (accueil.*-L131/L85/L135). Le délai du test (15 s) n'est
+// qu'une marge pour un runner lent : le blocage de la CI du 18-10 n'était PAS de la lenteur, voir ouvrir().
 const DELAI_ATTENTE = 3000;
 const DELAI_TEST = 15_000;
 
@@ -46,10 +44,21 @@ function lien(nom: string) {
   return trouves[0];
 }
 
+/**
+ * Monte l'arbre de routes de l'application dans un routeur NEUF, à l'URL `chemin`. Réutiliser le routeur
+ * singleton de './router' avec router.update({ history }) puis router.load() bloque dès le deuxième test
+ * avec @tanstack/react-router >= 1.170 (que la CI installe, faute de package-lock.json) : le routeur dont
+ * le rendu a été démonté par le nettoyage de testing-library ne termine plus jamais load() (reproduit
+ * avec 1.170.45, Node 20 ; 1.169.2 s'en accommode). Un routeur par test, comme les autres tests de
+ * routeur du dépôt (accueil.*-L131/L85/L135, navigation-current), n'a pas d'état hérité du test précédent.
+ */
 async function ouvrir(chemin: string) {
-  router.update({ history: createMemoryHistory({ initialEntries: [chemin] }) });
+  const router = createRouter({
+    routeTree: routeurApplication.routeTree,
+    history: createMemoryHistory({ initialEntries: [chemin] }),
+  });
   await router.load();
-  render(<AppRouter />);
+  render(<RouterProvider router={router} />);
 }
 
 describe('Route inconnue (L180)', () => {
