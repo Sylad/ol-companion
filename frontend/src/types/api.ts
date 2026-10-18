@@ -234,6 +234,7 @@ export interface LiveMatchTimelineEvent {
   playerName: string | null;
   playerShortName: string | null;
   extraPlayerName: string | null;
+  extraPlayerShortName?: string | null;
   description: string;
   /** True if synthesized client/server-side (e.g. 2nd-yellow → red derivation). */
   derived?: boolean;

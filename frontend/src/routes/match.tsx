@@ -26,6 +26,8 @@ const EVENT_LABEL: Record<string, string> = {
   card: '🟨 Carton',
   substitution: '↔ Remplacement',
   var: 'VAR',
+  goal_cancelled: '🚫 But annulé (VAR)',
+  woodwork: '🥅 Poteau',
   penalty_missed: '❌ Penalty raté',
 };
 
@@ -94,12 +96,17 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
   const isHome = event.competitorId === homeId;
   const base = EVENT_LABEL[event.type] ?? event.description;
   const who = event.playerShortName ?? event.playerName;
-  const label = who ? `${base} · ${who}` : base;
-  // Tooltip : nom complet, et passeur / entrant selon l'événement.
-  const extra = event.extraPlayerName
-    ? ` — ${event.type === 'substitution' ? 'entrant' : 'passe'} : ${event.extraPlayerName}`
-    : '';
-  const tooltip = event.playerName ? `${event.playerName}${extra}` : undefined;
+  // Remplacement : playerId = entrant, extraPlayer = sortant (365scores type 1000).
+  const isSub = event.type === 'substitution';
+  const out = event.extraPlayerShortName ?? event.extraPlayerName;
+  const label = isSub && who && out ? `${base} · ${who} ↔ ${out}` : who ? `${base} · ${who}` : base;
+  // Tooltip : nom complet, et entrant ↔ sortant ou passeur selon l'événement.
+  let tooltip: string | undefined;
+  if (event.playerName) {
+    if (isSub && event.extraPlayerName) tooltip = `${event.playerName} (entrant) ↔ ${event.extraPlayerName} (sortant)`;
+    else if (event.extraPlayerName) tooltip = `${event.playerName} — passe : ${event.extraPlayerName}`;
+    else tooltip = event.playerName;
+  }
   const dim = 'text-fg-dim';
   return (
     <div className="ev">
