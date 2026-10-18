@@ -499,8 +499,9 @@
     {
       "id": "L174",
       "title": "Coupes : les matchs de qualification en Ligue des champions",
-      "status": "doing",
-      "started": "2026-10-18"
+      "status": "done",
+      "started": "2026-10-18",
+      "finished": "2026-10-18"
     }
   ]
 }
