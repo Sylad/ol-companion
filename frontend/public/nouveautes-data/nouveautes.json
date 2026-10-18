@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-18 09:21",
+  "generated": "2026-10-18 12:48",
   "entries": [
+    {
+      "slug": "2026-10-18-joueurs-statistiques-lisibles-sur-telephone",
+      "title": "Joueurs : statistiques lisibles sur téléphone",
+      "date": "2026-10-18",
+      "lots": [
+        "L177"
+      ],
+      "captures": [
+        "captures/L177-stats-saison-390.png",
+        "captures/L177-fiche-detail-390.png"
+      ],
+      "alts": [
+        "Stats saison sur téléphone : sept puces de tri en haut, puis la liste des joueurs avec une seule colonne de valeur",
+        "Détail saison d'un joueur sur téléphone : Date, Adversaire, Buts · PD et Min"
+      ],
+      "html": "<p>Sur téléphone, l'onglet « Stats saison » de la page Joueurs ne demande plus de faire défiler le tableau sur le côté. Sept boutons (B+P, Buts, PD, Min, Matchs, Tirs, Note) choisissent la statistique affichée et l'ordre de la liste ; B+P est choisi par défaut. Le nom du joueur reste à gauche, son poste en dessous, et une valeur complémentaire s'affiche sous le chiffre principal.</p>\n<p>Sur la fiche d'un joueur, le « Détail saison » montre maintenant la date, l'adversaire, les buts et passes décisives (« Buts · PD ») et les minutes, sans défilement latéral. Sur écran large, rien ne change.</p>"
+    },
     {
       "slug": "2026-10-18-coupes-les-matchs-de-qualification-en-ligue-des-champions",
       "title": "Coupes : les matchs de qualification en Ligue des champions",
