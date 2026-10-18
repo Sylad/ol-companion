@@ -224,6 +224,8 @@ function PerformerCell({ player, align }: { player: LiveMatchTopPerformer['homeP
   );
 }
 
+// Au-delà, un « Chargement du match… » sans réponse devient une panne avec Réessayer (L80).
+const DELAI_CHARGEMENT_MS = 15_000;
 const GOAL_TYPES = new Set(['goal', 'penalty_goal', 'own_goal']);
 
 /** « Nuamah 7', 30' (pen.) » — buts crédités à `teamId`, groupés par joueur. Un csc profite à l'adversaire. */
@@ -340,7 +342,7 @@ export function MatchPage() {
   const { gameId } = useParams({ from: '/match/$gameId' });
   const { matchupId } = useSearch({ from: '/match/$gameId' }) as MatchSearch;
   const numericGameId = Number(gameId);
-  const { data, isLoading, error, refetch } = useLiveMatchStats(
+  const { data, isLoading, error, fetchStatus, refetch } = useLiveMatchStats(
     Number.isFinite(numericGameId) ? numericGameId : null,
     matchupId ?? null,
   );
@@ -353,6 +355,21 @@ export function MatchPage() {
     return () => document.body.classList.remove('theme-bleus');
   }, [bleus]);
 
+  // Sortie d'un chargement sans fin (L80) : sans réponse au bout de DELAI_CHARGEMENT_MS, la page passe à l'état panne
+  // (message + Réessayer) ; Réessayer relance l'appel et le délai. Hors ligne la requête est en pause : pas d'attente.
+  const [chargementTropLong, setChargementTropLong] = useState(false);
+  const [essai, setEssai] = useState(0);
+  const enAttente = !!matchupId && isLoading && !data;
+  useEffect(() => {
+    if (!enAttente) {
+      setChargementTropLong(false);
+      return;
+    }
+    const t = setTimeout(() => setChargementTropLong(true), DELAI_CHARGEMENT_MS);
+    return () => clearTimeout(t);
+  }, [enAttente, essai]);
+  const horsLigne = fetchStatus === 'paused' && !data;
+
   if (!matchupId) {
     // Le backend exige matchupId (format homeId-awayId-gameId) : sans lui la
     // query est désactivée et la page affichait « Match introuvable » pour un
@@ -364,7 +381,7 @@ export function MatchPage() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading && !horsLigne && !chargementTropLong) {
     return (
       <div data-testid="message-chargement" className="flex items-center justify-center py-20 text-fg-dim">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -375,15 +392,16 @@ export function MatchPage() {
   if (!data) {
     // Un échec de rafraîchissement avec le match déjà affiché n'efface rien : seule l'absence de données mène ici (L181).
     // 404 = match inconnu ; toute autre erreur (réseau, 5xx) est une panne, qu'un nouvel essai peut lever (L181).
-    // Sans objet d'erreur (cas non réseau), on garde « introuvable ».
-    const panne = error != null && !estIntrouvable(error);
+    // Sans réseau (requête en pause, ni erreur ni données) ou sans réponse au bout du délai : panne aussi (L80).
+    // Sans erreur et sans ces deux cas, on garde « introuvable ».
+    const panne = (error != null && !estIntrouvable(error)) || horsLigne || chargementTropLong;
     return (
       <div className="space-y-3 max-w-md mx-auto text-center py-20">
         <h1 data-testid="message-erreur" className="text-loss-fg font-semibold">
           {panne ? 'Impossible de charger le match' : 'Match introuvable'}
         </h1>
         {panne && (
-          <button type="button" onClick={() => void refetch()} className="rounded border border-border px-3 py-1.5 text-sm text-fg">
+          <button type="button" onClick={() => { setChargementTropLong(false); setEssai((n) => n + 1); void refetch(); }} className="rounded border border-border px-3 py-1.5 text-sm text-fg">
             Réessayer
           </button>
         )}

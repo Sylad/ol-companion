@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ApiError } from '@/lib/api';
 import type { LiveMatchStats } from '@/types/api';
 
@@ -102,5 +102,31 @@ describe('Page match — erreurs (L181)', () => {
     render(<MatchPage />);
     expect(screen.queryByTestId('message-erreur')).toBeNull();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Lyon – Lens');
+  });
+
+  it('R9 — hors ligne (requête en pause, sans erreur) : « Impossible de charger », Réessayer, pas « introuvable »', () => {
+    hook = { isLoading: false, isError: false, fetchStatus: 'paused', data: undefined, error: null, refetch };
+    render(<MatchPage />);
+    expect(screen.getByTestId('message-erreur')).toHaveTextContent('Impossible de charger le match');
+    expect(screen.getByRole('button', { name: 'Réessayer' })).toBeInTheDocument();
+  });
+
+  it('R10 — un chargement qui ne répond pas sort en erreur avec Réessayer après 15 s (L80)', () => {
+    vi.useFakeTimers();
+    try {
+      hook = { isLoading: true, isError: false, fetchStatus: 'fetching', data: undefined, refetch };
+      render(<MatchPage />);
+      expect(screen.getByTestId('message-chargement')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+      act(() => { vi.advanceTimersByTime(15_000); });
+      expect(screen.queryByTestId('message-chargement')).toBeNull();
+      expect(screen.getByTestId('message-erreur')).toHaveTextContent('Impossible de charger le match');
+      fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
+      expect(refetch).toHaveBeenCalledTimes(1);
+      // le nouvel essai ramène le chargement, avec un nouveau délai
+      expect(screen.getByTestId('message-chargement')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
