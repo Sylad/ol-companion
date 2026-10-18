@@ -254,9 +254,10 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
   }
   if (!data || data.length === 0) {
     return (
-      <p className="py-10 text-center text-fg-muted">
-        Pas encore de statistiques agrégées (pas de match terminé dans le cache).
-      </p>
+      <EtatPanneau onRetry={() => void refetch()}>
+        Aucune statistique de la saison n’est disponible pour le moment : elles apparaissent après le premier match
+        terminé. Réessayez plus tard.
+      </EtatPanneau>
     );
   }
 
