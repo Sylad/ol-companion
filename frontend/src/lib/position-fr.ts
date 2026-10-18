@@ -63,16 +63,26 @@ export function positionShortFr(value: string): string {
 }
 
 const GROUPE: Record<string, string> = {
+  // libellés de ligne de 365scores (champ `position` de la feuille de match, toujours présent)
+  goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', attacker: 'ATK', forward: 'ATK',
+  // codes courts
   gk: 'GK',
   def: 'DEF', cb: 'DEF', lb: 'DEF', rb: 'DEF', lwb: 'DEF', rwb: 'DEF',
   mid: 'MID', dm: 'MID', cm: 'MID', am: 'MID', lm: 'MID', rm: 'MID',
   atk: 'ATK', fw: 'ATK', lw: 'ATK', rw: 'ATK', cf: 'ATK', ss: 'ATK', st: 'ATK',
+  // `positionShort` de la feuille porte aussi des libellés longs (formation.shortName)
+  'centre back': 'DEF', 'center back': 'DEF', 'centre-back': 'DEF', 'left back': 'DEF', 'right back': 'DEF',
+  'left wing back': 'DEF', 'right wing back': 'DEF',
+  'defensive midfield': 'MID', 'central midfield': 'MID', 'attacking midfield': 'MID', 'left midfield': 'MID', 'right midfield': 'MID',
+  'left forward': 'ATK', 'right forward': 'ATK', 'centre forward': 'ATK', 'left winger': 'ATK', 'right winger': 'ATK',
+  'second striker': 'ATK', striker: 'ATK',
 };
 
 /**
- * Poste détaillé de la feuille de match (CB, RB, AM…) ramené à l'une des quatre lignes (GK, DEF, MID, ATK)
- * que portent les joueurs des stats de saison ; un code inconnu est rendu tel quel.
+ * Poste d'un joueur de la feuille de match ramené à l'une des quatre lignes (GK, DEF, MID, ATK) que portent les joueurs
+ * des stats de saison. La ligne se lit d'abord dans `position` (« Defender »), puis dans `positionShort`, qui peut être
+ * un code (CB) ou un libellé long (« Centre Back ») ; un poste inconnu est rendu tel quel (`positionShort`).
  */
-export function positionGroup(value: string): string {
-  return GROUPE[value.trim().toLowerCase()] ?? value;
+export function positionGroup(position: string, positionShort = ''): string {
+  return GROUPE[position.trim().toLowerCase()] ?? GROUPE[positionShort.trim().toLowerCase()] ?? (positionShort || position);
 }

@@ -105,17 +105,24 @@ describe('Effectif de la saison (L178)', () => {
 });
 
 describe('Convoqués de la feuille dans l\'Effectif (L178)', () => {
-  it('Effectif : un convoqué absent des stats n\'a ni badge « Banc » ni poste détaillé, comme les cartes de la saison', () => {
-    lineup!.bench = [{ ...lp(3, false, 6.1), positionShort: 'CB' }];
+  // Libellés réels de /api/lineup (mesurés dans backend/data/lineup-cache.json) : `position` = ligne, `positionShort` = code OU libellé long.
+  it.each([
+    ['Defender', 'Centre Back', 'DEF'],
+    ['Defender', 'Right Back', 'DEF'],
+    ['Midfielder', 'Central Midfield', 'MIL'],
+    ['Attacker', 'Centre Forward', 'ATT'],
+    ['Goalkeeper', 'Goalkeeper', 'GB'],
+    ['Defender', 'Sweeper', 'DEF'],
+  ])('Effectif : un convoqué « %s / %s » a la même étiquette de ligne que les cartes de la saison (%s : GB, DEF, MIL, ATT), ni « Banc » ni poste détaillé', (position, court, attendu) => {
+    lineup!.bench = [{ ...lp(3, false, 6.1), position, positionShort: court }];
     search = { onglet: 'effectif' };
     render(<PlayersPage />);
     const carte = screen.getByText('Feuille 3').closest('a')!;
     expect(within(carte).queryByText('Banc')).toBeNull();
-    expect(within(carte).getByText('DEF')).toBeInTheDocument();
-    expect(within(carte).queryByText('DC')).toBeNull();
+    expect(within(carte).getByText(attendu)).toBeInTheDocument();
+    for (const detaille of ['DC', 'DD', 'DG', 'MC', 'AC', 'MO']) expect(within(carte).queryByText(detaille)).toBeNull();
     // la note du dernier match n'est pas une moyenne de saison
     expect(within(carte).queryByText('6,1')).toBeNull();
-    expect(screen.queryByText('Banc')).toBeNull();
   });
 });
 

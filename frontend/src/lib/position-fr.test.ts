@@ -26,12 +26,20 @@ describe('postes en français (L56)', () => {
 });
 
 describe('ligne de poste de la feuille de match (L178)', () => {
-  it('ramène les postes détaillés à GK / DEF / MID / ATK, quelle que soit la casse, et laisse l\'inconnu', () => {
-    expect(positionGroup('GK')).toBe('GK');
-    for (const c of ['CB', 'RB', 'LB', 'LWB', 'RWB', 'DEF']) expect(positionGroup(c)).toBe('DEF');
-    for (const c of ['DM', 'CM', 'AM', 'LM', 'RM', 'MID']) expect(positionGroup(c)).toBe('MID');
-    for (const c of ['RW', 'LW', 'FW', 'ST', 'CF', 'SS', 'ATK']) expect(positionGroup(c)).toBe('ATK');
-    expect(positionGroup('cb')).toBe('DEF');
-    expect(positionGroup('XYZ')).toBe('XYZ');
+  it('lit la ligne dans `position`, avec les libellés réels de la feuille (positionShort long ou code)', () => {
+    const reels: [string, string, string][] = [
+      ['Goalkeeper', 'Goalkeeper', 'GK'],
+      ['Defender', 'Centre Back', 'DEF'], ['Defender', 'Right Back', 'DEF'], ['Defender', 'Left Back', 'DEF'],
+      ['Midfielder', 'Central Midfield', 'MID'], ['Midfielder', 'Attacking Midfield', 'MID'], ['Midfielder', 'MID', 'MID'],
+      ['Attacker', 'Centre Forward', 'ATK'], ['Attacker', 'Left Forward', 'ATK'], ['Attacker', 'Right Forward', 'ATK'],
+    ];
+    for (const [position, court, groupe] of reels) expect(positionGroup(position, court)).toBe(groupe);
+  });
+  it('sans `position`, se replie sur positionShort (libellé long ou code, casse libre) ; l\'inconnu est rendu tel quel', () => {
+    expect(positionGroup('', 'Centre Back')).toBe('DEF');
+    expect(positionGroup('', 'cb')).toBe('DEF');
+    expect(positionGroup('', 'RW')).toBe('ATK');
+    expect(positionGroup('', 'XYZ')).toBe('XYZ');
+    expect(positionGroup('Libero', 'LIB')).toBe('LIB');
   });
 });

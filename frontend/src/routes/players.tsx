@@ -170,7 +170,7 @@ function enCarte(p: PlayerSeasonStats): LineupPlayer {
 // Un convoqué de la feuille n'est ni « banc » ni « titulaire » dans un effectif de saison : pas de badge « Banc »,
 // poste ramené à GB / DEF / MIL / ATT comme les cartes issues des stats, pas de note (celle d'un match n'est pas une moyenne).
 function enCarteFeuille(p: LineupPlayer): LineupPlayer {
-  return { ...p, ranking: null, isStarting: true, positionShort: positionGroup(p.positionShort) };
+  return { ...p, ranking: null, isStarting: true, positionShort: positionGroup(p.position, p.positionShort) };
 }
 
 function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: LineupPlayer[] }) {
