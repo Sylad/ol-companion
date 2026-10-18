@@ -109,6 +109,51 @@ describe('<PlayersPage /> — Stats saison à 390 px (L177)', () => {
   });
 });
 
+describe('<PlayersPage /> — valeur secondaire sous la principale (L177)', () => {
+  // Joueur 1 : 1 seul match (singulier) ; joueur 2 : 3 matchs. L'ordre des lignes dépend du tri : on retrouve la ligne par le nom.
+  const lignes = () => within(screen.getByRole('table')).getAllByRole('row').slice(1);
+  const ligneDe = (nom: string) => lignes().find((l) => within(l).queryByText(nom))!;
+  const secondaireDe = (ligne: HTMLElement) =>
+    Array.from(ligne.querySelectorAll('span.block')).map((e) => e.textContent);
+
+  beforeEach(() => {
+    stats = [
+      { ...joueur(1, 1, 4), matchesPlayed: 1 } as PlayerSeasonStats,
+      joueur(2, 2, 2),
+    ];
+  });
+
+  it.each(['buts', 'passes', 'minutes', 'note'])('R9 — tri « %s » : « N match(s) » sous la valeur, au singulier à 1, dans la cellule du tri, sm:hidden', (tri) => {
+    search = { onglet: 'stats', tri };
+    render(<PlayersPage />);
+    expect(secondaireDe(ligneDe('Joueur 1'))).toEqual(['1 match']);
+    expect(secondaireDe(ligneDe('Joueur 2'))).toEqual(['3 matchs']);
+    const cellule = within(ligneDe('Joueur 1')).getByText('1 match');
+    expect(cellule.className).toContain('sm:hidden');
+    // la valeur secondaire est dans la colonne visible sur mobile (celle du tri), pas dans une cellule masquée
+    expect(visibleSurMobile(cellule.closest('td')!)).toBe(true);
+  });
+
+  it.each(['bp', 'matchs', 'tirs'])('R10 — tri « %s » : une seule valeur secondaire au plus, jamais « N matchs » en double', (tri) => {
+    search = { onglet: 'stats', tri };
+    render(<PlayersPage />);
+    for (const l of lignes()) expect(secondaireDe(l).length).toBe(tri === 'bp' ? 1 : 0);
+    if (tri === 'bp') expect(secondaireDe(ligneDe('Joueur 1'))).toEqual(['1 B · 4 PD']);
+  });
+
+  it('R11 — sous sm la colonne Joueur est fixe, et au-delà de 640 px elle redevient statique et transparente (le survol de la ligne la colore)', () => {
+    render(<PlayersPage />);
+    const entete = within(screen.getByRole('table')).getByRole('columnheader', { name: 'Joueur' });
+    const cellule = within(lignes()[0]).getAllByRole('cell')[0];
+    for (const el of [entete, cellule]) {
+      expect(el.className).toContain('sticky');
+      expect(el.className).toContain('bg-surface');
+      expect(el.className).toContain('sm:static');
+      expect(el.className).toContain('sm:bg-transparent');
+    }
+  });
+});
+
 describe('<PlayerDetailPage /> — Détail saison à 390 px (L177)', () => {
   it('R7 — Date, Adversaire, « Buts · PD » et Min restent affichés ; Score, Comp., Buts, PD et Tirs sont hidden sm:table-cell', () => {
     render(<PlayerDetailPage />);

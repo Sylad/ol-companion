@@ -285,7 +285,7 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
       <table className="w-full text-sm sm:min-w-[640px]">
         <thead>
           <tr className="text-fg-dim text-[11px] uppercase tracking-wider font-semibold border-b border-border">
-            <th className="text-left px-4 py-2 font-semibold sticky left-0 bg-surface">Joueur</th>
+            <th className="text-left px-4 py-2 font-semibold sticky left-0 bg-surface sm:static sm:bg-transparent">Joueur</th>
             <SortHeader label="Matchs" sortKey="matchs" current={tri} onSort={onTri} />
             <SortHeader label="Min" sortKey="minutes" current={tri} onSort={onTri} />
             <SortHeader label="Buts" sortKey="buts" current={tri} onSort={onTri} />
@@ -360,7 +360,7 @@ function PlayerStatsRow({ player, retour, tri }: { player: PlayerSeasonStats; re
     key === tri && sous ? <span className="block sm:hidden whitespace-nowrap text-xs font-normal text-fg-dim">{sous}</span> : null;
   return (
     <tr className="border-b border-border/60 hover:bg-surface-2 transition-colors">
-      <td className="px-4 py-2 sticky left-0 bg-surface">
+      <td className="px-4 py-2 sticky left-0 bg-surface sm:static sm:bg-transparent">
         <Link
           to="/player/$athleteId"
           params={{ athleteId: String(player.athleteId) }}
