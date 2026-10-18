@@ -28,7 +28,11 @@ export function PlayersPage() {
   const tab: Onglet = search.onglet ?? 'composition';
   const tri: Tri = search.tri ?? 'bp';
   const go = (next: PlayersSearch) =>
-    void navigate({ to: '/players', search: { onglet: next.onglet, tri: next.tri }, replace: true });
+    void navigate({
+      to: '/players',
+      search: { onglet: next.onglet === 'composition' ? undefined : next.onglet, tri: next.tri === 'bp' ? undefined : next.tri },
+      replace: true,
+    });
   const setTab = (onglet: Onglet) => go({ onglet, tri: search.tri });
   const baseId = useId();
   const tabId = (t: string) => `${baseId}-onglet-${t}`;

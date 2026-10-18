@@ -65,6 +65,15 @@ describe('<PlayersPage /> — onglet et tri dans l’URL (L7/t4)', () => {
     expect(navigate).toHaveBeenCalledWith({ to: '/players', search: { onglet: 'effectif', tri: undefined }, replace: true });
   });
 
+  it('revenir à Composition ou au tri B+P efface le paramètre (l’URL par défaut reste propre)', () => {
+    search = { onglet: 'stats', tri: 'buts' };
+    render(<PlayersPage />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Composition' }));
+    expect(navigate).toHaveBeenLastCalledWith({ to: '/players', search: { onglet: undefined, tri: 'buts' }, replace: true });
+    fireEvent.click(within(screen.getAllByRole('columnheader').find((h) => h.textContent === 'B+P')!).getByRole('button'));
+    expect(navigate).toHaveBeenLastCalledWith({ to: '/players', search: { onglet: 'stats', tri: undefined }, replace: true });
+  });
+
   it('?tri=buts trie par buts ; cliquer une colonne écrit le tri en gardant l’onglet', () => {
     search = { onglet: 'stats', tri: 'buts' };
     render(<PlayersPage />);
