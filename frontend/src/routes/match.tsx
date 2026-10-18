@@ -340,7 +340,7 @@ export function MatchPage() {
   const { gameId } = useParams({ from: '/match/$gameId' });
   const { matchupId } = useSearch({ from: '/match/$gameId' }) as MatchSearch;
   const numericGameId = Number(gameId);
-  const { data, isLoading, isError, error, refetch } = useLiveMatchStats(
+  const { data, isLoading, error, refetch } = useLiveMatchStats(
     Number.isFinite(numericGameId) ? numericGameId : null,
     matchupId ?? null,
   );
@@ -372,7 +372,8 @@ export function MatchPage() {
       </div>
     );
   }
-  if (isError || !data) {
+  if (!data) {
+    // Un échec de rafraîchissement avec le match déjà affiché n'efface rien : seule l'absence de données mène ici (L181).
     // 404 = match inconnu ; toute autre erreur (réseau, 5xx) est une panne, qu'un nouvel essai peut lever (L181).
     // Sans objet d'erreur (cas non réseau), on garde « introuvable ».
     const panne = error != null && !estIntrouvable(error);
