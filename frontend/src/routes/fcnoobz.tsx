@@ -41,7 +41,7 @@ export function FcNoobzPage() {
 
         <img
           src="/fcnoobz.png"
-          alt="FC Noobz"
+          alt=""
           className="relative mx-auto w-32 h-32 lg:w-40 lg:h-40 object-contain"
           style={{
             filter: `drop-shadow(0 0 28px ${NOOBZ_GREEN_GLOW}) drop-shadow(0 0 14px rgba(29, 78, 216, 0.5))`,
@@ -87,7 +87,9 @@ export function FcNoobzPage() {
       </section>
 
       {/* FUTURES SECTIONS */}
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <JeuxVideoTile />
+
+      <section data-testid="tuiles-bientot" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <FeatureTile
           icon={Gamepad2}
           title="Lecteur de sauvegarde FM"
@@ -106,10 +108,9 @@ export function FcNoobzPage() {
           desc="Trophées, statistiques et records accumulés au fil des éditions FM."
           status="À venir"
         />
-        <JeuxVideoTile />
       </section>
 
-      <p className="text-center text-xs" style={{ color: 'rgba(132, 204, 22, 0.5)' }}>
+      <p data-testid="pied-fcnoobz" className="text-center text-xs text-fg-dim">
         Section indépendante du suivi OL — purement personnelle.
       </p>
     </div>
@@ -121,7 +122,7 @@ function JeuxVideoTile() {
     <Link
       to="/fcnoobz/jeux-video"
       data-testid="tuile-jeux-video"
-      className="group block rounded-md p-5 transition-all hover:scale-[1.02]"
+      className="group block rounded-md p-5 transition-all hover:scale-[1.01]"
       style={{
         background: 'linear-gradient(180deg, rgba(15, 17, 35, 0.85), rgba(5, 7, 20, 0.9))',
         border: `1px solid ${NOOBZ_GREEN}`,
@@ -137,6 +138,9 @@ function JeuxVideoTile() {
         Jeux vidéo
       </h3>
       <p className="text-sm leading-relaxed text-fg-muted">Football Manager : la série et ses prochaines sorties.</p>
+      <span className="mt-3 inline-block text-sm font-bold" style={{ color: NOOBZ_GREEN }}>
+        Voir la page →
+      </span>
     </Link>
   );
 }
@@ -151,7 +155,7 @@ interface FeatureTileProps {
 function FeatureTile({ icon: Icon, title, desc, status }: FeatureTileProps) {
   return (
     <div
-      className="rounded-md p-5 group transition-all hover:scale-[1.02]"
+      className="rounded-md p-5"
       style={{
         background: 'linear-gradient(180deg, rgba(15, 17, 35, 0.85), rgba(5, 7, 20, 0.9))',
         border: `1px solid rgba(132, 204, 22, 0.35)`,
@@ -166,17 +170,17 @@ function FeatureTile({ icon: Icon, title, desc, status }: FeatureTileProps) {
             color: ELECTRIC_BLUE_BRIGHT,
           }}
         >
-          <Icon className="h-5 w-5" strokeWidth={2} />
+          <Icon className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
         </div>
         <span
-          className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-sm"
+          className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-sm"
           style={{
             color: NOOBZ_GREEN,
             background: 'rgba(132, 204, 22, 0.1)',
             border: `1px solid ${NOOBZ_GREEN}`,
           }}
         >
-          <Construction className="h-2.5 w-2.5" />
+          <Construction className="h-2.5 w-2.5" aria-hidden="true" />
           {status}
         </span>
       </div>
