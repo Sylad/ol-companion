@@ -1875,9 +1875,10 @@ lots:
     finished: 2026-10-18
   - id: L175
     title: "Coupes : un aller perdu affiche « Éliminé » pendant le match retour — isCupEliminated conclut sur le cumul dès un aller perdu avec rien à venir, or 365scores retire le match des matchs à venir avant le coup d'envoi et ne le met dans les résultats qu'à la fin (statut faux jusqu'à 2 h, cache compris, même si l'OL se qualifie) ; vaut pour tout tour à élimination directe : exiger les deux manches avant de conclure sur le cumul, sauf qualifié lu chez 365scores (constat de la revue de L174, 18-10)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-18
+    started: 2026-10-18
   - id: L176
     title: "QA — docs/qa/expectations.md, /cups : remplacer « qualifications de Ligue des champions : à décider » par « Ligue Europa et Ligue des champions — qualifications : 2 onglets ; les qualifications listent 4 matchs joués avec tour, manche et score, statut Éliminé » ; retirer « (à décider) » de la ligne api /api/cups, tranché par L174 (QA du 18-10)"
     status: todo
