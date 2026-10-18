@@ -1958,6 +1958,7 @@ lots:
     estimate: 0.25
     created: 2026-10-18
     started: 2026-10-18
+    review: { date: 2026-10-18, verdict: "compliant (0 bloquant, 0 majeur, 1 note mineure : la ligne never « Not Found » de la section `*` ne s'applique qu'aux URL que l'agent QA visite). Les cinq choix d'interprétation de l'auteur tiennent face au lot et au code. Commit 34503b7 relu : tsc propre, 906 tests verts sur 112 fichiers dont les 2 nouveaux. — orchestré (vague 2026-10-18-l9, 0 passe(s) de correction)", commit: 34503b74f54113411bf8872a1a9b66e351fee866 }
   - id: L181
     title: "Page match en erreur : toute erreur (réseau, 5xx) dit « Match introuvable » sans Réessayer ; états erreur / lien incomplet / chargement sans h1 — distinguer 404 et panne, bouton Réessayer (refetch), h1 sur chaque état, tests ; avec L80 (revue UX L9)"
     status: doing
