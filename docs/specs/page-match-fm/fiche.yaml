@@ -2,7 +2,7 @@ ecran:
   id: page-match-fm
   titre: Page du match disposée comme un écran de match de Football Manager
   route: /match/$gameId
-  lot: L160
+  lot: L186
   largeurs: [1440, 390]
   maquette: docs/specs/page-match-fm/maquette.html
 etats: [vide, chargement, erreur, charge, exterieur, probable, probable-mixte]
