@@ -361,6 +361,8 @@ lots:
     status: todo
     estimate: 1
     created: 2026-10-03
+    notes:
+      - { date: 2026-10-18, text: "18-10 (revue de L178) : pendant une panne de 365scores, doRebuild de player-stats.service remplace le cache par un cache vide (fetchGameDetail null partout) → getOne null → 404 pour tous → la fiche d'un joueur qui a joué dit « n'a pas encore joué cette saison » sans Réessayer ; servir le dernier cache règle aussi ce cas" }
   - id: L35
     title: "Classement vide : 365scores renvoie 18 lignes dont 2 sans objet « competitor » (positions 3 et 16 le 03-10 avec les en-têtes actuels ; aucune sans l'en-tête Origin ou avec langId=15&userCountryId=5), le schéma rejette toute la réponse et /api/standings rend null — chercher dans la charge utile une source déterministe du club (identifiant de ligne, liste de premier niveau) avant toute heuristique ; ne pas rendre un classement à 16 équipes ; même défaut silencieux dans le mini-classement du direct"
     status: done
@@ -1907,21 +1909,27 @@ lots:
   - id: L177
     title: "Joueurs à 390 px : Stats saison est trié sur une colonne hors écran (tableau 640 px dans 348, B+P à x=486) et la fiche cache Buts / Passes D. / Tirs dans « Détail saison » (501 px pour 348) — maquette de la revue UX L7 : colonne Joueur fixe (sticky, numéro et nom sur une ligne, poste dessous) et une seule colonne de valeur choisie par des puces (B+P par défaut, Buts, PD, Min, Matchs, Tirs, Note) qui pilotent le tri, cibles 44 px, aria-pressed, valeur secondaire sous la principale ; fiche : Date et Adversaire fixes puis « Buts · PD » et Min ; au-delà de 640 px rien ne change"
     public: "Joueurs : statistiques lisibles sur téléphone"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-18
     started: 2026-10-18
+    review: { date: 2026-10-18, verdict: conforme (revue Opus à la main après l'échec de review-small sur délai ; 9cdfd6f corrige « N matchs » sans test et le survol perdu au-delà de 640 px), commit: 9cdfd6f401c28e79c6ae397477275fb8a10b30f4 }
+    ux: { date: 2026-10-18, verdict: "conforme : captures regardées par le lead — à 390 px tableau 348/348 sans défilement, colonne Joueur fixe, 7 puces aria-pressed 44 px qui pilotent le tri (URL), valeur secondaire, fiche Date/Adv./Buts · PD/Min ; rien ne change à 1440 (survol compris) ; mineurs : numéro seul sur sa ligne pour 3 noms longs à 320 px, tableau de la fiche 4 px trop large à 320, cellule fixe non colorée au survol à 390" }
+    finished: 2026-10-18
   - id: L178
     title: "Joueurs : l'onglet « Effectif » ne montre que les 23 de la dernière feuille de match (Openda, Maitland-Niles, Fofana, Tagliafico, Ouédraogo, de Carvalho absents) — décision de Sylvain 18-10 : effectif de la SAISON bâti sur /api/players/season-stats ; avec : 9 noms sur 23 tronqués à 390 px (line-clamp-2 au lieu de truncate) ; libellés (titularisations), (cadrés), B+P, (D)/(E) avec légende ou abbr, « Tirs / cadrés 21/11 » qui se lit comme une date, notes au format fr (7,3) ; joueurs du terrain et du banc de Composition qui mènent à leur fiche (revue UX L7)"
     public: "Joueurs : tout l'effectif de la saison"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: component
     created: 2026-10-18
     started: 2026-10-18
+    review: { date: 2026-10-18, verdict: "conforme (revue Opus à la main ; ec01266 : 404 de season-stats = état neutre, 5xx = erreur avec Réessayer ; e93e97e : poste des convoqués ramené depuis position avec les libellés longs réels) ; note : pendant une panne 365scores le rebuild vide rend 404 pour tous et la fiche dit « pas encore joué » (relève de L34)", commit: e93e97e60409e84fa69ec40b43b601f7b622bea7 }
+    ux: { date: 2026-10-18, verdict: "conforme : captures regardées par le lead — Effectif de 29 joueurs (saison + 3 convoqués sans minute), aucun « Banc », postes GB/DEF/MIL/ATT en couleur, noms sur deux lignes, libellés expliqués, notes 7,3, Composition vers les fiches, retour selon l'onglet ; fiche 404 neutre (Bengui), 500 en erreur avec Réessayer ; mineurs : Maitland-Niles coupé à 320 px, bas des cartes décalés jusqu'à 48 px, nom accessible des cartes en double, erreur 500 sans indication de reprise" }
+    finished: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
