@@ -105,7 +105,7 @@ lots:
     finished: 2026-10-18
   - id: L8
     title: Revue UX — FC Noobz
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-09-28
     notes:
@@ -114,6 +114,7 @@ lots:
     tasks:
       - { id: t1, title: "FC Noobz : pied de page « Section indépendante du suivi OL… » à 3,15:1 (vert 50 % sur rgb(3,4,11), 12 px) → ≥ 4,5:1 mesuré (text-fg-dim comme « Infos vérifiées » de Jeux vidéo, ou vert ≥ 0,7 d'opacité), test à l'appui (WCAG 1.4.3)", status: todo }
       - { id: t2, title: "FC Noobz : tuile Jeux vidéo (seule active) en pleine largeur au-dessus des 3 tuiles « Bientôt », signe d'action visible au repos « Voir la page → » ; les 3 tuiles non cliquables ne grossissent plus au survol (transform none) ; plus de case vide à 1440 px, haut de la tuile dans le premier écran à 1440×900 (Nielsen 4/6)", status: todo }
+    started: 2026-10-18
   - id: L9
     title: Revue UX — Match en direct (/match)
     status: todo
