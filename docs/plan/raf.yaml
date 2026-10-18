@@ -1879,6 +1879,7 @@ lots:
     estimate: 0.25
     created: 2026-10-18
     started: 2026-10-18
+    review: { date: 2026-10-18, verdict: "conforme (2 notes mineures sur les tests, aucun défaut de comportement) — orchestré (vague 2026-10-18-l241, 1 passe(s) de correction)", commit: 94a2e0513059bff2d3061989369091753b555099 }
   - id: L176
     title: "QA — docs/qa/expectations.md, /cups : remplacer « qualifications de Ligue des champions : à décider » par « Ligue Europa et Ligue des champions — qualifications : 2 onglets ; les qualifications listent 4 matchs joués avec tour, manche et score, statut Éliminé » ; retirer « (à décider) » de la ligne api /api/cups, tranché par L174 (QA du 18-10)"
     status: todo
