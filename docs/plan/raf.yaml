@@ -2001,9 +2001,10 @@ lots:
     finished: 2026-10-18
   - id: L184
     title: Après une livraison, un onglet ouvert casse en « Something went wrong! — Failed to fetch dynamically imported module …/assets/match-<ancien hash>.js » (vécu par Sylvain le 18-10 pendant OL – Nice, mi-temps) — sur échec de chargement d'un module (vite:preloadError, erreur du routeur), recharger la page une seule fois (garde en sessionStorage contre la boucle), sinon page d'erreur en français avec « Recharger » ; plus jamais l'écran d'erreur anglais par défaut de TanStack (defaultErrorComponent) ; tests
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-18
+    started: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
