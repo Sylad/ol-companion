@@ -1955,6 +1955,8 @@ lots:
     estimate: 0.5
     created: 2026-10-18
     started: 2026-10-18
+    notes:
+      - { date: 2026-10-18, text: "test d'acceptation rescellé (lot livré L160, frontend/src/routes/match.disposition-L160.test.tsx, fiche amendée en 72964ff) : R15 amendée (revue UX L9, nombres fr-FR) : xG « 1,87 » au lieu de « 1.87 » ; la carte des tirs est nommée « Carte des tirs » au lieu de « Shot map » (aria-label demandé par L179) ; aucune autre assertion changée" }
   - id: L180
     title: "Route inconnue (dont /match sans identifiant) : « Not Found » TanStack en anglais, sans h1 ni lien — notFoundComponent en français avec h1 et liens Accueil / Calendrier, ligne never « Not Found » dans docs/qa/expectations.md (revue UX L9)"
     status: done
