@@ -88,7 +88,7 @@ lots:
     finished: 2026-10-17
   - id: L7
     title: Revue UX — Joueurs (liste + fiche)
-    status: doing
+    status: done
     estimate: 0.75
     created: 2026-09-28
     tasks:
@@ -101,6 +101,8 @@ lots:
       - { date: 2026-10-18, text: "revue UX du 18-10 (prod, captures ~/projects/developpeur/tmp/ux-ol-L7/) : non conforme, 3 bloquants 5 majeurs 4 mineurs → 5 tâches ici, tableaux à 390 px et effectif de la saison en lots à part ; notes : fiche à 390 « Note moy. » seule sur sa ligne, titre de page sans le nom du joueur, chargement de la fiche sans Retour, « Stats saison » sur 2 lignes à 390, deux joueurs #11 (Nakamura, Fofana) à vérifier ; déjà couverts : L72 L53 L76 (+ pastilles 5.8 et 6.7 coupées) L78 L60 L126 L34 L88" }
     started: 2026-10-18
     review: { date: 2026-10-18, verdict: "conforme — orchestré (vague 2026-10-18-l7, 1 passe(s) de correction + passe des mineurs)", commit: f81c3dd9d7b0b0c58530f366c2b0ccdc6e276bf8 }
+    ux: { date: 2026-10-18, verdict: "conforme : 5 tâches vérifiées sur l'app locale, captures regardées par le lead — carte et onglets gardés en erreur/null avec Réessayer et role=status, pastilles 5,59–6,77:1 (échelle gardée), formation 5,11, min total 6,59, erreurs 5,35, courbe 3,20:1 ; tablist + aria-sort ; onglet et tri gardés par Retour et le retour du navigateur ; Victoire / Match nul / Défaite dans l'arbre d'accessibilité ; notes : flèches de la tablist, nom de la tablist « Effectif », fiche en 500 lue « aucune statistique » (L60)" }
+    finished: 2026-10-18
   - id: L8
     title: Revue UX — FC Noobz
     status: todo
