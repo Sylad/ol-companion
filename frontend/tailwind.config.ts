@@ -26,6 +26,8 @@ export default {
           'blue-bright': 'hsl(var(--ol-blue-bright))',
           red: 'hsl(var(--ol-red))',
           'red-bright': 'hsl(var(--ol-red-bright))',
+          'red-deep': 'hsl(var(--ol-red-deep))',
+          'blue-fg': 'hsl(var(--ol-blue-fg))',
         },
         fg: {
           DEFAULT: 'hsl(var(--fg))',

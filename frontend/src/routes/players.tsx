@@ -42,7 +42,7 @@ export function PlayersPage() {
         </div>
       )}
       {isError && (
-        <p className="py-20 text-center text-loss">Erreur de chargement.</p>
+        <p className="py-20 text-center text-loss-fg">Erreur de chargement.</p>
       )}
       {data === null && !isLoading && (
         <p className="py-20 text-center text-fg-muted">Aucune compo récente trouvée.</p>
@@ -169,7 +169,7 @@ function SeasonStatsTab() {
     );
   }
   if (isError) {
-    return <p className="py-10 text-center text-loss">Erreur de chargement des stats.</p>;
+    return <p className="py-10 text-center text-loss-fg">Erreur de chargement des stats.</p>;
   }
   if (!data || data.length === 0) {
     return (

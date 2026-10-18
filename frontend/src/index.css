@@ -15,6 +15,10 @@
     --ol-blue-bright: 226 56% 51%;
     --ol-red: 0 73% 50%;
     --ol-red-bright: 0 84% 60%;
+    /* L7 : fond du badge de formation, blanc dessus ≥ 4,5:1 (--ol-red seul : 4,45:1). */
+    --ol-red-deep: 0 73% 46%;
+    /* L7 : bleu OL lisible en texte sur --surface (≥ 4,5:1) ; --ol-blue-bright fait 3,2:1 (tracés seulement). */
+    --ol-blue-fg: 226 70% 70%;
 
     --fg: 0 0% 96%;
     --fg-muted: 215 20% 65%;

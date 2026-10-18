@@ -30,7 +30,7 @@ export function FormationField({ starters, formation }: FormationFieldProps) {
         <PlayerOnField key={p.id} player={p} />
       ))}
 
-      <div className="absolute top-3 right-3 z-10 bg-ol-red px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm border border-ol-red-bright/60 shadow-lg">
+      <div className="absolute top-3 right-3 z-10 bg-ol-red-deep px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm border border-ol-red-bright/60 shadow-lg">
         {formation}
       </div>
     </div>
@@ -96,7 +96,7 @@ function PlayerOnField({ player }: { player: LineupPlayer }) {
             className="absolute -top-1.5 -right-1.5 z-20 inline-flex items-center justify-center w-[18px] h-[18px] rounded-full text-[9px] font-bold leading-none border-2 border-bg"
             style={{
               backgroundColor: ratingColor(player.ranking),
-              color: '#fff',
+              color: ratingTextColor(player.ranking),
             }}
             title={`Note ${player.ranking}`}
           >
@@ -112,7 +112,25 @@ function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v));
 }
 
-function ratingColor(rating: number): string {
+/** L7 : l'échelle de couleurs est celle de Sofascore/Google (cf. CLAUDE.md) ; le chiffre prend le noir ou le blanc, au meilleur contraste. */
+export function ratingTextColor(rating: number): string {
+  const bg = ratingColor(rating);
+  return contrastOf('#ffffff', bg) >= contrastOf('#08090d', bg) ? '#ffffff' : '#08090d';
+}
+
+function contrastOf(a: string, b: string): number {
+  const lum = (h: string) => {
+    const [r, g, b2] = [1, 3, 5].map((i) => {
+      const x = parseInt(h.slice(i, i + 2), 16) / 255;
+      return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b2;
+  };
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+export function ratingColor(rating: number): string {
   if (rating >= 8) return '#16a34a';
   if (rating >= 7) return '#65a30d';
   if (rating >= 6) return '#ca8a04';

@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils';
 import type { PlayerByMatch, PlayerSeasonStats } from '@/types/api';
 
 const OL_RED = 'hsl(0 73% 50%)';
-const OL_BLUE = 'hsl(224 64% 33%)';
 const OL_BLUE_BRIGHT = 'hsl(226 56% 51%)';
 
 function playerPhotoUrl(p: PlayerSeasonStats): string | null {
@@ -189,7 +188,7 @@ export function PlayerDetailPage() {
         >
           <ArrowLeft className="h-4 w-4" /> Retour à l'effectif
         </Link>
-        <p className="py-20 text-center text-loss">
+        <p className="py-20 text-center text-loss-fg">
           Aucune statistique trouvée pour ce joueur.
         </p>
       </div>
@@ -316,11 +315,11 @@ export function PlayerDetailPage() {
                 Minutes par match
               </h2>
             </div>
-            <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: OL_BLUE_BRIGHT }}>
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-ol-blue-fg">
               {player.minutesPlayed} min total
             </span>
           </header>
-          <Sparkline series={minutesSeries} color={OL_BLUE} unit="min" />
+          <Sparkline series={minutesSeries} color={OL_BLUE_BRIGHT} unit="min" />
         </section>
       </div>
 
