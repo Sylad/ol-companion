@@ -1977,9 +1977,10 @@ lots:
     finished: 2026-10-18
   - id: L182
     title: "Frontend : aucun package-lock.json suivi, la CI fait npm install et prend d'autres versions que Big-Blue (@tanstack/react-router 1.170.45 en CI contre 1.169.2 en local, test L180 bloqué en CI le 18-10) — suivre package-lock.json et passer frontend-checks.yml (et le Dockerfile) à npm ci ; vérifier que la suite passe avec les versions verrouillées"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-18
+    started: 2026-10-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
