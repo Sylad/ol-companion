@@ -123,10 +123,11 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     tasks:
-      - { id: t1, title: "Faits du match : type 365scores 3 (« Carton rouge ») affiché « ↔ Remplacement » (Udol 84', Lens – Lyon 4735252), type 1000 « Substitution » brut sans entrant ni sortant et info-bulle « passe : <sortant> », « Woodwork » et « But annulé — Var » bruts — eventTypeKey corrigé (live-match.aggregator.ts:110 : 3 = carton rouge, 1000 = remplacement), entrant ↔ sortant dans la ligne (pas seulement au survol), libellés FR (Poteau, But annulé (VAR)), animation du direct alignée, tests", status: todo }
+      - { id: t1, title: "Faits du match : type 365scores 3 (« Carton rouge ») affiché « ↔ Remplacement » (Udol 84', Lens – Lyon 4735252), type 1000 « Substitution » brut sans entrant ni sortant et info-bulle « passe : <sortant> », « Woodwork » et « But annulé — Var » bruts — eventTypeKey corrigé (live-match.aggregator.ts:110 : 3 = carton rouge, 1000 = remplacement), entrant ↔ sortant dans la ligne (pas seulement au survol), libellés FR (Poteau, But annulé (VAR)), animation du direct alignée, tests", status: done }
     notes:
       - { date: 2026-10-18, text: "revue UX du 18-10 (prod, captures ~/projects/developpeur/tmp/ux-ol-L9/, états à venir / terminé / sans id / introuvable vus, direct et mi-temps non vus) : non conforme, 1 bloquant déjà planifié (en-tête rogné à 320 → L65/L164, aussi colonnes déséquilibrées à 390), 4 majeurs → t1 ici (faits du match) + L179 (libellés et nombres FR) + L180 (page 404) + L181 (erreurs, Réessayer, h1) ; mineurs : statut écrit deux fois dans l'en-tête, match à venir à 390 commence par « Pas encore de statistiques » (L79 à recadrer), cibles Accueil 70×20 et LIGUE 1 52×15, graphiques sans résumé des données, 4,6 écrans au téléphone (stats d'équipe repliables), pastille LIVE CONNECTÉ rouge au-dessus d'un match terminé (L12), aucune zone aria-live pour les buts (à confirmer en direct)" }
     started: 2026-10-18
+    review: { date: 2026-10-18, verdict: "compliant (0 bloquant, 0 majeur, 2 notes mineures : libellés bruts dans live-match-card.tsx de l'accueil, branche « 2e » de l'id 3 non testée). Les six choix d'interprétation de l'auteur tiennent face au lot et au code. — orchestré (vague 2026-10-18-l9, 0 passe(s) de correction)", commit: e6375e1d51352d7a87a492673b8081cb3517da71 }
   - id: L10
     title: Revue UX — Carte
     status: todo
