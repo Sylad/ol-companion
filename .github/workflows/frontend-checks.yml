@@ -37,7 +37,7 @@ jobs:
           node-version: 20
 
       - name: Dépendances
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Plan publié à jour (sinon cd frontend && npm run plan, puis commiter plan.json)
         run: node scripts/plan-data.mjs --check

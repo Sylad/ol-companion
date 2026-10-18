@@ -3,6 +3,7 @@
 // docs/plan, ex. `raf done`) et une fuite du plan dans le bundle : cadence deliver
 // attend tous les runs du sha livré et échoue sur un run rouge.
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
@@ -37,5 +38,21 @@ describe('workflow frontend-checks.yml', () => {
   it('npm run build se termine par la vérification de fuite du plan', () => {
     const pkg = JSON.parse(readFileSync(`${root}/frontend/package.json`, 'utf8'));
     expect(pkg.scripts.build).toMatch(/plan-data\.mjs --leaks dist$/);
+  });
+
+  // L182 — sans package-lock.json suivi, la CI résolvait d'autres versions que Big-Blue
+  // (@tanstack/react-router 1.170.45 contre 1.169.2) et le test L180 y restait bloqué.
+  it("L182 — package-lock.json est suivi par git et la CI installe avec npm ci, pas npm install", () => {
+    const tracked = execFileSync('git', ['ls-files', 'frontend/package-lock.json'], { cwd: root, encoding: 'utf8' });
+    expect(tracked.trim()).toBe('frontend/package-lock.json');
+    expect(commands).toMatch(/npm ci/);
+    expect(commands).not.toMatch(/npm install/);
+  });
+
+  it("L182 — le Dockerfile du frontend copie le lockfile et installe avec npm ci", () => {
+    const dockerfile = readFileSync(`${root}/frontend/Dockerfile`, 'utf8');
+    expect(dockerfile).toMatch(/^RUN npm ci\b/m);
+    expect(dockerfile).not.toMatch(/npm install/);
+    expect(dockerfile).toMatch(/^COPY package\*\.json/m);
   });
 });

@@ -48,6 +48,8 @@ cd frontend && npm run dev         # Vite sur :5173, proxy /api → :3002
 `docker-compose.yml` reste disponible pour un lancement local en conteneurs (`docker compose up -d --build`,
 frontend sur :4202, données dans `./data`).
 
+Dépendances frontend (L182) : `frontend/package-lock.json` est suivi, CI et Dockerfile font `npm ci` ; toute modif de `package.json` commite aussi le lockfile.
+
 Livraison : commit + push sur `main` → la CI (`.github/workflows/build.yml`) construit et pousse
 `ghcr.io/sylad/ol-companion-{backend,frontend}:sha-<7>` → `cadence deliver` (voir `cadence.yaml`)
 lance `scripts/deploy.sh` (bump du tag dans `developpeur-gitops/charts/ol-companion/values.yaml`,

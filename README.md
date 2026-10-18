@@ -41,6 +41,10 @@ En amont du code, [ChatGPT](https://chat.openai.com) a aidé à générer le **l
   - **Jeux vidéo** (`/fcnoobz/jeux-video`, L25) — page Football Manager sous FC Noobz (tuile en pleine largeur de `/fcnoobz` (L8), au-dessus des trois tuiles « Bientôt » inertes — qui ne grossissent plus au survol —, avec le signe « Voir la page → » visible au repos ; pied de page en `text-fg-dim`, ≥ 4,5:1 ; thème vert/bleu, « FC Noobz » reste l'entrée courante de la barre latérale et de « Plus ») : prochaine sortie (nom, date « Mar. 10/11/2026 » au jour de la semaine calculé, plateformes ; « Date à confirmer » sans date), éditions précédentes, nouveautés annoncées, présentation de la série, et la ligne « Infos vérifiées le … sur footballmanager.com ». Aucune donnée backend : un fichier statique `frontend/public/jeux-video-data/football-manager.json` (`verifieLe`, `sources`, `prochaineSortie`, `editions`, `nouveautes`), servi `no-cache` comme `plan-data/`, **relu à la main sur les sources en ligne** à chaque mise à jour (jamais de mémoire). États de chargement, d'erreur (« Réessayer ») et vide.
 - **Reset saison automatique** — cron annuel le 1er août archive les caches dans `data/archive/<season>/` et redémarre la collecte. Endpoint admin `POST /api/admin/reset-season` pour le forcer manuellement.
 
+## Dépendances du frontend (L182)
+
+`frontend/package-lock.json` est suivi par git : la CI (`frontend-checks.yml`) et l'image Docker (`frontend/Dockerfile`) installent avec `npm ci`, donc exactement les versions verrouillées, celles de Big-Blue. Avant, `npm install` prenait les dernières versions compatibles (`@tanstack/react-router` 1.170.45 en CI contre 1.169.2 en local) et un test pouvait passer en local et rester bloqué en CI. Pour changer une dépendance : `cd frontend && npm install <paquet>@<version>`, puis commiter `package.json` ET `package-lock.json`. Garde-fou : `frontend/scripts/ci-frontend-checks.test.mjs`.
+
 ## Captures
 
 ### Page match — timeline + shot map + stats équipe + top performers
