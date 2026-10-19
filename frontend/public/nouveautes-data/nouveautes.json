@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 17:59",
+  "generated": "2026-10-19 18:59",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-derniers-textes-peu-contrastes-corriges",
+      "title": "Carte de la Ligue 1 : derniers textes peu contrastés corrigés",
+      "date": "2026-10-19",
+      "lots": [
+        "L196"
+      ],
+      "captures": [
+        "captures/L196-carte-fiche-nul-390.png"
+      ],
+      "alts": [
+        "Fiche du Havre sur la carte, à 390 px : la pastille du match nul porte un N noir sur fond gris"
+      ],
+      "html": "<p>Dans la fiche d'un club de la carte de la Ligue 1, la lettre « N » (match nul) des pastilles de résultat est désormais en noir sur le gris : elle se lit nettement mieux, y compris sur petit écran. Les lettres V, D et le point des matchs à venir, déjà lisibles, ne changent pas.</p>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-fiche-du-club-au-clavier-et-sur-petit-ec",
       "title": "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran",
