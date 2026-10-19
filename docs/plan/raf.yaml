@@ -2180,6 +2180,7 @@ lots:
     visible: true
     created: 2026-10-19
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "compliant (0 blocking, 0 major, 1 minor note) — R1/R2 et zones de 24 px mesurés dans Chromium à 320, 390 et 1440 px, aucun recouvrement — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: 85722dd5fb2de201f3bfe9e0795a4482229bfd0e }
   - id: L198
     title: "Carte L1 : fiche ouverte au zoom d'ouverture, un redimensionnement ou une rotation (followResize → frameFrance) la sort de la carte (Lille 109 px au-dessus après 390×844 → 844×390, 86 px à 1440 → 1400) — refaire le recalage de la fiche après le recadrage, test Chromium avec setViewportSize"
     public: "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone"
