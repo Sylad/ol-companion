@@ -131,7 +131,11 @@ function FrameFrance() {
   useEffect(() => {
     frameFrance(map);
     // Au zoom minimal le cadrage suit ; plus près, le zoom et le déplacement de l'utilisateur restent.
-    const onResize = () => followResize(map);
+    const onResize = () => {
+      followResize(map);
+      // Le recadrage a déplacé la carte sous la fiche ouverte (L198) : elle se recale, comme à l'ouverture.
+      ficheOuverte.get(map)?.getPopup()?.update();
+    };
     map.on('resize', onResize);
     return () => {
       map.off('resize', onResize);
