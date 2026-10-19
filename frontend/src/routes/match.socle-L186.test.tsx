@@ -324,7 +324,7 @@ describe('Page match en écran FM (L186) — règles R1 à R15', () => {
     expect(chainCss(tid('stats-equipe-visiteur'), grille)).toMatch(/--r:\s*2|row-start-2/);
     expect(css(within(home).getByTestId('terrain-composition'))).toBe(css(within(away).getByTestId('terrain-composition')));
   });
-  it('R4 — 1440 : gouttière de 16 px entre les colonnes (bord droit d\'une colonne + 16 = bord gauche de la suivante, ±1 px, y compris Composition et Statistiques de chaque côté), centre ≥ 480 px', () => {
+  it('R4 — 1440 : gouttière de 16 px entre les colonnes (bord droit d\'une colonne + 16 = bord gauche de la suivante, ±1 px), centre ≥ 480 px', () => {
     // R4 — « gouttière de 16 px entre colonnes (les bordures ne se touchent jamais) »
     show();
     const grille = tid('grille-match');
