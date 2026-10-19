@@ -13,7 +13,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - api: /api/events — flux SSE, sans taille
 - never: « Not Found » (route inconnue, dont /match sans identifiant : attendu un h1 « Page introuvable » et les liens Accueil / Calendrier, L180)
 - api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche ; « proche » = la fenêtre du backend (`live-match.service.ts`) : coup d'envoi dans les 24 h à venir, ou de 15 min avant à 3 h après le coup d'envoi, ou match fini depuis moins de 2 h. Au-delà de 24 h la réponse est vide (null mesuré ~32 h avant OL – Nice pendant que / annonçait « dans 1 jour » : conforme) ; ne la réclamer qu'à moins de 24 h
-- shows: les textes secondaires (jeton fg-dim) posés sur une photo, un halo ou un panneau semi-transparent (bandeau de /, légende de /map, surtitre de /about, le premier `<p>` de son `<header>` : aucun `.eyebrow` sur cette page) à ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390
+- shows: les textes secondaires (jeton fg-dim) posés sur une photo, un halo ou un panneau semi-transparent (bandeau de /, surtitre de /about, le premier `<p>` de son `<header>` : aucun `.eyebrow` sur cette page) à ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390
 - shows: scrollWidth = clientWidth de la page, à 1440 comme à 390 (aucun défilement horizontal ; L156 : une table `sr-only` hors d'un `div.sr-only` gardait sa largeur de contenu, 480 px, et poussait la page à 520 px sur / et /standings)
 
 ## /
@@ -84,8 +84,13 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - api: /api/cups — may be empty when aucune coupe n'a commencé
 
 ## /map
-- shows: 18 marqueurs sur la carte ; les tuiles de la carte chargées ; la légende « Aller / Retour »
+- shows: 18 marqueurs sur la carte ; les tuiles de la carte chargées ; la légende « Aller / Retour » SOUS la carte, à toute largeur, jamais posée dessus (L195 : elle cachait le × et l'en-tête de la fiche) ; elle est donc hors de la ligne `## *` des textes sur panneau semi-transparent (pas de fond translucide à mesurer, L199)
+- shows: à l'ouverture la carte est cadrée sur la France, zoom ≥ 6 à 1440 × 900 (L192) ; la molette fait défiler la page sans zoomer (`window.scrollY` change, zoom inchangé) ; un bouton « Recentrer » (en bas à gauche, après les boutons de zoom) ramène au cadrage d'ouverture
+- shows: chaque club a une zone cliquable d'au moins 24 × 24 px que ne recouvre aucune autre, à 1440, 390 et 320 px (L193, L197)
+- shows: la fiche d'un club s'ouvre au clavier (`role=dialog` nommé par le club, focus dedans), son bouton × est nommé « Fermer la fiche », Échap la ferme et rend le focus au marqueur du club (L195)
 - never: « Chargement de la carte… » après 8 s
+- never: « Pas de match OL recensé » (ni marqueur « Pas encore joué » faute de données : tant que /api/season-matches n'a pas répondu, « Chargement de la carte… » ; en erreur, un message avec « Réessayer », L194)
+- api: /api/season-matches — lu par la carte
 
 ## /equipe-de-france
 - shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur », chacune un lien [data-testid=lien-resultat-match] vers /match/<id>?matchupId=<home>-<away>-<id>, L167) et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; le prochain match donne toujours son jour (« Jeu. 12/11 ») puis l'heure ou « Horaire à confirmer » ; au téléphone, le bouton « Plus » actif
