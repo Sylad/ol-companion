@@ -1,6 +1,6 @@
 // L193 — zone cliquable des 18 clubs de la carte L1 mesurée dans Chromium : jsdom ne met rien en page, et c'est
 // la superposition réelle des marqueurs (PSG sous Paris FC, Monaco sous Nice, Lille sous Lens) qui était en cause.
-// API et tuiles refusées (la carte se cadre sans elles), serveur Vite démarré par le test.
+// API en 503 sauf une liste de matchs vide, tuiles refusées (la carte se cadre sans elles), serveur Vite démarré par le test.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { chromium, type Browser } from 'playwright';
 import { createServer, type ViteDevServer } from 'vite';
@@ -25,6 +25,8 @@ describe.each([[1440, 900], [390, 844]])('Carte L1 à %i×%i (L193)', (largeur, 
   it('R1 — chaque club a une zone d’au moins 24×24 px, entièrement à lui à l’ouverture (PSG, Monaco et Lille compris)', async () => {
     const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
     await page.route('**/api/**', (route) => route.fulfill({ status: 503, json: {} }));
+    // Depuis L194 la carte attend la liste des matchs : une erreur ne la rend pas, une liste vide chargée si.
+    await page.route('**/api/season-matches*', (route) => route.fulfill({ status: 200, json: [] }));
     await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
     await page.goto(`${url}/map`);
     await page.waitForSelector('.leaflet-marker-icon');
