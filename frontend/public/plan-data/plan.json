@@ -538,8 +538,9 @@
     {
       "id": "L191",
       "title": "Carte de la Ligue 1 : bilan, légende et marqueurs lisibles",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L192",
@@ -550,20 +551,32 @@
     {
       "id": "L193",
       "title": "Carte de la Ligue 1 : chaque club cliquable, même à Paris",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L194",
       "title": "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L195",
       "title": "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran",
       "status": "doing",
       "started": "2026-10-19"
+    },
+    {
+      "id": "L196",
+      "title": "Carte de la Ligue 1 : derniers textes peu contrastés corrigés",
+      "status": "todo"
+    },
+    {
+      "id": "L197",
+      "title": "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone",
+      "status": "todo"
     }
   ]
 }
