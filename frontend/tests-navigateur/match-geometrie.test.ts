@@ -1,5 +1,5 @@
 // L187 — géométrie de la page match (L186) mesurée dans Chromium : jsdom ne calcule aucune mise en page.
-// Match des Bleus à 4 buteurs d'un côté, noms complets (France 4-1 Belgique, le cas le plus haut mesuré par L189), API simulée au
+// Match des Bleus à 4 buteurs d'un côté, noms complets (France 5-1 Belgique : 5 buts, 4 buteurs ; le cas le plus haut mesuré par L189), API simulée au
 // niveau du navigateur, serveur Vite démarré par le test.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { chromium, type Browser, type Page } from 'playwright';
@@ -26,7 +26,7 @@ function stats() {
     gameId: GAME_ID, matchupId: MATCHUP, competitionId: 7016, competitionName: 'Ligue des nations', status: 'ended',
     statusGroup: 4, statusText: 'Terminé', gameTime: 90, gameTimeDisplay: "90'", startTime: '2026-10-05T20:45:00+02:00',
     timeConfirmed: true,
-    home: side(5061, 'France', 'FRA', 4),
+    home: side(5061, 'France', 'FRA', 5),
     away: side(2373, 'Belgique', 'BEL', 1),
     teamStats: {
       home: { 'Touches': 58, 'Tirs au total': 16, 'Tirs cadrés': 8, 'Buts attendus': 2.9, 'Passes Completed': 512, 'Fautes faites': 9 },
@@ -88,6 +88,15 @@ const boite = (page: Page, testId: string): Promise<Boite> =>
     const r = el.getBoundingClientRect();
     return { top: r.top + window.scrollY, bottom: r.bottom + window.scrollY, left: r.left, right: r.right, height: r.height };
   });
+
+describe('jeu de test', () => {
+  it('le score de chaque équipe est le nombre de ses buts dans les événements', () => {
+    const { home, away, events } = stats();
+    for (const equipe of [home, away]) {
+      expect(events.filter((e) => e.competitorId === equipe.id).length).toBe(equipe.score);
+    }
+  });
+});
 
 const ECRANS = [[1366, 768], [1440, 900]] as const;
 
