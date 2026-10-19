@@ -52,6 +52,16 @@ describe('Carte L1 — contrastes (L191)', () => {
   });
 });
 
+describe('Carte L1 — fond des attributions (L191)', () => {
+  it("R2 — le lien d'attribution lit ≥ 4,5:1 sur le fond de la bulle posé sur la tuile la plus claire (blanc)", () => {
+    const bg = css.match(/\.leaflet-control-attribution\s*\{[^}]*background:\s*hsl\(var\(--surface\)(?:\s*\/\s*([\d.]+))?\)/)!;
+    const alpha = bg[1] === undefined ? 1 : parseFloat(bg[1]);
+    // Le fond translucide laisse passer la tuile : on mesure sur le pire cas, une tuile blanche.
+    const sur = surface.map((c) => c * alpha + (1 - alpha)) as typeof surface;
+    expect(contrastRatio(token('ol-blue-fg'), sur)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
 describe('Carte L1 — moitiés de marqueur sans la couleur (L191)', () => {
   it('R4 — chaque résultat a un motif propre, deux à deux différents', () => {
     const motifs = (['W', 'D', 'L', 'FUTURE'] as const).map((r) => resultGlyph(r, 7));

@@ -712,7 +712,8 @@
   color: hsl(var(--fg)) !important;
 }
 .leaflet-control-attribution {
-  background: hsl(var(--surface) / 0.85) !important;
+  /* Opaque : translucide, la tuile claire dessous ramenait le lien à 4,43:1 (4,28:1 sur blanc). */
+  background: hsl(var(--surface)) !important;
   color: hsl(var(--fg-muted)) !important;
   font-size: 10px;
 }
