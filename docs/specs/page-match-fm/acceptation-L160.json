@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "5e254fde28b5d0959ad33559a25d9356f5192970"
+    "frontend/src/routes/match.disposition-L160.test.tsx": "44aad235d31cb4b074a275fc85c4a898bd7ca72d"
   },
   "resceaux": [
     {
@@ -51,6 +51,14 @@
       "apres": "5e254fde28b5d0959ad33559a25d9356f5192970",
       "porteur": "L186",
       "ficheAmendee": "6f063cc"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "Fiche page-match-fm R3 (L173) : Joueurs en vue reste affiché avant le coup d'envoi, avec un état vide ; l'assertion R4 « état à venir » attend donc Statistiques puis Joueurs en vue, comme le code.",
+      "date": "2026-10-19",
+      "avant": "5e254fde28b5d0959ad33559a25d9356f5192970",
+      "apres": "44aad235d31cb4b074a275fc85c4a898bd7ca72d",
+      "porteur": "L186"
     }
   ]
 }
