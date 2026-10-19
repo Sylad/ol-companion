@@ -132,9 +132,14 @@ lots:
     finished: 2026-10-18
   - id: L10
     title: Revue UX — Carte
-    status: todo
+    status: done
     estimate: 0.25
     created: 2026-09-28
+    ux: { date: 2026-10-19, verdict: "non conforme — 10 constats (3 bloquants contrastes WCAG 1.4.3/1.4.11, 7 majeurs cadrage, cibles, états, clavier, 320 px, libellé D) → lots L191–L195 ; captures tmp/ux-ol-l10/, regardées par le lead" }
+    notes:
+      - { date: 2026-10-19, text: "Mineurs (notes, pas de lot) : m1 légende sous la ligne de flottaison à 390 (choix L81) ; m2 légende ne dit pas moitié gauche = aller ; m3 date sur 2 lignes (ligue1-map.tsx:224) ; m4 aucun retour au survol ; m5 module carte en échec → « Une nouvelle version est disponible » ; m6 repli de chargement 160 px sans role=status (routes/map.tsx:33-38) ; m7 aria-label sur div/span génériques ; m8 × de popup 24 px ; m9 bande sombre au zoom 2 (corrigée par le cadrage de L192). Non vérifié : glisser tactile au-dessus de la carte (vrai téléphone), lecteur d'écran, bloc Coupe de France, zoom texte 200 %." }
+    started: 2026-10-19
+    finished: 2026-10-19
   - id: L11
     title: Revue UX — À propos
     status: todo
@@ -2090,6 +2095,41 @@ lots:
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "compliant : 0 blocking, 0 major, 3 minor notes (JSDoc ENTETE_BLEUS orphan, stale 1fr auto 1fr comment at match.tsx:245, garbled test header); full vitest 123 files / 1027 tests green, tsc clean — orchestré (vague 2026-10-19-ol-190-187, 0 passe(s) de correction)", commit: c5760014c9b885abe08e1a8cb86689a79a18dbe7 }
     finished: 2026-10-19
+  - id: L191
+    title: "Carte L1 : chiffres V/D de la popup ≥ 4,5:1 (1,82 et 3,85 mesurés), liens d'attribution Leaflet ≥ 4,5:1 (2,55, règle index.css:719 battue par leaflet.css), pastilles de légende ≥ 3:1 sur le fond (1,12 à 1,82), moitiés de marqueur distinguables sans la couleur — revue UX L10"
+    public: "Carte de la Ligue 1 : bilan, légende et marqueurs lisibles"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-19
+  - id: L192
+    title: "Carte L1 : s'ouvre cadrée sur la France (zoom ≥ 6 à 1440×900, 18 marqueurs ; zoom 5 mesuré par pad 0.18), la molette fait défiler la page sans zoomer, bouton Recentrer, zoom et cadrage bornés — revue UX L10"
+    public: "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-19
+  - id: L193
+    title: "Carte L1 : chaque club (PSG, Monaco, Lille compris) a une zone cliquable ≥ 24×24 px non recouverte à l'ouverture, à 1440 et 390 (PSG 7 % et 0 % cliquable mesurés) — revue UX L10"
+    public: "Carte de la Ligue 1 : chaque club cliquable, même à Paris"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-19
+  - id: L194
+    title: "Carte L1 : chargement et erreur de l'API distincts d'« aucun match » — en erreur un message avec Réessayer, jamais « Pas de match OL recensé » ni marqueurs « Pas encore joué » faute de données — revue UX L10"
+    public: "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-19
+  - id: L195
+    title: "Popup de la Carte L1 : Échap la ferme et rend le focus au marqueur, le focus entre dans la popup à l'ouverture ; à 320 px elle tient dans la carte (× visible, logo hors des boutons de zoom) ; « D » n'abrège plus Domicile — revue UX L10"
+    public: "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-19
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
