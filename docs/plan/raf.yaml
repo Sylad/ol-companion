@@ -2103,6 +2103,7 @@ lots:
     visible: true
     created: 2026-10-19
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "conforme — 3 notes mineures (pastille « N » de la popup préexistante à 3,35:1, utilitaire de contraste en double, WIN_BLUE recopié du jeton --ol-blue-bright) — orchestré (vague 2026-10-19-ol-carte, 1 passe(s) de correction)", commit: bf720a411c18c213dad81354573801af9883e4ee }
   - id: L192
     title: "Carte L1 : s'ouvre cadrée sur la France (zoom ≥ 6 à 1440×900, 18 marqueurs ; zoom 5 mesuré par pad 0.18), la molette fait défiler la page sans zoomer, bouton Recentrer, zoom et cadrage bornés — revue UX L10"
     public: "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page"
