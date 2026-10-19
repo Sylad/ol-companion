@@ -18,6 +18,14 @@ import {
   olMatchesVsClub,
   type OLMatchResult,
 } from '@/lib/ligue1-club-match';
+import {
+  OL_RED,
+  RESULT_COLORS,
+  RESULT_DARK,
+  RESULT_OUTLINE,
+  resultGlyph,
+  type MapResult,
+} from '@/lib/ligue1-map-colors';
 import { formatKickoffDayShort } from '@/lib/kickoff';
 import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
@@ -31,10 +39,6 @@ import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
  *   in far enough.
  */
 
-const OL_RED = 'hsl(0, 73%, 50%)';
-const OL_BLUE = 'hsl(224, 64%, 33%)';
-const RESULT_GRAY = 'hsl(0, 0%, 55%)';
-const RESULT_DARK = 'hsl(0, 0%, 18%)';
 const FRANCE_CENTER: [number, number] = [46.6, 2.4];
 
 function buildOlIcon(): L.DivIcon {
@@ -59,22 +63,20 @@ function buildOlIcon(): L.DivIcon {
 }
 
 function colorForResult(result: OLMatchResult | null): string {
-  if (result === 'W') return OL_BLUE;
-  if (result === 'L') return OL_RED;
-  if (result === 'D') return RESULT_GRAY;
-  // 'FUTURE' or null (no match recorded)
-  return RESULT_DARK;
+  // 'FUTURE' or null (no match recorded) → dark
+  return RESULT_COLORS[(result ?? 'FUTURE') as MapResult];
 }
 
 /**
  * Bicolor SVG marker for non-OL clubs.
  * Left half  = leg A (first chronological OL vs club fixture this season)
  * Right half = leg B (second fixture)
- * Color encodes result vs OL: blue=W, red=L, gray=D, dark=FUTURE/missing.
+ * Color encodes result vs OL (blue=W, red=L, gray=D, dark=FUTURE/missing) and so does a
+ * white pattern per half (none=W, bar=D, slash=L, dot=FUTURE) — see ligue1-map-colors.
  */
 function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): L.DivIcon {
   const size = 14;
-  const stroke = 'hsl(0, 0%, 92%)';
+  const stroke = RESULT_OUTLINE;
   const cA = colorForResult(legA);
   const cB = colorForResult(legB);
   // viewBox 28x28, radius 13, center (14,14) — sweep flag 0 (left arc) / 1 (right arc).
@@ -82,6 +84,8 @@ function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): 
     <svg viewBox="0 0 28 28" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:block;filter:drop-shadow(0 0 2px rgba(0,0,0,0.45));">
       <path d="M 14 1 A 13 13 0 0 0 14 27 Z" fill="${cA}" />
       <path d="M 14 1 A 13 13 0 0 1 14 27 Z" fill="${cB}" />
+      ${resultGlyph(legA ?? 'FUTURE', 7.5)}
+      ${resultGlyph(legB ?? 'FUTURE', 20.5)}
       <line x1="14" y1="1" x2="14" y2="27" stroke="${stroke}" stroke-width="0.8" />
       <circle cx="14" cy="14" r="13" fill="none" stroke="${stroke}" stroke-width="1.4" />
     </svg>
@@ -195,9 +199,9 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
             <div className="text-xs text-fg-dim italic mb-2">Pas de match OL recensé.</div>
           ) : (
             <div className="flex items-center gap-3 text-xs mb-3">
-              <span className="num"><span className="font-bold" style={{ color: OL_BLUE }}>{h2h.W}</span> V</span>
+              <span className="num"><span className="font-bold text-ol-blue-fg">{h2h.W}</span> V</span>
               <span className="num"><span className="text-fg-muted font-bold">{h2h.D}</span> N</span>
-              <span className="num"><span className="font-bold" style={{ color: OL_RED }}>{h2h.L}</span> D</span>
+              <span className="num"><span className="font-bold text-loss-fg">{h2h.L}</span> D</span>
             </div>
           )}
 
@@ -370,12 +374,12 @@ function ClubMarker({ club, positionOffsetMeters, standingEntry, ligue1Matches, 
  * Compact (~170 px wide) so it never crushes the map area.
  */
 export function MapLegend() {
-  const swatch = (color: string, label: string) => (
+  const swatch = (result: MapResult, label: string) => (
     <div className="flex items-center gap-1.5">
-      <span
-        className="inline-block w-3 h-3 rounded-sm border border-white/20 shrink-0"
-        style={{ background: color }}
-      />
+      <svg viewBox="0 0 28 28" width="14" height="14" className="shrink-0" aria-hidden>
+        <rect x="1" y="1" width="26" height="26" rx="4" fill={RESULT_COLORS[result]} stroke={RESULT_OUTLINE} strokeWidth="1.6" />
+        <g dangerouslySetInnerHTML={{ __html: resultGlyph(result, 14) }} />
+      </svg>
       <span className="text-[10px] text-fg leading-tight">{label}</span>
     </div>
   );
@@ -388,10 +392,10 @@ export function MapLegend() {
         Aller / Retour
       </div>
       <div className="grid grid-cols-1 gap-1">
-        {swatch(OL_BLUE, 'Victoire OL')}
-        {swatch(RESULT_GRAY, 'Match nul')}
-        {swatch(OL_RED, 'Défaite OL')}
-        {swatch(RESULT_DARK, 'Pas encore joué')}
+        {swatch('W', 'Victoire OL')}
+        {swatch('D', 'Match nul')}
+        {swatch('L', 'Défaite OL')}
+        {swatch('FUTURE', 'Pas encore joué')}
       </div>
     </div>
   );

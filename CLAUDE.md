@@ -157,7 +157,7 @@ Centralisés dans `SCORES365_HEADERS`.
 - Continue d'afficher après élimination OL — c'est voulu (suivi du parcours adverse).
 
 ### Carte Ligue 1 — markers bicolores
-- Marker = cercle moitié gauche (leg aller) + moitié droite (leg retour). Couleur de chaque moitié = résultat OL côté concerné (V = bleu OL si match à domicile / D = rouge / N = neutre).
+- Marker = cercle moitié gauche (leg aller) + moitié droite (leg retour). Couleur de chaque moitié = résultat OL côté concerné (V = bleu OL éclairci `WIN_BLUE` / D = rouge / N = gris) **plus un motif blanc** (V aplat, N barre, D oblique, pas joué point) : jamais la couleur seule (L191, `lib/ligue1-map-colors.ts`, contrastes testés).
 - Source = full-season history 365scores (pas seulement les matchs joués).
 - Collision Paris (PSG + Paris FC) : offset visuel `+20px y` sur le 2ème.
 - OL marker = rouge plein (cf palette).

@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 12:45",
+  "generated": "2026-10-19 15:20",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-bilan-legende-et-marqueurs-lisibles",
+      "title": "Carte de la Ligue 1 : bilan, légende et marqueurs lisibles",
+      "date": "2026-10-19",
+      "lots": [
+        "L191"
+      ],
+      "captures": [
+        "captures/carte-l1-lisible-L191-1440.png",
+        "captures/carte-l1-lisible-L191-390.png"
+      ],
+      "alts": [
+        "Carte de la Ligue 1 à 1440 px : légende aux pastilles contrastées, chacune avec son motif",
+        "Carte de la Ligue 1 à 390 px"
+      ],
+      "html": "<p>Sur la carte de la Ligue 1, tout se lit mieux sur le fond sombre :</p>\n<ul><li>les chiffres du bilan dans la fiche d'un club (victoires, défaites) sont nettement plus clairs ;</li><li>les liens « OpenStreetMap » en bas de la carte sont lisibles ;</li><li>les pastilles de la légende ressortent du fond, et la victoire est un bleu plus vif ;</li><li>chaque moitié de marqueur porte un motif en plus de sa couleur : aplat pour une victoire, barre pour un nul, barre oblique pour une défaite, point pour un match pas encore joué. La légende montre les mêmes motifs.</li></ul>"
+    },
     {
       "slug": "2026-10-19-match-a-320-px-le-nom-du-club-visiteur-n-est-plus-tronque",
       "title": "Match à 320 px : le nom du club visiteur n'est plus tronqué",

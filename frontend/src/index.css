@@ -716,8 +716,9 @@
   color: hsl(var(--fg-muted)) !important;
   font-size: 10px;
 }
-.leaflet-control-attribution a {
-  color: hsl(var(--ol-blue-bright));
+.leaflet-container .leaflet-control-attribution a {
+  /* leaflet.css pose `.leaflet-container a` (même poids, chargé après) : 2,55:1 mesurés. */
+  color: hsl(var(--ol-blue-fg));
 }
 .leaflet-control-zoom a {
   background: hsl(var(--surface)) !important;
