@@ -2042,13 +2042,15 @@ lots:
     finished: 2026-10-19
   - id: L187
     title: "Page match : test navigateur (Playwright) de la géométrie de L186 — à 1366×768 et 1440×900 le bas de la rangée Statistiques | Momentum reste sous le pli, écart de 16 px entre rangées du centre, tracé du Momentum à 96 px ; jsdom ne mesure rien"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-19
     notes:
       - { date: 2026-10-19, text: "QA L186 (19-10) : mettre aussi à jour docs/qa/expectations.md — /match « Momentum top < 786 à 390×844 » ne tient plus depuis R10 (Statistiques avant Momentum ; 805/865 mesurés) → « Statistiques top < 786 » ; ajouter « 1366×768 : bas de rangee-stats-elan ≤ 768 » ; / « lieu = stade ou rien » contre « Lieu : Extérieur » du panneau Tableau de bord match (antérieur, à préciser avec L90). Captures ~/projects/developpeur/tmp/qa-l186/." }
+      - { date: 2026-10-19, text: "Lead 19-10 : npm run test:navigateur 7/7 en local (Chromium Playwright) ; ce test ne tourne PAS en CI (aucun workflow) — à brancher si on veut qu'il protège les livraisons. Proposé par la revue : jeu de données aux noms réels de 365scores (déjà fait en a04595c)." }
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "conforme : les 2 constats mineurs traités tiennent (score 5-1 cohérent avec ses buts, README à 763/772 px, 721 px retiré), test navigateur 7/7 et suite unitaire 1027/1027 au vert ; restent 2 notes mineures — orchestré (vague 2026-10-19-ol-190-187, 1 passe(s) de correction + passe des mineurs)", commit: 20f35047e1fd7d1e87209bb14629726a1c1d2440 }
+    finished: 2026-10-19
   - id: L188
     title: "Match des Bleus : ouvrir ou recharger directement /match/<id>?matchupId=… (lien copié, F5) affiche « Lien incomplet » alors que le même lien suivi depuis Équipe de France affiche le match (mesuré 19-10 sur /match/4672325?matchupId=5061-2373-4672325) — l'URL doit suffire à elle seule, avec un test"
     status: done
@@ -2073,13 +2075,14 @@ lots:
     finished: 2026-10-19
   - id: L190
     title: "Page match (match de l'OL, en-tête en grille 1fr auto 1fr) : de 1024 à ~1250 px, un buteur au nom long rendu insécable par L189 décentre le score (triplé « Pierre-Emerick Aubameyang » à 1024 px : centre du score 670 au lieu de 632) — borner les colonnes en minmax(0,1fr) comme l'en-tête des Bleus, avec mesure navigateur"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-19
     notes:
       - { date: 2026-10-19, text: "Revue UX L189 : à 320 px sur Lyon–Nice le score est décalé de 11 px (colonnes 58/102/53, « Tanner Tessmann » impose sa largeur min à la grille 1fr auto 1fr) — préexistant, couvert par minmax(0,1fr)." }
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "compliant : 0 blocking, 0 major, 3 minor notes (JSDoc ENTETE_BLEUS orphan, stale 1fr auto 1fr comment at match.tsx:245, garbled test header); full vitest 123 files / 1027 tests green, tsc clean — orchestré (vague 2026-10-19-ol-190-187, 0 passe(s) de correction)", commit: c5760014c9b885abe08e1a8cb86689a79a18dbe7 }
+    finished: 2026-10-19
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
