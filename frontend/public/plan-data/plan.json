@@ -573,20 +573,23 @@
     {
       "id": "L196",
       "title": "Carte de la Ligue 1 : derniers textes peu contrastés corrigés",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L197",
       "title": "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L198",
       "title": "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     }
   ]
 }

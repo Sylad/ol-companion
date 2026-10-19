@@ -2164,39 +2164,51 @@ lots:
   - id: L196
     title: "Carte L1 : contrastes restants — lien d'attribution Leaflet 4,43:1 à 390 px (fond surface/0.85 sur tuile claire) et pastille « N » de la fiche (blanc 9 px sur gris 55 %) 3,35:1, ligue1-map.tsx:217 et 276 — ≥ 4,5:1 mesurés sur le fond réel (blend)"
     public: "Carte de la Ligue 1 : derniers textes peu contrastés corrigés"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-19
     notes:
       - { date: 2026-10-19, text: "QA L191 19-10 : attribution Leaflet à 6,59:1 après bf720a4 (volet réglé), reste la pastille N (3,36:1). Mineurs QA : remplissage « Victoire » de la légende 2,64:1 à 1440 (contour ≥ 12:1 compense) ; contour clair des marqueurs invisible sur tuile OSM claire (1,07–1,25:1), bord tenu par l'ombre portée." }
+      - { date: 2026-10-19, text: "Mineur : aucun test de rendu ne vérifie que les deux listes de pastilles appliquent RESULT_CHIP_TEXT (seule la constante est testée)." }
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "compliant (1 minor note: no rendering test that the chips apply RESULT_CHIP_TEXT; rendered result not verified in a browser) — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: 94ce34649b768e89d81a166aed560e09f9a238d7 }
+    ux: { date: 2026-10-19, verdict: "conforme — lettre « N » noire sur le gris du nul, lisible (capture Nouveautés regardée par le lead)" }
+    finished: 2026-10-19
   - id: L197
     title: "Carte L1 à 320 px : à l'ouverture, les zones de 24 px se recouvrent (Le Havre/Le Mans 67 % cliquable, Lens/PSG, Paris FC/Auxerre, Rennes/Lorient) — chaque club garde une zone 24×24 à lui, tests R1/R2 étendus à 320 px"
     public: "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-19
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "compliant (0 blocking, 0 major, 1 minor note) — R1/R2 et zones de 24 px mesurés dans Chromium à 320, 390 et 1440 px, aucun recouvrement — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: 85722dd5fb2de201f3bfe9e0795a4482229bfd0e }
+    ux: { date: 2026-10-19, verdict: "conforme — zones de 24 px sans recouvrement à 320, 390 et 1440 (Chromium) ; capture 320 regardée par le lead" }
+    notes:
+      - { date: 2026-10-19, text: "Mineur : CLAUDE.md et README disent « écartés de 4 à 19 px », la table NUDGES_PX va de 5,0 à 19,0 px (le 4 est un décalage par axe)." }
+    finished: 2026-10-19
   - id: L198
     title: "Carte L1 : fiche ouverte au zoom d'ouverture, un redimensionnement ou une rotation (followResize → frameFrance) la sort de la carte (Lille 109 px au-dessus après 390×844 → 844×390, 86 px à 1440 → 1400) — refaire le recalage de la fiche après le recadrage, test Chromium avec setViewportSize"
     public: "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-19
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "conforme — le correctif tient en une ligne et le test Chromium, qui échoue sans lui, passe avec : Lille, Lens et Strasbourg restent entiers après 390×844 → 844×390 et 1440 → 1400 — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: 946c976ef828359b5bd586c71bc560c98fe0f2fe }
+    ux: { date: 2026-10-19, verdict: conforme — fiche de Lille entière après rotation 390×844 → 844×390 (capture regardée par le lead) }
+    finished: 2026-10-19
   - id: L199
     title: "QA — docs/qa/expectations.md : retirer la légende de /map de la ligne ## * (contraste sur panneau semi-transparent) ; § /map : légende SOUS la carte, cadrage zoom ≥ 6, molette, Recentrer, zones 24 px, fiche au clavier (× « Fermer la fiche », Échap), never « Pas de match OL recensé » (QA L192–L195 19-10)"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-19
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "conforme — attendus QA de /map fidèles au code et à CLAUDE.md (légende sous la carte et hors de la ligne ## *, cadrage, molette, Recentrer, zones 24 px, fiche au clavier, never « Pas de match OL recensé ») ; 2 notes mineures de formulation sans sous-tâche — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: null }
+    notes:
+      - { date: 2026-10-19, text: "Mineurs : la ligne never de /map cite « Pas encore joué » entre parenthèses alors que la légende l'affiche toujours (faux positif possible d'un agent QA qui compare le texte brut) ; /api/standings (useStandings) non listé sous ## /map." }
+    finished: 2026-10-19
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
