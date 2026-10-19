@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 17:50",
+  "generated": "2026-10-19 17:59",
   "entries": [
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-fiche-du-club-au-clavier-et-sur-petit-ec",
@@ -10,16 +10,16 @@
         "L195"
       ],
       "captures": [
-        "captures/carte-l1-fiche-L195-1440.png",
+        "captures/carte-l1-fiche-L195-1440-legende-sous-carte.png",
         "captures/carte-l1-fiche-L195-390.png",
         "captures/carte-l1-fiche-L195-320.png"
       ],
       "alts": [
-        "Carte de la Ligue 1 à 1440 px avec la fiche de Lille ouverte : bilan face à Lyon, matchs joués avec « Domicile » et « Extérieur »",
+        "Carte de la Ligue 1 à 1440 px avec la fiche de Lille ouverte : bilan face à Lyon, matchs joués avec « Domicile » et « Extérieur » ; la légende Aller / Retour est sous la carte et ne recouvre plus la croix",
         "Carte de la Ligue 1 à 390 px avec la fiche de Lille ouverte, entièrement dans la carte, à droite des boutons de zoom",
         "Carte de la Ligue 1 à 320 px avec la fiche de Lille ouverte : la croix de fermeture est visible et la fiche ne recouvre pas les boutons de zoom"
       ],
-      "html": "<p>La fiche d'un club sur la carte de la Ligue 1 se commande au clavier et tient sur un petit écran.</p>\n<ul><li>Au clavier, Entrée sur un club ouvre sa fiche et le curseur y entre ; Échap (ou la croix) la ferme et le curseur revient sur le club.</li><li>À 320 px, la fiche reste entièrement dans la carte : la croix de fermeture est visible et la fiche ne recouvre plus les boutons de zoom.</li><li>Les matchs de la fiche indiquent « Domicile » ou « Extérieur » au lieu d'un « D » ou d'un « E » qui prêtait à confusion avec la défaite.</li></ul>"
+      "html": "<p>La fiche d'un club sur la carte de la Ligue 1 se commande au clavier et tient sur un petit écran.</p>\n<ul><li>Au clavier, Entrée sur un club ouvre sa fiche et le curseur y entre ; Échap (ou la croix, nommée « Fermer la fiche ») la ferme et le curseur revient sur le club. Échap marche où que soit le curseur dans la carte, par exemple après Maj+Tab depuis la croix.</li><li>La légende « Aller / Retour » est maintenant sous la carte, à toute largeur : sur tablette et sur grand écran elle recouvrait la croix et l'en-tête de la fiche de plusieurs clubs (Lille, Strasbourg, Troyes…).</li><li>À 320 px, la fiche reste entièrement dans la carte : la croix de fermeture est visible et la fiche ne recouvre plus les boutons de zoom.</li><li>Les matchs de la fiche indiquent « Domicile » ou « Extérieur » au lieu d'un « D » ou d'un « E » qui prêtait à confusion avec la défaite.</li></ul>"
     },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-message-clair-quand-les-resultats-ne-cha",

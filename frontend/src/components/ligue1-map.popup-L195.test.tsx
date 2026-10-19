@@ -113,6 +113,71 @@ describe('<Ligue1Map /> — fiche du club (L195)', () => {
     expect(focus).toHaveBeenCalledTimes(1);
   });
 
+  it('R9 — Échap ferme la fiche ouverte où que soit le focus dans la carte et rend le focus au marqueur de SON club', () => {
+    const { container } = render(<Ligue1Map />);
+    const lens = marqueur(container, 'Lens');
+    const troyes = marqueur(container, 'Troyes');
+    ouvrir(container, 'Lens');
+    // Maj+Tab depuis le × amène au marqueur voisin : le focus n'est plus dans la fiche.
+    act(() => {
+      troyes.focus();
+    });
+    expect(container.querySelector('.leaflet-popup')!.contains(document.activeElement)).toBe(false);
+    act(() => {
+      fireEvent.keyDown(troyes, { key: 'Escape', keyCode: 27 });
+    });
+    expect(container.querySelector('.leaflet-popup')).toBeNull();
+    expect(document.activeElement).toBe(lens);
+    // Sans fiche ouverte, Échap ne rend le focus à personne.
+    act(() => {
+      troyes.focus();
+      fireEvent.keyDown(troyes, { key: 'Escape', keyCode: 27 });
+    });
+    expect(document.activeElement).toBe(troyes);
+  });
+
+  it('R10 — Échap sur les boutons de zoom, focus rendu au marqueur ; Espace sur le × ferme comme Entrée', () => {
+    const { container } = render(<Ligue1Map />);
+    const lille = marqueur(container, 'Lille');
+    ouvrir(container, 'Lille');
+    const zoom = container.querySelector<HTMLElement>('.leaflet-control-zoom-in')!;
+    act(() => {
+      zoom.focus();
+      fireEvent.keyDown(zoom, { key: 'Escape', keyCode: 27 });
+    });
+    expect(container.querySelector('.leaflet-popup')).toBeNull();
+    expect(document.activeElement).toBe(lille);
+    const popup = ouvrir(container, 'Lille');
+    act(() => {
+      fireEvent.keyDown(popup.querySelector('.leaflet-popup-close-button')!, { key: ' ' });
+    });
+    expect(container.querySelector('.leaflet-popup')).toBeNull();
+    expect(document.activeElement).toBe(lille);
+  });
+
+  it('R11 — le × ne ferme qu’une fois, aussi après trois ouvertures', () => {
+    const setView = vi.spyOn(L.Map.prototype, 'setView');
+    const { container } = render(<Ligue1Map />);
+    const carte = setView.mock.contexts[0] as L.Map;
+    setView.mockRestore();
+    const icone = marqueur(container, 'Lille');
+    let popup = ouvrir(container, 'Lille');
+    for (let i = 0; i < 2; i++) {
+      act(() => {
+        carte.closePopup();
+      });
+      popup = ouvrir(container, 'Lille');
+    }
+    const focus = vi.spyOn(icone, 'focus');
+    const fermer = vi.spyOn(L.Marker.prototype, 'closePopup');
+    act(() => {
+      fireEvent.click(popup.querySelector('.leaflet-popup-close-button')!);
+    });
+    expect(focus).toHaveBeenCalledTimes(1);
+    expect(fermer).toHaveBeenCalledTimes(1);
+    fermer.mockRestore();
+  });
+
   it('R8 — le × et les lieux à venir sont en français et cohérents', () => {
     const base = { competitionCode: 'L1' as const, competitionId: 35, competition: 'Ligue 1', homeScore: null, awayScore: null, status: 'SCHEDULED' as const, matchday: 30 };
     matchs.value = [

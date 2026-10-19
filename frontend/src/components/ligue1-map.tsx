@@ -378,33 +378,63 @@ interface ClubMarkerProps {
 }
 
 /**
- * Clavier de la fiche (L195) : le focus y entre à l'ouverture ; Échap ou × la ferme et le rend au marqueur,
- * sans quoi il retombe sur <body> et l'ordre de tabulation repart du haut de la page.
- * Leaflet n'écoute Échap qu'une fois le conteneur de la carte focalisé, pas le marqueur ni la fiche.
+ * Fiche ouverte de chaque carte : le marqueur dont elle vient. Le clavier (Échap, ×) la lit pour rendre le focus à ce
+ * marqueur, où que soit le focus dans la carte.
  */
+const ficheOuverte = new WeakMap<L.Map, L.Marker>();
+
+/** Ferme la fiche ouverte de la carte et rend le focus à son marqueur ; faux s'il n'y en a pas. */
+function fermerFicheOuverte(map: L.Map): boolean {
+  const marker = ficheOuverte.get(map);
+  if (!marker) return false;
+  marker.closePopup();
+  marker.getElement()?.focus();
+  return true;
+}
+
+/**
+ * Clavier de la fiche (L195) : le focus y entre à l'ouverture ; Échap ou × la ferme et le rend au marqueur,
+ * sans quoi il retombe sur <body> et l'ordre de tabulation repart du haut de la page. Échap vaut pour la fiche
+ * ouverte où que soit le focus dans la carte (sur un autre marqueur, sur un bouton de zoom…), pas seulement dans la
+ * fiche : Leaflet, lui, n'écoute Échap qu'une fois le conteneur de la carte focalisé et ne rend le focus à personne.
+ */
+function FicheClavier() {
+  const map = useMap();
+  useEffect(() => {
+    const conteneur = map.getContainer();
+    // Phase de capture : on passe avant les écouteurs de Leaflet (qui fermeraient la fiche sans rendre le focus).
+    // Un seul écouteur par carte, posé ici : rien ne s'accumule d'une ouverture à l'autre.
+    const onKeyDown = (ev: KeyboardEvent) => {
+      const surCroix = (ev.target as Element | null)?.closest('.leaflet-popup-close-button');
+      if (ev.key !== 'Escape' && !(surCroix && ev.key === ' ')) return;
+      if (!fermerFicheOuverte(map)) return;
+      ev.stopPropagation();
+      ev.preventDefault();
+    };
+    const onClick = (ev: MouseEvent) => {
+      if (!(ev.target as Element | null)?.closest('.leaflet-popup-close-button')) return;
+      if (!fermerFicheOuverte(map)) return;
+      ev.stopPropagation();
+      ev.preventDefault();
+    };
+    conteneur.addEventListener('keydown', onKeyDown, true);
+    conteneur.addEventListener('click', onClick, true);
+    return () => {
+      conteneur.removeEventListener('keydown', onKeyDown, true);
+      conteneur.removeEventListener('click', onClick, true);
+    };
+  }, [map]);
+  return null;
+}
+
 function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string, map: L.Map) {
   const fiche = e.popup.getElement();
   if (!fiche) return;
+  ficheOuverte.set(map, marker);
   fiche.setAttribute('role', 'dialog');
   fiche.setAttribute('aria-label', club);
   fiche.tabIndex = -1;
-  const fermer = () => {
-    marker.closePopup();
-    marker.getElement()?.focus();
-  };
-  // Leaflet garde le même conteneur d'une ouverture à l'autre : les écouteurs ne se posent qu'une fois.
-  if (!fiche.dataset.clavierPose) {
-    fiche.dataset.clavierPose = '1';
-    fiche.addEventListener('keydown', (ev) => {
-      if (ev.key !== 'Escape') return;
-      ev.stopPropagation();
-      fermer();
-    });
-    fiche.querySelector<HTMLElement>('.leaflet-popup-close-button')?.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      fermer();
-    });
-  }
+  // Leaflet nomme le × « Close popup » : la page est en français (WCAG 3.1.2).
   fiche.querySelector<HTMLElement>('.leaflet-popup-close-button')?.setAttribute('aria-label', 'Fermer la fiche');
   fiche.focus({ preventScroll: true });
   // Les clubs du nord n'ont pas la place d'une fiche au-dessus d'eux dans les limites de glisser (L192) : on les
@@ -413,7 +443,8 @@ function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string, map: L.Map
   e.popup.update();
 }
 
-function fermerFiche(map: L.Map) {
+function fermerFiche(map: L.Map, marker: L.Marker) {
+  if (ficheOuverte.get(map) === marker) ficheOuverte.delete(map);
   restoreMaxBounds(map);
 }
 
@@ -435,7 +466,7 @@ function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMark
       zIndexOffset={isOL ? 1000 : 0}
       eventHandlers={{
         popupopen: (e) => ouvrirFiche(e, e.target as L.Marker, club.name, map),
-        popupclose: () => fermerFiche(map),
+        popupclose: (e) => fermerFiche(map, e.target as L.Marker),
       }}
     >
       <Popup autoPanPaddingTopLeft={POPUP_PAN_TOP_LEFT} autoPanPaddingBottomRight={POPUP_PAN_BOTTOM_RIGHT}>
@@ -451,10 +482,9 @@ function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMark
 }
 
 /**
- * Legend overlay explaining the bicolor markers.
- * Au téléphone (< sm) : sous la carte, dans le flux, pour ne pas masquer l'en-tête
- * des bulles (L81). À partir de sm : coin haut-droit, au-dessus des panes Leaflet.
- * Compact (~170 px wide) so it never crushes the map area.
+ * Légende des marqueurs bicolores : sous la carte, dans le flux, à toute largeur. Posée sur la carte (coin haut
+ * droit, L81 puis à partir de sm) elle masquait le × et l'en-tête de la fiche d'un club : le recalage de la fiche
+ * connaît les boutons de zoom, pas une légende (L195, WCAG 2.4.11). À partir de sm les rubriques se mettent en ligne.
  */
 export function MapLegend() {
   const swatch = (result: MapResult, label: string) => (
@@ -468,13 +498,13 @@ export function MapLegend() {
   );
   return (
     <div
-      className="border-t border-border bg-surface px-2.5 py-2 sm:absolute sm:top-2 sm:right-2 sm:z-[500] sm:w-[170px] sm:rounded-md sm:border sm:bg-surface/90 sm:backdrop-blur sm:shadow-md sm:pointer-events-none"
+      className="border-t border-border bg-surface px-2.5 py-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5"
       aria-label="Légende des marqueurs"
     >
-      <div className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold mb-1.5 leading-none">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold mb-1.5 sm:mb-0 leading-none">
         Aller / Retour
       </div>
-      <div className="grid grid-cols-1 gap-1">
+      <div className="grid grid-cols-1 gap-1 sm:flex sm:flex-wrap sm:gap-x-4">
         {swatch('W', 'Victoire OL')}
         {swatch('D', 'Match nul')}
         {swatch('L', 'Défaite OL')}
@@ -557,6 +587,7 @@ export function Ligue1Map() {
             maxZoom={18}
           />
           <FrameFrance />
+          <FicheClavier />
           <RecenterControl />
           {LIGUE1_CLUBS_COORDS.map((club) => {
             return (

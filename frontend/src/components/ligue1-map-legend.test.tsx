@@ -2,17 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MapLegend } from './ligue1-map';
 
-// L81 — à 390 px la légende « Aller / Retour » ne se pose plus sur la carte
-// (elle masquait l'en-tête des bulles) : sous la carte, dans le flux. Elle ne
-// flotte au-dessus de la carte qu'à partir de sm.
+// L81 puis L195 — la légende « Aller / Retour » ne se pose sur la carte à aucune largeur : au téléphone (L81) elle
+// masquait l'en-tête des bulles, à partir de sm (L195) elle cachait le × de la fiche de six clubs à 768 px et de
+// Strasbourg à 1440 px (WCAG 2.4.11). Sous la carte, dans le flux.
 
 describe('<MapLegend />', () => {
-  it('au téléphone : dans le flux, jamais en absolute sans préfixe de largeur', () => {
+  it('dans le flux à toute largeur : jamais en absolute, ni avec un préfixe de largeur', () => {
     render(<MapLegend />);
     const classes = screen.getByLabelText('Légende des marqueurs').className.split(/\s+/);
-    expect(classes).not.toContain('absolute');
-    expect(classes).not.toContain('z-[500]');
-    expect(classes).toContain('sm:absolute');
-    expect(classes).toContain('sm:z-[500]');
+    for (const c of classes) {
+      expect(c).not.toMatch(/(^|:)(absolute|fixed|sticky)$/);
+      expect(c).not.toMatch(/(^|:)z-\[/);
+    }
   });
 });
