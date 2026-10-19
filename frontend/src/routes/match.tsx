@@ -66,7 +66,7 @@ function StatRow({
   return (
     <div>
       {/* Valeur à gauche, libellé au centre, valeur à droite sur une ligne ; la barre comparée dessous, pleine largeur (L186 R16). */}
-      <div className="[display:grid] [grid-template-columns:minmax(0,1fr)_auto_minmax(0,1fr)] items-baseline gap-2 mb-1">
+      <div className="[display:grid] [grid-template-columns:minmax(0,1fr)_auto_minmax(0,1fr)] items-baseline gap-2 leading-5 mb-0.5">
         <span className="text-left num tabular-nums font-bold text-fg-bright">{f(home)}</span>
         <span className="text-[10px] uppercase tracking-wider text-fg-muted text-center">{label}</span>
         <span className="text-right num tabular-nums font-bold text-fg-bright">{f(away)}</span>
@@ -549,7 +549,7 @@ export function MatchPage() {
               <header className="px-5 py-3 border-b border-border">
                 <h2 className="eyebrow min-w-0">Statistiques</h2>
               </header>
-              <div className="px-5 py-3 space-y-2">
+              <div className="px-5 py-2 space-y-1">
                 {comparedRows.map((s) => (
                   <StatRow
                     key={s.key}

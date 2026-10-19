@@ -47,7 +47,7 @@ export function MomentumChart(props: {
           </span>
         </div>
       </header>
-      <div className="p-4">
+      <div className="px-4 py-3">
         {/* Hauteur = min(96 px, ancien tracé : svg 700 × 160 sur la largeur de l'écran moins 74 px de marges). */}
         <div className="relative w-full h-[min(96px,calc((100vw_-_74px)*0.22857))]">
           <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="w-full h-full" role="img" aria-label="Momentum">
