@@ -131,12 +131,6 @@ const carteSvg = () => within(tid('carte-tirs')).getByRole('img', { name: 'Carte
 const tracé = () => within(tid('elan')).getByRole('img', { name: 'Momentum' });
 const marqueurs = (svg: Element) =>
   Array.from(svg.querySelectorAll('title')).map((t) => ({ titre: t.textContent ?? '', g: t.parentElement as Element }));
-const ordonnee = (g: Element) => {
-  const c = g.querySelector('circle[fill]:not([fill="transparent"]), circle');
-  if (c) return Number(c.getAttribute('cy'));
-  const l = g.querySelector('line');
-  return Number(l?.getAttribute('y1'));
-};
 
 beforeEach(() => {
   cleanup();
@@ -494,11 +488,21 @@ describe('Page match en écran FM (L186)', () => {
     expect(m.filter((x) => /Cadré/.test(x.titre))).toHaveLength(1);
     expect(m.filter((x) => /Bloqué/.test(x.titre))).toHaveLength(1);
     expect(m.filter((x) => /Manqué/.test(x.titre))).toHaveLength(2);
-    // R17 — « (le club à domicile attaque vers le haut, le visiteur vers le bas) »
+    // R17 — « seule leur position est tournée » : « positions tournées (x, y) → (y, 700 − x) ».
+    // (x_ancien, y_ancien) = position dans l'ancien repère 700 × 450 de la carte d'avant L186
+    // (shot-map.tsx, b428094~1:62-63 : x = side/100 × 700, inversé pour le visiteur ; y = line/100 × 450).
+    // Nouvelle position attendue dans le repère 450 × 700 : (y_ancien, 700 − x_ancien), à ±1 unité.
+    const d = stats();
     for (const x of m) {
-      const domicile = ["23'", "30'", "35'", "40'"].some((t) => x.titre.startsWith(t));
-      if (domicile) expect(ordonnee(x.g)).toBeLessThan(350);
-      else expect(ordonnee(x.g)).toBeGreaterThan(350);
+      const tir = d.shots.find((s) => x.titre.startsWith(s.time));
+      expect(tir, `tir de la fixture pour « ${x.titre} »`).toBeDefined();
+      const domicile = tir!.competitorId === d.home.id;
+      const xAncien = domicile ? (tir!.side / 100) * 700 : (1 - tir!.side / 100) * 700;
+      const yAncien = (tir!.line / 100) * 450;
+      const c = x.g.querySelector('circle');
+      expect(c, `centre du marqueur « ${x.titre} »`).not.toBeNull();
+      expect(Math.abs(Number(c!.getAttribute('cx')) - yAncien), `abscisse de « ${x.titre} »`).toBeLessThanOrEqual(1);
+      expect(Math.abs(Number(c!.getAttribute('cy')) - (700 - xAncien)), `ordonnée de « ${x.titre} »`).toBeLessThanOrEqual(1);
     }
   });
 

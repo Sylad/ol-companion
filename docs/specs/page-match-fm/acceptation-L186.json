@@ -7,7 +7,16 @@
   ],
   "vert": false,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L186.test.tsx": "f41eab28bec4837707b83295121793277dd18eb5",
+    "frontend/src/routes/match.disposition-L186.test.tsx": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6",
     "frontend/src/routes/match.socle-L186.test.tsx": "47f1db172201386322d2149f2f7ca49b6bcbfda9"
-  }
+  },
+  "resceaux": [
+    {
+      "test": "frontend/src/routes/match.disposition-L186.test.tsx",
+      "raison": "Le test R17 des positions exigeait plus que la fiche (tous les tirs du domicile en haut, tous ceux du visiteur en bas) ; il vérifie maintenant la phrase de la fiche : positions tournées (x, y) → (y, 700 − x) à ±1 unité, depuis la formule de l'ancienne carte (shot-map.tsx:62-63).",
+      "date": "2026-10-19",
+      "avant": "f41eab28bec4837707b83295121793277dd18eb5",
+      "apres": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6"
+    }
+  ]
 }
