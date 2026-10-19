@@ -2042,11 +2042,12 @@ lots:
     finished: 2026-10-19
   - id: L187
     title: "Page match : test navigateur (Playwright) de la géométrie de L186 — à 1366×768 et 1440×900 le bas de la rangée Statistiques | Momentum reste sous le pli, écart de 16 px entre rangées du centre, tracé du Momentum à 96 px ; jsdom ne mesure rien"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-10-19
     notes:
       - { date: 2026-10-19, text: "QA L186 (19-10) : mettre aussi à jour docs/qa/expectations.md — /match « Momentum top < 786 à 390×844 » ne tient plus depuis R10 (Statistiques avant Momentum ; 805/865 mesurés) → « Statistiques top < 786 » ; ajouter « 1366×768 : bas de rangee-stats-elan ≤ 768 » ; / « lieu = stade ou rien » contre « Lieu : Extérieur » du panneau Tableau de bord match (antérieur, à préciser avec L90). Captures ~/projects/developpeur/tmp/qa-l186/." }
+    started: 2026-10-19
   - id: L188
     title: "Match des Bleus : ouvrir ou recharger directement /match/<id>?matchupId=… (lien copié, F5) affiche « Lien incomplet » alors que le même lien suivi depuis Équipe de France affiche le match (mesuré 19-10 sur /match/4672325?matchupId=5061-2373-4672325) — l'URL doit suffire à elle seule, avec un test"
     status: done
