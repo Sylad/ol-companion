@@ -150,7 +150,14 @@ const chain = (el: Element, stop: Element) => {
 const chainCss = (el: Element, stop: Element) => chain(el, stop).map(css).join(' ');
 const before = (a: Element, b: Element) => !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
 const centreIds = (col: Element) => Array.from(col.children).map((c) => (c as HTMLElement).dataset.testid);
-const CENTRE = ['faits-match', 'elan', 'carte-tirs', 'bloc-statistiques'];
+// L186 — fiche R8 : « Le centre empile, dans l'ordre : Faits du match, puis la rangée Statistiques comparées | Momentum,
+// puis la rangée Carte des tirs | (Joueurs en vue sur Classement en direct). » ; R10 : le DOM suit cet ordre de lecture.
+// Le centre est UNE colonne (R4) : ses blocs sont lus dans l'ordre du DOM, quelle que soit la rangée qui les porte.
+const CENTRE_COMPLET = ['faits-match', 'bloc-statistiques', 'elan', 'carte-tirs', 'joueurs-en-vue', 'classement-direct'];
+const blocsDuCentre = (col: Element) =>
+  Array.from(col.querySelectorAll('[data-testid]'))
+    .map((e) => (e as HTMLElement).dataset.testid!)
+    .filter((id) => CENTRE_COMPLET.includes(id));
 const MIN = 'min-[1440px]:';
 
 // Contraste WCAG 2.x
@@ -298,9 +305,20 @@ describe('Page match en écran FM (L160)', () => {
     setWidth(1439);
     show();
     const grille = tid('grille-match');
-    for (const e of [grille, ...Array.from(grille.querySelectorAll('*'))]) {
+    // L186 — fiche R4 : « entre lg et 1439 px les compositions restent empilées sous le centre, dont les rangées
+    // côte à côte commencent dès lg (R10) » ; R10 : « la grille à trois colonnes reste à 1440 px ». La grille et les
+    // côtés (ancêtres des compositions) ne posent donc rien sous 1440 px ; les rangées du centre (lg:grid) en sont exclues.
+    const [home, away] = all('bloc-composition');
+    const cotes = new Set([grille, ...chain(home, grille), ...chain(away, grille), ...chain(tid('stats-equipe-domicile'), grille), ...chain(tid('stats-equipe-visiteur'), grille)]);
+    for (const e of cotes) {
       for (const x of tokens(e)) {
         if (/grid-cols|(^|:)grid$|grid-rows/.test(x)) expect(x.startsWith(MIN)).toBe(true);
+      }
+    }
+    // jamais de trois colonnes (280 px / reste / 280 px) avant 1440 px, où que ce soit dans la grille
+    for (const e of Array.from(grille.querySelectorAll('*'))) {
+      for (const x of tokens(e)) {
+        if (/grid-cols-\[.*280px/.test(x) || /grid-cols-3/.test(x)) expect(x.startsWith(MIN)).toBe(true);
       }
     }
     expect(css(grille)).not.toMatch(/xl:grid|lg:grid/);
@@ -319,18 +337,20 @@ describe('Page match en écran FM (L160)', () => {
     expect(observed.filter(estConteneurDeDisposition)).toEqual([]);
   });
 
+  // L186 — fiche R4 : « Un bloc du centre sans donnée n'est pas affiché et le suivant remonte : jamais de trou, quel que soit l'état » ;
+  // les blocs sont listés dans l'ordre de lecture du centre (R8, R10), Joueurs en vue et Classement en direct compris.
   const ETATS: [string, Opts, string[]][] = [
-    ['charge complet', {}, CENTRE],
-    ['sans carte des tirs', { shots: false }, ['faits-match', 'elan', 'bloc-statistiques']],
-    ['sans tirs ni Momentum', { shots: false, momentum: false }, ['faits-match', 'bloc-statistiques']],
-    ['sans faits ni tirs', { events: false, shots: false }, ['elan', 'bloc-statistiques']],
+    ['charge complet', {}, CENTRE_COMPLET],
+    ['sans carte des tirs', { shots: false }, ['faits-match', 'bloc-statistiques', 'elan', 'joueurs-en-vue', 'classement-direct']],
+    ['sans tirs ni Momentum', { shots: false, momentum: false }, ['faits-match', 'bloc-statistiques', 'joueurs-en-vue', 'classement-direct']],
+    ['sans faits ni tirs', { events: false, shots: false }, ['bloc-statistiques', 'elan', 'joueurs-en-vue', 'classement-direct']],
   ];
 
   it("R4 — aucun trou : dans la colonne centrale, chaque bloc commence à (bas du précédent + 16 px de gap) ±1 px, quel que soit l'état (charge complet, sans carte des tirs, sans tirs ni Momentum, sans faits ni tirs, sans joueurs en vue ni classement)", () => {
     for (const [, o, attendu] of ETATS) {
       const { unmount } = show(o);
       const col = tid('colonne-centre');
-      expect(centreIds(col)).toEqual(attendu);
+      expect(blocsDuCentre(col)).toEqual(attendu);
       expect(tokens(col)).toEqual(expect.arrayContaining(['flex', 'flex-col', 'gap-4']));
       for (const c of Array.from(col.children)) expect(c.textContent?.trim()).not.toBe('');
       expect(centreIds(tid('colonne-centre-bas'))).toEqual(['joueurs-en-vue', 'classement-direct']);
@@ -339,7 +359,7 @@ describe('Page match en écran FM (L160)', () => {
     show({ performers: false, standings: false });
     expect(screen.queryByTestId('joueurs-en-vue')).toBeNull();
     expect(screen.queryByTestId('classement-direct')).toBeNull();
-    expect(centreIds(tid('colonne-centre'))).toEqual(CENTRE);
+    expect(blocsDuCentre(tid('colonne-centre'))).toEqual(['faits-match', 'bloc-statistiques', 'elan', 'carte-tirs']);
     expect(screen.queryByTestId('colonne-centre-bas')?.children.length ?? 0).toBe(0);
   });
 
@@ -347,7 +367,9 @@ describe('Page match en écran FM (L160)', () => {
     for (const lineups of ['none', 'probable'] as const) {
       const { unmount } = show({ status: 'upcoming', lineups, events: false, shots: false, momentum: false, performers: false, standings: false, team: false });
       const col = tid('colonne-centre');
-      expect(col.firstElementChild).toBe(tid('bloc-statistiques'));
+      // L186 : Statistiques est portée par la rangée Statistiques | Momentum (R4, R16) ; le premier élément du centre la contient
+      expect(col.firstElementChild).toContainElement(tid('bloc-statistiques'));
+      expect(blocsDuCentre(col)).toEqual(['bloc-statistiques']);
       expect(tokens(col).filter((x) => /^(mt|pt|my|py|m|p)-/.test(x))).toEqual([]);
       expect(tokens(tid('grille-match')).filter((x) => /^(pt|p|py)-/.test(x))).toEqual([]);
       unmount();
@@ -357,15 +379,14 @@ describe('Page match en écran FM (L160)', () => {
   it('R4 — 1440 : les colonnes sont indépendantes (agrandir un bloc latéral ne déplace aucun bloc du centre ; masquer un bloc du centre ne déplace aucun bloc latéral)', () => {
     show();
     const grille = tid('grille-match');
+    // fiche R4 : « Aucune colonne ne s'étire à la hauteur d'une autre (align-items: start) »
     expect(tokens(grille)).toContain(`${MIN}items-start`);
-    expect(tokens(grille).some((x) => x.startsWith(`${MIN}grid-rows-[auto_auto_1fr]`))).toBe(true);
-    const haut = tid('colonne-centre');
-    const bas = tid('colonne-centre-bas');
-    expect(haut).not.toContain(bas);
-    expect(haut.parentElement).toBe(bas.parentElement);
-    expect(css(haut)).toMatch(/row-start-1|row-\[1\]|\brow-1\b/);
-    expect(css(bas)).toMatch(/row-start-2|row-\[2\]|\brow-2\b/);
-    expect(tokens(bas)).toContain(`${MIN}mt-4`);
+    // L186 — fiche R4 : « Depuis L186 le centre est UNE colonne (une seule enveloppe, plus de centre haut / centre bas
+    // coupés par les côtés) » : Joueurs en vue et Classement (colonne-centre-bas, la pile) sont dans cette enveloppe unique,
+    // plus dans une rangée 2 de la grille extérieure (grid-rows auto / auto / 1fr et marge haute mt-4 supprimés).
+    const centre = tid('colonne-centre');
+    expect(centre).toContainElement(tid('colonne-centre-bas'));
+    expect(grille.contains(centre)).toBe(true);
   });
 
   it('R4 — 1440×900 : le début des statistiques d\'équipe est visible sans défiler et aucun panneau latéral n\'a plus de 15 % de vide', () => {
@@ -500,9 +521,11 @@ describe('Page match en écran FM (L160)', () => {
     expect(within(tid('stats-equipe-visiteur')).getByRole('heading', { level: 2 })).toHaveTextContent('Statistiques · Lens');
   });
 
+  // L186 — fiche R10 : « en-tête du score, Faits du match, Statistiques comparées, Momentum, Carte des tirs, Joueurs en vue,
+  // Classement en direct, puis composition et statistiques de l'équipe à domicile, composition et statistiques de l'équipe visiteuse »
   const ORDRE_DOM = [
-    'entete-score', 'faits-match', 'elan', 'carte-tirs', 'bloc-statistiques',
-    'comp-0', 'stats-equipe-domicile', 'comp-1', 'stats-equipe-visiteur', 'joueurs-en-vue', 'classement-direct',
+    'entete-score', 'faits-match', 'bloc-statistiques', 'elan', 'carte-tirs', 'joueurs-en-vue', 'classement-direct',
+    'comp-0', 'stats-equipe-domicile', 'comp-1', 'stats-equipe-visiteur',
   ];
   const noeudsOrdonnes = () =>
     ORDRE_DOM.map((id) => (id.startsWith('comp-') ? all('bloc-composition')[Number(id.slice(5))] : tid(id)));
@@ -561,12 +584,14 @@ describe('Page match en écran FM (L160)', () => {
   });
 
   // ---------------------------------------------------------------- R8
-  it('R8 — 1440 : le centre contient faits, momentum, tirs, statistiques dans cet ordre', () => {
+  it('R8 — 1440 : le centre contient faits, statistiques et momentum, carte des tirs, joueurs en vue, classement, dans cet ordre', () => {
     show();
     const grille = tid('grille-match');
     expect(grille).not.toContainElement(tid('entete-score'));
     expect(before(tid('entete-score'), grille)).toBe(true);
-    expect(centreIds(tid('colonne-centre'))).toEqual(CENTRE);
+    // L186 — R8 : « Le centre empile, dans l'ordre : Faits du match, puis la rangée Statistiques comparées | Momentum,
+    // puis la rangée Carte des tirs | (Joueurs en vue sur Classement en direct). »
+    expect(blocsDuCentre(tid('colonne-centre'))).toEqual(CENTRE_COMPLET);
     expect(centreIds(tid('colonne-centre-bas'))).toEqual(['joueurs-en-vue', 'classement-direct']);
     expect(tid('colonne-centre-bas')).not.toContainElement(tid('bloc-statistiques'));
   });
@@ -575,7 +600,8 @@ describe('Page match en écran FM (L160)', () => {
     show({ shots: false });
     expect(screen.queryByTestId('carte-tirs')).toBeNull();
     expect(within(tid('colonne-centre')).getByTestId('elan')).toBeInTheDocument();
-    expect(centreIds(tid('colonne-centre'))).toEqual(['faits-match', 'elan', 'bloc-statistiques']);
+    // L186 — R8 : « Un bloc sans donnée n'est pas affiché » ; le Momentum suit Statistiques dans l'ordre du centre
+    expect(blocsDuCentre(tid('colonne-centre'))).toEqual(['faits-match', 'bloc-statistiques', 'elan', 'joueurs-en-vue', 'classement-direct']);
   });
 
   // ---------------------------------------------------------------- R9
@@ -610,16 +636,18 @@ describe('Page match en écran FM (L160)', () => {
     expect(tid('grille-match')).toBeInTheDocument();
   });
 
-  it('R10 — ordre du DOM = ordre affiché à 390 (compositions de Lyon avant celles de Lens, Joueurs en vue et Classement en dernier)', () => {
+  it('R10 — ordre du DOM = ordre affiché à 390 (Statistiques avant Momentum, compositions de Lyon avant celles de Lens, compositions après Classement en direct)', () => {
     setWidth(390);
     show();
     const [home, away] = all('bloc-composition');
     expect(home).toHaveTextContent('Composition · Lyon');
     expect(away).toHaveTextContent('Composition · Lens');
     expect(before(home, away)).toBe(true);
-    expect(before(away, tid('joueurs-en-vue'))).toBe(true);
+    // L186 — R10 : « Statistiques comparées, Momentum, Carte des tirs, Joueurs en vue, Classement en direct, puis composition et statistiques de l'équipe à domicile, [...] visiteuse »
+    expect(before(tid('bloc-statistiques'), tid('elan'))).toBe(true);
     expect(before(tid('joueurs-en-vue'), tid('classement-direct'))).toBe(true);
-    expect(before(tid('stats-equipe-visiteur'), tid('joueurs-en-vue'))).toBe(true);
+    expect(before(tid('classement-direct'), home)).toBe(true);
+    expect(before(tid('stats-equipe-domicile'), away)).toBe(true);
     expect(before(tid('bloc-statistiques'), home)).toBe(true);
     // pas de réordonnancement sous 1440 px
     const grille = tid('grille-match');
@@ -757,8 +785,9 @@ describe('Page match en écran FM (L160)', () => {
   it('R13 — OL à l\'extérieur : libellés d\'attaque, OL en rouge à gauche et adversaire en bleu à droite', () => {
     show({ olHome: false });
     const carte = tid('carte-tirs');
-    const gauche = within(carte).getByText(/← OL attaque/);
-    const droite = within(carte).getByText(/RCL attaque →/);
+    // L186 — R13 : « libellés d'attaque (« ↓ OL attaque » rouge à gauche, « RCL attaque ↑ » bleu à droite, L186) »
+    const gauche = within(carte).getByText(/↓ OL attaque/);
+    const droite = within(carte).getByText(/RCL attaque ↑/);
     expect(css(gauche)).toMatch(/ol-red-bright/);
     expect(css(droite)).toMatch(/226[ _]70%[ _]70%/);
   });

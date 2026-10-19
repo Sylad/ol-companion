@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "cc8d1afa35952a6dc76752d5979dba16eede1c69"
+    "frontend/src/routes/match.disposition-L160.test.tsx": "5e254fde28b5d0959ad33559a25d9356f5192970"
   },
   "resceaux": [
     {
@@ -42,6 +42,15 @@
       "apres": "cc8d1afa35952a6dc76752d5979dba16eede1c69",
       "porteur": "L179",
       "ficheAmendee": "72964ff"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "Fiche page-match-fm amendée par L186 : centre en une colonne, ordre Faits, Statistiques, Momentum, Carte des tirs, Joueurs en vue, Classement ; libellés d'attaque ↓/↑ ; rangées dès 1024 px. Les assertions L160 qui figeaient l'ancien ordre, les anciens libellés et la grille à rangées sont alignées, les autres intactes.",
+      "date": "2026-10-19",
+      "avant": "cc8d1afa35952a6dc76752d5979dba16eede1c69",
+      "apres": "5e254fde28b5d0959ad33559a25d9356f5192970",
+      "porteur": "L186",
+      "ficheAmendee": "6f063cc"
     }
   ]
 }
