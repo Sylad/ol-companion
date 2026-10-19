@@ -5,7 +5,7 @@
     "frontend/src/routes/match.disposition-L186.test.tsx",
     "frontend/src/routes/match.socle-L186.test.tsx"
   ],
-  "vert": false,
+  "vert": true,
   "empreintes": {
     "frontend/src/routes/match.disposition-L186.test.tsx": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6",
     "frontend/src/routes/match.socle-L186.test.tsx": "3d8e14f4806784e11b5b98113299a8d4ed6077b6"
