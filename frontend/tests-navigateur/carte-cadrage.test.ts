@@ -170,7 +170,7 @@ async function glisser(page: Page, dx: number, dy: number, fois = 6) {
 describe.each([[1440, 900], [390, 844], [320, 700]])('Glisser de la carte L1 à %i×%i (L192)', (largeur, hauteur) => {
   const directions: Array<[string, number, number]> = [['vers la gauche', -1, 0], ['vers la droite', 1, 0], ['vers le haut', 0, -1], ['vers le bas', 0, 1]];
 
-  it.each(directions)('R11 — à l’ouverture comme après Recentrer, 6 glissers %s laissent des clubs à l’écran', async (_nom, dx, dy) => {
+  it.each(directions)('R11 — après Recentrer, 6 glissers %s laissent des clubs à l’écran', async (_nom, dx, dy) => {
     const page = await ouvrir(largeur, hauteur);
     await page.getByRole('button', { name: 'Recentrer' }).click();
     await page.waitForTimeout(800);

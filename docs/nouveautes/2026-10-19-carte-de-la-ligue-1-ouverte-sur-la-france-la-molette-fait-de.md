@@ -11,5 +11,5 @@ La carte de la Ligue 1 s'ouvre maintenant sur la France entière, avec les 18 cl
 
 - La **molette** de la souris fait défiler la page : elle ne zoome plus la carte quand on passe dessus. On zoome avec les boutons + et −.
 - Un bouton **Recentrer** ramène la carte à sa vue de départ, quel que soit le zoom ou l'endroit où on l'a déplacée.
-- On ne peut plus dézoomer au-delà de la France. La carte ne sort pas de sa vue de départ : à ce zoom elle ne bouge pas, plus près on la déplace sur la France sans jamais perdre les clubs de vue. Le zoom avant s'arrête à un niveau qui reste lisible.
+- On ne peut plus dézoomer au-delà de la France. La carte ne sort pas de sa vue de départ : à ce zoom elle ne bouge pas, plus près on la déplace, jamais au-delà de la vue de départ ; Recentrer y ramène. Le zoom avant s'arrête à un niveau qui reste lisible.
 - Si la fenêtre change de taille, la carte garde le zoom et l'endroit où on l'a mise ; elle ne reprend sa vue de départ que si elle y était déjà.

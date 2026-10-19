@@ -48,9 +48,9 @@ const MAX_BOUNDS_SLACK_PX = 1;
 
 /**
  * Cadrage de la France pour la taille actuelle de la carte. Le glisser ne sort pas de la vue d'ouverture : à ce zoom
- * la carte ne bouge pas, plus près elle se déplace sur la France mais jamais au-delà de cette vue, donc toujours sur
- * des clubs. Une marge symétrique autour des clubs (la France + 1,5 de chaque côté) laissait la vue partir en Pologne
- * sur un téléphone, où le cadrage est limité par la largeur et la vue est haute.
+ * la carte ne bouge pas, plus près elle se déplace mais jamais au-delà de cette vue (Recentrer y ramène). Ce n'est
+ * pas une garantie d'avoir des clubs à l'écran : les coins de la vue d'ouverture sont la mer. Une marge symétrique autour des clubs (la France + 1,5 de chaque
+ * côté) laissait la vue partir en Pologne sur un téléphone, où le cadrage est limité par la largeur et la vue est haute.
  * La marge de 36 px du cadrage, comptée au zoom d'ouverture, vaut plus au-dessus : un club du bord se découvre entier.
  */
 function measureFrame(map: L.Map): Frame {
