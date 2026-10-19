@@ -64,17 +64,18 @@ function StatRow({
   const f = fmt ?? ((n: number) => `${Math.round(n)}`);
 
   return (
-    <div className="[display:grid] [grid-template-columns:60px_1fr_60px] items-center gap-3">
-      <span className="text-right num tabular-nums font-bold text-fg-bright">{f(home)}</span>
-      <div>
-        <div className="text-[10px] uppercase tracking-wider text-fg-muted text-center mb-1">{label}</div>
-        {/* La couleur suit l'équipe suivie (OL rouge, adversaire bleu ; France bleue, adversaire blanc), pas le côté ; 2 px de --surface entre les segments. */}
-        <div className="flex gap-0.5 h-2 rounded-full bg-surface overflow-hidden">
-          {home > 0 && <div className={cn('transition-all', teamColors(palette, homeIsOl).bg)} style={{ flexGrow: pctHome, flexBasis: 0 }} />}
-          {away > 0 && <div className={cn('transition-all', teamColors(palette, !homeIsOl).bg)} style={{ flexGrow: 100 - pctHome, flexBasis: 0 }} />}
-        </div>
+    <div>
+      {/* Valeur à gauche, libellé au centre, valeur à droite sur une ligne ; la barre comparée dessous, pleine largeur (L186 R16). */}
+      <div className="[display:grid] [grid-template-columns:minmax(0,1fr)_auto_minmax(0,1fr)] items-baseline gap-2 mb-1">
+        <span className="text-left num tabular-nums font-bold text-fg-bright">{f(home)}</span>
+        <span className="text-[10px] uppercase tracking-wider text-fg-muted text-center">{label}</span>
+        <span className="text-right num tabular-nums font-bold text-fg-bright">{f(away)}</span>
       </div>
-      <span className="text-left num tabular-nums font-bold text-fg-bright">{f(away)}</span>
+      {/* La couleur suit l'équipe suivie (OL rouge, adversaire bleu ; France bleue, adversaire blanc), pas le côté ; 2 px de --surface entre les segments. */}
+      <div className="flex gap-0.5 h-2 rounded-full bg-surface overflow-hidden">
+        {home > 0 && <div className={cn('transition-all', teamColors(palette, homeIsOl).bg)} style={{ flexGrow: pctHome, flexBasis: 0 }} />}
+        {away > 0 && <div className={cn('transition-all', teamColors(palette, !homeIsOl).bg)} style={{ flexGrow: 100 - pctHome, flexBasis: 0 }} />}
+      </div>
     </div>
   );
 }
@@ -205,7 +206,7 @@ function PerformerCell({ player, align }: { player: LiveMatchTopPerformer['homeP
   return (
     <div className={cn('min-w-0', align === 'right' ? 'text-right' : 'text-left')}>
       <div className="font-semibold text-fg text-sm break-words">{player.name}</div>
-      <div data-stat-ligne className="text-xs text-fg-muted whitespace-nowrap">
+      <div data-stat-ligne className="text-xs text-fg-muted break-words">
         {statNameFr(player.statName)} : <span className="num tabular-nums font-semibold text-fg">{statValueFr(player.statValue)}</span>
       </div>
     </div>
@@ -435,6 +436,9 @@ export function MatchPage() {
     list.filter((s) => (data.teamStats.home[s.key] ?? 0) !== 0 || (data.teamStats.away[s.key] ?? 0) !== 0);
   const comparedRows = nonZero(COMPARED_STATS);
   const teamRows = nonZero(TEAM_STATS);
+  const hasMomentum = !!data.momentum && data.momentum.length > 0;
+  const hasShots = data.shots.length > 0;
+  const hasPile = data.topPerformers.length > 0 || isUpcoming || !!data.standings;
   const hasSides = !!homeLineup || !!awayLineup || teamRows.length > 0;
 
   return (
@@ -518,9 +522,10 @@ export function MatchPage() {
         </div>
       </section>
 
-      {/* Écran de match (L160) : à partir de 1440 px, trois colonnes indépendantes — domicile à gauche,
-          match au centre, visiteur à droite ; dessous, une seule colonne dans l'ordre du DOM. Le centre
-          est coupé en deux (haut, puis les côtés, puis bas) pour que le DOM suive l'ordre de lecture. */}
+      {/* Écran de match (L160, L186) : à partir de 1440 px, trois colonnes indépendantes — domicile à gauche,
+          match au centre, visiteur à droite ; dessous, une seule colonne dans l'ordre du DOM. Le centre est UNE
+          colonne : Faits, rangée Statistiques | Momentum, rangée Carte des tirs | pile Joueurs en vue + Classement
+          (rangées dès 1024 px). Le DOM suit l'ordre de lecture : aucun order ni grid-row entre les blocs. */}
       <div
         data-testid="grille-match"
         className={cn(
@@ -528,7 +533,9 @@ export function MatchPage() {
           'min-[1440px]:grid min-[1440px]:grid-cols-[280px_minmax(0,1fr)_280px] min-[1440px]:grid-rows-[auto_auto_1fr] min-[1440px]:gap-x-4 min-[1440px]:gap-y-0 min-[1440px]:items-start',
         )}
       >
-        <div data-testid="colonne-centre" className={cn('flex flex-col gap-4 min-w-0', 'min-[1440px]:col-start-2 min-[1440px]:row-start-1')}>
+        {/* La grille place le centre (un seul bloc de DOM) dans la colonne du milieu ; rien n'est réordonné à l'intérieur. */}
+        <div className="min-w-0 min-[1440px]:col-start-2 min-[1440px]:row-start-1">
+        <div data-testid="colonne-centre" className="flex flex-col gap-4 min-w-0">
           {data.events.length > 0 && (
             <FaitsMatch
               events={data.events}
@@ -537,52 +544,94 @@ export function MatchPage() {
               awaySymbol={clubSymbol(data.away.symbolicName, data.away.name, symbolIsOl && !trackedIsHome)}
             />
           )}
-          {!!data.momentum && data.momentum.length > 0 && (
-            <MomentumChart
-              points={data.momentum}
-              homeName={data.home.name}
-              awayName={data.away.name}
-              goalMinutes={goalMinutes}
-              homeIsOl={trackedIsHome}
-              palette={palette}
-            />
-          )}
-          {data.shots.length > 0 && (
-            <ShotMap
-              shots={data.shots}
-              homeId={data.home.id}
-              homeIsOl={trackedIsHome}
-              palette={palette}
-              homeName={data.home.name}
-              awayName={data.away.name}
-              homeSymbol={data.home.symbolicName}
-              awaySymbol={data.away.symbolicName}
-              playerNames={playerNames}
-            />
-          )}
-          <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
-            <header className="px-5 py-3 border-b border-border">
-              <h2 className="eyebrow min-w-0">Statistiques</h2>
-            </header>
-            <div className="px-5 py-3 space-y-2">
-              {comparedRows.map((s) => (
-                <StatRow
-                  key={s.key}
-                  label={s.label}
-                  home={data.teamStats.home[s.key] ?? 0}
-                  away={data.teamStats.away[s.key] ?? 0}
-                  fmt={s.fmt}
+          <div data-testid="rangee-stats-elan" className={cn('grid gap-4 [&>*]:min-w-0', hasMomentum && 'grid-cols-1 lg:grid-cols-2')}>
+            <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
+              <header className="px-5 py-3 border-b border-border">
+                <h2 className="eyebrow min-w-0">Statistiques</h2>
+              </header>
+              <div className="px-5 py-3 space-y-2">
+                {comparedRows.map((s) => (
+                  <StatRow
+                    key={s.key}
+                    label={s.label}
+                    home={data.teamStats.home[s.key] ?? 0}
+                    away={data.teamStats.away[s.key] ?? 0}
+                    fmt={s.fmt}
+                    homeIsOl={trackedIsHome}
+                    palette={palette}
+                  />
+                ))}
+                {comparedRows.length === 0 && (
+                  <p data-testid="message-stats-vide" className="text-xs text-fg-dim py-4 text-center">
+                    {bleus && isUpcoming ? 'Les statistiques apparaîtront au coup d’envoi.' : 'Pas encore de statistiques.'}
+                  </p>
+                )}
+              </div>
+            </section>
+            {hasMomentum && (
+              <MomentumChart
+                points={data.momentum!}
+                homeName={data.home.name}
+                awayName={data.away.name}
+                goalMinutes={goalMinutes}
+                homeIsOl={trackedIsHome}
+                palette={palette}
+              />
+            )}
+          </div>
+          {(hasShots || hasPile) && (
+            <div data-testid="rangee-tirs-joueurs" className={cn('grid gap-4 [&>*]:min-w-0 items-start', hasShots && hasPile && 'grid-cols-1 lg:grid-cols-2')}>
+              {hasShots && (
+                <ShotMap
+                  shots={data.shots}
+                  homeId={data.home.id}
                   homeIsOl={trackedIsHome}
                   palette={palette}
+                  homeName={data.home.name}
+                  awayName={data.away.name}
+                  homeSymbol={data.home.symbolicName}
+                  awaySymbol={data.away.symbolicName}
+                  playerNames={playerNames}
                 />
-              ))}
-              {comparedRows.length === 0 && (
-                <p data-testid="message-stats-vide" className="text-xs text-fg-dim py-4 text-center">
-                  {bleus && isUpcoming ? 'Les statistiques apparaîtront au coup d’envoi.' : 'Pas encore de statistiques.'}
-                </p>
+              )}
+              {hasPile && (
+                <div data-testid="colonne-centre-bas" className="flex flex-col gap-4 min-w-0">
+                  {(data.topPerformers.length > 0 || isUpcoming) && (
+                    <section data-testid="joueurs-en-vue" className="rounded-md bg-surface border border-border overflow-hidden">
+                      <header className="px-5 py-3 border-b border-border">
+                        <h2 className="eyebrow min-w-0">Joueurs en vue</h2>
+                      </header>
+                      <div className="px-5 py-2 divide-y divide-border">
+                        {data.topPerformers.length === 0 && (
+                          <p data-testid="message-joueurs-en-vue-vide" className="text-xs text-fg-dim py-4 text-center">
+                            Les joueurs en vue apparaîtront avec les statistiques du match.
+                          </p>
+                        )}
+                        {isUpcoming && data.topPerformers.length > 0 && (
+                          <p data-testid="periode-joueurs-en-vue" className="text-xs text-fg-dim py-2 text-center">
+                            Chiffres de la saison avant le coup d’envoi, pas de ce match.
+                          </p>
+                        )}
+                        {data.topPerformers.map((tp, i) => (
+                          <div key={i} className="py-1.5">
+                            <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
+                              {roleFr(tp.role)}
+                            </div>
+                            <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-3">
+                              <PerformerCell player={tp.homePlayer} align="right" />
+                              <PerformerCell player={tp.awayPlayer} align="left" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                  {!!data.standings && <MiniStandings rows={data.standings} />}
+                </div>
               )}
             </div>
-          </section>
+          )}
+        </div>
         </div>
 
         {hasSides && (
@@ -613,45 +662,6 @@ export function MatchPage() {
                 <TeamStats testId="stats-equipe-visiteur" teamName={data.away.name} values={data.teamStats.away} rows={teamRows} />
               </SideCell>
             )}
-          </div>
-        )}
-
-        {(data.topPerformers.length > 0 || isUpcoming || !!data.standings) && (
-          <div
-            data-testid="colonne-centre-bas"
-            className={cn('contents', 'min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-4 min-[1440px]:min-w-0 min-[1440px]:mt-4 min-[1440px]:col-start-2 min-[1440px]:row-start-2')}
-          >
-            {(data.topPerformers.length > 0 || isUpcoming) && (
-              <section data-testid="joueurs-en-vue" className="rounded-md bg-surface border border-border overflow-hidden">
-                <header className="px-5 py-3 border-b border-border">
-                  <h2 className="eyebrow min-w-0">Joueurs en vue</h2>
-                </header>
-                <div className="px-5 py-2 divide-y divide-border">
-                  {data.topPerformers.length === 0 && (
-                    <p data-testid="message-joueurs-en-vue-vide" className="text-xs text-fg-dim py-4 text-center">
-                      Les joueurs en vue apparaîtront avec les statistiques du match.
-                    </p>
-                  )}
-                  {isUpcoming && data.topPerformers.length > 0 && (
-                    <p data-testid="periode-joueurs-en-vue" className="text-xs text-fg-dim py-2 text-center">
-                      Chiffres de la saison avant le coup d’envoi, pas de ce match.
-                    </p>
-                  )}
-                  {data.topPerformers.map((tp, i) => (
-                    <div key={i} className="py-1.5">
-                      <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
-                        {roleFr(tp.role)}
-                      </div>
-                      <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-3">
-                        <PerformerCell player={tp.homePlayer} align="right" />
-                        <PerformerCell player={tp.awayPlayer} align="left" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-            {!!data.standings && <MiniStandings rows={data.standings} />}
           </div>
         )}
       </div>

@@ -4,20 +4,23 @@ import { teamColors, type MatchPalette, type TeamColors } from '@/lib/match-pale
 import { cn } from '@/lib/utils';
 import { decimalFr } from '@/lib/stat-fr';
 
-// Horizontal (landscape) pitch — uses full available width.
-// 365scores stores shot coords this way:
-//   side = % along the long axis (own goal at 0 → opponent goal at 100)
-//   line = % along the short axis (touchline 0 → touchline 100, 50 = centre)
-const W = 700;
-const H = 450;
-const HALF_X = W / 2;
-const PEN_W = 110;
-const PEN_H = 270;
-const PEN_Y = (H - PEN_H) / 2;
-const SIX_W = 40;
-const SIX_H = 130;
-const SIX_Y = (H - SIX_H) / 2;
+// Terrain à la verticale (L186 R17), viewBox 450 × 700 : buts en haut et en bas, le club à domicile attaque vers le haut.
+// 365scores donne les tirs sur un terrain horizontal :
+//   side = % le long de l'axe long (son but à 0 → but adverse à 100)
+//   line = % le long de l'axe court (touche à 0 → touche à 100, 50 = axe)
+// Rotation d'un quart de tour de l'ancienne carte 700 × 450 : (x, y) → (y, 700 − x).
+const W = 450;
+const H = 700;
+const PEN_W = 270;
+const PEN_H = 110;
+const PEN_X = (W - PEN_W) / 2;
+const SIX_W = 130;
+const SIX_H = 40;
+const SIX_X = (W - SIX_W) / 2;
 const SPOT_DIST = 75;
+/** Les marqueurs sont 60 % plus grands qu'avant L186 (rayons, croix, halo, traits) : le terrain est rendu à 224 px au lieu de 520 px. */
+const K = 1.6;
+const LINE = 2;
 
 interface Props {
   shots: LiveMatchShot[];
@@ -53,15 +56,15 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
       </header>
       <div className="p-4">
         <div className="relative w-full">
-          <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Carte des tirs">
+          <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[224px] mx-auto h-auto block" role="img" aria-label="Carte des tirs">
             <Pitch />
             {shots.map((s) => {
               const isHome = s.competitorId === homeId;
-              // Landscape pitch: long axis = horizontal (X), short axis = vertical (Y).
-              // Home attacks RIGHT (target at right), away attacks LEFT (target at left).
-              const x = isHome ? (s.side / 100) * W : (1 - s.side / 100) * W;
-              const y = (s.line / 100) * H;
-              const r = Math.min(9, 2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9);
+              // Ancienne carte : le club à domicile attaquait à droite (x), le visiteur à gauche ; y = axe court.
+              const oldX = isHome ? (s.side / 100) * 700 : (1 - s.side / 100) * 700;
+              const x = (s.line / 100) * W;
+              const y = H - oldX;
+              const r = Math.max(5.28, Math.min(9 * K, (2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9) * K));
               return (
                 <ShotMarker
                   key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
@@ -79,10 +82,10 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
         </div>
         {/* Sens d'attaque : une ligne sous le terrain, jamais posée dessus (les tirs se concentrent dans les surfaces). */}
         <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 text-[10px] uppercase tracking-wider font-bold">
-          <span className={teamColors(palette, !homeIsOl).text}>← {awaySymbol} attaque</span>
-          <span className={cn('text-right', teamColors(palette, homeIsOl).text)}>{homeSymbol} attaque →</span>
+          <span className={teamColors(palette, !homeIsOl).text}>↓ {awaySymbol} attaque</span>
+          <span className={cn('text-right', teamColors(palette, homeIsOl).text)}>{homeSymbol} attaque ↑</span>
         </div>
-        <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] sm:[grid-template-columns:repeat(4,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
+        <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
           <OutcomeLegend label="But" kind="goal" />
           <OutcomeLegend label="Cadré" kind="on-target" />
           <OutcomeLegend label="Bloqué" kind="blocked" />
@@ -100,24 +103,21 @@ function Pitch() {
   const stroke = 'rgba(255,255,255,0.18)';
   const grass = 'hsl(var(--surface-2) / 0.5)';
   return (
-    <g>
-      {/* Grass */}
+    <>
       <rect x={0} y={0} width={W} height={H} fill={grass} />
-      {/* Touchlines */}
-      <rect x={0.5} y={0.5} width={W - 1} height={H - 1} fill="none" stroke={stroke} strokeWidth={1} />
-      {/* Halfway line + center circle */}
-      <line x1={HALF_X} y1={0} x2={HALF_X} y2={H} stroke={stroke} strokeWidth={1} />
-      <circle cx={HALF_X} cy={H / 2} r={50} fill="none" stroke={stroke} strokeWidth={1} />
-      <circle cx={HALF_X} cy={H / 2} r={2} fill={stroke} />
-      {/* Left penalty box (away team's target = home defending) */}
-      <rect x={0} y={PEN_Y} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <rect x={0} y={SIX_Y} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <circle cx={SPOT_DIST} cy={H / 2} r={2} fill={stroke} />
-      {/* Right penalty box (home team's target = away defending) */}
-      <rect x={W - PEN_W} y={PEN_Y} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <rect x={W - SIX_W} y={SIX_Y} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={1} />
-      <circle cx={W - SPOT_DIST} cy={H / 2} r={2} fill={stroke} />
-    </g>
+      <rect x={1} y={1} width={W - 2} height={H - 2} fill="none" stroke={stroke} strokeWidth={LINE} />
+      <line x1={0} y1={H / 2} x2={W} y2={H / 2} stroke={stroke} strokeWidth={LINE} />
+      <circle cx={W / 2} cy={H / 2} r={50} fill="none" stroke={stroke} strokeWidth={LINE} />
+      <circle cx={W / 2} cy={H / 2} r={2} fill={stroke} />
+      {/* But du haut (défendu par le visiteur) */}
+      <rect x={PEN_X} y={0} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={LINE} />
+      <rect x={SIX_X} y={0} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={LINE} />
+      <circle cx={W / 2} cy={SPOT_DIST} r={2} fill={stroke} />
+      {/* But du bas (défendu par le club à domicile) */}
+      <rect x={PEN_X} y={H - PEN_H} width={PEN_W} height={PEN_H} fill="none" stroke={stroke} strokeWidth={LINE} />
+      <rect x={SIX_X} y={H - SIX_H} width={SIX_W} height={SIX_H} fill="none" stroke={stroke} strokeWidth={LINE} />
+      <circle cx={W / 2} cy={H - SPOT_DIST} r={2} fill={stroke} />
+    </>
   );
 }
 
@@ -153,13 +153,13 @@ function ShotMarker({
   ].filter(Boolean).join(' · ');
 
   if (isBlocked) {
-    const half = Math.max(r, 3);
+    const half = Math.max(r, 3 * K);
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={Math.max(half, 6)} fill="transparent" />
-        <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={1.75} strokeLinecap="round" />
-        <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={1.75} strokeLinecap="round" />
+        <circle cx={x} cy={y} r={Math.max(half, 6 * K)} fill="transparent" />
+        <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={1.75 * K} strokeLinecap="round" />
+        <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={1.75 * K} strokeLinecap="round" />
       </g>
     );
   }
@@ -167,8 +167,8 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={Math.max(r, 6)} fill="transparent" />
-        <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={2} />
+        <circle cx={x} cy={y} r={Math.max(r, 6 * K)} fill="transparent" />
+        <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={2 * K} />
       </g>
     );
   }
@@ -176,15 +176,15 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={r + 2} fill="none" stroke="white" strokeWidth={1} opacity={0.6} />
-        <circle cx={x} cy={y} r={r} fill={fill} stroke="white" strokeWidth={1.25} />
+        <circle cx={x} cy={y} r={r + 2 * K} fill="none" stroke="white" strokeWidth={1 * K} opacity={0.6} />
+        <circle cx={x} cy={y} r={r} fill={fill} stroke="white" strokeWidth={1.25 * K} />
       </g>
     );
   }
   return (
     <g aria-label={title}>
       <title>{title}</title>
-      <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={1.5} />
+      <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={1.5 * K} />
     </g>
   );
 }

@@ -34,7 +34,7 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
     const carte = screen.getByTestId('carte-tirs');
     const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
     const surface = terrain.parentElement as HTMLElement;
-    for (const re of [/← .* attaque/, /.* attaque →/]) {
+    for (const re of [/↓ .* attaque/, /.* attaque ↑/]) {
       const label = within(carte).getByText(re);
       expect(surface.contains(label), String(re)).toBe(false);
       for (const a of [label, ...ancestors(label, carte)]) {
@@ -47,8 +47,8 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
     renderMap({ homeIsOl: true, homeName: 'Lyon', awayName: 'Rennes' });
     const carte = screen.getByTestId('carte-tirs');
     const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
-    const gauche = within(carte).getByText(/← .* attaque/);
-    const droite = within(carte).getByText(/.* attaque →/);
+    const gauche = within(carte).getByText(/↓ .* attaque/);
+    const droite = within(carte).getByText(/.* attaque ↑/);
     for (const el of [gauche, droite]) {
       expect(el.className + el.parentElement!.className).not.toMatch(/writing-mode|vertical|rotate/);
       expect(terrain.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -63,8 +63,8 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
     for (const homeIsOl of [true, false]) {
       const { unmount } = renderMap({ homeIsOl, homeName: homeIsOl ? 'Lyon' : 'Rennes', awayName: homeIsOl ? 'Rennes' : 'Lyon' });
       const carte = screen.getByTestId('carte-tirs');
-      const olLabel = within(carte).getByText(homeIsOl ? /OL attaque →/ : /← OL attaque/);
-      const advLabel = within(carte).getByText(homeIsOl ? /← REN attaque/ : /REN attaque →/);
+      const olLabel = within(carte).getByText(homeIsOl ? /OL attaque ↑/ : /↓ OL attaque/);
+      const advLabel = within(carte).getByText(homeIsOl ? /↓ REN attaque/ : /REN attaque ↑/);
       expect(olLabel.className).toMatch(/text-ol-red-bright/);
       expect(advLabel.className).toMatch(/226_70%_70%/);
       unmount();

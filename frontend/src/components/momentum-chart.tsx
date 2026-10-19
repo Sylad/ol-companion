@@ -21,10 +21,11 @@ export function MomentumChart(props: {
   const palette = props.palette ?? 'ol';
   const HOME = teamColors(palette, props.homeIsOl).fill;
   const AWAY = teamColors(palette, !props.homeIsOl).fill;
-  const W = 700;
-  const H = 160;
-  const MID = 80;
-  const MAX_BAR = 76;
+  // Tracé 240 × 96 étiré en largeur (preserveAspectRatio=none) : la hauteur ne change pas (L186 R16).
+  const W = 240;
+  const H = 96;
+  const MID = 48;
+  const MAX_BAR = 45;
 
   const N = Math.max(90, props.points.length);
   const slot = W / N;
@@ -32,7 +33,7 @@ export function MomentumChart(props: {
 
 
   return (
-    <section data-testid="elan" className="rounded-md bg-surface border border-border overflow-hidden">
+    <section data-testid="elan" className="h-full rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between">
         <h2 className="eyebrow min-w-0">Momentum</h2>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
@@ -47,58 +48,44 @@ export function MomentumChart(props: {
         </div>
       </header>
       <div className="p-4">
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Momentum">
-          <line x1={0} x2={W} y1={MID} y2={MID} stroke="hsl(var(--border))" />
-          <line x1={45 * slot} x2={45 * slot} y1={0} y2={H} stroke="hsl(var(--border))" strokeDasharray="3 3" />
-          {props.points.length > 90 && (
-            <line x1={90 * slot} x2={90 * slot} y1={0} y2={H} stroke="hsl(var(--border))" strokeDasharray="3 3" />
-          )}
-          {props.points.map((p, i) => {
-            const h = Math.abs(p.value) / 100 * MAX_BAR;
-            const x = i * slot;
-            if (p.value >= 0) {
+        {/* Hauteur = min(96 px, ancien tracé : svg 700 × 160 sur la largeur de l'écran moins 74 px de marges). */}
+        <div className="relative w-full h-[min(96px,calc((100vw_-_74px)*0.22857))]">
+          <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="w-full h-full" role="img" aria-label="Momentum">
+            <line x1={0} x2={W} y1={MID} y2={MID} stroke="hsl(var(--border))" vectorEffect="non-scaling-stroke" />
+            <line x1={45 * slot} x2={45 * slot} y1={0} y2={H} stroke="hsl(var(--border))" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+            {props.points.length > 90 && (
+              <line x1={90 * slot} x2={90 * slot} y1={0} y2={H} stroke="hsl(var(--border))" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+            )}
+            {props.points.map((p, i) => {
+              const h = Math.abs(p.value) / 100 * MAX_BAR;
+              const x = i * slot;
+              return p.value >= 0
+                ? <rect key={p.minute} x={x} y={MID - h} width={barWidth} height={h} fill={HOME} />
+                : <rect key={p.minute} x={x} y={MID} width={barWidth} height={h} fill={AWAY} />;
+            })}
+          </svg>
+          {/* Pastilles de but : couche à part, non déformée, positionnée en % du repère du tracé (au bout de leur barre). */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
+            {props.goalMinutes.map(g => {
+              // Le point du Momentum le plus proche de la minute du but (exactement elle en données réelles : une valeur par minute).
+              const point = props.points.reduce((best, p) => (Math.abs(p.minute - g.minute) < Math.abs(best.minute - g.minute) ? p : best));
+              const h = Math.abs(point.value) / 100 * MAX_BAR;
+              const x = props.points.indexOf(point) * slot;
+              const cy = point.value >= 0 ? MID - h : MID + h;
               return (
-                <rect
-                  key={p.minute}
-                  x={x}
-                  y={MID - h}
-                  width={barWidth}
-                  height={h}
-                  fill={HOME}
+                <circle
+                  key={`goal-${g.minute}-${g.home}`}
+                  cx={`${((x + barWidth / 2) / W) * 100}%`}
+                  cy={`${(cy / H) * 100}%`}
+                  r={4}
+                  fill={g.home ? HOME : AWAY}
+                  stroke="white"
+                  strokeWidth={1.5}
                 />
               );
-            } else {
-              return (
-                <rect
-                  key={p.minute}
-                  x={x}
-                  y={MID}
-                  width={barWidth}
-                  height={h}
-                  fill={AWAY}
-                />
-              );
-            }
-          })}
-          {props.goalMinutes.map(g => {
-            const point = props.points.find(p => p.minute === g.minute);
-            if (!point) return null;
-            const h = Math.abs(point.value) / 100 * MAX_BAR;
-            const x = props.points.indexOf(point) * slot;
-            const cy = point.value >= 0 ? MID - h : MID + h;
-            return (
-              <circle
-                key={`goal-${g.minute}-${g.home}`}
-                cx={x + barWidth / 2}
-                cy={cy}
-                r={4}
-                fill={g.home ? HOME : AWAY}
-                stroke="white"
-                strokeWidth={1.5}
-              />
-            );
-          })}
-        </svg>
+            })}
+          </svg>
+        </div>
         <p className="text-[10px] text-fg-dim mt-2 leading-relaxed">
           Pression par minute, dérivée du play-by-play (tirs, corners, coups francs). Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
         </p>
