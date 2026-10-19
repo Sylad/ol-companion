@@ -261,6 +261,8 @@ const NOM_EQUIPE_OL = 'text-2xl leading-none';
  * maquette (`.sc`) : jusqu'à 599 px marge latérale 12 px, écart 8 px, score à 36 px ; sous 360 px marge 6 px, écart 4 px,
  * score à 32 px — à 390 px « Bosnie-Herzégovine » tient sur deux lignes, sans coupure dans le mot.
  */
+/** Match de l'OL (L190) : mêmes colonnes bornées que les Bleus, sinon un buteur insécable (L189) élargit sa colonne et décentre le score. */
+const ENTETE_OL = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]';
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 /** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
 const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
@@ -500,7 +502,7 @@ export function MatchPage() {
             )}>{clock.label}</span>
           )}
         </header>
-        <div className={cn('px-5 py-3 grid items-center gap-x-4 gap-y-1', bleus ? ENTETE_BLEUS : 'grid-cols-[1fr_auto_1fr]')}>
+        <div className={cn('px-5 py-3 grid items-center gap-x-4 gap-y-1', bleus ? ENTETE_BLEUS : ENTETE_OL)}>
           <div className="text-right">
             <div className={cn(NOM_EQUIPE, bleus ? NOM_EQUIPE_BLEUS : NOM_EQUIPE_OL, trackedIsHome && teamColors(palette, true).text)}>
               {data.home.name}
