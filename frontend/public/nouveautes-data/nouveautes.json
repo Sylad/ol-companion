@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 16:08",
+  "generated": "2026-10-19 16:21",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-message-clair-quand-les-resultats-ne-cha",
+      "title": "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas",
+      "date": "2026-10-19",
+      "lots": [
+        "L194"
+      ],
+      "captures": [
+        "captures/carte-l1-erreur-L194-1440.png",
+        "captures/carte-l1-erreur-L194-390.png"
+      ],
+      "alts": [
+        "Page Carte Ligue 1 à 1440 px quand les résultats ne chargent pas : le message « Impossible de charger les résultats de la saison. » et le bouton Réessayer à la place de la carte",
+        "Page Carte Ligue 1 à 390 px quand les résultats ne chargent pas : le message « Impossible de charger les résultats de la saison. » et le bouton Réessayer à la place de la carte"
+      ],
+      "html": "<p>Quand les résultats de la saison ne se chargent pas, la carte de la Ligue 1 le dit au lieu d'afficher des informations fausses.</p>\n<ul><li>Pendant l'attente, la page affiche « Chargement de la carte… ».</li><li>Si le chargement échoue, un message « Impossible de charger les résultats de la saison. » et un bouton « Réessayer » remplacent la carte.</li><li>Plus de marqueurs tous marqués « Pas encore joué », ni de fiches de club qui annoncent « Pas de match OL recensé », alors que les matchs existent simplement sans avoir pu être lus.</li><li>Si un rafraîchissement échoue alors que la carte est déjà affichée, elle reste telle quelle.</li></ul>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-chaque-club-cliquable-meme-a-paris",
       "title": "Carte de la Ligue 1 : chaque club cliquable, même à Paris",
