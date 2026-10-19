@@ -2115,10 +2115,11 @@ lots:
   - id: L193
     title: "Carte L1 : chaque club (PSG, Monaco, Lille compris) a une zone cliquable ≥ 24×24 px non recouverte à l'ouverture, à 1440 et 390 (PSG 7 % et 0 % cliquable mesurés) — revue UX L10"
     public: "Carte de la Ligue 1 : chaque club cliquable, même à Paris"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-19
+    started: 2026-10-19
   - id: L194
     title: "Carte L1 : chargement et erreur de l'API distincts d'« aucun match » — en erreur un message avec Réessayer, jamais « Pas de match OL recensé » ni marqueurs « Pas encore joué » faute de données — revue UX L10"
     public: "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas"
