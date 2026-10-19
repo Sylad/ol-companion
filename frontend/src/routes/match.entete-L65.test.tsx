@@ -37,12 +37,13 @@ function stats(): LiveMatchStats {
 afterEach(cleanup);
 
 describe('L65 — noms de club de l\'en-tête du match de l\'OL', () => {
-  it('R1 — 24 px, mais 16 px et coupure dans le mot sous 360 px', () => {
+  it('R1 — 24 px, 18 px sous 600 px, 16 px sous 390 px, coupure dans le mot', () => {
     render(<MatchPage />);
     for (const nom of ['Lyon', 'Nice']) {
       const cls = screen.getByText(nom, { selector: '.font-display' }).className;
       expect(cls).toContain('[overflow-wrap:anywhere]');
-      expect(cls).toContain('max-[359px]:text-base');
+      expect(cls).toContain('max-[599px]:text-lg');
+      expect(cls).toContain('max-[389px]:text-base');
       expect(cls).toContain('text-2xl');
     }
   });
@@ -50,6 +51,8 @@ describe('L65 — noms de club de l\'en-tête du match de l\'OL', () => {
   it('R1 — sous 360 px, marge latérale 6 px et écart 4 px comme l\'en-tête des Bleus', () => {
     render(<MatchPage />);
     const grille = screen.getByText('Lyon', { selector: '.font-display' }).closest('.grid') as HTMLElement;
+    expect(grille.className).toContain('max-[599px]:px-3');
+    expect(grille.className).toContain('max-[599px]:gap-x-2');
     expect(grille.className).toContain('max-[359px]:px-[6px]');
     expect(grille.className).toContain('max-[359px]:gap-x-1');
   });

@@ -8,4 +8,4 @@ captures:
 # une capture peut dire ce qu'elle montre : captures: [{ file: captures/x.png, alt: "texte alternatif" }]
 # nocapture: raison, quand une capture n'a pas de sens
 ---
-Sur un petit écran (320 px de large), le nom du club adverse dans l'en-tête du score d'un match de l'OL n'est plus coupé : « Crystal Palace », « Hoffenheim » ou « Lillestrom » s'affichent en entier, en plus petit et, si besoin, sur deux lignes. Au-dessus de 360 px, rien ne change.
+Sur un petit écran (de 320 à 599 px de large), le nom du club adverse dans l'en-tête du score d'un match de l'OL n'est plus coupé : « Crystal Palace », « Hoffenheim » ou « Lillestrom » s'affichent en entier, en un peu plus petit (18 px, 16 px sous 390 px) et, si besoin, sur deux lignes. À partir de 600 px, rien ne change. « Rennes » à 390 px ne s'affiche plus « Renne / s ».

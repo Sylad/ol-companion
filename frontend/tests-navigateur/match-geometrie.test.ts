@@ -159,3 +159,33 @@ describe('en-tête du score d\'un match de l\'OL à 320 px', () => {
     } finally { await page.close(); }
   });
 });
+
+// L65 — entre 360 et 599 px, un nom de club de l'OL se coupe à l'espace, jamais au milieu d'un mot (« Renne / s »).
+describe.each([360, 390])('en-tête du score d\'un match de l\'OL à %i px', (largeur) => {
+  const CAS: Array<[string, string]> = [
+    ['Lyon', 'Rennes'], ['Lyon', 'Crystal Palace'], ['Olympique de Marseille', 'Lyon'],
+    ['Hoffenheim', 'Lyon'], ['Lillestrom', 'Lyon'], ['Lyon', 'Bayer Leverkusen'],
+  ];
+  it.each(CAS)('R2 — %s – %s : aucun mot du nom n\'est coupé en son milieu', async (dom, vis) => {
+    const page = await ouvrir(largeur, 700, { id: dom === 'Lyon' ? 523 : 9001, name: dom }, { id: vis === 'Lyon' ? 523 : 9002, name: vis }, `523-9002-${GAME_ID}`);
+    try {
+      const coupes = await page.getByTestId('entete-score').evaluate((carte) => {
+        const res: string[] = [];
+        for (const el of Array.from(carte.querySelectorAll<HTMLElement>('.font-display.font-bold.leading-none'))) {
+          const noeud = el.firstChild;
+          if (!noeud || noeud.nodeType !== Node.TEXT_NODE) continue;
+          const texte = noeud.textContent ?? '';
+          for (const m of texte.matchAll(/\S+/g)) {
+            const plage = document.createRange();
+            plage.setStart(noeud, m.index!);
+            plage.setEnd(noeud, m.index! + m[0].length);
+            const lignes = new Set(Array.from(plage.getClientRects()).map((r) => Math.round(r.top)));
+            if (lignes.size > 1) res.push(m[0]);
+          }
+        }
+        return res;
+      });
+      expect(coupes, `mots coupés à ${largeur} px`).toEqual([]);
+    } finally { await page.close(); }
+  });
+});

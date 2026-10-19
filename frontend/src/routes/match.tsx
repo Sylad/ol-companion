@@ -254,8 +254,8 @@ function Scorers({ items, align, reflow = false }: { items: { name: string; mark
 // Mode Bleus : `min-[390px]:text-lg` et `min-[600px]:text-2xl` portent leur propre interligne (28 et 32 px) et battent le
 // `leading-none` de base dans leur media query — d'où un `leading-none` par palier.
 const NOM_EQUIPE = 'font-display font-bold';
-/** Sous 360 px (L65) la colonne d'un nom ne fait que ~50 px : 16 px et coupure dans le mot, sinon « Crystal Palace » est rogné par l'overflow-hidden de la carte. */
-const NOM_EQUIPE_OL = '[overflow-wrap:anywhere] text-2xl max-[359px]:text-base leading-none max-[359px]:leading-none';
+/** Mêmes paliers que les Bleus (L65) : 16 px sous 390 px, 18 px sous 600 px, 24 px au-delà. À 360 px, 18 px coupait encore « Olympique », « Hoffenheim » ou « Leverkusen » au milieu du mot ; à 390 px, 24 px coupait « Renne / s ». */
+const NOM_EQUIPE_OL = '[overflow-wrap:anywhere] text-2xl max-[599px]:text-lg max-[389px]:text-base leading-none max-[599px]:leading-none max-[389px]:leading-none';
 /**
  * En-tête d'un match des Bleus (L167 R13) : noms jamais coupés ni cachés. Grille minmax(0,1fr) auto minmax(0,1fr), noms qui
  * passent à la ligne (`overflow-wrap:anywhere`) à 24 px au-dessus de 600 px, 18 px dessous, 16 px sous 390 px. Comme la
@@ -263,13 +263,14 @@ const NOM_EQUIPE_OL = '[overflow-wrap:anywhere] text-2xl max-[359px]:text-base l
  * score à 32 px — à 390 px « Bosnie-Herzégovine » tient sur deux lignes, sans coupure dans le mot.
  */
 /** Match de l'OL (L190) : mêmes colonnes bornées que les Bleus, sinon un buteur insécable (L189) élargit sa colonne et décentre le score. */
-const ENTETE_OL = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[359px]:px-[6px] max-[359px]:gap-x-1';
+const ENTETE_OL = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 /** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
 const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
 /** Séparateur du score des Bleus : 4 px par côté sous 600 px (les colonnes de nom gagnent 8 px : « Bosnie-Herzégovine » sur deux lignes même à 0·0), 8 px au-dessus (L167 R13). */
 const SEP_SCORE_BLEUS = 'mx-1 min-[600px]:mx-2';
-const SCORE_OL = 'text-5xl font-bold tabular-nums num text-fg-bright';
+/** 36 px sous 600 px comme les Bleus (L65) : à 48 px le score prend assez de largeur pour couper « Hoffenheim » ou « Leverkusen » à 360 px. */
+const SCORE_OL = 'text-5xl max-[599px]:text-4xl font-bold tabular-nums num text-fg-bright';
 const NOM_EQUIPE_BLEUS = '[overflow-wrap:anywhere] text-base min-[390px]:text-lg min-[600px]:text-2xl leading-none min-[390px]:leading-none min-[600px]:leading-none';
 
 /**
