@@ -2164,12 +2164,13 @@ lots:
   - id: L196
     title: "Carte L1 : contrastes restants — lien d'attribution Leaflet 4,43:1 à 390 px (fond surface/0.85 sur tuile claire) et pastille « N » de la fiche (blanc 9 px sur gris 55 %) 3,35:1, ligue1-map.tsx:217 et 276 — ≥ 4,5:1 mesurés sur le fond réel (blend)"
     public: "Carte de la Ligue 1 : derniers textes peu contrastés corrigés"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-19
     notes:
       - { date: 2026-10-19, text: "QA L191 19-10 : attribution Leaflet à 6,59:1 après bf720a4 (volet réglé), reste la pastille N (3,36:1). Mineurs QA : remplissage « Victoire » de la légende 2,64:1 à 1440 (contour ≥ 12:1 compense) ; contour clair des marqueurs invisible sur tuile OSM claire (1,07–1,25:1), bord tenu par l'ombre portée." }
+    started: 2026-10-19
   - id: L197
     title: "Carte L1 à 320 px : à l'ouverture, les zones de 24 px se recouvrent (Le Havre/Le Mans 67 % cliquable, Lens/PSG, Paris FC/Auxerre, Rennes/Lorient) — chaque club garde une zone 24×24 à lui, tests R1/R2 étendus à 320 px"
     public: "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone"
