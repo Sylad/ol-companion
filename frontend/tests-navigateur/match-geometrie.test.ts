@@ -1,5 +1,5 @@
 // L187 — géométrie de la page match (L186) mesurée dans Chromium : jsdom ne calcule aucune mise en page.
-// Match des Bleus à 4 buteurs d'un côté (France 4-1 Belgique, le cas le plus haut mesuré par L189), API simulée au
+// Match des Bleus à 4 buteurs d'un côté, noms complets (France 4-1 Belgique, le cas le plus haut mesuré par L189), API simulée au
 // niveau du navigateur, serveur Vite démarré par le test.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { chromium, type Browser, type Page } from 'playwright';
@@ -8,8 +8,8 @@ import { createServer, type ViteDevServer } from 'vite';
 const GAME_ID = 4672325;
 const MATCHUP = `5061-2373-${GAME_ID}`;
 
-const goal = (competitorId: number, name: string, min: number) => ({
-  competitorId, gameTime: min, gameTimeDisplay: `${min}'`, type: 'goal', isMajor: true, playerId: min, extraPlayerId: null,
+const goal = (competitorId: number, name: string, min: number, type = 'goal') => ({
+  competitorId, gameTime: min, gameTimeDisplay: `${min}'`, type, isMajor: true, playerId: min, extraPlayerId: null,
   playerName: name, playerShortName: null, extraPlayerName: null, description: 'But',
 });
 
@@ -32,8 +32,13 @@ function stats() {
       home: { 'Touches': 58, 'Tirs au total': 16, 'Tirs cadrés': 8, 'Buts attendus': 2.9, 'Passes Completed': 512, 'Fautes faites': 9 },
       away: { 'Touches': 42, 'Tirs au total': 8, 'Tirs cadrés': 3, 'Buts attendus': 1.1, 'Passes Completed': 366, 'Fautes faites': 12 },
     },
-    // 4 buteurs d'un côté : l'en-tête le plus haut, donc la pire mesure du pli.
-    events: [goal(5061, 'Mbappé', 12), goal(5061, 'Dembélé', 30), goal(5061, 'Griezmann', 55), goal(5061, 'Thuram', 80), goal(2373, 'Lukaku', 64)],
+    // 4 buteurs d'un côté, noms complets comme les envoie le backend (`playerName` = nom complet, le nom court va dans
+    // `playerShortName`) : la liste passe sur deux lignes, c'est l'en-tête le plus haut, donc la pire mesure du pli
+    // (bas de la rangée à 763 px à 1366 × 768, 772 px à 1440 × 900 : plus haut que les 748 px du vrai match, et à 5 px du pli).
+    events: [
+      goal(5061, 'Kylian Mbappé', 12), goal(5061, 'Ousmane Dembélé', 30), goal(5061, 'Antoine Griezmann', 55),
+      goal(5061, 'Marcus Thuram', 80), goal(5061, 'Kylian Mbappé', 85, 'penalty_goal'), goal(2373, 'Romelu Lukaku', 64),
+    ],
     topPerformers: [{ role: 'Meilleur joueur', homePlayer: { id: 1, name: 'Mbappé', statValue: '8,9', statName: 'Note' }, awayPlayer: { id: 2, name: 'Lukaku', statValue: '7,1', statName: 'Note' } }],
     shots: Array.from({ length: 12 }, (_, i) => ({
       competitorId: i % 3 ? 5061 : 2373, playerId: i, time: `${i * 7 + 3}'`, xg: 0.05 * (i + 1), xgot: 0, bodyPart: 'Pied',
