@@ -2098,10 +2098,11 @@ lots:
   - id: L191
     title: "Carte L1 : chiffres V/D de la popup ≥ 4,5:1 (1,82 et 3,85 mesurés), liens d'attribution Leaflet ≥ 4,5:1 (2,55, règle index.css:719 battue par leaflet.css), pastilles de légende ≥ 3:1 sur le fond (1,12 à 1,82), moitiés de marqueur distinguables sans la couleur — revue UX L10"
     public: "Carte de la Ligue 1 : bilan, légende et marqueurs lisibles"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-19
+    started: 2026-10-19
   - id: L192
     title: "Carte L1 : s'ouvre cadrée sur la France (zoom ≥ 6 à 1440×900, 18 marqueurs ; zoom 5 mesuré par pad 0.18), la molette fait défiler la page sans zoomer, bouton Recentrer, zoom et cadrage bornés — revue UX L10"
     public: "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page"
