@@ -11,4 +11,4 @@ Sur la carte de la Ligue 1, on peut maintenant ouvrir la fiche de chacun des 18 
 
 - Chaque club a une zone à toucher d'au moins 24 × 24 pixels, au lieu d'un petit cercle de 14 pixels difficile à viser au doigt.
 - Les clubs trop proches pour tenir côte à côte (Paris FC et PSG, Nice et Monaco, Lens et Lille, Angers et Le Mans, Auxerre et Troyes, Brest et Lorient) sont écartés de quelques pixels : un marqueur n'en recouvre plus un autre à l'ouverture de la carte. Un marqueur peut donc se trouver à une dizaine de pixels de son stade.
-- Le bouton « Recentrer » passe en bas à gauche de la carte : il ne cache plus Brest sur téléphone.
+- Le bouton « Recentrer » passe en bas à gauche de la carte : il ne cache plus Brest sur téléphone.

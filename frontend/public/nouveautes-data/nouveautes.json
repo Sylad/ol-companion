@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 15:46",
+  "generated": "2026-10-19 16:08",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-chaque-club-cliquable-meme-a-paris",
+      "title": "Carte de la Ligue 1 : chaque club cliquable, même à Paris",
+      "date": "2026-10-19",
+      "lots": [
+        "L193"
+      ],
+      "captures": [
+        "captures/carte-l1-zones-L193-1440.png",
+        "captures/carte-l1-zones-L193-390.png"
+      ],
+      "alts": [
+        "Carte de la Ligue 1 à 1440 px : les 18 clubs, ceux de Paris, de Nice et Monaco et de Lens et Lille séparés les uns des autres, le bouton Recentrer en bas à gauche",
+        "Carte de la Ligue 1 à 390 px : les 18 clubs séparés les uns des autres, le bouton Recentrer en bas à gauche"
+      ],
+      "html": "<p>Sur la carte de la Ligue 1, on peut maintenant ouvrir la fiche de chacun des 18 clubs, y compris le PSG, Monaco et Lille, qui étaient cachés ou presque derrière leur voisin.</p>\n<ul><li>Chaque club a une zone à toucher d'au moins 24 × 24 pixels, au lieu d'un petit cercle de 14 pixels difficile à viser au doigt.</li><li>Les clubs trop proches pour tenir côte à côte (Paris FC et PSG, Nice et Monaco, Lens et Lille, Angers et Le Mans, Auxerre et Troyes, Brest et Lorient) sont écartés de quelques pixels : un marqueur n'en recouvre plus un autre à l'ouverture de la carte. Un marqueur peut donc se trouver à une dizaine de pixels de son stade.</li><li>Le bouton « Recentrer » passe en bas à gauche de la carte : il ne cache plus Brest sur téléphone.</li></ul>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-ouverte-sur-la-france-la-molette-fait-de",
       "title": "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page",
