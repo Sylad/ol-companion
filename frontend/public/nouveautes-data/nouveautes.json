@@ -1,7 +1,17 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-18 19:35",
+  "generated": "2026-10-19 08:28",
   "entries": [
+    {
+      "slug": "2026-10-19-match-tout-l-essentiel-sur-un-ecran",
+      "title": "Match : tout l'essentiel sur un écran",
+      "date": "2026-10-19",
+      "lots": [
+        "L186"
+      ],
+      "captures": [],
+      "html": "<p>Sur la page d'un match, les blocs sont regroupés pour voir plus de choses sans faire défiler la page.</p>\n<ul><li>Les <strong>statistiques</strong> et le <strong>Momentum</strong> sont côte à côte, à la même hauteur, sous les faits du match. Le Momentum est moins haut.</li><li>La <strong>carte des tirs</strong> est plus petite, avec le terrain à la verticale (un but en haut, un but en bas). On y voit les mêmes tirs des deux équipes ; le club à domicile attaque vers le haut, ce que disent les libellés « ↓ Visiteur attaque » et « Domicile attaque ↑ ».</li><li>À droite de la carte, <strong>Joueurs en vue</strong> et <strong>Classement en direct</strong> sont empilés.</li><li>Sur un écran étroit, tout reste empilé dans l'ordre de lecture : faits, statistiques, Momentum, carte des tirs, joueurs en vue, classement, puis les compositions.</li></ul>\n<p>Aucune donnée ni animation n'est retirée.</p>\n<h3>Hypothèses</h3>\n<ul><li>R7 — le terrain des compositions fait 360 px de haut à toute largeur ; si ce n'est pas la bonne hauteur, seule cette valeur change.</li><li>R9 — les statistiques d'équipe de chaque côté listent leurs valeurs seules, les quatre mesures comparées restant au centre ; si le partage est autre, seuls les libellés déplacés changent de bloc.</li><li>R10 — sous 1024 px les compositions viennent après le classement ; si on les préfère plus haut, c'est l'ordre des blocs qui change.</li></ul>"
+    },
     {
       "slug": "2026-10-18-page-du-match-une-panne-n-est-plus-introuvable",
       "title": "Page du match : une panne n'est plus « introuvable »",
