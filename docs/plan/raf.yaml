@@ -2055,8 +2055,11 @@ lots:
     started: 2026-10-19
   - id: L189
     title: "Page match à 1366×768 : avec 4 buteurs d'un côté (France 4-1 Belgique, /match/4672325), le bas de la rangée Statistiques | Momentum est à 776 px, 8 px sous le pli (barre xG rognée) — compacter la liste des buteurs de l'en-tête (ex. minutes groupées par joueur sur une ligne) pour tenir R16 jusqu'à 4 buteurs ; mesure navigateur à l'appui (QA L186)"
+    public: "Match : buteurs sur une ligne dans l'en-tête"
     status: doing
     estimate: 0.25
+    visible: true
+    screen: page
     created: 2026-10-19
     started: 2026-10-19
 acknowledged:
