@@ -2022,7 +2022,7 @@ lots:
   - id: L186
     title: "Page match, un maximum d'infos à l'écran sans défiler (demande de Sylvain le 18-10) : Momentum moins haut ; Statistiques et Momentum côte à côte, même hauteur, au-dessus de la carte des tirs ; carte des tirs plus petite, terrain à la verticale (buts en haut et en bas), mêmes tirs des deux équipes ; à sa droite Joueurs en vue et Classement en direct empilés ; écran étroit : tout empilé dans l'ordre de lecture ; ordre du DOM = ordre visuel (WCAG 1.3.2) ; aucune donnée ni animation retirée ; amende la fiche docs/specs/page-match-fm (maquette) ; les tests scellés L160 R4, L161 et L167 qui figent l'ancien ordre sont rescellés par le lead avec --porteur L186"
     public: "Match : tout l'essentiel sur un écran"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     screen: page
@@ -2035,7 +2035,10 @@ lots:
       - { date: 2026-10-19, text: "test d'acceptation rescellé (lot livré L167, frontend/src/routes/match.equipe-de-france-L167.test.tsx, fiche amendée en f4790dd) : La fiche L167 R7 (amendée, f4790dd) renvoie à l'ordre du DOM de match.tsx (page-match-fm R10) ; L186 l'a changé (statistiques, Momentum, tirs, joueurs en vue avant les compositions) ; l'ORDRE attendu suit cette fiche." }
       - { date: 2026-10-19, text: "test d'acceptation rescellé (lot livré L160, frontend/src/routes/match.disposition-L160.test.tsx, fiche inchangée) : Fiche page-match-fm R3 (L173) : Joueurs en vue reste affiché avant le coup d'envoi, avec un état vide ; l'assertion R4 « état à venir » attend donc Statistiques puis Joueurs en vue, comme le code." }
       - { date: 2026-10-19, text: "test d'acceptation rescellé (frontend/src/routes/match.socle-L186.test.tsx, fiche inchangée) : Fiche page-match-fm R3 (L173) : Joueurs en vue reste affiché avant le coup d'envoi, avec un état vide ; l'assertion R4 « état à venir » attend donc Statistiques puis Joueurs en vue, comme le code." }
-    review: { date: 2026-10-19, verdict: "conforme, 1 note mineure (en-têtes Statistiques et Momentum moins hauts que les autres) — orchestré (vague 2026-10-19-l186h, 2 passe(s) de correction + passe des mineurs)", commit: 2388130f8cc2461c33091b01949419dd9910c949 }
+      - { date: 2026-10-19, text: "Mineurs : en-têtes Statistiques (match.tsx:549) et Momentum (momentum-chart.tsx:37) en py-2 (34 px) contre py-3 (42 px) ailleurs ; à 1366×768 le bas de la rangée Statistiques | Momentum passe à 776 px avec 4 buteurs d'un côté (740 avec 2) — à couvrir par L187." }
+    review: { date: 2026-10-19, verdict: "conforme, 1 note mineure (en-têtes Statistiques et Momentum moins hauts que les autres) — vague 2026-10-19-l186h, 2 passes de correction + passe des mineurs ; 2 majeurs de la vague l186g traités par le lead (R16 amendée 84b6ae9, géométrie → L187) ; re-vérifié par le lead : 1016 tests, 81 d'acceptation, build", commit: 2388130f8cc2461c33091b01949419dd9910c949 }
+    ux: { date: 2026-10-19, verdict: "conforme (lead, captures 1366×768, 1440, 390 regardées : Statistiques | Momentum au-dessus du pli, carte des tirs verticale + Joueurs en vue/Classement, empilement 390 dans l'ordre de lecture) ; note mineure : en-têtes Statistiques et Momentum à 34 px contre 42 px pour les autres blocs" }
+    finished: 2026-10-19
   - id: L187
     title: "Page match : test navigateur (Playwright) de la géométrie de L186 — à 1366×768 et 1440×900 le bas de la rangée Statistiques | Momentum reste sous le pli, écart de 16 px entre rangées du centre, tracé du Momentum à 96 px ; jsdom ne mesure rien"
     status: todo
