@@ -2124,10 +2124,11 @@ lots:
   - id: L194
     title: "Carte L1 : chargement et erreur de l'API distincts d'« aucun match » — en erreur un message avec Réessayer, jamais « Pas de match OL recensé » ni marqueurs « Pas encore joué » faute de données — revue UX L10"
     public: "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-19
+    started: 2026-10-19
   - id: L195
     title: "Popup de la Carte L1 : Échap la ferme et rend le focus au marqueur, le focus entre dans la popup à l'ouverture ; à 320 px elle tient dans la carte (× visible, logo hors des boutons de zoom) ; « D » n'abrège plus Domicile — revue UX L10"
     public: "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran"
