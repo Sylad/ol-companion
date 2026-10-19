@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import L from 'leaflet';
 import { LIGUE1_CLUBS_COORDS } from '@/lib/ligue1-clubs-coords';
 import {
@@ -121,5 +121,16 @@ describe('Carte L1 — cadrage de la France (L192)', () => {
     frameFrance(map);
     expect(map.getZoom()).toBeLessThan(desktopZoom);
     expect(map.getMinZoom()).toBe(map.getZoom());
+  });
+
+  it('R8 — Recentrer animé pose le zoom minimal sur le cadrage, pas sur le zoom d’avant l’animation', () => {
+    const map = makeMap(DESKTOP.width, DESKTOP.height);
+    const framed = map.getZoom();
+    map.setView([43.3, 5.4], 10, { animate: false });
+    // Pendant une animation, getZoom() rend encore l'ancien zoom : fitBounds ne bouge pas la vue ici.
+    vi.spyOn(map, 'fitBounds').mockImplementation(() => map);
+    frameFrance(map, true);
+    expect(map.getZoom()).toBe(10);
+    expect(map.getMinZoom()).toBe(framed);
   });
 });

@@ -75,4 +75,26 @@ describe.each([[1440, 900], [768, 900], [390, 844], [320, 700]])('Carte L1 à %i
     await page.close();
     for (const k of ['haut', 'bas', 'gauche', 'droite'] as const) expect(apres[k]).toBeCloseTo(avant[k], 0);
   });
+
+  it('R10 — après plusieurs + puis Recentrer, − est grisé et un + ne gagne qu’un cran', async () => {
+    const page = await ouvrir(largeur, hauteur);
+    const plus = page.getByRole('button', { name: 'Zoom in' });
+    const moins = page.getByRole('button', { name: 'Zoom out' });
+    for (let i = 0; i < 4; i++) {
+      await plus.click();
+      await page.waitForTimeout(300);
+    }
+    await page.getByRole('button', { name: 'Recentrer' }).click();
+    await page.waitForTimeout(800);
+    const grise = await moins.evaluate((b) => b.classList.contains('leaflet-disabled'));
+    const avant = await marges(page);
+    await plus.click();
+    await page.waitForTimeout(500);
+    const apres = await marges(page);
+    await page.close();
+    expect(grise).toBe(true);
+    // Un cran de zoom (×2) écarte les marqueurs : la marge haute n'est plus celle du cadrage, sans les envoyer à Lyon (zoom +4).
+    expect(apres.haut).toBeLessThan(avant.haut);
+    expect(apres.haut).toBeGreaterThan(-avant.haut * 4);
+  });
 });

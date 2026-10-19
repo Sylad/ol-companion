@@ -35,10 +35,13 @@ export function maxBounds(): L.LatLngBounds {
  * (rotation du téléphone, fenêtre redimensionnée) : le cadrage suit, le zoom arrière aussi.
  */
 export function frameFrance(map: L.Map, animate = false): void {
+  const padding = L.point(FRAME_PADDING_PX, FRAME_PADDING_PX);
   // getBoundsZoom ne descend pas sous le zoom minimal posé : on le lève pour mesurer le cadrage.
   map.setMinZoom(0);
+  // Zoom du cadrage calculé, pas lu avec getZoom() : pendant un fitBounds animé il rend encore l'ancien zoom.
+  const framedZoom = Math.min(map.getBoundsZoom(clubsBounds(), false, padding.multiplyBy(2)), MAX_ZOOM);
   // fitBounds centre sur le milieu projeté (Mercator), pas sur la moyenne des latitudes.
   map.fitBounds(clubsBounds(), { padding: [FRAME_PADDING_PX, FRAME_PADDING_PX], animate });
   // Posé après le cadrage : le poser avant ferait un zoom animé qui, en finissant, défait le cadrage.
-  map.setMinZoom(map.getZoom());
+  map.setMinZoom(framedZoom);
 }
