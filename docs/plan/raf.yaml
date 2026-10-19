@@ -925,10 +925,13 @@ lots:
   - id: L82
     title: "Carte Ligue 1 : au zoom initial, PSG est sous Paris FC (2 px), Monaco sous OGC Nice, Lille sous Lens à 390 — la bulle du club dessous ne s'ouvre pas (QA L70 09-10) ; regrouper ou décaler les marqueurs voisins"
     public: "Carte Ligue 1 : les clubs voisins restent cliquables au zoom de départ"
-    status: todo
+    status: dropped
     estimate: 0.5
     visible: true
     created: 2026-10-09
+    finished: 2026-10-19
+    notes:
+      - { date: 2026-10-19, text: "abandonné : Résolu par L193 et L197 : QA prod 19-10, 18/18 zones de 24 px cliquables à 100 % à 390 et 320 px" }
   - id: L83
     title: "Accueil : « 0D/2D » des pastilles par compétition en rouge --loss à 12 px = 3,85:1 sur surface (WCAG 1.4.3 exige 4,5) — texte en --ol-red-bright (4,95:1) ou pastille colorée + chiffre fg (revue UX L2)"
     public: "Accueil : les compteurs de défaites par compétition plus lisibles"
@@ -2199,6 +2202,8 @@ lots:
     review: { date: 2026-10-19, verdict: "conforme — le correctif tient en une ligne et le test Chromium, qui échoue sans lui, passe avec : Lille, Lens et Strasbourg restent entiers après 390×844 → 844×390 et 1440 → 1400 — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: 946c976ef828359b5bd586c71bc560c98fe0f2fe }
     ux: { date: 2026-10-19, verdict: conforme — fiche de Lille entière après rotation 390×844 → 844×390 (capture regardée par le lead) }
     finished: 2026-10-19
+    notes:
+      - { date: 2026-10-19, text: "QA prod 19-10 (1ef84ed) : verte. Suspect mineur : en paysage 844×390, fiche ouverte puis rotation → fiche entière dans la carte mais sous le bas de l'écran (en-tête 318 px, fiche y 328–544, barre du bas dès y 332) ; à voir à la prochaine revue UX de la Carte." }
   - id: L199
     title: "QA — docs/qa/expectations.md : retirer la légende de /map de la ligne ## * (contraste sur panneau semi-transparent) ; § /map : légende SOUS la carte, cadrage zoom ≥ 6, molette, Recentrer, zones 24 px, fiche au clavier (× « Fermer la fiche », Échap), never « Pas de match OL recensé » (QA L192–L195 19-10)"
     status: done
