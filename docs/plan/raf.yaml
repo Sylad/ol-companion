@@ -2175,10 +2175,11 @@ lots:
   - id: L197
     title: "Carte L1 à 320 px : à l'ouverture, les zones de 24 px se recouvrent (Le Havre/Le Mans 67 % cliquable, Lens/PSG, Paris FC/Auxerre, Rennes/Lorient) — chaque club garde une zone 24×24 à lui, tests R1/R2 étendus à 320 px"
     public: "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-19
+    started: 2026-10-19
   - id: L198
     title: "Carte L1 : fiche ouverte au zoom d'ouverture, un redimensionnement ou une rotation (followResize → frameFrance) la sort de la carte (Lille 109 px au-dessus après 390×844 → 844×390, 86 px à 1440 → 1400) — refaire le recalage de la fiche après le recadrage, test Chromium avec setViewportSize"
     public: "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone"
