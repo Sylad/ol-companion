@@ -2060,18 +2060,22 @@ lots:
   - id: L189
     title: "Page match à 1366×768 : avec 4 buteurs d'un côté (France 4-1 Belgique, /match/4672325), le bas de la rangée Statistiques | Momentum est à 776 px, 8 px sous le pli (barre xG rognée) — compacter la liste des buteurs de l'en-tête (ex. minutes groupées par joueur sur une ligne) pour tenir R16 jusqu'à 4 buteurs ; mesure navigateur à l'appui (QA L186)"
     public: "Match : buteurs sur une ligne dans l'en-tête"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     screen: page
     created: 2026-10-19
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "compliant after 1 minor fix — orchestré (vague 2026-10-19-ol-188-189, 2 passe(s) de correction)", commit: 093680efa222f380a286b9f3fd116ddc79aeef0f }
+    ux: { date: 2026-10-19, verdict: "conforme (lead, capture 1366×768 regardée) — 1366×768 : bas de la rangée Statistiques | Momentum à 748 px (était 776) sur France 4-1 Belgique, 730 sur Lyon–Nice, 758 avec 4 buteurs distincts simulés ; score centré à 1024–1440 ; 390 px identique à avant, sans défilement horizontal" }
+    finished: 2026-10-19
   - id: L190
     title: "Page match (match de l'OL, en-tête en grille 1fr auto 1fr) : de 1024 à ~1250 px, un buteur au nom long rendu insécable par L189 décentre le score (triplé « Pierre-Emerick Aubameyang » à 1024 px : centre du score 670 au lieu de 632) — borner les colonnes en minmax(0,1fr) comme l'en-tête des Bleus, avec mesure navigateur"
     status: todo
     estimate: 0.25
     created: 2026-10-19
+    notes:
+      - { date: 2026-10-19, text: "Revue UX L189 : à 320 px sur Lyon–Nice le score est décalé de 11 px (colonnes 58/102/53, « Tanner Tessmann » impose sa largeur min à la grille 1fr auto 1fr) — préexistant, couvert par minmax(0,1fr)." }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

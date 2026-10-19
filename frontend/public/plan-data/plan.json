@@ -534,8 +534,9 @@
     {
       "id": "L189",
       "title": "Match : buteurs sur une ligne dans l'en-tête",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     }
   ]
 }
