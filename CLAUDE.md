@@ -158,6 +158,7 @@ Centralisés dans `SCORES365_HEADERS`.
 
 ### Carte Ligue 1 — markers bicolores
 - Marker = cercle moitié gauche (leg aller) + moitié droite (leg retour). Couleur de chaque moitié = résultat OL côté concerné (V = bleu OL éclairci `WIN_BLUE` / D = rouge / N = gris) **plus un motif blanc** (V aplat, N barre, D oblique, pas joué point) : jamais la couleur seule (L191, `lib/ligue1-map-colors.ts`, contrastes testés).
+- **Cadrage (L192)** : `lib/ligue1-map-view.ts` — la carte s'ouvre sur la France (`fitBounds` des 18 clubs, marge 36 px, `zoomSnap` 0,25 : zoom 6 à 1440×900, mesuré ; le `pad(0.18)` donnait 5), la molette ne zoome pas (`scrollWheelZoom` faux : la page défile), bouton « Recentrer » (`frameFrance(map, true)`), zoom arrière borné au cadrage (zoom minimal reposé à chaque `resize`), zoom avant à 14, glisser borné (`maxBounds` = France + 1,5 de chaque côté ; plus étroit, Leaflet recentre sur la moyenne des latitudes et décale le cadrage). Le zoom minimal se pose APRÈS le `fitBounds` : avant, le zoom animé qui s'ensuit défait le cadrage (jsdom n'anime pas : mesure dans Chromium, `tests-navigateur/carte-cadrage.test.ts`).
 - Source = full-season history 365scores (pas seulement les matchs joués).
 - Collision Paris (PSG + Paris FC) : offset visuel `+20px y` sur le 2ème.
 - OL marker = rouge plein (cf palette).

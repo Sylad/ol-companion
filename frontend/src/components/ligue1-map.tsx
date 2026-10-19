@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { LocateFixed } from 'lucide-react';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -27,6 +28,7 @@ import {
   type MapResult,
 } from '@/lib/ligue1-map-colors';
 import { formatKickoffDayShort } from '@/lib/kickoff';
+import { MAX_ZOOM, ZOOM_SNAP, clubsBounds, frameFrance, maxBounds } from '@/lib/ligue1-map-view';
 import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
 /**
@@ -38,8 +40,6 @@ import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
  *   both icons stay clickable; the nudge collapses to zero once the user zooms
  *   in far enough.
  */
-
-const FRANCE_CENTER: [number, number] = [46.6, 2.4];
 
 function buildOlIcon(): L.DivIcon {
   const size = 18;
@@ -101,6 +101,10 @@ function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): 
 
 const OL_ICON = buildOlIcon();
 
+// Vue de départ du conteneur, aussitôt remplacée par FrameFrance une fois la carte mesurée.
+const FRANCE_CENTER = clubsBounds().getCenter();
+const FRANCE_MAX_BOUNDS = maxBounds();
+
 /** Cache club icons per (legA, legB) combo — only 25 possible combinations. */
 const clubIconCache = new Map<string, L.DivIcon>();
 function getClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): L.DivIcon {
@@ -113,13 +117,39 @@ function getClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): L.
   return icon;
 }
 
-function FitBoundsToClubs() {
+/** Ouvre la carte sur la France ; un changement de format (rotation, fenêtre) la recadre. */
+function FrameFrance() {
   const map = useMap();
   useEffect(() => {
-    const bounds = L.latLngBounds(LIGUE1_CLUBS_COORDS.map((c) => [c.lat, c.lng]));
-    map.fitBounds(bounds.pad(0.18), { animate: false });
+    frameFrance(map);
+    const onResize = () => frameFrance(map);
+    map.on('resize', onResize);
+    return () => {
+      map.off('resize', onResize);
+    };
   }, [map]);
   return null;
+}
+
+/** Bouton « Recentrer » (L192) : revient à la vue d'ouverture, quel que soit le zoom ou le décalage. */
+function RecenterButton() {
+  const map = useMap();
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    // Un clic sur le bouton ne doit ni glisser ni zoomer la carte dessous.
+    if (ref.current) L.DomEvent.disableClickPropagation(ref.current);
+  }, []);
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={() => frameFrance(map, true)}
+      className="absolute left-[10px] top-[84px] z-[1000] inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 text-xs font-semibold text-fg shadow-md hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ol-blue-fg"
+    >
+      <LocateFixed className="h-4 w-4" aria-hidden />
+      Recentrer
+    </button>
+  );
 }
 
 function formatDate(iso: string): string {
@@ -435,8 +465,12 @@ export function Ligue1Map() {
       >
         <MapContainer
           center={FRANCE_CENTER}
-          zoom={6}
-          scrollWheelZoom
+          zoom={5}
+          zoomSnap={ZOOM_SNAP}
+          maxZoom={MAX_ZOOM}
+          maxBounds={FRANCE_MAX_BOUNDS}
+          maxBoundsViscosity={1}
+          scrollWheelZoom={false}
           className="h-full w-full"
           style={{ background: '#0e1420' }}
         >
@@ -445,7 +479,8 @@ export function Ligue1Map() {
             attribution="&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
             maxZoom={18}
           />
-          <FitBoundsToClubs />
+          <FrameFrance />
+          <RecenterButton />
           {LIGUE1_CLUBS_COORDS.map((club) => {
             // Paris collision — Paris FC sits ~3 km south of PSG. We push Paris
             // FC ~600 m further south so both pins are clickable at zoom <= 8.

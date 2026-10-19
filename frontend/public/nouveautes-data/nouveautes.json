@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 15:20",
+  "generated": "2026-10-19 15:46",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-ouverte-sur-la-france-la-molette-fait-de",
+      "title": "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page",
+      "date": "2026-10-19",
+      "lots": [
+        "L192"
+      ],
+      "captures": [
+        "captures/carte-l1-ouverte-L192-1440.png",
+        "captures/carte-l1-ouverte-L192-390.png"
+      ],
+      "alts": [
+        "Carte de la Ligue 1 à 1440 px : la France entière avec les 18 clubs, le bouton Recentrer sous les boutons de zoom",
+        "Carte de la Ligue 1 à 390 px : la France entière, le bouton Recentrer sous les boutons de zoom"
+      ],
+      "html": "<p>La carte de la Ligue 1 s'ouvre maintenant sur la France entière, avec les 18 clubs dans la vue, au lieu d'un cadre trop large.</p>\n<ul><li>La <strong>molette</strong> de la souris fait défiler la page : elle ne zoome plus la carte quand on passe dessus. On zoome avec les boutons + et −.</li><li>Un bouton <strong>Recentrer</strong> ramène la carte à sa vue de départ, quel que soit le zoom ou l'endroit où on l'a déplacée.</li><li>On ne peut plus dézoomer au-delà de la France ni faire glisser la carte loin de ses clubs ; le zoom avant s'arrête à un niveau qui reste lisible.</li></ul>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-bilan-legende-et-marqueurs-lisibles",
       "title": "Carte de la Ligue 1 : bilan, légende et marqueurs lisibles",
