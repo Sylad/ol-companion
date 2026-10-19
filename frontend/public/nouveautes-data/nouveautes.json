@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 19:07",
+  "generated": "2026-10-19 19:20",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-la-fiche-reste-entiere-quand-on-tourne-l",
+      "title": "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone",
+      "date": "2026-10-19",
+      "lots": [
+        "L198"
+      ],
+      "captures": [
+        "captures/L198-fiche-apres-rotation.png"
+      ],
+      "alts": [
+        "Carte Ligue 1 après rotation du téléphone : la fiche de Lille est restée entière dans la carte"
+      ],
+      "html": "<p>Sur la carte Ligue 1, quand une fiche de club est ouverte et qu'on tourne le téléphone ou qu'on redimensionne la fenêtre, la fiche reste entière dans la carte : son nom, le stade et le bouton × ne sortent plus par le haut. Avant, la fiche de Lille pouvait se retrouver coupée de plus de 100 px.</p>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-chaque-club-cliquable-sur-petit-telephon",
       "title": "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone",

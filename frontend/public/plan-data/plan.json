@@ -585,7 +585,8 @@
     {
       "id": "L198",
       "title": "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-19"
     }
   ]
 }
