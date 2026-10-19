@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 18:59",
+  "generated": "2026-10-19 19:07",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-chaque-club-cliquable-sur-petit-telephon",
+      "title": "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone",
+      "date": "2026-10-19",
+      "lots": [
+        "L197"
+      ],
+      "captures": [
+        "captures/carte-l1-zones-L197-320.png"
+      ],
+      "alts": [
+        "Carte de la Ligue 1 à 320 px de large : les 18 clubs séparés les uns des autres, sans marqueur posé sur un autre"
+      ],
+      "html": "<p>Sur un très petit téléphone (320 px de large), la carte de la Ligue 1 s'ouvre avec tous les clubs touchables : certains se gênaient (Le Havre et Le Mans, Lens et le PSG, Paris FC et Auxerre, Rennes et Lorient), et il fallait viser juste pour ouvrir leur fiche.</p>\n<ul><li>Chaque club garde une zone à toucher de 24 × 24 pixels qui n'est partagée avec aucun autre, dès l'ouverture de la carte et à tous les zooms.</li><li>Quelques marqueurs sont écartés de quelques pixels de leur stade pour cela ; l'OL reste exactement sur le sien.</li><li>Aux autres largeurs (390 px, tablette, ordinateur), la carte reste utilisable comme avant.</li></ul>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-derniers-textes-peu-contrastes-corriges",
       "title": "Carte de la Ligue 1 : derniers textes peu contrastés corrigés",
