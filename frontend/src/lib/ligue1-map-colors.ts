@@ -21,6 +21,17 @@ export const RESULT_COLORS: Record<MapResult, string> = {
 };
 
 /**
+ * Couleur de la lettre des pastilles de la fiche (9 px, WCAG 1.4.3 : ≥ 4,5:1) :
+ * le blanc ne faisait que 3,35:1 sur le gris du nul, qui prend du noir (6,27:1).
+ */
+export const RESULT_CHIP_TEXT: Record<MapResult, string> = {
+  W: 'hsl(0, 0%, 100%)',
+  D: 'hsl(0, 0%, 0%)',
+  L: 'hsl(0, 0%, 100%)',
+  FUTURE: 'hsl(0, 0%, 100%)',
+};
+
+/**
  * Motif blanc d'une moitié, en repère 28×28, centré sur (cx, 14) :
  * victoire = aucun (aplat), nul = barre horizontale, défaite = barre oblique,
  * pas joué = point.

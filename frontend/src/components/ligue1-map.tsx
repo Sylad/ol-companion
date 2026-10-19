@@ -23,6 +23,7 @@ import {
 import {
   OL_RED,
   RESULT_COLORS,
+  RESULT_CHIP_TEXT,
   RESULT_DARK,
   RESULT_OUTLINE,
   resultGlyph,
@@ -270,12 +271,13 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                   const olScore = m.isHome ? m.fixture.homeScore : m.fixture.awayScore;
                   const oppScore = m.isHome ? m.fixture.awayScore : m.fixture.homeScore;
                   const chipColor = colorForResult(m.outcome ?? 'FUTURE');
+                  const chipText = RESULT_CHIP_TEXT[m.outcome ?? 'FUTURE'];
                   const chipLetter = m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·';
                   return (
                     <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
                       <span
-                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
-                        style={{ background: chipColor }}
+                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold shrink-0"
+                        style={{ background: chipColor, color: chipText }}
                         aria-label={chipLetter}
                       >
                         {chipLetter}
@@ -329,14 +331,15 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                   const olScore = isHome ? m.match.homeScore : m.match.awayScore;
                   const oppScore = isHome ? m.match.awayScore : m.match.homeScore;
                   const chipColor = m.isPast ? colorForResult(m.outcome ?? 'FUTURE') : RESULT_DARK;
+                  const chipText = RESULT_CHIP_TEXT[m.isPast ? (m.outcome ?? 'FUTURE') : 'FUTURE'];
                   const chipLetter = m.isPast
                     ? m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·'
                     : '·';
                   return (
                     <li key={m.match.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
                       <span
-                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
-                        style={{ background: chipColor }}
+                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold shrink-0"
+                        style={{ background: chipColor, color: chipText }}
                         aria-label={chipLetter}
                       >
                         {chipLetter}

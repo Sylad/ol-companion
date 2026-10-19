@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  RESULT_CHIP_TEXT,
   RESULT_COLORS,
   RESULT_OUTLINE,
   resultGlyph,
@@ -66,5 +67,14 @@ describe('Carte L1 — moitiés de marqueur sans la couleur (L191)', () => {
   it('R4 — chaque résultat a un motif propre, deux à deux différents', () => {
     const motifs = (['W', 'D', 'L', 'FUTURE'] as const).map((r) => resultGlyph(r, 7));
     expect(new Set(motifs).size).toBe(4);
+  });
+});
+
+describe('Carte L1 — lettre des pastilles de la fiche (L196)', () => {
+  it('R1 — la lettre (9 px) de chaque pastille V, N, D, · lit ≥ 4,5:1 sur le fond réel de la pastille', () => {
+    for (const r of ['W', 'D', 'L', 'FUTURE'] as const) {
+      const ratio = contrastRatio(parseHsl(RESULT_CHIP_TEXT[r]), parseHsl(RESULT_COLORS[r]));
+      expect(ratio, r).toBeGreaterThanOrEqual(4.5);
+    }
   });
 });
