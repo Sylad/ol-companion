@@ -28,6 +28,7 @@ import {
   type MapResult,
 } from '@/lib/ligue1-map-colors';
 import { formatKickoffDayShort } from '@/lib/kickoff';
+import { HIT_SIZE_PX, markerNudge } from '@/lib/ligue1-map-hit';
 import { MAX_ZOOM, ZOOM_SNAP, clubsBounds, frameFrance, maxBounds } from '@/lib/ligue1-map-view';
 import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
@@ -35,21 +36,29 @@ import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
  * Ligue 1 club map.
  * - Tiles: OpenStreetMap (free, attribution required by ODbL).
  * - Markers: OL in red (HSL 0 73% 50%), others in OL blue (224 64% 33%).
- * - Paris cluster: PSG and Paris FC are too close (~3 km) to render readable
- *   pins side-by-side at the default zoom. We nudge Paris FC a hair south so
- *   both icons stay clickable; the nudge collapses to zero once the user zooms
- *   in far enough.
+ * - Zone cliquable (L193) : chaque marqueur occupe 24 px, le cercle dessiné en
+ *   occupe 14 ou 18 au centre ; les clubs trop proches à l'ouverture (Paris, Nice/Monaco,
+ *   Lens/Lille…) sont écartés de quelques pixels, voir ligue1-map-hit.
  */
+
+/** Gabarit commun des marqueurs : zone cliquable de 24 px, cercle dessiné centré, décalé de `nudge` pixels. */
+function hitIcon(html: string, nudge: readonly [number, number]): L.DivIcon {
+  const [dx, dy] = nudge;
+  const demi = HIT_SIZE_PX / 2;
+  return L.divIcon({
+    className: 'ligue1-map-marker',
+    iconSize: [HIT_SIZE_PX, HIT_SIZE_PX],
+    iconAnchor: [demi - dx, demi - dy],
+    // Le popup s'ouvre au-dessus du cercle décalé, pas au-dessus de l'emplacement du stade.
+    popupAnchor: [dx, dy - demi],
+    html: `<span style="display:flex;align-items:center;justify-content:center;width:${HIT_SIZE_PX}px;height:${HIT_SIZE_PX}px;">${html}</span>`,
+  });
+}
 
 function buildOlIcon(): L.DivIcon {
   const size = 18;
   const halo = '0 0 0 3px hsla(0, 90%, 60%, 0.35), 0 0 12px hsla(0, 90%, 55%, 0.55)';
-  return L.divIcon({
-    className: 'ligue1-map-marker',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -size / 2],
-    html: `
+  return hitIcon(`
       <span style="
         display:inline-block;
         width:${size}px;height:${size}px;
@@ -58,8 +67,7 @@ function buildOlIcon(): L.DivIcon {
         border:2px solid #fff;
         box-shadow:${halo};
       "></span>
-    `,
-  });
+    `, markerNudge(OL_ID_365));
 }
 
 function colorForResult(result: OLMatchResult | null): string {
@@ -74,7 +82,7 @@ function colorForResult(result: OLMatchResult | null): string {
  * Color encodes result vs OL (blue=W, red=L, gray=D, dark=FUTURE/missing) and so does a
  * white pattern per half (none=W, bar=D, slash=L, dot=FUTURE) — see ligue1-map-colors.
  */
-function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): L.DivIcon {
+function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null, nudge: readonly [number, number]): L.DivIcon {
   const size = 14;
   const stroke = RESULT_OUTLINE;
   const cA = colorForResult(legA);
@@ -90,13 +98,7 @@ function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): 
       <circle cx="14" cy="14" r="13" fill="none" stroke="${stroke}" stroke-width="1.4" />
     </svg>
   `;
-  return L.divIcon({
-    className: 'ligue1-map-marker',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -size / 2],
-    html,
-  });
+  return hitIcon(html, nudge);
 }
 
 const OL_ICON = buildOlIcon();
@@ -105,13 +107,13 @@ const OL_ICON = buildOlIcon();
 const FRANCE_CENTER = clubsBounds().getCenter();
 const FRANCE_MAX_BOUNDS = maxBounds();
 
-/** Cache club icons per (legA, legB) combo — only 25 possible combinations. */
+/** Cache club icons per (legA, legB, nudge) combo — 25 result combinations × a handful of nudges. */
 const clubIconCache = new Map<string, L.DivIcon>();
-function getClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null): L.DivIcon {
-  const key = `${legA ?? 'none'}|${legB ?? 'none'}`;
+function getClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null, nudge: readonly [number, number]): L.DivIcon {
+  const key = `${legA ?? 'none'}|${legB ?? 'none'}|${nudge.join(',')}`;
   let icon = clubIconCache.get(key);
   if (!icon) {
-    icon = buildClubIcon(legA, legB);
+    icon = buildClubIcon(legA, legB, nudge);
     clubIconCache.set(key, icon);
   }
   return icon;
@@ -144,7 +146,7 @@ function RecenterButton() {
       ref={ref}
       type="button"
       onClick={() => frameFrance(map, true)}
-      className="absolute left-[10px] top-[84px] z-[1000] inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 text-xs font-semibold text-fg shadow-md hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ol-blue-fg"
+      className="absolute bottom-[26px] left-[10px] z-[1000] inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 text-xs font-semibold text-fg shadow-md hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ol-blue-fg"
     >
       <LocateFixed className="h-4 w-4" aria-hidden />
       Recentrer
@@ -345,7 +347,6 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
 
 interface ClubMarkerProps {
   club: Ligue1Club;
-  positionOffsetMeters?: { dx: number; dy: number };
   standingEntry?: StandingEntry;
   /** L1-only matches — drives the bicolor marker (legA / legB). */
   ligue1Matches: SeasonMatch[];
@@ -353,34 +354,18 @@ interface ClubMarkerProps {
   allMatches: SeasonMatch[] | undefined;
 }
 
-/** Convert a small metres offset to lat/lng — fine for sub-km nudges. */
-function offsetLatLng(
-  lat: number,
-  lng: number,
-  dxMeters: number,
-  dyMeters: number,
-): [number, number] {
-  const dLat = dyMeters / 111_320;
-  const dLng = dxMeters / (111_320 * Math.cos((lat * Math.PI) / 180));
-  return [lat + dLat, lng + dLng];
-}
-
-function ClubMarker({ club, positionOffsetMeters, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
+function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
   const isOL = club.id365 === OL_ID_365;
-  const [lat, lng] = positionOffsetMeters
-    ? offsetLatLng(club.lat, club.lng, positionOffsetMeters.dx, positionOffsetMeters.dy)
-    : [club.lat, club.lng];
-
   const icon = useMemo(() => {
     if (isOL) return OL_ICON;
     // Markers strictly reflect Ligue 1 — never CdF/UEL.
     const season = computeClubH2HSeason(ligue1Matches, club);
-    return getClubIcon(season.legA?.result ?? null, season.legB?.result ?? null);
+    return getClubIcon(season.legA?.result ?? null, season.legB?.result ?? null, markerNudge(club.id365));
   }, [isOL, ligue1Matches, club]);
 
   return (
     <Marker
-      position={[lat, lng]}
+      position={[club.lat, club.lng]}
       icon={icon}
       title={club.name}
       zIndexOffset={isOL ? 1000 : 0}
@@ -482,15 +467,10 @@ export function Ligue1Map() {
           <FrameFrance />
           <RecenterButton />
           {LIGUE1_CLUBS_COORDS.map((club) => {
-            // Paris collision — Paris FC sits ~3 km south of PSG. We push Paris
-            // FC ~600 m further south so both pins are clickable at zoom <= 8.
-            const offset =
-              club.id365 === 6075 ? { dx: 0, dy: -600 } : undefined;
             return (
               <ClubMarker
                 key={club.id365}
                 club={club}
-                positionOffsetMeters={offset}
                 standingEntry={findStandingForClub(club)}
                 ligue1Matches={ligue1Matches}
                 allMatches={seasonMatchesQ.data}
