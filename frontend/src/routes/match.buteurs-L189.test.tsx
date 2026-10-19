@@ -57,9 +57,10 @@ describe('L189 — buteurs de l\'en-tête', () => {
     expect(belgique.className).not.toMatch(/justify-end/);
   });
 
-  it('un buteur n\'est jamais coupé : nom et minutes d\'un joueur restent ensemble sur une ligne', () => {
+  it('un buteur n\'est insécable qu\'à partir de 1024 px : en dessous, un doublé ne pousse pas l\'autre colonne hors de l\'écran', () => {
     render(<MatchPage />);
     const li = screen.getByText('Thuram').closest('li') as HTMLLIElement;
-    expect(li.className).toMatch(/whitespace-nowrap/);
+    const jetons = li.className.split(/\s+/).filter((c) => /whitespace-nowrap$/.test(c));
+    expect(jetons).toEqual(['min-[1024px]:whitespace-nowrap']);
   });
 });

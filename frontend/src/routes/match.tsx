@@ -240,9 +240,9 @@ function Scorers({ items, align, reflow = false }: { items: { name: string; mark
     // une ou deux lignes au lieu de trois, ce qui garde la rangée Statistiques | Momentum au-dessus du pli (768 px).
     <ul className={cn('flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-fg-muted', align === 'right' ? 'justify-end text-right' : 'justify-start text-left')}>
       {items.map((s) => (
-        <li key={s.name} className="min-[390px]:whitespace-nowrap">
+        <li key={s.name} className="min-[1024px]:whitespace-nowrap">
           <span className="text-fg">{s.name}</span>{' '}
-          {/* Sous 390 px, les minutes passent à la ligne sous le nom : « Lukébakio 35' » n'est jamais coupé (L167 R13). */}
+          {/* Sous 390 px, les minutes passent à la ligne sous le nom : « Lukébakio 35' » n'est jamais coupé (L167 R13). Le `nowrap` du buteur n'est posé qu'à partir de 1024 px : plus étroit, une colonne de grille `1fr auto 1fr` s'élargirait pour un doublé et pousserait l'autre hors de l'écran. */}
           <span className={cn('num tabular-nums text-fg-dim', reflow && 'whitespace-nowrap max-[389px]:block')}>{s.marks}</span>
         </li>
       ))}
