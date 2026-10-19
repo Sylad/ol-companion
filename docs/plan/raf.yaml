@@ -2077,6 +2077,7 @@ lots:
     notes:
       - { date: 2026-10-19, text: "Revue UX L189 : à 320 px sur Lyon–Nice le score est décalé de 11 px (colonnes 58/102/53, « Tanner Tessmann » impose sa largeur min à la grille 1fr auto 1fr) — préexistant, couvert par minmax(0,1fr)." }
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "compliant : 0 blocking, 0 major, 3 minor notes (JSDoc ENTETE_BLEUS orphan, stale 1fr auto 1fr comment at match.tsx:245, garbled test header); full vitest 123 files / 1027 tests green, tsc clean — orchestré (vague 2026-10-19-ol-190-187, 0 passe(s) de correction)", commit: c5760014c9b885abe08e1a8cb86689a79a18dbe7 }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
