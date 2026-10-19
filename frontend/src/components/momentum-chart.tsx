@@ -65,7 +65,7 @@ export function MomentumChart(props: {
             })}
           </svg>
           {/* Pastilles de but : couche à part, non déformée, positionnée en % du repère du tracé (au bout de leur barre). */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
+          <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" aria-hidden="true">
             {props.goalMinutes.map(g => {
               // Le point du Momentum le plus proche de la minute du but (exactement elle en données réelles : une valeur par minute).
               const point = props.points.reduce((best, p) => (Math.abs(p.minute - g.minute) < Math.abs(best.minute - g.minute) ? p : best));
