@@ -2045,6 +2045,11 @@ lots:
     status: todo
     estimate: 0.5
     created: 2026-10-19
+  - id: L188
+    title: "Match des Bleus : ouvrir ou recharger directement /match/<id>?matchupId=… (lien copié, F5) affiche « Lien incomplet » alors que le même lien suivi depuis Équipe de France affiche le match (mesuré 19-10 sur /match/4672325?matchupId=5061-2373-4672325) — l'URL doit suffire à elle seule, avec un test"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-19
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
