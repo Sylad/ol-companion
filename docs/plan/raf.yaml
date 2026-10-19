@@ -2049,10 +2049,14 @@ lots:
       - { date: 2026-10-19, text: "QA L186 (19-10) : mettre aussi à jour docs/qa/expectations.md — /match « Momentum top < 786 à 390×844 » ne tient plus depuis R10 (Statistiques avant Momentum ; 805/865 mesurés) → « Statistiques top < 786 » ; ajouter « 1366×768 : bas de rangee-stats-elan ≤ 768 » ; / « lieu = stade ou rien » contre « Lieu : Extérieur » du panneau Tableau de bord match (antérieur, à préciser avec L90). Captures ~/projects/developpeur/tmp/qa-l186/." }
   - id: L188
     title: "Match des Bleus : ouvrir ou recharger directement /match/<id>?matchupId=… (lien copié, F5) affiche « Lien incomplet » alors que le même lien suivi depuis Équipe de France affiche le match (mesuré 19-10 sur /match/4672325?matchupId=5061-2373-4672325) — l'URL doit suffire à elle seule, avec un test"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-19
     started: 2026-10-19
+    notes:
+      - { date: 2026-10-19, text: "Fausse alerte du lead : la mesure du 19-10 (« Lien incomplet » avec matchupId) venait d'une capture relue sous le même nom de fichier ; le lien direct fonctionne en prod. Seul reste un test de garde (b54bd59) : 6 cas, dont le tiret encodé %2D." }
+    review: { date: 2026-10-19, verdict: "conforme (relu par le lead) : un fichier de test de garde, 66 lignes, routeur réel en mémoire, aucun code de production touché", commit: b54bd59fcde6ade63705558c613184c19f2be44f }
+    finished: 2026-10-19
   - id: L189
     title: "Page match à 1366×768 : avec 4 buteurs d'un côté (France 4-1 Belgique, /match/4672325), le bas de la rangée Statistiques | Momentum est à 776 px, 8 px sous le pli (barre xG rognée) — compacter la liste des buteurs de l'en-tête (ex. minutes groupées par joueur sur une ligne) pour tenir R16 jusqu'à 4 buteurs ; mesure navigateur à l'appui (QA L186)"
     public: "Match : buteurs sur une ligne dans l'en-tête"
@@ -2063,6 +2067,11 @@ lots:
     created: 2026-10-19
     started: 2026-10-19
     review: { date: 2026-10-19, verdict: "compliant after 1 minor fix — orchestré (vague 2026-10-19-ol-188-189, 2 passe(s) de correction)", commit: 093680efa222f380a286b9f3fd116ddc79aeef0f }
+  - id: L190
+    title: "Page match (match de l'OL, en-tête en grille 1fr auto 1fr) : de 1024 à ~1250 px, un buteur au nom long rendu insécable par L189 décentre le score (triplé « Pierre-Emerick Aubameyang » à 1024 px : centre du score 670 au lieu de 632) — borner les colonnes en minmax(0,1fr) comme l'en-tête des Bleus, avec mesure navigateur"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-19
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
