@@ -7,6 +7,7 @@ import { createServer, type ViteDevServer } from 'vite';
 
 const GAME_ID = 4672325;
 const MATCHUP = `5061-2373-${GAME_ID}`;
+const OL_ID = 465; // identifiant de l'OL chez 365scores (523 = football-data, que l'API du match n'envoie pas)
 
 const goal = (competitorId: number, name: string, min: number, type = 'goal') => ({
   competitorId, gameTime: min, gameTimeDisplay: `${min}'`, type, isMajor: true, playerId: min, extraPlayerId: null,
@@ -140,7 +141,7 @@ describe('en-tête du score d\'un match de l\'OL à 320 px', () => {
     ['Hoffenheim', 'Lyon'], ['Lyon', 'Crystal Palace'], ['Lillestrom', 'Lyon'], ['Sparta Prague', 'Lyon'],
   ];
   it.each(CAS)('R1 — %s – %s : chaque nom tient dans sa colonne, dans la carte (320 px)', async (dom, vis) => {
-    const page = await ouvrir(320, 700, { id: dom === 'Lyon' ? 523 : 9001, name: dom }, { id: vis === 'Lyon' ? 523 : 9002, name: vis }, `523-9002-${GAME_ID}`);
+    const page = await ouvrir(320, 700, { id: dom === 'Lyon' ? OL_ID : 9001, name: dom }, { id: vis === 'Lyon' ? OL_ID : 9002, name: vis }, `${dom === 'Lyon' ? OL_ID : 9001}-${vis === 'Lyon' ? OL_ID : 9002}-${GAME_ID}`);
     try {
       const mesures = await page.getByTestId('entete-score').evaluate((carte) => {
         const r = carte.getBoundingClientRect();
@@ -167,7 +168,7 @@ describe.each([360, 390])('en-tête du score d\'un match de l\'OL à %i px', (la
     ['Hoffenheim', 'Lyon'], ['Lillestrom', 'Lyon'], ['Lyon', 'Bayer Leverkusen'],
   ];
   it.each(CAS)('R2 — %s – %s : aucun mot du nom n\'est coupé en son milieu', async (dom, vis) => {
-    const page = await ouvrir(largeur, 700, { id: dom === 'Lyon' ? 523 : 9001, name: dom }, { id: vis === 'Lyon' ? 523 : 9002, name: vis }, `523-9002-${GAME_ID}`);
+    const page = await ouvrir(largeur, 700, { id: dom === 'Lyon' ? OL_ID : 9001, name: dom }, { id: vis === 'Lyon' ? OL_ID : 9002, name: vis }, `${dom === 'Lyon' ? OL_ID : 9001}-${vis === 'Lyon' ? OL_ID : 9002}-${GAME_ID}`);
     try {
       const coupes = await page.getByTestId('entete-score').evaluate((carte) => {
         const res: string[] = [];

@@ -4,7 +4,7 @@ date: 2026-10-19
 created: 2026-10-19T12:13+02:00
 lots: [L65]
 captures:
-  - { file: captures/match-entete-320.png, alt: "L'en-tête du score d'un match Lyon – Crystal Palace à 320 px : « Crystal Palace » tient sur deux lignes, entier" }
+  - { file: captures/match-entete-320.png, alt: "L'en-tête du score de Lyon 3-2 Crystal Palace à 320 px : Lyon en rouge, « Crystal Palace » tient en entier sur deux lignes" }
 # une capture peut dire ce qu'elle montre : captures: [{ file: captures/x.png, alt: "texte alternatif" }]
 # nocapture: raison, quand une capture n'a pas de sens
 ---
