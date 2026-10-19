@@ -136,8 +136,8 @@ describe.each(ECRANS)('page match à %i × %i', (largeur, hauteur) => {
 
 // L65 — à 320 px, le nom d'un club dans l'en-tête du score d'un match de l'OL n'est ni rogné ni débordant.
 describe('en-tête du score d\'un match de l\'OL à 320 px', () => {
-  const CAS: Array<[string, string, string]> = [
-    ['Hoffenheim', 'Lyon', 'domicile'], ['Lyon', 'Crystal Palace', 'visiteur'], ['Lillestrom', 'Lyon', 'domicile'], ['Sparta Prague', 'Lyon', 'domicile'],
+  const CAS: Array<[string, string]> = [
+    ['Hoffenheim', 'Lyon'], ['Lyon', 'Crystal Palace'], ['Lillestrom', 'Lyon'], ['Sparta Prague', 'Lyon'],
   ];
   it.each(CAS)('R1 — %s – %s : chaque nom tient dans sa colonne, dans la carte (320 px)', async (dom, vis) => {
     const page = await ouvrir(320, 700, { id: dom === 'Lyon' ? 523 : 9001, name: dom }, { id: vis === 'Lyon' ? 523 : 9002, name: vis }, `523-9002-${GAME_ID}`);
