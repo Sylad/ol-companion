@@ -2171,6 +2171,7 @@ lots:
     notes:
       - { date: 2026-10-19, text: "QA L191 19-10 : attribution Leaflet à 6,59:1 après bf720a4 (volet réglé), reste la pastille N (3,36:1). Mineurs QA : remplissage « Victoire » de la légende 2,64:1 à 1440 (contour ≥ 12:1 compense) ; contour clair des marqueurs invisible sur tuile OSM claire (1,07–1,25:1), bord tenu par l'ombre portée." }
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "compliant (1 minor note: no rendering test that the chips apply RESULT_CHIP_TEXT; rendered result not verified in a browser) — orchestré (vague 2026-10-19-ol-carte2, 0 passe(s) de correction)", commit: 94ce34649b768e89d81a166aed560e09f9a238d7 }
   - id: L197
     title: "Carte L1 à 320 px : à l'ouverture, les zones de 24 px se recouvrent (Le Havre/Le Mans 67 % cliquable, Lens/PSG, Paris FC/Auxerre, Rennes/Lorient) — chaque club garde une zone 24×24 à lui, tests R1/R2 étendus à 320 px"
     public: "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone"
