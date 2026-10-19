@@ -27,6 +27,7 @@ import {
   resultGlyph,
   type MapResult,
 } from '@/lib/ligue1-map-colors';
+import { RetryMessage } from '@/components/retry-message';
 import { formatKickoffDayShort } from '@/lib/kickoff';
 import { HIT_SIZE_PX, markerNudge } from '@/lib/ligue1-map-hit';
 import { MAX_ZOOM, ZOOM_SNAP, clubsBounds, frameFrance, maxBounds } from '@/lib/ligue1-map-view';
@@ -439,6 +440,31 @@ export function Ligue1Map() {
       return standingsByTeamId.get(OL_TEAM_ID);
     }
     return standingsByTeamId.get(club.id365);
+  }
+
+  // Sans liste de matchs, la carte mentirait : tous les marqueurs diraient « Pas encore joué ».
+  // Une liste vide chargée est une vraie saison vide (carte affichée) ; l'attente et l'erreur
+  // sont des états à part (L194).
+  if (seasonMatchesQ.data === undefined) {
+    return (
+      <div
+        className="flex items-center justify-center rounded-md border border-border bg-surface p-6"
+        style={{ minHeight: 460 }}
+      >
+        {seasonMatchesQ.isError ? (
+          <RetryMessage
+            message="Impossible de charger les résultats de la saison."
+            onRetry={() => void seasonMatchesQ.refetch()}
+            messageTestId="carte-erreur"
+            buttonTestId="carte-reessayer"
+          />
+        ) : (
+          <p role="status" className="text-sm text-fg-muted">
+            Chargement de la carte…
+          </p>
+        )}
+      </div>
+    );
   }
 
   return (
