@@ -104,6 +104,10 @@ function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null, n
 
 const OL_ICON = buildOlIcon();
 
+// La fiche se recale hors des boutons de zoom (coin haut-gauche : 10 px de marge + 30 de large) et du bord droit.
+const POPUP_PAN_TOP_LEFT = L.point(48, 10);
+const POPUP_PAN_BOTTOM_RIGHT = L.point(10, 10);
+
 // Vue de départ du conteneur, aussitôt remplacée par FrameFrance une fois la carte mesurée.
 const FRANCE_CENTER = clubsBounds().getCenter();
 const FRANCE_MAX_BOUNDS = maxBounds();
@@ -189,7 +193,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
   const logo = clubLogoUrl(club.id365, club.imageVersion ?? 1);
 
   return (
-    <div className="min-w-[240px] max-w-[280px] text-fg">
+    <div className="ligue1-popup-content text-fg">
       <header className="flex items-center gap-3 mb-2">
         <img
           src={logo}
@@ -259,7 +263,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                         {chipLetter}
                       </span>
                       <span className="text-fg-dim w-[68px] num">{formatDate(m.fixture.date)}</span>
-                      <span className="text-fg-muted">{m.isHome ? 'D' : 'E'}</span>
+                      <span className="text-fg-muted">{m.isHome ? 'Domicile' : 'Extérieur'}</span>
                       <span className="num font-bold">
                         {olScore}–{oppScore}
                       </span>
@@ -320,7 +324,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                         {chipLetter}
                       </span>
                       <span className="text-fg-dim min-w-[68px] num">{m.isPast ? formatDate(m.match.date) : formatKickoffDayShort(m.match)}</span>
-                      <span className="text-fg-muted">{isHome ? 'D' : 'E'}</span>
+                      <span className="text-fg-muted">{isHome ? 'Domicile' : 'Extérieur'}</span>
                       {m.isPast && olScore !== null && oppScore !== null ? (
                         <span className="num font-bold">
                           {olScore}–{oppScore}
@@ -355,6 +359,33 @@ interface ClubMarkerProps {
   allMatches: SeasonMatch[] | undefined;
 }
 
+/**
+ * Clavier de la fiche (L195) : le focus y entre à l'ouverture ; Échap ou × la ferme et le rend au marqueur,
+ * sans quoi il retombe sur <body> et l'ordre de tabulation repart du haut de la page.
+ * Leaflet n'écoute Échap qu'une fois le conteneur de la carte focalisé, pas le marqueur ni la fiche.
+ */
+function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string) {
+  const fiche = e.popup.getElement();
+  if (!fiche) return;
+  fiche.setAttribute('role', 'dialog');
+  fiche.setAttribute('aria-label', club);
+  fiche.tabIndex = -1;
+  const fermer = () => {
+    marker.closePopup();
+    marker.getElement()?.focus();
+  };
+  fiche.addEventListener('keydown', (ev) => {
+    if (ev.key !== 'Escape') return;
+    ev.stopPropagation();
+    fermer();
+  });
+  fiche.querySelector<HTMLElement>('.leaflet-popup-close-button')?.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    fermer();
+  });
+  fiche.focus({ preventScroll: true });
+}
+
 function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
   const isOL = club.id365 === OL_ID_365;
   const icon = useMemo(() => {
@@ -370,8 +401,9 @@ function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMark
       icon={icon}
       title={club.name}
       zIndexOffset={isOL ? 1000 : 0}
+      eventHandlers={{ popupopen: (e) => ouvrirFiche(e, e.target as L.Marker, club.name) }}
     >
-      <Popup>
+      <Popup autoPanPaddingTopLeft={POPUP_PAN_TOP_LEFT} autoPanPaddingBottomRight={POPUP_PAN_BOTTOM_RIGHT}>
         <ClubPopup
           club={club}
           standingEntry={standingEntry}
