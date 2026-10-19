@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 08:38",
+  "generated": "2026-10-19 11:03",
   "entries": [
+    {
+      "slug": "2026-10-19-match-buteurs-sur-une-ligne-dans-l-en-tete",
+      "title": "Match : buteurs sur une ligne dans l'en-tête",
+      "date": "2026-10-19",
+      "lots": [
+        "L189"
+      ],
+      "captures": [
+        "captures/L189-match-buteurs-1366.png"
+      ],
+      "alts": [
+        "Page d'un match à 1366 px sur 768 : les quatre buteurs de France 4-1 Belgique tiennent sur une ligne sous le score, et les blocs Statistiques et Momentum restent visibles en entier sans défiler"
+      ],
+      "html": "<p>Sur la page d'un match, les buteurs de l'en-tête tiennent désormais sur une ligne, sous le score.</p>\n<ul><li>Les <strong>minutes</strong> d'un même joueur sont <strong>groupées</strong> : on lit « Michael Olise 88', 90' » au lieu de deux lignes.</li><li>Même avec <strong>quatre buteurs</strong>, les blocs <strong>Statistiques</strong> et <strong>Momentum</strong> restent visibles sans faire défiler la page sur un écran de 1366 × 768.</li></ul>"
+    },
     {
       "slug": "2026-10-19-match-tout-l-essentiel-sur-un-ecran",
       "title": "Match : tout l'essentiel sur un écran",
