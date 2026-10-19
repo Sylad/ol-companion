@@ -759,7 +759,7 @@ lots:
   - id: L65
     title: "Match /match à 320 px : le nom du club visiteur est tronqué dans l'en-tête du score (« Rennes » x 234–321 dans une carte coupée à 300) — réduire la police ou autoriser le retour à la ligne (QA prod 05-10)"
     public: "Match à 320 px : le nom du club visiteur n'est plus tronqué"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-05
@@ -767,7 +767,9 @@ lots:
       - { date: 2026-10-17, text: "QA L172 17-10 : à 320 px, colonne de droite de l'en-tête coupée par overflow-hidden — Lyon 267–322/300 (Hoffenheim – Lyon), Crystal Palace 231–316, Lillestrom 186–304, Lyon 255–310 (Sparta – Lyon) ; rien à 360/390 ; casse l'attente « jamais : un libellé tronqué sous 390 px »" }
       - { date: 2026-10-19, text: "QA L190 (19-10) : à 320 px « Crystal Palace » (24 px, overflow-wrap normal) déborde de sa colonne de 52 px et est rogné par l'overflow-hidden de l'en-tête (capture ~/projects/developpeur/tmp/qa-l190/match-4828743-320-entete.png). Avec minmax(0,1fr) (L190), il faut un retour à la ligne dans le mot ou une police plus petite sous 360 px, comme NOM_EQUIPE_BLEUS. L164 décrit le même défaut." }
     started: 2026-10-19
-    review: { date: 2026-10-19, verdict: "conforme : 0 bloquant, 0 majeur, 3 mineurs (capture de la Nouveauté antérieure au score à 36 px, R2 peut passer sans rien vérifier si la structure du nom change, ENTETE_OL identique à ENTETE_BLEUS) — orchestré (vague 2026-10-19-ol-l65, 1 passe(s) de correction + passe des mineurs)", commit: e71feb9c2e8d2c8737a85314102bbb6aa7f072eb }
+    review: { date: 2026-10-19, verdict: "conforme — revue Opus de la vague 2026-10-19-ol-l65 (1 correction) ; commit 1e1cc87 relu par le lead : identifiant de Lyon (465) dans le jeu du test navigateur et capture Nouveautés réelle, aucun code de production", commit: 1e1cc879bcfc4d538145f3e1098e7937b32a70a0 }
+    ux: { date: 2026-10-19, verdict: "conforme (lead, captures 320 et 360 px regardées : « Crystal Palace » entier sur deux lignes, score centré) — 0 bloquant, 0 majeur ; mineurs : « Fenerbahç/e » coupé dans le mot à 320 px, minutes d'un doublé ; capture Nouveautés corrigée en 1e1cc87" }
+    finished: 2026-10-19
   - id: L66
     title: "Match /match : aucun h1 sur la page (attendu par docs/qa/expectations.md section *) — ajouter un h1 masqué visuellement ou ajuster la ligne (QA prod 05-10)"
     status: done

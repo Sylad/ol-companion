@@ -173,8 +173,9 @@
     {
       "id": "L65",
       "title": "Match à 320 px : le nom du club visiteur n'est plus tronqué",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L70",
