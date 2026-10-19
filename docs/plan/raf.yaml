@@ -2159,6 +2159,7 @@ lots:
     ux: { date: 2026-10-19, verdict: "conforme — légende sous la carte validée par Sylvain (19-10) ; captures regardées par le lead, rognage des captures r2 = redimensionnement fullPage, mesuré entier à l'état stable (1440, 768, 390, 320)" }
     notes:
       - { date: 2026-10-19, text: "Mineur : le test de recouvrement attend 600 ms fixes et non moveend (recadrage ≤ 312 ms mesuré). L'entrée Nouveautés de L81 (2026-10-09) dit encore « légende dans le coin haut droit » : entrée historique laissée telle quelle." }
+      - { date: 2026-10-19, text: "QA prod 19-10 (10ea044, 4 largeurs) : verte — 18/18 fiches entières, × non recouvert, Échap rend le focus ; légende sous la carte ; erreur simulée → Réessayer. À 320 px l'écran d'erreur met « Réessayer » sous la ligne de flottaison (bloc 460 px), pour ux-reviewer." }
     finished: 2026-10-19
   - id: L196
     title: "Carte L1 : contrastes restants — lien d'attribution Leaflet 4,43:1 à 390 px (fond surface/0.85 sur tuile claire) et pastille « N » de la fiche (blanc 9 px sur gris 55 %) 3,35:1, ligue1-map.tsx:217 et 276 — ≥ 4,5:1 mesurés sur le fond réel (blend)"
@@ -2182,6 +2183,11 @@ lots:
     status: todo
     estimate: 0.25
     visible: true
+    created: 2026-10-19
+  - id: L199
+    title: "QA — docs/qa/expectations.md : retirer la légende de /map de la ligne ## * (contraste sur panneau semi-transparent) ; § /map : légende SOUS la carte, cadrage zoom ≥ 6, molette, Recentrer, zones 24 px, fiche au clavier (× « Fermer la fiche », Échap), never « Pas de match OL recensé » (QA L192–L195 19-10)"
+    status: todo
+    estimate: 0.1
     created: 2026-10-19
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
