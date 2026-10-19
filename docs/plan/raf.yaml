@@ -2184,10 +2184,11 @@ lots:
   - id: L198
     title: "Carte L1 : fiche ouverte au zoom d'ouverture, un redimensionnement ou une rotation (followResize → frameFrance) la sort de la carte (Lille 109 px au-dessus après 390×844 → 844×390, 86 px à 1440 → 1400) — refaire le recalage de la fiche après le recadrage, test Chromium avec setViewportSize"
     public: "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-19
+    started: 2026-10-19
   - id: L199
     title: "QA — docs/qa/expectations.md : retirer la légende de /map de la ligne ## * (contraste sur panneau semi-transparent) ; § /map : légende SOUS la carte, cadrage zoom ≥ 6, molette, Recentrer, zones 24 px, fiche au clavier (× « Fermer la fiche », Échap), never « Pas de match OL recensé » (QA L192–L195 19-10)"
     status: todo
