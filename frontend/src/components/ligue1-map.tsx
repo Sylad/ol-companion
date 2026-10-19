@@ -291,7 +291,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                     </span>
                     <span className="text-fg-dim min-w-[68px] num">{formatKickoffDayShort(m.fixture)}</span>
                     <span className="text-fg-muted">
-                      {m.isHome ? 'à domicile' : "à l'extérieur"}
+                      {m.isHome ? 'Domicile' : 'Extérieur'}
                     </span>
                   </li>
                 ))}
@@ -374,15 +374,20 @@ function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string, map: L.Map
     marker.closePopup();
     marker.getElement()?.focus();
   };
-  fiche.addEventListener('keydown', (ev) => {
-    if (ev.key !== 'Escape') return;
-    ev.stopPropagation();
-    fermer();
-  });
-  fiche.querySelector<HTMLElement>('.leaflet-popup-close-button')?.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    fermer();
-  });
+  // Leaflet garde le même conteneur d'une ouverture à l'autre : les écouteurs ne se posent qu'une fois.
+  if (!fiche.dataset.clavierPose) {
+    fiche.dataset.clavierPose = '1';
+    fiche.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Escape') return;
+      ev.stopPropagation();
+      fermer();
+    });
+    fiche.querySelector<HTMLElement>('.leaflet-popup-close-button')?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      fermer();
+    });
+  }
+  fiche.querySelector<HTMLElement>('.leaflet-popup-close-button')?.setAttribute('aria-label', 'Fermer la fiche');
   fiche.focus({ preventScroll: true });
   // Les clubs du nord n'ont pas la place d'une fiche au-dessus d'eux dans les limites de glisser (L192) : on les
   // lève le temps de la fiche et on la recale (`popup.update`), `fermerFiche` les remet.

@@ -92,4 +92,38 @@ describe('<Ligue1Map /> — fiche du club (L195)', () => {
     });
     expect(carte.options.maxBounds).toBeTruthy();
   });
+
+  it('R7 — les écouteurs ne s’accumulent pas : après trois ouvertures, Échap ne rend le focus qu’une fois', () => {
+    const setView = vi.spyOn(L.Map.prototype, 'setView');
+    const { container } = render(<Ligue1Map />);
+    const carte = setView.mock.contexts[0] as L.Map;
+    setView.mockRestore();
+    const icone = marqueur(container, 'Lille');
+    let popup = ouvrir(container, 'Lille');
+    for (let i = 0; i < 2; i++) {
+      act(() => {
+        carte.closePopup();
+      });
+      popup = ouvrir(container, 'Lille');
+    }
+    const focus = vi.spyOn(icone, 'focus');
+    act(() => {
+      fireEvent.keyDown(popup, { key: 'Escape', keyCode: 27 });
+    });
+    expect(focus).toHaveBeenCalledTimes(1);
+  });
+
+  it('R8 — le × et les lieux à venir sont en français et cohérents', () => {
+    const base = { competitionCode: 'L1' as const, competitionId: 35, competition: 'Ligue 1', homeScore: null, awayScore: null, status: 'SCHEDULED' as const, matchday: 30 };
+    matchs.value = [
+      { ...base, id: 3, date: '2099-02-01T18:00:00Z', homeTeamId: 523, awayTeamId: 469, homeTeam: 'Lyon', awayTeam: 'Marseille' },
+      { ...base, id: 4, date: '2099-03-01T18:00:00Z', homeTeamId: 469, awayTeamId: 523, homeTeam: 'Marseille', awayTeam: 'Lyon' },
+    ] as unknown as SeasonMatch[];
+    const { container } = render(<Ligue1Map />);
+    const popup = ouvrir(container, 'Olympique de Marseille');
+    expect(popup.querySelector('.leaflet-popup-close-button')?.getAttribute('aria-label')).toBe('Fermer la fiche');
+    const lieux = [...popup.querySelectorAll('li > span.text-fg-muted')].map((s) => s.textContent);
+    expect(lieux).toEqual(['Domicile', 'Extérieur']);
+    matchs.value = [];
+  });
 });
