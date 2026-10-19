@@ -1,6 +1,6 @@
 // L192 — cadrage de la carte L1 mesuré dans Chromium : jsdom n'anime ni ne met en page, et c'est l'animation d'un
 // zoom minimal posé avant le cadrage qui l'avait décalé de 35 px vers le nord (Marseille collé au bord bas).
-// API et tuiles refusées (la carte se cadre sans elles), serveur Vite démarré par le test.
+// Tuiles refusées, API en 503 sauf une liste de matchs vide (la carte se cadre sans eux), serveur Vite démarré par le test.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { chromium, type Browser, type Page } from 'playwright';
 import { createServer, type ViteDevServer } from 'vite';
@@ -24,6 +24,8 @@ afterAll(async () => {
 async function ouvrir(largeur: number, hauteur: number): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
   await page.route('**/api/**', (route) => route.fulfill({ status: 503, json: {} }));
+  // Depuis L194 la carte attend la liste des matchs : une erreur ne la rend pas, une liste vide chargée si.
+  await page.route('**/api/season-matches*', (route) => route.fulfill({ status: 200, json: [] }));
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
   await page.goto(`${url}/map`);
   await page.waitForSelector('.ligue1-map-marker');
