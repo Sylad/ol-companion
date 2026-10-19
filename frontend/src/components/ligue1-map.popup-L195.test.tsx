@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render } from '@testing-library/react';
+import L from 'leaflet';
 import { Ligue1Map } from './ligue1-map';
 import type { SeasonMatch } from '@/types/api';
 
@@ -63,11 +64,11 @@ describe('<Ligue1Map /> — fiche du club (L195)', () => {
   });
 
   it('R5 — « D » n’abrège plus Domicile : un match joué à domicile ou à l’extérieur est écrit en toutes lettres', () => {
-    const base = { competitionCode: 'L1', competitionId: 35, competition: 'Ligue 1', homeScore: 2, awayScore: 1, status: 'FINISHED', matchday: 1 };
+    const base = { competitionCode: 'L1' as const, competitionId: 35, competition: 'Ligue 1', homeScore: 2, awayScore: 1, status: 'FINISHED' as const, matchday: 1 };
     matchs.value = [
       { ...base, id: 1, date: '2025-09-01T18:00:00Z', homeTeamId: 523, awayTeamId: 469, homeTeam: 'Lyon', awayTeam: 'Marseille' },
       { ...base, id: 2, date: '2026-02-01T18:00:00Z', homeTeamId: 469, awayTeamId: 523, homeTeam: 'Marseille', awayTeam: 'Lyon' },
-    ] satisfies Partial<SeasonMatch>[];
+    ] satisfies SeasonMatch[];
     const { container } = render(<Ligue1Map />);
     const popup = ouvrir(container, 'Olympique de Marseille');
     const texte = popup.textContent ?? '';
@@ -76,5 +77,19 @@ describe('<Ligue1Map /> — fiche du club (L195)', () => {
     const lieux = [...popup.querySelectorAll('li > span.text-fg-muted')].map((s) => s.textContent);
     expect(lieux).toEqual(['Domicile', 'Extérieur']);
     matchs.value = [];
+  });
+
+  it('R6 — les limites de glisser sont levées le temps de la fiche (les clubs du nord y tiennent) puis remises', () => {
+    const setView = vi.spyOn(L.Map.prototype, 'setView');
+    const { container } = render(<Ligue1Map />);
+    const carte = setView.mock.contexts[0] as L.Map;
+    setView.mockRestore();
+    expect(carte.options.maxBounds).toBeTruthy();
+    const popup = ouvrir(container, 'Lille');
+    expect(carte.options.maxBounds).toBeNull();
+    act(() => {
+      fireEvent.keyDown(popup, { key: 'Escape', keyCode: 27 });
+    });
+    expect(carte.options.maxBounds).toBeTruthy();
   });
 });

@@ -701,15 +701,19 @@
   border-radius: 6px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
-.leaflet-popup-content {
-  margin: 12px 14px;
+.leaflet-container .leaflet-popup-content {
+  /* Marge droite plus large : la place du × ; leaflet.css (chargé après) posait 13px 24px 13px 20px. */
+  margin: 12px 22px 12px 12px;
   line-height: 1.4;
 }
-/* Fiche d'un club (L195) : 240 px, mais jamais plus large que la place laissée entre les boutons de zoom
-   (48 px) et le bord droit (10 px) de la carte, elle-même large de 100vw − 32 px de marges de page − 2 px de
-   bordure ; 28 px de marges internes de la fiche. À 320 px : 200 px. */
+/* Fiche d'un club (L195) : 240 px, mais jamais plus large que la place laissée dans la carte entre les boutons
+   de zoom (44 px) et le bord droit (6 px), moins 34 px de marges internes et 4 px de bordure. cqw = largeur de
+   la carte (conteneur `.ligue1-map`), pas de la fenêtre : la marge de page varie. À 320 px (carte de 260) : 172 px. */
+.ligue1-map {
+  container-type: inline-size;
+}
 .ligue1-popup-content {
-  width: min(240px, calc(100vw - 32px - 2px - 48px - 10px - 28px));
+  width: min(240px, calc(100cqw - 44px - 6px - 34px - 4px));
 }
 .leaflet-popup-close-button {
   color: hsl(var(--fg-dim)) !important;

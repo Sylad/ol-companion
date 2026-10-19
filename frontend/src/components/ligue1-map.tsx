@@ -104,9 +104,9 @@ function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null, n
 
 const OL_ICON = buildOlIcon();
 
-// La fiche se recale hors des boutons de zoom (coin haut-gauche : 10 px de marge + 30 de large) et du bord droit.
-const POPUP_PAN_TOP_LEFT = L.point(48, 10);
-const POPUP_PAN_BOTTOM_RIGHT = L.point(10, 10);
+// La fiche se recale hors des boutons de zoom (coin haut-gauche : 10 px de marge + 30 de large + 4 d'air) et du bord droit.
+const POPUP_PAN_TOP_LEFT = L.point(44, 10);
+const POPUP_PAN_BOTTOM_RIGHT = L.point(6, 10);
 
 // Vue de départ du conteneur, aussitôt remplacée par FrameFrance une fois la carte mesurée.
 const FRANCE_CENTER = clubsBounds().getCenter();
@@ -254,7 +254,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                   const chipColor = colorForResult(m.outcome ?? 'FUTURE');
                   const chipLetter = m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·';
                   return (
-                    <li key={m.fixture.id} className="flex items-center gap-2 text-[11px]">
+                    <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
                       <span
                         className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
                         style={{ background: chipColor }}
@@ -281,7 +281,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
               </div>
               <ul className="space-y-1">
                 {upcoming.map((m) => (
-                  <li key={m.fixture.id} className="flex items-center gap-2 text-[11px]">
+                  <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
                     <span
                       className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
                       style={{ background: RESULT_DARK }}
@@ -315,7 +315,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                     ? m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·'
                     : '·';
                   return (
-                    <li key={m.match.id} className="flex items-center gap-2 text-[11px]">
+                    <li key={m.match.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
                       <span
                         className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
                         style={{ background: chipColor }}
@@ -364,7 +364,7 @@ interface ClubMarkerProps {
  * sans quoi il retombe sur <body> et l'ordre de tabulation repart du haut de la page.
  * Leaflet n'écoute Échap qu'une fois le conteneur de la carte focalisé, pas le marqueur ni la fiche.
  */
-function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string) {
+function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string, map: L.Map) {
   const fiche = e.popup.getElement();
   if (!fiche) return;
   fiche.setAttribute('role', 'dialog');
@@ -384,9 +384,18 @@ function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string) {
     fermer();
   });
   fiche.focus({ preventScroll: true });
+  // Les clubs du nord n'ont pas la place d'une fiche au-dessus d'eux dans les limites de glisser (L192) : on les
+  // lève le temps de la fiche et on la recale (`popup.update`), `fermerFiche` les remet.
+  map.setMaxBounds(L.latLngBounds([]));
+  e.popup.update();
+}
+
+function fermerFiche(map: L.Map) {
+  map.setMaxBounds(FRANCE_MAX_BOUNDS);
 }
 
 function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
+  const map = useMap();
   const isOL = club.id365 === OL_ID_365;
   const icon = useMemo(() => {
     if (isOL) return OL_ICON;
@@ -401,7 +410,10 @@ function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMark
       icon={icon}
       title={club.name}
       zIndexOffset={isOL ? 1000 : 0}
-      eventHandlers={{ popupopen: (e) => ouvrirFiche(e, e.target as L.Marker, club.name) }}
+      eventHandlers={{
+        popupopen: (e) => ouvrirFiche(e, e.target as L.Marker, club.name, map),
+        popupclose: () => fermerFiche(map),
+      }}
     >
       <Popup autoPanPaddingTopLeft={POPUP_PAN_TOP_LEFT} autoPanPaddingBottomRight={POPUP_PAN_BOTTOM_RIGHT}>
         <ClubPopup
@@ -514,7 +526,7 @@ export function Ligue1Map() {
           maxBounds={FRANCE_MAX_BOUNDS}
           maxBoundsViscosity={1}
           scrollWheelZoom={false}
-          className="h-full w-full"
+          className="ligue1-map h-full w-full"
           style={{ background: '#0e1420' }}
         >
           <TileLayer
