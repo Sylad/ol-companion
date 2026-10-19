@@ -2111,11 +2111,16 @@ lots:
   - id: L192
     title: "Carte L1 : s'ouvre cadrée sur la France (zoom ≥ 6 à 1440×900, 18 marqueurs ; zoom 5 mesuré par pad 0.18), la molette fait défiler la page sans zoomer, bouton Recentrer, zoom et cadrage bornés — revue UX L10"
     public: "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-19
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "conforme — revue Opus neuve après reprise à la main (vague 2026-10-19-ol-carte rendue au budget) : glisser borné à la vue d'ouverture, zoom minimal après Recentrer, followResize, ordre de tabulation ; vitest 1065, navigateur 72/72 ; promesse « toujours sur des clubs » reformulée (d0bf1a7, texte seul, relu par le lead)", commit: d0bf1a7223f0cc9fc2d2c6f2f9f33f0313d04c60 }
+    ux: { date: 2026-10-19, verdict: "conforme — 18 clubs cadrés à 1440 et 390, Recentrer en bas à gauche, glisser sans sortir de la vue de départ (R11/R12 navigateur) ; captures regardées par le lead" }
+    notes:
+      - { date: 2026-10-19, text: "Mineurs : R11 ne mesure pas le glisser juste après l'ouverture dans Chromium (seul jsdom R5) ; redimensionnement fiche ouverte au zoom minimal (frameFrance non animé) non mesuré ; tsconfig ne couvre pas tests-navigateur/." }
+    finished: 2026-10-19
   - id: L193
     title: "Carte L1 : chaque club (PSG, Monaco, Lille compris) a une zone cliquable ≥ 24×24 px non recouverte à l'ouverture, à 1440 et 390 (PSG 7 % et 0 % cliquable mesurés) — revue UX L10"
     public: "Carte de la Ligue 1 : chaque club cliquable, même à Paris"
@@ -2145,11 +2150,16 @@ lots:
   - id: L195
     title: "Popup de la Carte L1 : Échap la ferme et rend le focus au marqueur, le focus entre dans la popup à l'ouverture ; à 320 px elle tient dans la carte (× visible, logo hors des boutons de zoom) ; « D » n'abrège plus Domicile — revue UX L10"
     public: "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-19
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "conforme — revue Opus neuve après reprise à la main (vague rendue au budget) : légende sous la carte, FicheClavier (écouteurs uniques), × « Fermer la fiche », Échap où que soit le focus ; vitest 1068, navigateur 79/79 ; fiches entières aux 4 largeurs une fois recadrées ; mineur → L198", commit: cff0f5adc20a45fe93c5b3e0beff32aa29fae1da }
+    ux: { date: 2026-10-19, verdict: "conforme — légende sous la carte validée par Sylvain (19-10) ; captures regardées par le lead, rognage des captures r2 = redimensionnement fullPage, mesuré entier à l'état stable (1440, 768, 390, 320)" }
+    notes:
+      - { date: 2026-10-19, text: "Mineur : le test de recouvrement attend 600 ms fixes et non moveend (recadrage ≤ 312 ms mesuré). L'entrée Nouveautés de L81 (2026-10-09) dit encore « légende dans le coin haut droit » : entrée historique laissée telle quelle." }
+    finished: 2026-10-19
   - id: L196
     title: "Carte L1 : contrastes restants — lien d'attribution Leaflet 4,43:1 à 390 px (fond surface/0.85 sur tuile claire) et pastille « N » de la fiche (blanc 9 px sur gris 55 %) 3,35:1, ligue1-map.tsx:217 et 276 — ≥ 4,5:1 mesurés sur le fond réel (blend)"
     public: "Carte de la Ligue 1 : derniers textes peu contrastés corrigés"
@@ -2157,9 +2167,18 @@ lots:
     estimate: 0.25
     visible: true
     created: 2026-10-19
+    notes:
+      - { date: 2026-10-19, text: "QA L191 19-10 : attribution Leaflet à 6,59:1 après bf720a4 (volet réglé), reste la pastille N (3,36:1). Mineurs QA : remplissage « Victoire » de la légende 2,64:1 à 1440 (contour ≥ 12:1 compense) ; contour clair des marqueurs invisible sur tuile OSM claire (1,07–1,25:1), bord tenu par l'ombre portée." }
   - id: L197
     title: "Carte L1 à 320 px : à l'ouverture, les zones de 24 px se recouvrent (Le Havre/Le Mans 67 % cliquable, Lens/PSG, Paris FC/Auxerre, Rennes/Lorient) — chaque club garde une zone 24×24 à lui, tests R1/R2 étendus à 320 px"
     public: "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-19
+  - id: L198
+    title: "Carte L1 : fiche ouverte au zoom d'ouverture, un redimensionnement ou une rotation (followResize → frameFrance) la sort de la carte (Lille 109 px au-dessus après 390×844 → 844×390, 86 px à 1440 → 1400) — refaire le recalage de la fiche après le recadrage, test Chromium avec setViewportSize"
+    public: "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone"
     status: todo
     estimate: 0.25
     visible: true

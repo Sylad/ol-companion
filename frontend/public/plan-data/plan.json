@@ -545,8 +545,9 @@
     {
       "id": "L192",
       "title": "Carte de la Ligue 1 : ouverte sur la France, la molette fait défiler la page",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L193",
@@ -565,8 +566,9 @@
     {
       "id": "L195",
       "title": "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran",
-      "status": "doing",
-      "started": "2026-10-19"
+      "status": "done",
+      "started": "2026-10-19",
+      "finished": "2026-10-19"
     },
     {
       "id": "L196",
@@ -576,6 +578,11 @@
     {
       "id": "L197",
       "title": "Carte de la Ligue 1 : chaque club cliquable sur petit téléphone",
+      "status": "todo"
+    },
+    {
+      "id": "L198",
+      "title": "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone",
       "status": "todo"
     }
   ]
