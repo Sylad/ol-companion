@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "414c1d9b271300cc153bde9d2e1c0989f3ae2292"
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "5eee983ffbb9428fb1b7950323fde58e1d177cca"
   },
   "resceaux": [
     {
@@ -45,6 +45,15 @@
       "date": "2026-10-16",
       "avant": "c9f42347a7ddabdccf945a0f170f58b6a153ebe9",
       "apres": "414c1d9b271300cc153bde9d2e1c0989f3ae2292"
+    },
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "La fiche L161 R6 (amendée, f4790dd) renvoie à l'ordre de page-match-fm R8/R10 ; L186 l'a changé (Faits, Statistiques | Momentum, Carte des tirs, puis Joueurs en vue + Classement) ; l'assertion d'ordre suit cette fiche.",
+      "date": "2026-10-19",
+      "avant": "414c1d9b271300cc153bde9d2e1c0989f3ae2292",
+      "apres": "5eee983ffbb9428fb1b7950323fde58e1d177cca",
+      "porteur": "L186",
+      "ficheAmendee": "f4790dd"
     }
   ]
 }

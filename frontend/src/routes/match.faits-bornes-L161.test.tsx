@@ -600,8 +600,13 @@ describe('page-match-faits-bornes (L161)', () => {
 
   it('R6 — l\'ordre des blocs du centre est inchangé', () => {
     complet(18, 1440);
-    const blocs = ordreCentre();
-    // R6 — « ordre des blocs du centre (Faits, Momentum, Carte des tirs, Statistiques) » : le bloc Faits contient sa liste des faits
+    const centre = screen.getByTestId('colonne-centre');
+    const blocs = ['faits-match', 'bloc-statistiques', 'elan', 'carte-tirs'].map((id) => {
+      const el = screen.getByTestId(id);
+      return { id, dedans: centre.contains(el), el };
+    });
+    // R6 — « ordre des blocs du centre (ordre de la fiche page-match-fm R8/R10 : depuis L186, Faits, Statistiques | Momentum, Carte des tirs | Joueurs en vue + Classement) » :
+    // ordre de page-match-fm R8/R10 depuis L186 ; le bloc Faits contient sa liste des faits
     expect(screen.getByTestId('faits-match').contains(liste())).toBe(true);
     expect(blocs.every((b) => b.dedans)).toBe(true);
     for (let i = 1; i < blocs.length; i++) expect(precede(blocs[i - 1].el, blocs[i].el)).toBe(true);
