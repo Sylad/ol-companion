@@ -379,7 +379,8 @@ describe('Page match en écran FM (L186) — règles R1 à R15', () => {
       const col = tid('colonne-centre');
       // L186 : Statistiques est portée par la rangée Statistiques | Momentum (R4, R16) ; le premier élément du centre la contient
       expect(col.firstElementChild).toContainElement(tid('bloc-statistiques'));
-      expect(blocsDuCentre(col)).toEqual(['bloc-statistiques']);
+      // R3 — Joueurs en vue reste affiché avant le coup d'envoi (L173, état vide) ; R4 — jamais de trou : seuls Statistiques et Joueurs en vue sont présents
+      expect(blocsDuCentre(col)).toEqual(['bloc-statistiques', 'joueurs-en-vue']);
       expect(tokens(col).filter((x) => /^(mt|pt|my|py|m|p)-/.test(x))).toEqual([]);
       expect(tokens(tid('grille-match')).filter((x) => /^(pt|p|py)-/.test(x))).toEqual([]);
       unmount();

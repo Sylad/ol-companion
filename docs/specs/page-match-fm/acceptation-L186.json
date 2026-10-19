@@ -8,7 +8,7 @@
   "vert": false,
   "empreintes": {
     "frontend/src/routes/match.disposition-L186.test.tsx": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6",
-    "frontend/src/routes/match.socle-L186.test.tsx": "47f1db172201386322d2149f2f7ca49b6bcbfda9"
+    "frontend/src/routes/match.socle-L186.test.tsx": "3d8e14f4806784e11b5b98113299a8d4ed6077b6"
   },
   "resceaux": [
     {
@@ -17,6 +17,13 @@
       "date": "2026-10-19",
       "avant": "f41eab28bec4837707b83295121793277dd18eb5",
       "apres": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6"
+    },
+    {
+      "test": "frontend/src/routes/match.socle-L186.test.tsx",
+      "raison": "Fiche page-match-fm R3 (L173) : Joueurs en vue reste affiché avant le coup d'envoi, avec un état vide ; l'assertion R4 « état à venir » attend donc Statistiques puis Joueurs en vue, comme le code.",
+      "date": "2026-10-19",
+      "avant": "47f1db172201386322d2149f2f7ca49b6bcbfda9",
+      "apres": "3d8e14f4806784e11b5b98113299a8d4ed6077b6"
     }
   ]
 }
