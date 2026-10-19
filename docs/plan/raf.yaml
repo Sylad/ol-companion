@@ -2066,7 +2066,7 @@ lots:
     screen: page
     created: 2026-10-19
     started: 2026-10-19
-    review: { date: 2026-10-19, verdict: "compliant after 1 minor fix — orchestré (vague 2026-10-19-ol-188-189, 2 passe(s) de correction)", commit: 093680efa222f380a286b9f3fd116ddc79aeef0f }
+    review: { date: 2026-10-19, verdict: "conforme — revue Opus de la vague 2026-10-19-ol-188-189 (2 corrections) ; commit 7c48657 relu par le lead : entrée Nouveautés et données générées seulement (md, png, nouveautes.json, tailles.json), aucun code", commit: 7c486571918b2b5ab90ea87d2efaae59f62bd96d }
     ux: { date: 2026-10-19, verdict: "conforme (lead, capture 1366×768 regardée) — 1366×768 : bas de la rangée Statistiques | Momentum à 748 px (était 776) sur France 4-1 Belgique, 730 sur Lyon–Nice, 758 avec 4 buteurs distincts simulés ; score centré à 1024–1440 ; 390 px identique à avant, sans défilement horizontal" }
     finished: 2026-10-19
   - id: L190
