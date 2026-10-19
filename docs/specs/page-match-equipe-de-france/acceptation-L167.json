@@ -8,7 +8,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "c647193542350060dcce1b895951dc0b4c2271ee",
+    "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "c0128c03f2b6fd849b4d36635b11f4f35014dd8f",
     "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
     "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "bad83bbaf0a14bc7e6b652c1290b94b061621d57"
   },
@@ -62,6 +62,15 @@
       "date": "2026-10-17",
       "avant": "2ef841cb01481a05b4726ca87ea5ae544487d295",
       "apres": "bad83bbaf0a14bc7e6b652c1290b94b061621d57"
+    },
+    {
+      "test": "frontend/src/routes/match.equipe-de-france-L167.test.tsx",
+      "raison": "La fiche L167 R7 (amendée, f4790dd) renvoie à l'ordre du DOM de match.tsx (page-match-fm R10) ; L186 l'a changé (statistiques, Momentum, tirs, joueurs en vue avant les compositions) ; l'ORDRE attendu suit cette fiche.",
+      "date": "2026-10-19",
+      "avant": "c647193542350060dcce1b895951dc0b4c2271ee",
+      "apres": "c0128c03f2b6fd849b4d36635b11f4f35014dd8f",
+      "porteur": "L186",
+      "ficheAmendee": "f4790dd"
     }
   ]
 }

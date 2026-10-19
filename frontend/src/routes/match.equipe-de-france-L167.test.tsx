@@ -192,12 +192,13 @@ describe('R6 — pas de classement sur un match des Bleus', () => {
 });
 
 describe('R7 — contenu de /match', () => {
-  const ORDRE = ['entete-score', 'faits-match', 'elan', 'carte-tirs', 'bloc-statistiques', 'bloc-composition', 'stats-equipe-domicile', 'stats-equipe-visiteur', 'joueurs-en-vue'];
+  const ORDRE = ['entete-score', 'faits-match', 'bloc-statistiques', 'elan', 'carte-tirs', 'joueurs-en-vue', 'bloc-composition', 'stats-equipe-domicile', 'stats-equipe-visiteur'];
 
   it('R7 — match des Bleus : tous les blocs de /match sont présents, dans le même ordre', async () => {
     show(FRANCE_AT_HOME);
     const els = await Promise.all(ORDRE.map(async (id) => (await screen.findAllByTestId(id))[0]));
-    // R7 — « même ordre du DOM que match.tsx (en-tête, faits, Momentum, tirs, statistiques, compositions et statistiques par équipe, puis joueurs en vue) »
+    // R7 — « même ordre du DOM que match.tsx (fiche page-match-fm R10 : depuis L186, en-tête, faits, statistiques, Momentum, tirs, joueurs en vue, classement, puis composition et statistiques de l'équipe à domicile, composition et statistiques de l'équipe visiteuse) »
+    // ordre de page-match-fm R8/R10 depuis L186 (classement absent d'un match des Bleus : R6)
     for (let i = 1; i < els.length; i++) {
       expect(els[i - 1].compareDocumentPosition(els[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
