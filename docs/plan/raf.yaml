@@ -2120,6 +2120,7 @@ lots:
     visible: true
     created: 2026-10-19
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "conforme, 2 constats mineurs (zones de 24 px qui se recouvrent à 320 px, hors périmètre ; ancrage de la popup décalée non testé) — orchestré (vague 2026-10-19-ol-carte, 1 passe(s) de correction)", commit: 3de6d0e5751fe4bffc3364e48054a0dfddebe15b }
   - id: L194
     title: "Carte L1 : chargement et erreur de l'API distincts d'« aucun match » — en erreur un message avec Réessayer, jamais « Pas de match OL recensé » ni marqueurs « Pas encore joué » faute de données — revue UX L10"
     public: "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas"
