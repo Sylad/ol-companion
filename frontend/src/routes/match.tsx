@@ -254,7 +254,8 @@ function Scorers({ items, align, reflow = false }: { items: { name: string; mark
 // Mode Bleus : `min-[390px]:text-lg` et `min-[600px]:text-2xl` portent leur propre interligne (28 et 32 px) et battent le
 // `leading-none` de base dans leur media query — d'où un `leading-none` par palier.
 const NOM_EQUIPE = 'font-display font-bold';
-const NOM_EQUIPE_OL = 'text-2xl leading-none';
+/** Sous 360 px (L65) la colonne d'un nom ne fait que ~50 px : 16 px et coupure dans le mot, sinon « Crystal Palace » est rogné par l'overflow-hidden de la carte. */
+const NOM_EQUIPE_OL = '[overflow-wrap:anywhere] text-2xl max-[359px]:text-base leading-none max-[359px]:leading-none';
 /**
  * En-tête d'un match des Bleus (L167 R13) : noms jamais coupés ni cachés. Grille minmax(0,1fr) auto minmax(0,1fr), noms qui
  * passent à la ligne (`overflow-wrap:anywhere`) à 24 px au-dessus de 600 px, 18 px dessous, 16 px sous 390 px. Comme la
@@ -262,7 +263,7 @@ const NOM_EQUIPE_OL = 'text-2xl leading-none';
  * score à 32 px — à 390 px « Bosnie-Herzégovine » tient sur deux lignes, sans coupure dans le mot.
  */
 /** Match de l'OL (L190) : mêmes colonnes bornées que les Bleus, sinon un buteur insécable (L189) élargit sa colonne et décentre le score. */
-const ENTETE_OL = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]';
+const ENTETE_OL = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[359px]:px-[6px] max-[359px]:gap-x-1';
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 /** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
 const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
