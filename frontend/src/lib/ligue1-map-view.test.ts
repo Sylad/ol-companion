@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import L from 'leaflet';
 import { LIGUE1_CLUBS_COORDS } from '@/lib/ligue1-clubs-coords';
+import { markerNudge } from '@/lib/ligue1-map-hit';
 import {
   MAX_ZOOM,
   ZOOM_SNAP,
@@ -62,11 +63,10 @@ describe('Carte L1 — cadrage de la France (L192)', () => {
     expectEveryClubInside(map);
   });
 
-  it('R1b — la France est centrée dans la carte : même marge en haut (Lille) et en bas (Marseille)', () => {
+  it('R1b — la France est centrée dans la carte : même marge en haut et en bas, marqueurs écartés compris (L193, L197)', () => {
     const map = makeMap(DESKTOP.width, DESKTOP.height);
-    const lille = map.latLngToContainerPoint([50.6119, 3.1306]);
-    const marseille = map.latLngToContainerPoint([43.2698, 5.3958]);
-    expect(lille.y).toBeCloseTo(DESKTOP.height - marseille.y, 0);
+    const ys = LIGUE1_CLUBS_COORDS.map((c) => map.latLngToContainerPoint([c.lat, c.lng]).y + markerNudge(c.id365)[1]);
+    expect(Math.min(...ys)).toBeCloseTo(DESKTOP.height - Math.max(...ys), 0);
   });
 
   it('R2 — à 390 px la France tient encore entière, à un zoom plus bas', () => {

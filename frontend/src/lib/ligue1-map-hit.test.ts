@@ -6,8 +6,8 @@ import { MAX_ZOOM } from '@/lib/ligue1-map-view';
 
 // L193 — la zone cliquable de 24 px d'un club ne recouvre jamais celle d'un voisin, à aucun zoom de la carte.
 
-/** Zoom d'ouverture de la carte à 390 px de large (330 px de carte), mesuré dans Chromium : le plus bas qu'un visiteur du /map voie. */
-const ZOOM_OUVERTURE_390 = 4.75;
+/** Zoom d'ouverture de la carte à 320 px de large (260 px de carte), mesuré dans Chromium : le plus bas qu'un visiteur du /map voie (390 px : 4,75). */
+const ZOOM_OUVERTURE_320 = 4;
 
 /** Centre du marqueur à l'écran (px) à un zoom donné, décalage de désencombrement compris. */
 function centre(club: (typeof LIGUE1_CLUBS_COORDS)[number], zoom: number) {
@@ -17,8 +17,8 @@ function centre(club: (typeof LIGUE1_CLUBS_COORDS)[number], zoom: number) {
 }
 
 describe('markerNudge (L193)', () => {
-  it('R2 — deux zones cliquables de 24 px ne se recouvrent du zoom d’ouverture à 390 px de large au zoom maximal (Paris, Nice/Monaco, Lens/Lille, Angers/Le Mans, Auxerre/Troyes, Brest/Lorient)', () => {
-    for (let zoom = ZOOM_OUVERTURE_390; zoom <= MAX_ZOOM; zoom += 0.25) {
+  it('R2 — deux zones cliquables de 24 px ne se recouvrent du zoom d’ouverture à 320 px de large (4) au zoom maximal (Paris, Nice/Monaco, Lens/Lille, Le Havre/Le Mans, Rennes/Lorient, Auxerre/Troyes, Brest…)', () => {
+    for (let zoom = ZOOM_OUVERTURE_320; zoom <= MAX_ZOOM; zoom += 0.25) {
       const centres = LIGUE1_CLUBS_COORDS.map((c) => ({ nom: c.name, ...centre(c, zoom) }));
       for (let i = 0; i < centres.length; i++) {
         for (let j = i + 1; j < centres.length; j++) {

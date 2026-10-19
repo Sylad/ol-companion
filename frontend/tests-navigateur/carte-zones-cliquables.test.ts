@@ -21,7 +21,7 @@ afterAll(async () => {
   await serveur?.close();
 });
 
-describe.each([[1440, 900], [390, 844]])('Carte L1 à %i×%i (L193)', (largeur, hauteur) => {
+describe.each([[1440, 900], [390, 844], [320, 844]])('Carte L1 à %i×%i (L193)', (largeur, hauteur) => {
   it('R1 — chaque club a une zone d’au moins 24×24 px, entièrement à lui à l’ouverture (PSG, Monaco et Lille compris)', async () => {
     const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
     await page.route('**/api/**', (route) => route.fulfill({ status: 503, json: {} }));
