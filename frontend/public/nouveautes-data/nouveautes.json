@@ -1,7 +1,26 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 16:21",
+  "generated": "2026-10-19 16:40",
   "entries": [
+    {
+      "slug": "2026-10-19-carte-de-la-ligue-1-fiche-du-club-au-clavier-et-sur-petit-ec",
+      "title": "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran",
+      "date": "2026-10-19",
+      "lots": [
+        "L195"
+      ],
+      "captures": [
+        "captures/carte-l1-fiche-L195-1440.png",
+        "captures/carte-l1-fiche-L195-390.png",
+        "captures/carte-l1-fiche-L195-320.png"
+      ],
+      "alts": [
+        "Carte de la Ligue 1 à 1440 px avec la fiche de Lille ouverte : bilan face à Lyon, matchs joués avec « Domicile » et « Extérieur »",
+        "Carte de la Ligue 1 à 390 px avec la fiche de Lille ouverte, entièrement dans la carte, à droite des boutons de zoom",
+        "Carte de la Ligue 1 à 320 px avec la fiche de Lille ouverte : la croix de fermeture est visible et la fiche ne recouvre pas les boutons de zoom"
+      ],
+      "html": "<p>La fiche d'un club sur la carte de la Ligue 1 se commande au clavier et tient sur un petit écran.</p>\n<ul><li>Au clavier, Entrée sur un club ouvre sa fiche et le curseur y entre ; Échap (ou la croix) la ferme et le curseur revient sur le club.</li><li>À 320 px, la fiche reste entièrement dans la carte : la croix de fermeture est visible et la fiche ne recouvre plus les boutons de zoom.</li><li>Les matchs de la fiche indiquent « Domicile » ou « Extérieur » au lieu d'un « D » ou d'un « E » qui prêtait à confusion avec la défaite.</li></ul>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-message-clair-quand-les-resultats-ne-cha",
       "title": "Carte de la Ligue 1 : message clair quand les résultats ne chargent pas",
