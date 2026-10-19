@@ -236,9 +236,11 @@ function scorersFor(events: LiveMatchTimelineEvent[], teamId: number, opponentId
 function Scorers({ items, align, reflow = false }: { items: { name: string; marks: string }[]; align: 'right' | 'left'; reflow?: boolean }) {
   if (!items.length) return <div />;
   return (
-    <ul className={cn('space-y-0.5 text-xs text-fg-muted', align === 'right' ? 'text-right' : 'text-left')}>
+    // Les buteurs coulent sur une ligne et passent à la ligne par joueur entier (L189) : à 1366 px, 3 joueurs tiennent sur
+    // une ou deux lignes au lieu de trois, ce qui garde la rangée Statistiques | Momentum au-dessus du pli (768 px).
+    <ul className={cn('flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-fg-muted', align === 'right' ? 'justify-end text-right' : 'justify-start text-left')}>
       {items.map((s) => (
-        <li key={s.name}>
+        <li key={s.name} className="min-[390px]:whitespace-nowrap">
           <span className="text-fg">{s.name}</span>{' '}
           {/* Sous 390 px, les minutes passent à la ligne sous le nom : « Lukébakio 35' » n'est jamais coupé (L167 R13). */}
           <span className={cn('num tabular-nums text-fg-dim', reflow && 'whitespace-nowrap max-[389px]:block')}>{s.marks}</span>
