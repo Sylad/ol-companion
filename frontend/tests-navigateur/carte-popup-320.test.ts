@@ -67,6 +67,8 @@ describe.each([[320, 640], [390, 844], [1440, 900]])('Fiche de la Carte L1 à %i
       });
       if (!(m.ficheDansCarte && m.croixDansCarte && m.croixAtteignable && !m.logoSurZoom && !m.debordement)) fautes.push(`${club} ${JSON.stringify(m)}`);
       await page.keyboard.press('Escape');
+      // La limite du glisser (L192) revient à la fermeture : la carte regagne la vue d'ouverture par un déplacement animé, à laisser finir.
+      await page.waitForTimeout(400);
     }
     await page.close();
     expect(fautes).toEqual([]);
