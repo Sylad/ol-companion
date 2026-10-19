@@ -34,6 +34,6 @@ describe('ShotMap — légende réduite au nom quand le sigle n\'est qu\'un repl
     const carte = screen.getByTestId('carte-tirs');
     expect(within(carte).getByText('OL Lyon')).toBeTruthy();
     expect(within(carte).getByText('RCL Lens')).toBeTruthy();
-    expect(within(carte).getByText(/RCL attaque →|← RCL attaque/)).toBeTruthy();
+    expect(within(carte).getByText(/RCL attaque ↑|↓ RCL attaque/)).toBeTruthy();
   });
 });
