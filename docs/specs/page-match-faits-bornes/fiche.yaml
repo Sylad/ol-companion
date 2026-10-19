@@ -76,7 +76,7 @@ regles:
     tests: ["R5 — la variable --ligne-fait vaut 44 px à 1440 et à 390 et 60 px à 389, 360 et 320, et la max-height de la liste vaut 5 fois cette valeur"]
   - id: R6
     etat: charge
-    enonce: "Rien d'autre ne change : ordre des blocs du centre (Faits, Momentum, Carte des tirs, Statistiques), contenu et libellés des lignes de faits, couleurs, compositions et statistiques latérales (champs hérités de L160 listés plus haut) et appel API (GET /api/live-match/{gameId}/stats, aucun champ ajouté)."
+    enonce: "Rien d'autre ne change : ordre des blocs du centre (ordre de la fiche page-match-fm R8/R10 : depuis L186, Faits, Statistiques | Momentum, Carte des tirs | Joueurs en vue + Classement), contenu et libellés des lignes de faits, couleurs, compositions et statistiques latérales (champs hérités de L160 listés plus haut) et appel API (GET /api/live-match/{gameId}/stats, aucun champ ajouté)."
     message: ~
     champs: [entete-score, grille-match, colonne-centre, bloc-statistiques, bloc-composition, titre-composition, formation-composition, terrain-composition, rangee-composition, banc-composition, stats-equipe-domicile, stats-equipe-visiteur, colonne-centre-bas, joueurs-en-vue, classement-direct]
     statut: sourcee
