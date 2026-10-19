@@ -546,10 +546,10 @@ export function MatchPage() {
           )}
           <div data-testid="rangee-stats-elan" className={cn('grid gap-4 [&>*]:min-w-0', hasMomentum && 'grid-cols-1 lg:grid-cols-2')}>
             <section data-testid="bloc-statistiques" className="rounded-md bg-surface border border-border overflow-hidden">
-              <header className="px-5 py-3 border-b border-border">
+              <header className="px-5 py-2 border-b border-border">
                 <h2 className="eyebrow min-w-0">Statistiques</h2>
               </header>
-              <div className="px-5 py-2 space-y-1">
+              <div className="px-5 py-1 space-y-1">
                 {comparedRows.map((s) => (
                   <StatRow
                     key={s.key}
