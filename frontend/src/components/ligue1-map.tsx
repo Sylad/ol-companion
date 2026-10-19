@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { LocateFixed } from 'lucide-react';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -30,7 +31,7 @@ import {
 import { RetryMessage } from '@/components/retry-message';
 import { formatKickoffDayShort } from '@/lib/kickoff';
 import { HIT_SIZE_PX, markerNudge } from '@/lib/ligue1-map-hit';
-import { MAX_ZOOM, ZOOM_SNAP, clubsBounds, frameFrance, maxBounds } from '@/lib/ligue1-map-view';
+import { MAX_ZOOM, ZOOM_SNAP, clubsBounds, followResize, frameFrance, liftMaxBounds, restoreMaxBounds } from '@/lib/ligue1-map-view';
 import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
 /**
@@ -110,7 +111,6 @@ const POPUP_PAN_BOTTOM_RIGHT = L.point(6, 10);
 
 // Vue de départ du conteneur, aussitôt remplacée par FrameFrance une fois la carte mesurée.
 const FRANCE_CENTER = clubsBounds().getCenter();
-const FRANCE_MAX_BOUNDS = maxBounds();
 
 /** Cache club icons per (legA, legB, nudge) combo — 25 result combinations × a handful of nudges. */
 const clubIconCache = new Map<string, L.DivIcon>();
@@ -129,7 +129,8 @@ function FrameFrance() {
   const map = useMap();
   useEffect(() => {
     frameFrance(map);
-    const onResize = () => frameFrance(map);
+    // Au zoom minimal le cadrage suit ; plus près, le zoom et le déplacement de l'utilisateur restent.
+    const onResize = () => followResize(map);
     map.on('resize', onResize);
     return () => {
       map.off('resize', onResize);
@@ -138,24 +139,41 @@ function FrameFrance() {
   return null;
 }
 
-/** Bouton « Recentrer » (L192) : revient à la vue d'ouverture, quel que soit le zoom ou le décalage. */
-function RecenterButton() {
+/**
+ * Bouton « Recentrer » (L192) : revient à la vue d'ouverture, quel que soit le zoom ou le décalage. Contrôle Leaflet en
+ * bas à gauche (L193 : en haut il recouvrait Brest à 390 px) : il suit les boutons de zoom dans l'ordre de tabulation, et
+ * les liens d'attribution du bas à droite viennent après lui.
+ */
+function RecenterControl() {
   const map = useMap();
-  const ref = useRef<HTMLButtonElement>(null);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
   useEffect(() => {
-    // Un clic sur le bouton ne doit ni glisser ni zoomer la carte dessous.
-    if (ref.current) L.DomEvent.disableClickPropagation(ref.current);
-  }, []);
-  return (
+    const control = new L.Control({ position: 'bottomleft' });
+    control.onAdd = () => {
+      const div = L.DomUtil.create('div', 'leaflet-control');
+      // Aligné sur le bord bas des anciennes valeurs (26 px) ; un clic ne doit ni glisser ni zoomer la carte dessous.
+      div.style.marginBottom = '26px';
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    };
+    control.addTo(map);
+    setContainer(control.getContainer() ?? null);
+    return () => {
+      control.remove();
+      setContainer(null);
+    };
+  }, [map]);
+  if (!container) return null;
+  return createPortal(
     <button
-      ref={ref}
       type="button"
       onClick={() => frameFrance(map, true)}
-      className="absolute bottom-[26px] left-[10px] z-[1000] inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 text-xs font-semibold text-fg shadow-md hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ol-blue-fg"
+      className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 text-xs font-semibold text-fg shadow-md hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ol-blue-fg"
     >
       <LocateFixed className="h-4 w-4" aria-hidden />
       Recentrer
-    </button>
+    </button>,
+    container,
   );
 }
 
@@ -391,12 +409,12 @@ function ouvrirFiche(e: L.PopupEvent, marker: L.Marker, club: string, map: L.Map
   fiche.focus({ preventScroll: true });
   // Les clubs du nord n'ont pas la place d'une fiche au-dessus d'eux dans les limites de glisser (L192) : on les
   // lève le temps de la fiche et on la recale (`popup.update`), `fermerFiche` les remet.
-  map.setMaxBounds(L.latLngBounds([]));
+  liftMaxBounds(map);
   e.popup.update();
 }
 
 function fermerFiche(map: L.Map) {
-  map.setMaxBounds(FRANCE_MAX_BOUNDS);
+  restoreMaxBounds(map);
 }
 
 function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
@@ -528,7 +546,6 @@ export function Ligue1Map() {
           zoom={5}
           zoomSnap={ZOOM_SNAP}
           maxZoom={MAX_ZOOM}
-          maxBounds={FRANCE_MAX_BOUNDS}
           maxBoundsViscosity={1}
           scrollWheelZoom={false}
           className="ligue1-map h-full w-full"
@@ -540,7 +557,7 @@ export function Ligue1Map() {
             maxZoom={18}
           />
           <FrameFrance />
-          <RecenterButton />
+          <RecenterControl />
           {LIGUE1_CLUBS_COORDS.map((club) => {
             return (
               <ClubMarker

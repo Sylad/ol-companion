@@ -5,8 +5,8 @@ import {
   MAX_ZOOM,
   ZOOM_SNAP,
   clubsBounds,
+  followResize,
   frameFrance,
-  maxBounds,
 } from '@/lib/ligue1-map-view';
 
 // L192 — jsdom ne mesure rien : la taille de la carte est posée sur l'élément, Leaflet fait le reste
@@ -22,7 +22,6 @@ function makeMap(width: number, height: number): L.Map {
   const map = L.map(host, {
     zoomSnap: ZOOM_SNAP,
     maxZoom: MAX_ZOOM,
-    maxBounds: maxBounds(),
     maxBoundsViscosity: 1,
     zoomAnimation: false,
     fadeAnimation: false,
@@ -90,14 +89,33 @@ describe('Carte L1 — cadrage de la France (L192)', () => {
     expect(map.getZoom()).toBe(MAX_ZOOM);
   });
 
-  it('R5 — le glisser ne sort pas de la France', () => {
+  it('R5 — le glisser reste sur la vue d’ouverture : à l’ouverture rien ne bouge, plus près la vue ne la quitte pas', () => {
     const map = makeMap(DESKTOP.width, DESKTOP.height);
-    map.setZoom(map.getZoom() + 3, { animate: false });
+    const centre = map.getCenter();
     map.panBy([-50_000, 50_000], { animate: false });
-    const limit = maxBounds();
-    expect(limit.contains(map.getCenter())).toBe(true);
-    map.panBy([100_000, -100_000], { animate: false });
-    expect(limit.contains(map.getCenter())).toBe(true);
+    // Au pixel près (jeu de 1 px de la limite) : le glisser de 50 000 px n'a rien déplacé.
+    expect(map.getCenter().lat).toBeCloseTo(centre.lat, 1);
+    expect(map.getCenter().lng).toBeCloseTo(centre.lng, 1);
+    const ouverture = map.getBounds().pad(0.02);
+    map.setZoom(map.getZoom() + 3, { animate: false });
+    for (const [dx, dy] of [[-50_000, 0], [100_000, 0], [0, -50_000], [0, 100_000]]) {
+      map.panBy([dx, dy], { animate: false });
+      const vue = map.getBounds();
+      expect(ouverture.contains(vue.getSouthWest()) && ouverture.contains(vue.getNorthEast())).toBe(true);
+    }
+  });
+
+  it('R5b — téléphone en portrait, la vue d’ouverture garde les clubs : aucune borne ne la laisse partir en Pologne', () => {
+    const map = makeMap(PHONE.width, PHONE.height);
+    const ouverture = map.getBounds().pad(0.02);
+    map.setZoom(map.getZoom() + 1, { animate: false });
+    for (const [dx, dy] of [[-50_000, 0], [100_000, 0], [0, -50_000], [0, 100_000]]) {
+      map.panBy([dx, dy], { animate: false });
+      const vue = map.getBounds();
+      expect(ouverture.contains(vue.getSouthWest()) && ouverture.contains(vue.getNorthEast())).toBe(true);
+      // Au moins un club reste à l'écran, même contre la borne.
+      expect(LIGUE1_CLUBS_COORDS.some((c) => vue.contains([c.lat, c.lng]))).toBe(true);
+    }
   });
 
   it('R6 — Recentrer ramène la vue d’ouverture, d’un zoom avant comme d’un décalage', () => {
@@ -132,5 +150,27 @@ describe('Carte L1 — cadrage de la France (L192)', () => {
     frameFrance(map, true);
     expect(map.getZoom()).toBe(10);
     expect(map.getMinZoom()).toBe(framed);
+  });
+
+  it('R9 — un redimensionnement garde le zoom et le déplacement de l’utilisateur ; au zoom minimal il recadre', () => {
+    const map = makeMap(DESKTOP.width, DESKTOP.height);
+    map.setView([43.3, 5.4], 9, { animate: false });
+    const centre = map.getCenter();
+    Object.defineProperty(host!, 'clientWidth', { value: DESKTOP.width - 20, configurable: true });
+    map.invalidateSize({ animate: false });
+    followResize(map);
+    expect(map.getZoom()).toBe(9);
+    expect(map.getCenter().lat).toBeCloseTo(centre.lat, 1);
+    expect(map.getMinZoom()).toBeLessThan(9);
+
+    frameFrance(map);
+    const cadree = map.getZoom();
+    Object.defineProperty(host!, 'clientWidth', { value: PHONE.width, configurable: true });
+    Object.defineProperty(host!, 'clientHeight', { value: PHONE.height, configurable: true });
+    map.invalidateSize({ animate: false });
+    followResize(map);
+    expect(map.getZoom()).toBeLessThan(cadree);
+    expect(map.getMinZoom()).toBe(map.getZoom());
+    expectEveryClubInside(map);
   });
 });
