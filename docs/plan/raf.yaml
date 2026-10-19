@@ -2129,6 +2129,7 @@ lots:
     visible: true
     created: 2026-10-19
     started: 2026-10-19
+    review: { date: 2026-10-19, verdict: "compliant (0 blocking, 0 major, 1 minor note) — raf review L194 — orchestré (vague 2026-10-19-ol-carte, 0 passe(s) de correction)", commit: bae51925ccc10d34452e4d211883bc59b9b4545c }
   - id: L195
     title: "Popup de la Carte L1 : Échap la ferme et rend le focus au marqueur, le focus entre dans la popup à l'ouverture ; à 320 px elle tient dans la carte (× visible, logo hors des boutons de zoom) ; « D » n'abrège plus Domicile — revue UX L10"
     public: "Carte de la Ligue 1 : fiche du club au clavier et sur petit écran"
