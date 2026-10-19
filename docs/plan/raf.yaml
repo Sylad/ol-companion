@@ -1770,13 +1770,15 @@ lots:
   - id: L164
     title: "Page du match à 320 px : l'en-tête du score est rogné (« Lyon 2 – 1 Len… »), sans défilement horizontal (vu en maquette L161 16-10, en-tête hérité de L160, cf. L65 à 320 px) — réduire la police ou passer les noms sur deux lignes"
     public: "Page du match : score et noms entiers sur les petits écrans"
-    status: todo
+    status: dropped
     estimate: 0.25
     visible: true
     screen: component
     created: 2026-10-16
     notes:
       - { date: 2026-10-18, text: "18-10 revue UX L9 : à 390 aussi, colonnes de l'en-tête déséquilibrées (Anderlecht 130 px, Lyon 60 px) — grille minmax(0,1fr) auto minmax(0,1fr) et minutes insécables comme L167 R13" }
+      - { date: 2026-10-19, text: "abandonné : doublon de L65 (même défaut : en-tête du score rogné à 320 px), constaté par la QA L190 le 19-10" }
+    finished: 2026-10-19
   - id: L165
     title: "QA — docs/qa/expectations.md, /match/$gameId : conditionner « Classement en direct » aux matchs de Ligue 1 (absent sur un match de coupe depuis L158, QA L161 16-10 : Lyon – Crystal Palace, standings null) et ajouter les attentes du bloc Faits borné (L161 : compte « N faits », liste 5 × 44 px, repère « ↑ N faits plus anciens » / « Début du match » aria-disabled, Momentum sous le pli à 1440 × 900 et 390 × 844, jamais de bouton fléché ni de vert) — brouillon du qa-reviewer dans la note"
     status: done
