@@ -2241,10 +2241,11 @@ lots:
     started: 2026-10-21
   - id: L203
     title: "Notifications : après un refus de la permission (off → denied), le bouton focalisé disparaît — focus perdu et consigne non annoncée de façon fiable ; garder une région role=status montée ou rendre le focus au bloc, test de la transition (revue L201)"
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     created: 2026-10-21
+    started: 2026-10-21
   - id: L204
     title: "À propos : section « Notifications match » remontée juste sous l'en-tête de la page (aujourd'hui à 3 435 px sur 4 597 à 390 px) — décision Sylvain 21-10, revue UX L11"
     status: todo
