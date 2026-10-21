@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-21 18:23",
+  "generated": "2026-10-21 18:43",
   "entries": [
+    {
+      "slug": "2026-10-21-en-tetes-de-page-h1-olympique-lyonnais-identique-sur-7-pages",
+      "title": "Chaque page porte son nom comme titre, et Joueurs affiche le sien",
+      "date": "2026-10-21",
+      "lots": [
+        "L206"
+      ],
+      "captures": [
+        "captures/joueurs-titre-1440.png",
+        "captures/joueurs-titre-390.png"
+      ],
+      "alts": [
+        "Page Joueurs à 1440 px : le titre « Joueurs » est visible sous le bandeau Olympique Lyonnais",
+        "Page Joueurs à 390 px : le titre « Joueurs » est visible sous le bandeau Olympique Lyonnais"
+      ],
+      "html": "<p>Avec un lecteur d'écran, chaque page s'annonce désormais par son nom (Dashboard, Calendrier, Classement, Joueurs, Actu, Coupes, Carte Ligue 1) au lieu d'« Olympique Lyonnais » partout. La page Joueurs affiche en plus son titre à l'écran. Le bandeau « Olympique Lyonnais » en haut des pages ne change pas.</p>"
+    },
     {
       "slug": "2026-10-21-barre-laterale-coupee-sous-882-px-de-hauteur-sans-defilement",
       "title": "La barre latérale défile quand l'écran est peu haut",

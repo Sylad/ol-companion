@@ -614,6 +614,12 @@
       "started": "2026-10-21"
     },
     {
+      "id": "L206",
+      "title": "Chaque page porte son nom comme titre, et Joueurs affiche le sien",
+      "status": "doing",
+      "started": "2026-10-21"
+    },
+    {
       "id": "L207",
       "title": "Un lien « Aller au contenu » pour passer la barre latérale au clavier",
       "status": "doing",
