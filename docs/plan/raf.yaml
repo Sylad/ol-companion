@@ -2219,41 +2219,55 @@ lots:
     finished: 2026-10-19
   - id: L200
     title: 'À propos : lien ChatGPT et mot « bleu » en --ol-blue-fg (3,2:1 mesuré, WCAG 1.4.3) ; titre « Vibe coded with Claude Code » et « Made with curiosity » balisés lang="en" (WCAG 3.1.2) — revue UX L11'
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-10-21
     started: 2026-10-21
     review: { date: 2026-10-21, verdict: 'conforme : le contraste du bleu est porté de 3,2:1 à 6,59:1 (mesuré sur le rendu, 1440 et 390 px), lang="en" est posé sur le h1 et sur « Made with curiosity » ; 1073 tests verts, aucun constat — orchestré (vague 2026-10-21-ol-about, 1 passe(s) de correction)', commit: 6317f574d2b44321f9bc2ebf6651e084d9cc57a3 }
+    ux: { date: 2026-10-21, verdict: "conforme (lead, capture 1440 de la vague L204 : « bleu » et ChatGPT lisibles, 6,59:1 mesuré par le relecteur ; lang=en posé)" }
+    finished: 2026-10-21
   - id: L201
     title: "Notifications match bloquées ou non supportées : consigne lisible (3,0:1 mesuré, text-fg-dim × opacity-70) et annoncée en bloc d'état role=status au lieu d'un bouton désactivé inatteignable au clavier — revue UX L11"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-21
     started: 2026-10-21
     review: { date: 2026-10-21, verdict: "conforme — orchestré (vague 2026-10-21-ol-about, 1 passe(s) de correction)", commit: f5a95c5029cb9222008a1790cf1dda4a458df081 }
+    ux: { date: 2026-10-21, verdict: "conforme (lead, capture 390 de l'état « bloquées » prise par le lead : consigne lisible, bloc role=status annoncé)" }
+    finished: 2026-10-21
   - id: L202
     title: "Nouveauté L200 : captures dupliquées (liste YAML ré-ouverte sous le commentaire « # captures: », 4 images au lieu de 2 sur /nouveautes) — corriger le .md et régénérer nouveautes.json"
-    status: doing
+    status: dropped
     estimate: 0.1
     created: 2026-10-21
     started: 2026-10-21
+    finished: 2026-10-21
+    notes:
+      - { date: 2026-10-21, text: "abandonné : déjà fait par 6317f57 (passe des mineurs de L200)" }
   - id: L203
     title: "Notifications : après un refus de la permission (off → denied), le bouton focalisé disparaît — focus perdu et consigne non annoncée de façon fiable ; garder une région role=status montée ou rendre le focus au bloc, test de la transition (revue L201)"
-    status: doing
+    status: dropped
     estimate: 0.1
     visible: true
     created: 2026-10-21
     started: 2026-10-21
+    finished: 2026-10-21
+    notes:
+      - { date: 2026-10-21, text: "abandonné : déjà fait par f5a95c5 (passe des mineurs de L201)" }
   - id: L204
     title: "À propos : section « Notifications match » remontée juste sous l'en-tête de la page (aujourd'hui à 3 435 px sur 4 597 à 390 px) — décision Sylvain 21-10, revue UX L11"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-10-21
     started: 2026-10-21
     review: { date: 2026-10-21, verdict: "conforme : 1 note mineure (titre « Notifications match » en h3 directement sous le h1, WCAG 1.3.1) — orchestré (vague 2026-10-21-ol-about2, 1 passe(s) de correction)", commit: 001d21ea48dd059268da23ae3a61c95a1acee1b2 }
+    ux: { date: 2026-10-21, verdict: "conforme (lead, captures 1440/390 : Notifications match juste sous l'en-tête) ; 1 mineur : titre h3 sous le h1 avant le h2 (WCAG 1.3.1, saut de niveau)" }
+    finished: 2026-10-21
+    notes:
+      - { date: 2026-10-21, text: "mineur de revue : « Notifications match » reste un h3 placé avant le seul h2 (ordre h1, h3, h2) — saut de niveau WCAG 1.3.1" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
