@@ -2248,10 +2248,11 @@ lots:
     started: 2026-10-21
   - id: L204
     title: "À propos : section « Notifications match » remontée juste sous l'en-tête de la page (aujourd'hui à 3 435 px sur 4 597 à 390 px) — décision Sylvain 21-10, revue UX L11"
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     created: 2026-10-21
+    started: 2026-10-21
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
