@@ -2219,10 +2219,11 @@ lots:
     finished: 2026-10-19
   - id: L200
     title: 'À propos : lien ChatGPT et mot « bleu » en --ol-blue-fg (3,2:1 mesuré, WCAG 1.4.3) ; titre « Vibe coded with Claude Code » et « Made with curiosity » balisés lang="en" (WCAG 3.1.2) — revue UX L11'
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     created: 2026-10-21
+    started: 2026-10-21
   - id: L201
     title: "Notifications match bloquées ou non supportées : consigne lisible (3,0:1 mesuré, text-fg-dim × opacity-70) et annoncée en bloc d'état role=status au lieu d'un bouton désactivé inatteignable au clavier — revue UX L11"
     status: todo
