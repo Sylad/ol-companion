@@ -2235,9 +2235,10 @@ lots:
     review: { date: 2026-10-21, verdict: "conforme — orchestré (vague 2026-10-21-ol-about, 1 passe(s) de correction)", commit: f5a95c5029cb9222008a1790cf1dda4a458df081 }
   - id: L202
     title: "Nouveauté L200 : captures dupliquées (liste YAML ré-ouverte sous le commentaire « # captures: », 4 images au lieu de 2 sur /nouveautes) — corriger le .md et régénérer nouveautes.json"
-    status: todo
+    status: doing
     estimate: 0.1
     created: 2026-10-21
+    started: 2026-10-21
   - id: L203
     title: "Notifications : après un refus de la permission (off → denied), le bouton focalisé disparaît — focus perdu et consigne non annoncée de façon fiable ; garder une région role=status montée ou rendre le focus au bloc, test de la transition (revue L201)"
     status: todo
