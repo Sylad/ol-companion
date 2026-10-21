@@ -51,9 +51,9 @@ export function StandingsPage() {
         <header className="px-5 py-4 flex items-center justify-between gap-4 border-b border-border">
           <div>
             <div className="eyebrow mb-1">Ligue 1 Uber Eats</div>
-            <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
+            <h1 className="font-display text-xl font-bold text-fg-bright leading-none">
               Classement
-            </h2>
+            </h1>
           </div>
           <div className="flex items-center gap-3 text-xs text-fg-dim">
             {data && (

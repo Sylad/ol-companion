@@ -957,7 +957,7 @@ describe('<FixturesPage /> — bandeau compact au téléphone (L50)', () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     await screen.findAllByRole('article');
-    const header = screen.getByRole('heading', { level: 1 }).closest('header')!;
+    const header = screen.getByText('Olympique Lyonnais').closest('header')!;
     expect(header.dataset.compact).toBe('true');
     expect(header.className).toContain('min-h-10');
     expect(header.querySelector('div')!.className).toMatch(/\bw-6 h-6\b/);

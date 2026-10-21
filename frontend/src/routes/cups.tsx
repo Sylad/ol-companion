@@ -20,6 +20,7 @@ export function CupsPage() {
   return (
     <div className="space-y-8">
       <KnowledgeHeader compact />
+      <h1 className="sr-only">Coupes</h1>
 
       {isLoading && (
         <div className="flex items-center justify-center py-20 text-fg">

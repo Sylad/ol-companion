@@ -9,6 +9,7 @@ function ordinal(pos: number): string {
 }
 
 /**
+ * Bandeau de marque : « Olympique Lyonnais » y est un paragraphe, pas un titre (L206) — le h1 de chaque page est son nom.
  * `compact` : sous 1024 px, une ligne de 40 px (écusson 24 px, titre et rang côte à côte) pour que le contenu
  * de la page remonte dans le premier écran (L50 R9) ; au bureau le bandeau reste le même.
  */
@@ -41,7 +42,7 @@ export function KnowledgeHeader({ compact = false }: { compact?: boolean }) {
         )}
       </div>
       <div className={cn('min-w-0 flex-1', compact && 'flex flex-wrap items-baseline gap-x-2 lg:block')}>
-        <h1
+        <p
           className={cn(
             'font-display font-bold text-fg-bright tracking-tight',
             compact ? 'text-base' : 'text-2xl',
@@ -51,7 +52,7 @@ export function KnowledgeHeader({ compact = false }: { compact?: boolean }) {
           )}
         >
           Olympique Lyonnais
-        </h1>
+        </p>
         <p className={cn('text-sm text-fg-muted lg:mt-1', compact ? 'text-xs lg:text-sm' : 'mt-1')}>{subtitle}</p>
       </div>
     </header>

@@ -13,7 +13,7 @@ describe.each([
 ])('L50 — bandeau au bureau inchangé : %s', (_nom, compact) => {
   it('le titre garde 34 px et leading-tight au bureau', () => {
     render(<KnowledgeHeader compact={compact} />);
-    const classes = screen.getByRole('heading', { level: 1 }).className.split(/\s+/);
+    const classes = screen.getByText('Olympique Lyonnais').className.split(/\s+/);
     expect(classes).toContain('lg:text-[34px]');
     expect(classes).toContain('lg:leading-tight');
   });

@@ -36,6 +36,7 @@ export function NewsPage() {
   return (
     <div className="space-y-8">
       <KnowledgeHeader compact />
+      <h1 className="sr-only">Actu</h1>
 
       {/* ARTICLES */}
       <section className="rounded-md bg-surface border border-border overflow-hidden">

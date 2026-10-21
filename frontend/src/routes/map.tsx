@@ -19,9 +19,9 @@ export function MapPage() {
       <section className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-4 border-b border-border">
           <div className="eyebrow mb-1">Saison {seasonLabel(data)}</div>
-          <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
+          <h1 className="font-display text-xl font-bold text-fg-bright leading-none">
             Carte Ligue 1
-          </h2>
+          </h1>
           <p className="text-xs text-fg-muted mt-2 max-w-prose">
             Les 18 clubs de Ligue 1 sur la carte. Cliquez sur un marqueur pour voir
             la position au classement et le bilan de l'OL face à l'adversaire cette saison.

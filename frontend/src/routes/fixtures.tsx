@@ -125,9 +125,9 @@ export function FixturesPage() {
       <section className="rounded-md bg-surface border border-border overflow-clip">
         <header className="px-5 py-4 border-b border-border">
           <div className="eyebrow mb-1 whitespace-nowrap">Saison {seasonLabel(data)}</div>
-          <h2 data-testid="titre-page" className="font-display text-xl font-bold text-fg-bright leading-none">
+          <h1 data-testid="titre-page" className="font-display text-xl font-bold text-fg-bright leading-none">
             Calendrier
-          </h2>
+          </h1>
         </header>
 
         {data && (

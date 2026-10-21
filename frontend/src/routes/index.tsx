@@ -24,6 +24,7 @@ export function DashboardPage() {
   return (
     <div className="space-y-6 lg:space-y-8">
       <KnowledgeHeader />
+      <h1 className="sr-only">Dashboard</h1>
       <DashboardHero />
       <LiveMatchCard />
       <DashboardStats />

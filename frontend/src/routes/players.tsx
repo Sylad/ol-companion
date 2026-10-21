@@ -47,6 +47,7 @@ export function PlayersPage() {
   return (
     <div className="space-y-8">
       <KnowledgeHeader />
+      <h1 className="font-display text-2xl font-bold text-fg-bright leading-none">Joueurs</h1>
 
       <section className="rounded-md bg-surface border border-border overflow-hidden">
         <header className="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border">
