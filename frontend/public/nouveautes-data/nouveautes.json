@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-21 15:16",
+  "generated": "2026-10-21 15:33",
   "entries": [
+    {
+      "slug": "2026-10-21-a-propos-les-notifications-de-match-tout-en-haut-de-la-page",
+      "title": "À propos : les notifications de match tout en haut de la page",
+      "date": "2026-10-21",
+      "lots": [
+        "L204"
+      ],
+      "captures": [
+        "captures/L204-notifications-sous-entete-1440.png",
+        "captures/L204-notifications-sous-entete-390.png"
+      ],
+      "alts": [
+        "Page À propos à 1440 px : la section « Notifications match » juste sous l'en-tête",
+        "Même page à 390 px : la section « Notifications match » visible dès l'ouverture"
+      ],
+      "html": "<p>Sur la page À propos, la section « Notifications match » vient maintenant juste sous le titre de la page. Sur téléphone, il fallait faire défiler plus de 3 400 px pour l’atteindre ; elle est désormais visible dès l’ouverture, à 279 px du haut.</p>"
+    },
     {
       "slug": "2026-10-21-notifications-match-bloquees-ou-non-supportees-consigne-lisi",
       "title": "Notifications bloquées ou non supportées : la consigne se lit et s’annonce",
