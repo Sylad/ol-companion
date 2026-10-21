@@ -634,6 +634,11 @@
       "status": "done",
       "started": "2026-10-21",
       "finished": "2026-10-21"
+    },
+    {
+      "id": "L209",
+      "title": "Fiche d'un joueur : son nom s'affiche toujours",
+      "status": "todo"
     }
   ]
 }
