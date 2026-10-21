@@ -597,6 +597,12 @@
       "title": "Notifications bloquées ou non supportées : la consigne se lit et s’annonce",
       "status": "doing",
       "started": "2026-10-21"
+    },
+    {
+      "id": "L204",
+      "title": "À propos : les notifications de match tout en haut de la page",
+      "status": "doing",
+      "started": "2026-10-21"
     }
   ]
 }
