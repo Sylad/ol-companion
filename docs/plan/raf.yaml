@@ -2227,10 +2227,11 @@ lots:
     review: { date: 2026-10-21, verdict: 'conforme : le contraste du bleu est porté de 3,2:1 à 6,59:1 (mesuré sur le rendu, 1440 et 390 px), lang="en" est posé sur le h1 et sur « Made with curiosity » ; 1073 tests verts, aucun constat — orchestré (vague 2026-10-21-ol-about, 1 passe(s) de correction)', commit: 6317f574d2b44321f9bc2ebf6651e084d9cc57a3 }
   - id: L201
     title: "Notifications match bloquées ou non supportées : consigne lisible (3,0:1 mesuré, text-fg-dim × opacity-70) et annoncée en bloc d'état role=status au lieu d'un bouton désactivé inatteignable au clavier — revue UX L11"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-21
+    started: 2026-10-21
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
