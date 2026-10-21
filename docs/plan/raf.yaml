@@ -2273,28 +2273,41 @@ lots:
       - { date: 2026-10-21, text: "mineur de revue : « Notifications match » reste un h3 placé avant le seul h2 (ordre h1, h3, h2) — saut de niveau WCAG 1.3.1" }
   - id: L205
     title: "Barre latérale coupée sous 882 px de hauteur, sans défilement : Sofascore, pastille du direct et version hors écran à 1440×768, 4 liens à 1366×640, focus clavier entièrement caché (WCAG 2.4.11) — barre défilable (liserés néon hors du conteneur qui défile) ou resserrée à faible hauteur — revue UX L12"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-21
     started: 2026-10-21
     review: { date: 2026-10-21, verdict: "compliant — orchestré (vague 2026-10-21-ol-gabarit, 0 passe(s) de correction)", commit: a6abcaccfe3b39b6c03433b7afa2948860799f62 }
+    ux: { date: 2026-10-21, verdict: "conforme (lead, capture 1440×768 : barre latérale défilée, pastille du direct et version atteignables)" }
+    finished: 2026-10-21
   - id: L206
     title: "En-têtes de page : h1 « Olympique Lyonnais » identique sur 7 pages, nom de la page en h2 — h1 = nom de la page, bandeau OL inchangé à l'écran (p/div), titre visible sur Joueurs (WCAG 2.4.6 / 1.3.1) — revue UX L12"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-21
     started: 2026-10-21
     review: { date: 2026-10-21, verdict: "conforme : 0 constat. Les 7 pages ont un seul h1 au nom de la page, le bandeau OL est un <p> au même rendu, et le titre Joueurs est visible. Les 1104 tests et tsc passent. — orchestré (vague 2026-10-21-ol-gabarit, 0 passe(s) de correction)", commit: 4df6e6f004d5a0cbe17945a01490394bcd3c981c }
+    ux: { date: 2026-10-21, verdict: "conforme (lead, capture 390 : « Joueurs » titre de la page ; relecteur : un seul h1 au nom de la page sur 7 pages, bandeau OL en p au même rendu)" }
+    finished: 2026-10-21
   - id: L207
     title: "Lien d'évitement « Aller au contenu » visible au focus, premier élément focalisable, vers main tabIndex=-1 : 17 tabulations dans la barre latérale avant le contenu à 1440 px — revue UX L12"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-10-21
     started: 2026-10-21
     review: { date: 2026-10-21, verdict: "compliant — 0 finding (lien d'évitement conforme WCAG 2.4.1, vérifié en navigateur à 1440 et 390 px) — orchestré (vague 2026-10-21-ol-gabarit, 0 passe(s) de correction)", commit: 41e1c4e3399cd351112c69d2cf4bc0c1bd077df1 }
+    ux: { date: 2026-10-21, verdict: "conforme (lead, capture 1440 : « Aller au contenu » visible au focus, premier arrêt)" }
+    finished: 2026-10-21
+  - id: L208
+    title: "Pastille « Live connecté » : hors match, point neutre sans animation et libellé clair de l'état du flux (« Temps réel · connecté / reconnexion… / en attente », accents dans le title) ; rouge et animation ping inchangés pendant un match en cours ; role=status pour annoncer la reconnexion (WCAG 4.1.3) — décision Sylvain 21-10, revue UX L12"
+    public: "Pastille du direct : rouge seulement pendant un match"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-21
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
