@@ -97,6 +97,19 @@ export function AboutPage() {
         </p>
       </header>
 
+      <section className="rounded-md border border-border bg-surface p-5">
+        <h3 className="font-display text-lg font-semibold text-fg-bright mb-1">Notifications match</h3>
+        <p className="text-sm text-fg-muted mb-4">
+          Reçois une notification système (Android, desktop, ou PWA installée) quand Lyon marque,
+          prend un rouge, démarre ou termine un match. Opt-in, désactivable en un clic.
+        </p>
+        <NotificationsToggle />
+        <p className="text-[11px] text-fg-dim mt-3 leading-snug">
+          Aucun serveur push externe — c'est ton onglet OL Companion (ou la PWA installée) qui
+          déclenche la notif locale via le service worker, à partir du flux SSE en temps réel.
+        </p>
+      </section>
+
       <section className="relative overflow-hidden rounded-md border border-border bg-surface p-6">
         <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-ol-red/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -left-12 w-64 h-64 rounded-full bg-ol-blue/15 blur-3xl pointer-events-none" />
@@ -219,19 +232,6 @@ export function AboutPage() {
             </a>
           ))}
         </div>
-      </section>
-
-      <section className="rounded-md border border-border bg-surface p-5">
-        <h3 className="font-display text-lg font-semibold text-fg-bright mb-1">Notifications match</h3>
-        <p className="text-sm text-fg-muted mb-4">
-          Reçois une notification système (Android, desktop, ou PWA installée) quand Lyon marque,
-          prend un rouge, démarre ou termine un match. Opt-in, désactivable en un clic.
-        </p>
-        <NotificationsToggle />
-        <p className="text-[11px] text-fg-dim mt-3 leading-snug">
-          Aucun serveur push externe — c'est ton onglet OL Companion (ou la PWA installée) qui
-          déclenche la notif locale via le service worker, à partir du flux SSE en temps réel.
-        </p>
       </section>
 
       <section className="rounded-md border border-border bg-surface p-6 mb-6">

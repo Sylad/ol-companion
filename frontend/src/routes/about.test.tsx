@@ -45,3 +45,23 @@ describe('À propos — L200', () => {
     expect(en.parentElement?.getAttribute('lang')).toBeNull();
   });
 });
+
+// L204 — revue UX L11 : « Notifications match » juste sous l'en-tête (elle était à 3 435 px sur 4 597 à 390 px).
+describe('À propos — L204', () => {
+  it('R1 — la section « Notifications match » est la première section, juste après l’en-tête', () => {
+    const { container } = render(<AboutPage />);
+    const racine = container.firstElementChild!;
+    const enfants = Array.from(racine.children);
+    expect(enfants[0].tagName).toBe('HEADER');
+    expect(enfants[1].tagName).toBe('SECTION');
+    expect(enfants[1].querySelector('h3')?.textContent).toBe('Notifications match');
+  });
+
+  it('R2 — la section garde ses deux textes d’explication', () => {
+    render(<AboutPage />);
+    const titre = screen.getByRole('heading', { name: 'Notifications match' });
+    const section = titre.closest('section')!;
+    expect(section.textContent).toContain('Opt-in, désactivable en un clic');
+    expect(section.textContent).toContain('Aucun serveur push externe');
+  });
+});
