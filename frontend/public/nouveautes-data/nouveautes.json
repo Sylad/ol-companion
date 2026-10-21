@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-21 18:08",
+  "generated": "2026-10-21 18:23",
   "entries": [
+    {
+      "slug": "2026-10-21-barre-laterale-coupee-sous-882-px-de-hauteur-sans-defilement",
+      "title": "La barre latérale défile quand l'écran est peu haut",
+      "date": "2026-10-21",
+      "lots": [
+        "L205"
+      ],
+      "captures": [
+        "captures/barre-laterale-1440.png",
+        "captures/barre-laterale-390.png"
+      ],
+      "alts": [
+        "Page d'accueil à 1440×768 px, barre latérale défilée jusqu'en bas : Sofascore, l'état du direct et la version sont visibles",
+        "Page d'accueil à 390 px : sur téléphone la barre latérale est remplacée par la navigation du bas, inchangée"
+      ],
+      "html": "<p>Sur un écran de moins de 882 px de hauteur, la barre latérale n'est plus coupée : elle défile, et on atteint ainsi tous les liens, Sofascore, l'état du direct et la version. Au clavier, le lien qui prend le focus reste visible. Les liserés rouge et bleu du bord ne bougent pas pendant le défilement. Sur téléphone, rien ne change.</p>"
+    },
     {
       "slug": "2026-10-21-un-lien-aller-au-contenu-pour-passer-la-barre-laterale-au-cl",
       "title": "Un lien « Aller au contenu » pour passer la barre latérale au clavier",

@@ -608,6 +608,12 @@
       "finished": "2026-10-21"
     },
     {
+      "id": "L205",
+      "title": "La barre latérale défile quand l'écran est peu haut",
+      "status": "doing",
+      "started": "2026-10-21"
+    },
+    {
       "id": "L207",
       "title": "Un lien « Aller au contenu » pour passer la barre latérale au clavier",
       "status": "doing",
