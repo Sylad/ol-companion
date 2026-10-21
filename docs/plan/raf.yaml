@@ -2281,10 +2281,11 @@ lots:
     review: { date: 2026-10-21, verdict: "compliant — orchestré (vague 2026-10-21-ol-gabarit, 0 passe(s) de correction)", commit: a6abcaccfe3b39b6c03433b7afa2948860799f62 }
   - id: L206
     title: "En-têtes de page : h1 « Olympique Lyonnais » identique sur 7 pages, nom de la page en h2 — h1 = nom de la page, bandeau OL inchangé à l'écran (p/div), titre visible sur Joueurs (WCAG 2.4.6 / 1.3.1) — revue UX L12"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-21
+    started: 2026-10-21
   - id: L207
     title: "Lien d'évitement « Aller au contenu » visible au focus, premier élément focalisable, vers main tabIndex=-1 : 17 tabulations dans la barre latérale avant le contenu à 1440 px — revue UX L12"
     status: doing
