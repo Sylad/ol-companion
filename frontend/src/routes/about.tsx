@@ -88,7 +88,7 @@ export function AboutPage() {
         <p className="text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
           À propos · OL Companion
         </p>
-        <h1 className="font-display text-3xl lg:text-4xl font-bold text-fg-bright">
+        <h1 lang="en" className="font-display text-3xl lg:text-4xl font-bold text-fg-bright">
           Vibe coded with Claude Code
         </h1>
         <p className="text-fg-muted max-w-2xl">
@@ -116,7 +116,7 @@ export function AboutPage() {
               Développeur Java côté serveur depuis 21 ans, mais novice sur React et le front
               moderne. J'avais envie d'un compagnon numérique pour suivre l'OL — pas un site
               Web encombré de pubs, ni une app générique. Quelque chose de fait main, aux
-              couleurs <span className="text-ol-red-bright font-semibold">rouge</span> et <span className="text-ol-blue-bright font-semibold">bleu</span> du club.
+              couleurs <span className="text-ol-red-bright font-semibold">rouge</span> et <span className="text-ol-blue-fg font-semibold">bleu</span> du club.
             </p>
             <p className="text-fg leading-relaxed mb-3">
               Toute l'appli (frontend React, backend NestJS, infra Docker) a été co-construite avec
@@ -140,7 +140,7 @@ export function AboutPage() {
                 href="https://chat.openai.com/"
                 target="_blank"
                 rel="noopener"
-                className="text-ol-blue-bright hover:underline inline-flex items-center gap-1 font-medium"
+                className="text-ol-blue-fg hover:underline inline-flex items-center gap-1 font-medium"
               >
                 ChatGPT
                 <ExternalLink className="h-3 w-3" />
@@ -267,7 +267,7 @@ export function AboutPage() {
           Tu seras surpris de ce qu'on peut construire en quelques sessions.
         </p>
         <div className="text-[10px] uppercase tracking-[0.2em] text-fg-dim mt-4">
-          Allez l'OL · Made with curiosity · v2.0
+          Allez l'OL · <span lang="en">Made with curiosity</span> · v2.0
         </div>
       </section>
     </div>

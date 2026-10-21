@@ -585,6 +585,12 @@
       "status": "done",
       "started": "2026-10-19",
       "finished": "2026-10-19"
+    },
+    {
+      "id": "L200",
+      "title": "Page À propos : textes bleus plus lisibles et passages en anglais bien lus",
+      "status": "doing",
+      "started": "2026-10-21"
     }
   ]
 }

@@ -1,7 +1,28 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-19 19:20",
+  "generated": "2026-10-21 15:04",
   "entries": [
+    {
+      "slug": "2026-10-21-a-propos-lien-chatgpt-et-mot-bleu-en-ol-blue-fg-3-2-1-mesure",
+      "title": "Page À propos : textes bleus plus lisibles et passages en anglais bien lus",
+      "date": "2026-10-21",
+      "lots": [
+        "L200"
+      ],
+      "captures": [
+        "captures/L200-a-propos-1440.png",
+        "captures/L200-a-propos-390.png",
+        "captures/L200-a-propos-1440.png",
+        "captures/L200-a-propos-390.png"
+      ],
+      "alts": [
+        "Page À propos à 1440 px : le lien ChatGPT et le mot bleu en bleu clair",
+        "Page À propos à 390 px",
+        "Page À propos à 1440 px : le lien ChatGPT et le mot bleu en bleu clair",
+        "Page À propos à 390 px"
+      ],
+      "html": "<p>Sur la page À propos, le lien « ChatGPT » et le mot « bleu » prennent un bleu plus clair, lisible sur le fond sombre de la carte (contraste de 3,2:1 porté à plus de 4,5:1). Le titre « Vibe coded with Claude Code » et la mention « Made with curiosity » sont déclarés en anglais : les lecteurs d'écran les prononcent avec la bonne langue.</p>"
+    },
     {
       "slug": "2026-10-19-carte-de-la-ligue-1-la-fiche-reste-entiere-quand-on-tourne-l",
       "title": "Carte de la Ligue 1 : la fiche reste entière quand on tourne le téléphone",
