@@ -2273,10 +2273,11 @@ lots:
       - { date: 2026-10-21, text: "mineur de revue : « Notifications match » reste un h3 placé avant le seul h2 (ordre h1, h3, h2) — saut de niveau WCAG 1.3.1" }
   - id: L205
     title: "Barre latérale coupée sous 882 px de hauteur, sans défilement : Sofascore, pastille du direct et version hors écran à 1440×768, 4 liens à 1366×640, focus clavier entièrement caché (WCAG 2.4.11) — barre défilable (liserés néon hors du conteneur qui défile) ou resserrée à faible hauteur — revue UX L12"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-21
+    started: 2026-10-21
   - id: L206
     title: "En-têtes de page : h1 « Olympique Lyonnais » identique sur 7 pages, nom de la page en h2 — h1 = nom de la page, bandeau OL inchangé à l'écran (p/div), titre visible sur Joueurs (WCAG 2.4.6 / 1.3.1) — revue UX L12"
     status: todo
