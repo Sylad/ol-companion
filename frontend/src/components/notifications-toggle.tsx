@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bell, BellOff, BellRing } from 'lucide-react';
 import {
   notificationPermission,
@@ -32,11 +32,22 @@ function deriveStatus(): Status {
  */
 export function NotificationsToggle({ className }: { className?: string }) {
   const [status, setStatus] = useState<Status>(() => 'off');
+  const blocRef = useRef<HTMLDivElement>(null);
+  // Vrai seulement quand le refus vient d'un clic : le bouton focalisé quitte alors
+  // le DOM, le focus passe au bloc d'état (WCAG 2.4.3) qui le lit à la prise de focus.
+  const focusAuBloc = useRef(false);
 
   // Initial status read happens in an effect to avoid SSR / hydration drift.
   useEffect(() => {
     setStatus(deriveStatus());
   }, []);
+
+  useEffect(() => {
+    if (focusAuBloc.current && status === 'denied') {
+      focusAuBloc.current = false;
+      blocRef.current?.focus();
+    }
+  }, [status]);
 
   const onClick = async () => {
     if (status === 'unsupported' || status === 'denied') return;
@@ -47,6 +58,7 @@ export function NotificationsToggle({ className }: { className?: string }) {
       await registerServiceWorker();
       const perm = await requestNotificationPermission();
       if (perm !== 'granted') {
+        focusAuBloc.current = perm === 'denied';
         setStatus(perm === 'denied' ? 'denied' : 'off');
         return;
       }
@@ -98,8 +110,11 @@ export function NotificationsToggle({ className }: { className?: string }) {
   if (!interactive) {
     return (
       <div
+        ref={blocRef}
         role="status"
+        tabIndex={-1}
         className={cn(
+          'outline-none focus-visible:ring-2 focus-visible:ring-ol-blue-bright',
           'w-full flex items-start gap-3 rounded-md border border-border bg-surface p-4 text-left',
           className,
         )}

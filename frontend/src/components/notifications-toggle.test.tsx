@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
 
 const perm = vi.hoisted(() => ({ value: 'default' as string }));
 vi.mock('@/lib/pwa', () => ({
@@ -9,6 +9,7 @@ vi.mock('@/lib/pwa', () => ({
   requestNotificationPermission: vi.fn(),
 }));
 
+import { requestNotificationPermission } from '@/lib/pwa';
 import { NotificationsToggle } from './notifications-toggle';
 
 beforeEach(() => {
@@ -49,5 +50,24 @@ describe('NotificationsToggle (L201)', () => {
     const bouton = await screen.findByRole('button', { name: /Activer les notifications/ });
     expect(bouton.getAttribute('aria-pressed')).toBe('false');
     expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('R4 — refus du navigateur après un clic : le focus passe au bloc d’état, il ne tombe pas sur <body>', async () => {
+    perm.value = 'default';
+    vi.mocked(requestNotificationPermission).mockResolvedValue('denied');
+    render(<NotificationsToggle />);
+    const bouton = await screen.findByRole('button', { name: /Activer les notifications/ });
+    bouton.focus();
+    fireEvent.click(bouton);
+    const bloc = await screen.findByRole('status');
+    expect(bloc.textContent).toContain('Notifications bloquées');
+    await waitFor(() => expect(document.activeElement).toBe(bloc));
+  });
+
+  it('R4 — un bloc monté déjà bloqué ne vole pas le focus', async () => {
+    perm.value = 'denied';
+    render(<NotificationsToggle />);
+    const bloc = await screen.findByRole('status');
+    expect(document.activeElement).not.toBe(bloc);
   });
 });
