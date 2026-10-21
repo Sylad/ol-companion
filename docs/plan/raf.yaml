@@ -2286,6 +2286,7 @@ lots:
     visible: true
     created: 2026-10-21
     started: 2026-10-21
+    review: { date: 2026-10-21, verdict: "conforme : 0 constat. Les 7 pages ont un seul h1 au nom de la page, le bandeau OL est un <p> au même rendu, et le titre Joueurs est visible. Les 1104 tests et tsc passent. — orchestré (vague 2026-10-21-ol-gabarit, 0 passe(s) de correction)", commit: 4df6e6f004d5a0cbe17945a01490394bcd3c981c }
   - id: L207
     title: "Lien d'évitement « Aller au contenu » visible au focus, premier élément focalisable, vers main tabIndex=-1 : 17 tabulations dans la barre latérale avant le contenu à 1440 px — revue UX L12"
     status: doing
