@@ -591,6 +591,12 @@
       "title": "Page À propos : textes bleus plus lisibles et passages en anglais bien lus",
       "status": "doing",
       "started": "2026-10-21"
+    },
+    {
+      "id": "L201",
+      "title": "Notifications bloquées ou non supportées : la consigne se lit et s’annonce",
+      "status": "doing",
+      "started": "2026-10-21"
     }
   ]
 }
