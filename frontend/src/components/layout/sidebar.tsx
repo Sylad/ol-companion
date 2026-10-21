@@ -57,6 +57,8 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
         }}
       />
 
+      {/* L205 : tout le contenu défile dans ce conteneur (WCAG 2.4.11) ; les liserés néon, au-dessus, restent attachés à la barre. */}
+      <div data-testid="barre-laterale-defilante" className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
       <div className="px-5 pt-6 pb-7">
         <Link to="/" className="flex items-center gap-3 group">
           <img
@@ -119,6 +121,7 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
       <div className="space-y-2 px-6 py-3 border-t border-border">
         <LiveConnectionBadge status={eventStreamStatus} />
         <div className="text-[10px] uppercase tracking-[0.14em] text-fg-dim">v2.0</div>
+      </div>
       </div>
     </aside>
   );
