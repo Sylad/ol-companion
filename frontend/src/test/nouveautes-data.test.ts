@@ -75,6 +75,12 @@ describe('données des Nouveautés (public/nouveautes-data)', () => {
     }
   });
 
+  it('aucune capture déclarée deux fois dans une entrée (L200 : liste YAML dupliquée)', () => {
+    for (const e of readJson().entries) {
+      expect(e.captures, `${e.slug} : capture en double`).toEqual([...new Set(e.captures)]);
+    }
+  });
+
   it("pas de page index.html de cadence sous /nouveautes-data/ (doublon non habillé de /nouveautes)", () => {
     expect(existsSync(join(DATA, 'index.html'))).toBe(false);
   });
