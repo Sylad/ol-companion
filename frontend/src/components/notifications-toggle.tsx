@@ -92,18 +92,36 @@ export function NotificationsToggle({ className }: { className?: string }) {
   const { title, sub, icon: Icon } = labels[status];
   const interactive = status === 'on' || status === 'off';
 
+  // L201 : bloquées / non supportées = une consigne, pas une commande. Un bouton
+  // désactivé n'est pas atteignable au clavier et sa consigne n'était pas annoncée ;
+  // le texte, lui, était estompé (text-fg-dim × opacity-70 : 3,0:1). Bloc d'état lisible.
+  if (!interactive) {
+    return (
+      <div
+        role="status"
+        className={cn(
+          'w-full flex items-start gap-3 rounded-md border border-border bg-surface p-4 text-left',
+          className,
+        )}
+      >
+        <Icon className="h-5 w-5 mt-0.5 flex-shrink-0 text-fg-muted" strokeWidth={1.75} aria-hidden="true" />
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold text-fg-bright leading-tight">{title}</div>
+          <div className="text-xs text-fg-muted mt-0.5 leading-snug">{sub}</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={!interactive}
       className={cn(
         'w-full flex items-start gap-3 rounded-md border p-4 text-left transition-colors',
         status === 'on'
           ? 'border-ol-blue/40 bg-ol-blue/5 hover:bg-ol-blue/10'
-          : status === 'off'
-          ? 'border-border bg-surface hover:border-border-strong hover:bg-surface-2/40'
-          : 'border-border bg-surface opacity-70 cursor-not-allowed',
+          : 'border-border bg-surface hover:border-border-strong hover:bg-surface-2/40',
         className,
       )}
       aria-pressed={status === 'on'}
@@ -119,16 +137,14 @@ export function NotificationsToggle({ className }: { className?: string }) {
         <div className="text-sm font-semibold text-fg-bright leading-tight">{title}</div>
         <div className="text-xs text-fg-dim mt-0.5 leading-snug">{sub}</div>
       </div>
-      {interactive && (
-        <div
-          className={cn(
-            'mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider',
-            status === 'on' ? 'bg-ol-blue text-white' : 'bg-surface-2 text-fg-muted border border-border',
-          )}
-        >
-          {status === 'on' ? 'On' : 'Off'}
-        </div>
-      )}
+      <div
+        className={cn(
+          'mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider',
+          status === 'on' ? 'bg-ol-blue text-white' : 'bg-surface-2 text-fg-muted border border-border',
+        )}
+      >
+        {status === 'on' ? 'On' : 'Off'}
+      </div>
     </button>
   );
 }
