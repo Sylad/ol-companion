@@ -15,6 +15,7 @@ vi.mock('@/hooks/use-match-notifications', () => ({ useMatchNotifications: () =>
 vi.mock('@/components/page-backdrop', () => ({ PageBackdrop: () => null }));
 vi.mock('@/components/demo-banner', () => ({ DemoBanner: () => null }));
 vi.mock('./sidebar', () => ({ Sidebar: () => null, NAV_ITEMS: [], DIVIDER: 'divider' }));
+vi.mock('@/hooks/use-live-match', () => ({ useCurrentLiveMatch: () => ({ data: null }) }));
 vi.mock('./bottom-nav', () => ({ BottomNav: () => null }));
 
 afterEach(cleanup);
@@ -40,7 +41,7 @@ async function renderShell(path = '/') {
       <RouterProvider router={router} />
     </QueryClientProvider>,
   );
-  return screen.findByText('Live reconnecte');
+  return screen.findByText('Temps réel · reconnexion…');
 }
 
 describe('AppShell — pastille du direct sur téléphone (L30)', () => {
