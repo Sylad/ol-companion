@@ -142,9 +142,12 @@ lots:
     finished: 2026-10-19
   - id: L11
     title: Revue UX — À propos
-    status: todo
+    status: done
     estimate: 0.25
     created: 2026-09-28
+    started: 2026-10-21
+    ux: { date: 2026-10-21, verdict: "non conforme (lead, captures 1440/390/320 regardées) : 2 bloquants → L200 (contraste du bleu 3,2:1, lang=en), 2 majeurs → L201 (état Notifications bloquées illisible) et question à Sylvain (section Notifications enfouie à 3 435/4 597 px à 390). Mineurs en note : H3 sous H2, emoji dans le nom des liens, logo alt redondant, nouvel onglet non annoncé, badges On/Off en anglais, rouge/bleu ressemblant à des liens, cartes site/dépôt indistinctes, sources incomplètes, « : » en début de ligne à 390, p-5/p-6, intro notifications trop large, textes 10 px" }
+    finished: 2026-10-21
   - id: L12
     title: "Revue UX — Gabarit commun : navigation, en-tête, pied, rendu téléphone"
     status: todo
@@ -2214,6 +2217,18 @@ lots:
     notes:
       - { date: 2026-10-19, text: "Mineurs : la ligne never de /map cite « Pas encore joué » entre parenthèses alors que la légende l'affiche toujours (faux positif possible d'un agent QA qui compare le texte brut) ; /api/standings (useStandings) non listé sous ## /map." }
     finished: 2026-10-19
+  - id: L200
+    title: 'À propos : lien ChatGPT et mot « bleu » en --ol-blue-fg (3,2:1 mesuré, WCAG 1.4.3) ; titre « Vibe coded with Claude Code » et « Made with curiosity » balisés lang="en" (WCAG 3.1.2) — revue UX L11'
+    status: todo
+    estimate: 0.1
+    visible: true
+    created: 2026-10-21
+  - id: L201
+    title: "Notifications match bloquées ou non supportées : consigne lisible (3,0:1 mesuré, text-fg-dim × opacity-70) et annoncée en bloc d'état role=status au lieu d'un bouton désactivé inatteignable au clavier — revue UX L11"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-21
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
