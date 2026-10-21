@@ -9,7 +9,7 @@ vi.mock('./sidebar-links', () => ({ SidebarLinks: () => <a href="https://www.sof
 afterEach(cleanup);
 
 async function renderSidebar() {
-  const root = createRootRoute({ component: () => <Sidebar eventStreamStatus="open" /> });
+  const root = createRootRoute({ component: () => <Sidebar eventStreamStatus="connected" /> });
   const router = createRouter({ routeTree: root, history: createMemoryHistory({ initialEntries: ['/'] }) });
   render(<RouterProvider router={router} />);
   await screen.findByText('Pastille');
