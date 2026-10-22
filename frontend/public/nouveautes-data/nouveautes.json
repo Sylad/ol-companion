@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-22 09:09",
+  "generated": "2026-10-22 09:38",
   "entries": [
+    {
+      "slug": "2026-10-22-fiche-d-un-joueur-son-nom-tous-les-jours",
+      "title": "Fiche d'un joueur : son nom tous les jours",
+      "date": "2026-10-22",
+      "lots": [
+        "L210"
+      ],
+      "captures": [
+        "captures/2026-10-22-fiche-joueur-nom-1440.png",
+        "captures/2026-10-22-fiche-joueur-nom-390.png"
+      ],
+      "alts": [
+        "Fiche de Justin Bengui sur grand écran : « Saison en cours », son nom, « Gardien · #25 » et le message « n’a pas encore joué cette saison »",
+        "La même fiche sur téléphone"
+      ],
+      "html": "<p>La fiche d'un joueur qui n'a pas encore joué cette saison affiche désormais son nom, son poste et son numéro tous les jours, y compris les jours sans match et pour les joueurs blessés ou absents du groupe. Jusqu'ici, elle ne les affichait que dans les 24 heures avant un match de l'OL, et montrait « Joueur » le reste du temps.</p>"
+    },
     {
       "slug": "2026-10-22-fiche-d-un-joueur-son-nom-s-affiche-toujours",
       "title": "Fiche d'un joueur sans minute : son nom, quand l'OL le connaît",
