@@ -231,6 +231,7 @@ lots:
     review: { date: 2026-10-22, verdict: "compliant — 1 commit (779185f) relu ; les 4 choix d'interprétation de l'auteur tiennent ; 1 mineur (2 messages ESLint nouveaux, ligne 60 du guard) — orchestré (vague 2026-10-22-ol-l19, 0 passe(s) de correction)", commit: 779185fb0e9194d4bcc85c668ff8f4ee019880c5 }
     notes:
       - { date: 2026-10-22, text: "mineur de revue : client-ip-throttler.guard.ts:60, Array(...).fill('0') typé any[] → 1 erreur + 1 avertissement ESLint no-unsafe-* (base de lint déjà rouge, prettier)" }
+      - { date: 2026-10-22, text: "QA prod 22-10 verte : 14/14 pages à 1440 et 390 px, aucun 429, 18 écussons du classement chargés (backend sha-e022d5f)" }
     finished: 2026-10-22
   - id: L20
     title: Retirer les traces du déploiement NAS (docker-compose, scripts, doc, page À propos) — prod = dark-blue (k3s) ou Cloudflare Pages ; NAS = médias et sauvegardes
