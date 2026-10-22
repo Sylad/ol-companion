@@ -228,6 +228,7 @@ lots:
     estimate: 0.25
     created: 2026-09-29
     started: 2026-10-22
+    review: { date: 2026-10-22, verdict: "compliant — 1 commit (779185f) relu ; les 4 choix d'interprétation de l'auteur tiennent ; 1 mineur (2 messages ESLint nouveaux, ligne 60 du guard) — orchestré (vague 2026-10-22-ol-l19, 0 passe(s) de correction)", commit: 779185fb0e9194d4bcc85c668ff8f4ee019880c5 }
   - id: L20
     title: Retirer les traces du déploiement NAS (docker-compose, scripts, doc, page À propos) — prod = dark-blue (k3s) ou Cloudflare Pages ; NAS = médias et sauvegardes
     status: done
