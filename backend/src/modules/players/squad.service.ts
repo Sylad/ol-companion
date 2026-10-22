@@ -1,5 +1,4 @@
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
-import { z } from 'zod';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { OL_365SCORES_ID } from '../../config/constants';
 import { POSITION_BY_ID } from '../../config/scores365-positions';
@@ -52,9 +51,9 @@ export class SquadService {
       );
       if (!res.ok) throw new Error(`365scores squads → HTTP ${res.status}`);
       const parsed = parseExternal(SquadsResponseSchema, await res.json(), '365scores OL squads');
-      // Un 200 sans « squads » (rendu dégradé) n'est pas un effectif vide.
-      if (!parsed.squads) throw new Error('365scores OL : effectif en 200 sans « squads »');
-      const athletes = (parsed.squads.find((s) => s.competitorId === OL_365SCORES_ID) ?? parsed.squads[0])?.athletes ?? [];
+      // Un 200 sans « squads », sans l'entrée de l'OL ou sans joueur est un rendu dégradé, pas un effectif vide.
+      const athletes = parsed.squads?.find((s) => s.competitorId === OL_365SCORES_ID)?.athletes;
+      if (!athletes?.length) throw new Error('365scores OL : effectif en 200 sans l\'entrée de l\'OL ni joueur');
       const data = athletes.flatMap((a) => {
         const position = POSITION_BY_ID[a.position?.id ?? -1];
         return position ? [{ athleteId: a.id, name: a.name, position, jerseyNumber: a.jerseyNum !== undefined && a.jerseyNum > 0 ? a.jerseyNum : null }] : [];

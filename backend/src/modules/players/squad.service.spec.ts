@@ -54,6 +54,29 @@ describe('SquadService — effectif de l\'OL (L210)', () => {
     await expect(service.getSquad()).rejects.toBeInstanceOf(ServiceUnavailableException);
   });
 
+  it.each([
+    ['squads: []', { squads: [] }],
+    ['sans l\'entrée 465 (un autre club)', { squads: [{ competitorId: 999, athletes: [athlete(5, 'Autre Club', 1, 1)] }] }],
+    ['l\'entrée 465 sans joueur', { squads: [{ competitorId: 465, athletes: [] }] }],
+  ])('R4 — un 200 avec %s est un rendu dégradé : 503 sans copie, journalisé, jamais un effectif vide', async (_nom, body) => {
+    const warn = jest.spyOn(service['logger'], 'warn').mockImplementation();
+    fetcher.mockImplementation(() => ok(body));
+    await expect(service.getSquad()).rejects.toBeInstanceOf(ServiceUnavailableException);
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
+
+  it('R4 — un rendu dégradé après une bonne lecture garde la dernière bonne copie et journalise', async () => {
+    const warn = jest.spyOn(service['logger'], 'warn').mockImplementation();
+    const t = jest.spyOn(Date, 'now');
+    t.mockReturnValue(1_000_000);
+    await service.getSquad();
+    t.mockReturnValue(1_000_000 + 2 * 60 * 60 * 1000);
+    fetcher.mockImplementation(() => ok({ squads: [] }));
+    expect(await service.getSquad()).toHaveLength(5);
+    expect(warn).toHaveBeenCalledTimes(1);
+    t.mockRestore();
+  });
+
   it('R3 — un échec après une lecture réussie rend la dernière copie connue', async () => {
     const t = jest.spyOn(Date, 'now');
     t.mockReturnValue(1_000_000);
