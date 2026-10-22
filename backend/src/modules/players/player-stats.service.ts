@@ -50,6 +50,8 @@ export class PlayerStatsService implements OnModuleInit {
   private readonly logger = new Logger(PlayerStatsService.name);
   private cache = new Map<number, PlayerSeasonStats>();
   private cacheBuiltAt = 0;
+  /** Matchs lus pour bâtir la copie en mémoire (0 après une relecture du disque) : une panne partielle ne doit pas la remplacer par moins. */
+  private cacheMatchCount = 0;
   private busSub: Subscription | null = null;
 
   /** Test seam — overridden via spec, defaults to global fetch. */
@@ -143,15 +145,22 @@ export class PlayerStatsService implements OnModuleInit {
       }
     }
 
-    // Aucun des matchs terminés n'a pu être lu : panne de 365scores, pas une saison sans stat. On garde la dernière copie.
-    if (finished.length > 0 && succeeded === 0 && this.cache.size > 0) {
-      this.keepLastCopy(`aucun des ${finished.length} matchs lisible`);
+    // Panne de 365scores, pas une saison sans stat : aucun match lu, ou moins que pour la copie actuelle (panne partielle). On la garde.
+    if (
+      finished.length > 0 &&
+      this.cache.size > 0 &&
+      succeeded < Math.max(1, this.cacheMatchCount)
+    ) {
+      this.keepLastCopy(
+        `${succeeded}/${finished.length} matchs lisibles, la copie en comptait ${this.cacheMatchCount}`,
+      );
       return;
     }
 
     const stats = finalize(acc);
     this.cache = new Map(stats.map((s) => [s.athleteId, s]));
     this.cacheBuiltAt = Date.now();
+    this.cacheMatchCount = succeeded;
     this.writeCacheToDisk();
     this.logger.log(
       `player-stats rebuilt: ${stats.length} OL players from ${succeeded}/${finished.length} matches`,

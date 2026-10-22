@@ -217,6 +217,28 @@ describe('PlayerStatsService', () => {
       });
     });
 
+    it('R7 — panne partielle : moins de matchs lus que lors de la copie gardée, la copie reste servie et sur disque', async () => {
+      await withCwd(async (dir) => {
+        const { svc, seasonMatches } = buildService();
+        const [un] = await seasonMatches.getMatches();
+        seasonMatches.getMatches.mockResolvedValue([
+          un,
+          { ...un, id: 4463861 },
+        ]);
+        const all = await svc.getAll();
+        const file = path.join(dir, 'data', 'player-stats-cache.json');
+        const before = fs.readFileSync(file, 'utf-8');
+        jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 2 * HOUR);
+        svc.fetcher = jest.fn(async (url: any) =>
+          String(url).includes('gameId=4463861')
+            ? ({ ok: true, status: 200, json: async () => fixture } as any)
+            : down(),
+        );
+        expect(await svc.getAll()).toEqual(all);
+        expect(fs.readFileSync(file, 'utf-8')).toBe(before);
+      });
+    });
+
     it('R6 — la copie gardée n\'est pas réécrite sur disque (son âge reste celui du dernier succès)', async () => {
       await withCwd(async (dir) => {
         const { svc } = buildService();
