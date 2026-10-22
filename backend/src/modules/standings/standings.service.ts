@@ -17,7 +17,13 @@ export interface StandingEntry {
   recentForm?: FormOutcome[];
   trend?: number;
 }
-export interface SeasonStandings { season: string; updatedAt: string; currentMatchday: number; table: StandingEntry[]; }
+export interface SeasonStandings {
+  season: string; updatedAt: string; currentMatchday: number; table: StandingEntry[];
+  /** Posé seulement quand 365scores est en panne et que la réponse est la dernière copie connue, périmée (L34). */
+  stale?: boolean;
+  /** Date ISO de cette copie (dernier appel réussi) ; présent avec `stale`. */
+  cachedAt?: string;
+}
 
 /**
  * LFP tie-break rules (https://ligue1.com — art 2160):
@@ -125,6 +131,11 @@ export class StandingsService implements OnModuleInit {
       if (cached) return cached;
     }
 
+    // Une panne de 365scores ne retire pas le classement : dernière copie connue, avec son âge (L34).
+    return (await this.fetchCurrent()) ?? this.readStale();
+  }
+
+  private async fetchCurrent(): Promise<SeasonStandings | null> {
     try {
       const url = `${SCORES365_API_BASE}/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=${LIGUE1_365SCORES_ID}`;
       const res = await fetch(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(10_000) });
@@ -305,10 +316,24 @@ export class StandingsService implements OnModuleInit {
   }
 
   private readCache(): SeasonStandings | null {
+    const entry = this.readEntry();
+    return entry && Date.now() - entry.ts < CACHE_TTL_MS ? entry.data : null;
+  }
+
+  /** Copie quel que soit son âge, marquée périmée et datée : le repli d'une panne de 365scores (L34). */
+  private readStale(): SeasonStandings | null {
+    const entry = this.readEntry();
+    if (!entry) return null;
+    const cachedAt = new Date(entry.ts).toISOString();
+    this.logger.warn(`Classement : 365scores indisponible, copie du ${cachedAt} servie`);
+    return { ...entry.data, stale: true, cachedAt };
+  }
+
+  private readEntry(): { ts: number; data: SeasonStandings } | null {
     if (!fs.existsSync(this.cacheFile)) return null;
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
-      if (Date.now() - ts < CACHE_TTL_MS) return data;
+      if (typeof ts === 'number' && data) return { ts, data };
     } catch (err: unknown) {
       this.logger.warn(`Failed to read standings cache ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
     }
