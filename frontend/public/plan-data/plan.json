@@ -638,7 +638,8 @@
     {
       "id": "L209",
       "title": "Fiche d'un joueur : son nom s'affiche toujours",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-22"
     }
   ]
 }
