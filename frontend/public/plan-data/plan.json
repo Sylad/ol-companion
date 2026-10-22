@@ -645,8 +645,9 @@
     {
       "id": "L210",
       "title": "Fiche d'un joueur : son nom tous les jours",
-      "status": "doing",
-      "started": "2026-10-22"
+      "status": "done",
+      "started": "2026-10-22",
+      "finished": "2026-10-22"
     }
   ]
 }
