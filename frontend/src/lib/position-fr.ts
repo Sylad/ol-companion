@@ -34,6 +34,17 @@ const LONG_FR: Record<string, string> = {
   management: 'Entraîneur',
 };
 
+/**
+ * Codes produits par `abbreviatePosition` (backend, feuille de match du direct) et par les stats de saison, rendus en
+ * libellé long français : une fiche alimentée par la feuille probable n'a que le code (« GK »), jamais « Goalkeeper ».
+ */
+const LONG_FR_BY_CODE: Record<string, string> = {
+  gk: 'Gardien', def: 'Défenseur', cb: 'Défenseur central', lb: 'Latéral gauche', rb: 'Latéral droit',
+  lwb: 'Piston gauche', rwb: 'Piston droit', mid: 'Milieu', dm: 'Milieu défensif', cm: 'Milieu central',
+  am: 'Milieu offensif', lm: 'Milieu gauche', rm: 'Milieu droit', atk: 'Attaquant', fw: 'Attaquant',
+  lw: 'Ailier gauche', rw: 'Ailier droit', cf: 'Avant-centre', ss: 'Second attaquant', st: 'Avant-centre',
+};
+
 const SHORT_FR: Record<string, string> = {
   gk: 'GB', def: 'DEF', cb: 'DC', lb: 'DG', rb: 'DD', lwb: 'PG', rwb: 'PD',
   mid: 'MIL', dm: 'MDC', cm: 'MC', am: 'MO', lm: 'MG', rm: 'MD',
@@ -52,7 +63,7 @@ const SHORT_BY_LONG_FR: Record<string, string> = {
 export function positionLabelFr(name: string): string {
   const key = name.trim().toLowerCase();
   if (!key) return name;
-  return LONG_FR[key] ?? name;
+  return LONG_FR[key] ?? LONG_FR_BY_CODE[key] ?? name;
 }
 
 export function positionShortFr(value: string): string {

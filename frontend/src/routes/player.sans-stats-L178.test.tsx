@@ -163,6 +163,9 @@ describe('<PlayerDetailPage /> — nom toujours affiché (L209)', () => {
     monter();
     expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
     expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Justin Bengui n’a pas encore joué cette saison');
+    // Le poste de la feuille probable est un code (« GK », abbreviatePosition) : affiché en français comme sur la dernière feuille.
+    expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Gardien · #40');
+    expect(screen.getByTestId('joueur-sans-stats')).not.toHaveTextContent('GK');
   });
 
   it('R1 — un id de membre égal à l\'athleteId de la route, sans athleteId, ne désigne pas ce joueur', async () => {

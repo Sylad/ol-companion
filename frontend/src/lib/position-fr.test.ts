@@ -11,6 +11,16 @@ describe('postes en français (L56)', () => {
     expect(positionLabelFr('Management')).toBe('Entraîneur');
     expect(positionLabelFr('Defensive Midfield')).toBe('Milieu défensif');
   });
+  it('traduit chaque code produit par abbreviatePosition (backend) en libellé long français (L209)', () => {
+    const codes: [string, string][] = [
+      ['GK', 'Gardien'], ['CB', 'Défenseur central'], ['LB', 'Latéral gauche'], ['RB', 'Latéral droit'],
+      ['LWB', 'Piston gauche'], ['RWB', 'Piston droit'], ['DM', 'Milieu défensif'], ['CM', 'Milieu central'],
+      ['AM', 'Milieu offensif'], ['LM', 'Milieu gauche'], ['RM', 'Milieu droit'], ['LW', 'Ailier gauche'],
+      ['RW', 'Ailier droit'], ['CF', 'Avant-centre'], ['SS', 'Second attaquant'], ['ST', 'Avant-centre'],
+    ];
+    for (const [code, libelle] of codes) expect(positionLabelFr(code)).toBe(libelle);
+    expect(positionLabelFr('gk')).toBe('Gardien');
+  });
   it('laisse les libellés déjà français ou inconnus', () => {
     expect(positionLabelFr('Gardien de But')).toBe('Gardien de but');
     expect(positionLabelFr('Libero')).toBe('Libero');
