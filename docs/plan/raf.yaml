@@ -2353,6 +2353,28 @@ lots:
     estimate: 0.25
     created: 2026-10-22
     started: 2026-10-22
+    review:
+      {
+        date: 2026-10-22,
+        verdict: "compliant (0 blocking, 0 major, 1 minor)
+
+
+          Commit reviewed: 050f051. Les 3 cas du lot (`squads: []`, entrée 465 absente, entrée 465 sans joueur) lèvent une erreur dans le `catch` existant. Elle y est journalisée une fois, puis la dernière bonne copie est rendue, ou un 503 s'il n'y en a pas. Les tests R4 couvrent chaque cas, y compris le maintien de la copie après un rendu dégradé. Le test « sans l'entrée 465 » aurait réussi avec l'ancien repli `squads[0]` : il protège donc bien la suppression. L'import `zod` mort est retiré. Le README décrit le nouveau comportement.
+
+
+          Les 5 choix de l'auteur tiennent :
+
+          - Un effectif de l'OL présent mais sans joueur est refusé comme `squads: []`.
+
+          - Le repli `?? squads[0]` est supprimé : il aurait pu mettre en copie l'effectif d'un autre club.
+
+          - Un seul `warn` par échec, dans le `catch` existant.
+
+          - Tests numérotés R4 dans le spec existant.
+
+          - Pas de CHANGELOG dans ce dépôt, seul le README est mis à jour. — orchestré (vague 2026-10-22-ol-squad, 0 passe(s) de correction)",
+        commit: 050f0516133b7aeed1ac2490a161022d8caffd08
+      }
   - id: L213
     title: "Fiche d'un joueur sans minute : « #-1 » affiché sous le nom (Paul Akouokou, /player/51163) — 365scores envoie jerseyNum -1 pour un numéro inconnu, gardé par squad.service.ts:60 (a.jerseyNum || null) ; ne garder qu'un numéro > 0 côté serveur ET ne rien afficher côté écran pour un numéro ≤ 0, tests inclus ; ajouter la ligne « never : #-1 ou #0 sous le nom » à ## /player/$athleteId de docs/qa/expectations.md (QA L210 22-10)"
     public: "Fiche d'un joueur : jamais de faux numéro"
