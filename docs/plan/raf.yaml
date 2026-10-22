@@ -2349,9 +2349,10 @@ lots:
     finished: 2026-10-22
   - id: L212
     title: "Effectif de l'OL (/api/players/squad) : un 200 de 365scores avec squads: [] ou sans l'entrée 465 est mis en copie 1 h comme effectif vide (squad.service.ts:56-62) — toute fiche sans minute retombe sur « Joueur » sans erreur ni journal ; le refuser comme un rendu dégradé (garder la dernière bonne copie, journaliser), avec un test ; retirer au passage l'import zod mort (revue de L210)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-22
+    started: 2026-10-22
   - id: L213
     title: "Fiche d'un joueur sans minute : « #-1 » affiché sous le nom (Paul Akouokou, /player/51163) — 365scores envoie jerseyNum -1 pour un numéro inconnu, gardé par squad.service.ts:60 (a.jerseyNum || null) ; ne garder qu'un numéro > 0 côté serveur ET ne rien afficher côté écran pour un numéro ≤ 0, tests inclus ; ajouter la ligne « never : #-1 ou #0 sous le nom » à ## /player/$athleteId de docs/qa/expectations.md (QA L210 22-10)"
     public: "Fiche d'un joueur : jamais de faux numéro"
