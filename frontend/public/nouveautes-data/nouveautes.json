@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-22 11:04",
+  "generated": "2026-10-22 12:06",
   "entries": [
+    {
+      "slug": "2026-10-22-joueurs-finitions-de-l-effectif-complet",
+      "title": "Joueurs : finitions de l'effectif complet",
+      "date": "2026-10-22",
+      "lots": [
+        "L215"
+      ],
+      "captures": [
+        "captures/L215-effectif-1440px.png",
+        "captures/L215-effectif-390px.png"
+      ],
+      "alts": [
+        "Onglet Effectif des Joueurs : cartes triées par numéro, avec la photo de chaque joueur",
+        "Le même onglet à 390 px"
+      ],
+      "html": "<p>Dans l'onglet Effectif des Joueurs, un joueur qui n'a pas encore joué mais qui figure sur la feuille du dernier match garde désormais sa photo, au lieu de simples initiales. Les joueurs sans numéro connu restent rangés après tous les joueurs numérotés, le n° 99 compris.</p>"
+    },
     {
       "slug": "2026-10-22-joueurs-l-effectif-complet-avec-chaque-fiche",
       "title": "Joueurs : l'effectif complet, avec chaque fiche",

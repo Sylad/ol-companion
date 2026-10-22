@@ -36,6 +36,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - shows: « Dernier match » avec un score ; 11 titulaires sur le terrain ; un banc non vide, qui compte autant de joueurs que le banc de la page du même match ; onglet Effectif : au moins 18 liens vers une fiche joueur ; onglet Stats saison : au moins 18 lignes
 - never: « Aucune compo récente trouvée. » ; « Erreur de chargement des stats. »
 - shows: onglet Effectif (L214) : tout l'effectif de /api/players/squad (une carte par joueur, joueurs sans minute compris, ex. Bengui, Akouokou), chaque carte menant à sa fiche
+- shows: onglet Effectif — une photo chargée sur chaque joueur ayant joué ; initiales tolérées pour les joueurs sans minute (L215 : un convoqué de la feuille du dernier match garde sa photo)
 - never: « ? » ou « -1 » comme numéro sur le terrain de Composition (L214)
 - api: /api/lineup — `starters` de 11
 - api: /api/players/squad — sur l'onglet Effectif
