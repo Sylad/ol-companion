@@ -143,4 +143,91 @@ describe('PlayerStatsService', () => {
       svc2.onModuleDestroy();
     });
   });
+
+  describe('panne de 365scores (L34)', () => {
+    const HOUR = 60 * 60 * 1000;
+    const down = () => ({ ok: false, status: 503 }) as any;
+    afterEach(() => jest.restoreAllMocks());
+
+    it('R1 — TTL expiré et chaque match en échec : la dernière copie reste servie (fiche et liste), pas un cache vide', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        const all = await svc.getAll();
+        const now = Date.now();
+        jest.spyOn(Date, 'now').mockReturnValue(now + 2 * HOUR);
+        svc.fetcher = jest.fn(async () => down());
+        expect(await svc.getAll()).toEqual(all);
+        expect(await svc.getOne(all[0].athleteId)).toEqual(all[0]);
+      });
+    });
+
+    it('R2 — saison sans match terminé (liste vide) : la copie est bien remplacée, ce n\'est pas une panne', async () => {
+      await withCwd(async () => {
+        const { svc, seasonMatches } = buildService();
+        expect(await svc.getAll()).not.toHaveLength(0);
+        jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 2 * HOUR);
+        seasonMatches.getMatches.mockResolvedValue([]);
+        expect(await svc.getAll()).toEqual([]);
+      });
+    });
+
+    it('R3 — la liste des matchs qui échoue ne vide pas la copie ; sans copie, l\'erreur remonte', async () => {
+      await withCwd(async () => {
+        const { svc, seasonMatches } = buildService();
+        const all = await svc.getAll();
+        const now = Date.now();
+        jest.spyOn(Date, 'now').mockReturnValue(now + 2 * HOUR);
+        seasonMatches.getMatches.mockRejectedValue(new Error('503'));
+        expect(await svc.getAll()).toEqual(all);
+        const { svc: vide, seasonMatches: sm2 } = buildService();
+        sm2.getMatches.mockRejectedValue(new Error('503'));
+        await expect(vide.getAll()).rejects.toThrow('503');
+      });
+    });
+
+    it('R4 — invalidation sur season-matches-changed puis panne : la copie est gardée', async () => {
+      await withCwd(async () => {
+        const { svc, bus } = buildService();
+        svc.onModuleInit();
+        const all = await svc.getAll();
+        svc.fetcher = jest.fn(async () => down());
+        bus.emit('season-matches-changed', { count: 1 });
+        expect(await svc.getAll()).toEqual(all);
+        svc.onModuleDestroy();
+      });
+    });
+
+    it('R5 — après un échec, pas de nouvelle salve d\'appels avant le délai de reprise (5 min), puis on réessaie', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        await svc.getAll();
+        const now = Date.now();
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(now + 2 * HOUR);
+        const fetcher = jest.fn(async () => down());
+        svc.fetcher = fetcher;
+        await svc.getAll();
+        const apresEchec = fetcher.mock.calls.length;
+        expect(apresEchec).toBeGreaterThan(0);
+        clock.mockReturnValue(now + 2 * HOUR + 60_000);
+        await svc.getAll();
+        expect(fetcher.mock.calls.length).toBe(apresEchec);
+        clock.mockReturnValue(now + 2 * HOUR + 6 * 60_000);
+        await svc.getAll();
+        expect(fetcher.mock.calls.length).toBeGreaterThan(apresEchec);
+      });
+    });
+
+    it('R6 — la copie gardée n\'est pas réécrite sur disque (son âge reste celui du dernier succès)', async () => {
+      await withCwd(async (dir) => {
+        const { svc } = buildService();
+        await svc.getAll();
+        const file = path.join(dir, 'data', 'player-stats-cache.json');
+        const before = fs.readFileSync(file, 'utf-8');
+        jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 2 * HOUR);
+        svc.fetcher = jest.fn(async () => down());
+        await svc.getAll();
+        expect(fs.readFileSync(file, 'utf-8')).toBe(before);
+      });
+    });
+  });
 });

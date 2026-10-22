@@ -29,6 +29,8 @@ import type { PlayerSeasonStats } from './player-stats.types';
 const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1h
+/** Après une reconstruction sans aucun match lu, on réessaie dans 5 min, pas à chaque requête. */
+const RETRY_AFTER_FAILURE_MS = 5 * 60 * 1000;
 const CACHE_FILE_NAME = 'player-stats-cache.json';
 
 /**
@@ -90,8 +92,11 @@ export class PlayerStatsService implements OnModuleInit {
     return this.cache.get(athleteId) ?? null;
   }
 
+  /**
+   * Marque la copie périmée pour que la prochaine lecture reconstruise, sans la jeter : si 365scores est en
+   * panne à ce moment, la dernière copie reste servie (L34).
+   */
   invalidate(): void {
-    this.cache.clear();
     this.cacheBuiltAt = 0;
   }
 
@@ -111,7 +116,14 @@ export class PlayerStatsService implements OnModuleInit {
   }
 
   private async doRebuild(): Promise<void> {
-    const matches = await this.seasonMatches.getMatches();
+    let matches: SeasonMatch[];
+    try {
+      matches = await this.seasonMatches.getMatches();
+    } catch (err) {
+      if (this.cache.size === 0) throw err;
+      this.keepLastCopy(`liste des matchs indisponible (${(err as Error).message})`);
+      return;
+    }
     const finished = matches.filter((m) => m.status === 'FINISHED');
     this.logger.log(
       `Rebuilding player-stats from ${finished.length} finished matches`,
@@ -131,12 +143,26 @@ export class PlayerStatsService implements OnModuleInit {
       }
     }
 
+    // Aucun des matchs terminés n'a pu être lu : panne de 365scores, pas une saison sans stat. On garde la dernière copie.
+    if (finished.length > 0 && succeeded === 0 && this.cache.size > 0) {
+      this.keepLastCopy(`aucun des ${finished.length} matchs lisible`);
+      return;
+    }
+
     const stats = finalize(acc);
     this.cache = new Map(stats.map((s) => [s.athleteId, s]));
     this.cacheBuiltAt = Date.now();
     this.writeCacheToDisk();
     this.logger.log(
       `player-stats rebuilt: ${stats.length} OL players from ${succeeded}/${finished.length} matches`,
+    );
+  }
+
+  /** Garde la copie en mémoire et sur disque telle quelle ; la prochaine tentative est reportée de 5 min. */
+  private keepLastCopy(reason: string): void {
+    this.cacheBuiltAt = Date.now() - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS;
+    this.logger.warn(
+      `player-stats : reconstruction impossible, ${reason} — dernière copie conservée (${this.cache.size} joueurs)`,
     );
   }
 
