@@ -390,11 +390,12 @@ lots:
     finished: 2026-10-03
   - id: L34
     title: "Résilience : quand 365scores est en panne, servir le dernier cache connu (composition, classement) avec son âge au lieu de null une fois le TTL expiré — le 03-10 l'effectif a disparu 6 h après le dernier appel réussi"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-03
     notes:
       - { date: 2026-10-18, text: "18-10 (revue de L178) : pendant une panne de 365scores, doRebuild de player-stats.service remplace le cache par un cache vide (fetchGameDetail null partout) → getOne null → 404 pour tous → la fiche d'un joueur qui a joué dit « n'a pas encore joué cette saison » sans Réessayer ; servir le dernier cache règle aussi ce cas" }
+    started: 2026-10-22
   - id: L35
     title: "Classement vide : 365scores renvoie 18 lignes dont 2 sans objet « competitor » (positions 3 et 16 le 03-10 avec les en-têtes actuels ; aucune sans l'en-tête Origin ou avec langId=15&userCountryId=5), le schéma rejette toute la réponse et /api/standings rend null — chercher dans la charge utile une source déterministe du club (identifiant de ligne, liste de premier niveau) avant toute heuristique ; ne pas rendre un classement à 16 équipes ; même défaut silencieux dans le mini-classement du direct"
     status: done
