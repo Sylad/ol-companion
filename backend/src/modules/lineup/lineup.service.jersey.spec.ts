@@ -23,7 +23,7 @@ describe('LineupService — numéros de la feuille (L214)', () => {
 
   it('R7 — seul un numéro > 0 est gardé : -1, 0 et absent donnent null', async () => {
     const service = new LineupService();
-    jest.spyOn(service as never, 'writeCache').mockImplementation(() => undefined);
+    jest.spyOn(service as unknown as { writeCache: (lineup: unknown) => void }, 'writeCache').mockImplementation(() => undefined);
     jest.spyOn(global, 'fetch').mockImplementation((url) =>
       String(url).includes('/web/games/results/') ? ok({ games: [{ id: 9, startTime: '2026-10-10T19:00:00Z', statusGroup: 4, hasLineups: true }] }) : ok(GAME));
     const lineup = await service.getLatestLineup({ force: true });
