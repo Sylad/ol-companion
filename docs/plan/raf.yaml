@@ -224,9 +224,10 @@ lots:
     finished: 2026-10-01
   - id: L19
     title: "Limite de débit IPv6 : tracker sur le préfixe /64 plutôt que l'adresse complète (un visiteur IPv6 change d'adresse à volonté)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-09-29
+    started: 2026-10-22
   - id: L20
     title: Retirer les traces du déploiement NAS (docker-compose, scripts, doc, page À propos) — prod = dark-blue (k3s) ou Cloudflare Pages ; NAS = médias et sauvegardes
     status: done
