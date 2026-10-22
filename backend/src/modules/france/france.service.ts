@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { FRANCE_365SCORES_ID } from '../../config/constants';
 import { POSITION_BY_ID } from '../../config/scores365-positions';
+import { SquadsResponseSchema } from '../../config/scores365-squads';
 import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
@@ -46,28 +47,6 @@ export interface FranceOverview {
   results: FranceResult[];
   squad: FrancePlayer[];
 }
-
-const SquadsResponseSchema = z.object({
-  squads: z
-    .array(
-      z.object({
-        competitorId: z.number().optional(),
-        athletes: z
-          .array(
-            z
-              .object({
-                id: z.number(),
-                name: z.string(),
-                age: z.number().optional(),
-                position: z.object({ id: z.number().optional(), name: z.string().optional() }).optional(),
-              })
-              .passthrough(),
-          )
-          .optional(),
-      }),
-    )
-    .optional(),
-});
 
 const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 const QUERY = `appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=75&competitors=${FRANCE_365SCORES_ID}`;
