@@ -395,6 +395,7 @@ lots:
     created: 2026-10-03
     notes:
       - { date: 2026-10-18, text: "18-10 (revue de L178) : pendant une panne de 365scores, doRebuild de player-stats.service remplace le cache par un cache vide (fetchGameDetail null partout) → getOne null → 404 pour tous → la fiche d'un joueur qui a joué dit « n'a pas encore joué cette saison » sans Réessayer ; servir le dernier cache règle aussi ce cas" }
+      - { date: 2026-10-22, text: "QA de prod 22-10 (a8a50eb) : conforme, 5 pages (/, /standings, /players, /player/2185, /match) à 1440 et 390 px, tous les appels en 200. Non observable en lecture seule : la copie servie pendant une panne de 365scores (stale/cachedAt), couverte par les tests unitaires ; le frontend ne l'affiche pas encore." }
     started: 2026-10-22
     review: { date: 2026-10-22, verdict: "conforme : les constats mineurs sont corrigés (vidage à la remise à zéro de saison, effectif en production via SchedulerModule), 471 tests unitaires et 5 e2e verts, tsc propre — orchestré (vague 2026-10-22-ol34-wh165, 2 passe(s) de correction + passe des mineurs)", commit: 5805acde1a399b5dee5acf43e820a33c7d452aa0 }
     finished: 2026-10-22
