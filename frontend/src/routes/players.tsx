@@ -187,7 +187,7 @@ function enCarteFeuille(p: LineupPlayer): LineupPlayer {
 }
 
 const parNumero = (a: LineupPlayer, b: LineupPlayer) =>
-  (hasJersey(a.jerseyNumber) ? a.jerseyNumber : 99) - (hasJersey(b.jerseyNumber) ? b.jerseyNumber : 99) || a.name.localeCompare(b.name, 'fr');
+  (hasJersey(a.jerseyNumber) ? a.jerseyNumber : Infinity) - (hasJersey(b.jerseyNumber) ? b.jerseyNumber : Infinity) || a.name.localeCompare(b.name, 'fr');
 
 function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: LineupPlayer[] }) {
   const { data, isLoading, isError, refetch } = useSeasonStats();

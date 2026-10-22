@@ -74,6 +74,13 @@ describe('Effectif complet (L214)', () => {
     expect(screen.getByText('Alpha').closest('a')!.textContent).not.toMatch(/-1|#|\b0\b/);
   });
 
+  it('R3 — le n° 99 (Nartey) se range avant les joueurs sans numéro, même d\'un nom qui le précède', () => {
+    squad = [membre(1, 'Alpha', null), membre(2, 'Noah Nartey', 99), membre(3, 'Dix', 10)];
+    stats = [];
+    render(<PlayersPage />);
+    expect(screen.getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual(['/player/3', '/player/2', '/player/1']);
+  });
+
   it('R4 — un joueur des stats de saison absent de l\'effectif (parti du club) n\'est pas listé', () => {
     stats = [saison(9, 'Openda', 7.3), saison(4, 'Parti', 6)];
     render(<PlayersPage />);
