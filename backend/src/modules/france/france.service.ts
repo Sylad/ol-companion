@@ -2,6 +2,7 @@ import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { z } from 'zod';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { FRANCE_365SCORES_ID } from '../../config/constants';
+import { POSITION_BY_ID } from '../../config/scores365-positions';
 import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
@@ -71,11 +72,6 @@ const SquadsResponseSchema = z.object({
 const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 const QUERY = `appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=75&competitors=${FRANCE_365SCORES_ID}`;
 const RESULTS_COUNT = 5;
-/**
- * Les quatre postes de la fiche (R8), par identifiant 365scores (stable d'une langue à l'autre,
- * contrairement aux noms). Le staff (Entraîneur, Assistant Coach) a `position.id` 0 : écarté.
- */
-const POSITION_BY_ID: Record<number, string> = { 1: 'Goalkeeper', 2: 'Defender', 3: 'Midfielder', 4: 'Attacker' };
 /** Durée de la copie en mémoire : la page se lit à la demande, pas par cron. */
 const CACHE_TTL_MS = 10 * 60 * 1000;
 /** Nouvel essai après une réponse inutilisable (365scores en panne, 200 sans « games ») : 1 min, pas 10. */

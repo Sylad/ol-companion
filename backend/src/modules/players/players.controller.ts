@@ -6,10 +6,14 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { PlayerStatsService } from './player-stats.service';
+import { SquadService } from './squad.service';
 
 @Controller('players')
 export class PlayersController {
-  constructor(private readonly stats: PlayerStatsService) {}
+  constructor(
+    private readonly stats: PlayerStatsService,
+    private readonly squad: SquadService,
+  ) {}
 
   /**
    * Cumulative season stats for every OL player who logged minutes,
@@ -18,6 +22,12 @@ export class PlayersController {
   @Get('season-stats')
   list() {
     return this.stats.getAll();
+  }
+
+  /** Effectif complet de l'OL (nom, poste, numéro) — nomme la fiche d'un joueur sans minute (L210). */
+  @Get('squad')
+  roster() {
+    return this.squad.getSquad();
   }
 
   /**
