@@ -239,6 +239,23 @@ describe('PlayerStatsService', () => {
       });
     });
 
+    it('R8 — remise à zéro de saison du 1er août : la copie de la saison passée est vidée, une reconstruction à moins de matchs la remplace', async () => {
+      await withCwd(async () => {
+        const bus = new EventBusService();
+        let reset: () => void = () => undefined;
+        const seasonReset = { onReset: (l: () => void) => (reset = l) } as any;
+        const un = (await buildService().seasonMatches.getMatches())[0];
+        const getMatches = jest.fn(async () => [un, { ...un, id: 4463861 }]);
+        const svc = new PlayerStatsService(bus, { getMatches } as any, seasonReset);
+        svc.fetcher = jest.fn(async () => ({ ok: true, status: 200, json: async () => fixture }) as any);
+        expect((await svc.getAll())[0].matchesPlayed).toBe(2);
+        reset();
+        getMatches.mockResolvedValue([un]);
+        jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 100 * 24 * HOUR);
+        expect((await svc.getAll())[0].matchesPlayed).toBe(1);
+      });
+    });
+
     it('R6 — la copie gardée n\'est pas réécrite sur disque (son âge reste celui du dernier succès)', async () => {
       await withCwd(async (dir) => {
         const { svc } = buildService();

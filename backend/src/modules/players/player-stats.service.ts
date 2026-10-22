@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Optional } from '@nestjs/common';
 import { Subscription } from 'rxjs';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -8,6 +8,7 @@ import {
   SeasonMatchesService,
   type SeasonMatch,
 } from '../season-matches/season-matches.service';
+import { SeasonResetService } from '../scheduler/season-reset.service';
 import { OL_TEAM_ID } from '../../config/constants';
 import {
   scores365Headers,
@@ -60,7 +61,15 @@ export class PlayerStatsService implements OnModuleInit {
   constructor(
     private readonly bus: EventBusService,
     private readonly seasonMatches: SeasonMatchesService,
-  ) {}
+    @Optional() seasonReset?: SeasonResetService,
+  ) {
+    // Le cache fichier part à l'archive le 1er août : la copie en mémoire et son nombre de matchs partent avec lui.
+    seasonReset?.onReset(() => {
+      this.cache = new Map();
+      this.cacheBuiltAt = 0;
+      this.cacheMatchCount = 0;
+    });
+  }
 
   onModuleInit() {
     // Hydrate from disk so a fresh container doesn't need to refetch every match.
