@@ -2328,10 +2328,11 @@ lots:
   - id: L210
     title: "Fiche d'un joueur sans minute : nom lu dans l'effectif 365scores de l'OL (/web/squads competitors=465, comme france.service.ts:129) hors des 24 h avant un match — Bengui 133157 affiche « Joueur » un jour sans match ; joueurs blessés ou absents (statut 3) compris ; suite de L209"
     public: "Fiche d'un joueur : son nom tous les jours"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-22
+    started: 2026-10-22
   - id: L211
     title: "QA : docs/qa/expectations.md à jour — /match : l'exemple Hoffenheim–Lyon sans lineups est périmé (365scores publie la composition probable, 11+12 mesurés le 22-10), en faire une règle (bloc Composition seulement quand une feuille probable ou confirmée est publiée) ; / : « Lieu » du Tableau de bord match = nom de stade, ou Domicile/Extérieur faute de stade (QA de L209)"
     status: todo
