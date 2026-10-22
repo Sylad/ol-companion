@@ -2398,6 +2398,8 @@ lots:
     review: { date: 2026-10-22, verdict: "conforme : 2 notes mineures (spec backend qui ne passe pas tsc strict, cas « effectif vide » du test R5 non exercé) — orchestré (vague 2026-10-22-ol-effectif, 2 passe(s) de correction)", commit: 5bf3eb3e9a82c97e3ca2557ee54dd4e529425fef }
     ux: { date: 2026-10-22, verdict: "conforme : l'onglet Effectif liste l'effectif complet, joueurs sans minute compris (Bengui, Akouokou, Kango, Diarra, Kamara, Rodríguez) avec lien vers leur fiche, initiales faute de photo (capture vue par le lead) ; la capture des Nouveautés date d'avant le tri corrigé du n° 99 : reprise en lot" }
     finished: 2026-10-22
+    notes:
+      - { date: 2026-10-22, text: "QA prod 22-10 verte (sha 1a24f84) : 29 liens pour 29 joueurs, six joueurs sans minute liés, ordre des numéros correct" }
   - id: L215
     title: "Effectif complet, suites de la revue de L214 : capture des Nouveautés à refaire (n° 99 de Nartey rangé parmi les sans-numéro, prise avant 358cfe8) ; convoqué sans minute présent sur la feuille du dernier match sans sa photo (enCarteEffectif ignore imageVersion de la feuille, players.tsx:175 ; régression de L178) ; spec backend lineup.service.jersey.spec.ts:26 en erreur TS2345 au tsc strict ; test R5 qui annonce « vide ou erreur » sans exercer squad = []"
     public: "Joueurs : finitions de l'effectif complet"
@@ -2405,6 +2407,8 @@ lots:
     estimate: 0.25
     visible: true
     created: 2026-10-22
+    notes:
+      - { date: 2026-10-22, text: "QA prod de L214 (22-10, sha 1a24f84) verte, 4/4 pages ; ajouter aussi à docs/qa/expectations.md (## /players) : « onglet Effectif — une photo chargée sur chaque joueur ayant joué ; initiales tolérées pour les joueurs sans minute »" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
