@@ -2333,6 +2333,7 @@ lots:
     visible: true
     created: 2026-10-22
     started: 2026-10-22
+    review: { date: 2026-10-22, verdict: "conforme : 0 bloquant, 0 majeur, 3 notes mineures (effectif vide en 200 mis en copie 1 h, import zod mort, h1 « Joueur » transitoire pendant le chargement de l'effectif). Vérifié : jest 436/436, e2e 5/5, vitest 1120/1120, tsc vert des deux côtés. — orchestré (vague 2026-10-22-ol-l210, 0 passe(s) de correction + passe des mineurs)", commit: b226ff7f0c79265435fb1123cc7aa1ddb105295b }
   - id: L211
     title: "QA : docs/qa/expectations.md à jour — /match : l'exemple Hoffenheim–Lyon sans lineups est périmé (365scores publie la composition probable, 11+12 mesurés le 22-10), en faire une règle (bloc Composition seulement quand une feuille probable ou confirmée est publiée) ; / : « Lieu » du Tableau de bord match = nom de stade, ou Domicile/Extérieur faute de stade (QA de L209)"
     status: todo
