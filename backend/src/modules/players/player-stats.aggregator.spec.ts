@@ -148,4 +148,22 @@ describe('player-stats.aggregator', () => {
       expect(finalized).toHaveLength(11);
     });
   });
+  describe('numéro de maillot inconnu (L213)', () => {
+    it.each([-1, 0])('L213 — un jerseyNumber %i de 365scores devient null, jamais copié', (numero) => {
+      const game = JSON.parse(JSON.stringify(fixture.game)) as Scores365GameDetailed;
+      for (const m of (game as any).members ?? []) m.jerseyNum = numero, m.jerseyNumber = numero;
+      const stats = aggregateAll([{ game, ctx: ctxLyonRennes }]);
+      expect(stats.length).toBeGreaterThanOrEqual(11);
+      for (const p of stats) expect(p.jerseyNumber).toBeNull();
+    });
+
+    it('L213 — un numéro > 0 est gardé, et un -1 plus récent n\'écrase pas le dernier numéro connu', () => {
+      const bon = JSON.parse(JSON.stringify(fixture.game)) as Scores365GameDetailed;
+      for (const m of (bon as any).members ?? []) m.jerseyNumber = 7;
+      const faux = JSON.parse(JSON.stringify(fixture.game)) as Scores365GameDetailed;
+      for (const m of (faux as any).members ?? []) m.jerseyNumber = -1;
+      const stats = aggregateAll([{ game: bon, ctx: ctxLyonRennes }, { game: faux, ctx: { ...ctxLyonRennes, gameId: 2 } }]);
+      for (const p of stats) expect(p.jerseyNumber).toBe(7);
+    });
+  });
 });

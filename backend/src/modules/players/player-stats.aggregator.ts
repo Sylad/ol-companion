@@ -184,7 +184,7 @@ function ensureBucket(
     name: meta.name ?? `Joueur #${member.id}`,
     shortName: meta.shortName ?? meta.name ?? `Joueur #${member.id}`,
     jerseyNumber:
-      typeof meta.jerseyNumber === 'number' ? meta.jerseyNumber : null,
+      typeof meta.jerseyNumber === 'number' && meta.jerseyNumber > 0 ? meta.jerseyNumber : null,
     position: positionLong,
     positionShort,
     imageVersion:
@@ -249,7 +249,8 @@ export function accumulateGame(
     // a transfer or position swap.
     if (meta.name) bucket.name = meta.name;
     if (meta.shortName) bucket.shortName = meta.shortName;
-    if (typeof meta.jerseyNumber === 'number')
+    // 365scores envoie -1 ou 0 pour un numéro inconnu : jamais copié (L213).
+    if (typeof meta.jerseyNumber === 'number' && meta.jerseyNumber > 0)
       bucket.jerseyNumber = meta.jerseyNumber;
     if (typeof meta.imageVersion === 'number')
       bucket.imageVersion = meta.imageVersion;

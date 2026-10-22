@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-22 10:31",
+  "generated": "2026-10-22 10:37",
   "entries": [
     {
       "slug": "2026-10-22-fiche-d-un-joueur-jamais-de-faux-numero",
@@ -15,7 +15,7 @@
       "alts": [
         "Fiche de Paul Akouokou : le nom et le poste, sans numéro de maillot"
       ],
-      "html": "<p>Sur la fiche d'un joueur qui n'a pas encore joué, le « #-1 » affiché sous le nom (par exemple pour Paul Akouokou) a disparu : quand le numéro de maillot n'est pas connu, rien ne s'affiche à la place. Dans l'onglet Effectif, un numéro inconnu s'écrit « — ».</p>"
+      "html": "<p>Sur la fiche d'un joueur qui n'a pas encore joué, le « #-1 » affiché sous le nom (par exemple pour Paul Akouokou) a disparu : quand le numéro de maillot n'est pas connu, rien ne s'affiche à la place. Il en va de même dans l'onglet Effectif et en tête de la fiche d'un joueur qui a joué : un numéro inconnu n'est écrit nulle part (le tableau Stats saison met un tiret).</p>"
     },
     {
       "slug": "2026-10-22-fiche-d-un-joueur-son-nom-tous-les-jours",

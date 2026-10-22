@@ -43,7 +43,7 @@ Visiter 2185, ou n'importe quel lien de l'onglet Effectif de /players.
 - shows: le nom du joueur en titre ; les tuiles Buts, Passes déc., Minutes ; au moins une ligne dans le tableau des matchs joués
 - never: « Aucune statistique trouvée pour ce joueur. »
 - shows: pour un convoqué qui n'a pas encore joué (ex. 133157, Justin Bengui ; /api/players/<id>/season-stats rend 404, attendu) : « n'a pas encore joué cette saison » en neutre (ni `role=alert` ni rouge), son nom, et le lien de retour
-- never: « #-1 » ou « #0 » sous le nom (L213 ; ex. 51163, Paul Akouokou : 365scores envoie jerseyNum -1 pour un numéro inconnu, rien ne s'affiche à la place) ; le même numéro dans l'onglet Effectif de /players est « — »
+- never: « #-1 » ou « #0 » sous le nom (L213 ; ex. 51163, Paul Akouokou : 365scores envoie jerseyNum -1 pour un numéro inconnu, rien ne s'affiche à la place) ; le même numéro dans l'onglet Effectif de /players n'est pas écrit non plus (rien à la place ; seul Stats saison écrit « — »)
 - api: /api/players/<id>/season-stats
 
 ## /match/$gameId

@@ -180,7 +180,7 @@ function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: Line
   const joueurs = useMemo(() => {
     const saison = new Set((data ?? []).map((p) => p.athleteId));
     const tous = [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map(enCarteFeuille)];
-    return tous.sort((a, b) => (a.jerseyNumber ?? 99) - (b.jerseyNumber ?? 99) || a.name.localeCompare(b.name, 'fr'));
+    return tous.sort((a, b) => (hasJersey(a.jerseyNumber) ? a.jerseyNumber : 99) - (hasJersey(b.jerseyNumber) ? b.jerseyNumber : 99) || a.name.localeCompare(b.name, 'fr'));
   }, [data, feuille]);
   const etat = statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });
   if (etat) return etat;

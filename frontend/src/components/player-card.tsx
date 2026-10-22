@@ -1,6 +1,7 @@
 import type { LineupPlayer } from '@/types/api';
 import { positionShortFr } from '@/lib/position-fr';
 import { noteFr } from '@/lib/note-fr';
+import { hasJersey } from '@/lib/jersey';
 import { cn } from '@/lib/utils';
 
 function playerPhotoUrl(p: LineupPlayer): string | null {
@@ -69,7 +70,7 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
-          {player.jerseyNumber !== null && (
+          {hasJersey(player.jerseyNumber) && (
             <div className="absolute top-2 right-2 font-mono tabular-nums text-fg-bright font-bold text-2xl leading-none drop-shadow-lg">
               {player.jerseyNumber}
             </div>
@@ -92,7 +93,7 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
           >
             {positionShortFr(player.positionShort)}
           </span>
-          {compact && player.jerseyNumber !== null && (
+          {compact && hasJersey(player.jerseyNumber) && (
             <span className="font-mono tabular-nums text-fg-dim text-xs">#{player.jerseyNumber}</span>
           )}
         </div>

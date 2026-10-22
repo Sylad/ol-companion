@@ -302,7 +302,7 @@ export function PlayerDetailPage() {
                 {player.shortName.split(' ').map((p) => p[0]).join('').slice(0, 2)}
               </div>
             )}
-            {player.jerseyNumber !== null && (
+            {hasJersey(player.jerseyNumber) && (
               <div className="absolute top-2 right-2 font-mono tabular-nums text-fg-bright font-bold text-2xl leading-none drop-shadow-lg">
                 {player.jerseyNumber}
               </div>
@@ -316,7 +316,7 @@ export function PlayerDetailPage() {
             </h1>
             <p className="mt-1 text-sm text-fg-muted">
               <span className="text-fg-bright font-semibold">{positionLabelFr(player.position || player.positionShort)}</span>
-              {player.jerseyNumber !== null && (
+              {hasJersey(player.jerseyNumber) && (
                 <>
                   {' '}· <span className="font-mono tabular-nums">#{player.jerseyNumber}</span>
                 </>

@@ -175,3 +175,32 @@ describe('Composition : joueurs vers leur fiche (L178)', () => {
     expect(screen.getByText('8,4')).toBeInTheDocument();
   });
 });
+
+describe('Numéro de maillot inconnu dans l\'Effectif (L213)', () => {
+  it.each([-1, 0])('L213 R2 — un numéro %i n\'est écrit nulle part sur la carte, et la carte passe après les numéros connus', (numero) => {
+    stats = [{ ...joueur(9, 'Openda'), jerseyNumber: numero }, joueur(2, 'Maitland-Niles'), joueur(30, 'Fofana')];
+    lineup = undefined;
+    search = { onglet: 'effectif' };
+    render(<PlayersPage />);
+    const carte = screen.getByText('Openda').closest('a')!;
+    expect(carte).not.toHaveTextContent(/-1|(^|\D)0(\D|$)/);
+    expect(carte).not.toHaveTextContent('#');
+    const noms = screen.getAllByRole('link').map((a) => a.textContent?.match(/Maitland-Niles|Openda|Fofana/)?.[0]);
+    expect(noms).toEqual(['Maitland-Niles', 'Fofana', 'Openda']);
+  });
+
+  it.each([-1, 0])('L213 R3 — la carte compacte du banc (numéro %i) n\'écrit pas « # »', async (numero) => {
+    const { PlayerCard } = await import('@/components/player-card');
+    const { container } = render(<PlayerCard player={{ ...lp(1, false, null), jerseyNumber: numero }} compact />);
+    expect(container).toHaveTextContent('Feuille 1');
+    expect(container).not.toHaveTextContent('#');
+  });
+
+  it.each([-1, 0])('L213 R4 — la fiche d\'un joueur avec minutes et numéro %i n\'écrit ni « # » ni le chiffre en vignette', (numero) => {
+    stats = [{ ...joueur(9, 'Openda'), jerseyNumber: numero }];
+    render(<PlayerDetailPage />);
+    const entete = screen.getByRole('heading', { level: 1, name: 'Openda' }).parentElement!;
+    expect(entete).not.toHaveTextContent('#');
+    expect(entete.parentElement!.querySelector('.font-mono.text-2xl')).toBeNull();
+  });
+});
