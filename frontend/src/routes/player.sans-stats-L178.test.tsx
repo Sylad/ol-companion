@@ -235,7 +235,7 @@ describe('<PlayerDetailPage /> — nom lu dans l\'effectif (L210)', () => {
     expect(etat).not.toHaveTextContent('#');
   });
 
-  it('R3 — la feuille du dernier match, puis la feuille probable, priment sur l\'effectif', async () => {
+  it('R3 — la feuille du dernier match prime sur l\'effectif', async () => {
     squadStatus = 200;
     squadBody = [{ ...effectif[0], name: 'Nom Effectif' }];
     monter();
@@ -243,6 +243,20 @@ describe('<PlayerDetailPage /> — nom lu dans l\'effectif (L210)', () => {
     await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/squad'))).toBe(true));
     await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Justin Bengui');
+  });
+
+  it('R3 — la feuille probable du prochain match prime sur l\'effectif (poste et numéro de la feuille, #40 et non #25)', async () => {
+    lineupBody = null;
+    currentBody = { gameId: 9, matchupId: '9-1' };
+    statsBody = probable(true, joueurProbable(68071622, 133157, 'Nom Probable'));
+    squadStatus = 200;
+    squadBody = [{ ...effectif[0], name: 'Nom Effectif' }];
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Nom Probable' })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/squad'))).toBe(true));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Nom Probable');
+    expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Gardien · #40');
   });
 
   it('R4 — joueur absent de l\'effectif, ou effectif en échec : h1 « Joueur » et état neutre, jamais d\'alerte', async () => {
