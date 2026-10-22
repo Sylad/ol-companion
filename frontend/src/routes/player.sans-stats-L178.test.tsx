@@ -36,6 +36,8 @@ let statsStatus = 404;
 let lineupBody: LineupResponse | null = feuille;
 let currentBody: unknown = null;
 let statsBody: unknown = {};
+let squadStatus = 503;
+let squadBody: unknown = [];
 const fetchMock = vi.fn();
 
 function monter() {
@@ -54,10 +56,13 @@ beforeEach(() => {
   lineupBody = feuille;
   currentBody = null;
   statsBody = {};
+  squadStatus = 503;
+  squadBody = [];
   fetchMock.mockReset();
   fetchMock.mockImplementation((url: string) =>
     Promise.resolve(
       String(url).includes('/lineup') ? reponse(200, lineupBody)
+      : String(url).includes('/players/squad') ? reponse(squadStatus, squadBody)
       : String(url).includes('/live-match/current') ? reponse(200, currentBody)
       : String(url).includes('/live-match/') ? reponse(200, statsBody)
       : reponse(statsStatus),
@@ -194,5 +199,61 @@ describe('<PlayerDetailPage /> — nom toujours affiché (L209)', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
     await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/live-match/9'))).toBe(true));
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Justin Bengui');
+  });
+});
+
+// L210 — hors des 24 h avant un match, aucune feuille probable n'est publiée : le nom vient de l'effectif de l'OL
+// (GET /api/players/squad, lu sur /web/squads competitors=465), où tout joueur sous contrat figure, blessé ou absent compris.
+const effectif = [
+  { athleteId: 133157, name: 'Justin Bengui', position: 'Goalkeeper', jerseyNumber: 25 },
+  { athleteId: 4569, name: 'Clinton Mata', position: 'Defender', jerseyNumber: null },
+];
+
+describe('<PlayerDetailPage /> — nom lu dans l\'effectif (L210)', () => {
+  it('R1 — un jour sans match (ni feuille, ni match en cours) : le nom, le poste et le numéro de l\'effectif', async () => {
+    lineupBody = null;
+    currentBody = null;
+    squadStatus = 200;
+    squadBody = effectif;
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    const etat = screen.getByTestId('joueur-sans-stats');
+    expect(etat).toHaveTextContent('Justin Bengui n’a pas encore joué cette saison');
+    expect(etat).toHaveTextContent('Gardien · #25');
+    expect(etat).not.toHaveTextContent('Goalkeeper');
+  });
+
+  it('R2 — un joueur de l\'effectif sans numéro : nom et poste, pas de « # »', async () => {
+    search = {};
+    lineupBody = null;
+    squadStatus = 200;
+    squadBody = [{ ...effectif[0], jerseyNumber: null }];
+    monter();
+    const etat = await screen.findByTestId('joueur-sans-stats');
+    await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' });
+    expect(etat).toHaveTextContent('Gardien');
+    expect(etat).not.toHaveTextContent('#');
+  });
+
+  it('R3 — la feuille du dernier match, puis la feuille probable, priment sur l\'effectif', async () => {
+    squadStatus = 200;
+    squadBody = [{ ...effectif[0], name: 'Nom Effectif' }];
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/squad'))).toBe(true));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Justin Bengui');
+  });
+
+  it('R4 — joueur absent de l\'effectif, ou effectif en échec : h1 « Joueur » et état neutre, jamais d\'alerte', async () => {
+    lineupBody = null;
+    squadStatus = 200;
+    squadBody = [effectif[1]];
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Joueur' })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/squad'))).toBe(true));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/^Joueur$/);
+    expect(screen.queryByRole('alert')).toBeNull();
   });
 });

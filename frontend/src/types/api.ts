@@ -164,6 +164,15 @@ export interface LineupPlayer {
   imageVersion?: number;
 }
 
+/** `GET /api/players/squad` : un joueur de l'effectif de l'OL (L210). */
+export interface SquadPlayer {
+  athleteId: number;
+  name: string;
+  /** Poste anglais (« Goalkeeper »…), à passer par `positionLabelFr`. */
+  position: string;
+  jerseyNumber: number | null;
+}
+
 export interface LineupResponse {
   gameId: number;
   date: string;

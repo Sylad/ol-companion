@@ -14,6 +14,7 @@ import {
 import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
 import { estIntrouvable } from '@/lib/api';
 import { useLineup } from '@/hooks/use-lineup';
+import { useSquad } from '@/hooks/use-squad';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import type { PlayersSearch } from '@/lib/players-search';
 import { TeamLogo } from '@/components/team-logo';
@@ -187,21 +188,26 @@ function LienRetour({ retour, className }: { retour: PlayersSearch; className: s
 /**
  * 404 de /api/players/<id>/season-stats : le joueur n'a pas encore de minute cette saison (convoqué, jeune, recrue).
  * Ce n'est pas une erreur : état neutre. Le nom vient de la feuille du dernier match (déjà en cache depuis Composition
- * et Effectif), à défaut de la feuille probable du prochain match de l'OL ; à défaut des deux, le h1 est « Joueur »
- * (L209 : une page sans h1 non vide est inaccessible).
+ * et Effectif), à défaut de la feuille probable du prochain match de l'OL (publiée seulement dans les 24 h avant le
+ * match), à défaut de l'effectif de l'OL (L210 : tout joueur sous contrat, blessé ou absent compris, tous les jours) ;
+ * à défaut des trois, le h1 est « Joueur » (L209 : une page sans h1 non vide est inaccessible).
  */
 function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: PlayersSearch }) {
   const { data: feuille } = useLineup();
+  const { data: effectif } = useSquad();
   const { data: courant } = useCurrentLiveMatch();
   const { data: prochain } = useLiveMatchStats(courant?.gameId ?? null, courant?.matchupId ?? null);
   const dernier = feuille ? [...feuille.starters, ...feuille.bench, ...feuille.injured].find((p) => p.athleteId === athleteId) : undefined;
   const cote = prochain ? (prochain.home.id === OL_365SCORES_ID ? prochain.lineups?.home : prochain.lineups?.away) : undefined;
   const probable = cote && [...cote.starters, ...cote.bench].find((p) => p.athleteId === athleteId);
+  const membre = effectif?.find((p) => p.athleteId === athleteId);
   const joueur = dernier
     ? { name: dernier.name, poste: dernier.position || dernier.positionShort, numero: dernier.jerseyNumber }
     : probable
       ? { name: probable.name, poste: probable.positionShort, numero: probable.jerseyNumber }
-      : undefined;
+      : membre
+        ? { name: membre.name, poste: membre.position, numero: membre.jerseyNumber }
+        : undefined;
   return (
     <div className="space-y-4">
       <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
