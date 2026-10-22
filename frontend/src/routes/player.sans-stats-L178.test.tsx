@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { LineupResponse } from '@/types/api';
 
@@ -173,7 +173,11 @@ describe('<PlayerDetailPage /> — nom toujours affiché (L209)', () => {
     currentBody = { gameId: 9, matchupId: '9-1' };
     statsBody = probable(true, joueurProbable(133157, undefined, 'Autre Joueur'));
     monter();
-    expect(await screen.findByRole('heading', { level: 1, name: 'Joueur' })).toBeInTheDocument();
+    // Le h1 « Joueur » est déjà là au premier rendu : attendre la réponse de la feuille probable avant de conclure.
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/live-match/9/stats'))).toBe(true));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/^Joueur$/);
+    expect(screen.queryByText('Autre Joueur')).toBeNull();
   });
 
   it('R2 — nulle part : h1 « Joueur » non vide, jamais de page sans h1', async () => {
