@@ -208,7 +208,7 @@ function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: Line
       </div>
     );
   }
-  const etat = effectif ? null : statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });
+  const etat = statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.', effectif: !!effectif });
   if (etat) return etat;
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
@@ -227,8 +227,8 @@ function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: Line
   );
 }
 
-/** Chargement, erreur et vide des stats de saison, communs à l'Effectif et à Stats saison ; null quand il y a des joueurs. */
-function statsEtat({ data, isLoading, isError, onRetry, vide }: { data: PlayerSeasonStats[] | undefined; isLoading: boolean; isError: boolean; onRetry: () => void; vide: string }) {
+/** Chargement, erreur et vide des stats de saison, communs à l'Effectif et à Stats saison ; null quand il y a des joueurs (ou, `effectif` servi, des stats vides). */
+function statsEtat({ data, isLoading, isError, onRetry, vide, effectif = false }: { data: PlayerSeasonStats[] | undefined; isLoading: boolean; isError: boolean; onRetry: () => void; vide: string; effectif?: boolean }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-10 text-fg-dim">
@@ -244,7 +244,8 @@ function statsEtat({ data, isLoading, isError, onRetry, vide }: { data: PlayerSe
       </EtatPanneau>
     );
   }
-  if (!data || data.length === 0) return <EtatPanneau onRetry={onRetry}>{vide}</EtatPanneau>;
+  // Un effectif servi se suffit : des stats vides n'ôtent que les notes (chargement et erreur, eux, restent dits).
+  if (!effectif && (!data || data.length === 0)) return <EtatPanneau onRetry={onRetry}>{vide}</EtatPanneau>;
   return null;
 }
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { LineupResponse, PlayerSeasonStats, SquadPlayer } from '@/types/api';
 import { FormationField } from '@/components/formation-field';
 
@@ -18,9 +18,11 @@ let lineup: LineupResponse | undefined;
 let stats: PlayerSeasonStats[] | undefined;
 let squad: SquadPlayer[] | undefined;
 let squadEtat = { isLoading: false, isError: false };
+let statsEtat = { isLoading: false, isError: false };
+const refetchStats = vi.fn();
 vi.mock('@/hooks/use-lineup', () => ({ useLineup: () => ({ data: lineup, isLoading: false, isError: false, refetch: vi.fn() }) }));
 vi.mock('@/hooks/use-player-stats', () => ({
-  useSeasonStats: () => ({ data: stats, isLoading: false, isError: false, refetch: vi.fn() }),
+  useSeasonStats: () => ({ data: stats, ...statsEtat, refetch: refetchStats }),
 }));
 vi.mock('@/hooks/use-squad', () => ({ useSquad: () => ({ data: squad, ...squadEtat, refetch: vi.fn() }) }));
 vi.mock('@/components/knowledge-header', () => ({ KnowledgeHeader: () => null }));
@@ -38,6 +40,8 @@ const saison = (athleteId: number, name: string, note: number | null): PlayerSea
 beforeEach(() => {
   search = { onglet: 'effectif' };
   squadEtat = { isLoading: false, isError: false };
+  statsEtat = { isLoading: false, isError: false };
+  refetchStats.mockClear();
   squad = [
     membre(9, 'Openda', 9, 'Attacker'),
     membre(133157, 'Justin Bengui', 25, 'Goalkeeper'),
@@ -98,6 +102,30 @@ describe('Effectif complet (L214)', () => {
     render(<PlayersPage />);
     expect(screen.getByText('Openda')).toBeInTheDocument();
     expect(screen.queryByText('Justin Bengui')).toBeNull();
+  });
+
+  it('R5 — effectif servi mais stats de saison en erreur : le panneau d\'erreur avec « Réessayer » remplace les cartes, jamais des cartes sans photo ni note en silence', () => {
+    statsEtat = { isLoading: false, isError: true };
+    stats = undefined;
+    render(<PlayersPage />);
+    expect(screen.getByText(/stats de la saison n’ont pas pu être chargées/)).toBeInTheDocument();
+    expect(screen.queryAllByRole('link')).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: /Réessayer/ }));
+    expect(refetchStats).toHaveBeenCalledTimes(1);
+  });
+
+  it('R5 — effectif servi, stats de saison en chargement : message de chargement, pas de cartes en initiales qui basculent ensuite', () => {
+    statsEtat = { isLoading: true, isError: false };
+    stats = undefined;
+    render(<PlayersPage />);
+    expect(screen.getByText(/Chargement des stats/)).toBeInTheDocument();
+    expect(screen.queryAllByRole('link')).toHaveLength(0);
+  });
+
+  it('R5 — effectif servi, stats de saison vides : l\'effectif reste listé (sans note)', () => {
+    stats = [];
+    render(<PlayersPage />);
+    expect(screen.getAllByRole('link')).toHaveLength(4);
   });
 });
 
