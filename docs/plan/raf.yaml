@@ -2355,10 +2355,11 @@ lots:
   - id: L213
     title: "Fiche d'un joueur sans minute : « #-1 » affiché sous le nom (Paul Akouokou, /player/51163) — 365scores envoie jerseyNum -1 pour un numéro inconnu, gardé par squad.service.ts:60 (a.jerseyNum || null) ; ne garder qu'un numéro > 0 côté serveur ET ne rien afficher côté écran pour un numéro ≤ 0, tests inclus ; ajouter la ligne « never : #-1 ou #0 sous le nom » à ## /player/$athleteId de docs/qa/expectations.md (QA L210 22-10)"
     public: "Fiche d'un joueur : jamais de faux numéro"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-22
+    started: 2026-10-22
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
