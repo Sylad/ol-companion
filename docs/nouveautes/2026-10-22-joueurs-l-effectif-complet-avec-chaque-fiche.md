@@ -4,7 +4,7 @@ date: 2026-10-22
 created: 2026-10-22T10:58+02:00
 lots: [L214]
 captures:
-  - { file: captures/L214-effectif-complet-1440px.png, alt: "Onglet Effectif des Joueurs : cartes de tout l'effectif triées par numéro, avec ou sans note moyenne" }
+  - { file: captures/L214-effectif-complet-1440px.png, alt: "Fin de l'onglet Effectif des Joueurs à 1440 px : les cartes triées par numéro, du 22 au 26, du 32 au 50, puis le 76, le 85 et le 99 (Noah Nartey), suivies de Paul Akouokou, sans numéro, avec ses initiales PA ; la note moyenne n'est affichée que pour les joueurs qui ont joué, et plusieurs cartes n'ont que des initiales à la place de la photo" }
   - { file: captures/L214-effectif-complet-390px.png, alt: "Le même onglet à 390 px" }
 # nocapture: raison, quand une capture n'a pas de sens
 ---

@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-22 12:06",
+  "generated": "2026-10-22 12:15",
   "entries": [
     {
       "slug": "2026-10-22-joueurs-finitions-de-l-effectif-complet",
@@ -14,10 +14,10 @@
         "captures/L215-effectif-390px.png"
       ],
       "alts": [
-        "Onglet Effectif des Joueurs : cartes triées par numéro, avec la photo de chaque joueur",
-        "Le même onglet à 390 px"
+        "Fin de l'onglet Effectif des Joueurs à 1440 px : dernière rangée de cartes, les n° 76, 85 et 99 (Noah Nartey, avec sa photo) puis Paul Akouokou, sans numéro, qui n'a que ses initiales PA ; au-dessus, les cartes des n° 32 à 50",
+        "Le même onglet à 390 px, en fin de liste : les cartes du n° 85 (Noham Kamara, initiales NK) et du n° 99 (Noah Nartey, avec sa photo), puis celle de Paul Akouokou, sans numéro, avec ses initiales PA"
       ],
-      "html": "<p>Dans l'onglet Effectif des Joueurs, un joueur qui n'a pas encore joué mais qui figure sur la feuille du dernier match garde désormais sa photo, au lieu de simples initiales. Les joueurs sans numéro connu restent rangés après tous les joueurs numérotés, le n° 99 compris.</p>"
+      "html": "<p>Dans l'onglet Effectif des Joueurs, les joueurs sans numéro connu restent rangés après tous les joueurs numérotés, le n° 99 compris : les captures montrent la fin de la liste, avec le n° 99 (Noah Nartey) puis Paul Akouokou, sans numéro. Un joueur de l'effectif qui n'a pas encore joué mais qui figure sur la feuille du dernier match garde aussi sa photo, au lieu de simples initiales ; aucun joueur n'est dans ce cas sur la feuille du match du 18 octobre, les captures ne montrent donc pas cette photo.</p>"
     },
     {
       "slug": "2026-10-22-joueurs-l-effectif-complet-avec-chaque-fiche",
@@ -31,7 +31,7 @@
         "captures/L214-effectif-complet-390px.png"
       ],
       "alts": [
-        "Onglet Effectif des Joueurs : cartes de tout l'effectif triées par numéro, avec ou sans note moyenne",
+        "Fin de l'onglet Effectif des Joueurs à 1440 px : les cartes triées par numéro, du 22 au 26, du 32 au 50, puis le 76, le 85 et le 99 (Noah Nartey), suivies de Paul Akouokou, sans numéro, avec ses initiales PA ; la note moyenne n'est affichée que pour les joueurs qui ont joué, et plusieurs cartes n'ont que des initiales à la place de la photo",
         "Le même onglet à 390 px"
       ],
       "html": "<p>L'onglet Effectif de la page Joueurs liste désormais tout l'effectif de l'OL, et plus seulement les joueurs qui ont déjà joué : les joueurs sans minute (gardiens remplaçants, jeunes, recrues) y ont leur carte, avec un lien vers leur fiche. La note moyenne reste affichée pour ceux qui en ont une. Le terrain de la Composition n'écrit plus de faux numéro (« ? » ou « -1 ») quand le numéro d'un joueur est inconnu.</p>"
