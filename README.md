@@ -147,6 +147,7 @@ Les caches API (fixtures, standings, etc.) se peuplent au premier appel.
 - **football-data.org** : API publique avec free tier (10 req/min, suffit pour Ligue 1).
 - **Aucun appel Claude au runtime** : pas de SDK Anthropic ni de clé Anthropic ; tout le contenu vient des sources ci-dessus.
 - **Reverse-engineering raisonnable** : un seul utilisateur, polling 30 s max sur les matchs live, 1 h sur le classement. Pas de proxy commercial, pas de scraping massif.
+- La limite de débit compte par visiteur (en-tête `CF-Connecting-IP`, repli `req.ip`) : une IPv4 telle quelle, une IPv6 par son préfixe /64, car un visiteur IPv6 change d'adresse à volonté dans son /64 (L19). Une IPv4 mappée (`::ffff:a.b.c.d`) compte comme l'IPv4.
 - Le module wiki-image est porté du projet warhammer40k (FR cette fois). Sa limite de débit est propre (40/s, 300/min par visiteur) : une page de logos dépassait les 10/s par défaut (L32).
 
 ## Crédits IA
