@@ -666,8 +666,9 @@
     {
       "id": "L215",
       "title": "Joueurs : finitions de l'effectif complet",
-      "status": "doing",
-      "started": "2026-10-22"
+      "status": "done",
+      "started": "2026-10-22",
+      "finished": "2026-10-22"
     }
   ]
 }

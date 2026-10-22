@@ -2403,14 +2403,16 @@ lots:
   - id: L215
     title: "Effectif complet, suites de la revue de L214 : capture des Nouveautés à refaire (n° 99 de Nartey rangé parmi les sans-numéro, prise avant 358cfe8) ; convoqué sans minute présent sur la feuille du dernier match sans sa photo (enCarteEffectif ignore imageVersion de la feuille, players.tsx:175 ; régression de L178) ; spec backend lineup.service.jersey.spec.ts:26 en erreur TS2345 au tsc strict ; test R5 qui annonce « vide ou erreur » sans exercer squad = []"
     public: "Joueurs : finitions de l'effectif complet"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-22
     notes:
       - { date: 2026-10-22, text: "QA prod de L214 (22-10, sha 1a24f84) verte, 4/4 pages ; ajouter aussi à docs/qa/expectations.md (## /players) : « onglet Effectif — une photo chargée sur chaque joueur ayant joué ; initiales tolérées pour les joueurs sans minute »" }
     started: 2026-10-22
-    review: { date: 2026-10-22, verdict: "compliant after 2 minor notes (captures de la Nouveauté : n° 99 et convoqué non visibles, capture L214 d'origine conservée) ; code, tests R5/R8 et tsc backend verts — orchestré (vague 2026-10-22-ol-l215, 0 passe(s) de correction)", commit: 4b9110abca94e089fd8fd58f231505bb9fde95b0 }
+    review: { date: 2026-10-22, verdict: "conforme : convoqué sans minute avec la photo de la feuille, spec backend propre au tsc strict, R5 exerce squad = [] ; captures des Nouveautés L214 et L215 refaites sur données réelles (87b14a9, vérifiées par le lead) ; 1147 tests frontend, 444 backend verts", commit: 87b14a99caefc405323542bc6e63fb07d41791b5 }
+    ux: { date: 2026-10-22, verdict: "conforme : fin de l'onglet Effectif avec le n° 99 (Nartey, photo) après les numérotés et Akouokou sans numéro en dernier, à 390 px (capture vue par le lead) ; la photo d'un convoqué sans minute n'est pas illustrée faute de cas dans les données réelles, le texte le dit" }
+    finished: 2026-10-22
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
