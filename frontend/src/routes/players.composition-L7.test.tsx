@@ -21,6 +21,8 @@ vi.mock('@/hooks/use-lineup', () => ({ useLineup: () => ({ data: lineup, isLoadi
 vi.mock('@/hooks/use-player-stats', () => ({
   useSeasonStats: () => ({ data: stats, isLoading: false, isError: false, refetch: refetchStats }),
 }));
+// L214 : sans effectif (/api/players/squad en échec), l'onglet Effectif retombe sur les stats de saison et la feuille.
+vi.mock('@/hooks/use-squad', () => ({ useSquad: () => ({ data: undefined, isLoading: false, isError: true, refetch: vi.fn() }) }));
 vi.mock('@/components/knowledge-header', () => ({ KnowledgeHeader: () => null }));
 vi.mock('@/components/team-logo', () => ({ TeamLogo: () => null }));
 vi.mock('@/components/player-card', () => ({ PlayerCard: ({ player }: { player: LineupPlayer }) => <span>{player.name}</span> }));

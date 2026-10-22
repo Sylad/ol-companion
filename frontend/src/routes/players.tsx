@@ -6,13 +6,14 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import type { Onglet, PlayersSearch, Tri } from '@/lib/players-search';
 import { useLineup } from '@/hooks/use-lineup';
 import { useSeasonStats } from '@/hooks/use-player-stats';
+import { useSquad } from '@/hooks/use-squad';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { FormationField } from '@/components/formation-field';
 import { PlayerCard } from '@/components/player-card';
 import { TeamLogo } from '@/components/team-logo';
 import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
-import type { LineupPlayer, PlayerSeasonStats } from '@/types/api';
+import type { LineupPlayer, PlayerSeasonStats, SquadPlayer } from '@/types/api';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
@@ -159,13 +160,23 @@ function LineupEtat({ isLoading, isError, onRetry }: EtatProps & { isLoading: bo
   );
 }
 
-// L178 : l'effectif est celui de la saison (tous ceux qui ont joué) complété des convoqués de la dernière feuille
-// de match qui n'ont pas encore joué (troisième gardien, jeune, recrue), sans note moyenne (la note de la feuille est celle d'un match, pas une moyenne).
+// L214 : l'effectif est celui de /api/players/squad (tout joueur sous contrat, minutes ou non) ; les stats de saison n'y
+// ajoutent que la note moyenne. Squad indisponible (L178) : repli sur les joueurs de la saison complétés des convoqués de
+// la dernière feuille de match, sans note moyenne pour un convoqué (la note de la feuille est celle d'un match).
 function enCarte(p: PlayerSeasonStats): LineupPlayer {
   return {
     id: p.athleteId, athleteId: p.athleteId, name: p.name, shortName: p.shortName, jerseyNumber: p.jerseyNumber,
     position: p.position, positionShort: p.positionShort, imageVersion: p.imageVersion ?? undefined, yardLine: 0, yardSide: 0,
     ranking: p.averageRating, isStarting: true,
+  };
+}
+
+// Un joueur de l'effectif sans minute n'a ni photo (le squad ne donne pas de version d'image) ni note : initiales, poste GB / DEF / MIL / ATT.
+function enCarteEffectif(p: SquadPlayer, saison: PlayerSeasonStats | undefined): LineupPlayer {
+  if (saison) return enCarte(saison);
+  return {
+    id: p.athleteId, athleteId: p.athleteId, name: p.name, shortName: p.name, jerseyNumber: p.jerseyNumber,
+    position: p.position, positionShort: positionGroup(p.position), yardLine: 0, yardSide: 0, ranking: null, isStarting: true,
   };
 }
 
@@ -175,14 +186,29 @@ function enCarteFeuille(p: LineupPlayer): LineupPlayer {
   return { ...p, ranking: null, isStarting: true, positionShort: positionGroup(p.position, p.positionShort) };
 }
 
+const parNumero = (a: LineupPlayer, b: LineupPlayer) =>
+  (hasJersey(a.jerseyNumber) ? a.jerseyNumber : 99) - (hasJersey(b.jerseyNumber) ? b.jerseyNumber : 99) || a.name.localeCompare(b.name, 'fr');
+
 function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: LineupPlayer[] }) {
   const { data, isLoading, isError, refetch } = useSeasonStats();
+  const squad = useSquad();
+  const effectif = squad.data?.length ? squad.data : null;
   const joueurs = useMemo(() => {
+    if (effectif) {
+      const saison = new Map((data ?? []).map((p) => [p.athleteId, p]));
+      return effectif.map((p) => enCarteEffectif(p, saison.get(p.athleteId))).sort(parNumero);
+    }
     const saison = new Set((data ?? []).map((p) => p.athleteId));
-    const tous = [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map(enCarteFeuille)];
-    return tous.sort((a, b) => (hasJersey(a.jerseyNumber) ? a.jerseyNumber : 99) - (hasJersey(b.jerseyNumber) ? b.jerseyNumber : 99) || a.name.localeCompare(b.name, 'fr'));
-  }, [data, feuille]);
-  const etat = statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });
+    return [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map(enCarteFeuille)].sort(parNumero);
+  }, [effectif, data, feuille]);
+  if (squad.isLoading) {
+    return (
+      <div className="flex items-center justify-center py-10 text-fg-dim">
+        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Chargement de l’effectif…
+      </div>
+    );
+  }
+  const etat = effectif ? null : statsEtat({ data, isLoading, isError, onRetry: () => void refetch(), vide: 'Aucun joueur n’a encore joué cette saison : l’effectif apparaît après le premier match terminé. Réessayez plus tard.' });
   if (etat) return etat;
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">

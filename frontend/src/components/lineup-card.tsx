@@ -166,8 +166,6 @@ export function fitNameFont(el: HTMLElement): void {
   }
 }
 
-/** Un numéro 0 est un remplissage de la source : jamais affiché. */
-
 const byPitch = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) => a.yardLine - b.yardLine || a.yardSide - b.yardSide;
 
 /**

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import type { LineupPlayer } from '@/types/api';
 import type { PlayersSearch } from '@/lib/players-search';
 import { noteFr } from '@/lib/note-fr';
+import { hasJersey } from '@/lib/jersey';
 
 const LINE_TO_Y: Record<number, number> = {
   1: 88,
@@ -89,7 +90,7 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
       >
         <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-ol-blue-bright to-ol-blue border-2 border-white/90 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center transition-transform group-hover:scale-110">
           <span className="font-mono tabular-nums text-white font-bold text-xs sm:text-sm">
-            {player.jerseyNumber ?? '?'}
+            {hasJersey(player.jerseyNumber) ? player.jerseyNumber : ''}
           </span>
         </div>
         <span
