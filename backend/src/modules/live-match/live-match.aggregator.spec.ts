@@ -230,6 +230,16 @@ describe('toLineups — compositions des deux équipes depuis le détail live', 
     expect(gk).toMatchObject({ id: 844534, name: 'Dominik Greif', shortName: 'Greif', jerseyNumber: 1, positionShort: 'GK' });
   });
 
+  it('L209 — expose l\'athleteId du joueur (celui de /api/players et de la route /player), distinct de l\'id de membre', () => {
+    const g = JSON.parse(JSON.stringify(fixture));
+    const id = g.game.homeCompetitor.lineups.members.find((m: any) => m.status === 1).id;
+    g.game.members.find((m: any) => m.id === id).athleteId = 133157;
+    const home = aggregate(g).lineups!.home;
+    const p = [...home.starters, ...home.bench].find((x) => x.id === id)!;
+    expect(p.athleteId).toBe(133157);
+    expect(p.id).toBe(id);
+  });
+
   it('exclut absents (status 3) et staff (status 4)', () => {
     const all = [...payload.lineups!.home.starters, ...payload.lineups!.home.bench];
     expect(all.length).toBeLessThan(24);

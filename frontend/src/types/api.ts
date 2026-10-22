@@ -265,7 +265,10 @@ export interface LiveMatchMomentumPoint {
 }
 
 export interface LiveMatchLineupPlayer {
+  /** Identifiant de membre 365scores, propre au match : pas l'`athleteId` de la route /player. */
   id: number;
+  /** Identifiant du joueur (celui de /api/players et de la route /player), absent si 365scores ne le donne pas (L209). */
+  athleteId?: number;
   name: string;
   shortName: string;
   jerseyNumber: number | null;

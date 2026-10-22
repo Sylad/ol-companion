@@ -389,6 +389,7 @@ export function toLineups(game: Scores365GameDetailed): LiveMatchStats['lineups'
         return {
           player: {
             id: m.id,
+            athleteId: info?.athleteId ?? m.athleteId,
             name: info?.name ?? `Joueur #${m.id}`,
             shortName: info?.shortName ?? info?.name ?? `#${m.id}`,
             // 0 = valeur de remplissage de 365scores avant le match, pas un numéro (L129).

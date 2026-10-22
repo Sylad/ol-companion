@@ -79,7 +79,8 @@ export interface LiveMatchMomentumPoint {
 }
 
 export interface LiveMatchLineupPlayer {
-  id: number;
+  id: number;                // identifiant de membre 365scores (propre au match)
+  athleteId?: number;        // identifiant du joueur (/api/players, route /player) — L209
   name: string;
   shortName: string;
   jerseyNumber: number | null;
