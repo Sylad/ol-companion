@@ -142,7 +142,7 @@ export class LineupService implements OnModuleInit {
         athleteId: meta?.athleteId ?? m.athleteId ?? m.id,
         name: meta?.name ?? `Joueur #${m.id}`,
         shortName: meta?.shortName ?? meta?.name ?? `Joueur #${m.id}`,
-        jerseyNumber: typeof meta?.jerseyNumber === 'number' ? meta.jerseyNumber : null,
+        jerseyNumber: typeof meta?.jerseyNumber === 'number' && meta.jerseyNumber > 0 ? meta.jerseyNumber : null,
         position: positionName,
         positionShort,
         yardLine: m.yardFormation?.line ?? 0,
