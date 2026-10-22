@@ -148,6 +148,7 @@ Les caches API (fixtures, standings, etc.) se peuplent au premier appel.
 - **Aucun appel Claude au runtime** : pas de SDK Anthropic ni de clé Anthropic ; tout le contenu vient des sources ci-dessus.
 - **Reverse-engineering raisonnable** : un seul utilisateur, polling 30 s max sur les matchs live, 1 h sur le classement. Pas de proxy commercial, pas de scraping massif.
 - La limite de débit compte par visiteur (en-tête `CF-Connecting-IP`, repli `req.ip`) : une IPv4 telle quelle, une IPv6 par son préfixe /64, car un visiteur IPv6 change d'adresse à volonté dans son /64 (L19). Une IPv4 mappée (`::ffff:a.b.c.d`) compte comme l'IPv4.
+- **Panne de 365scores : la dernière copie connue reste servie (L34)** — la composition (`GET /api/lineup`, TTL 6 h) n'est plus remplacée par `null` quand 365scores échoue (HTTP, réseau, charge illisible) après l'expiration du TTL : elle est rendue telle qu'elle était, avec `stale: true` et `cachedAt` (date ISO du dernier appel réussi). La copie périmée n'est jamais réécrite (son âge reste celui du dernier succès) ; sans aucune copie, la réponse reste `null`. Un champ absent = donnée fraîche. Tests : `backend/src/modules/lineup/lineup.service.stale.spec.ts` (R1 à R5).
 - Le module wiki-image est porté du projet warhammer40k (FR cette fois). Sa limite de débit est propre (40/s, 300/min par visiteur) : une page de logos dépassait les 10/s par défaut (L32).
 
 ## Crédits IA

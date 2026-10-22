@@ -44,6 +44,10 @@ export interface LineupResponse {
   starters: LineupPlayer[];
   bench: LineupPlayer[];
   injured: LineupPlayer[];
+  /** Posé seulement quand 365scores est en panne et que la réponse est la dernière copie connue, périmée (L34). */
+  stale?: boolean;
+  /** Date ISO de cette copie (dernier appel réussi) ; présent avec `stale`. */
+  cachedAt?: string;
 }
 
 const CACHE_TTL_MS = 6 * 3600_000; // 6h
@@ -74,6 +78,11 @@ export class LineupService implements OnModuleInit {
       if (cached) return cached;
     }
 
+    // Une panne de 365scores ne retire pas la composition : dernière copie connue, avec son âge (L34).
+    return (await this.fetchLatest()) ?? this.readStale();
+  }
+
+  private async fetchLatest(): Promise<LineupResponse | null> {
     try {
       const gameId = await this.findLatestGameId();
       if (!gameId) {
@@ -196,10 +205,23 @@ export class LineupService implements OnModuleInit {
   }
 
   private readCache(): LineupResponse | null {
+    const entry = this.readEntry();
+    return entry && Date.now() - entry.ts < CACHE_TTL_MS ? entry.data : null;
+  }
+
+  /** Copie quel que soit son âge, marquée périmée et datée : le repli d'une panne de 365scores (L34). */
+  private readStale(): LineupResponse | null {
+    const entry = this.readEntry();
+    if (!entry) return null;
+    this.logger.warn(`Composition : 365scores indisponible, copie du ${new Date(entry.ts).toISOString()} servie`);
+    return { ...entry.data, stale: true, cachedAt: new Date(entry.ts).toISOString() };
+  }
+
+  private readEntry(): { ts: number; data: LineupResponse } | null {
     if (!fs.existsSync(CACHE_FILE)) return null;
     try {
       const { ts, data } = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
-      if (Date.now() - ts < CACHE_TTL_MS) return data;
+      if (typeof ts === 'number' && data) return { ts, data };
     } catch (err: unknown) {
       this.logger.warn(`Failed to read lineup cache ${CACHE_FILE}: ${(err as Error)?.message ?? err}`);
     }
