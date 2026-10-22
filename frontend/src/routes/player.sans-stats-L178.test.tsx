@@ -90,6 +90,15 @@ describe('<PlayerDetailPage /> — joueur sans minute (L178)', () => {
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
   });
 
+  it.each([-1, 0])('L213 R1 — numéro %i (inconnu chez 365scores) : aucun « #%i » sous le nom', async (numero) => {
+    lineupBody = { ...feuille, bench: [{ ...feuille.bench[0], jerseyNumber: numero }] } as unknown as LineupResponse;
+    monter();
+    const etat = await screen.findByTestId('joueur-sans-stats');
+    expect(await screen.findByRole('heading', { name: 'Justin Bengui' })).toBeInTheDocument();
+    expect(etat).toHaveTextContent('Gardien');
+    expect(etat).not.toHaveTextContent(/#\s*-?\d/);
+  });
+
   it('404 : pas de nouvelle tentative (une seule requête season-stats, pas d\'écran de chargement qui traîne)', async () => {
     monter();
     await screen.findByTestId('joueur-sans-stats');

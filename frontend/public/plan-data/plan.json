@@ -652,7 +652,8 @@
     {
       "id": "L213",
       "title": "Fiche d'un joueur : jamais de faux numéro",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-22"
     }
   ]
 }

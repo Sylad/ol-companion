@@ -57,7 +57,7 @@ export class SquadService {
       const athletes = (parsed.squads.find((s) => s.competitorId === OL_365SCORES_ID) ?? parsed.squads[0])?.athletes ?? [];
       const data = athletes.flatMap((a) => {
         const position = POSITION_BY_ID[a.position?.id ?? -1];
-        return position ? [{ athleteId: a.id, name: a.name, position, jerseyNumber: a.jerseyNum || null }] : [];
+        return position ? [{ athleteId: a.id, name: a.name, position, jerseyNumber: a.jerseyNum !== undefined && a.jerseyNum > 0 ? a.jerseyNum : null }] : [];
       });
       this.cache = { at: Date.now(), data };
       return data;

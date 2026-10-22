@@ -12,6 +12,8 @@ const SQUAD = {
       athlete(133157, 'Justin Bengui', 1, 25),
       athlete(4569, 'Clinton Mata', 2, 22),
       athlete(77, 'Sans Numéro', 4),
+      athlete(51163, 'Paul Akouokou', 3, -1),
+      athlete(88, 'Numéro Zéro', 3, 0),
       athlete(1, 'Paulo Fonseca', 0),
     ],
   }],
@@ -35,6 +37,9 @@ describe('SquadService — effectif de l\'OL (L210)', () => {
       { athleteId: 133157, name: 'Justin Bengui', position: 'Goalkeeper', jerseyNumber: 25 },
       { athleteId: 4569, name: 'Clinton Mata', position: 'Defender', jerseyNumber: 22 },
       { athleteId: 77, name: 'Sans Numéro', position: 'Attacker', jerseyNumber: null },
+      // L213 — 365scores envoie -1 (ou 0) pour un numéro inconnu : jamais un faux numéro
+      { athleteId: 51163, name: 'Paul Akouokou', position: 'Midfielder', jerseyNumber: null },
+      { athleteId: 88, name: 'Numéro Zéro', position: 'Midfielder', jerseyNumber: null },
     ]);
   });
 
@@ -55,7 +60,7 @@ describe('SquadService — effectif de l\'OL (L210)', () => {
     await service.getSquad();
     t.mockReturnValue(1_000_000 + 2 * 60 * 60 * 1000);
     fetcher.mockImplementation(() => Promise.reject(new TypeError('Failed to fetch')));
-    expect(await service.getSquad()).toHaveLength(3);
+    expect(await service.getSquad()).toHaveLength(5);
     t.mockRestore();
   });
 });

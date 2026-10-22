@@ -1,5 +1,6 @@
 import { Fragment, useLayoutEffect, useRef } from 'react';
 import type { LiveMatchLineup, LiveMatchLineupPlayer } from '@/types/api';
+import { hasJersey } from '@/lib/jersey';
 import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
 
@@ -166,7 +167,6 @@ export function fitNameFont(el: HTMLElement): void {
 }
 
 /** Un numéro 0 est un remplissage de la source : jamais affiché. */
-const hasJersey = (n: number | null): n is number => n !== null && n > 0;
 
 const byPitch = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) => a.yardLine - b.yardLine || a.yardSide - b.yardSide;
 

@@ -1,4 +1,5 @@
 import { Link, useParams, useSearch } from '@tanstack/react-router';
+import { hasJersey } from '@/lib/jersey';
 import { positionLabelFr } from '@/lib/position-fr';
 import { Loader2, ArrowLeft, Goal, Target, Clock, Award, Activity, ShieldCheck } from 'lucide-react';
 import {
@@ -217,7 +218,7 @@ function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: Pl
         {joueur && (
           <p className="text-sm text-fg-muted">
             {positionLabelFr(joueur.poste)}
-            {joueur.numero !== null && <> · <span className="font-mono tabular-nums">#{joueur.numero}</span></>}
+            {hasJersey(joueur.numero) && <> · <span className="font-mono tabular-nums">#{joueur.numero}</span></>}
           </p>
         )}
         <p role="status" className="text-fg-muted">

@@ -1,4 +1,5 @@
 import { useId, useMemo } from 'react';
+import { hasJersey } from '@/lib/jersey';
 import { positionGroup, positionShortFr } from '@/lib/position-fr';
 import { Loader2, LayoutGrid, Users, BarChart3, ArrowUpDown } from 'lucide-react';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
@@ -375,7 +376,7 @@ function PlayerStatsRow({ player, retour, tri }: { player: PlayerSeasonStats; re
           className="flex flex-wrap sm:flex-nowrap items-center gap-x-2 group"
         >
           <span className="text-[10px] font-mono text-fg-dim w-6 tabular-nums shrink-0">
-            {player.jerseyNumber !== null ? `#${player.jerseyNumber}` : '—'}
+            {hasJersey(player.jerseyNumber) ? `#${player.jerseyNumber}` : '—'}
           </span>
           <span className="font-semibold text-fg group-hover:text-ol-red-bright transition-colors">
             {player.name}
