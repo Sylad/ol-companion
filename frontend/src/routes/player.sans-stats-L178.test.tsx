@@ -34,6 +34,8 @@ const feuille: LineupResponse = {
 const reponse = (status: number, body: unknown = {}) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 let statsStatus = 404;
 let lineupBody: LineupResponse | null = feuille;
+let currentBody: unknown = null;
+let statsBody: unknown = {};
 const fetchMock = vi.fn();
 
 function monter() {
@@ -50,9 +52,16 @@ beforeEach(() => {
   search = {};
   statsStatus = 404;
   lineupBody = feuille;
+  currentBody = null;
+  statsBody = {};
   fetchMock.mockReset();
   fetchMock.mockImplementation((url: string) =>
-    Promise.resolve(String(url).includes('/lineup') ? reponse(200, lineupBody) : reponse(statsStatus)),
+    Promise.resolve(
+      String(url).includes('/lineup') ? reponse(200, lineupBody)
+      : String(url).includes('/live-match/current') ? reponse(200, currentBody)
+      : String(url).includes('/live-match/') ? reponse(200, statsBody)
+      : reponse(statsStatus),
+    ),
   );
   vi.stubGlobal('fetch', fetchMock);
 });
@@ -126,5 +135,39 @@ describe('<PlayerDetailPage /> — libellé du lien de retour (L178)', () => {
     monter();
     const retour = await screen.findByRole('link', { name: libelle });
     expect(JSON.parse(retour.getAttribute('data-search')!)).toEqual(recu);
+  });
+});
+
+// L209 — Bengui (133157) n'est pas sur la feuille du dernier match : le nom et le h1 manquaient (## * exige un h1 non vide).
+const probable = {
+  gameId: 9, matchupId: '9-1', status: 'scheduled', home: { id: 523 }, away: { id: 7 },
+  lineups: {
+    home: { formation: '4-3-3', probable: true, starters: [], bench: [{ id: 133157, name: 'Justin Bengui', shortName: 'J. Bengui', jerseyNumber: 40, positionShort: 'GK', yardLine: 0, yardSide: 0, ranking: null }] },
+    away: { formation: '4-4-2', probable: true, starters: [{ id: 5, name: 'Autre Club', shortName: 'A. Club', jerseyNumber: 9, positionShort: 'FW', yardLine: 0, yardSide: 0, ranking: null }], bench: [] },
+  },
+};
+
+describe('<PlayerDetailPage /> — nom toujours affiché (L209)', () => {
+  it('R1 — absent de la dernière feuille mais sur la feuille probable du prochain match : son nom est le h1', async () => {
+    lineupBody = { ...feuille, bench: [] } as LineupResponse;
+    currentBody = { gameId: 9, matchupId: '9-1' };
+    statsBody = probable;
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Justin Bengui n’a pas encore joué cette saison');
+  });
+
+  it('R2 — nulle part : h1 « Joueur » non vide, jamais de page sans h1', async () => {
+    lineupBody = null;
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Joueur' })).toBeInTheDocument();
+    expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Ce joueur n’a pas encore joué cette saison');
+  });
+
+  it('R3 — la feuille du dernier match prime sur la feuille probable', async () => {
+    currentBody = { gameId: 9, matchupId: '9-1' };
+    statsBody = { ...probable, lineups: { ...probable.lineups, home: { ...probable.lineups.home, bench: [{ ...probable.lineups.home.bench[0], name: 'Nom Probable' }] } } };
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
   });
 });

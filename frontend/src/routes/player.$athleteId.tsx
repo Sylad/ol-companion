@@ -14,6 +14,7 @@ import {
 import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
 import { estIntrouvable } from '@/lib/api';
 import { useLineup } from '@/hooks/use-lineup';
+import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import type { PlayersSearch } from '@/lib/players-search';
 import { TeamLogo } from '@/components/team-logo';
 import { CompetitionAbbr } from '@/components/competition-abbr';
@@ -183,27 +184,37 @@ function LienRetour({ retour, className }: { retour: PlayersSearch; className: s
   );
 }
 
+const OL_TEAM_ID = 523;
+
 /**
  * 404 de /api/players/<id>/season-stats : le joueur n'a pas encore de minute cette saison (convoqué, jeune, recrue).
- * Ce n'est pas une erreur : état neutre, avec son nom et son poste quand la feuille du dernier match (déjà en cache
- * depuis Composition et Effectif) le donne.
+ * Ce n'est pas une erreur : état neutre. Le nom vient de la feuille du dernier match (déjà en cache depuis Composition
+ * et Effectif), à défaut de la feuille probable du prochain match de l'OL ; à défaut des deux, le h1 est « Joueur »
+ * (L209 : une page sans h1 non vide est inaccessible).
  */
 function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: PlayersSearch }) {
   const { data: feuille } = useLineup();
-  const joueur = feuille ? [...feuille.starters, ...feuille.bench, ...feuille.injured].find((p) => p.athleteId === athleteId) : undefined;
+  const { data: courant } = useCurrentLiveMatch();
+  const { data: prochain } = useLiveMatchStats(courant?.gameId ?? null, courant?.matchupId ?? null);
+  const dernier = feuille ? [...feuille.starters, ...feuille.bench, ...feuille.injured].find((p) => p.athleteId === athleteId) : undefined;
+  const cote = prochain ? (prochain.home.id === OL_TEAM_ID ? prochain.lineups?.home : prochain.lineups?.away) : undefined;
+  const probable = cote && [...cote.starters, ...cote.bench].find((p) => p.id === athleteId);
+  const joueur = dernier
+    ? { name: dernier.name, poste: dernier.position || dernier.positionShort, numero: dernier.jerseyNumber }
+    : probable
+      ? { name: probable.name, poste: probable.positionShort, numero: probable.jerseyNumber }
+      : undefined;
   return (
     <div className="space-y-4">
       <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
       <section data-testid="joueur-sans-stats" className="rounded-md bg-surface border border-border p-6 text-center space-y-2">
         <div className="eyebrow">Saison en cours</div>
+        <h1 className="font-display text-2xl font-bold text-fg-bright leading-tight">{joueur?.name ?? 'Joueur'}</h1>
         {joueur && (
-          <>
-            <h1 className="font-display text-2xl font-bold text-fg-bright leading-tight">{joueur.name}</h1>
-            <p className="text-sm text-fg-muted">
-              {positionLabelFr(joueur.position || joueur.positionShort)}
-              {joueur.jerseyNumber !== null && <> · <span className="font-mono tabular-nums">#{joueur.jerseyNumber}</span></>}
-            </p>
-          </>
+          <p className="text-sm text-fg-muted">
+            {positionLabelFr(joueur.poste)}
+            {joueur.numero !== null && <> · <span className="font-mono tabular-nums">#{joueur.numero}</span></>}
+          </p>
         )}
         <p role="status" className="text-fg-muted">
           {joueur ? `${joueur.name} n’a` : 'Ce joueur n’a'} pas encore joué cette saison. Ses statistiques apparaîtront dès son premier match.
