@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-22 10:37",
+  "generated": "2026-10-22 11:04",
   "entries": [
+    {
+      "slug": "2026-10-22-joueurs-l-effectif-complet-avec-chaque-fiche",
+      "title": "Joueurs : l'effectif complet, avec chaque fiche",
+      "date": "2026-10-22",
+      "lots": [
+        "L214"
+      ],
+      "captures": [
+        "captures/L214-effectif-complet-1440px.png",
+        "captures/L214-effectif-complet-390px.png"
+      ],
+      "alts": [
+        "Onglet Effectif des Joueurs : cartes de tout l'effectif triées par numéro, avec ou sans note moyenne",
+        "Le même onglet à 390 px"
+      ],
+      "html": "<p>L'onglet Effectif de la page Joueurs liste désormais tout l'effectif de l'OL, et plus seulement les joueurs qui ont déjà joué : les joueurs sans minute (gardiens remplaçants, jeunes, recrues) y ont leur carte, avec un lien vers leur fiche. La note moyenne reste affichée pour ceux qui en ont une. Le terrain de la Composition n'écrit plus de faux numéro (« ? » ou « -1 ») quand le numéro d'un joueur est inconnu.</p>"
+    },
     {
       "slug": "2026-10-22-fiche-d-un-joueur-jamais-de-faux-numero",
       "title": "Fiche d'un joueur : jamais de faux numéro",

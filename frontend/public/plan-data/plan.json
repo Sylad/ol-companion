@@ -659,7 +659,8 @@
     {
       "id": "L214",
       "title": "Joueurs : l'effectif complet, avec chaque fiche",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-22"
     }
   ]
 }
