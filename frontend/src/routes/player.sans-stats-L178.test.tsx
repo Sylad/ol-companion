@@ -139,22 +139,38 @@ describe('<PlayerDetailPage /> — libellé du lien de retour (L178)', () => {
 });
 
 // L209 — Bengui (133157) n'est pas sur la feuille du dernier match : le nom et le h1 manquaient (## * exige un h1 non vide).
-const probable = {
-  gameId: 9, matchupId: '9-1', status: 'scheduled', home: { id: 523 }, away: { id: 7 },
-  lineups: {
-    home: { formation: '4-3-3', probable: true, starters: [], bench: [{ id: 133157, name: 'Justin Bengui', shortName: 'J. Bengui', jerseyNumber: 40, positionShort: 'GK', yardLine: 0, yardSide: 0, ranking: null }] },
-    away: { formation: '4-4-2', probable: true, starters: [{ id: 5, name: 'Autre Club', shortName: 'A. Club', jerseyNumber: 9, positionShort: 'FW', yardLine: 0, yardSide: 0, ranking: null }], bench: [] },
-  },
+// Forme réelle de /api/live-match/<gameId>/stats : équipes en identifiants 365scores (OL = 465), `id` d'un joueur = identifiant
+// de membre du match (68071622), distinct de l'`athleteId` de la route (133157).
+const joueurProbable = (id: number, athleteId: number | undefined, name: string) => ({
+  id, athleteId, name, shortName: name, jerseyNumber: 40, positionShort: 'GK', yardLine: 0, yardSide: 0, ranking: null,
+});
+const feuilleVide = { formation: '4-3-3', probable: true, starters: [], bench: [] };
+const probable = (olALExterieur: boolean, bengui: ReturnType<typeof joueurProbable>) => {
+  const ol = { ...feuilleVide, bench: [bengui] };
+  const autre = { ...feuilleVide, starters: [joueurProbable(5, 133157, 'Joueur Adverse')] };
+  return {
+    gameId: 9, matchupId: '9-1', status: 'scheduled',
+    home: { id: olALExterieur ? 351 : 465 }, away: { id: olALExterieur ? 465 : 351 },
+    lineups: olALExterieur ? { home: autre, away: ol } : { home: ol, away: autre },
+  };
 };
 
 describe('<PlayerDetailPage /> — nom toujours affiché (L209)', () => {
-  it('R1 — absent de la dernière feuille mais sur la feuille probable du prochain match : son nom est le h1', async () => {
+  it.each([[true, 'OL à l\'extérieur'], [false, 'OL à domicile']])('R1 — absent de la dernière feuille mais sur la feuille probable du prochain match (%s) : son nom est le h1, retrouvé par athleteId et dans la feuille de l\'OL', async (olALExterieur) => {
     lineupBody = { ...feuille, bench: [] } as LineupResponse;
     currentBody = { gameId: 9, matchupId: '9-1' };
-    statsBody = probable;
+    statsBody = probable(olALExterieur, joueurProbable(68071622, 133157, 'Justin Bengui'));
     monter();
     expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
     expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Justin Bengui n’a pas encore joué cette saison');
+  });
+
+  it('R1 — un id de membre égal à l\'athleteId de la route, sans athleteId, ne désigne pas ce joueur', async () => {
+    lineupBody = null;
+    currentBody = { gameId: 9, matchupId: '9-1' };
+    statsBody = probable(true, joueurProbable(133157, undefined, 'Autre Joueur'));
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Joueur' })).toBeInTheDocument();
   });
 
   it('R2 — nulle part : h1 « Joueur » non vide, jamais de page sans h1', async () => {
@@ -166,8 +182,10 @@ describe('<PlayerDetailPage /> — nom toujours affiché (L209)', () => {
 
   it('R3 — la feuille du dernier match prime sur la feuille probable', async () => {
     currentBody = { gameId: 9, matchupId: '9-1' };
-    statsBody = { ...probable, lineups: { ...probable.lineups, home: { ...probable.lineups.home, bench: [{ ...probable.lineups.home.bench[0], name: 'Nom Probable' }] } } };
+    statsBody = probable(true, joueurProbable(68071622, 133157, 'Nom Probable'));
     monter();
     expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/live-match/9'))).toBe(true));
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Justin Bengui');
   });
 });

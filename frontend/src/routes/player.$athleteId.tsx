@@ -21,7 +21,7 @@ import { CompetitionAbbr } from '@/components/competition-abbr';
 import { competitionLong, competitionShort } from '@/lib/competitions';
 import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
-import type { PlayerByMatch, PlayerSeasonStats } from '@/types/api';
+import { OL_365SCORES_ID, type PlayerByMatch, type PlayerSeasonStats } from '@/types/api';
 
 const OL_RED = 'hsl(0 73% 50%)';
 const OL_BLUE_BRIGHT = 'hsl(226 56% 51%)';
@@ -184,8 +184,6 @@ function LienRetour({ retour, className }: { retour: PlayersSearch; className: s
   );
 }
 
-const OL_TEAM_ID = 523;
-
 /**
  * 404 de /api/players/<id>/season-stats : le joueur n'a pas encore de minute cette saison (convoqué, jeune, recrue).
  * Ce n'est pas une erreur : état neutre. Le nom vient de la feuille du dernier match (déjà en cache depuis Composition
@@ -197,8 +195,8 @@ function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: Pl
   const { data: courant } = useCurrentLiveMatch();
   const { data: prochain } = useLiveMatchStats(courant?.gameId ?? null, courant?.matchupId ?? null);
   const dernier = feuille ? [...feuille.starters, ...feuille.bench, ...feuille.injured].find((p) => p.athleteId === athleteId) : undefined;
-  const cote = prochain ? (prochain.home.id === OL_TEAM_ID ? prochain.lineups?.home : prochain.lineups?.away) : undefined;
-  const probable = cote && [...cote.starters, ...cote.bench].find((p) => p.id === athleteId);
+  const cote = prochain ? (prochain.home.id === OL_365SCORES_ID ? prochain.lineups?.home : prochain.lineups?.away) : undefined;
+  const probable = cote && [...cote.starters, ...cote.bench].find((p) => p.athleteId === athleteId);
   const joueur = dernier
     ? { name: dernier.name, poste: dernier.position || dernier.positionShort, numero: dernier.jerseyNumber }
     : probable
