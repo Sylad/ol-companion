@@ -171,12 +171,13 @@ function enCarte(p: PlayerSeasonStats): LineupPlayer {
   };
 }
 
-// Un joueur de l'effectif sans minute n'a ni photo (le squad ne donne pas de version d'image) ni note : initiales, poste GB / DEF / MIL / ATT.
-function enCarteEffectif(p: SquadPlayer, saison: PlayerSeasonStats | undefined): LineupPlayer {
+// Un joueur de l'effectif sans minute n'a pas de note, et le squad ne donne pas de version d'image : sa photo vient de la
+// feuille du dernier match s'il y figure (L215), sinon initiales. Poste GB / DEF / MIL / ATT.
+function enCarteEffectif(p: SquadPlayer, saison: PlayerSeasonStats | undefined, convoque: LineupPlayer | undefined): LineupPlayer {
   if (saison) return enCarte(saison);
   return {
     id: p.athleteId, athleteId: p.athleteId, name: p.name, shortName: p.name, jerseyNumber: p.jerseyNumber,
-    position: p.position, positionShort: positionGroup(p.position), yardLine: 0, yardSide: 0, ranking: null, isStarting: true,
+    position: p.position, positionShort: positionGroup(p.position), imageVersion: convoque?.imageVersion, yardLine: 0, yardSide: 0, ranking: null, isStarting: true,
   };
 }
 
@@ -196,7 +197,8 @@ function EffectifTab({ retour, feuille }: { retour: PlayersSearch; feuille: Line
   const joueurs = useMemo(() => {
     if (effectif) {
       const saison = new Map((data ?? []).map((p) => [p.athleteId, p]));
-      return effectif.map((p) => enCarteEffectif(p, saison.get(p.athleteId))).sort(parNumero);
+      const convoques = new Map(feuille.map((p) => [p.athleteId, p]));
+      return effectif.map((p) => enCarteEffectif(p, saison.get(p.athleteId), convoques.get(p.athleteId))).sort(parNumero);
     }
     const saison = new Set((data ?? []).map((p) => p.athleteId));
     return [...(data ?? []).map(enCarte), ...feuille.filter((p) => !saison.has(p.athleteId)).map(enCarteFeuille)].sort(parNumero);

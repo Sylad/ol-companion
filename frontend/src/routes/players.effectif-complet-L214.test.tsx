@@ -91,7 +91,7 @@ describe('Effectif complet (L214)', () => {
     expect(screen.queryByText('Parti')).toBeNull();
   });
 
-  it('R5 — effectif en chargement : message de chargement, aucune carte ; vide ou erreur : repli sur les stats de saison (L178)', () => {
+  it('R5 — effectif en chargement : message de chargement, aucune carte ; en erreur : repli sur les stats de saison (L178)', () => {
     squadEtat = { isLoading: true, isError: false };
     squad = undefined;
     const { unmount } = render(<PlayersPage />);
@@ -102,6 +102,14 @@ describe('Effectif complet (L214)', () => {
     render(<PlayersPage />);
     expect(screen.getByText('Openda')).toBeInTheDocument();
     expect(screen.queryByText('Justin Bengui')).toBeNull();
+  });
+
+  it('R5 — effectif servi vide (squad = []) : repli sur les stats de saison (L178), comme en erreur', () => {
+    squad = [];
+    render(<PlayersPage />);
+    expect(screen.getByText('Openda')).toBeInTheDocument();
+    expect(screen.queryByText('Justin Bengui')).toBeNull();
+    expect(screen.getAllByRole('link')).toHaveLength(1);
   });
 
   it('R5 — effectif servi mais stats de saison en erreur : le panneau d\'erreur avec « Réessayer » remplace les cartes, jamais des cartes sans photo ni note en silence', () => {
@@ -126,6 +134,30 @@ describe('Effectif complet (L214)', () => {
     stats = [];
     render(<PlayersPage />);
     expect(screen.getAllByRole('link')).toHaveLength(4);
+  });
+});
+
+describe('Photo d\'un convoqué de la feuille (L215)', () => {
+  const feuilleJoueur = (athleteId: number, imageVersion?: number) => ({
+    id: athleteId, athleteId, name: `Feuille ${athleteId}`, shortName: `F. ${athleteId}`, jerseyNumber: 4, position: 'Midfielder',
+    positionShort: 'MID', imageVersion, yardLine: 0, yardSide: 0, ranking: null, isStarting: false,
+  });
+  const avecFeuille = (...joueurs: ReturnType<typeof feuilleJoueur>[]) => {
+    lineup = { gameId: 1, date: '2026-10-10', competition: 'Ligue 1', matchday: 8, opponent: 'Lens', opponentId: 7, isHome: true, homeScore: 2, awayScore: 1, formation: '4-3-3', starters: [], bench: joueurs, injured: [] } as LineupResponse;
+  };
+
+  it('R8 — un joueur de l\'effectif sans minute présent sur la feuille du dernier match garde la photo de la feuille', () => {
+    avecFeuille(feuilleJoueur(51163, 321));
+    render(<PlayersPage />);
+    const photo = screen.getByAltText('Paul Akouokou');
+    expect(photo.getAttribute('src')).toContain('/v321/Athletes/51163');
+  });
+
+  it('R8 — sans version d\'image sur la feuille, ou absent de la feuille : initiales, pas de photo', () => {
+    avecFeuille(feuilleJoueur(51163, undefined));
+    render(<PlayersPage />);
+    expect(screen.queryByAltText('Paul Akouokou')).toBeNull();
+    expect(screen.queryByAltText('Justin Bengui')).toBeNull();
   });
 });
 
