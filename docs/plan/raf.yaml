@@ -2349,7 +2349,7 @@ lots:
     finished: 2026-10-22
   - id: L212
     title: "Effectif de l'OL (/api/players/squad) : un 200 de 365scores avec squads: [] ou sans l'entrée 465 est mis en copie 1 h comme effectif vide (squad.service.ts:56-62) — toute fiche sans minute retombe sur « Joueur » sans erreur ni journal ; le refuser comme un rendu dégradé (garder la dernière bonne copie, journaliser), avec un test ; retirer au passage l'import zod mort (revue de L210)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-22
     started: 2026-10-22
@@ -2375,15 +2375,25 @@ lots:
           - Pas de CHANGELOG dans ce dépôt, seul le README est mis à jour. — orchestré (vague 2026-10-22-ol-squad, 0 passe(s) de correction)",
         commit: 050f0516133b7aeed1ac2490a161022d8caffd08
       }
+    finished: 2026-10-22
   - id: L213
     title: "Fiche d'un joueur sans minute : « #-1 » affiché sous le nom (Paul Akouokou, /player/51163) — 365scores envoie jerseyNum -1 pour un numéro inconnu, gardé par squad.service.ts:60 (a.jerseyNum || null) ; ne garder qu'un numéro > 0 côté serveur ET ne rien afficher côté écran pour un numéro ≤ 0, tests inclus ; ajouter la ligne « never : #-1 ou #0 sous le nom » à ## /player/$athleteId de docs/qa/expectations.md (QA L210 22-10)"
     public: "Fiche d'un joueur : jamais de faux numéro"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-22
     started: 2026-10-22
     review: { date: 2026-10-22, verdict: "conforme après 2 corrections mineures (terrain de Composition sans garde du numéro ≤ 0, commentaire orphelin dans lineup-card) — orchestré (vague 2026-10-22-ol-squad, 1 passe(s) de correction)", commit: 6213c3242712cb1b40fdc0994bd1af2c85f25e4b }
+    ux: { date: 2026-10-22, verdict: "conforme : /player/51163 « Paul Akouokou — Milieu », aucun numéro sous le nom à 390 px (capture vue par le lead) ; reste mineur repris dans le lot de l'Effectif complet (terrain de Composition sans garde du numéro ≤ 0, commentaire orphelin)" }
+    finished: 2026-10-22
+  - id: L214
+    title: "Joueurs, onglet Effectif : lister l'effectif complet de /api/players/squad (29 joueurs le 22-10) avec un lien vers chaque fiche, joueurs sans minute compris (Bengui, Akouokou, Rodríguez, Kango, Diarra, Kamara), au lieu des seuls joueurs des stats saison (décision Sylvain 22-10, QA L210) ; au passage : terrain de Composition (formation-field.tsx:92) gardé par hasJersey, lineup.service.ts:145 ne garde qu'un numéro > 0, commentaire orphelin de lineup-card.tsx:169 retiré"
+    public: "Joueurs : l'effectif complet, avec chaque fiche"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-22
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

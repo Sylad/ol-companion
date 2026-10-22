@@ -652,8 +652,14 @@
     {
       "id": "L213",
       "title": "Fiche d'un joueur : jamais de faux numéro",
-      "status": "doing",
-      "started": "2026-10-22"
+      "status": "done",
+      "started": "2026-10-22",
+      "finished": "2026-10-22"
+    },
+    {
+      "id": "L214",
+      "title": "Joueurs : l'effectif complet, avec chaque fiche",
+      "status": "todo"
     }
   ]
 }
