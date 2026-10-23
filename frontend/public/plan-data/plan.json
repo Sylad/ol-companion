@@ -669,6 +669,11 @@
       "status": "done",
       "started": "2026-10-22",
       "finished": "2026-10-22"
+    },
+    {
+      "id": "L216",
+      "title": "Joueurs : une photo indisponible laisse place aux initiales",
+      "status": "todo"
     }
   ]
 }

@@ -2430,6 +2430,13 @@ lots:
     review: { date: 2026-10-22, verdict: "conforme : convoqué sans minute avec la photo de la feuille, spec backend propre au tsc strict, R5 exerce squad = [] ; captures des Nouveautés L214 et L215 refaites sur données réelles (87b14a9, vérifiées par le lead) ; 1147 tests frontend, 444 backend verts", commit: 87b14a99caefc405323542bc6e63fb07d41791b5 }
     ux: { date: 2026-10-22, verdict: "conforme : fin de l'onglet Effectif avec le n° 99 (Nartey, photo) après les numérotés et Akouokou sans numéro en dernier, à 390 px (capture vue par le lead) ; la photo d'un convoqué sans minute n'est pas illustrée faute de cas dans les données réelles, le texte le dit" }
     finished: 2026-10-22
+  - id: L216
+    title: "Joueurs, Composition : le banc garde une <img> cassée quand la photo 365scores répond 404 (Angel García, athlete 266757 : icône d'image cassée et alt rogné « Angel » à 1440 et 390, QA prod L26 23-10) — reprendre le repli en initiales de l'onglet Effectif ; test"
+    public: "Joueurs : une photo indisponible laisse place aux initiales"
+    status: todo
+    estimate: 0.1
+    visible: true
+    created: 2026-10-23
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
