@@ -304,11 +304,14 @@ lots:
     finished: 2026-10-11
   - id: L26
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé (captures, scripts de mesure, builds de démonstration), documents périmés (specs et plans de lots livrés, audits dépassés), scripts jetables, captures non référencées, dépendances et fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé, garder ce que les Nouveautés ou la doc référencent ; à refaire à chaque clôture de vague, rouvrir ce lot ou en créer un nouveau"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-02
     started: 2026-10-23
     review: { date: 2026-10-23, verdict: "compliant — 0 finding. Les 4 dépendances retirées n'ont aucun import ni référence dans le code, `tsc` passe des deux côtés, les 471 tests du backend sont verts, et le plan de mai supprimé n'est cité nulle part. — orchestré (vague 2026-10-23-ol-l26, 0 passe(s) de correction)", commit: 12b50da01b01b922461e544a399e97a8b836417f }
+    notes:
+      - { date: 2026-10-23, text: "Re-vérifié par le lead le 23-10 depuis une installation propre : backend 471 tests + build, frontend 1147 tests + build. Mineurs : @eslint/eslintrc et @nestjs/schematics laissés (depcheck), docs/review-2026-08-14-backlog.md et docs/specs gardés." }
+    finished: 2026-10-23
   - id: L27
     title: Page dédiée à l'équipe de France
     public: "Une page dédiée à l'équipe de France"
