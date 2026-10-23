@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-22 12:15",
+  "generated": "2026-10-23 23:24",
   "entries": [
+    {
+      "slug": "2026-10-23-joueurs-une-photo-indisponible-laisse-place-aux-initiales",
+      "title": "Joueurs : une photo indisponible laisse place aux initiales",
+      "date": "2026-10-23",
+      "lots": [
+        "L216"
+      ],
+      "captures": [
+        "captures/2026-10-23-banc-initiales-photo-indisponible.png"
+      ],
+      "alts": [
+        "Banc de la Composition : Angel García et Corentin Tolisso, leurs initiales AG et CT dans la pastille à la place de la photo"
+      ],
+      "html": "<p>Quand la photo d'un joueur n'existe pas chez le fournisseur, le banc de la Composition et l'onglet Effectif affichent ses initiales dans la pastille, au lieu d'une icône d'image cassée suivie d'un bout de nom.</p>"
+    },
     {
       "slug": "2026-10-22-joueurs-finitions-de-l-effectif-complet",
       "title": "Joueurs : finitions de l'effectif complet",
