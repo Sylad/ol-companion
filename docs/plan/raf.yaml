@@ -304,9 +304,10 @@ lots:
     finished: 2026-10-11
   - id: L26
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé (captures, scripts de mesure, builds de démonstration), documents périmés (specs et plans de lots livrés, audits dépassés), scripts jetables, captures non référencées, dépendances et fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé, garder ce que les Nouveautés ou la doc référencent ; à refaire à chaque clôture de vague, rouvrir ce lot ou en créer un nouveau"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-02
+    started: 2026-10-23
   - id: L27
     title: Page dédiée à l'équipe de France
     public: "Une page dédiée à l'équipe de France"
