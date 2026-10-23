@@ -308,6 +308,7 @@ lots:
     estimate: 0.25
     created: 2026-10-02
     started: 2026-10-23
+    review: { date: 2026-10-23, verdict: "compliant — 0 finding. Les 4 dépendances retirées n'ont aucun import ni référence dans le code, `tsc` passe des deux côtés, les 471 tests du backend sont verts, et le plan de mai supprimé n'est cité nulle part. — orchestré (vague 2026-10-23-ol-l26, 0 passe(s) de correction)", commit: 12b50da01b01b922461e544a399e97a8b836417f }
   - id: L27
     title: Page dédiée à l'équipe de France
     public: "Une page dédiée à l'équipe de France"
