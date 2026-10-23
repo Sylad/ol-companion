@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { LineupPlayer } from '@/types/api';
 import { positionShortFr } from '@/lib/position-fr';
 import { noteFr } from '@/lib/note-fr';
@@ -9,6 +10,10 @@ function playerPhotoUrl(p: LineupPlayer): string | null {
     return `https://imagecache.365scores.com/image/upload/f_png,w_180,h_180,c_limit,r_max,q_auto:eco/v${p.imageVersion}/Athletes/${p.athleteId}`;
   }
   return null;
+}
+
+function initiales(p: LineupPlayer): string {
+  return p.shortName.split(' ').map((m) => m[0]).join('').slice(0, 2);
 }
 
 const POSITION_TONE: Record<string, string> = {
@@ -40,7 +45,10 @@ interface PlayerCardProps {
 }
 
 export function PlayerCard({ player, compact = false, rankingLabel = 'Note dernier match' }: PlayerCardProps) {
-  const photoUrl = playerPhotoUrl(player);
+  const [echec, setEchec] = useState<string | null>(null);
+  const url = playerPhotoUrl(player);
+  // Une photo qui répond 404 (athlète sans image chez 365scores) laisse place aux initiales, jamais à une <img> cassée.
+  const photoUrl = url === echec ? null : url;
   const tone = getPositionTone(player.positionShort);
 
   return (
@@ -51,7 +59,7 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
       )}
     >
       {compact ? (
-        <Avatar player={player} photoUrl={photoUrl} size={44} />
+        <Avatar player={player} photoUrl={photoUrl} size={44} onError={() => setEchec(url)} />
       ) : (
         <div className="relative aspect-[3/4] bg-gradient-to-b from-surface-2 to-surface overflow-hidden">
           {photoUrl ? (
@@ -60,13 +68,11 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
               alt={player.name}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 p-2"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = 'none';
-              }}
+              onError={() => setEchec(url)}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-fg-dim text-3xl font-display font-bold">
-              {player.shortName.split(' ').map((p) => p[0]).join('').slice(0, 2)}
+              {initiales(player)}
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
@@ -123,10 +129,12 @@ function Avatar({
   player,
   photoUrl,
   size,
+  onError,
 }: {
   player: LineupPlayer;
   photoUrl: string | null;
   size: number;
+  onError: () => void;
 }) {
   return (
     <div
@@ -134,10 +142,10 @@ function Avatar({
       style={{ width: size, height: size }}
     >
       {photoUrl ? (
-        <img src={photoUrl} alt={player.name} className="w-full h-full object-cover" loading="lazy" />
+        <img src={photoUrl} alt={player.name} className="w-full h-full object-cover" loading="lazy" onError={onError} />
       ) : (
         <span className="text-fg-dim text-sm font-bold uppercase">
-          {player.shortName.split(' ').map((p) => p[0]).join('').slice(0, 2)}
+          {initiales(player)}
         </span>
       )}
     </div>
