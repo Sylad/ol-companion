@@ -2433,12 +2433,21 @@ lots:
   - id: L216
     title: "Joueurs, Composition : le banc garde une <img> cassée quand la photo 365scores répond 404 (Angel García, athlete 266757 : icône d'image cassée et alt rogné « Angel » à 1440 et 390, QA prod L26 23-10) — reprendre le repli en initiales de l'onglet Effectif ; test"
     public: "Joueurs : une photo indisponible laisse place aux initiales"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-10-23
     started: 2026-10-23
     review: { date: 2026-10-23, verdict: "compliant (0 bloquant, 0 majeur, 2 notes mineures : fiche joueur hors périmètre qui garde son display:none ; titre du it.each affiche true/false) — orchestré (vague 2026-10-23-2320, 0 passe(s) de correction)", commit: a26ff7388cfc986ac3c39ceb5033bfbd9360d4d0 }
+    ux: { date: 2026-10-23, verdict: "conforme (ux-reviewer 23-10, 2 mineurs) ; capture regardée par le lead : banc à 390 px, Angel García en initiales AG, aucune image cassée ; suite 1150/1150, build vert" }
+    finished: 2026-10-23
+  - id: L217
+    title: "Fiche joueur : la photo 365scores en 404 disparaît (display:none sur onError, player.$athleteId.tsx:269) au lieu du repli en initiales de L216 — Angel García (athlete 266757)"
+    public: "Fiche joueur : initiales quand la photo manque"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-23
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
