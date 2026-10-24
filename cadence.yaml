@@ -40,3 +40,17 @@ orchestrate:
   # puis tests d'acceptation rouges lancés par la commande dédiée ci-dessous (lanceur dans frontend/).
   spec: { dir: docs/specs }
   accept: cd frontend && npx vitest run -c vitest.acceptation.config.ts
+
+# Documentation qui suit le code (cadence docs.sync, L307 de cadence, 24-10) : raf check et la revue signalent un lot dont le code laisse sa doc en retard ; docs.articles = étude de cas du projet dans claude-code-codex (le bibliothécaire propose un lot là-bas).
+docs:
+  sync:
+    # API NestJS (fixtures, standings, cups, france, players, scheduler…) : « Modules backend / endpoints clés » du CLAUDE.md et « Fonctionnalités » du README.
+    - paths: ['backend/src/**', '!**/*.test.*', '!**/*.spec.*', '!**/__snapshots__/**']
+      docs: [README.md, CLAUDE.md]
+    # Écrans React (routes, composants, router) : « Fonctionnalités » du README, CLAUDE.md ; une Nouveauté vaut pour un changement visible.
+    - paths: ['frontend/src/**', '!**/*.css', '!frontend/src/test/**', '!**/*.test.*', '!**/*.spec.*', '!**/__snapshots__/**']
+      docs: [README.md, CLAUDE.md, 'docs/nouveautes/*.md']
+  since: 2026-10-24
+  articles:
+    - repo: ../claude-code-codex
+      file: frontend/src/pages/case-studies/ol-companion.astro
