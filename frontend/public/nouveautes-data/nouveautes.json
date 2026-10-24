@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-23 23:24",
+  "generated": "2026-10-24 08:14",
   "entries": [
+    {
+      "slug": "2026-10-24-fiche-joueur-initiales-quand-la-photo-manque",
+      "title": "Fiche joueur : initiales quand la photo manque",
+      "date": "2026-10-24",
+      "lots": [
+        "L217"
+      ],
+      "captures": [
+        "captures/2026-10-24-fiche-joueur-initiales-1440.png",
+        "captures/2026-10-24-fiche-joueur-initiales-390.png"
+      ],
+      "alts": [
+        "Fiche d'Angel García sur grand écran : ses initiales AG et son numéro 14 dans le cadre de la photo",
+        "Fiche d'Angel García sur téléphone : ses initiales AG et son numéro 14 dans le cadre de la photo"
+      ],
+      "html": "<p>Quand la photo d'un joueur n'existe pas chez le fournisseur, l'en-tête de sa fiche affiche ses initiales dans le cadre, comme le banc et l'onglet Effectif, au lieu d'un cadre vide.</p>"
+    },
     {
       "slug": "2026-10-23-joueurs-une-photo-indisponible-laisse-place-aux-initiales",
       "title": "Joueurs : une photo indisponible laisse place aux initiales",
