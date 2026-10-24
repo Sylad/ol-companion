@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 
 // L23 — page « Plan de travail » (portage de finance-tracker). Données publiques
 // générées par `npm run plan` (frontend/scripts/plan-data.mjs) depuis
-// docs/plan/raf.yaml : lots visibles, TITRES PUBLICS et états seulement, jamais
+// .cadence/raf.yaml : lots visibles, TITRES PUBLICS et états seulement, jamais
 // les notes. Même grammaire de carte que les Nouveautés.
 
 // État dit en toutes lettres ; la couleur ne fait que le souligner (bleu OL = en

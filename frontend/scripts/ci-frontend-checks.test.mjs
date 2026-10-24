@@ -1,6 +1,6 @@
 // @vitest-environment node
 // L23 — la CI doit rendre ROUGE un plan publié périmé (commit qui ne touche que
-// docs/plan, ex. `raf done`) et une fuite du plan dans le bundle : cadence deliver
+// .cadence/raf.yaml, ex. `raf done`) et une fuite du plan dans le bundle : cadence deliver
 // attend tous les runs du sha livré et échoue sur un run rouge.
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

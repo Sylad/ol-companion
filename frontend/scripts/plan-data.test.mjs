@@ -21,7 +21,7 @@ import {
 } from './plan-data.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const RAF = `${root}/docs/plan/raf.yaml`;
+const RAF = `${root}/.cadence/raf.yaml`;
 const NEWS = `${root}/docs/nouveautes`;
 const PLAN_JSON = `${root}/frontend/public/plan-data/plan.json`;
 const DIST = `${root}/frontend/dist`;
@@ -221,12 +221,12 @@ describe('isDenied (filet de sécurité)', () => {
 });
 
 // ── Le vrai plan du dépôt ─────────────────────────────────────────────────────
-describe('plan publié (docs/plan/raf.yaml → public/plan-data/plan.json)', () => {
+describe('plan publié (.cadence/raf.yaml → public/plan-data/plan.json)', () => {
   const realRaf = readPlan(RAF);
   const committedText = () => readFileSync(PLAN_JSON, 'utf8');
   const committed = () => JSON.parse(committedText());
 
-  it('plan.json est à jour avec docs/plan/raf.yaml et docs/nouveautes (sinon : npm run plan)', () => {
+  it('plan.json est à jour avec .cadence/raf.yaml et docs/nouveautes (sinon : npm run plan)', () => {
     expect(committedText()).toBe(renderPlan(buildPlan(realRaf, { newsTitles: readNewsTitles(NEWS) })));
   });
 

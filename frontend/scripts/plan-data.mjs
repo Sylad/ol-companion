@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // L23 — données PUBLIQUES de la page « Plan de travail », tirées du plan raf
-// (docs/plan/raf.yaml). Repris de finance-tracker L48 (même règles, même format),
+// (.cadence/raf.yaml). Repris de finance-tracker L48 (même règles, même format),
 // plus une vérification de fuite sur le bundle construit.
 //
-//   node scripts/plan-data.mjs [--in ../docs/plan/raf.yaml] [--news ../docs/nouveautes]
+//   node scripts/plan-data.mjs [--in ../.cadence/raf.yaml] [--news ../docs/nouveautes]
 //        [--out public/plan-data/plan.json] [--check]
 //   node scripts/plan-data.mjs --leaks dist      (après vite build, appelé par npm run build)
 //
@@ -203,7 +203,7 @@ function main(argv) {
     const i = argv.indexOf(name);
     return i >= 0 && argv[i + 1] ? argv[i + 1] : def;
   };
-  const input = arg('--in', '../docs/plan/raf.yaml');
+  const input = arg('--in', '../.cadence/raf.yaml');
   const output = arg('--out', 'public/plan-data/plan.json');
   const newsDir = arg('--news', '../docs/nouveautes');
   if (argv.includes('--leaks')) {
