@@ -2459,6 +2459,11 @@ lots:
     estimate: 0.1
     visible: true
     created: 2026-10-24
+  - id: L219
+    title: "Plan déplacé vers .cadence/raf.yaml avec raf migrate (cadence L284, L305) : --dry-run d'abord, chaque lecteur du chemin (scripts plan-data, tests, CI, CLAUDE.md, skills) mis à jour ou signalé ; un lecteur non traité (chemin construit à la main) corrigé à la main dans le même lot ; tests, build et raf check verts ; l'avertissement « ancien emplacement » disparaît"
+    status: todo
+    estimate: 0.1
+    created: 2026-10-24
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
