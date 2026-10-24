@@ -680,8 +680,9 @@
     {
       "id": "L217",
       "title": "Fiche joueur : initiales quand la photo manque",
-      "status": "doing",
-      "started": "2026-10-24"
+      "status": "done",
+      "started": "2026-10-24",
+      "finished": "2026-10-24"
     }
   ]
 }
