@@ -2469,11 +2469,14 @@ lots:
     finished: 2026-10-24
   - id: L220
     title: "config cadence : porte de tests et précheck Sonnet (comme warhammer L203) — orchestrate.test (suite backend jest et suite frontend vitest, chacune vérifiée verte sur main avant d'être déclarée ; la CI « Contrôles frontend » a été rouge 4 fois du 17 au 19-10, une vague ne lançait jamais la suite ; un test lent ou e2e qui expire sous charge est exclu et dit) et orchestrate.build (nest build puis build frontend, vérifié vert), dans cadence.yaml avec un commentaire ; precheck: true au lieu de local (cadence L328) ; les acceptations rouges restent hors de la commande ; CLAUDE.md si la section cadence le décrit"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-25
     started: 2026-10-25
     review: { date: 2026-10-25, verdict: "compliant — orchestré (vague 2026-10-25-2110, 0 passe(s) de correction)", commit: 392d642259d16b10aa44b19d379b08665ed5358f }
+    finished: 2026-10-25
+    notes:
+      - { date: 2026-10-25, text: "Re-vérifié par le lead le 25-10 : test (jest 471, vitest 1152) et build verts à la main, raf check propre. Config seule : rien à livrer en prod." }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
