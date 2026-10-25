@@ -30,8 +30,19 @@ deliver:
 # Revue UX automatique des vagues (cadence orchestrate) : backend NestJS (3002) + frontend Vite (5174)
 # dans UN groupe de processus, tués ensemble par le programme.
 orchestrate:
-  # Précheck sur le modèle local (claude-local, hors quota) pour tout lot sans commit ; un « oui » local est confirmé par Sonnet (L146, L296 de cadence, 24-10).
-  precheck: local
+  # Précheck sur Sonnet pour tout lot sans commit (L220, comme warhammer L203) : le modèle local (precheck: local)
+  # plantait 1 lot sur 3 et répondait « oui » à tort (cadence L328, 25-10).
+  precheck: true
+  # Porte de tests de la vague (L220), lancée après chaque implement/fix : la CI « Contrôles frontend » a été rouge
+  # 4 fois du 17 au 19-10 faute que la vague lance la suite. Commandes vérifiées vertes sur main le 25-10 :
+  # backend jest 471 tests (45 suites), frontend vitest 1152 tests (140 fichiers). Exclus et dits : le e2e backend
+  # hermétique (`npm run test:e2e`, config jest à part, démarre tout l'AppModule : lent, il expirerait sous la charge
+  # de la suite complète) et les tests Chromium (`npm run test:navigateur`, demandent Playwright) ; aucun
+  # `*.e2e.spec.ts` n'existe côté frontend. Les acceptations rouges (vert: false) restent exclues par
+  # vitest.config.ts et ne passent que par `accept:`.
+  test: (cd backend && npm test) && (cd frontend && npm test)
+  # Build backend (nest build) puis frontend (tsc -b, vite build, contrôle de fuite du plan), verts le 25-10.
+  build: (cd backend && npm run build) && (cd frontend && npm run build)
   ux:
     command: '(cd backend && npm run start:dev) & (cd frontend && npm run dev -- --port 5174 --strictPort) & wait'
     url: http://localhost:5174

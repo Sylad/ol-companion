@@ -192,6 +192,14 @@ message (`fix(L4): …`, `L2/t1`), `raf now` dit la suite, `raf check` repère l
 écarts. Début et fin de session : skills `/cadence:session-start` et
 `/cadence:session-close`.
 
+**Vagues `cadence orchestrate` (L220)** : `cadence.yaml` déclare le précheck sur Sonnet
+(`precheck: true`), la porte de tests lancée après chaque implement/fix (`orchestrate.test` :
+`npm test` du backend jest puis `npm test` du frontend vitest) et le build (`orchestrate.build` :
+`nest build` puis `npm run build` du frontend). Sont exclus de la porte : le e2e backend hermétique
+(`npm run test:e2e`, lent, expirerait sous charge), les tests Chromium (`npm run test:navigateur`) et
+les acceptations rouges (`accept:` seul). Si l'on ajoute des tests ou un build, mettre à jour ces
+commandes et les chiffres du commentaire de `cadence.yaml`.
+
 **Plan de travail public** (`/plan`, L23) : après TOUT `raf` qui modifie le plan
 (start, done, add, drop…) ou toute nouvelle entrée Nouveautés, lancer `cd frontend && npm run plan`
 et commiter `frontend/public/plan-data/plan.json` (versionné : le build Docker n'a pas `docs/`) ;
