@@ -2455,10 +2455,11 @@ lots:
   - id: L218
     title: "Fiche joueur : le repli de photo (L217) prend les initiales dans shortName → « T » pour Corentin Tolisso, quand le banc (L216) affiche « CT » ; même règle d'initiales partout (nom complet) ; test. QA prod 24-10 (404 simulé sur /player/2185)"
     public: "Fiche joueur : initiales complètes quand la photo manque"
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     created: 2026-10-24
+    started: 2026-10-26
   - id: L219
     title: "Plan déplacé vers .cadence/raf.yaml avec raf migrate (cadence L284, L305) : --dry-run d'abord, chaque lecteur du chemin (scripts plan-data, tests, CI, CLAUDE.md, skills) mis à jour ou signalé ; un lecteur non traité (chemin construit à la main) corrigé à la main dans le même lot ; tests, build et raf check verts ; l'avertissement « ancien emplacement » disparaît"
     status: done
