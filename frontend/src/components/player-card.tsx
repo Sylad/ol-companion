@@ -4,14 +4,8 @@ import { positionShortFr } from '@/lib/position-fr';
 import { noteFr } from '@/lib/note-fr';
 import { hasJersey } from '@/lib/jersey';
 import { initiales } from '@/lib/initiales';
+import { photoJoueurUrl } from '@/lib/photo-joueur';
 import { cn } from '@/lib/utils';
-
-function playerPhotoUrl(p: LineupPlayer): string | null {
-  if (p.athleteId && p.imageVersion) {
-    return `https://imagecache.365scores.com/image/upload/f_png,w_180,h_180,c_limit,r_max,q_auto:eco/v${p.imageVersion}/Athletes/${p.athleteId}`;
-  }
-  return null;
-}
 
 const POSITION_TONE: Record<string, string> = {
   GK: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
@@ -43,7 +37,7 @@ interface PlayerCardProps {
 
 export function PlayerCard({ player, compact = false, rankingLabel = 'Note dernier match' }: PlayerCardProps) {
   const [echec, setEchec] = useState<string | null>(null);
-  const url = playerPhotoUrl(player);
+  const url = photoJoueurUrl(player.athleteId, player.imageVersion, 180);
   // Une photo qui répond 404 (athlète sans image chez 365scores) laisse place aux initiales, jamais à une <img> cassée.
   const photoUrl = url === echec ? null : url;
   const tone = getPositionTone(player.positionShort);

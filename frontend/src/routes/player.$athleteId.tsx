@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { hasJersey } from '@/lib/jersey';
 import { initiales } from '@/lib/initiales';
+import { photoJoueurUrl } from '@/lib/photo-joueur';
 import { positionLabelFr } from '@/lib/position-fr';
 import { Loader2, ArrowLeft, Goal, Target, Clock, Award, Activity, ShieldCheck } from 'lucide-react';
 import {
@@ -25,17 +26,10 @@ import { CompetitionAbbr } from '@/components/competition-abbr';
 import { competitionLong, competitionShort } from '@/lib/competitions';
 import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
-import { OL_365SCORES_ID, type PlayerByMatch, type PlayerSeasonStats } from '@/types/api';
+import { OL_365SCORES_ID, type PlayerByMatch } from '@/types/api';
 
 const OL_RED = 'hsl(0 73% 50%)';
 const OL_BLUE_BRIGHT = 'hsl(226 56% 51%)';
-
-function playerPhotoUrl(p: PlayerSeasonStats): string | null {
-  if (p.athleteId && p.imageVersion) {
-    return `https://imagecache.365scores.com/image/upload/f_png,w_320,h_320,c_limit,r_max,q_auto:eco/v${p.imageVersion}/Athletes/${p.athleteId}`;
-  }
-  return null;
-}
 
 // Une photo qui répond 404 (athlète sans image chez 365scores) laisse place aux initiales, jamais à un cadre vide.
 function PhotoFiche({ url, nom, initiales: lettres }: { url: string | null; nom: string; initiales: string }) {
@@ -288,7 +282,7 @@ export function PlayerDetailPage() {
     );
   }
 
-  const photoUrl = playerPhotoUrl(player);
+  const photoUrl = photoJoueurUrl(player.athleteId, player.imageVersion, 320);
 
   const goalSeries: SparkPoint[] = player.byMatch.map((m, i) => ({
     index: i,

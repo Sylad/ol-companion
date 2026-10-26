@@ -36,6 +36,8 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - shows: « Dernier match » avec un score ; 11 titulaires sur le terrain ; un banc non vide, qui compte autant de joueurs que le banc de la page du même match ; onglet Effectif : au moins 18 liens vers une fiche joueur ; onglet Stats saison : au moins 18 lignes
 - never: « Aucune compo récente trouvée. » ; « Erreur de chargement des stats. »
 - shows: onglet Effectif (L214) : tout l'effectif de /api/players/squad (une carte par joueur, joueurs sans minute compris, ex. Bengui, Akouokou), chaque carte menant à sa fiche
+- shows: banc de Composition — sur chaque ligne, la photo chargée ou, quand 365scores n'a pas d'image (`imageVersion` 1, ex. 266757 Angel García : l'URL répond 404), les initiales du nom complet (« AG ») ; jamais d'<img> cassée
+- never: une requête vers `imagecache.365scores.com/.../v1/Athletes/<id>` (version 1 = pas d'image : la photo n'est pas demandée, aucune erreur 404 ni erreur console, L223)
 - shows: onglet Effectif — une photo chargée sur chaque joueur ayant joué ; initiales tolérées pour les joueurs sans minute (L215 : un convoqué de la feuille du dernier match garde sa photo)
 - never: « ? » ou « -1 » comme numéro sur le terrain de Composition (L214)
 - api: /api/lineup — `starters` de 11

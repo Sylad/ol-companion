@@ -30,3 +30,11 @@ describe('<PlayerCard /> — photo indisponible (L216)', () => {
     expect(screen.getByText('CT')).toBeTruthy();
   });
 });
+
+describe('<PlayerCard /> — version d’image 1 (L223)', () => {
+  it.each([true, false])('R5 — compact=%s : imageVersion 1 = athlète sans image, initiales d’emblée, aucune <img> demandée', (compact) => {
+    const { container } = render(<PlayerCard player={{ ...joueur, imageVersion: 1 }} compact={compact} />);
+    expect(container.querySelector('img')).toBeNull();
+    expect(screen.getByText('AG')).toBeTruthy();
+  });
+});

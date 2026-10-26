@@ -58,3 +58,13 @@ describe('<PlayerDetailPage /> — photo indisponible (L217)', () => {
     expect(screen.queryByText('G')).toBeNull();
   });
 });
+
+describe('<PlayerDetailPage /> — version d’image 1 (L223)', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('R6 — imageVersion 1 : initiales d’emblée, aucune <img> demandée', async () => {
+    const { container } = monter(1);
+    expect(await screen.findByText('AG')).toBeTruthy();
+    expect(container.querySelector('img')).toBeNull();
+  });
+});
