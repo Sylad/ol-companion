@@ -17,15 +17,15 @@ vi.mock('recharts', () => {
 
 import { PlayerDetailPage } from './player.$athleteId';
 
-const joueur = (imageVersion: number | null): PlayerSeasonStats => ({
-  athleteId: 266757, memberId: 1, name: 'Angel García', shortName: 'Angel García', jerseyNumber: 14,
+const joueur = (imageVersion: number | null, shortName = 'Angel García'): PlayerSeasonStats => ({
+  athleteId: 266757, memberId: 1, name: 'Angel García', shortName, jerseyNumber: 14,
   position: 'Milieu', positionShort: 'MID', imageVersion, matchesPlayed: 1, matchesStarted: 0,
   minutesPlayed: 12, goals: 0, assists: 0, goalContributions: 0, shots: 0, shotsOnTarget: 0,
   shotAccuracy: 0, yellowCards: 0, redCards: 0, averageRating: null, byMatch: [],
 } as unknown as PlayerSeasonStats);
 
-function monter(imageVersion: number | null) {
-  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: async () => joueur(imageVersion) })));
+function monter(imageVersion: number | null, shortName?: string) {
+  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: async () => joueur(imageVersion, shortName) })));
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
@@ -49,5 +49,12 @@ describe('<PlayerDetailPage /> — photo indisponible (L217)', () => {
     await screen.findByRole('img', { name: 'Angel García' });
     expect(container.querySelector('img')).not.toBeNull();
     expect(screen.queryByText('AG')).toBeNull();
+  });
+
+  it('L218 R1 — les initiales viennent du nom complet, pas de shortName (« García » seul donnait « G »)', async () => {
+    monter(7, 'García');
+    fireEvent.error(await screen.findByRole('img', { name: 'Angel García' }));
+    expect(screen.getByText('AG')).toBeTruthy();
+    expect(screen.queryByText('G')).toBeNull();
   });
 });

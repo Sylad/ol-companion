@@ -3,6 +3,7 @@ import type { LineupPlayer } from '@/types/api';
 import { positionShortFr } from '@/lib/position-fr';
 import { noteFr } from '@/lib/note-fr';
 import { hasJersey } from '@/lib/jersey';
+import { initiales } from '@/lib/initiales';
 import { cn } from '@/lib/utils';
 
 function playerPhotoUrl(p: LineupPlayer): string | null {
@@ -10,10 +11,6 @@ function playerPhotoUrl(p: LineupPlayer): string | null {
     return `https://imagecache.365scores.com/image/upload/f_png,w_180,h_180,c_limit,r_max,q_auto:eco/v${p.imageVersion}/Athletes/${p.athleteId}`;
   }
   return null;
-}
-
-function initiales(p: LineupPlayer): string {
-  return p.shortName.split(' ').map((m) => m[0]).join('').slice(0, 2);
 }
 
 const POSITION_TONE: Record<string, string> = {
@@ -72,7 +69,7 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-fg-dim text-3xl font-display font-bold">
-              {initiales(player)}
+              {initiales(player.name)}
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
@@ -145,7 +142,7 @@ function Avatar({
         <img src={photoUrl} alt={player.name} className="w-full h-full object-cover" loading="lazy" onError={onError} />
       ) : (
         <span className="text-fg-dim text-sm font-bold uppercase">
-          {initiales(player)}
+          {initiales(player.name)}
         </span>
       )}
     </div>

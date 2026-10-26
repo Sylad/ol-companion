@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { hasJersey } from '@/lib/jersey';
+import { initiales } from '@/lib/initiales';
 import { positionLabelFr } from '@/lib/position-fr';
 import { Loader2, ArrowLeft, Goal, Target, Clock, Award, Activity, ShieldCheck } from 'lucide-react';
 import {
@@ -34,10 +35,6 @@ function playerPhotoUrl(p: PlayerSeasonStats): string | null {
     return `https://imagecache.365scores.com/image/upload/f_png,w_320,h_320,c_limit,r_max,q_auto:eco/v${p.imageVersion}/Athletes/${p.athleteId}`;
   }
   return null;
-}
-
-function initiales(shortName: string): string {
-  return shortName.split(' ').map((m) => m[0]).join('').slice(0, 2);
 }
 
 // Une photo qui répond 404 (athlète sans image chez 365scores) laisse place aux initiales, jamais à un cadre vide.
@@ -313,7 +310,7 @@ export function PlayerDetailPage() {
       <section className="rounded-md bg-surface border border-border overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-5 p-5 md:p-6">
           <div className="relative aspect-square md:aspect-auto md:h-44 mx-auto md:mx-0 w-44 md:w-44 rounded-md bg-gradient-to-b from-ol-blue/10 to-surface-2 border border-border overflow-hidden">
-            <PhotoFiche url={photoUrl} nom={player.name} initiales={initiales(player.shortName)} />
+            <PhotoFiche url={photoUrl} nom={player.name} initiales={initiales(player.name)} />
             {hasJersey(player.jerseyNumber) && (
               <div className="absolute top-2 right-2 font-mono tabular-nums text-fg-bright font-bold text-2xl leading-none drop-shadow-lg">
                 {player.jerseyNumber}

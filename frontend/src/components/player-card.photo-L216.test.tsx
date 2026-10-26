@@ -23,4 +23,10 @@ describe('<PlayerCard /> — photo indisponible (L216)', () => {
     expect(container.querySelector('img')).not.toBeNull();
     expect(screen.queryByText('AG')).toBeNull();
   });
+
+  it.each([true, false])('L218 R2 — compact=%s : les initiales viennent du nom complet, pas de shortName', (compact) => {
+    render(<PlayerCard player={{ ...joueur, name: 'Corentin Tolisso', shortName: 'Tolisso' }} compact={compact} />);
+    fireEvent.error(screen.getByRole('img', { name: 'Corentin Tolisso' }));
+    expect(screen.getByText('CT')).toBeTruthy();
+  });
 });

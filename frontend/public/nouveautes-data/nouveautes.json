@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-24 08:14",
+  "generated": "2026-10-26 08:15",
   "entries": [
+    {
+      "slug": "2026-10-26-fiche-joueur-initiales-completes-quand-la-photo-manque",
+      "title": "Fiche joueur : initiales complètes quand la photo manque",
+      "date": "2026-10-26",
+      "lots": [
+        "L218"
+      ],
+      "captures": [
+        "captures/L218-fiche-initiales-1440px.png",
+        "captures/L218-fiche-initiales-390px.png"
+      ],
+      "alts": [
+        "Fiche de Corentin Tolisso sans photo, initiales CT, sur ordinateur",
+        "La même fiche sur téléphone"
+      ],
+      "html": "<p>Quand la photo d'un joueur ne s'affiche pas, la fiche montre maintenant ses deux initiales (« CT » pour Corentin Tolisso), comme sur le banc et dans l'effectif, au lieu d'une seule lettre.</p>"
+    },
     {
       "slug": "2026-10-24-fiche-joueur-initiales-quand-la-photo-manque",
       "title": "Fiche joueur : initiales quand la photo manque",
