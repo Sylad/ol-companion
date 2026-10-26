@@ -2489,6 +2489,14 @@ lots:
     started: 2026-10-25
     review: { date: 2026-10-25, verdict: "conforme (lead : clé de config d'une ligne, lue sans erreur par cadence orchestrate --dry-run 1.12)", commit: e372fdd330f1bab24df57ccf17aa9482dfe23002 }
     finished: 2026-10-25
+  - id: L222
+    title: Article ol-companion à rafraîchir
+    status: todo
+    estimate: 0.5
+    created: 2026-10-26
+    repos: [ { path: ../claude-code-codex, cite: ol-companion } ]
+    notes:
+      - { date: 2026-10-26, text: "Livraison 007a350 : titres publics livrés « Fiche joueur : initiales complètes quand la photo manque ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
