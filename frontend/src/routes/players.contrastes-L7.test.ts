@@ -44,4 +44,24 @@ describe('L7/t2 — contrastes Joueurs', () => {
       expect(contrast(token('loss-fg'), token(fond))).toBeGreaterThanOrEqual(4.5);
     }
   });
+
+  // L60 — « Réessayer » (fiche joueur et page Joueurs) : contour focus-visible --ol-red-bright, ≥ 3:1 (WCAG 1.4.11, 2.4.7)
+  // sur le fond de page et sur la carte ; l'ancien focus:ring-ol-red/50 ne faisait que 1,77:1.
+  it('L60 — « Réessayer » : contour focus-visible --ol-red-bright ≥ 3:1 sur --bg et --surface, plus de focus:ring-ol-red/50', () => {
+    for (const fond of ['bg', 'surface']) {
+      expect(contrast(token('ol-red-bright'), token(fond))).toBeGreaterThanOrEqual(3);
+    }
+    for (const f of ['./players.tsx', './player.$athleteId.tsx']) {
+      const src = read(f);
+      const bouton = src.slice(src.lastIndexOf('<button', src.indexOf('Réessayer')), src.indexOf('Réessayer'));
+      expect(bouton, f).toContain('focus-visible:outline-2');
+      expect(bouton, f).toContain('focus-visible:outline-[hsl(var(--ol-red-bright))]');
+      expect(bouton, f).not.toMatch(/focus:outline-none|focus:ring/);
+    }
+  });
+
+  it('L60 — le bloc d’erreur de la fiche est posé sur --surface (texte text-loss-fg ≥ 4,5:1 sur la carte, pas sur la photo de fond)', () => {
+    expect(read('./player.$athleteId.tsx')).toMatch(/data-testid="joueur-erreur" role="alert" className="[^"]*bg-surface/);
+    expect(contrast(token('loss-fg'), surface)).toBeGreaterThanOrEqual(4.5);
+  });
 });

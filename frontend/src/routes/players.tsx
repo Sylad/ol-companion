@@ -127,7 +127,7 @@ function EtatPanneau({ onRetry, children }: EtatProps & { children: React.ReactN
       <button
         type="button"
         onClick={onRetry}
-        className="inline-flex items-center rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-bright hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ol-red/50"
+        className="inline-flex items-center rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-bright hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ol-red-bright))]"
       >
         Réessayer
       </button>

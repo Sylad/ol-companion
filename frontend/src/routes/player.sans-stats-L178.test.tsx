@@ -336,15 +336,173 @@ describe('<PlayerDetailPage /> — nom lu dans l\'effectif (L210)', () => {
     expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Gardien · #40');
   });
 
-  it('R4 — joueur absent de l\'effectif, ou effectif en échec : h1 « Joueur » et état neutre, jamais d\'alerte', async () => {
+  it('R4 — effectif en échec : h1 « Joueur » et état neutre, jamais d\'alerte (on ne conclut pas sur une absence de réponse)', async () => {
     lineupBody = null;
-    squadStatus = 200;
-    squadBody = [effectif[1]];
+    squadStatus = 503;
     monter();
     expect(await screen.findByRole('heading', { level: 1, name: 'Joueur' })).toBeInTheDocument();
     await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/squad'))).toBe(true));
     await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/^Joueur$/);
+    expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Ce joueur n’a pas encore joué cette saison');
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+});
+
+// L60 — constat 2 : un 404 pour un joueur que ni la dernière feuille, ni la feuille probable, ni l'effectif ne connaissent
+// est un joueur inconnu (/player/999999), pas un joueur « qui n'a pas encore joué ».
+describe('<PlayerDetailPage /> — joueur inconnu de toutes les sources (L60)', () => {
+  it('R7 — effectif répondu sans ce joueur, feuilles sans lui : h1 « Joueur inconnu », pas « n\'a pas encore joué »', async () => {
+    idRoute = '999999';
+    squadStatus = 200;
+    squadBody = effectif;
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Joueur inconnu' })).toBeInTheDocument();
+    const bloc = screen.getByRole('alert');
+    expect(bloc).toHaveTextContent('ne figure pas dans l’effectif');
+    expect(bloc).not.toHaveTextContent(/pas encore joué|connexion|serveur/i);
+    expect(screen.queryByTestId('joueur-sans-stats')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+    expect(screen.getByRole('link', { name: /Retour/ })).toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+  });
+
+  it('R7 — l\'état « Joueur inconnu » est posé sur --surface (lisible sur la photo de fond)', async () => {
+    idRoute = '999999';
+    squadStatus = 200;
+    squadBody = effectif;
+    monter();
+    const bloc = (await screen.findByRole('heading', { level: 1, name: 'Joueur inconnu' })).closest('section')!;
+    expect(bloc).toHaveClass('bg-surface');
+  });
+
+  it('R7 — le joueur est dans l\'effectif seulement : état neutre sous son nom, pas « inconnu »', async () => {
+    lineupBody = null;
+    squadStatus = 200;
+    squadBody = effectif;
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    expect(screen.queryByText('Joueur inconnu')).toBeNull();
+  });
+
+  it('R7 — le joueur est sur la feuille du dernier match mais pas dans l\'effectif : connu, état neutre', async () => {
+    squadStatus = 200;
+    squadBody = [effectif[1]];
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(screen.queryByText('Joueur inconnu')).toBeNull();
+  });
+
+  it('R7 — l\'effectif a répondu mais la feuille probable est encore attendue : on ne conclut pas « inconnu »', async () => {
+    lineupBody = null;
+    currentBody = { gameId: 9, matchupId: '9-1' };
+    statsBody = probable(true, joueurProbable(68071622, 133157, 'Justin Bengui'));
+    squadStatus = 200;
+    squadBody = [effectif[1]];
+    monter();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    expect(screen.queryByText('Joueur inconnu')).toBeNull();
+  });
+});
+
+// L60 — constat 3 : pendant le nouvel essai, le bloc d'erreur, le bouton et le lien restent ; le focus ne bouge pas.
+describe('<PlayerDetailPage /> — Réessayer garde le bloc d\'erreur et le focus (L60)', () => {
+  function reseauCoupeJusqu() {
+    let relache!: (v: ReturnType<typeof reponse>) => void;
+    const enAttente = new Promise<ReturnType<typeof reponse>>((r) => { relache = r; });
+    let essais = 0;
+    fetchMock.mockImplementation((url: string) => {
+      const u = String(url);
+      if (u.includes('/lineup')) return Promise.resolve(reponse(200, feuille));
+      if (u.includes('/season-stats')) {
+        essais += 1;
+        return essais <= 2 ? Promise.reject(new TypeError('Failed to fetch')) : enAttente;
+      }
+      return Promise.resolve(reponse(200, null));
+    });
+    return relache;
+  }
+
+  it('R8 — pendant le nouvel essai : bloc, bouton « Nouvel essai… » aria-disabled et lien Retour restent, focus sur le bouton, pas de « Chargement du joueur… »', async () => {
+    const relache = reseauCoupeJusqu();
+    monter();
+    const alerte = await screen.findByRole('alert');
+    const bouton = screen.getByRole('button', { name: 'Réessayer' });
+    expect(bouton).toHaveAttribute('aria-disabled', 'false');
+    bouton.focus();
+    expect(bouton).toHaveFocus();
+    fireEvent.click(bouton);
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Nouvel essai…' })).toBeInTheDocument());
+    const apres = screen.getByRole('button', { name: 'Nouvel essai…' });
+    expect(apres).toBe(bouton); // même élément DOM : le focus n'est pas perdu
+    expect(apres).toHaveFocus();
+    expect(apres).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByRole('alert')).toBe(alerte); // zone aria-live inchangée, qui annonce le nouvel libellé
+    expect(alerte).toContainElement(apres);
+    expect(alerte).toHaveTextContent('Connexion impossible');
+    expect(screen.getByRole('link', { name: /Retour/ })).toBeInTheDocument();
+    expect(screen.queryByText(/Chargement du joueur/)).toBeNull();
+    relache(reponse(404));
+    expect(await screen.findByTestId('joueur-sans-stats')).toBeInTheDocument();
+  });
+
+  it('R8 — aria-disabled : un clic pendant le nouvel essai ne relance rien', async () => {
+    const relache = reseauCoupeJusqu();
+    monter();
+    await screen.findByRole('alert');
+    const avant = () => appelsStats();
+    fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
+    const bouton = await screen.findByRole('button', { name: 'Nouvel essai…' });
+    const n = avant();
+    fireEvent.click(bouton);
+    fireEvent.click(bouton);
+    expect(avant()).toBe(n);
+    relache(reponse(404));
+    await screen.findByTestId('joueur-sans-stats');
+  });
+
+  it('R8 — le nouvel essai échoue encore : le bouton redevient « Réessayer », toujours le même, focus gardé', async () => {
+    fetchMock.mockImplementation((url: string) =>
+      String(url).includes('/lineup') ? Promise.resolve(reponse(200, feuille)) : Promise.reject(new TypeError('Failed to fetch')),
+    );
+    monter();
+    await screen.findByRole('alert');
+    const bouton = screen.getByRole('button', { name: 'Réessayer' });
+    bouton.focus();
+    fireEvent.click(bouton);
+    await screen.findByRole('button', { name: 'Nouvel essai…' });
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Réessayer' })).toHaveAttribute('aria-disabled', 'false'));
+    expect(screen.getByRole('button', { name: 'Réessayer' })).toBe(bouton);
+    expect(bouton).toHaveFocus();
+  });
+});
+
+// L60 — constat 5 : jamais une fiche sans h1 (L209) ; constat 4 : le bloc d'erreur est posé sur --surface ;
+// constat 1 : contour de focus visible en --ol-red-bright (WCAG 2.4.7, 1.4.11).
+describe('<PlayerDetailPage /> — h1, fond et focus des états d\'erreur (L60)', () => {
+  it('R9 — « Statistiques indisponibles » a un h1 unique, sur --surface, titre et message en text-loss-fg lisibles', async () => {
+    statsStatus = 500;
+    monter();
+    const h1 = await screen.findByRole('heading', { level: 1, name: 'Statistiques indisponibles' });
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(h1.closest('section')).toHaveClass('bg-surface');
+    expect(screen.getByRole('alert').querySelector('.text-loss-fg')).not.toBeNull();
+  });
+
+  it.each(['abc', '0'])('R9 — identifiant « %s » : h1 « Joueur inconnu » sur --surface', async (id) => {
+    idRoute = id;
+    monter();
+    const h1 = await screen.findByRole('heading', { level: 1, name: 'Joueur inconnu' });
+    expect(h1.closest('section')).toHaveClass('bg-surface');
+  });
+
+  it('R10 — « Réessayer » : contour focus-visible --ol-red-bright, plus de focus:outline-none ni de focus:ring', async () => {
+    statsStatus = 500;
+    monter();
+    const bouton = await screen.findByRole('button', { name: 'Réessayer' });
+    expect(bouton.className).toContain('focus-visible:outline-2');
+    expect(bouton.className).toContain('focus-visible:outline-[hsl(var(--ol-red-bright))]');
+    expect(bouton.className).not.toMatch(/focus:outline-none|focus:ring/);
   });
 });

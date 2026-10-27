@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { hasJersey } from '@/lib/jersey';
 import { initiales } from '@/lib/initiales';
@@ -202,6 +202,53 @@ function LienRetour({ retour, className }: { retour: PlayersSearch; className: s
   );
 }
 
+// L60 : un identifiant qui ne désigne aucun joueur connu (lien mal formé, ou 404 d'un joueur absent de toutes nos sources).
+// Fond --surface (jamais le texte posé sur la photo de fond de la page) et un h1 (L209 : jamais une fiche sans h1).
+function JoueurInconnu({ retour, message }: { retour: PlayersSearch; message: string }) {
+  return (
+    <div className="space-y-4">
+      <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
+      <section data-testid="joueur-inconnu" role="alert" className="rounded-md bg-surface border border-border p-6 text-center space-y-2">
+        <h1 className="font-display text-2xl font-bold text-fg-bright leading-tight">Joueur inconnu</h1>
+        <p className="text-sm text-fg-muted">{message}</p>
+      </section>
+    </div>
+  );
+}
+
+// L60 : les statistiques n'ont pas pu être chargées. Le bloc reste affiché pendant le nouvel essai (`enCours`) : le bouton
+// ne disparaît pas, son libellé change et il passe en aria-disabled (le focus reste dessus, WCAG 2.4.3) ; le bloc est une
+// zone role=alert (aria-live) qui annonce « Nouvel essai… ». Contour de focus visible : --ol-red-bright (WCAG 2.4.7, 1.4.11).
+function ErreurStats({ retour, error, enCours, onRetry }: { retour: PlayersSearch; error: unknown; enCours: boolean; onRetry: () => void }) {
+  return (
+    <div className="space-y-4">
+      <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
+      <section data-testid="joueur-erreur" role="alert" className="rounded-md bg-surface border border-border p-6 text-center space-y-3">
+        <h1 className="font-display text-2xl font-bold text-fg-bright leading-tight">Statistiques indisponibles</h1>
+        <p className="text-loss-fg">Les statistiques de ce joueur n’ont pas pu être chargées.</p>
+        {/* Une réponse du serveur (5xx, 429…) n'est pas une coupure de réseau : sans réponse, c'est la connexion. */}
+        <p className="text-sm text-fg-muted">
+          {error instanceof ApiError
+            ? 'Le serveur n’a pas pu répondre. Réessayez dans un instant.'
+            : 'Connexion impossible. Vérifiez votre réseau, puis réessayez.'}
+        </p>
+        <button
+          type="button"
+          aria-disabled={enCours}
+          onClick={() => { if (!enCours) onRetry(); }}
+          className={cn(
+            'inline-flex items-center rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-bright hover:bg-surface-2',
+            'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ol-red-bright))]',
+            enCours && 'cursor-default',
+          )}
+        >
+          {enCours ? 'Nouvel essai…' : 'Réessayer'}
+        </button>
+      </section>
+    </div>
+  );
+}
+
 /**
  * 404 de /api/players/<id>/season-stats : le joueur n'a pas encore de minute cette saison (convoqué, jeune, recrue).
  * Ce n'est pas une erreur : état neutre. Le nom vient de la feuille du dernier match (déjà en cache depuis Composition
@@ -210,10 +257,10 @@ function LienRetour({ retour, className }: { retour: PlayersSearch; className: s
  * à défaut des trois, le h1 est « Joueur » (L209 : une page sans h1 non vide est inaccessible).
  */
 function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: PlayersSearch }) {
-  const { data: feuille } = useLineup();
+  const { data: feuille, isLoading: feuilleEnCours } = useLineup();
   const { data: effectif } = useSquad();
-  const { data: courant } = useCurrentLiveMatch();
-  const { data: prochain } = useLiveMatchStats(courant?.gameId ?? null, courant?.matchupId ?? null);
+  const { data: courant, isLoading: courantEnCours } = useCurrentLiveMatch();
+  const { data: prochain, isLoading: prochainEnCours } = useLiveMatchStats(courant?.gameId ?? null, courant?.matchupId ?? null);
   const dernier = feuille ? [...feuille.starters, ...feuille.bench, ...feuille.injured].find((p) => p.athleteId === athleteId) : undefined;
   const cote = prochain ? (prochain.home.id === OL_365SCORES_ID ? prochain.lineups?.home : prochain.lineups?.away) : undefined;
   const probable = cote && [...cote.starters, ...cote.bench].find((p) => p.athleteId === athleteId);
@@ -225,6 +272,12 @@ function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: Pl
       : membre
         ? { name: membre.name, poste: membre.position, numero: membre.jerseyNumber }
         : undefined;
+  // L60 : l'effectif de l'OL a répondu (la liste de tous les joueurs sous contrat) et ni lui ni les deux feuilles ne
+  // connaissent ce joueur → « Joueur inconnu », pas un joueur sans minute. Tant que l'effectif n'a pas répondu (échec,
+  // chargement) ou qu'une feuille est encore attendue, l'état neutre reste : on ne conclut pas sur une absence de réponse.
+  if (!joueur && effectif !== undefined && !feuilleEnCours && !courantEnCours && !prochainEnCours) {
+    return <JoueurInconnu retour={retour} message="Ce joueur ne figure pas dans l’effectif de l’OL. Revenez à la liste pour en choisir un." />;
+  }
   return (
     <div className="space-y-4">
       <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
@@ -251,21 +304,19 @@ export function PlayerDetailPage() {
   // Un identifiant qui n'est pas un entier positif (lien mal formé, URL tapée) n'a pas de requête : joueur inconnu, pas panne.
   const idValide = Number.isInteger(athleteId) && athleteId > 0;
   const retour = useSearch({ from: '/player/$athleteId' });
-  const { data: player, isLoading, isError, error, refetch } = usePlayerSeasonStats(idValide ? athleteId : null);
+  const { data: player, isLoading, isError, isFetching, error, refetch } = usePlayerSeasonStats(idValide ? athleteId : null);
+  // TanStack v5 : un nouvel essai sans données remet la requête en « pending » et efface l'erreur. On garde la dernière
+  // erreur tant que l'essai court, pour que le bloc d'erreur (et le focus sur son bouton) ne disparaisse pas (L60).
+  const derniereErreur = useRef<{ error: unknown } | null>(null);
+  if (isError) derniereErreur.current = { error };
+  else if (!isFetching) derniereErreur.current = null;
+  const nouvelEssai = !isError && isFetching && !player && derniereErreur.current !== null;
 
   if (!idValide) {
-    return (
-      <div className="space-y-4">
-        <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
-        <div role="alert" className="py-20 text-center space-y-3">
-          <p className="text-loss-fg">Joueur inconnu.</p>
-          <p className="text-sm text-fg-muted">Ce lien ne désigne aucun joueur. Revenez à la liste pour en choisir un.</p>
-        </div>
-      </div>
-    );
+    return <JoueurInconnu retour={retour} message="Ce lien ne désigne aucun joueur. Revenez à la liste pour en choisir un." />;
   }
 
-  if (isLoading) {
+  if (isLoading && !nouvelEssai) {
     return (
       <div className="flex items-center justify-center py-20 text-fg-dim">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -278,25 +329,12 @@ export function PlayerDetailPage() {
 
   if (isError || !player) {
     return (
-      <div className="space-y-4">
-        <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
-        <div role="alert" className="py-20 text-center space-y-3">
-          <p className="text-loss-fg">Les statistiques de ce joueur n’ont pas pu être chargées.</p>
-          {/* Une réponse du serveur (5xx, 429…) n'est pas une coupure de réseau : sans réponse, c'est la connexion. */}
-          <p className="text-sm text-fg-muted">
-            {error instanceof ApiError
-              ? 'Le serveur n’a pas pu répondre. Réessayez dans un instant.'
-              : 'Connexion impossible. Vérifiez votre réseau, puis réessayez.'}
-          </p>
-          <button
-            type="button"
-            onClick={() => void refetch()}
-            className="inline-flex items-center rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-bright hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ol-red/50"
-          >
-            Réessayer
-          </button>
-        </div>
-      </div>
+      <ErreurStats
+        retour={retour}
+        error={isError ? error : derniereErreur.current?.error}
+        enCours={nouvelEssai}
+        onRetry={() => void refetch()}
+      />
     );
   }
 
