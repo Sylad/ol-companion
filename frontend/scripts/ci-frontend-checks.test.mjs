@@ -55,4 +55,14 @@ describe('workflow frontend-checks.yml', () => {
     expect(dockerfile).not.toMatch(/npm install/);
     expect(dockerfile).toMatch(/^COPY package\*\.json/m);
   });
+
+  // L58 — le job nginx-cache lance `npm ci` (scripts d'installation de paquets tiers) : il ne
+  // doit pas hériter de `packages: write` du workflow ni laisser le jeton dans .git/config.
+  it('L58 — le job nginx-cache de build.yml n\'a que contents: read et ne persiste pas le jeton', () => {
+    const build = parse(readFileSync(`${root}/.github/workflows/build.yml`, 'utf8'));
+    const job = build.jobs['nginx-cache'];
+    expect(job.permissions).toEqual({ contents: 'read' });
+    const checkout = job.steps.find((s) => String(s.uses ?? '').startsWith('actions/checkout'));
+    expect(checkout.with?.['persist-credentials']).toBe(false);
+  });
 });

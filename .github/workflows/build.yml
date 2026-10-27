@@ -71,8 +71,13 @@ jobs:
   nginx-cache:
     name: Cache HTTP (nginx)
     runs-on: ubuntu-latest
+    # `npm ci` exécute des scripts de paquets tiers : pas de packages: write ici.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 20
