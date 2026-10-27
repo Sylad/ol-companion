@@ -139,6 +139,50 @@ describe('<PlayerDetailPage /> — joueur sans minute (L178)', () => {
   });
 });
 
+describe('<PlayerDetailPage /> — la cause de l\'échec est dite (L60)', () => {
+  it('L60 R1 — 500 : le serveur est en cause, pas le réseau de l\'utilisateur', async () => {
+    statsStatus = 500;
+    monter();
+    const alerte = await screen.findByRole('alert');
+    expect(alerte).toHaveTextContent('Le serveur n’a pas pu répondre');
+    expect(alerte).not.toHaveTextContent(/connexion/i);
+    expect(screen.getByRole('button', { name: 'Réessayer' })).toBeInTheDocument();
+  });
+
+  it('L60 R2 — réseau coupé : la connexion est en cause, pas le joueur ni le serveur', async () => {
+    fetchMock.mockImplementation((url: string) =>
+      String(url).includes('/lineup') ? Promise.resolve(reponse(200, feuille)) : Promise.reject(new TypeError('Failed to fetch')),
+    );
+    monter();
+    const alerte = await screen.findByRole('alert');
+    expect(alerte).toHaveTextContent('Connexion impossible');
+    expect(alerte).not.toHaveTextContent('Le serveur n’a pas pu répondre');
+    expect(screen.getByRole('button', { name: 'Réessayer' })).toBeInTheDocument();
+  });
+
+  it('L60 R3 — Réessayer après une panne réseau charge la fiche quand la connexion revient', async () => {
+    let coupe = true;
+    fetchMock.mockImplementation((url: string) =>
+      String(url).includes('/lineup') ? Promise.resolve(reponse(200, feuille))
+      : coupe ? Promise.reject(new TypeError('Failed to fetch'))
+      : Promise.resolve(reponse(404)),
+    );
+    monter();
+    await screen.findByRole('alert');
+    coupe = false;
+    fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
+    expect(await screen.findByTestId('joueur-sans-stats')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('L60 R4 — 404 : ni « connexion » ni « serveur », état neutre sans Réessayer', async () => {
+    monter();
+    const etat = await screen.findByTestId('joueur-sans-stats');
+    expect(etat).not.toHaveTextContent(/connexion|serveur/i);
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+  });
+});
+
 describe('<PlayerDetailPage /> — libellé du lien de retour (L178)', () => {
   it.each([
     [{}, 'Retour à la composition'],

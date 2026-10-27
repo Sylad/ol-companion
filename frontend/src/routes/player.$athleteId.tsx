@@ -16,7 +16,7 @@ import {
   type TooltipProps,
 } from 'recharts';
 import { usePlayerSeasonStats } from '@/hooks/use-player-stats';
-import { estIntrouvable } from '@/lib/api';
+import { ApiError, estIntrouvable } from '@/lib/api';
 import { useLineup } from '@/hooks/use-lineup';
 import { useSquad } from '@/hooks/use-squad';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
@@ -270,6 +270,12 @@ export function PlayerDetailPage() {
         <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
         <div role="alert" className="py-20 text-center space-y-3">
           <p className="text-loss-fg">Les statistiques de ce joueur n’ont pas pu être chargées.</p>
+          {/* Une réponse du serveur (5xx, 429…) n'est pas une coupure de réseau : sans réponse, c'est la connexion. */}
+          <p className="text-sm text-fg-muted">
+            {error instanceof ApiError
+              ? 'Le serveur n’a pas pu répondre. Réessayez dans un instant.'
+              : 'Connexion impossible. Vérifiez votre réseau, puis réessayez.'}
+          </p>
           <button
             type="button"
             onClick={() => void refetch()}
