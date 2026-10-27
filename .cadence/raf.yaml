@@ -691,11 +691,12 @@ lots:
     finished: 2026-10-08
   - id: L53
     title: "Statistiques joueurs : un détail de match 365scores en timeout est sauté en silence (stats bâties sur 9 matchs sur 10 et gardées 1 h) ; vérifier les passes décisives (Tolisso 12 en 10 matchs)"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-10-03
     notes:
       - { date: 2026-10-03, text: "03-10, second passage QA : « Passes D. » totalise au moins 95 sur 22 lignes pour 18 buts marqués (Abner 13, Tolisso 12 ; 4 passes créditées à Tolisso sur le 3-1 contre Auxerre)." }
+    started: 2026-10-27
   - id: L54
     title: "Livraison : index.html servi sans Cache-Control — un visiteur revenu garde l'ancienne appli (mesuré le 03-10 : calendrier d'avant L39 encore affiché 1 h 25 après la livraison) ; un fichier /assets/ absent répond 200 text/html max-age=14400 et Cloudflare le met en cache (page blanche possible) — no-cache sur index.html, 404 sur un /assets/ manquant, cache long sur les fichiers à empreinte, contrôle d'effet dans cadence.yaml"
     status: done
