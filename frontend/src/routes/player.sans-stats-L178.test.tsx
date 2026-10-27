@@ -488,6 +488,49 @@ describe('<PlayerDetailPage /> — Réessayer garde le bloc d\'erreur et le focu
   });
 });
 
+// L225 — Réessayer cliqué hors ligne : la requête est en pause (fetchStatus « paused », isFetching faux). Au retour du
+// réseau elle repart : le bloc, le bouton et son focus restent jusqu'à la réponse, « Chargement du joueur… » ne le remplace pas.
+describe('<PlayerDetailPage /> — Réessayer cliqué hors ligne (L225)', () => {
+  function pannePuisEnAttente() {
+    const { promesse, relache } = enAttente();
+    let enPanne = true;
+    fetchMock.mockImplementation((url: string) => {
+      const u = String(url);
+      if (u.includes('/lineup')) return Promise.resolve(reponse(200, feuille));
+      if (u.includes('/season-stats')) return enPanne ? Promise.reject(new TypeError('Failed to fetch')) : promesse;
+      return Promise.resolve(reponse(200, null));
+    });
+    return { relache, finDePanne: () => { enPanne = false; } };
+  }
+
+  it('R1 — Réessayer hors ligne : le bloc reste en « Nouvel essai… » (requête en pause), puis au retour du réseau, jusqu\'à la réponse, avec le même bouton et son focus', async () => {
+    const { relache, finDePanne } = pannePuisEnAttente();
+    monter();
+    const alerte = await screen.findByRole('alert');
+    const bouton = screen.getByRole('button', { name: 'Réessayer' });
+    bouton.focus();
+    const avant = appelsStats();
+    finDePanne();
+    act(() => { onlineManager.setOnline(false); });
+    fireEvent.click(bouton);
+    // en pause : aucun appel de plus, mais le bloc ne change pas de nature
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Nouvel essai…' })).toBe(bouton));
+    expect(appelsStats()).toBe(avant);
+    expect(screen.getByRole('alert')).toBe(alerte);
+    expect(screen.queryByText(/Chargement du joueur/)).toBeNull();
+    expect(bouton).toHaveFocus();
+    act(() => { onlineManager.setOnline(true); });
+    await waitFor(() => expect(appelsStats()).toBeGreaterThan(avant));
+    await attendre();
+    expect(screen.queryByText(/Chargement du joueur/)).toBeNull();
+    expect(screen.getByRole('alert')).toBe(alerte);
+    expect(screen.getByRole('button', { name: 'Nouvel essai…' })).toBe(bouton);
+    expect(bouton).toHaveFocus();
+    relache(reponse(404));
+    expect(await screen.findByTestId('joueur-sans-stats')).toBeInTheDocument();
+  });
+});
+
 // L60 — constat 5 : jamais une fiche sans h1 (L209) ; constat 4 : le bloc d'erreur est posé sur --surface ;
 // constat 1 : contour de focus visible en --ol-red-bright (WCAG 2.4.7, 1.4.11).
 describe('<PlayerDetailPage /> — h1, fond et focus des états d\'erreur (L60)', () => {

@@ -304,19 +304,21 @@ export function PlayerDetailPage() {
   // Un identifiant qui n'est pas un entier positif (lien mal formé, URL tapée) n'a pas de requête : joueur inconnu, pas panne.
   const idValide = Number.isInteger(athleteId) && athleteId > 0;
   const retour = useSearch({ from: '/player/$athleteId' });
-  const { data: player, isLoading, isError, isFetching, error, refetch } = usePlayerSeasonStats(idValide ? athleteId : null);
+  const { data: player, isLoading, isError, isFetching, isPaused, error, refetch } = usePlayerSeasonStats(idValide ? athleteId : null);
   // TanStack v5 : une requête relancée sans données (Réessayer, invalidation SSE, reconnexion) repasse en « pending » et
   // efface son erreur. On garde la dernière erreur DE CE JOUEUR tant que la relance court (L60), pour que l'écran ne
   // change pas d'ici la réponse : un 404 garde l'état neutre ou « inconnu », une vraie erreur garde son bloc (et le focus
   // sur son bouton). Liée à l'identifiant car le routeur ne remonte pas la page quand $athleteId change : l'erreur de A
-  // ne doit pas s'afficher pendant le chargement de B. Écrite dans un effet, jamais pendant le rendu.
+  // ne doit pas s'afficher pendant le chargement de B. Écrite dans un effet, jamais pendant le rendu. Hors ligne, Réessayer met
+  // la requête en pause (isFetching faux, isPaused vrai) : la mémoire ne s'efface qu'à l'état « idle » (L225), sinon au
+  // retour du réseau « Chargement du joueur… » remplacerait le bloc, démonterait le bouton et le focus partirait sur body.
   const [derniereErreur, setDerniereErreur] = useState<{ athleteId: number; error: unknown } | null>(null);
   useEffect(() => {
     if (isError) setDerniereErreur((m) => (m && m.athleteId === athleteId && m.error === error ? m : { athleteId, error }));
-    else if (!isFetching) setDerniereErreur(null);
-  }, [athleteId, isError, error, isFetching]);
+    else if (!isFetching && !isPaused) setDerniereErreur(null);
+  }, [athleteId, isError, error, isFetching, isPaused]);
   const memoire = derniereErreur && derniereErreur.athleteId === athleteId ? derniereErreur : null;
-  const nouvelEssai = !isError && isFetching && !player && memoire !== null;
+  const nouvelEssai = !isError && (isFetching || isPaused) && !player && memoire !== null;
   const erreurAffichee = isError ? error : nouvelEssai ? memoire?.error : undefined;
 
   if (!idValide) {
