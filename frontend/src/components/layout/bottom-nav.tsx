@@ -256,7 +256,11 @@ export function BottomNav() {
                 <NewsBadge badge={news.badge} label="" className="absolute -right-2 -top-1.5 h-4 min-w-4 ring-2 ring-surface" />
               )}
             </span>
-            <span className="text-[10px] font-medium tracking-wide">Plus</span>
+            {/* L59 : la page courante cachée est nommée à l'écran (le nom accessible la contient,
+                WCAG 2.5.3) ; un libellé long est tronqué par le CSS, le texte reste entier. */}
+            <span className="max-w-full truncate px-1 text-[10px] font-medium tracking-wide">
+              {currentMore && !open ? currentMore.label : 'Plus'}
+            </span>
           </button>
         </div>
       </nav>

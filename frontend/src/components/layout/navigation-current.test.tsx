@@ -264,3 +264,40 @@ describe('fiche joueur (/player/<id>) — « Joueurs » reste la page actuelle',
     expect(currentLabels(sidebarEntries())).toEqual(['Joueurs']);
   });
 });
+
+// L59 — le nom de la page courante cachée sous « Plus » est lu à l'écran, pas seulement
+// par le lecteur d'écran (relevé de la revue UX L29, WCAG 2.5.3 : le texte visible est
+// contenu dans le nom accessible).
+describe('libellé visible de « Plus » (téléphone)', () => {
+  const visibleText = () => screen.getByTestId('bouton-plus').querySelector('span.text-\\[10px\\]')!.textContent;
+
+  it('sur une page de la barre, la case dit « Plus »', async () => {
+    await renderAt('/standings', () => <BottomNav />);
+    expect(visibleText()).toBe('Plus');
+  });
+
+  it.each(MORE_ENTRIES)('sur $to, la case dit « $label » et son nom accessible le contient', async ({ to, label: name }) => {
+    await renderAt(to, () => <BottomNav />);
+    expect(visibleText()).toBe(name);
+    expect(screen.getByTestId('bouton-plus').getAttribute('aria-label')).toContain(name);
+  });
+
+  it('sur la fiche joueur, la case dit « Joueurs »', async () => {
+    await renderAt('/player/1', () => <BottomNav />);
+    expect(visibleText()).toBe('Joueurs');
+  });
+
+  it('panneau ouvert, la case redit « Plus » (le panneau nomme les pages)', async () => {
+    const user = userEvent.setup();
+    await renderAt('/players', () => <BottomNav />);
+    await user.click(screen.getByTestId('bouton-plus'));
+    expect(visibleText()).toBe('Plus');
+  });
+
+  it('un libellé long est tronqué par le CSS, jamais coupé dans le texte', async () => {
+    await renderAt('/equipe-de-france', () => <BottomNav />);
+    const span = screen.getByTestId('bouton-plus').querySelector('span.text-\\[10px\\]')!;
+    expect(span.textContent).toBe('Équipe de France');
+    expect(span.className).toContain('truncate');
+  });
+});
