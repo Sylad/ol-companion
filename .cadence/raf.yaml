@@ -770,6 +770,7 @@ lots:
     visible: true
     created: 2026-10-05
     started: 2026-10-27
+    review: { date: 2026-10-27, verdict: "conforme : une note mineure (un 200 au corps illisible est annoncé comme « Connexion impossible »), sans sous-tâche — orchestré (vague 2026-10-27-1950, 1 passe(s) de correction + passe des mineurs)", commit: 6535a8deec4c1467582badad5bf9c0e77d5cfe95 }
   - id: L61
     title: "Banc incohérent : /players affiche 11 entrées (10 joueurs + entraîneur, Tagliafico inclus), /match/4735259 en affiche 9 sans Tagliafico — aligner les deux sources (complète L42) — QA prod 05-10"
     status: dropped
