@@ -142,16 +142,17 @@ export class PlayerStatsService implements OnModuleInit {
 
     const acc = new Map<number, any>();
     let succeeded = 0;
+    // Un détail en échec (timeout, HTTP non-2xx, charge illisible) est relu une fois après la passe, puis nommé s'il reste manquant (L53).
+    let missing: SeasonMatch[] = [];
     for (const m of finished) {
-      try {
-        const game = await this.fetchGameDetail(m.id);
-        if (!game) continue;
-        const ctx = this.toContext(m);
-        accumulateGame(acc, game, ctx);
-        succeeded++;
-      } catch (err) {
-        this.logger.warn(`Skip match ${m.id}: ${(err as Error).message}`);
-      }
+      if (await this.accumulateMatch(acc, m)) succeeded++;
+      else missing.push(m);
+    }
+    const retry = missing;
+    missing = [];
+    for (const m of retry) {
+      if (await this.accumulateMatch(acc, m)) succeeded++;
+      else missing.push(m);
     }
 
     // Panne de 365scores, pas une saison sans stat : aucun match lu, ou moins que pour la copie actuelle (panne partielle). On la garde.
@@ -168,12 +169,37 @@ export class PlayerStatsService implements OnModuleInit {
 
     const stats = finalize(acc);
     this.cache = new Map(stats.map((s) => [s.athleteId, s]));
-    this.cacheBuiltAt = Date.now();
+    // Copie bâtie sans tous les matchs : valable 5 min seulement (le disque garde la même date), pas 1 h.
+    this.cacheBuiltAt =
+      missing.length > 0
+        ? Date.now() - CACHE_TTL_MS + RETRY_AFTER_FAILURE_MS
+        : Date.now();
+    if (missing.length > 0) {
+      this.logger.warn(
+        `player-stats : ${missing.length}/${finished.length} détails de match illisibles (${missing.map((m) => m.id).join(', ')}) — stats partielles, nouvelle tentative dans 5 min`,
+      );
+    }
     this.cacheMatchCount = succeeded;
     this.writeCacheToDisk();
     this.logger.log(
       `player-stats rebuilt: ${stats.length} OL players from ${succeeded}/${finished.length} matches`,
     );
+  }
+
+  /** Lit un match et l'ajoute à l'accumulateur ; faux si son détail est illisible (échec journalisé). */
+  private async accumulateMatch(
+    acc: Map<number, any>,
+    m: SeasonMatch,
+  ): Promise<boolean> {
+    try {
+      const game = await this.fetchGameDetail(m.id);
+      if (!game) return false;
+      accumulateGame(acc, game, this.toContext(m));
+      return true;
+    } catch (err) {
+      this.logger.warn(`Skip match ${m.id}: ${(err as Error).message}`);
+      return false;
+    }
   }
 
   /** Garde la copie en mémoire et sur disque telle quelle ; la prochaine tentative est reportée de 5 min. */

@@ -269,4 +269,79 @@ describe('PlayerStatsService', () => {
       });
     });
   });
+
+  describe('détail de match en échec (L53)', () => {
+    const HOUR = 60 * 60 * 1000;
+    const ok = () => ({ ok: true, status: 200, json: async () => fixture }) as any;
+    afterEach(() => jest.restoreAllMocks());
+
+    async function serviceADeuxMatchs(second: (n: number) => any) {
+      const { svc, seasonMatches } = buildService();
+      const [un] = await seasonMatches.getMatches();
+      seasonMatches.getMatches.mockResolvedValue([un, { ...un, id: 4463861 }]);
+      let appelsSecond = 0;
+      svc.fetcher = jest.fn(async (url: any) =>
+        String(url).includes('gameId=4463861') ? second(++appelsSecond) : ok(),
+      );
+      return svc;
+    }
+
+    it('R1 — un détail en timeout est relu une fois avant de renoncer : le match rattrapé est dans les stats', async () => {
+      await withCwd(async () => {
+        const svc = await serviceADeuxMatchs((n) => {
+          if (n === 1) throw new DOMException('timeout', 'TimeoutError');
+          return ok();
+        });
+        const all = await svc.getAll();
+        expect(all[0].matchesPlayed).toBe(2);
+      });
+    });
+
+    it('R2 — un match resté illisible après la relecture : stats bâties sur les autres, mais reprise sous 5 min (pas 1 h) et alerte nommant le match', async () => {
+      await withCwd(async () => {
+        const svc = await serviceADeuxMatchs(() => {
+          throw new DOMException('timeout', 'TimeoutError');
+        });
+        const warn = jest.spyOn((svc as any).logger, 'warn');
+        expect((await svc.getAll())[0].matchesPlayed).toBe(1);
+        expect(warn.mock.calls.map((c) => String(c[0])).join('\n')).toContain('4463861');
+        const fetcher = svc.fetcher as jest.Mock;
+        const apres = fetcher.mock.calls.length;
+        const now = Date.now();
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(now + 60_000);
+        await svc.getAll();
+        expect(fetcher.mock.calls.length).toBe(apres);
+        // 6 min plus tard : le match manquant est réessayé, et, rattrapé, la copie est complète.
+        svc.fetcher = jest.fn(async () => ok());
+        clock.mockReturnValue(now + 6 * 60_000);
+        expect((await svc.getAll())[0].matchesPlayed).toBe(2);
+        clock.mockReturnValue(now + 6 * 60_000 + HOUR / 2);
+        const fetcher2 = svc.fetcher as jest.Mock;
+        const n2 = fetcher2.mock.calls.length;
+        await svc.getAll();
+        expect(fetcher2.mock.calls.length).toBe(n2);
+      });
+    });
+
+    it('R3 — un HTTP non-2xx est traité comme un timeout (relu, puis reprise courte)', async () => {
+      await withCwd(async () => {
+        const svc = await serviceADeuxMatchs((n) => (n === 1 ? ({ ok: false, status: 503 } as any) : ok()));
+        expect((await svc.getAll())[0].matchesPlayed).toBe(2);
+      });
+    });
+
+    it('R4 — tous les matchs lus : TTL normal d\'une heure, aucune alerte', async () => {
+      await withCwd(async () => {
+        const svc = await serviceADeuxMatchs(() => ok());
+        const warn = jest.spyOn((svc as any).logger, 'warn');
+        await svc.getAll();
+        const fetcher = svc.fetcher as jest.Mock;
+        const n = fetcher.mock.calls.length;
+        jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 30 * 60_000);
+        await svc.getAll();
+        expect(fetcher.mock.calls.length).toBe(n);
+        expect(warn).not.toHaveBeenCalled();
+      });
+    });
+  });
 });
