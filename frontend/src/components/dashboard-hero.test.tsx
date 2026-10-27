@@ -164,6 +164,18 @@ describe('<DashboardHero /> — prochain rendez-vous (L39)', () => {
     renderHero();
 
     expect(await screen.findByText('Aucun match programmé.')).toBeInTheDocument();
+    // Le calendrier a répondu : plus de squelette, aucune carte de match.
+    expect(screen.queryByTestId('squelette-prochain-match')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('carte-prochain-match')).not.toBeInTheDocument();
+  });
+
+  it('calendrier pas encore arrivé : le squelette, jamais « Aucun match programmé » (le test ci-dessus ne distinguerait pas ce cas)', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => undefined)));
+    renderHero();
+
+    expect(await screen.findByTestId('squelette-prochain-match')).toBeInTheDocument();
+    expect(screen.queryByText('Aucun match programmé.')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('message-aucun-match')).not.toBeInTheDocument();
   });
 
   // L52 — à 390 px, un nom d'adversaire long rognait la carte « Tableau de bord match » :

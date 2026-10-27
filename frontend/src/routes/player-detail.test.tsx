@@ -19,7 +19,7 @@ vi.mock('recharts', () => {
   };
 });
 
-import { PlayerDetailPage } from './player.$athleteId';
+import { PlayerDetailPage, SparkTooltip } from './player.$athleteId';
 
 const byMatch = (gameId: number, competitionCode: 'L1' | 'UCL' | 'UEL' | 'CDF') => ({
   gameId, date: '2026-09-20T18:00:00Z', opponent: 'Nice', isHome: true, olScore: 2, opponentScore: 1,
@@ -57,5 +57,15 @@ describe('<PlayerDetailPage /> — noms de compétitions (L49)', () => {
       'Comp. : L1 = Ligue 1 · C1 = Ligue des champions · C3 = Ligue Europa · CdF = Coupe de France',
     );
     expect(legend).not.toHaveClass('sr-only');
+  });
+});
+
+describe('<SparkTooltip /> — nom de la compétition (L46)', () => {
+  it('C1 : sigle affiché, « Ligue des champions » annoncé, sans la Ligue 1 ni le C3', () => {
+    const payload = [{ payload: { index: 0, label: '', value: 2, match: byMatch(2, 'UCL') } }];
+    render(<SparkTooltip active payload={payload as never} unit="buts" />);
+    const abbr = screen.getByTitle('Ligue des champions');
+    expect(abbr).toHaveTextContent('C1Ligue des champions');
+    expect(screen.queryByTitle('Ligue Europa')).not.toBeInTheDocument();
   });
 });

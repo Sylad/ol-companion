@@ -91,7 +91,7 @@ interface SparkPoint {
   match: PlayerByMatch;
 }
 
-function SparkTooltip({ active, payload, unit }: TooltipProps<number, string> & { unit: string }) {
+export function SparkTooltip({ active, payload, unit }: TooltipProps<number, string> & { unit: string }) {
   if (!active || !payload?.length) return null;
   const p = payload[0].payload as SparkPoint;
   const m = p.match;

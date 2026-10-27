@@ -73,6 +73,13 @@ describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
     }
   });
 
+  it("L46 — l'infobulle du graphique nomme la Ligue des champions en long, jamais C1", () => {
+    const point = { matchIndex: 2, date: '2026-09-20', goalDifference: 1, points: null, competitionCode: 'UCL', result: 'W' };
+    render(<ChartTooltip active payload={[{ payload: point }] as never} />);
+    expect(screen.getByText(/Ligue des champions ·/)).toBeInTheDocument();
+    expect(screen.queryByText(/\bC1\b/)).not.toBeInTheDocument();
+  });
+
   // L102 — idem dans l'infobulle du graphique : « Match nul » en --draw, jamais en gris.
   it("écrit « Match nul » de l'infobulle en --draw", () => {
     const point = { matchIndex: 3, date: '2026-09-20', goalDifference: 2, points: 7, competitionCode: 'L1', result: 'D' };
