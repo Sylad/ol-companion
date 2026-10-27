@@ -8,8 +8,9 @@ import type { LineupResponse } from '@/types/api';
 // Le hook réel et un fetch simulé sont utilisés : c'est le statut HTTP qui décide.
 
 let search: Record<string, string | undefined> = {};
+let idRoute = '133157';
 vi.mock('@tanstack/react-router', () => ({
-  useParams: () => ({ athleteId: '133157' }),
+  useParams: () => ({ athleteId: idRoute }),
   useSearch: () => search,
   Link: ({ children, search: s, className }: { children: React.ReactNode; search?: unknown; className?: string }) => (
     <a href="/players" data-search={JSON.stringify(s ?? null)} className={className}>{children}</a>
@@ -52,6 +53,7 @@ const appelsStats = () => fetchMock.mock.calls.filter(([url]) => String(url).inc
 
 beforeEach(() => {
   search = {};
+  idRoute = '133157';
   statsStatus = 404;
   lineupBody = feuille;
   currentBody = null;
@@ -180,6 +182,17 @@ describe('<PlayerDetailPage /> — la cause de l\'échec est dite (L60)', () => 
     const etat = await screen.findByTestId('joueur-sans-stats');
     expect(etat).not.toHaveTextContent(/connexion|serveur/i);
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+  });
+
+  it.each(['abc', '0', '-3'])('L60 R5 — identifiant « %s » : le joueur est inconnu, pas la connexion, et aucun appel ne part', async (id) => {
+    idRoute = id;
+    monter();
+    const alerte = await screen.findByRole('alert');
+    expect(alerte).toHaveTextContent('Joueur inconnu');
+    expect(alerte).not.toHaveTextContent(/connexion|serveur/i);
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+    expect(screen.getByRole('link', { name: /Retour/ })).toBeInTheDocument();
+    expect(appelsStats()).toBe(0);
   });
 });
 

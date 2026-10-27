@@ -248,10 +248,22 @@ function JoueurSansMinute({ athleteId, retour }: { athleteId: number; retour: Pl
 export function PlayerDetailPage() {
   const { athleteId: athleteIdRaw } = useParams({ from: '/player/$athleteId' });
   const athleteId = Number(athleteIdRaw);
+  // Un identifiant qui n'est pas un entier positif (lien mal formé, URL tapée) n'a pas de requête : joueur inconnu, pas panne.
+  const idValide = Number.isInteger(athleteId) && athleteId > 0;
   const retour = useSearch({ from: '/player/$athleteId' });
-  const { data: player, isLoading, isError, error, refetch } = usePlayerSeasonStats(
-    Number.isFinite(athleteId) ? athleteId : null,
-  );
+  const { data: player, isLoading, isError, error, refetch } = usePlayerSeasonStats(idValide ? athleteId : null);
+
+  if (!idValide) {
+    return (
+      <div className="space-y-4">
+        <LienRetour retour={retour} className="inline-flex items-center gap-2 text-sm text-fg-dim hover:text-fg" />
+        <div role="alert" className="py-20 text-center space-y-3">
+          <p className="text-loss-fg">Joueur inconnu.</p>
+          <p className="text-sm text-fg-muted">Ce lien ne désigne aucun joueur. Revenez à la liste pour en choisir un.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
