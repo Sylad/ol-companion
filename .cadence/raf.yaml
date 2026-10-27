@@ -753,13 +753,15 @@ lots:
   - id: L59
     title: "Téléphone : afficher sous « Plus » le nom de la page courante cachée (ou acter que seul l'accessible la nomme) — UX mineur relevé en revue L29"
     public: "Téléphone : la barre du bas nomme la page ouverte sous « Plus »"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     screen: component
     created: 2026-10-05
     started: 2026-10-27
     review: { date: 2026-10-27, verdict: "conforme — orchestré (vague 2026-10-27-1950, 1 passe(s) de correction)", commit: cf51f6baff8d9c5b3916ddfcc779b55011ed3486 }
+    ux: { date: 2026-10-27, verdict: "lead (captures regardées : « Équipe de … » nommé sous Plus avec le filet rouge à 390 px, menu ouvert marqué, focus rendu après Échap) : conforme, 3 mineurs (libellés longs tronqués, nom accessible qui commence par Plus, pastille sur le filet — antérieure)" }
+    finished: 2026-10-27
   - id: L60
     title: "Fiche joueur : état d'erreur distinguant réseau / joueur inconnu, avec bouton Réessayer (Nielsen 9) — relevé en revue UX L29"
     status: doing
