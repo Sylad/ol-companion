@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { SeasonMatchesService } from './season-matches.service';
+import { SeasonMatchesService, stageLabel, legLabel } from './season-matches.service';
 import { EventBusService } from '../events/event-bus.service';
 import type { FixturesService } from '../fixtures/fixtures.service';
 
@@ -120,6 +120,46 @@ describe('SeasonMatchesService', () => {
         [4, null, 'retour'],
         [5, null, null],
       ]);
+    });
+  });
+
+  it('round : « 1er tour » (singulier ordinal), les autres « Ne tour » ; la journée l’emporte sur le tour ET sur la manche', async () => {
+    await withCwd(async () => {
+      const svc = buildService([
+        [
+          game({ id: 1, competitionId: 332, startTime: inSeasonIso, stageName: '1st Round', legNum: 1 }),
+          game({ id: 2, competitionId: 332, startTime: inSeasonIso, stageName: '3rd Round' }),
+          // Journée connue : ni le tour ni la manche ne sont repris.
+          game({ id: 3, competitionId: 332, startTime: inSeasonIso, roundNum: 2, stageName: '2nd Round', legNum: 2 }),
+          // Tour traduit ailleurs que dans les qualifications : non affiché.
+          game({ id: 4, competitionId: 572, startTime: inSeasonIso, stageName: '1st Round', legNum: 1 }),
+        ],
+        [],
+      ]);
+      const result = await svc.getMatches({ force: true });
+      expect(result.map((m) => [m.id, m.matchday, m.round]).sort()).toEqual([
+        [1, null, '1er tour de qualification · aller'],
+        [2, null, '3e tour de qualification'],
+        [3, 2, null],
+        [4, null, 'aller'],
+      ]);
+    });
+  });
+
+  describe('stageLabel et legLabel', () => {
+    it('stageLabel : qualifications seules, tour absent ou inconnu → null', () => {
+      expect(stageLabel(332, '1st Round')).toBe('1er tour de qualification');
+      expect(stageLabel(332, '2nd Round')).toBe('2e tour de qualification');
+      expect(stageLabel(332, 'Playoffs')).toBe('Barrages');
+      expect(stageLabel(332, 'Final')).toBeNull();
+      expect(stageLabel(332, undefined)).toBeNull();
+      expect(stageLabel(572, '1st Round')).toBeNull();
+    });
+    it('legLabel : 1 aller, 2 retour, le reste null', () => {
+      expect(legLabel(1)).toBe('aller');
+      expect(legLabel(2)).toBe('retour');
+      expect(legLabel(3)).toBeNull();
+      expect(legLabel(undefined)).toBeNull();
     });
   });
 

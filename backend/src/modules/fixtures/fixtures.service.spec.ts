@@ -276,6 +276,29 @@ describe('FixturesService — appel football-data refusé ou en échec (L39)', (
     });
   });
 
+  it('matchs à venir : 200 sans match, repli par journée refusé : ce n’est pas la réponse de football-data, le cache garde ses 15 matchs', async () => {
+    await withCwd(async (dir) => {
+      const { svc, events } = buildWithBus();
+      await svc.getFixtures({ force: true });
+      events.length = 0;
+      requested = [];
+
+      answers.scheduled = { matches: [] };
+      answers.competition = 429;
+      const matches = await svc.getFixtures({ force: true });
+
+      // Le repli a bien été tenté, et son refus a gardé les matchs à venir.
+      expect(requested.filter((u) => u.includes('/competitions/')).length).toBeGreaterThan(0);
+      expect(matches).toHaveLength(15);
+      expect(readCache(dir)).toHaveLength(15);
+      expect(svc.peekFixtures().find((m) => m.matchday === 6)).toMatchObject({
+        status: 'TIMED',
+        timeConfirmed: true,
+      });
+      expect(events).toEqual([]);
+    });
+  });
+
   it('matchs à venir refusés : aucun appel de repli par journée quand le cache a déjà la réponse', async () => {
     await withCwd(async () => {
       const { svc } = buildWithBus();
