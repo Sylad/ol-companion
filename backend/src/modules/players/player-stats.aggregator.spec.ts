@@ -29,6 +29,36 @@ const ctxLyonRennes: MatchContext = {
 };
 
 describe('player-stats.aggregator', () => {
+  describe('passes décisives (L53)', () => {
+    const olMembers = () =>
+      [fixture.game.homeCompetitor, fixture.game.awayCompetitor]
+        .find((c) => c?.id === 465)!.lineups!.members!;
+
+    it('R1 — seule la stat « Pass. Décisiv. » (type 26) compte : « Passes décisives » (type 46, passes clés) n\'est pas une passe décisive', () => {
+      const game = JSON.parse(JSON.stringify(fixture.game)) as Scores365GameDetailed;
+      const ol = [game.homeCompetitor, game.awayCompetitor].find((c) => c?.id === 465)!;
+      const cible = ol.lineups!.members![0];
+      cible.stats = [
+        { type: 30, value: "90'", name: 'Minutes' } as any,
+        { type: 26, value: '0', name: 'Pass. Décisiv.' } as any,
+        { type: 46, value: '3', name: 'Passes décisives' } as any,
+      ];
+      const stats = aggregateAll([{ game, ctx: ctxLyonRennes }]);
+      const joueur = stats.find((p) => p.memberId === cible.id)!;
+      expect(joueur.assists).toBe(0);
+    });
+
+    it('R1 — la stat « Pass. Décisiv. » du fichier réel est comptée, et le total ne dépasse pas les buts du match', () => {
+      const stats = aggregateAll([{ game: fixture.game, ctx: ctxLyonRennes }]);
+      const total = stats.reduce((n, p) => n + p.assists, 0);
+      const attendu = olMembers().reduce(
+        (n, m) => n + Number(m.stats?.find((s) => s.type === 26)?.value ?? 0),
+        0,
+      );
+      expect(total).toBe(attendu);
+    });
+  });
+
   describe('accumulateGame (single OL match)', () => {
     it('produces one entry per OL starter who played', () => {
       const stats = aggregateAll([{ game: fixture.game, ctx: ctxLyonRennes }]);

@@ -151,9 +151,8 @@ function buildMatchEntry(
     competitionCode: ctx.competitionCode,
     minutes,
     goals: statValue(member, 'Buts'),
-    assists:
-      statValue(member, 'Pass. Décisiv.') ||
-      statValue(member, 'Passes décisives'),
+    // Seule « Pass. Décisiv. » (type 26) est une passe décisive : « Passes décisives » (type 46) compte les passes clés (L53).
+    assists: statValue(member, 'Pass. Décisiv.'),
     shots: statValue(member, 'Tirs au total'),
     shotsOnTarget: statValue(member, 'Tirs cadrés'),
     yellowCards: cards.yellow,
