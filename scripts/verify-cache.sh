@@ -7,7 +7,9 @@
 #   2. le bundle que référence le document existe : 200 et du JavaScript — un
 #      /assets/ cassé (ou le repli HTML mis en cache sous le nom du bundle
 #      pendant une bascule) donne une page blanche avec une livraison verte ;
-#   3. un fichier absent de /assets/ répond 404, pas le repli HTML en 200.
+#   3. un fichier absent de /assets/ répond 404, pas le repli HTML en 200, et
+#      `Cache-Control: no-store` (L58) : ni le navigateur ni Cloudflare ne
+#      doivent garder le 404 d'un nom en .js.
 # Lecture seule, par curl. OL_URL remplace l'adresse (scripts/test-nginx-cache.sh
 # s'en sert contre un nginx local).
 set -eu
@@ -50,3 +52,7 @@ probe="/assets/verify-fichier-absent.js?verify=$(date +%s)-$$"
 h=$(headers "$BASE$probe") || { echo "verify: $BASE$probe injoignable" >&2; exit 1; }
 [ "$(status "$h")" = 404 ] ||
   { echo "verify: un fichier absent de /assets/ répond $(status "$h"), attendu 404 ($probe)" >&2; exit 1; }
+case "$(cache_control "$h")" in
+  *no-store*) ;;
+  *) echo "verify: le 404 d'un fichier absent de /assets/ sans Cache-Control no-store (reçu : '$(cache_control "$h")', $probe)" >&2; exit 1 ;;
+esac

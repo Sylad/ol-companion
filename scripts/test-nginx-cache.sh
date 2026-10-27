@@ -4,13 +4,16 @@
 #   1. `nginx -t` dans l'image de base du Dockerfile frontend ;
 #   2. index.html (/, /index.html, repli des routes) : `no-cache`, et un 304
 #      possible (ETag, Last-Modified) ;
-#   3. /assets/ : fichier à empreinte = cache d'un an immutable ; fichier
-#      absent = 404 `no-store`, jamais le repli HTML ;
+#   3. /assets/ : fichier à empreinte = cache d'un an immutable, avec ou sans
+#      en-tête Range (jamais de 206 ni de 416 : L58) ; fichier absent = 404
+#      `no-store`, jamais le repli HTML ; tout fichier du build y porte une
+#      vraie empreinte (`fichier_a_empreinte`, contrôlée avant Docker) ;
 #   4. tout autre fichier du build (sw.js, manifeste, icônes, JSON, captures) :
 #      `no-cache` ;
 #   5. /api/ et /api/events : relayés, aucun Cache-Control ajouté ;
 #   6. scripts/verify-cache.sh (le contrôle d'effet de `cadence deliver`) passe
 #      sur ce nginx, et échoue sur un serveur qui répond 200 sans en-tête à tout.
+# Rejoué par la CI (job `nginx-cache` de .github/workflows/build.yml).
 #
 # Prérequis : `cd frontend && npm run build` (le script sert frontend/dist tel
 # quel, monté comme le Dockerfile le copie). Le backend n'existe pas ici : il
@@ -28,6 +31,28 @@ CONF="$PWD/frontend/nginx.conf"
 # la même image de base que le dernier étage du Dockerfile frontend
 IMAGE="$(awk '$1 == "FROM" && $2 ~ /^nginx/ { print $2 }' frontend/Dockerfile | tail -n 1)"
 [ -n "$IMAGE" ] || { echo "test-nginx-cache: image nginx introuvable dans frontend/Dockerfile" >&2; exit 2; }
+
+# L58 : un fichier de assets/ est-il sûr à servir immutable ? Deux conditions.
+#  - la forme : `<nom>-<8 caractères base64url>.<ext>`, ce que Vite écrit ;
+#  - la provenance : AUCUN motif de nom ne distingue une empreinte (« Dgihpmma »,
+#    une vraie) d'un mot de huit lettres (« settings »), donc `foo-settings.js`
+#    passe la forme. Ce qui garantit l'empreinte, c'est que Vite a produit le
+#    fichier : un fichier de frontend/public/assets/ est copié tel quel, sous un
+#    nom que personne ne hache, et ne doit pas être là.
+# fichier_a_empreinte <racine du dépôt frontend> <chemin relatif à dist, ex. assets/x-AbCd1234.js>
+fichier_a_empreinte() {
+  printf '%s\n' "${2##*/}" | grep -Eq -- '^.+-[A-Za-z0-9_-]{8}\.[A-Za-z0-9.]+$' || return 1
+  [ ! -e "$1/public/$2" ]
+}
+# contrôle du contrôle : forme refusée, copie de public/ refusée, build accepté
+pub="$(mktemp -d)"; mkdir -p "$pub/public/assets"; : > "$pub/public/assets/foo-settings.js"
+for bon in assets/index-AbCd1234.js assets/chunk-B_x-9aZq.css assets/match-0a1B2c3D.js.map assets/ligue1-map-Dgihpmma.css; do
+  fichier_a_empreinte "$pub" "$bon" || { echo "test-nginx-cache: fichier_a_empreinte refuse un fichier de build ($bon)" >&2; exit 2; }
+done
+for mauvais in assets/index.js assets/court-1234567.js assets/foo-settings.js assets/foo-settings-longue.js; do
+  ! fichier_a_empreinte "$pub" "$mauvais" || { echo "test-nginx-cache: fichier_a_empreinte accepte un fichier sans empreinte ($mauvais)" >&2; exit 2; }
+done
+rm -rf "$pub"
 
 NET="ol-nginx-cache-$$"
 FRONT="ol-nginx-cache-front-$$"
@@ -74,10 +99,24 @@ server {
         return 200 '<script type="module" src="/assets/index-AbCd1234.js"></script>';
     }
 }
+# 3005 : tout est conforme sauf le 404 d'un actif absent, servi sans no-store
+server {
+    listen 3005;
+    location = /assets/index-AbCd1234.js {
+        default_type application/javascript;
+        return 200 "export {}";
+    }
+    location /assets/ { return 404; }
+    location / {
+        default_type text/html;
+        add_header Cache-Control "no-cache";
+        return 200 '<script type="module" src="/assets/index-AbCd1234.js"></script>';
+    }
+}
 EOF
 
 docker network create "$NET" >/dev/null
-docker run -d --name "$BACK-$$" --network "$NET" --network-alias "$BACK" -p 127.0.0.1::3002 -p 127.0.0.1::3003 -p 127.0.0.1::3004 \
+docker run -d --name "$BACK-$$" --network "$NET" --network-alias "$BACK" -p 127.0.0.1::3002 -p 127.0.0.1::3003 -p 127.0.0.1::3004 -p 127.0.0.1::3005 \
   -v "$TMP/backend.conf:/etc/nginx/conf.d/default.conf:ro" "$IMAGE" >/dev/null
 docker run --rm --network "$NET" \
   -v "$CONF:/etc/nginx/conf.d/default.conf:ro" "$IMAGE" nginx -t
@@ -153,17 +192,20 @@ expect "/$js"                        "/$js"          200 application/javascript 
 expect "/$css"                       "/$css"         200 text/css "$IMMUTABLE"
 probe "/$js"
 expect "/$js + If-None-Match"        "/$js"          304 - "$IMMUTABLE" -H "If-None-Match: $ETAG"
+# L58 : un Range ne change ni le statut ni l'en-tête (avant, hors fichier = 416
+# immutable, en double : le filtre Range tourne après la map sur $status)
+expect "/$js + Range 0-10"           "/$js"          200 application/javascript "$IMMUTABLE" -H 'Range: bytes=0-10'
+expect "/$js + Range hors fichier"   "/$js"          200 application/javascript "$IMMUTABLE" -H 'Range: bytes=999999999-'
+expect "/$js + Range incohérent"     "/$js"          200 application/javascript "$IMMUTABLE" -H 'Range: bytes=5-2'
+expect '/assets/absent + Range'      /assets/absent-0a1B2c3D.js 404 text/html no-store -H 'Range: bytes=0-10'
 expect '/assets/absent-0a1B2c3D.js'  /assets/absent-0a1B2c3D.js  404 text/html no-store
 expect '/assets/absent-0a1B2c3D.css' /assets/absent-0a1B2c3D.css 404 text/html no-store
 expect '/assets/sous/dossier/x.js'   /assets/sous/dossier/x.js   404 text/html no-store
 
 # le cache d'un an n'est sûr que si TOUT fichier de assets/ porte une empreinte
-# de contenu dans son nom (Vite : -XXXXXXXX avant l'extension)
+# de contenu dans son nom (forme et provenance : cf. fichier_a_empreinte)
 while IFS= read -r f; do
-  case "$f" in
-    *-[A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-].*) ;;
-    *) echo "FAIL $f : fichier sans empreinte dans assets/, il serait servi immutable"; fail=1 ;;
-  esac
+  fichier_a_empreinte "$PWD/frontend" "$f" || { echo "FAIL $f : fichier sans empreinte dans assets/, il serait servi immutable"; fail=1; }
 done < <(cd "$DIST" && find assets -type f | sort)
 
 # 4. tout autre fichier du build : pas d'empreinte dans le nom → no-cache
@@ -204,6 +246,13 @@ if OL_URL="$fallback_url" scripts/verify-cache.sh 2>/dev/null; then
   fail=1
 else
   echo "OK   verify-cache.sh échoue quand un /assets/ absent répond le repli HTML en 200"
+fi
+no_store_url="http://$(docker port "$BACK-$$" 3005/tcp | head -n 1)"
+if OL_URL="$no_store_url" scripts/verify-cache.sh 2>/dev/null; then
+  echo "FAIL verify-cache.sh passe alors que le 404 d'un /assets/ absent n'a pas no-store"
+  fail=1
+else
+  echo "OK   verify-cache.sh échoue quand le 404 d'un /assets/ absent n'a pas no-store"
 fi
 unreachable=$(OL_URL="http://127.0.0.1:9" scripts/verify-cache.sh 2>&1 || true)
 case "$unreachable" in
