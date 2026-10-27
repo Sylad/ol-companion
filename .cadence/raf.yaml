@@ -752,8 +752,11 @@ lots:
     finished: 2026-10-27
   - id: L59
     title: "Téléphone : afficher sous « Plus » le nom de la page courante cachée (ou acter que seul l'accessible la nomme) — UX mineur relevé en revue L29"
+    public: "Téléphone : la barre du bas nomme la page ouverte sous « Plus »"
     status: doing
     estimate: 1
+    visible: true
+    screen: component
     created: 2026-10-05
     started: 2026-10-27
   - id: L60

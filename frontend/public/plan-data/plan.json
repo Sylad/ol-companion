@@ -166,6 +166,12 @@
       "finished": "2026-10-09"
     },
     {
+      "id": "L59",
+      "title": "Téléphone : la barre du bas nomme la page ouverte sous « Plus »",
+      "status": "doing",
+      "started": "2026-10-27"
+    },
+    {
       "id": "L64",
       "title": "Téléphone : l'état du direct reste visible quand on fait défiler la page",
       "status": "todo"
