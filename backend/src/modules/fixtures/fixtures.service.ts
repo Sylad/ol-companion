@@ -148,8 +148,9 @@ export class FixturesService implements OnModuleInit {
 
       // Rien d'obtenu : le cache reste tel quel, horodatage compris.
       if (finished === null && upcoming === null) {
-        const oldest = Math.min(finishedAt, upcomingAt);
-        if (now - oldest > KEPT_MAX_AGE_MS) {
+        // Le dernier succès, toutes parties : « plus de 24 h » vaut pour les deux.
+        const latestSuccess = Math.max(finishedAt, upcomingAt);
+        if (now - latestSuccess > KEPT_MAX_AGE_MS) {
           this.logger.error(
             `football-data : aucune réponse exploitable depuis plus de 24 h — le cache (${previous?.length ?? 0} match(s)) est servi tel quel`,
           );

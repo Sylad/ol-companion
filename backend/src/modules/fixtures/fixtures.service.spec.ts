@@ -512,6 +512,32 @@ describe('FixturesService — appel football-data refusé ou en échec (L39)', (
         expect(error).toHaveBeenCalledWith(expect.stringContaining('depuis plus de 24 h'));
       });
     });
+
+    it('pas d’erreur « depuis plus de 24 h » si les résultats datent de moins de 24 h', async () => {
+      await withCwd(async () => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+        const error = jest.spyOn(Logger.prototype, 'error').mockImplementation();
+        const warn = jest.spyOn(Logger.prototype, 'warn').mockImplementation();
+
+        // Les matchs à venir échouent seuls depuis T0 ; les résultats réussissent à 29 h.
+        answers.scheduled = 429;
+        answers.competition = 429;
+        at(29);
+        await svc.getFixtures({ force: true });
+        error.mockClear();
+
+        // À 30 h, les deux échouent : les résultats ont 1 h, rien à crier.
+        answers.finished = 429;
+        at(30);
+        await svc.getFixtures({ force: true });
+
+        expect(error).not.toHaveBeenCalledWith(expect.stringContaining('aucune réponse exploitable'));
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('les deux appels ont échoué'));
+        error.mockRestore();
+        warn.mockRestore();
+      });
+    });
   });
 
   it('sans cache : un appel refusé laisse écrire la partie obtenue', async () => {
