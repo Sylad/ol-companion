@@ -19,20 +19,41 @@ const FOOTBALL_DATA_LIGUE1 = 'Ligue 1';
  */
 export const KICKOFF_WINDOW_MS = 14 * 24 * 3600_000;
 
+/** Les champs d'un match football-data dont dépend la décision. */
+export type FootballDataKickoff = Pick<
+  Match,
+  'competition' | 'matchday' | 'timeConfirmed'
+> & {
+  /** Instant du coup d'envoi selon football-data ; absent = rien à comparer. */
+  date?: string;
+};
+
 /**
  * Ce que football-data dit de l'heure de la journée `matchday` de Ligue 1 :
  * `true` (fixée) ou `false` (à confirmer), ou `undefined` s'il n'en dit rien
  * (pas de clé, pas de cache, appel en échec, journée au-delà de sa réponse,
  * match sans journée). Partagé avec la réponse de `/api/live-match/{id}/stats`.
+ *
+ * `date` est le coup d'envoi tel que 365scores l'annonce : quand football-data
+ * a fixé l'heure (`true`) mais à un AUTRE instant, l'heure de 365scores est un
+ * remplissage ou une valeur périmée, pas une heure fixée — le verdict est
+ * `false` (L46). Sans `date` (ou sans date chez football-data), le verdict de
+ * football-data tient seul.
  */
 export function footballDataSaysKickoff(
   matchday: number | null,
-  footballData: Pick<Match, 'competition' | 'matchday' | 'timeConfirmed'>[],
+  footballData: FootballDataKickoff[],
+  date?: string,
 ): boolean | undefined {
   if (matchday === null) return undefined;
-  return footballData.find(
+  const said = footballData.find(
     (f) => f.competition === FOOTBALL_DATA_LIGUE1 && f.matchday === matchday,
-  )?.timeConfirmed;
+  );
+  if (said === undefined) return undefined;
+  if (said.timeConfirmed && date !== undefined && said.date !== undefined) {
+    return new Date(said.date).getTime() === new Date(date).getTime();
+  }
+  return said.timeConfirmed;
 }
 
 /**
@@ -53,7 +74,9 @@ export function footballDataSaysKickoff(
  *   fixée : 365scores est la seule source, aucun signal « à confirmer » n'y
  *   existe ;
  * - Ligue 1 à venir, football-data PARLE de la même journée → il a le dernier
- *   mot : `TIMED` = fixée, `SCHEDULED` à minuit UTC = non fixée ;
+ *   mot : `SCHEDULED` à minuit UTC = non fixée ; `TIMED` = fixée SI son instant
+ *   est celui de 365scores, sinon non fixée (l'heure de 365scores n'est alors
+ *   pas la bonne, L46) ;
  * - Ligue 1 à venir, football-data n'en dit RIEN (pas de clé, pas de cache,
  *   appel en échec, journée au-delà de sa réponse, match sans journée) → l'heure
  *   de 365scores est tenue pour fixée dans les 14 prochains jours, pas au-delà.
@@ -64,12 +87,16 @@ export function footballDataSaysKickoff(
  */
 export function isKickoffTimeConfirmed(
   match: KickoffSubject,
-  footballData: Pick<Match, 'competition' | 'matchday' | 'timeConfirmed'>[],
+  footballData: FootballDataKickoff[],
   now: Date = new Date(),
 ): boolean {
   if (match.status !== 'SCHEDULED') return true;
   if (match.competitionCode !== 'L1') return true;
-  const said = footballDataSaysKickoff(match.matchday, footballData);
+  const said = footballDataSaysKickoff(
+    match.matchday,
+    footballData,
+    match.date,
+  );
   if (said !== undefined) return said;
   return new Date(match.date).getTime() - now.getTime() <= KICKOFF_WINDOW_MS;
 }

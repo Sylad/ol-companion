@@ -12,9 +12,8 @@ import type {
 } from './live-match.types';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID as OL_365_ID } from '../../config/constants';
 import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
-import { footballDataSaysKickoff } from '../season-matches/kickoff-confirmation';
+import { footballDataSaysKickoff, type FootballDataKickoff } from '../season-matches/kickoff-confirmation';
 import { TRACKED_COMPETITIONS } from '../season-matches/season-matches.service';
-import type { Match } from '../fixtures/fixtures.service';
 import type {
   Scores365Competitor,
   Scores365Event,
@@ -268,7 +267,7 @@ function toTopPerformers(g: Scores365GameDetailed): LiveMatchTopPerformer[] {
   });
 }
 
-type FootballDataFixtures = Pick<Match, 'competition' | 'matchday' | 'timeConfirmed'>[];
+type FootballDataFixtures = FootballDataKickoff[];
 
 /**
  * Heure du coup d'envoi fixée ? Un match de Ligue 1 à venir suit ce que football-data
@@ -285,7 +284,7 @@ function kickoffTimeConfirmed(
   footballData: FootballDataFixtures,
 ): boolean {
   if (g.competitionId === LIGUE1_365SCORES_ID && deriveStatus(g.statusGroup ?? 0) === 'upcoming') {
-    const said = footballDataSaysKickoff(g.roundNum ?? null, footballData);
+    const said = footballDataSaysKickoff(g.roundNum ?? null, footballData, g.startTime);
     if (said !== undefined) return said;
   }
   if (g.competitionId !== LIGUE1_365SCORES_ID && g.competitionId !== undefined && g.competitionId in TRACKED_COMPETITIONS) {

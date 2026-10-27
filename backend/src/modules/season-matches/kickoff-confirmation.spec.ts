@@ -44,8 +44,9 @@ function footballData(
   matchday: number | null,
   timeConfirmed: boolean,
   competition = 'Ligue 1',
+  date?: string,
 ) {
-  return { competition, matchday, timeConfirmed };
+  return { competition, matchday, timeConfirmed, date };
 }
 
 const confirmed = (
@@ -137,6 +138,41 @@ describe('isKickoffTimeConfirmed', () => {
       expect(confirmed(seasonMatch({ matchday: 14, days: 71 }), said)).toBe(
         true,
       );
+    });
+  });
+
+  describe('Ligue 1 à venir, football-data TIMED : son heure doit être celle de 365scores (L46)', () => {
+    // 365scores met une heure de remplissage (17:00 UTC) quand l'heure n'est pas
+    // arrêtée chez lui ; si football-data a déjà fixé une autre heure, afficher
+    // celle de 365scores serait afficher une heure fausse comme ferme.
+    const lens = seasonMatch({ date: '2026-10-09T17:00:00.000Z', matchday: 6 });
+
+    it('même instant (écriture différente) : fixée', () => {
+      expect(
+        confirmed(lens, [footballData(6, true, 'Ligue 1', '2026-10-09T17:00:00Z')]),
+      ).toBe(true);
+    });
+
+    it('football-data à 18:45, 365scores à 17:00 : à confirmer, jamais l’heure de 365scores', () => {
+      expect(
+        confirmed(lens, [footballData(6, true, 'Ligue 1', '2026-10-09T18:45:00Z')]),
+      ).toBe(false);
+    });
+
+    it('un autre jour : à confirmer aussi', () => {
+      expect(
+        confirmed(lens, [footballData(6, true, 'Ligue 1', '2026-10-10T17:00:00Z')]),
+      ).toBe(false);
+    });
+
+    it('football-data sans date lisible (entrée sans date) : son verdict TIMED tient', () => {
+      expect(confirmed(lens, [footballData(6, true)])).toBe(true);
+    });
+
+    it('football-data SCHEDULED à minuit : non fixée, la date ne change rien', () => {
+      expect(
+        confirmed(lens, [footballData(6, false, 'Ligue 1', '2026-10-09T17:00:00Z')]),
+      ).toBe(false);
     });
   });
 

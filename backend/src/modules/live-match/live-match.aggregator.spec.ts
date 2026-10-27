@@ -393,6 +393,14 @@ describe('L170 — timeConfirmed d’un match de Ligue 1 à venir : football-dat
     expect(summarize(live, NOW, said(32, false)).timeConfirmed).toBe(true);
   });
 
+  it('L46 — football-data fixe l’heure à un autre instant que 365scores : faux, l’heure de 365scores n’est pas la bonne', () => {
+    const game = upcomingL1(3 * DAY);
+    const sameInstant = [{ ...said(32, true)[0], date: game.startTime }];
+    const otherInstant = [{ ...said(32, true)[0], date: new Date(NOW.getTime() + 3 * DAY + 5400_000).toISOString() }];
+    expect(summarize(game, NOW, sameInstant).timeConfirmed).toBe(true);
+    expect(summarize(game, NOW, otherInstant).timeConfirmed).toBe(false);
+  });
+
   it('L170/R5 — aggregate() transmet ce que dit football-data à la réponse stats', () => {
     const raw = { game: upcomingL1(14.3 * DAY) } as never;
     expect(aggregate(raw, NOW, said(32, true)).timeConfirmed).toBe(true);
