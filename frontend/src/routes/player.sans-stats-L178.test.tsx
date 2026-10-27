@@ -43,12 +43,22 @@ const fetchMock = vi.fn();
 
 function monter() {
   const client = new QueryClient({ defaultOptions: { queries: { retryDelay: 0 } } });
-  return render(
+  const arbre = () => (
     <QueryClientProvider client={client}>
       <PlayerDetailPage />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
+  const rendu = render(arbre());
+  // Le routeur ne remonte pas la page quand $athleteId change : `rejouer` rend le MÊME composant avec le nouvel identifiant.
+  return { ...rendu, client, rejouer: () => rendu.rerender(arbre()) };
 }
+/** Une réponse que le test relâche lui-même : la requête reste en attente d'ici là. */
+function enAttente() {
+  let relache!: (v: ReturnType<typeof reponse>) => void;
+  const promesse = new Promise<ReturnType<typeof reponse>>((r) => { relache = r; });
+  return { promesse, relache };
+}
+const attendre = (ms = 20) => act(async () => { await new Promise((r) => setTimeout(r, ms)); });
 const appelsStats = () => fetchMock.mock.calls.filter(([url]) => String(url).includes('/season-stats')).length;
 
 beforeEach(() => {
@@ -504,5 +514,35 @@ describe('<PlayerDetailPage /> — h1, fond et focus des états d\'erreur (L60)'
     expect(bouton.className).toContain('focus-visible:outline-2');
     expect(bouton.className).toContain('focus-visible:outline-[hsl(var(--ol-red-bright))]');
     expect(bouton.className).not.toMatch(/focus:outline-none|focus:ring/);
+  });
+});
+
+// L60 — revue de code, point 2 : la garde « une feuille est encore attendue » de JoueurSansMinute. L'effectif a répondu
+// sans ce joueur, mais la source qui le connaît n'a pas encore répondu : « Joueur inconnu » ne doit pas être rendu avant.
+describe('<PlayerDetailPage /> — « Joueur inconnu » attend les feuilles (L60, revue 2)', () => {
+  const benguiProbable = () => probable(true, joueurProbable(68071622, 133157, 'Justin Bengui'));
+
+  it.each([
+    ['/lineup', () => { currentBody = null; }, () => reponse(200, feuille)],
+    ['/live-match/current', () => { lineupBody = null; statsBody = benguiProbable(); }, () => reponse(200, { gameId: 9, matchupId: '9-1' })],
+    ['/live-match/9/stats', () => { lineupBody = null; currentBody = { gameId: 9, matchupId: '9-1' }; }, () => reponse(200, benguiProbable())],
+  ])('R12 — effectif répondu sans lui, %s en attente : état neutre sans « Joueur inconnu », puis son nom à l\'arrivée', async (retenue, preparer, reponseRetenue) => {
+    preparer();
+    squadStatus = 200;
+    squadBody = [effectif[1]];
+    const { promesse, relache } = enAttente();
+    const defaut = fetchMock.getMockImplementation()!;
+    fetchMock.mockImplementation((url: string) => (String(url).includes(retenue) ? promesse : defaut(url)));
+    monter();
+    await screen.findByTestId('joueur-sans-stats');
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/squad'))).toBe(true));
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes(retenue))).toBe(true));
+    await attendre();
+    expect(screen.queryByText('Joueur inconnu')).toBeNull();
+    expect(screen.queryByTestId('joueur-inconnu')).toBeNull();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/^Joueur$/);
+    relache(reponseRetenue());
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    expect(screen.queryByText('Joueur inconnu')).toBeNull();
   });
 });
