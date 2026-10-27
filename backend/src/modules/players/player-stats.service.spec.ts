@@ -304,7 +304,7 @@ describe('PlayerStatsService', () => {
         });
         const warn = jest.spyOn((svc as any).logger, 'warn');
         expect((await svc.getAll())[0].matchesPlayed).toBe(1);
-        expect(warn.mock.calls.map((c) => String(c[0])).join('\n')).toContain('4463861');
+        expect(warn.mock.calls.map((c) => String(c[0])).join('\n')).toContain('détails de match illisibles (4463861)');
         const fetcher = svc.fetcher as jest.Mock;
         const apres = fetcher.mock.calls.length;
         const now = Date.now();
@@ -327,6 +327,35 @@ describe('PlayerStatsService', () => {
       await withCwd(async () => {
         const svc = await serviceADeuxMatchs((n) => (n === 1 ? ({ ok: false, status: 503 } as any) : ok()));
         expect((await svc.getAll())[0].matchesPlayed).toBe(2);
+      });
+    });
+
+    it('R3b — un HTTP non-2xx persistant : stats partielles, reprise sous 5 min et non 1 h', async () => {
+      await withCwd(async () => {
+        const svc = await serviceADeuxMatchs(() => ({ ok: false, status: 503 }) as any);
+        expect((await svc.getAll())[0].matchesPlayed).toBe(1);
+        const fetcher = svc.fetcher as jest.Mock;
+        const apres = fetcher.mock.calls.length;
+        const now = Date.now();
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(now + 60_000);
+        await svc.getAll();
+        expect(fetcher.mock.calls.length).toBe(apres);
+        svc.fetcher = jest.fn(async () => ok());
+        clock.mockReturnValue(now + 6 * 60_000);
+        expect((await svc.getAll())[0].matchesPlayed).toBe(2);
+      });
+    });
+
+    it('R6 — aucun détail lisible à la première passe : pas de seconde passe', async () => {
+      await withCwd(async () => {
+        const { svc, seasonMatches } = buildService();
+        const [un] = await seasonMatches.getMatches();
+        seasonMatches.getMatches.mockResolvedValue([un, { ...un, id: 4463861 }]);
+        svc.fetcher = jest.fn(async () => {
+          throw new DOMException('timeout', 'TimeoutError');
+        });
+        await svc.getAll();
+        expect((svc.fetcher as jest.Mock).mock.calls.length).toBe(2);
       });
     });
 
