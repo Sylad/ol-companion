@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { hasJersey } from '@/lib/jersey';
 import { initiales } from '@/lib/initiales';
@@ -305,12 +305,19 @@ export function PlayerDetailPage() {
   const idValide = Number.isInteger(athleteId) && athleteId > 0;
   const retour = useSearch({ from: '/player/$athleteId' });
   const { data: player, isLoading, isError, isFetching, error, refetch } = usePlayerSeasonStats(idValide ? athleteId : null);
-  // TanStack v5 : un nouvel essai sans données remet la requête en « pending » et efface l'erreur. On garde la dernière
-  // erreur tant que l'essai court, pour que le bloc d'erreur (et le focus sur son bouton) ne disparaisse pas (L60).
-  const derniereErreur = useRef<{ error: unknown } | null>(null);
-  if (isError) derniereErreur.current = { error };
-  else if (!isFetching) derniereErreur.current = null;
-  const nouvelEssai = !isError && isFetching && !player && derniereErreur.current !== null;
+  // TanStack v5 : une requête relancée sans données (Réessayer, invalidation SSE, reconnexion) repasse en « pending » et
+  // efface son erreur. On garde la dernière erreur DE CE JOUEUR tant que la relance court (L60), pour que l'écran ne
+  // change pas d'ici la réponse : un 404 garde l'état neutre ou « inconnu », une vraie erreur garde son bloc (et le focus
+  // sur son bouton). Liée à l'identifiant car le routeur ne remonte pas la page quand $athleteId change : l'erreur de A
+  // ne doit pas s'afficher pendant le chargement de B. Écrite dans un effet, jamais pendant le rendu.
+  const [derniereErreur, setDerniereErreur] = useState<{ athleteId: number; error: unknown } | null>(null);
+  useEffect(() => {
+    if (isError) setDerniereErreur((m) => (m && m.athleteId === athleteId && m.error === error ? m : { athleteId, error }));
+    else if (!isFetching) setDerniereErreur(null);
+  }, [athleteId, isError, error, isFetching]);
+  const memoire = derniereErreur && derniereErreur.athleteId === athleteId ? derniereErreur : null;
+  const nouvelEssai = !isError && isFetching && !player && memoire !== null;
+  const erreurAffichee = isError ? error : nouvelEssai ? memoire?.error : undefined;
 
   if (!idValide) {
     return <JoueurInconnu retour={retour} message="Ce lien ne désigne aucun joueur. Revenez à la liste pour en choisir un." />;
@@ -325,13 +332,14 @@ export function PlayerDetailPage() {
     );
   }
 
-  if (estIntrouvable(error)) return <JoueurSansMinute athleteId={athleteId} retour={retour} />;
+  // Le 404 (pas encore de minute, ou joueur inconnu) vaut aussi pendant sa relance : jamais le bloc d'erreur d'ici la réponse.
+  if (estIntrouvable(erreurAffichee)) return <JoueurSansMinute athleteId={athleteId} retour={retour} />;
 
   if (isError || !player) {
     return (
       <ErreurStats
         retour={retour}
-        error={isError ? error : derniereErreur.current?.error}
+        error={erreurAffichee}
         enCours={nouvelEssai}
         onRetry={() => void refetch()}
       />

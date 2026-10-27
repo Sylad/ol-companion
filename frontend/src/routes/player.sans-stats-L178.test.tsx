@@ -517,6 +517,79 @@ describe('<PlayerDetailPage /> — h1, fond et focus des états d\'erreur (L60)'
   });
 });
 
+// L60 — revue de code, point 1 : un 404 est aussi relancé (SSE `season-matches-changed` qui invalide ['player-stats'],
+// reconnexion SSE qui invalide tout, refetchOnReconnect). TanStack v5 remet alors `error` à null : la fiche ne doit pas
+// passer en « Statistiques indisponibles » le temps que le 404 revienne — l'état neutre (ou inconnu) reste affiché.
+describe('<PlayerDetailPage /> — rafraîchissement d\'une fiche 404 (L60, revue 1)', () => {
+  function stats404PuisEnAttente() {
+    const { promesse, relache } = enAttente();
+    let essais = 0;
+    fetchMock.mockImplementation((url: string) => {
+      const u = String(url);
+      if (u.includes('/lineup')) return Promise.resolve(reponse(200, feuille));
+      if (u.includes('/season-stats')) {
+        essais += 1;
+        return essais === 1 ? Promise.resolve(reponse(404)) : promesse;
+      }
+      return Promise.resolve(reponse(503));
+    });
+    return relache;
+  }
+
+  it.each([
+    ['invalidateQueries({ queryKey: [\'player-stats\'] }) (SSE season-matches-changed)', (c: QueryClient) => c.invalidateQueries({ queryKey: ['player-stats'] })],
+    ['invalidateQueries() (reconnexion SSE)', (c: QueryClient) => c.invalidateQueries()],
+  ])('R11 — après un 404 rendu, %s avec réponse en attente : aucune alerte, l\'état neutre reste', async (_libelle, invalider) => {
+    const relache = stats404PuisEnAttente();
+    const { client } = monter();
+    await screen.findByTestId('joueur-sans-stats');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
+    act(() => { void invalider(client); });
+    await waitFor(() => expect(appelsStats()).toBe(2));
+    await attendre();
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+    expect(screen.queryByText(/Statistiques indisponibles|Nouvel essai|Réessayer/)).toBeNull();
+    expect(screen.getByTestId('joueur-sans-stats')).toHaveTextContent('Justin Bengui n’a pas encore joué cette saison');
+    relache(reponse(404));
+    await attendre();
+    expect(screen.getByTestId('joueur-sans-stats')).toBeInTheDocument();
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+  });
+
+  it('R11 — après un 404 rendu, le rafraîchissement rend une VRAIE erreur : le bloc d\'erreur apparaît alors seulement', async () => {
+    const relache = stats404PuisEnAttente();
+    const { client } = monter();
+    await screen.findByTestId('joueur-sans-stats');
+    act(() => { void client.invalidateQueries({ queryKey: ['player-stats'] }); });
+    await waitFor(() => expect(appelsStats()).toBe(2));
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+    relache(reponse(500));
+    const alerte = await screen.findByRole('alert');
+    expect(alerte).toHaveTextContent('Le serveur n’a pas pu répondre');
+  });
+
+  it('R11 — après une VRAIE erreur, une invalidation garde le bloc d\'erreur avec « Nouvel essai… » (ce qui marchait reste)', async () => {
+    const { promesse, relache } = enAttente();
+    let essais = 0;
+    fetchMock.mockImplementation((url: string) => {
+      const u = String(url);
+      if (u.includes('/lineup')) return Promise.resolve(reponse(200, feuille));
+      if (u.includes('/season-stats')) {
+        essais += 1;
+        return essais <= 2 ? Promise.resolve(reponse(500)) : promesse;
+      }
+      return Promise.resolve(reponse(503));
+    });
+    const { client } = monter();
+    await screen.findByRole('alert');
+    act(() => { void client.invalidateQueries({ queryKey: ['player-stats'] }); });
+    expect(await screen.findByRole('button', { name: 'Nouvel essai…' })).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByRole('alert')).toHaveTextContent('Le serveur n’a pas pu répondre');
+    relache(reponse(404));
+    await screen.findByTestId('joueur-sans-stats');
+  });
+});
+
 // L60 — revue de code, point 2 : la garde « une feuille est encore attendue » de JoueurSansMinute. L'effectif a répondu
 // sans ce joueur, mais la source qui le connaît n'a pas encore répondu : « Joueur inconnu » ne doit pas être rendu avant.
 describe('<PlayerDetailPage /> — « Joueur inconnu » attend les feuilles (L60, revue 2)', () => {
@@ -544,5 +617,49 @@ describe('<PlayerDetailPage /> — « Joueur inconnu » attend les feuilles (L60
     relache(reponseRetenue());
     expect(await screen.findByRole('heading', { level: 1, name: 'Justin Bengui' })).toBeInTheDocument();
     expect(screen.queryByText('Joueur inconnu')).toBeNull();
+  });
+});
+
+// L60 — revue de code, point 3 : la mémoire de la dernière erreur est liée à l'identifiant. Le routeur ne remonte pas le
+// composant quand $athleteId change : joueur A en erreur, puis B dont la requête est en attente → B charge, sans l'erreur de A.
+describe('<PlayerDetailPage /> — la dernière erreur est celle de CE joueur (L60, revue 3)', () => {
+  it('R13 — A en 500, puis l\'identifiant change pour B (requête en attente) : chargement de B, pas le bloc d\'erreur de A', async () => {
+    const { promesse, relache } = enAttente();
+    fetchMock.mockImplementation((url: string) => {
+      const u = String(url);
+      if (u.includes('/lineup')) return Promise.resolve(reponse(200, feuille));
+      if (u.includes('/players/4569/season-stats')) return promesse;
+      if (u.includes('/season-stats')) return Promise.resolve(reponse(500));
+      return Promise.resolve(reponse(503));
+    });
+    const { rejouer } = monter();
+    expect(await screen.findByRole('alert')).toHaveTextContent('Le serveur n’a pas pu répondre');
+    idRoute = '4569';
+    rejouer();
+    await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('/players/4569/season-stats'))).toBe(true));
+    await attendre();
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+    expect(screen.queryByText(/Statistiques indisponibles|Nouvel essai/)).toBeNull();
+    expect(screen.getByText(/Chargement du joueur/)).toBeInTheDocument();
+    relache(reponse(404));
+    expect(await screen.findByTestId('joueur-sans-stats')).toBeInTheDocument();
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+  });
+
+  it('R13 — A en 500, puis B en 500 : le bloc d\'erreur de B ; retour à A (en cache d\'erreur) : le bloc d\'erreur de A', async () => {
+    fetchMock.mockImplementation((url: string) =>
+      String(url).includes('/lineup') ? Promise.resolve(reponse(200, feuille))
+      : String(url).includes('/season-stats') ? Promise.resolve(reponse(500))
+      : Promise.resolve(reponse(503)),
+    );
+    const { rejouer } = monter();
+    await screen.findByRole('alert');
+    idRoute = '4569';
+    rejouer();
+    await waitFor(() => expect(fetchMock.mock.calls.filter(([u]) => String(u).includes('/players/4569/season-stats')).length).toBe(2));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Le serveur n’a pas pu répondre');
+    idRoute = '133157';
+    rejouer();
+    expect(await screen.findByRole('alert')).toHaveTextContent('Le serveur n’a pas pu répondre');
   });
 });
