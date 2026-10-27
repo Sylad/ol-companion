@@ -744,11 +744,12 @@ lots:
     created: 2026-10-03
   - id: L58
     title: "Cache HTTP, suites de la relecture du 03-10 : motif d'empreinte du test trop large (foo-settings.js accepté) ; 416 sur un actif servi en immutable (map sur $status évaluée avant le filtre Range) ; exiger no-store sur le 404 d'un actif absent ; jouer test-nginx-cache.sh en CI ; recharger la page quand un morceau d'une ancienne version répond 404 (onglet resté ouvert pendant une livraison)"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-03
     started: 2026-10-27
     review: { date: 2026-10-27, verdict: "conforme : les correctifs de la passe (job nginx-cache limité à contents: read, jeton non persisté, test dans ci-frontend-checks.test.mjs) sont en place, aucune régression, test-nginx-cache.sh vert (158 OK) — orchestré (vague 2026-10-27-1950, 0 passe(s) de correction + passe des mineurs)", commit: b0f8825e0e21cfdbf8128da43f51c63c554d0628 }
+    finished: 2026-10-27
   - id: L59
     title: "Téléphone : afficher sous « Plus » le nom de la page courante cachée (ou acter que seul l'accessible la nomme) — UX mineur relevé en revue L29"
     status: todo
