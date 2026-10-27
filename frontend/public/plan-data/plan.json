@@ -709,6 +709,11 @@
       "id": "L225",
       "title": "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient",
       "status": "todo"
+    },
+    {
+      "id": "L226",
+      "title": "Hors ligne : un message de connexion au lieu d'une fausse nouvelle version",
+      "status": "todo"
     }
   ]
 }
