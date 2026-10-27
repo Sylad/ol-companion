@@ -697,6 +697,7 @@ lots:
     notes:
       - { date: 2026-10-03, text: "03-10, second passage QA : « Passes D. » totalise au moins 95 sur 22 lignes pour 18 buts marqués (Abner 13, Tolisso 12 ; 4 passes créditées à Tolisso sur le 3-1 contre Auxerre)." }
     started: 2026-10-27
+    review: { date: 2026-10-27, verdict: "conforme : les mineurs traités le sont (alerte vérifiée sur son texte, reprise courte sur HTTP 503 testée en R3b, pas de relecture sans match lu, avec R6 qui échouerait si la relecture revenait) ; il reste un mineur de documentation (README:151 : exception succeeded=0 et R3b/R6 absents) — orchestré (vague 2026-10-27-1950, 0 passe(s) de correction + passe des mineurs)", commit: ff7382684bbe3f7f43c9a1d82f63f594472258a8 }
   - id: L54
     title: "Livraison : index.html servi sans Cache-Control — un visiteur revenu garde l'ancienne appli (mesuré le 03-10 : calendrier d'avant L39 encore affiché 1 h 25 après la livraison) ; un fichier /assets/ absent répond 200 text/html max-age=14400 et Cloudflare le met en cache (page blanche possible) — no-cache sur index.html, 404 sur un /assets/ manquant, cache long sur les fichiers à empreinte, contrôle d'effet dans cadence.yaml"
     status: done
