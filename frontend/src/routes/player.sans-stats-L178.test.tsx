@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, onlineManager } from '@tanstack/react-query';
 import type { LineupResponse } from '@/types/api';
 
 // L178 — un convoqué qui n'a pas encore joué a un lien vers sa fiche : GET /api/players/<id>/season-stats rend 404.
@@ -73,6 +73,7 @@ beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock);
 });
 afterEach(() => {
+  onlineManager.setOnline(true);
   cleanup();
   vi.unstubAllGlobals();
 });
@@ -192,6 +193,16 @@ describe('<PlayerDetailPage /> — la cause de l\'échec est dite (L60)', () => 
     expect(alerte).not.toHaveTextContent(/connexion|serveur/i);
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
     expect(screen.getByRole('link', { name: /Retour/ })).toBeInTheDocument();
+    expect(appelsStats()).toBe(0);
+  });
+
+  it('L60 R6 — hors ligne (requête en pause) : « Connexion impossible » avec Réessayer, aucun appel season-stats', async () => {
+    onlineManager.setOnline(false);
+    monter();
+    const alerte = await screen.findByRole('alert');
+    expect(alerte).toHaveTextContent('Connexion impossible');
+    expect(alerte).not.toHaveTextContent('Le serveur n’a pas pu répondre');
+    expect(screen.getByRole('button', { name: 'Réessayer' })).toBeInTheDocument();
     expect(appelsStats()).toBe(0);
   });
 });
