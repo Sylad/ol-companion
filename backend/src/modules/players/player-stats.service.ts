@@ -148,11 +148,14 @@ export class PlayerStatsService implements OnModuleInit {
       if (await this.accumulateMatch(acc, m)) succeeded++;
       else missing.push(m);
     }
-    const retry = missing;
-    missing = [];
-    for (const m of retry) {
-      if (await this.accumulateMatch(acc, m)) succeeded++;
-      else missing.push(m);
+    // Rien de lu : 365scores est tombé, rejouer les N détails ne ferait qu'allonger l'attente (chacun jusqu'à 10 s).
+    if (succeeded > 0) {
+      const retry = missing;
+      missing = [];
+      for (const m of retry) {
+        if (await this.accumulateMatch(acc, m)) succeeded++;
+        else missing.push(m);
+      }
     }
 
     // Panne de 365scores, pas une saison sans stat : aucun match lu, ou moins que pour la copie actuelle (panne partielle). On la garde.
