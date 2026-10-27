@@ -2541,21 +2541,25 @@ lots:
   - id: L225
     title: "Fiche joueur : Réessayer cliqué hors ligne (requête en pause) — au retour du réseau « Chargement du joueur… » remplace le bloc d'erreur, le bouton est démonté et le focus part sur body ; garder la mémoire de l'erreur jusqu'à fetchStatus idle et compter isPaused dans nouvelEssai (player.$athleteId.tsx:316,319), test qui échoue aujourd'hui"
     public: "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-27
     started: 2026-10-27
     review: { date: 2026-10-27, verdict: "compliant — orchestré (vague 2026-10-27-2324, 0 passe(s) de correction)", commit: 624fb5b8960d9b9970e6ff9ed66fb01fc210011f }
+    ux: { date: 2026-10-27, verdict: "conforme (lead, captures 390/1440 regardées : bloc et Nouvel essai… gardés au retour du réseau, focus conservé)" }
+    finished: 2026-10-27
   - id: L226
     title: "Navigation hors ligne vers une page pas encore chargée : l'écran d'erreur annonce une nouvelle version au lieu d'une erreur de connexion (ErreurPage, estErreurDeModule) — tester navigator.onLine, hors ligne dire Connexion impossible sans rechargement automatique ; test"
     public: "Hors ligne : un message de connexion au lieu d'une fausse nouvelle version"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-27
     started: 2026-10-27
     review: { date: 2026-10-27, verdict: "compliant: 0 blocking, 0 major, 1 minor (note, no sub-task) — orchestré (vague 2026-10-27-2324, 0 passe(s) de correction)", commit: b8247d3f155f3248558354749f92ef864fc44302 }
+    ux: { date: 2026-10-27, verdict: "conforme (lead, capture 390 regardée : « Connexion impossible » hors ligne au lieu d'une fausse nouvelle version, bouton Recharger) ; mineur en note : navigator.onLine lu au rendu sans abonnement, l'écran garde « hors ligne » après le retour du réseau tant qu'on ne recharge pas" }
+    finished: 2026-10-27
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

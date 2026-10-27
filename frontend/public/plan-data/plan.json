@@ -708,14 +708,16 @@
     {
       "id": "L225",
       "title": "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient",
-      "status": "doing",
-      "started": "2026-10-27"
+      "status": "done",
+      "started": "2026-10-27",
+      "finished": "2026-10-27"
     },
     {
       "id": "L226",
       "title": "Hors ligne : un message de connexion au lieu d'une fausse nouvelle version",
-      "status": "doing",
-      "started": "2026-10-27"
+      "status": "done",
+      "started": "2026-10-27",
+      "finished": "2026-10-27"
     }
   ]
 }
