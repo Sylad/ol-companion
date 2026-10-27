@@ -759,7 +759,7 @@ lots:
     screen: component
     created: 2026-10-05
     started: 2026-10-27
-    review: { date: 2026-10-27, verdict: "conforme — orchestré (vague 2026-10-27-1950, 1 passe(s) de correction)", commit: cf51f6baff8d9c5b3916ddfcc779b55011ed3486 }
+    review: { date: 2026-10-27, verdict: "conforme : commits c53609c + suivant documentation seule (entrée Nouveautés, capture 390 px regardée par le lead, données publiques régénérées), tests Nouveautés et plan verts", commit: 3866b0f218744dac8dfb297d9d9f369a2f9f8935 }
     ux: { date: 2026-10-27, verdict: "lead (captures regardées : « Équipe de … » nommé sous Plus avec le filet rouge à 390 px, menu ouvert marqué, focus rendu après Échap) : conforme, 3 mineurs (libellés longs tronqués, nom accessible qui commence par Plus, pastille sur le filet — antérieure)" }
     finished: 2026-10-27
   - id: L60
