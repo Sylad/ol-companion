@@ -47,6 +47,25 @@ function withTimeConfirmed(matches: StoredMatch[]): Match[] {
 
 const CACHE_TTL_MS = 3600_000;
 
+/**
+ * Âge au-delà duquel une partie du cache (résultats, matchs à venir) gardée
+ * faute de réponse de football-data n'est plus servie (L46). Compté depuis le
+ * dernier appel réussi de CETTE partie : une écriture du cache pour l'autre
+ * partie ne la rajeunit pas. Passé ce délai, l'heure d'un match donnée par
+ * football-data n'est plus une information fiable (elle a pu être fixée ou
+ * changée depuis) : le calendrier retombe sur la règle des 14 jours de
+ * 365scores, qui est la règle prévue quand football-data se tait.
+ */
+const KEPT_MAX_AGE_MS = 24 * 3600_000;
+
+/** Le cache sur disque : `finishedAt` / `upcomingAt` datent le dernier succès de chaque partie. */
+interface CacheFile {
+  ts: number;
+  data: StoredMatch[];
+  finishedAt?: number;
+  upcomingAt?: number;
+}
+
 /** Les 20 derniers résultats suffisent au tableau de bord (dernier résultat). */
 const FINISHED_LIMIT = 20;
 /**
@@ -106,7 +125,13 @@ export class FixturesService implements OnModuleInit {
     const apiKey = this.config.get<string>('footballApiKey');
     if (!apiKey) return [];
 
-    const previous = this.readCacheRaw();
+    const previousFile = this.readCacheFile();
+    const previous = previousFile?.data ?? null;
+    const now = Date.now();
+    // Dernier succès de chaque partie ; un cache écrit avant ces champs se date
+    // par son horodatage global.
+    const finishedAt = previousFile ? previousFile.finishedAt ?? previousFile.ts : now;
+    const upcomingAt = previousFile ? previousFile.upcomingAt ?? previousFile.ts : now;
     try {
       // Two separate calls — football-data v4 only accepts one status at a time.
       // `null` = appel refusé ou en échec, à ne pas confondre avec « 0 match ».
@@ -123,9 +148,16 @@ export class FixturesService implements OnModuleInit {
 
       // Rien d'obtenu : le cache reste tel quel, horodatage compris.
       if (finished === null && upcoming === null) {
-        this.logger.warn(
-          'football-data : les deux appels ont échoué — cache existant conservé',
-        );
+        const oldest = Math.min(finishedAt, upcomingAt);
+        if (now - oldest > KEPT_MAX_AGE_MS) {
+          this.logger.error(
+            `football-data : aucune réponse exploitable depuis plus de 24 h — le cache (${previous?.length ?? 0} match(s)) est servi tel quel`,
+          );
+        } else {
+          this.logger.warn(
+            'football-data : les deux appels ont échoué — cache existant conservé',
+          );
+        }
         return previous ?? [];
       }
 
@@ -133,16 +165,28 @@ export class FixturesService implements OnModuleInit {
       // appel refusé (429) ne retire donc jamais les matchs à venir, ni l'heure
       // qu'ils donnent au calendrier. La réponse fraîche l'emporte sur un match
       // gardé (un match à venir du cache, joué depuis, n'apparaît qu'une fois).
+      // Une partie gardée depuis plus de 24 h est abandonnée (L46).
       const fresh = [...(finished ?? []), ...(upcoming ?? [])];
       const freshIds = new Set(fresh.map((m) => m.id));
-      const kept = (previous ?? []).filter(
-        (m) =>
-          (isFinished(m) ? finished === null : upcoming === null) &&
-          !freshIds.has(m.id),
-      );
-      if (kept.length > 0) {
+      const expired = (part: 'finished' | 'upcoming'): boolean =>
+        now - (part === 'finished' ? finishedAt : upcomingAt) > KEPT_MAX_AGE_MS;
+      const failedPart = finished === null ? 'finished' : upcoming === null ? 'upcoming' : null;
+      const partLabel = failedPart === 'finished' ? 'matchs joués' : 'matchs à venir';
+      const abandoned = failedPart !== null && expired(failedPart);
+      const kept = abandoned
+        ? []
+        : (previous ?? []).filter(
+            (m) =>
+              (isFinished(m) ? finished === null : upcoming === null) &&
+              !freshIds.has(m.id),
+          );
+      if (abandoned) {
+        this.logger.error(
+          `football-data : ${partLabel} en échec depuis plus de 24 h — la copie du cache est abandonnée`,
+        );
+      } else if (kept.length > 0) {
         this.logger.warn(
-          `football-data : ${finished === null ? 'matchs joués' : 'matchs à venir'} en échec — ${kept.length} match(s) gardé(s) du cache`,
+          `football-data : ${partLabel} en échec — ${kept.length} match(s) gardé(s) du cache`,
         );
       }
 
@@ -150,11 +194,14 @@ export class FixturesService implements OnModuleInit {
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       );
 
-      if (matches.length === 0 && previous && previous.length > 0) {
+      if (!abandoned && matches.length === 0 && previous && previous.length > 0) {
         this.logger.warn('football-data a rendu 0 match — cache existant conservé');
         return previous;
       }
-      this.writeCache(matches);
+      this.writeCache(matches, {
+        finishedAt: finished !== null ? now : finishedAt,
+        upcomingAt: upcoming !== null ? now : upcomingAt,
+      });
       if (this.fixturesChanged(previous, matches)) {
         this.bus.emit('fixtures-changed', { count: matches.length });
       }
@@ -287,19 +334,25 @@ export class FixturesService implements OnModuleInit {
   }
 
   private readCacheRaw(): StoredMatch[] | null {
+    return this.readCacheFile()?.data ?? null;
+  }
+
+  private readCacheFile(): CacheFile | null {
     if (!fs.existsSync(this.cacheFile)) return null;
     try {
-      const { data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
-      return data;
+      return JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8')) as CacheFile;
     } catch (err: unknown) {
       this.logger.warn(`Failed to read fixtures cache (raw) ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
       return null;
     }
   }
 
-  private writeCache(data: StoredMatch[]): void {
+  private writeCache(
+    data: StoredMatch[],
+    parts: { finishedAt: number; upcomingAt: number },
+  ): void {
     fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
-    atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
+    atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data, ...parts });
   }
 
   private fixturesChanged(prev: StoredMatch[] | null, next: StoredMatch[]): boolean {

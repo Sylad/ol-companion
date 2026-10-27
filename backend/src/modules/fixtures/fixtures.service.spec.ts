@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FixturesService } from './fixtures.service';
 import { footballDataTimeConfirmed } from './kickoff-time';
@@ -397,6 +398,119 @@ describe('FixturesService — appel football-data refusé ou en échec (L39)', (
       await svc.getFixtures({ force: true });
 
       expect(readCache(dir)).toHaveLength(5);
+    });
+  });
+
+  describe('âge des matchs gardés du cache (L46)', () => {
+    const HOUR = 3600_000;
+    let now: jest.SpyInstance<number, []>;
+    const at = (hours: number) => now.mockReturnValue(T0 + hours * HOUR);
+    const T0 = Date.parse('2026-10-10T10:00:00Z');
+
+    beforeEach(() => {
+      now = jest.spyOn(Date, 'now');
+      at(0);
+    });
+    afterEach(() => jest.restoreAllMocks());
+
+    it('matchs à venir refusés 2 h de suite : gardés ; l’âge compte depuis le dernier succès, pas depuis la dernière écriture', async () => {
+      await withCwd(async (dir) => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+
+        answers.scheduled = 429;
+        at(1);
+        await svc.getFixtures({ force: true });
+        at(2);
+        await svc.getFixtures({ force: true });
+
+        expect(readCache(dir)).toHaveLength(15);
+        const raw = JSON.parse(
+          fs.readFileSync(path.join(dir, 'data', 'fixtures-cache.json'), 'utf-8'),
+        ) as { finishedAt: number; upcomingAt: number };
+        expect(raw.upcomingAt).toBe(T0);
+        expect(raw.finishedAt).toBe(T0 + 2 * HOUR);
+      });
+    });
+
+    it('matchs à venir refusés plus de 24 h : abandonnés (avec une erreur au journal), les résultats frais restent', async () => {
+      await withCwd(async (dir) => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+        const error = jest.spyOn(Logger.prototype, 'error').mockImplementation();
+
+        answers.scheduled = 429;
+        answers.competition = 429;
+        at(12);
+        await svc.getFixtures({ force: true });
+        expect(readCache(dir)).toHaveLength(15);
+        expect(error).not.toHaveBeenCalled();
+
+        at(25);
+        const matches = await svc.getFixtures({ force: true });
+
+        expect(matches).toHaveLength(5);
+        expect(matches.every((m) => m.status === 'FINISHED')).toBe(true);
+        expect(readCache(dir)).toHaveLength(5);
+        expect(error).toHaveBeenCalledWith(expect.stringContaining('matchs à venir'));
+        error.mockRestore();
+      });
+    });
+
+    it('matchs à venir abandonnés alors que la réponse fraîche est vide : le vieux cache ne revient pas', async () => {
+      await withCwd(async (dir) => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+        jest.spyOn(Logger.prototype, 'error').mockImplementation();
+
+        answers.finished = { matches: [] };
+        answers.scheduled = 429;
+        answers.competition = 429;
+        at(30);
+        const matches = await svc.getFixtures({ force: true });
+
+        expect(matches).toEqual([]);
+        expect(readCache(dir)).toEqual([]);
+      });
+    });
+
+    it('un cache écrit avant ces champs se date par son horodatage global', async () => {
+      await withCwd(async (dir) => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+        const file = path.join(dir, 'data', 'fixtures-cache.json');
+        const old = JSON.parse(fs.readFileSync(file, 'utf-8')) as Record<string, unknown>;
+        delete old.finishedAt;
+        delete old.upcomingAt;
+        fs.writeFileSync(file, JSON.stringify(old));
+        jest.spyOn(Logger.prototype, 'error').mockImplementation();
+
+        answers.scheduled = 429;
+        answers.competition = 429;
+        at(25);
+        const matches = await svc.getFixtures({ force: true });
+
+        expect(matches.filter((m) => m.status !== 'FINISHED')).toEqual([]);
+      });
+    });
+
+    it('les deux appels refusés plus de 24 h : cache servi tel quel, mais l’échec durable est au journal', async () => {
+      await withCwd(async (dir) => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+        const file = path.join(dir, 'data', 'fixtures-cache.json');
+        const before = fs.readFileSync(file, 'utf-8');
+        const error = jest.spyOn(Logger.prototype, 'error').mockImplementation();
+
+        answers.finished = 429;
+        answers.scheduled = 429;
+        at(25);
+        const matches = await svc.getFixtures({ force: true });
+
+        expect(matches).toHaveLength(15);
+        expect(fs.readFileSync(file, 'utf-8')).toBe(before);
+        expect(error).toHaveBeenCalledWith(expect.stringContaining('depuis plus de 24 h'));
+      });
     });
   });
 
