@@ -708,7 +708,8 @@
     {
       "id": "L225",
       "title": "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-27"
     },
     {
       "id": "L226",

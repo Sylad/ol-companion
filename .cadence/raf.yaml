@@ -2541,10 +2541,11 @@ lots:
   - id: L225
     title: "Fiche joueur : Réessayer cliqué hors ligne (requête en pause) — au retour du réseau « Chargement du joueur… » remplace le bloc d'erreur, le bouton est démonté et le focus part sur body ; garder la mémoire de l'erreur jusqu'à fetchStatus idle et compter isPaused dans nouvelEssai (player.$athleteId.tsx:316,319), test qui échoue aujourd'hui"
     public: "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-27
+    started: 2026-10-27
   - id: L226
     title: "Navigation hors ligne vers une page pas encore chargée : l'écran d'erreur annonce une nouvelle version au lieu d'une erreur de connexion (ErreurPage, estErreurDeModule) — tester navigator.onLine, hors ligne dire Connexion impossible sans rechargement automatique ; test"
     public: "Hors ligne : un message de connexion au lieu d'une fausse nouvelle version"
