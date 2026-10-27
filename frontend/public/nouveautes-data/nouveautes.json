@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-26 08:15",
+  "generated": "2026-10-27 21:36",
   "entries": [
+    {
+      "slug": "2026-10-27-telephone-la-barre-du-bas-nomme-la-page-ouverte-sous-plus",
+      "title": "Téléphone : la barre du bas nomme la page ouverte sous « Plus »",
+      "date": "2026-10-27",
+      "lots": [
+        "L59"
+      ],
+      "captures": [
+        "captures/L59-barre-du-bas-a-propos-390px.png"
+      ],
+      "alts": [
+        "Page À propos sur téléphone : la dernière case de la barre du bas s'appelle « À propos » au lieu de « Plus »"
+      ],
+      "html": "<p>Sur téléphone, quand tu ouvres une page rangée sous « Plus » (Joueurs, Carte Ligue 1, Équipe de France, FC Noobz, Nouveautés, Plan de travail, À propos…), la dernière case de la barre du bas porte maintenant le nom de la page où tu es, au lieu de « Plus ». Tu sais toujours où tu es sans avoir à ouvrir le menu. Quand le menu est ouvert, la case redit « Plus ».</p>"
+    },
     {
       "slug": "2026-10-26-fiche-joueur-initiales-completes-quand-la-photo-manque",
       "title": "Fiche joueur : initiales complètes quand la photo manque",
