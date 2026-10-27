@@ -47,9 +47,13 @@ export function rechargerUneFois(deps: Deps = depsParDefaut()): boolean {
   return true;
 }
 
-/** Écoute `vite:preloadError` (préchargement d'un chunk échoué) : recharge une fois et neutralise l'erreur. */
+/**
+ * Écoute `vite:preloadError` (préchargement d'un chunk échoué) : recharge une fois et neutralise l'erreur.
+ * Hors ligne (L226) l'échec vient de la connexion, pas d'une livraison : rien n'est rechargé, l'erreur suit son cours.
+ */
 export function installerRechargementModule(cible: EventTarget = window, deps?: Deps): void {
   cible.addEventListener('vite:preloadError', (event) => {
+    if (!navigator.onLine) return;
     if (rechargerUneFois(deps)) event.preventDefault();
   });
 }

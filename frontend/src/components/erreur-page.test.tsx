@@ -11,7 +11,14 @@ vi.mock('../lib/rechargement-module', async (orig) => ({
   rechargerUneFois: rechargement.rechargerUneFois,
 }));
 
-afterEach(() => rechargement.rechargerUneFois.mockReset());
+function simulerReseau(enLigne: boolean) {
+  vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(enLigne);
+}
+
+afterEach(() => {
+  rechargement.rechargerUneFois.mockReset();
+  vi.restoreAllMocks();
+});
 
 describe('Page d\'erreur (L184)', () => {
   it('R6 — erreur de module : tente le rechargement unique, puis (garde atteinte) page française avec « Recharger »', () => {
@@ -61,5 +68,29 @@ describe('Page d\'erreur (L184)', () => {
     await router.load();
     const vue = render(<RouterProvider router={router} />);
     await vi.waitFor(() => expect(vue.container.querySelector('h1')?.textContent).toBe('Un problème est survenu'));
+  });
+
+  it('R10 — hors ligne, un module introuvable dit « Connexion impossible » (pas « nouvelle version ») et ne recharge pas tout seul', () => {
+    simulerReseau(false);
+    const recharger = vi.fn();
+    const { container } = render(
+      <ErreurPage error={new TypeError('Failed to fetch dynamically imported module: /assets/match-abc.js')} reset={() => {}} recharger={recharger} />,
+    );
+    expect(container.querySelector('h1')?.textContent).toBe('Connexion impossible');
+    expect(document.body.textContent).not.toMatch(/nouvelle version|mise à jour/i);
+    expect(rechargement.rechargerUneFois).not.toHaveBeenCalled();
+    expect(recharger).not.toHaveBeenCalled();
+    fireEvent.click([...container.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Recharger')!);
+    expect(recharger).toHaveBeenCalledTimes(1);
+  });
+
+  it('R11 — en ligne, le même module introuvable garde « nouvelle version » et le rechargement unique', () => {
+    simulerReseau(true);
+    rechargement.rechargerUneFois.mockReturnValue(false);
+    const { container } = render(
+      <ErreurPage error={new TypeError('Failed to fetch dynamically imported module: /assets/match-abc.js')} reset={() => {}} />,
+    );
+    expect(container.querySelector('h1')?.textContent).toMatch(/nouvelle version/i);
+    expect(rechargement.rechargerUneFois).toHaveBeenCalledTimes(1);
   });
 });

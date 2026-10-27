@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-27 23:28",
+  "generated": "2026-10-27 23:34",
   "entries": [
+    {
+      "slug": "2026-10-27-hors-ligne-un-message-de-connexion-au-lieu-d-une-fausse-nouv",
+      "title": "Hors ligne : un message de connexion au lieu d'une fausse nouvelle version",
+      "date": "2026-10-27",
+      "lots": [
+        "L226"
+      ],
+      "captures": [
+        "captures/2026-10-27-hors-ligne-connexion-1440.png",
+        "captures/2026-10-27-hors-ligne-connexion-390.png"
+      ],
+      "alts": [
+        "Écran « Connexion impossible » avec le bouton Recharger, sur grand écran",
+        "Le même écran sur téléphone"
+      ],
+      "html": "<p>Quand la connexion est coupée et que vous ouvrez une page que l'application n'avait pas encore chargée, l'écran annonce désormais « Connexion impossible » et vous invite à rétablir la connexion puis à recharger. Il ne prétend plus qu'une nouvelle version est disponible, et la page ne se recharge plus toute seule pendant que vous êtes hors ligne. Le bouton « Recharger » reste là pour réessayer.</p>"
+    },
     {
       "slug": "2026-10-27-fiche-joueur-le-bouton-reessayer-garde-sa-place-quand-le-res",
       "title": "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient",

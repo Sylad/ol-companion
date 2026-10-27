@@ -55,4 +55,16 @@ describe('Rechargement sur module introuvable (L184)', () => {
     expect(recharger).toHaveBeenCalledTimes(1);
     expect(ev.defaultPrevented).toBe(true);
   });
+
+  it('R12 — hors ligne, vite:preloadError ne recharge pas et laisse l\'erreur à la page d\'erreur', () => {
+    const cible = new EventTarget();
+    const recharger = vi.fn();
+    const reseau = vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
+    installerRechargementModule(cible, { storage: stockage(), recharger, maintenant: () => 5 });
+    const ev = new Event('vite:preloadError', { cancelable: true });
+    cible.dispatchEvent(ev);
+    reseau.mockRestore();
+    expect(recharger).not.toHaveBeenCalled();
+    expect(ev.defaultPrevented).toBe(false);
+  });
 });
