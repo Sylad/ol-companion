@@ -66,7 +66,7 @@ routes) et les fichiers de `public/`, aux noms fixes (`sw.js`, manifeste, icône
 répond 404 `no-store`, jamais le repli HTML. Ne rien servir sous `/assets/` sans empreinte dans le nom.
 Le service worker (`public/sw.js`) n'intercepte ni les navigations ni `/assets/` : il ne garde que
 l'icône, le manifeste et le favicon (cache `olc-shell-v1`, à renommer si l'un d'eux change). Preuve
-rejouable : `cd frontend && npm run build`, puis `DOCKER_API_VERSION=1.44 scripts/test-nginx-cache.sh`.
+rejouable : `cd frontend && npm run build`, puis `DOCKER_API_VERSION=1.44 scripts/test-nginx-cache.sh` (L58 : Range sans 206 ni 416, 404 `no-store` exigé aussi par `verify-cache.sh`, provenance des fichiers de `assets/` ; rejoué par la CI, job `nginx-cache`).
 
 ## Variables d'env requises (`backend/.env`)
 
