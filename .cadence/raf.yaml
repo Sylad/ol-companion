@@ -601,9 +601,10 @@ lots:
     finished: 2026-10-13
   - id: L46
     title: "Calendrier, suites de la relecture de code du 03-10 : test du repli par journée refusé quand SCHEDULED répond 200 sans match ; test « aucun match à venir » du tableau de bord qui passe sur l'état de chargement ; tests du tour (journée + manche, « 1er tour ») ; tests des libellés C1 du bilan et de la page joueur ; borner l'âge des matchs gardés du cache football-data ou rendre l'échec durable visible ; comparer l'heure 365scores à celle de football-data avant de l'afficher comme fixée"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-03
+    started: 2026-10-27
   - id: L47
     title: "Calendrier : jour non fixé affiché comme ferme (18 des 21 lignes « à confirmer » sont un samedi de remplissage) — « Date et horaire à confirmer » ou « Week-end du … », aussi sur le tableau de bord"
     public: "Calendrier : la date marquée « à confirmer » quand elle n'est pas fixée"
