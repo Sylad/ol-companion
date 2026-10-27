@@ -759,6 +759,7 @@ lots:
     screen: component
     created: 2026-10-05
     started: 2026-10-27
+    review: { date: 2026-10-27, verdict: "conforme — orchestré (vague 2026-10-27-1950, 1 passe(s) de correction)", commit: cf51f6baff8d9c5b3916ddfcc779b55011ed3486 }
   - id: L60
     title: "Fiche joueur : état d'erreur distinguant réseau / joueur inconnu, avec bouton Réessayer (Nielsen 9) — relevé en revue UX L29"
     status: todo
