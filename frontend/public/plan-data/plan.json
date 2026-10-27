@@ -175,8 +175,9 @@
     {
       "id": "L60",
       "title": "Fiche joueur : l'erreur dit sa cause et propose de réessayer",
-      "status": "doing",
-      "started": "2026-10-27"
+      "status": "done",
+      "started": "2026-10-27",
+      "finished": "2026-10-27"
     },
     {
       "id": "L64",
@@ -703,6 +704,11 @@
       "status": "done",
       "started": "2026-10-26",
       "finished": "2026-10-26"
+    },
+    {
+      "id": "L225",
+      "title": "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient",
+      "status": "todo"
     }
   ]
 }

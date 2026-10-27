@@ -765,12 +765,14 @@ lots:
   - id: L60
     title: "Fiche joueur : état d'erreur distinguant réseau / joueur inconnu, avec bouton Réessayer (Nielsen 9) — relevé en revue UX L29"
     public: "Fiche joueur : l'erreur dit sa cause et propose de réessayer"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-05
     started: 2026-10-27
-    review: { date: 2026-10-27, verdict: "conforme : une note mineure (un 200 au corps illisible est annoncé comme « Connexion impossible »), sans sous-tâche — orchestré (vague 2026-10-27-1950, 1 passe(s) de correction + passe des mineurs)", commit: 6535a8deec4c1467582badad5bf9c0e77d5cfe95 }
+    review: { date: 2026-10-27, verdict: "conforme sur le périmètre (revue Opus 3 : les 3 constats de la revue 2 corrigés, chacun vérifié par mutation ; suites 495 + 1214 vertes, build vert) ; constat hors ligne préexistant depuis ba94ed1, pas une régression par rapport à la prod, coupé en L225", commit: c4b2bf13317d988c9bfb971c58d46f543c879694 }
+    ux: { date: 2026-10-27, verdict: "conforme (lead, captures 390 regardées après correctif : focus visible ol-red-bright, bloc gardé pendant Nouvel essai…, Joueur inconnu en h1 sur bg-surface ; contraste 5,35:1) ; mineurs en note : bouton 30 px de haut, lien vers la liste sous Joueur inconnu" }
+    finished: 2026-10-27
   - id: L61
     title: "Banc incohérent : /players affiche 11 entrées (10 joueurs + entraîneur, Tagliafico inclus), /match/4735259 en affiche 9 sans Tagliafico — aligner les deux sources (complète L42) — QA prod 05-10"
     status: dropped
@@ -2535,6 +2537,13 @@ lots:
     started: 2026-10-27
     review: { date: 2026-10-27, verdict: "revue lead : 3 lignes de config, commande de plan du projet — conforme", commit: null }
     finished: 2026-10-27
+  - id: L225
+    title: "Fiche joueur : Réessayer cliqué hors ligne (requête en pause) — au retour du réseau « Chargement du joueur… » remplace le bloc d'erreur, le bouton est démonté et le focus part sur body ; garder la mémoire de l'erreur jusqu'à fetchStatus idle et compter isPaused dans nouvelEssai (player.$athleteId.tsx:316,319), test qui échoue aujourd'hui"
+    public: "Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-27
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
