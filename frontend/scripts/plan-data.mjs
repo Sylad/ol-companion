@@ -80,6 +80,24 @@ export function checkPublicTitle(title, where) {
   return t;
 }
 
+/** Titre public d'un lot : `public:`, sinon sa Nouveauté (jamais pour une revue), sinon `undefined`. */
+function publicTitleOf(lot, newsTitles) {
+  if (lot.public != null) return lot.public;
+  return isProcessLot(lot) ? undefined : newsTitles.get(String(lot.id));
+}
+
+/**
+ * Lots visibles à faire / en cours que la page publique ne montre pas faute de
+ * titre public (le lot est alors masqué sans bruit). Les lots de sécurité, que le
+ * filet écarte volontairement, ne sont pas signalés.
+ */
+export function untitledOpenLots(raf, { newsTitles = new Map() } = {}) {
+  return (raf?.lots ?? [])
+    .filter((l) => l?.visible === true && (l.status === 'todo' || l.status === 'doing'))
+    .filter((l) => !isDenied(l.title) && publicTitleOf(l, newsTitles) == null)
+    .map((l) => String(l.id));
+}
+
 /**
  * Plan raf (objet YAML) → données publiques. Pur, sans E/S.
  * Titre d'un lot : `public:`, sinon titre de sa Nouveauté (`newsTitles`), sinon
@@ -94,8 +112,7 @@ export function buildPlan(raf, { newsTitles = new Map() } = {}) {
     if (!PUBLISHED_STATUSES.includes(lot.status)) continue;
     if (isDenied(lot.title)) continue;
     const id = String(lot.id);
-    let title = lot.public;
-    if (title == null && !isProcessLot(lot)) title = newsTitles.get(id);
+    const title = publicTitleOf(lot, newsTitles);
     if (title == null) continue;
     const out = { id, title: checkPublicTitle(title, id), status: lot.status };
     const started = day(lot.started);
@@ -222,7 +239,13 @@ function main(argv) {
     console.log(`plan-data : aucun texte privé du plan dans ${dir}/.`);
     return;
   }
-  const json = renderPlan(buildPlan(readPlan(input), { newsTitles: readNewsTitles(newsDir) }));
+  const rafPlan = readPlan(input);
+  const newsTitles = readNewsTitles(newsDir);
+  const json = renderPlan(buildPlan(rafPlan, { newsTitles }));
+  const untitled = untitledOpenLots(rafPlan, { newsTitles });
+  if (untitled.length > 0) {
+    console.warn(`plan-data : ${untitled.length} lot(s) visible(s) ouvert(s) sans titre public, absents de la page : ${untitled.join(', ')} (ajouter « public: » au lot).`);
+  }
   if (argv.includes('--check')) {
     let current = '';
     try { current = readFileSync(output, 'utf8'); } catch { /* absent = pas à jour */ }

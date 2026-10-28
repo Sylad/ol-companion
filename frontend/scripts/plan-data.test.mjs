@@ -18,6 +18,7 @@ import {
   readPlan,
   renderPlan,
   scanDir,
+  untitledOpenLots,
 } from './plan-data.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
@@ -221,6 +222,26 @@ describe('isDenied (filet de sécurité)', () => {
 });
 
 // ── Le vrai plan du dépôt ─────────────────────────────────────────────────────
+describe('untitledOpenLots (L57 — un lot ouvert ne disparaît pas sans bruit)', () => {
+  it('L57 — liste les lots visibles à faire / en cours qu’aucun titre public ne permet d’afficher', () => {
+    expect(untitledOpenLots(raf, { newsTitles: news })).toEqual(['L5']);
+  });
+
+  it('L57 — un titre venu d’une Nouveauté suffit ; un lot masqué, terminé, abandonné ou de sécurité n’est pas signalé', () => {
+    const open = untitledOpenLots(raf, { newsTitles: new Map([...news, ['L5', 'Titre de la Nouveauté']]) });
+    expect(open).toEqual([]);
+  });
+
+  it('L57 — une revue UX ouverte sans public: est signalée même si une Nouveauté existe', () => {
+    const r = { lots: [{ id: 'L20', title: 'Revue UX — Écran', status: 'todo', visible: true }] };
+    expect(untitledOpenLots(r, { newsTitles: new Map([['L20', 'x']]) })).toEqual(['L20']);
+  });
+
+  it('L57 — le plan réel : chaque lot visible ouvert a un titre public (sinon : public: dans raf.yaml)', () => {
+    expect(untitledOpenLots(readPlan(RAF), { newsTitles: readNewsTitles(NEWS) })).toEqual([]);
+  });
+});
+
 describe('plan publié (.cadence/raf.yaml → public/plan-data/plan.json)', () => {
   const realRaf = readPlan(RAF);
   const committedText = () => readFileSync(PLAN_JSON, 'utf8');
