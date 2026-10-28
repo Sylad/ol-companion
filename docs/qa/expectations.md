@@ -18,7 +18,8 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 
 ## /
 - shows: le bandeau titré « Prochain rendez-vous », ou « Approche du coup d'envoi » (match à moins de 36 h), ou « Jour de match » (match le jour même, L157 complète L73), ou « Match en direct » ; avec deux clubs et une date ; les tuiles Position, Points, Différence de buts, Forme, chacune avec une valeur ; « Dernier résultat » avec un score ; « OL en chiffres » ; le tracker de classement avec autant de points que d'entrées dans /api/standings/season-rankings (6 le 10-10) ; le lieu du prochain match (ligne de date de l'en-tête) est un nom de stade, ou rien ; la ligne « Lieu » du « Tableau de bord match » dit « Domicile » ou « Extérieur » (jamais un nom de stade, jamais vide, L211)
-- never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 » ou « 02h00 » (minuit UTC)
+- shows: la carte du direct À venir affiche « vs » entre les deux clubs, tant que /api/live-match/current est `upcoming` avec des scores `null` (L73, QA L77)
+- never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 » ou « 02h00 » (minuit UTC) ; « -1 · -1 » (L73)
 - api: /api/standings
 - api: /api/season-matches — lu par le bandeau « Prochain rendez-vous » et par « Dernier résultat » (toutes compétitions) ; `/api/fixtures` n'est plus appelé par `/`
 - api: /api/standings/season-rankings
@@ -58,7 +59,7 @@ Visiter le lien de la carte du direct sur / quand elle existe ; sinon
 /match/<gameId de /api/lineup>?matchupId=<homeId>-<awayId>-<gameId> : 465 (l'OL) et opponentId de /api/lineup,
 dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-france (5061 dans le matchupId).
 - shows: l'en-tête du score avec deux clubs ; « Faits du match » avec au moins un événement pour un match terminé ; « Statistiques » ; deux blocs « Composition » de 11 (règle L211 : le bloc « Composition » n'existe que lorsque 365scores publie une feuille, probable ou confirmée, pour le match ; l'exemple Hoffenheim – Lyon sans `lineups` est périmé, 365scores y publiait la composition probable le 22-10, 11 + 12 mesurés ; sur un match à venir dont la réponse n'a pas de `lineups`, ni colonnes ni bloc « Composition », mais « Statistiques » (« Pas encore de statistiques. ») et « Joueurs en vue » (« Les joueurs en vue apparaîtront avec les statistiques du match. ») restent affichés — L162, L173 ; sur un match terminé sans joueurs en vue, le bloc est absent) ; sur un match de Ligue 1 seulement, « Classement en direct » avec 5 lignes dont Lyon (sur un match de coupe ou d'Europe, le bloc est absent : la réponse de /api/live-match/<gameId>/stats n'a pas de clé `standings`, undefined et non null, vu sur Lyon – Crystal Palace le 16-10, L158)
-- never: « Match introuvable » ; « Lien incomplet »
+- never: « Match introuvable » ; « Lien incomplet » ; « -1 · -1 » à la place du score d'un match à venir (L73)
 - never: le nom brut 365scores « France, Ligue 1 » (ou « UEFA … ») à côté du statut du match : le nom vient du glossaire (« Ligue 1 », L72) ; une compétition non suivie garde son nom brut
 - shows: sur un match des Bleus (5061 dans le matchupId, L167) : `body.theme-bleus` ; le lien de retour [data-testid=lien-retour-equipe] « Équipe de France » (le lien « Équipe de France » de la barre latérale existe sur toutes les pages, il ne compte pas) ; texte de la France hsl(224 90% 75%) dans l'en-tête et les repères de sens « ← X attaque » de la Carte des tirs ; pastilles, points et courbes de la France hsl(224 80% 58%) (Momentum, Carte des tirs et leurs légendes), adversaire hsl(0 0% 96%) ; une bordure néon bleu-blanc-rouge sur `.faits-bloc` ; des noms d'équipe sur 2 lignes au plus, sans rognage, à 390
 - never: sur un match de l'OL (sans 5061 dans le matchupId), `body.theme-bleus`, [data-testid=lien-retour-equipe] ou une couleur des Bleus : rien ne change
@@ -77,7 +78,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 
 ## /fixtures
 - shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal au nombre de lignes affichées, quel que soit le filtre de statut ou de compétition (au total, sans filtre) ; à 0 ligne la vue rapide est masquée (L51) et « Aucun match dans cette catégorie. » + « Afficher tous les matchs » la remplacent, sans « Matchs listés 0 » ; ce bouton rend le focus au titre « Calendrier », « Chargement des matchs… » est annoncé (role=status) ; les pastilles par compétition, dont la somme égale « Toutes »
-- shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux
+- shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux ; un match dont l'horaire n'est pas fixé a aussi un jour de remplissage : la ligne dit « Week-end du dd/mm » (vendredi à dimanche, « du dd/mm » à l'écran) ou « Date à confirmer » (`unconfirmedDay`, L47), jamais le jour de remplissage présenté comme sûr (L73, QA L32)
 - never: « Aucun match dans cette catégorie. » quand la pastille choisie annonce au moins 1 match ; une heure « 01:00 » ou « 02:00 » (minuit UTC)
 - api: /api/season-matches
 
@@ -97,6 +98,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - shows: à l'ouverture la carte est cadrée sur la France, zoom ≥ 6 à 1440 × 900 (L192) ; la molette fait défiler la page sans zoomer (`window.scrollY` change, zoom inchangé) ; un bouton « Recentrer » (en bas à gauche, après les boutons de zoom) ramène au cadrage d'ouverture
 - shows: chaque club a une zone cliquable d'au moins 24 × 24 px que ne recouvre aucune autre, à 1440, 390 et 320 px (L193, L197)
 - shows: la fiche d'un club s'ouvre au clavier (`role=dialog` nommé par le club, focus dedans), son bouton × est nommé « Fermer la fiche », Échap la ferme et rend le focus au marqueur du club (L195)
+- shows: un clic au centre de chaque marqueur ouvre la bulle de ce club, et la bulle n'est recouverte par aucun contrôle de la carte (L73, QA L70)
 - never: « Chargement de la carte… » après 8 s
 - never: « Pas de match OL recensé » (ni marqueur « Pas encore joué » faute de données : tant que /api/season-matches n'a pas répondu, « Chargement de la carte… » ; en erreur, un message avec « Réessayer », L194)
 - api: /api/season-matches — lu par la carte
