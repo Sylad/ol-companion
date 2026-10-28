@@ -102,6 +102,18 @@ export function FixturesPage() {
   // `scroll-padding-top` (index.css, repli 124 px) la suive, sinon un focus clavier passe dessous (WCAG 2.4.11).
   const barRef = useRef<HTMLDivElement>(null);
   const hasBar = Boolean(data);
+
+  // « Afficher tous les matchs » disparaît avec le message vide : le focus passe au titre de la page, sinon il
+  // tombe sur body (WCAG 2.4.3). Le titre reçoit le focus une fois la liste revenue.
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const focusTitleAfterReset = useRef(false);
+  const listBack = filtered.length > 0;
+  useEffect(() => {
+    if (focusTitleAfterReset.current && listBack) {
+      focusTitleAfterReset.current = false;
+      titleRef.current?.focus({ preventScroll: true });
+    }
+  }, [listBack]);
   useEffect(() => {
     const bar = barRef.current;
     if (!bar || typeof ResizeObserver === 'undefined') return;
@@ -126,7 +138,7 @@ export function FixturesPage() {
       <section className="rounded-md bg-surface border border-border overflow-clip">
         <header className="px-5 py-4 border-b border-border">
           <div className="eyebrow mb-1 whitespace-nowrap">Saison {seasonLabel(data)}</div>
-          <h1 data-testid="titre-page" className="font-display text-xl font-bold text-fg-bright leading-none">
+          <h1 ref={titleRef} tabIndex={-1} data-testid="titre-page" className="font-display text-xl font-bold text-fg-bright leading-none focus:outline-none">
             Calendrier
           </h1>
         </header>
@@ -170,10 +182,15 @@ export function FixturesPage() {
         )}
 
         <div className="p-3 sm:p-5">
-          {isLoading && (
-            <div data-testid="message-chargement" className="flex items-center justify-center py-20 text-fg-dim">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />
-              <span>Chargement des matchs…</span>
+          {/* Zone annoncée présente dès l'erreur, avant « Chargement des matchs… » qui y entre après Réessayer (WCAG 4.1.3). */}
+          {!data && (
+            <div role="status">
+              {isLoading && (
+                <div data-testid="message-chargement" className="flex items-center justify-center py-20 text-fg-dim">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  <span>Chargement des matchs…</span>
+                </div>
+              )}
             </div>
           )}
           {isError && !data && (
@@ -200,6 +217,7 @@ export function FixturesPage() {
                 type="button"
                 data-testid="afficher-tout"
                 onClick={() => {
+                  focusTitleAfterReset.current = true;
                   setCompetition('all');
                   setTab('all');
                 }}

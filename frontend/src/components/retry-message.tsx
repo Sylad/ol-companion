@@ -38,7 +38,7 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
           retryEn = Date.now();
           onRetry();
         }}
-        className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue-bright/10 px-5 text-sm font-semibold text-fg-bright"
+        className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue-bright/10 px-5 text-sm font-semibold text-fg-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
       >
         Réessayer
       </button>
