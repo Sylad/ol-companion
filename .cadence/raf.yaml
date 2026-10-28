@@ -2585,6 +2585,7 @@ lots:
     notes:
       - { date: 2026-10-28, text: "QA prod 28-10 (6afb528) : à 0 ligne filtrée, « Matchs listés » disparaît (vue rapide masquée, antérieur à L51) alors que docs/qa/expectations.md l'exige quel que soit le filtre — trancher dans ce lot : afficher « Matchs listés 0 » ou préciser l'attente" }
     started: 2026-10-28
+    review: { date: 2026-10-28, verdict: "conforme : 2 notes mineures (drapeau de focus resté levé si la saison est vide, test R2 plus faible que son titre) — orchestré (vague 2026-10-28-1030o, 1 passe(s) de correction)", commit: 247d1507e18f70771924a257f2a67a20153643d0 }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
