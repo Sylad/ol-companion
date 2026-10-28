@@ -2578,12 +2578,13 @@ lots:
   - id: L228
     title: "Calendrier : focus et annonces — après « Afficher tous les matchs » le focus tombe sur body (mesuré 1440/390, WCAG 2.4.3), « Chargement des matchs… » sans role=status après Réessayer (WCAG 4.1.3) ; contour de focus de RetryMessage aligné sur ol-red-bright"
     public: "Calendrier : navigation au clavier plus fluide"
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     created: 2026-10-28
     notes:
       - { date: 2026-10-28, text: "QA prod 28-10 (6afb528) : à 0 ligne filtrée, « Matchs listés » disparaît (vue rapide masquée, antérieur à L51) alors que docs/qa/expectations.md l'exige quel que soit le filtre — trancher dans ce lot : afficher « Matchs listés 0 » ou préciser l'attente" }
+    started: 2026-10-28
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
