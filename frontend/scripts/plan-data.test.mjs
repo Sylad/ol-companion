@@ -227,9 +227,23 @@ describe('untitledOpenLots (L57 — un lot ouvert ne disparaît pas sans bruit)'
     expect(untitledOpenLots(raf, { newsTitles: news })).toEqual(['L5']);
   });
 
-  it('L57 — un titre venu d’une Nouveauté suffit ; un lot masqué, terminé, abandonné ou de sécurité n’est pas signalé', () => {
+  it('L57 — un titre venu d’une Nouveauté suffit', () => {
     const open = untitledOpenLots(raf, { newsTitles: new Map([...news, ['L5', 'Titre de la Nouveauté']]) });
     expect(open).toEqual([]);
+  });
+
+  it('L57 — sans titre public, un lot masqué, terminé, abandonné, bloqué ou de sécurité n’est pas signalé', () => {
+    const r = {
+      lots: [
+        { id: 'L30', title: 'Masqué', status: 'todo', visible: false },
+        { id: 'L31', title: 'Terminé', status: 'done', visible: true },
+        { id: 'L32', title: 'Abandonné', status: 'dropped', visible: true },
+        { id: 'L33', title: 'Bloqué', status: 'blocked', visible: true },
+        { id: 'L34', title: 'Corriger une faille de sécurité', status: 'todo', visible: true },
+        { id: 'L35', title: 'Ouvert', status: 'doing', visible: true },
+      ],
+    };
+    expect(untitledOpenLots(r)).toEqual(['L35']);
   });
 
   it('L57 — une revue UX ouverte sans public: est signalée même si une Nouveauté existe', () => {
