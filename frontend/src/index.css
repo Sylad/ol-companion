@@ -751,6 +751,21 @@
   }
 }
 
+/* L64 — la ligne de la pastille du direct (h-9 dans AppShell) colle en haut sous 1024 px : --ligne-direct-h = 36 px,
+   0 au bureau. S'ajoute aux 124 px / à la barre des filtres ci-dessus, et au bandeau démo (--bandeau-demo-h, posée par
+   DemoBanner ; 0 sans bandeau). Écrit à part pour laisser intacte la règle L50. */
+:root {
+  --ligne-direct-h: 0px;
+}
+@media (max-width: 1023px) {
+  :root {
+    --ligne-direct-h: 36px;
+  }
+  html {
+    scroll-padding-top: calc(var(--barre-filtres-h, 124px) + var(--ligne-direct-h) + var(--bandeau-demo-h, 0px));
+  }
+}
+
 /* L161 — bloc Faits du match borné à CINQ lignes (décision de Sylvain, 16-10). --ligne-fait : hauteur fixe d'un
    fait, 44 px (deux lignes de texte à 14 px / 1,2, remplissage 4 px, filet 1 px) ; la borne s'écrit en lignes.
    Départ en bas (column-reverse : le DOM reste chronologique, les plus récents sont visibles sans script).

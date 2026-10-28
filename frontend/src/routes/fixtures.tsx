@@ -150,6 +150,8 @@ export function FixturesPage() {
             <div
               ref={barRef}
               data-testid="barre-filtres"
+              // L64 : top-0 du bureau/repli ; au téléphone la barre colle SOUS la ligne collante de la pastille du direct (et le bandeau démo).
+              style={{ top: 'calc(var(--bandeau-demo-h, 0px) + var(--ligne-direct-h, 0px))' }}
               className="flex flex-col gap-1.5 bg-surface px-3 py-1.5 sm:px-5 max-lg:sticky max-lg:top-0 max-lg:z-20 max-lg:border-b max-lg:border-border max-lg:shadow-[0_6px_12px_-8px_rgba(0,0,0,0.9)] lg:flex-row lg:flex-wrap lg:items-center lg:justify-end lg:gap-2 lg:py-3"
             >
               {competitions.length > 1 && (

@@ -39,9 +39,15 @@ export function AppShell() {
       <Sidebar eventStreamStatus={eventStreamStatus} />
       <main id="contenu" tabIndex={-1} className="outline-none relative z-10 lg:pl-[240px] pb-20 lg:pb-0">
         <div className={cn('mx-auto w-full px-5 lg:px-8', wide ? 'max-w-none py-5 lg:py-6' : 'max-w-[1440px] py-6 lg:py-10')}>
-          {/* L30 : sur téléphone la pastille a sa propre ligne, dans le flux — flottante, elle recouvrait le titre. */}
-          <div className="mb-3 flex justify-end lg:hidden">
-            <LiveConnectionBadge status={eventStreamStatus} />
+          {/* L30 : sur téléphone la pastille a sa propre ligne, dans le flux — flottante, elle recouvrait le titre.
+              L64 : cette ligne est collante (sticky, jamais fixed : elle garde sa hauteur dans le flux, rien ne passe dessous
+              au repos) et reste sous le haut de l'écran au défilement ; transparente aux clics hors de la pastille.
+              Sa hauteur (h-9) est --ligne-direct-h dans index.css. */}
+          <div
+            data-testid="ligne-direct"
+            className="pointer-events-none sticky top-[var(--bandeau-demo-h,0px)] z-30 flex h-9 items-start justify-end lg:hidden"
+          >
+            <LiveConnectionBadge status={eventStreamStatus} className="pointer-events-auto" />
           </div>
           <Outlet />
         </div>

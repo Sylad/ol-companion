@@ -48,8 +48,16 @@ describe('AppShell — pastille du direct sur téléphone (L30)', () => {
   it('ne flotte pas au-dessus du contenu : ni fixed ni absolute sur elle ni sur ses parents', async () => {
     const label = await renderShell();
     for (let el: HTMLElement | null = label; el && el !== document.body; el = el.parentElement) {
-      expect(el.className).not.toMatch(/(^|\s)(fixed|absolute|sticky)(\s|$)/);
+      expect(el.className).not.toMatch(/(^|\s)(fixed|absolute)(\s|$)/);
     }
+  });
+
+  it('R4 (L64) — sa ligne est collante (sticky, hauteur fixe dans le flux), transparente aux clics hors de la pastille', async () => {
+    const label = await renderShell();
+    const ligne = label.closest('[data-testid="ligne-direct"]') as HTMLElement;
+    expect(ligne.className).toMatch(/(^|\s)sticky(\s|$)/);
+    expect(ligne.className).toMatch(/(^|\s)h-9(\s|$)/);
+    expect(ligne.className).toMatch(/pointer-events-none/);
   });
 
   it('est rendue dans <main>, avant le titre de la page, et masquée au bureau', async () => {

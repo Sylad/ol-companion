@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Lock } from 'lucide-react';
 import { useDemoStatus } from '@/hooks/use-demo-status';
 
@@ -12,11 +13,29 @@ import { useDemoStatus } from '@/hooks/use-demo-status';
  */
 export function DemoBanner() {
   const { data } = useDemoStatus();
+  const ref = useRef<HTMLDivElement>(null);
+  const forced = Boolean(data?.forced);
 
-  if (!data?.forced) return null;
+  // L64 : le bandeau colle en haut ; les lignes collantes sous lui (pastille du direct, filtres du Calendrier) partent de sa hauteur.
+  useEffect(() => {
+    const bandeau = ref.current;
+    if (!bandeau || typeof ResizeObserver === 'undefined') return;
+    const racine = document.documentElement;
+    const appliquer = () => racine.style.setProperty('--bandeau-demo-h', `${Math.ceil(bandeau.getBoundingClientRect().height)}px`);
+    appliquer();
+    const observateur = new ResizeObserver(appliquer);
+    observateur.observe(bandeau);
+    return () => {
+      observateur.disconnect();
+      racine.style.removeProperty('--bandeau-demo-h');
+    };
+  }, [forced]);
+
+  if (!forced) return null;
 
   return (
     <div
+      ref={ref}
       role="status"
       aria-live="polite"
       className="sticky top-0 z-50 flex items-center justify-center gap-2 border-b border-ol-red/40 bg-surface-2/95 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-fg-bright backdrop-blur-md"
