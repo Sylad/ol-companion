@@ -149,4 +149,18 @@ describe('données des Nouveautés (public/nouveautes-data)', () => {
     expect(entries.some((x) => x.slug.startsWith('2026-10-28-pendant-un-match-la-pastille'))).toBe(false);
     expect(entries.flatMap((x) => x.captures).some((c) => c.includes('L230'))).toBe(false);
   });
+
+  // L230 — sur /plan, la carte du lot renvoie (« Voir la nouveauté ») à l'entrée de L64, qui dit
+  // « Sur ordinateur, rien ne change ». Son titre public doit donc décrire ce que le visiteur a vu
+  // (la pastille au téléphone), jamais un changement sur ordinateur ni une minute « lue » que
+  // seul git a connue (Nielsen H4, H2).
+  it('L230 — le titre public du lot décrit la suite de L64 au téléphone, pas un changement sur ordinateur', () => {
+    const plan = JSON.parse(readFileSync(join(ROOT, 'frontend/public/plan-data/plan.json'), 'utf8')) as {
+      lots: { id: string; title: string }[];
+    };
+    const l230 = plan.lots.find((l) => l.id === 'L230');
+    expect(l230).toBeDefined();
+    expect(l230!.title).toMatch(/téléphone/i);
+    expect(l230!.title).not.toMatch(/ordinateur|lue sans bruit/i);
+  });
 });

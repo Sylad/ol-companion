@@ -2610,7 +2610,7 @@ lots:
     created: 2026-10-28
   - id: L230
     title: "Suites de L64 : pastille du direct sur ordinateur (25 → 55 px sur 3 lignes pendant un match), minute hors de la région role=status (lue toutes les 60 s par les lecteurs d'écran), libellé deriveClock (MI-TEMPS, TAB) au lieu de gameTimeDisplay brut, Nouveauté L64 à jour (score et minute)"
-    public: "Pastille du direct : plus compacte sur ordinateur, minute lue sans bruit"
+    public: "Téléphone : la pastille du direct affiche le score et la minute pendant un match"
     status: doing
     estimate: 0.5
     visible: true
