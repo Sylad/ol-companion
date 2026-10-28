@@ -4,7 +4,7 @@ import { LineupService } from './lineup.service';
 const member = (id: number, jerseyNumber: number | undefined) => ({ id, name: `Joueur ${id}`, shortName: `J. ${id}`, jerseyNumber });
 const GAME = {
   game: {
-    id: 9, startTime: '2026-10-10T19:00:00Z', competitionDisplayName: 'Ligue 1', roundNum: 8,
+    id: 9, startTime: '2026-10-10T19:00:00Z', competitionId: 35, competitionDisplayName: 'France, Ligue 1', roundNum: 8,
     homeCompetitor: {
       id: 465, name: 'Lyon', score: 2,
       lineups: {
@@ -29,5 +29,14 @@ describe('LineupService — numéros de la feuille (L214)', () => {
     const lineup = await service.getLatestLineup({ force: true });
     const numeros = Object.fromEntries([...lineup!.starters, ...lineup!.bench].map((p) => [p.id, p.jerseyNumber]));
     expect(numeros).toEqual({ 1: 10, 2: null, 3: null, 4: null, 5: 1.5 });
+  });
+
+  it("L72/R4 — la feuille porte l'identifiant 365scores de la compétition, que le front passe par le glossaire", async () => {
+    const service = new LineupService();
+    jest.spyOn(service as unknown as { writeCache: (lineup: unknown) => void }, 'writeCache').mockImplementation(() => undefined);
+    jest.spyOn(global, 'fetch').mockImplementation((url) =>
+      String(url).includes('/web/games/results/') ? ok({ games: [{ id: 9, startTime: '2026-10-10T19:00:00Z', statusGroup: 4, hasLineups: true }] }) : ok(GAME));
+    const lineup = await service.getLatestLineup({ force: true });
+    expect(lineup!.competitionId).toBe(35);
   });
 });

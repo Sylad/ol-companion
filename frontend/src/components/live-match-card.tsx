@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { competitionLabel } from '@/lib/competitions';
 import { Radio, Trophy, Clock, Pause } from 'lucide-react';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import { deriveClock } from '@/lib/match-clock';
@@ -95,7 +96,7 @@ export function LiveMatchCard() {
               {clock.phase === 'suspended' ? clock.label : 'Terminé'}
             </span>
           )}
-          <span className="text-xs text-fg-muted">{current.competitionName}</span>
+          <span className="text-xs text-fg-muted">{competitionLabel(current.competitionId, current.competitionName)}</span>
         </div>
         <span className={cn(
           'text-xs num tabular-nums font-semibold',

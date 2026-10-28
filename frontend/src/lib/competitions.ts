@@ -19,3 +19,21 @@ export function competitionLong(code: CompetitionCode): string {
 export function competitionShort(code: CompetitionCode): string {
   return COMPETITION_GLOSSARY[code].short;
 }
+
+/** Identifiant 365scores → code suivi (miroir de `TRACKED_COMPETITIONS` du backend). */
+const CODE_BY_365SCORES_ID: Record<number, CompetitionCode> = {
+  35: 'L1',
+  37: 'CDF',
+  573: 'UEL',
+  572: 'UCL',
+  332: 'UCL',
+};
+
+/**
+ * Nom à afficher d'une compétition lue brute chez 365scores (« France, Ligue 1 ») :
+ * le nom du glossaire quand l'identifiant est suivi, sinon le nom brut, faute de mieux.
+ */
+export function competitionLabel(competitionId: number | undefined, rawName: string | undefined): string {
+  const code = competitionId === undefined ? undefined : CODE_BY_365SCORES_ID[competitionId];
+  return code ? competitionLong(code) : (rawName ?? '');
+}

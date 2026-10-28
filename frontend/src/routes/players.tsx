@@ -1,4 +1,5 @@
 import { useId, useMemo } from 'react';
+import { competitionLabel } from '@/lib/competitions';
 import { hasJersey } from '@/lib/jersey';
 import { positionGroup, positionShortFr } from '@/lib/position-fr';
 import { Loader2, LayoutGrid, Users, BarChart3, ArrowUpDown } from 'lucide-react';
@@ -71,7 +72,7 @@ export function PlayersPage() {
                 )}
               </div>
               <p className="text-xs text-fg-dim mt-1.5">
-                {data.competition}
+                {competitionLabel(data.competitionId, data.competition)}
                 {data.matchday ? ` · J${data.matchday}` : ''} · {formatDate(data.date)} · Composition{' '}
                 <span className="text-ol-red-bright font-semibold">{data.formation}</span>
               </p>

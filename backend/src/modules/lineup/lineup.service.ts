@@ -33,6 +33,8 @@ export interface LineupPlayer {
 export interface LineupResponse {
   gameId: number;
   date: string;
+  /** Identifiant 365scores de la compétition (le front en tire le nom du glossaire). */
+  competitionId?: number;
   competition: string;
   matchday: number | null;
   opponent: string;
@@ -168,6 +170,7 @@ export class LineupService implements OnModuleInit {
     return {
       gameId: g.id,
       date: g.startTime,
+      competitionId: g.competitionId,
       competition: g.competitionDisplayName ?? '',
       matchday: g.roundNum ?? null,
       opponent: opponentCompetitor?.name ?? '',

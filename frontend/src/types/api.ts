@@ -182,6 +182,7 @@ export interface SquadPlayer {
 export interface LineupResponse {
   gameId: number;
   date: string;
+  competitionId?: number;
   competition: string;
   matchday: number | null;
   opponent: string;

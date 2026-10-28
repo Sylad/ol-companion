@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { competitionLabel } from '@/lib/competitions';
 import { useParams, useSearch, Link } from '@tanstack/react-router';
 import { Loader2, Radio, ArrowLeft, Pause, Trophy, Clock } from 'lucide-react';
 import { useLiveMatchStats } from '@/hooks/use-live-match';
@@ -486,7 +487,7 @@ export function MatchPage() {
                 {clock.phase === 'suspended' ? clock.label : 'Terminé'}
               </span>
             )}
-            <span className="text-xs text-fg-muted">{data.competitionName}</span>
+            <span className="text-xs text-fg-muted">{competitionLabel(data.competitionId, data.competitionName)}</span>
           </div>
           {isUpcoming && bleus ? (
             <span data-testid="coup-envoi" className="text-xs num tabular-nums font-semibold text-fg-muted whitespace-nowrap">
