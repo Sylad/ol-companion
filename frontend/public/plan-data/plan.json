@@ -729,6 +729,12 @@
       "status": "done",
       "started": "2026-10-28",
       "finished": "2026-10-28"
+    },
+    {
+      "id": "L230",
+      "title": "Pendant un match, la pastille du direct reste compacte et lisible",
+      "status": "doing",
+      "started": "2026-10-28"
     }
   ]
 }
