@@ -2,7 +2,7 @@
 title: "Téléphone : l'état du direct reste visible quand on fait défiler la page"
 date: 2026-10-28
 created: 2026-10-28T18:21+01:00
-lots: [L64]
+lots: [L64, L230]
 captures: [{ file: captures/L64-direct-collant-telephone.png, alt: "Classement défilé au téléphone (390 px) pendant un match : la pastille reste collée en haut de l'écran et affiche « OL 2 · 1 NIC · 63' »" }]
 ---
 Sur un téléphone, la pastille « Temps réel » (l'état du direct) partait hors de l'écran dès qu'on faisait défiler la page.

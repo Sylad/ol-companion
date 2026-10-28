@@ -139,15 +139,14 @@ describe('données des Nouveautés (public/nouveautes-data)', () => {
     }
   });
 
-  // L230 — la mesure (tests-navigateur/direct-collant.test.ts, R5) : à 1440 px la pastille de la barre
-  // latérale garde ses deux lignes (40 px) ; elle ne tient pas « sur une seule ligne ».
-  it('L230 — la Nouveauté de la pastille du direct décrit la mesure : deux lignes, 40 px, pas « une seule ligne »', () => {
-    const e = readJson().entries.find((x) => x.slug.startsWith('2026-10-28-pendant-un-match-la-pastille')) as
-      | (Entry & { html: string })
-      | undefined;
-    expect(e).toBeDefined();
-    const texte = e!.html.replace(/<[^>]+>/g, '');
-    expect(texte).not.toMatch(/sur une seule ligne pendant un match/);
-    expect(texte).toMatch(/Sur ordinateur, la pastille de la barre latérale garde ses deux lignes/);
+  // L230 — les états comparés par une Nouveauté « pastille compacte » (55 px, minute dans role=status,
+  // gameTimeDisplay brut) n'ont existé que dans git entre deux commits de L64 : aucun visiteur ne les a vus.
+  // L230 se rattache à l'entrée de L64 (précédent : lots [L38, L110]) au lieu d'en publier une seconde.
+  it('L230 — la correction de L64 n\'a pas d\'entrée à elle : elle est rattachée à celle de L64', () => {
+    const entries = readJson().entries as (Entry & { lots: string[]; captures: string[] })[];
+    const parL230 = entries.filter((x) => x.lots.includes('L230'));
+    expect(parL230.map((x) => x.lots)).toEqual([expect.arrayContaining(['L64', 'L230'])]);
+    expect(entries.some((x) => x.slug.startsWith('2026-10-28-pendant-un-match-la-pastille'))).toBe(false);
+    expect(entries.flatMap((x) => x.captures).some((c) => c.includes('L230'))).toBe(false);
   });
 });
