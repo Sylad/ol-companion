@@ -74,7 +74,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - api: /api/live-match/<gameId>/stats
 
 ## /fixtures
-- shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal au nombre de lignes affichées, quel que soit le filtre de statut ou de compétition (au total, sans filtre) ; les pastilles par compétition, dont la somme égale « Toutes »
+- shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal au nombre de lignes affichées, quel que soit le filtre de statut ou de compétition (au total, sans filtre) ; à 0 ligne la vue rapide est masquée (L51) et « Aucun match dans cette catégorie. » + « Afficher tous les matchs » la remplacent, sans « Matchs listés 0 » ; ce bouton rend le focus au titre « Calendrier », « Chargement des matchs… » est annoncé (role=status) ; les pastilles par compétition, dont la somme égale « Toutes »
 - shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux
 - never: « Aucun match dans cette catégorie. » quand la pastille choisie annonce au moins 1 match ; une heure « 01:00 » ou « 02:00 » (minuit UTC)
 - api: /api/season-matches
