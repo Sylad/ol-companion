@@ -809,11 +809,14 @@ lots:
   - id: L64
     title: "Téléphone : l'état du direct sort de l'écran quand on fait défiler la page (Nielsen H1) — décider entre une ligne de pastille sticky et une réserve de hauteur sous une pastille fixe, au moins sur /match/<id> (revue L30)"
     public: "Téléphone : l'état du direct reste visible quand on fait défiler la page"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-05
     started: 2026-10-28
+    review: { date: 2026-10-28, verdict: "conforme : dernier majeur levé par 820bc40 (test navigateur direct-collant attend l'état stabilisé avant scrollTo, borne ≥ 1000 au lieu d'égaler ; 7/7 passes vertes), relu par le lead (6 lignes, test seul) ; front 1251 tests, back 500 tests, build OK ; mineurs en notes (L50 R7 à resceller, README classement, hauteur 36 px écrite deux fois)", commit: 820bc40e24bd772c4520f562f7cd20a4535e33f6 }
+    ux: { date: 2026-10-28, verdict: "conforme : captures regardées — 390 px : pastille « OL 2 · 1 NIC · 63' » collée en haut au défilement du classement, en-tête du tableau collant visible dessous, pas de débordement ; 1440 px : barre latérale inchangée ; sous-tâches de la revue (pastille bureau, lecteurs d'écran, Nouveauté) proposées à part" }
+    finished: 2026-10-28
   - id: L65
     title: "Match /match à 320 px : le nom du club visiteur est tronqué dans l'en-tête du score (« Rennes » x 234–321 dans une carte coupée à 300) — réduire la police ou autoriser le retour à la ligne (QA prod 05-10)"
     public: "Match à 320 px : le nom du club visiteur n'est plus tronqué"
