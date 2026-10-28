@@ -186,7 +186,7 @@ describe('R2 — erreur', () => {
     renderPage();
     expect(await screen.findByTestId('message-erreur')).toHaveTextContent('Erreur de chargement.');
     expect(tid('titre-page')).toHaveTextContent('Calendrier');
-    expect(screen.queryByRole('button', { name: /réessayer/i })).toBeNull();
+    // Depuis L51, la fiche (R2) ajoute un bouton « Réessayer » : vérifié par le test de L51, plus exclu ici.
     for (const id of ['barre-filtres', 'liste-mois', 'message-chargement']) expect(screen.queryByTestId(id)).toBeNull();
   });
 });

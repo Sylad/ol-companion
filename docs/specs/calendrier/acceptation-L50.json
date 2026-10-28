@@ -6,6 +6,17 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "6be631b7f0b0618e402a4e2bcfd3b34762336192"
-  }
+    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "465825ee656c8d1312d6cece0630b8ab2be37a91"
+  },
+  "resceaux": [
+    {
+      "test": "frontend/src/routes/fixtures.acceptation-L50.test.tsx",
+      "raison": "La fiche R2 renvoyait « Réessayer » à L51 ; le test de L50 verrouillait l'absence du bouton, état de L50 seulement. L51 ajoute le bouton (fiche amendée), son test le vérifie.",
+      "date": "2026-10-28",
+      "avant": "6be631b7f0b0618e402a4e2bcfd3b34762336192",
+      "apres": "465825ee656c8d1312d6cece0630b8ab2be37a91",
+      "porteur": "L51",
+      "ficheAmendee": "d8a444b"
+    }
+  ]
 }
