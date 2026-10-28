@@ -744,9 +744,10 @@ lots:
     finished: 2026-10-09
   - id: L57
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-03
+    started: 2026-10-28
   - id: L58
     title: "Cache HTTP, suites de la relecture du 03-10 : motif d'empreinte du test trop large (foo-settings.js accepté) ; 416 sur un actif servi en immutable (map sur $status évaluée avant le filtre Range) ; exiger no-store sur le 404 d'un actif absent ; jouer test-nginx-cache.sh en CI ; recharger la page quand un morceau d'une ancienne version répond 404 (onglet resté ouvert pendant une livraison)"
     status: done
