@@ -41,7 +41,7 @@ regles:
     tests: ["R1 — chargement : le message s'affiche"]
   - id: R2
     etat: erreur
-    enonce: "Si l'appel échoue, l'écran affiche l'erreur. Texte inchangé ; depuis L51 le message est en role=alert, couleur ol-red-bright, suivi d'un bouton « Réessayer » qui relance le chargement. Exception : si le calendrier est déjà chargé, un rafraîchissement qui échoue ne retire rien et n'affiche ni message ni « Réessayer » (comme la page Coupes et la carte, L194)."
+    enonce: "Si l'appel échoue, l'écran affiche l'erreur à la place des filtres et de la liste (le titre de la page reste). Texte inchangé ; depuis L51 le message est en role=alert, couleur ol-red-bright, suivi d'un bouton « Réessayer » qui relance le chargement. Exception : si le calendrier est déjà chargé, un rafraîchissement qui échoue ne retire rien et n'affiche ni message ni « Réessayer » (comme la page Coupes et la carte, L194)."
     message: "Erreur de chargement."
     champs: [message-erreur]
     statut: sourcee
