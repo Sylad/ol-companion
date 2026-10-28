@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { RetryMessage } from '@/components/retry-message';
 import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { KnowledgeHeader } from '@/components/knowledge-header';
 import { TeamLogo } from '@/components/team-logo';
@@ -75,7 +76,7 @@ function formatDateParts(match: SeasonMatch): {
 
 export function FixturesPage() {
   // Toute la saison, toutes compétitions : /api/season-matches (L39).
-  const { data, isLoading, isError } = useSeasonMatches();
+  const { data, isLoading, isError, refetch } = useSeasonMatches();
   const [tab, setTab] = useState<StatusTab>('all');
   const [competition, setCompetition] = useState<CompetitionFilter>('all');
 
@@ -175,9 +176,15 @@ export function FixturesPage() {
               <span>Chargement des matchs…</span>
             </div>
           )}
-          {isError && (
-            // role=alert : annoncée dès qu'elle apparaît ; ol-red-bright, pas --loss (3,85:1 à 16 px, WCAG 1.4.3).
-            <p data-testid="message-erreur" role="alert" className="py-20 text-center text-ol-red-bright">Erreur de chargement.</p>
+          {isError && !data && (
+            // RetryMessage : message en role=alert, ol-red-bright (pas --loss, 3,85:1 à 16 px, WCAG 1.4.3) + « Réessayer » (L51).
+            <RetryMessage
+              className="flex flex-col items-center gap-3 py-20 text-center"
+              message="Erreur de chargement."
+              onRetry={() => void refetch()}
+              messageTestId="message-erreur"
+              buttonTestId="reessayer-calendrier"
+            />
           )}
           {/* La zone annoncée existe avant son texte : une zone `status` insérée avec son contenu n'est pas lue (L51). */}
           {data && (

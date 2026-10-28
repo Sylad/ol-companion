@@ -70,6 +70,25 @@ describe('<FixturesPage /> — états (L51)', () => {
     expect(message.className).toContain('text-ol-red-bright');
   });
 
+  it('R2 — erreur : un bouton « Réessayer » relance /api/season-matches et rend le calendrier quand l’appel réussit', async () => {
+    let appels = 0;
+    const fetchMock = vi.fn((url: string) => {
+      if (url !== '/api/season-matches') return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
+      appels += 1;
+      return Promise.resolve(appels === 1 ? { ok: false, status: 500, json: async () => ({}) } : okJson(withAggregate));
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderPage();
+    const message = await screen.findByTestId('message-erreur');
+    expect(message).toHaveAttribute('role', 'alert');
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Réessayer' }));
+    expect(await screen.findByTestId('liste-mois')).toBeInTheDocument();
+    expect(appels).toBe(2);
+    expect(screen.queryByTestId('message-erreur')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+  });
+
   it('vide : le message est dans une zone role=status, avec un bouton qui rend tous les matchs', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
