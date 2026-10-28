@@ -41,7 +41,7 @@ regles:
     tests: ["R1 — chargement : le message s'affiche"]
   - id: R2
     etat: erreur
-    enonce: "Si l'appel échoue, l'écran affiche l'erreur. Texte et absence de bouton inchangés ici ; « Réessayer » et le rôle d'alerte sont le lot L51."
+    enonce: "Si l'appel échoue, l'écran affiche l'erreur. Texte et absence de bouton inchangés ici (« Réessayer » : en attente, voir L51) ; depuis L51 le message est en role=alert, couleur ol-red-bright."
     message: "Erreur de chargement."
     champs: [message-erreur]
     statut: sourcee
