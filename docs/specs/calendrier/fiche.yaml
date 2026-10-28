@@ -41,12 +41,12 @@ regles:
     tests: ["R1 — chargement : le message s'affiche"]
   - id: R2
     etat: erreur
-    enonce: "Si l'appel échoue, l'écran affiche l'erreur. Texte inchangé ; depuis L51 le message est en role=alert, couleur ol-red-bright, suivi d'un bouton « Réessayer » qui relance le chargement."
+    enonce: "Si l'appel échoue, l'écran affiche l'erreur. Texte inchangé ; depuis L51 le message est en role=alert, couleur ol-red-bright, suivi d'un bouton « Réessayer » qui relance le chargement. Exception : si le calendrier est déjà chargé, un rafraîchissement qui échoue ne retire rien et n'affiche ni message ni « Réessayer » (comme la page Coupes et la carte, L194)."
     message: "Erreur de chargement."
     champs: [message-erreur]
     statut: sourcee
     source: "frontend/src/routes/fixtures.tsx (isError) ; le lot L51 reprend l'état d'erreur"
-    tests: ["R2 — erreur : le message s'affiche"]
+    tests: ["R2 — erreur : le message s'affiche", "R2 — erreur : un bouton « Réessayer » relance /api/season-matches et rend le calendrier quand l’appel réussit", "R2 — erreur : un rafraîchissement en échec ne retire pas le calendrier déjà chargé (ni message, ni « Réessayer »)"]
   - id: R3
     etat: vide
     enonce: "Quand la combinaison de filtres ne laisse aucun match (exemple de la maquette : compétition C1 et statut À venir, la Ligue des champions 2026-2027 n'ayant plus de match à venir), le message remplace la vue rapide et la liste ; les filtres restent visibles pour changer de choix."
