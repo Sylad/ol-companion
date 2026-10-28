@@ -903,6 +903,7 @@ lots:
       - { date: 2026-10-09, text: "QA L32 09-10 : accepter « Jour de match » (3e variante du bandeau à moins de 2 h du coup d'envoi), « du dd/mm » pour les horaires non fixés sur /fixtures (plus de « Horaire à confirmer »), préciser que la tuile Lieu vaut Domicile/Extérieur et le nom de stade est celui du bandeau" }
       - { date: 2026-10-09, text: "QA L70 09-10 : /map — ajouter « un clic au centre de chaque marqueur ouvre la bulle de ce club » et « la bulle n'est recouverte par aucun contrôle de la carte » ; / — « Lieu » du tableau de bord dit Domicile/Extérieur, le stade est dans le bandeau" }
     started: 2026-10-28
+    review: { date: 2026-10-28, verdict: "conforme — orchestré (vague 2026-10-28-1210o, 1 passe(s) de correction)", commit: 82d6c919a481d2fec345d3a7fc6c3b895d52ee9f }
   - id: L74
     title: "Textes fg-dim posés sur un fond hors jeton sous 4,5:1 à 390 px (WCAG 1.4.3, QA prod L52 08-10) : bandeau d'accueil « · Ligue 1 · J6 » 3,77:1 sur la photo (5,11:1 à 1440), légende « Aller / Retour » de /map 3,87–3,97:1 sur le panneau semi-transparent, surtitre « À propos · OL Companion » 4,33:1 sur le halo rouge — voile ou fond plus opaque sous le texte, ou fg-muted ; mesure pixels réels"
     public: Textes secondaires lisibles sur les photos et les panneaux
