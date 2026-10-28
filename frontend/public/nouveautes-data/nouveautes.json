@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-27 23:34",
+  "generated": "2026-10-28 08:04",
   "entries": [
+    {
+      "slug": "2026-10-28-calendrier-des-messages-plus-clairs-quand-il-n-y-a-rien-a-af",
+      "title": "Calendrier : des messages plus clairs quand il n'y a rien à afficher",
+      "date": "2026-10-28",
+      "lots": [
+        "L51"
+      ],
+      "captures": [
+        "captures/calendrier-vide-L51.png",
+        "captures/calendrier-cumul-L51.png"
+      ],
+      "alts": [
+        "Calendrier sur téléphone : un filtre sans match affiche « Aucun match dans cette catégorie. » et un bouton « Afficher tous les matchs »",
+        "Calendrier sur téléphone : le match retour du 3e tour de qualification affiche « Cumul 4-2 » sous « Terminé »"
+      ],
+      "html": "<p>Quand un filtre du calendrier ne laisse aucun match, un bouton « Afficher tous les matchs » remet « Toutes » et « Tout » d'un clic, et le lecteur d'écran annonce le message « Aucun match dans cette catégorie. ». Le message d'erreur de chargement est lu à voix haute dès qu'il apparaît et son rouge est plus lisible. Sur le match retour d'une qualification, la ligne indique le score cumulé des deux manches (« Cumul 4-2 ») sous « Terminé ».</p>"
+    },
     {
       "slug": "2026-10-27-hors-ligne-un-message-de-connexion-au-lieu-d-une-fausse-nouv",
       "title": "Hors ligne : un message de connexion au lieu d'une fausse nouvelle version",
