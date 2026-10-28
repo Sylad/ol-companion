@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import season from '@/test/fixtures/season-matches-2026-10-03.json';
@@ -85,6 +85,31 @@ describe('<FixturesPage /> — états (L51)', () => {
     await user.click(screen.getByRole('button', { name: 'Réessayer' }));
     expect(await screen.findByTestId('liste-mois')).toBeInTheDocument();
     expect(appels).toBe(2);
+    expect(screen.queryByTestId('message-erreur')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
+  });
+
+  it('R2 — erreur : un rafraîchissement en échec ne retire pas le calendrier déjà chargé (ni message, ni « Réessayer »)', async () => {
+    let appels = 0;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string) => {
+        if (url !== '/api/season-matches') return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
+        appels += 1;
+        return Promise.resolve(appels === 1 ? okJson(withAggregate) : { ok: false, status: 500, json: async () => ({}) });
+      }),
+    );
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <FixturesPage />
+      </QueryClientProvider>,
+    );
+    await screen.findByTestId('liste-mois');
+    await client.refetchQueries();
+    expect(appels).toBe(2);
+    await waitFor(() => expect(client.getQueryState(['season-matches'])?.status).toBe('error'));
+    expect(screen.getByTestId('liste-mois')).toBeInTheDocument();
     expect(screen.queryByTestId('message-erreur')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
   });
