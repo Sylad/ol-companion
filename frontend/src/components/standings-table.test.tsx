@@ -212,3 +212,16 @@ describe('StandingsTable — en-tête collant (L153)', () => {
     }
   });
 });
+
+// L64 — la ligne de la pastille du direct (z-30) colle en haut sous 1024 px : l'en-tête collant du tableau se pose
+// dessous, sinon elle recouvre Club, G, N, P, DB et Pts.
+describe('<StandingsTable /> — en-tête sous la ligne collante du direct (L64)', () => {
+  it("R4 — l'en-tête colle sous la ligne de la pastille et le bandeau démo, pas à top-0", () => {
+    renderTable();
+    for (const th of document.querySelectorAll('thead th')) {
+      expect(th).toHaveClass('sticky');
+      expect(th).toHaveClass('top-[calc(var(--bandeau-demo-h,0px)+var(--ligne-direct-h,0px))]');
+      expect(th).not.toHaveClass('top-0');
+    }
+  });
+});

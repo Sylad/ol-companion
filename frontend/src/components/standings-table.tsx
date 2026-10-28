@@ -102,7 +102,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
               <th
                 key={col.key}
                 className={cn(
-                  'sticky top-0 z-10 bg-surface px-1 md:px-2 py-3 font-semibold uppercase tracking-wider text-[10px]',
+                  'sticky top-[calc(var(--bandeau-demo-h,0px)+var(--ligne-direct-h,0px))] z-10 bg-surface px-1 md:px-2 py-3 font-semibold uppercase tracking-wider text-[10px]',
                   col.w,
                   col.align === 'center' ? 'text-center' : 'text-left',
                   col.mobile === false && 'hidden md:table-cell',

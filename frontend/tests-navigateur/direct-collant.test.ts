@@ -87,3 +87,35 @@ describe('pastille du direct au bureau', () => {
     expect(affichee).toBe(false);
   });
 });
+
+describe('en-tête du classement sous la pastille du direct', () => {
+  it('R4 — à 390 px, défilé sous le tableau, chaque cellule de l\'en-tête reste lisible (rien ne la recouvre)', async () => {
+    const page = await navigateur.newPage({ viewport: { width: 390, height: 800 }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
+    const table = Array.from({ length: 18 }, (_, i) => ({
+      position: i + 1, team: `Club ${i + 1}`, teamId: 1000 + i, played: 9, won: 5, draw: 2, lost: 2,
+      goalsFor: 15, goalsAgainst: 9, goalDifference: 6, points: 17 - i,
+    }));
+    await page.route('**/api/**', (route) => route.fulfill({ status: 404, json: {} }));
+    await page.route('**/api/standings', (route) => route.fulfill({ json: { season: '2026-27', updatedAt: new Date().toISOString(), currentMatchday: 9, table } }));
+    await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
+    await page.goto(`${url}/standings`);
+    await page.locator('thead th').first().waitFor();
+    await page.evaluate(() => {
+      const haut = document.querySelector('thead')!.getBoundingClientRect().top + scrollY;
+      window.scrollTo({ top: haut + 200, behavior: 'instant' });
+    });
+    const recouverts = await page.evaluate(() =>
+      [...document.querySelectorAll('thead th')]
+        .filter((th) => getComputedStyle(th).display !== 'none')
+        .filter((th) => {
+          const r = th.getBoundingClientRect();
+          return !th.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
+        })
+        .map((th) => th.textContent),
+    );
+    const haut = await page.evaluate(() => document.querySelector('thead th')!.getBoundingClientRect().top);
+    await page.close();
+    expect(recouverts).toEqual([]);
+    expect(haut).toBeGreaterThanOrEqual(36);
+  });
+});
