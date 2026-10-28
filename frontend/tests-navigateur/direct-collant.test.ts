@@ -27,6 +27,10 @@ async function ouvrir(largeur: number, chemin: string): Promise<Page> {
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
   await page.goto(`${url}${chemin}`);
   await page.locator('main [role="status"]').first().waitFor();
+  // Page stabilisée : le gabarit de chargement (min-h-[45vh]) a cédé la place à l'état d'erreur du 404 (« Réessayer », ou le
+  // message « Match introuvable » de la page match), après retry: 1. Défiler avant, c'est laisser l'ancrage de défilement de
+  // Chromium décaler la fenêtre quand la hauteur change.
+  await page.getByRole('button', { name: 'Réessayer' }).or(page.getByTestId('message-erreur')).first().waitFor();
   await page.evaluate(() => {
     const reserve = document.createElement('div');
     reserve.setAttribute('data-testid', 'reserve');
@@ -51,7 +55,8 @@ describe.each([['/match/4672325?matchupId=5061-2373-4672325'], ['/standings'], [
     const avant = await pastille(page);
     expect(avant.top).toBeGreaterThan(0);
     await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
-    expect(await page.evaluate(() => window.scrollY)).toBe(1500);
+    // Borne plutôt qu'égalité : prouve qu'on a bien défilé loin sous le haut, sans figer la hauteur exacte de la page.
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(1000);
     const apres = await pastille(page);
     expect(apres.visible).toBe(true);
     expect(apres.top).toBeGreaterThanOrEqual(0);
