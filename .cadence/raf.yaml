@@ -2563,10 +2563,12 @@ lots:
     finished: 2026-10-27
   - id: L227
     title: "Précheck coupé (orchestrate.precheck: false) : 1 « oui » sur 236 lots du 22 au 28-10, 4,9 M tokens Sonnet pour ≈ 80 k évités"
-    status: doing
+    status: done
     estimate: 0.05
     created: 2026-10-28
     started: 2026-10-28
+    review: { date: 2026-10-28, verdict: "conforme (lead) : config seule, 3 lignes relues ; dry-run de L51 sans étape precheck", commit: b7ceea157c2d869a8394e751852b480f10e8f354 }
+    finished: 2026-10-28
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
