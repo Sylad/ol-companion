@@ -2,6 +2,7 @@ import { Radio } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EventStreamStatus } from '@/hooks/use-event-stream';
 import { useCurrentLiveMatch } from '@/hooks/use-live-match';
+import { scoreText } from '@/lib/match-score';
 
 const LABEL: Record<EventStreamStatus, string> = {
   connecting: 'Temps réel · en attente',
@@ -20,6 +21,8 @@ export function LiveConnectionBadge({
   const { data: current } = useCurrentLiveMatch();
   // L208 : le rouge et le ping disent « match en cours », pas « flux connecté ».
   const matchEnCours = connected && current?.status === 'live';
+  // L64 : la ligne collante garde le score et la minute à l'écran quand l'en-tête du match défile.
+  const score = matchEnCours ? scoreText(current.home, current.away, current.status) : null;
 
   return (
     <div
@@ -45,7 +48,12 @@ export function LiveConnectionBadge({
         {matchEnCours && <span className="absolute inset-0 rounded-full bg-ol-red-bright animate-ping" />}
       </span>
       <Radio aria-hidden="true" className="h-3 w-3" strokeWidth={2} />
-      {LABEL[status]}
+      <span className={cn(matchEnCours && 'max-sm:sr-only')}>{LABEL[status]}</span>
+      {matchEnCours && (
+        <span className="num tabular-nums">
+          {current.home.symbolicName} {score ? `${score[0]} · ${score[1]}` : 'vs'} {current.away.symbolicName} · {current.gameTimeDisplay}
+        </span>
+      )}
     </div>
   );
 }

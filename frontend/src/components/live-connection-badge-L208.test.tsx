@@ -2,8 +2,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import { LiveConnectionBadge } from './live-connection-badge';
 
-const courant = vi.hoisted(() => ({ data: null as { status: string } | null | undefined }));
+const courant = vi.hoisted(() => ({ data: null as Record<string, unknown> | null | undefined }));
 vi.mock('@/hooks/use-live-match', () => ({ useCurrentLiveMatch: () => courant }));
+
+const cote = { symbolicName: 'OL', score: 0 };
 
 afterEach(() => {
   cleanup();
@@ -37,7 +39,7 @@ describe('Pastille du flux temps réel (L208)', () => {
   });
 
   it('R3 — pendant un match en cours, connecté : point rouge et animation ping inchangés', () => {
-    courant.data = { status: 'live' };
+    courant.data = { status: 'live', home: cote, away: cote, gameTimeDisplay: "10'" };
     render(<LiveConnectionBadge status="connected" />);
     const badge = screen.getByRole('status');
     expect(badge.querySelector('.animate-ping')).not.toBeNull();
@@ -50,7 +52,7 @@ describe('Pastille du flux temps réel (L208)', () => {
     render(<LiveConnectionBadge status="connected" />);
     expect(screen.getByRole('status').querySelector('.animate-ping')).toBeNull();
     cleanup();
-    courant.data = { status: 'live' };
+    courant.data = { status: 'live', home: cote, away: cote, gameTimeDisplay: "10'" };
     render(<LiveConnectionBadge status="reconnecting" />);
     expect(screen.getByRole('status').querySelector('.animate-ping')).toBeNull();
     expect(point().className).not.toMatch(/ol-red/);
