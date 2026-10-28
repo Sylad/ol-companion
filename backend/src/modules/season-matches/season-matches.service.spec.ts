@@ -257,6 +257,38 @@ describe('SeasonMatchesService', () => {
     });
   });
 
+  describe('score cumulé du match retour (L51)', () => {
+    const ol = (score: number) => ({ id: 465, name: 'Lyon', score });
+    const adv = (score: number) => ({ id: 800, name: 'Sparta', score });
+    const run = async (games: any[]) => {
+      let out: any[] = [];
+      await withCwd(async () => {
+        out = await buildService([games]).getMatches({ force: true });
+      });
+      return out;
+    };
+    const first = game({ id: 10, competitionId: 332, legNum: 1, startTime: '2026-08-06T19:00:00Z', homeCompetitor: adv(2), awayCompetitor: ol(1) });
+
+    it('retour joué : cumul des deux manches, dans le sens domicile / extérieur du retour', async () => {
+      const second = game({ id: 11, competitionId: 332, legNum: 2, startTime: inSeasonIso, homeCompetitor: ol(3), awayCompetitor: adv(0) });
+      const result = await run([first, second]);
+      expect(result.find((m) => m.id === 11)!.aggregateScore).toEqual({ home: 4, away: 2 });
+    });
+
+    it('la manche aller, un match sans manche et un retour introuvable aller n’ont pas de cumul', async () => {
+      const alone = game({ id: 12, competitionId: 332, legNum: 2, startTime: inSeasonIso, homeCompetitor: ol(1), awayCompetitor: { id: 900, name: 'Autre', score: 1 } });
+      const league = game({ id: 13, competitionId: 35, startTime: inSeasonIso, homeCompetitor: ol(1), awayCompetitor: adv(1) });
+      const result = await run([first, alone, league]);
+      expect([10, 12, 13].map((id) => result.find((m) => m.id === id)!.aggregateScore)).toEqual([null, null, null]);
+    });
+
+    it('retour pas encore joué : pas de cumul', async () => {
+      const upcoming = game({ id: 14, competitionId: 332, legNum: 2, statusGroup: 2, startTime: inSeasonIso, homeCompetitor: ol(0), awayCompetitor: adv(0) });
+      const result = await run([first, upcoming]);
+      expect(result.find((m) => m.id === 14)!.aggregateScore).toBeNull();
+    });
+  });
+
   describe('tirs au but (L135)', () => {
     const ol = (score: number, isQualified?: boolean) => ({ id: 465, name: 'Lyon', score, ...(isQualified === undefined ? {} : { isQualified }) });
     const adv = (score: number, isQualified?: boolean) => ({ id: 800, name: 'Rennes', score, ...(isQualified === undefined ? {} : { isQualified }) });

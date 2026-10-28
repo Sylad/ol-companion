@@ -66,6 +66,12 @@ interface StoredSeasonMatch {
    * but : sans ce champ un 1-1 décidé aux t.a.b. se lit « match nul ».
    */
   shootoutWinnerId: number | null;
+  /**
+   * Cumul des deux manches, dans le sens domicile / extérieur de ce match, sur
+   * une manche retour jouée dont l'aller est joué aussi ; `null` sinon. Le
+   * `homeScore` / `awayScore` restent ceux du match seul (L51).
+   */
+  aggregateScore: { home: number; away: number } | null;
 }
 
 export interface SeasonMatch extends StoredSeasonMatch {
@@ -415,6 +421,7 @@ export class SeasonMatchesService implements OnModuleInit {
 
     return {
       shootoutWinnerId: this.shootoutWinnerId(g, status, siblings, remapId),
+      aggregateScore: this.aggregateScore(g, status, siblings),
       id: g.id,
       date: new Date(g.startTime).toISOString(),
       homeTeam: home?.name ?? '',
@@ -430,6 +437,31 @@ export class SeasonMatchesService implements OnModuleInit {
       matchday,
       round,
     };
+  }
+
+  /** La manche aller, jouée, de la confrontation dont `g` est la manche retour ; `undefined` si elle manque. */
+  private firstLeg(g: Scores365Game, siblings: Scores365Game[]): Scores365Game | undefined {
+    if (g.legNum !== 2) return undefined;
+    const ids = (m: Scores365Game) => [m.homeCompetitor?.id, m.awayCompetitor?.id].sort().join();
+    return siblings.find(
+      (o) => o.id !== g.id && o.legNum === 1 && o.competitionId === g.competitionId && o.statusGroup === 4 && ids(o) === ids(g),
+    );
+  }
+
+  /** Cumul des deux manches pour une manche retour jouée dont l'aller est connu (L51), sinon `null`. */
+  private aggregateScore(
+    g: Scores365Game,
+    status: SeasonMatch['status'],
+    siblings: Scores365Game[],
+  ): { home: number; away: number } | null {
+    const home = g.homeCompetitor;
+    const away = g.awayCompetitor;
+    if (status !== 'FINISHED' || home?.score === undefined || away?.score === undefined) return null;
+    const first = this.firstLeg(g, siblings);
+    if (!first) return null;
+    const goals = (teamId: number | undefined) =>
+      (first.homeCompetitor?.id === teamId ? first.homeCompetitor?.score : first.awayCompetitor?.score) ?? 0;
+    return { home: home.score + goals(home.id), away: away.score + goals(away.id) };
   }
 
   /**
@@ -457,14 +489,7 @@ export class SeasonMatchesService implements OnModuleInit {
     const winner = home.isQualified === true ? home : away.isQualified === true ? away : null;
     if (!winner) return null;
     if (g.legNum === 2) {
-      const first = siblings.find(
-        (o) =>
-          o.id !== g.id &&
-          o.legNum === 1 &&
-          o.competitionId === g.competitionId &&
-          o.statusGroup === 4 &&
-          [o.homeCompetitor?.id, o.awayCompetitor?.id].sort().join() === [home.id, away.id].sort().join(),
-      );
+      const first = this.firstLeg(g, siblings);
       if (!first) return null;
       const goals = (teamId: number) =>
         (first.homeCompetitor?.id === teamId ? first.homeCompetitor.score : first.awayCompetitor?.score) ?? 0;
