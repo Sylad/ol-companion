@@ -37,7 +37,7 @@ async function ouvrir(largeur: number, chemin: string): Promise<Page> {
 }
 
 const pastille = (page: Page) =>
-  page.locator('main [role="status"]').first().evaluate((el) => {
+  page.locator('main [data-testid="pastille-direct"]').first().evaluate((el) => {
     const r = el.getBoundingClientRect();
     return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, visible: r.bottom > 0 && r.top < innerHeight };
   });
@@ -63,8 +63,8 @@ describe.each([['/match/4672325?matchupId=5061-2373-4672325'], ['/standings'], [
   it('R2 — la ligne ne masque aucun contenu au repos et ne crée pas de défilement horizontal', async () => {
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     const m = await page.evaluate(() => {
-      const ligne = document.querySelector('main [role="status"]')!.parentElement!.getBoundingClientRect();
-      const suivant = document.querySelector('main [role="status"]')!.parentElement!.nextElementSibling!.getBoundingClientRect();
+      const ligne = document.querySelector('main [data-testid="ligne-direct"]')!.getBoundingClientRect();
+      const suivant = document.querySelector('main [data-testid="ligne-direct"]')!.nextElementSibling!.getBoundingClientRect();
       return { basLigne: ligne.bottom, hautSuivant: suivant.top, largeurDoc: document.documentElement.scrollWidth, largeurFenetre: innerWidth };
     });
     expect(m.hautSuivant).toBeGreaterThanOrEqual(m.basLigne - 0.5);
@@ -80,7 +80,7 @@ describe('pastille du direct au bureau', () => {
     await page.goto(`${url}/standings`);
     await page.locator('aside [role="status"]').first().waitFor();
     const affichee = await page.evaluate(() => {
-      const lignes = [...document.querySelectorAll('main [role="status"]')].map((e) => e.parentElement!);
+      const lignes = [...document.querySelectorAll('main [data-testid="ligne-direct"]')];
       return lignes.some((e) => getComputedStyle(e).display !== 'none');
     });
     await page.close();
@@ -117,5 +117,62 @@ describe('en-tête du classement sous la pastille du direct', () => {
     await page.close();
     expect(recouverts).toEqual([]);
     expect(haut).toBeGreaterThanOrEqual(36);
+  });
+});
+
+// Match en direct simulé : la pastille porte le score et la minute sur la ligne collante seulement.
+const DIRECT = {
+  gameId: 4672325, matchupId: '35-465-4672325', competitionId: 35, competitionName: 'Ligue 1', status: 'live',
+  statusGroup: 3, statusText: 'Deuxième mi-temps', gameTime: 63, gameTimeDisplay: "63'", startTime: new Date().toISOString(),
+  home: { id: 465, name: 'Lyon', symbolicName: 'OL', imageVersion: 1, score: 2 },
+  away: { id: 1, name: 'Nice', symbolicName: 'NIC', imageVersion: 1, score: 1 },
+};
+
+async function ouvrirEnDirect(largeur: number): Promise<Page> {
+  const page = await navigateur.newPage({ viewport: { width: largeur, height: 800 }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
+  // Flux SSE « connecté » : un EventSource factice qui s'ouvre et ne coupe jamais (le 404 de /api/events le mettrait en reconnexion).
+  await page.addInitScript(() => {
+    class FluxOuvert {
+      onopen: (() => void) | null = null;
+      onmessage: unknown = null;
+      onerror: unknown = null;
+      constructor() { setTimeout(() => this.onopen?.(), 0); }
+      close() {}
+    }
+    (window as unknown as { EventSource: unknown }).EventSource = FluxOuvert;
+  });
+  await page.route('**/api/**', (route) => route.fulfill({ status: 404, json: {} }));
+  await page.route('**/api/live-match/current', (route) => route.fulfill({ json: DIRECT }));
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
+  await page.goto(`${url}/standings`);
+  return page;
+}
+
+describe('pastille du direct pendant un match en cours', () => {
+  // Hauteur d'avant le lot (sha 8424ee6, mesurée ici) : 40 px, « Temps réel · / connecté » sur deux lignes dans 192 px.
+  // Avec le score et la minute (ca1cfa0) elle passait à 55 px, le score coupé au milieu.
+  it('R5 — à 1440 px, la pastille de la barre latérale (192 px) garde sa hauteur d\'avant le lot, sans score ni minute', async () => {
+    const page = await ouvrirEnDirect(1440);
+    const aside = page.locator('aside [data-testid="pastille-direct"]');
+    await aside.locator('.animate-ping').waitFor();
+    const m = await aside.evaluate((el) => ({ hauteur: el.getBoundingClientRect().height, texte: el.textContent }));
+    await page.close();
+    expect(m.texte).toBe('Temps réel · connecté');
+    expect(m.hauteur).toBeLessThanOrEqual(40);
+  });
+
+  it("R6 — à 390 px, la ligne collante porte « OL 2 · 1 NIC · 63' » sur une ligne, sans défilement horizontal", async () => {
+    const page = await ouvrirEnDirect(390);
+    const ligne = page.locator('main [data-testid="pastille-direct"]');
+    await ligne.locator('.animate-ping').waitFor();
+    const m = await ligne.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return { hauteur: r.height, right: r.right, texte: el.textContent, largeurDoc: document.documentElement.scrollWidth };
+    });
+    await page.close();
+    expect(m.texte).toContain("OL 2 · 1 NIC · 63'");
+    expect(m.hauteur).toBeLessThanOrEqual(30);
+    expect(m.right).toBeLessThanOrEqual(390);
+    expect(m.largeurDoc).toBeLessThanOrEqual(390);
   });
 });

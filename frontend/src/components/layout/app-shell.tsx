@@ -47,7 +47,7 @@ export function AppShell() {
             data-testid="ligne-direct"
             className="pointer-events-none sticky top-[var(--bandeau-demo-h,0px)] z-30 flex h-9 items-start justify-end lg:hidden"
           >
-            <LiveConnectionBadge status={eventStreamStatus} className="pointer-events-auto" />
+            <LiveConnectionBadge status={eventStreamStatus} className="pointer-events-auto" avecScore />
           </div>
           <Outlet />
         </div>

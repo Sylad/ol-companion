@@ -60,7 +60,7 @@ describe('Pastille du flux temps réel (L208)', () => {
 
   it('R5 — role=status annonce l’état (WCAG 4.1.3) ; title accentué', () => {
     render(<LiveConnectionBadge status="reconnecting" />);
-    const badge = screen.getByRole('status');
-    expect(badge.getAttribute('title')).toBe('État du flux temps réel OL Companion');
+    const pastille = screen.getByTitle('État du flux temps réel OL Companion');
+    expect(pastille.contains(screen.getByRole('status'))).toBe(true);
   });
 });
