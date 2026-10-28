@@ -891,6 +891,7 @@ lots:
     estimate: 1
     created: 2026-10-08
     started: 2026-10-28
+    review: { date: 2026-10-28, verdict: "conforme : le lot L72 est sain. Les deux constats mineurs sont corrigés : 4c6d63e teste la carte du direct, 423c88a teste l'égalité des tables `CODE_BY_365SCORES_ID` et `TRACKED_COMPETITIONS`. Ces correctifs ne cassent rien et aucun nouveau défaut n'apparaît. — orchestré (vague 2026-10-28-1210o, 1 passe(s) de correction + passe des mineurs)", commit: 423c88a51059ada53f7e584584fa6e08c6ff5947 }
   - id: L73
     title: "QA : attentes de / — accepter « Approche du coup d'envoi » comme variante de « Prochain rendez-vous » (match à moins d'un jour) et « Différence buts » pour la tuile (QA 08-10)"
     status: todo
