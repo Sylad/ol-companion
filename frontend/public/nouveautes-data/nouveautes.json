@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-28 10:23",
+  "generated": "2026-10-28 18:24",
   "entries": [
+    {
+      "slug": "2026-10-28-telephone-l-etat-du-direct-reste-visible-quand-on-fait-defil",
+      "title": "Téléphone : l'état du direct reste visible quand on fait défiler la page",
+      "date": "2026-10-28",
+      "lots": [
+        "L64"
+      ],
+      "captures": [
+        "captures/L64-direct-collant-telephone.png"
+      ],
+      "alts": [
+        "Page défilée au téléphone (390 px) : la pastille « Temps réel » reste collée en haut de l'écran"
+      ],
+      "html": "<p>Sur un téléphone, la pastille « Temps réel » (l'état du direct) partait hors de l'écran dès qu'on faisait défiler la page.</p>\n<ul><li>Elle reste maintenant collée en haut de l'écran pendant tout le défilement, sur la page d'un match comme sur les autres pages.</li><li>Au repos, elle garde sa ligne au-dessus du contenu : rien n'est recouvert et la page ne défile pas de côté.</li><li>Sur le Calendrier, les filtres se rangent juste sous la pastille.</li><li>Sur ordinateur, rien ne change : l'état du direct reste dans la barre latérale.</li></ul>"
+    },
     {
       "slug": "2026-10-28-calendrier-navigation-au-clavier-plus-fluide",
       "title": "Calendrier : navigation au clavier plus fluide",
