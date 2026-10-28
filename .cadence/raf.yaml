@@ -2543,6 +2543,7 @@ lots:
       - { date: 2026-10-27, text: "Livraison ddbbfb0 : titres publics livrés « Fiche joueur : le bouton Réessayer garde sa place quand le réseau revient », « Hors ligne : un message de connexion au lieu d'une fausse nouvelle version ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
       - { date: 2026-10-28, text: "Livraison 6afb528 : titres publics livrés « Calendrier : des messages plus clairs quand il n'y a rien à afficher ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
       - { date: 2026-10-28, text: "Livraison d5d3867 : titres publics livrés « Calendrier : navigation au clavier plus fluide ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
+      - { date: 2026-10-28, text: "Livraison f0c5b91 : titres publics livrés « Téléphone : l'état du direct reste visible quand on fait défiler la page ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
   - id: L223
     title: "QA L218 26-10 : docs/qa/expectations.md /players, ligne shows du banc (photo chargée, ou initiales du nom complet quand 365scores n'a pas d'image) ; vérifier sur plusieurs athlètes si imageVersion=1 veut dire « pas d'image » et ne pas demander la photo dans ce cas (266757 Angel García : 404 et erreur console, initiales affichées)"
     status: done
@@ -2602,6 +2603,17 @@ lots:
     review: { date: 2026-10-28, verdict: "conforme : 2 notes mineures (drapeau de focus resté levé si la saison est vide, test R2 plus faible que son titre) — orchestré (vague 2026-10-28-1030o, 1 passe(s) de correction)", commit: 247d1507e18f70771924a257f2a67a20153643d0 }
     ux: { date: 2026-10-28, verdict: "conforme (lead, captures 390 regardées : liste rétablie après « Afficher tous les matchs », focus sur le h1, « Réessayer » au contour ol-red-bright) ; « Matchs listés » à 0 ligne : attente précisée dans docs/qa/expectations.md" }
     finished: 2026-10-28
+  - id: L229
+    title: "Resceller L50 R7 sur la géométrie de L64 (barre des filtres collée à 36 px sous la ligne du direct, scroll-padding-top = barre + 36) : fiche L50 amendée, test d'acceptation corrigé pour mesurer l'effet réel, cadence spec reseal --porteur ce lot (les assertions top-0 et 124 px sont vertes sans mesurer la règle depuis L64)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-28
+  - id: L230
+    title: "Suites de L64 : pastille du direct sur ordinateur (25 → 55 px sur 3 lignes pendant un match), minute hors de la région role=status (lue toutes les 60 s par les lecteurs d'écran), libellé deriveClock (MI-TEMPS, TAB) au lieu de gameTimeDisplay brut, Nouveauté L64 à jour (score et minute)"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-28
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
