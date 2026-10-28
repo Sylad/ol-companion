@@ -744,11 +744,12 @@ lots:
     finished: 2026-10-09
   - id: L57
     title: "Plan public : 1 lot prévu affiché pour 17 lots visibles ouverts (16 sans titre public) — donner des titres publics ou l'assumer (à décider)"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-03
     started: 2026-10-28
     review: { date: 2026-10-28, verdict: "conforme : les correctifs de la passe des mineurs sont en place (README sans chiffre figé ; nouveau test des filtres masqué, terminé, abandonné, bloqué et sécurité, cohérent avec PUBLISHED_STATUSES) ; aucune régression ; plan-data.test.mjs 42/42 ; plan.json à jour, sans lot ouvert sans titre — orchestré (vague 2026-10-28-1135o, 0 passe(s) de correction + passe des mineurs)", commit: 65cd063f91f5edd9dccde5376c9cbf9f43b9032f }
+    finished: 2026-10-28
   - id: L58
     title: "Cache HTTP, suites de la relecture du 03-10 : motif d'empreinte du test trop large (foo-settings.js accepté) ; 416 sur un actif servi en immutable (map sur $status évaluée avant le filtre Range) ; exiger no-store sur le 404 d'un actif absent ; jouer test-nginx-cache.sh en CI ; recharger la page quand un morceau d'une ancienne version répond 404 (onglet resté ouvert pendant une livraison)"
     status: done
