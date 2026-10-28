@@ -2611,12 +2611,16 @@ lots:
   - id: L230
     title: "Suites de L64 : pastille du direct sur ordinateur (25 → 55 px sur 3 lignes pendant un match), minute hors de la région role=status (lue toutes les 60 s par les lecteurs d'écran), libellé deriveClock (MI-TEMPS, TAB) au lieu de gameTimeDisplay brut, Nouveauté L64 à jour (score et minute)"
     public: "Téléphone : la pastille du direct affiche le score et la minute pendant un match"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-28
     started: 2026-10-28
     review: { date: 2026-10-28, verdict: "conforme — orchestré (vague 2026-10-28-2130, 3 passe(s) de correction + passe des mineurs)", commit: 4a0d70a493a8a27ef22a1228b3879a98e4e854db }
+    ux: { date: 2026-10-28, verdict: "conforme : aucun écran modifié — les 4 points (pastille bureau sans score, minute via deriveClock, score/minute hors role=status, Nouveauté) étaient déjà livrés par f6127b9 (L64), tests live-connection-badge-L64 R1–R5 ; seule l'entrée Nouveautés est rattachée à L64" }
+    notes:
+      - { date: 2026-10-28, text: "28-10 (lead) : lot redondant — créé par le lead à partir de propositions de revue déjà traitées par f6127b9 (L64) ; 5 passes de revue perdues sur le titre de Nouveauté. Leçon : vérifier les commits postérieurs avant d'ouvrir des lots de suites" }
+    finished: 2026-10-28
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

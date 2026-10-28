@@ -733,8 +733,9 @@
     {
       "id": "L230",
       "title": "Téléphone : la pastille du direct affiche le score et la minute pendant un match",
-      "status": "doing",
-      "started": "2026-10-28"
+      "status": "done",
+      "started": "2026-10-28",
+      "finished": "2026-10-28"
     }
   ]
 }
