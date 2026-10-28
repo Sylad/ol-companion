@@ -83,6 +83,12 @@ export interface SeasonMatch extends Fixture {
    * ne les compte pas) ; `null` sinon. Absent d'un backend antérieur à L135.
    */
   shootoutWinnerId?: number | null;
+  /**
+   * Cumul des deux manches, dans le sens domicile / extérieur de ce match,
+   * sur une manche retour jouée dont l'aller est connu (L51) ; `null` sinon,
+   * absent d'un backend antérieur au champ.
+   */
+  aggregateScore?: { home: number; away: number } | null;
 }
 
 export interface NewsItem {

@@ -176,10 +176,31 @@ export function FixturesPage() {
             </div>
           )}
           {isError && (
-            <p data-testid="message-erreur" className="py-20 text-center text-loss">Erreur de chargement.</p>
+            // role=alert : annoncée dès qu'elle apparaît ; ol-red-bright, pas --loss (3,85:1 à 16 px, WCAG 1.4.3).
+            <p data-testid="message-erreur" role="alert" className="py-20 text-center text-ol-red-bright">Erreur de chargement.</p>
+          )}
+          {/* La zone annoncée existe avant son texte : une zone `status` insérée avec son contenu n'est pas lue (L51). */}
+          {data && (
+            <div role="status">
+              {filtered.length === 0 && (
+                <p data-testid="message-vide" className="pt-20 pb-6 text-center text-fg-muted">Aucun match dans cette catégorie.</p>
+              )}
+            </div>
           )}
           {data && filtered.length === 0 && (
-            <p data-testid="message-vide" className="py-20 text-center text-fg-muted">Aucun match dans cette catégorie.</p>
+            <div className="pb-20 text-center">
+              <button
+                type="button"
+                data-testid="afficher-tout"
+                onClick={() => {
+                  setCompetition('all');
+                  setTab('all');
+                }}
+                className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue-bright/10 px-5 text-sm font-semibold text-fg-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+              >
+                Afficher tous les matchs
+              </button>
+            </div>
           )}
           {data && filtered.length > 0 && (
             <div className="grid gap-3 lg:grid-cols-[280px_1fr] lg:gap-5">
@@ -391,7 +412,8 @@ function matchLinkName(fixture: SeasonMatch): string {
   const played = fixture.homeScore !== null && fixture.awayScore !== null;
   const shootout = played && fixture.homeScore === fixture.awayScore ? shootoutWinnerName(fixture) : null;
   const score = played ? `${home} ${fixture.homeScore}, ${away} ${fixture.awayScore}` : `${home} contre ${away}`;
-  return `${score}${shootout ? `, ${shootout} qualifié aux tirs au but` : ''} — détail du match`;
+  const aggregate = fixture.aggregateScore ? `, cumul ${fixture.aggregateScore.home} à ${fixture.aggregateScore.away}` : '';
+  return `${score}${aggregate}${shootout ? `, ${shootout} qualifié aux tirs au but` : ''} — détail du match`;
 }
 
 /**
@@ -547,6 +569,12 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
               <span aria-hidden="true">t.a.b.</span>
               <span className="sr-only">tirs au but</span>
             </abbr>
+          </span>
+        )}
+        {fixture.aggregateScore && (
+          // Le score de la ligne est celui du match seul ; le cumul des deux manches se lit dessous (L51).
+          <span data-testid="cumul-match" aria-hidden="true" className="num text-[11px] font-semibold text-fg-muted">
+            Cumul {fixture.aggregateScore.home}-{fixture.aggregateScore.away}
           </span>
         )}
         <CompetitionTag fixture={fixture} />
