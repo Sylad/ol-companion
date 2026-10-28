@@ -1,6 +1,6 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-28 21:30",
+  "generated": "2026-10-28 21:37",
   "entries": [
     {
       "slug": "2026-10-28-pendant-un-match-la-pastille-du-direct-reste-compacte-et-lis",
@@ -15,7 +15,7 @@
       "alts": [
         "Classement défilé au téléphone (390 px) pendant un match : la pastille collée en haut affiche « OL 2 · 1 NIC · 63' » sur une ligne"
       ],
-      "html": "<p>Pendant un match en cours, la pastille de l'état du direct est plus claire à lire et à écouter.</p>\n<ul><li>Sur ordinateur, la pastille de la barre latérale reste sur une seule ligne pendant un match : elle n'affiche que l'état du flux, le score et la minute restent sur la ligne du téléphone.</li><li>Au téléphone, la minute s'écrit comme sur la page du match : « MI-TEMPS » à la pause, « TAB » aux tirs au but, et rien quand la minute n'est pas connue.</li><li>Les lecteurs d'écran n'annoncent plus la minute à chaque changement : seul l'état du flux (connecté, reconnexion…) est annoncé.</li></ul>"
+      "html": "<p>Pendant un match en cours, la pastille de l'état du direct est plus claire à lire et à écouter.</p>\n<ul><li>Sur ordinateur, la pastille de la barre latérale garde ses deux lignes (« Temps réel · connecté », 40 px de haut) pendant un match, au lieu de grandir à 55 px : elle n'affiche que l'état du flux, le score et la minute restent sur la ligne du téléphone.</li><li>Au téléphone, la minute s'écrit comme sur la page du match : « MI-TEMPS » à la pause, « TAB » aux tirs au but, et rien quand la minute n'est pas connue.</li><li>Les lecteurs d'écran n'annoncent plus la minute à chaque changement : seul l'état du flux (connecté, reconnexion…) est annoncé.</li></ul>"
     },
     {
       "slug": "2026-10-28-telephone-l-etat-du-direct-reste-visible-quand-on-fait-defil",

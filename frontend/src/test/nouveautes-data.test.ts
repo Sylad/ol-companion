@@ -138,4 +138,16 @@ describe('données des Nouveautés (public/nouveautes-data)', () => {
       rmSync(tmp, { recursive: true, force: true });
     }
   });
+
+  // L230 — la mesure (tests-navigateur/direct-collant.test.ts, R5) : à 1440 px la pastille de la barre
+  // latérale garde ses deux lignes (40 px) ; elle ne tient pas « sur une seule ligne ».
+  it('L230 — la Nouveauté de la pastille du direct décrit la mesure : deux lignes, 40 px, pas « une seule ligne »', () => {
+    const e = readJson().entries.find((x) => x.slug.startsWith('2026-10-28-pendant-un-match-la-pastille')) as
+      | (Entry & { html: string })
+      | undefined;
+    expect(e).toBeDefined();
+    const texte = e!.html.replace(/<[^>]+>/g, '');
+    expect(texte).not.toMatch(/sur une seule ligne pendant un match/);
+    expect(texte).toMatch(/Sur ordinateur, la pastille de la barre latérale garde ses deux lignes/);
+  });
 });

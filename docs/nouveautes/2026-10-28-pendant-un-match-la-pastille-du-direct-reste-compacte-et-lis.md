@@ -7,6 +7,6 @@ captures: [{ file: captures/L230-pastille-direct-telephone.png, alt: "Classement
 ---
 Pendant un match en cours, la pastille de l'état du direct est plus claire à lire et à écouter.
 
-- Sur ordinateur, la pastille de la barre latérale reste sur une seule ligne pendant un match : elle n'affiche que l'état du flux, le score et la minute restent sur la ligne du téléphone.
+- Sur ordinateur, la pastille de la barre latérale garde ses deux lignes (« Temps réel · connecté », 40 px de haut) pendant un match, au lieu de grandir à 55 px : elle n'affiche que l'état du flux, le score et la minute restent sur la ligne du téléphone.
 - Au téléphone, la minute s'écrit comme sur la page du match : « MI-TEMPS » à la pause, « TAB » aux tirs au but, et rien quand la minute n'est pas connue.
 - Les lecteurs d'écran n'annoncent plus la minute à chaque changement : seul l'état du flux (connecté, reconnexion…) est annoncé.
