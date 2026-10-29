@@ -1,7 +1,8 @@
 /**
  * 365scores donne les postes en anglais (« Goalkeeper », « Centre Back »,
  * « Coach »), en libellé long ou en abréviation (GK, CB). L'écran les montre
- * en français ; un libellé inconnu est rendu tel quel.
+ * en français ; un libellé déjà français de 365scores (« Milieu de Terrain ») est ramené à la casse du français ;
+ * un libellé inconnu est rendu tel quel.
  */
 const LONG_FR: Record<string, string> = {
   goalkeeper: 'Gardien',
@@ -15,6 +16,9 @@ const LONG_FR: Record<string, string> = {
   'left wing back': 'Piston gauche',
   'right wing back': 'Piston droit',
   midfielder: 'Milieu',
+  'milieu de terrain': 'Milieu de terrain',
+  attaquant: 'Attaquant',
+  défenseur: 'Défenseur',
   'defensive midfield': 'Milieu défensif',
   'central midfield': 'Milieu central',
   'attacking midfield': 'Milieu offensif',
@@ -55,7 +59,7 @@ const SHORT_FR: Record<string, string> = {
 const SHORT_BY_LONG_FR: Record<string, string> = {
   Gardien: 'GB', 'Gardien de but': 'GB', Défenseur: 'DEF', 'Défenseur central': 'DC',
   'Latéral gauche': 'DG', 'Latéral droit': 'DD', 'Piston gauche': 'PG', 'Piston droit': 'PD',
-  Milieu: 'MIL', 'Milieu défensif': 'MDC', 'Milieu central': 'MC', 'Milieu offensif': 'MO',
+  Milieu: 'MIL', 'Milieu de terrain': 'MIL', 'Milieu défensif': 'MDC', 'Milieu central': 'MC', 'Milieu offensif': 'MO',
   'Milieu gauche': 'MG', 'Milieu droit': 'MD', Attaquant: 'ATT', 'Ailier gauche': 'AG',
   'Ailier droit': 'AD', 'Avant-centre': 'AC', 'Second attaquant': 'SA', Entraîneur: 'ENT',
 };
@@ -75,6 +79,7 @@ export function positionShortFr(value: string): string {
 
 const GROUPE: Record<string, string> = {
   // libellés de ligne de 365scores (champ `position` de la feuille de match, toujours présent)
+  'gardien de but': 'GK', 'milieu de terrain': 'MID', attaquant: 'ATK', défenseur: 'DEF',
   goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', attacker: 'ATK', forward: 'ATK',
   // codes courts
   gk: 'GK',

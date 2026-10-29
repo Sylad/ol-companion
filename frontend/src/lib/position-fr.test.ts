@@ -21,6 +21,19 @@ describe('postes en français (L56)', () => {
     for (const [code, libelle] of codes) expect(positionLabelFr(code)).toBe(libelle);
     expect(positionLabelFr('gk')).toBe('Gardien');
   });
+  it('L78 — les libellés français de 365scores (« Milieu de Terrain ») sont ramenés à la casse du français, abrégés et groupés', () => {
+    expect(positionLabelFr('Milieu de Terrain')).toBe('Milieu de terrain');
+    expect(positionLabelFr('milieu de terrain')).toBe('Milieu de terrain');
+    expect(positionLabelFr('Attaquant')).toBe('Attaquant');
+    expect(positionLabelFr('Défenseur')).toBe('Défenseur');
+    expect(positionLabelFr('Gardien de But')).toBe('Gardien de but');
+    expect(positionShortFr('Milieu de Terrain')).toBe('MIL');
+    expect(positionShortFr('Défenseur')).toBe('DEF');
+    expect(positionGroup('Milieu de Terrain')).toBe('MID');
+    expect(positionGroup('Attaquant')).toBe('ATK');
+    expect(positionGroup('Défenseur')).toBe('DEF');
+    expect(positionGroup('Gardien de But')).toBe('GK');
+  });
   it('laisse les libellés déjà français ou inconnus', () => {
     expect(positionLabelFr('Gardien de But')).toBe('Gardien de but');
     expect(positionLabelFr('Libero')).toBe('Libero');
