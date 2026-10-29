@@ -43,7 +43,23 @@ describe('placerJoueurDeBord (L76)', () => {
     expect(r.nomMax).toBe(44);
     expect(12 + r.decalage - 44 / 2).toBe(2);
   });
-  it('R5 — la place disponible ne descend jamais sous le plancher', () => {
-    expect(placerJoueurDeBord({ ...base, x: 96, nom: 60, voisinGauche: 290 }).nomMax).toBe(24);
+  it('R5 — place plus étroite que le rond mais lisible : le rond reste dans le terrain, le nom (centré sous lui) garde 4 px avec le voisin', () => {
+    // voisin finissant à 256, rond de 44 px : place = 300 - 2 - 256 - 4 = 38 < 44
+    const r = placerJoueurDeBord({ ...base, rond: 44, x: 96, nom: 60, voisinGauche: 256 });
+    const centre = 288 + r.decalage;
+    expect(centre + 22).toBe(298); // rond collé à la marge
+    expect(r.nomMax).toBe(2 * (276 - 256 - 4));
+    expect(centre - r.nomMax! / 2).toBeGreaterThanOrEqual(256 + 4);
+  });
+  it('R5 — de même à gauche : le nom garde 4 px avec le voisin de droite', () => {
+    // place = 46 - 4 - 2 = 40 < 44
+    const r = placerJoueurDeBord({ ...base, rond: 44, x: 4, nom: 60, voisinDroite: 46 });
+    const centre = 12 + r.decalage;
+    expect(centre - 22).toBe(2);
+    expect(centre + r.nomMax! / 2).toBeLessThanOrEqual(46 - 4);
+  });
+  it('R5 — place trop étroite pour se lire (< 24 px) : nom masqué (nomMax 0), jamais un plancher qui recouvre le voisin', () => {
+    expect(placerJoueurDeBord({ ...base, x: 96, nom: 60, voisinGauche: 270 }).nomMax).toBe(0);
+    expect(placerJoueurDeBord({ ...base, x: 96, nom: 60, voisinGauche: 290 }).nomMax).toBe(0);
   });
 });

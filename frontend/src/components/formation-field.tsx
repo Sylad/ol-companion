@@ -9,8 +9,8 @@ import { hasJersey } from '@/lib/jersey';
 const MARGE_BORD_PX = 2;
 /** L76 : écart minimal gardé entre le nom d'un joueur de bord recalé et le nom de son voisin de ligne. */
 const ECART_NOMS_PX = 4;
-/** L76 : largeur plancher d'un nom tronqué (quelques lettres et les points de suspension). */
-const NOM_MIN_PX = 24;
+/** L76 : sous cette largeur (marges du nom et un caractère avec ses points de suspension) un nom tronqué ne se lit plus : il est masqué (nomMax 0). */
+const NOM_LISIBLE_MIN_PX = 24;
 
 const LINE_TO_Y: Record<number, number> = {
   1: 88,
@@ -151,6 +151,8 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
             backdropFilter: 'blur(2px)',
             textShadow: '0 1px 2px rgba(0,0,0,0.9)',
             maxWidth: place.nomMax ?? undefined,
+            // Nom masqué : sans marges ni affichage, mais en place (display: none ferait mesurer un scrollWidth nul au recalage suivant).
+            ...(place.nomMax === 0 ? { padding: 0, visibility: 'hidden' as const } : null),
           }}
         >
           {player.shortName}
@@ -193,22 +195,33 @@ interface EntreePlaceBord {
   voisinDroite: number | null;
 }
 
+/** Largeur laissée au nom tronqué : 0 (masqué) quand elle est trop étroite pour se lire. */
+function nomLisible(place: number): number {
+  return place < NOM_LISIBLE_MIN_PX ? 0 : place;
+}
+
 /**
  * L76 : place un joueur dans le terrain. Le décalage ramène le bloc dans le terrain (decalageDansTerrain) ; s'il rapproche le nom
  * à moins de ECART_NOMS_PX du nom voisin, il ne le fait pas : le nom est alors tronqué à la place disponible entre le bord du
- * terrain et le voisin (plancher NOM_MIN_PX).
+ * terrain et le voisin. Quand cette place est plus étroite que le rond, le rond est collé à la marge du terrain et le nom, centré
+ * sous lui, est réduit de façon symétrique pour garder l'écart (sous NOM_LISIBLE_MIN_PX le nom est masqué : jamais de recouvrement du voisin).
  */
 export function placerJoueurDeBord(e: EntreePlaceBord): PlaceBord {
   const { x, largeurTerrain: W, nom, rond, debord, voisinGauche, voisinDroite } = e;
   const centre = (x / 100) * W;
   const decalage = decalageDansTerrain(x, Math.max(rond, nom), W, debord);
   if (decalage > 0 && voisinDroite !== null && centre + decalage + nom / 2 > voisinDroite - ECART_NOMS_PX) {
-    const nomMax = Math.max(NOM_MIN_PX, voisinDroite - ECART_NOMS_PX - MARGE_BORD_PX);
-    return { decalage: MARGE_BORD_PX + Math.max(rond, nomMax) / 2 - centre, nomMax };
+    const place = voisinDroite - ECART_NOMS_PX - MARGE_BORD_PX;
+    if (place >= rond) return { decalage: MARGE_BORD_PX + place / 2 - centre, nomMax: nomLisible(place) };
+    const cible = MARGE_BORD_PX + rond / 2;
+    return { decalage: cible - centre, nomMax: nomLisible(2 * (voisinDroite - ECART_NOMS_PX - cible)) };
   }
   if (decalage < 0 && voisinGauche !== null && centre + decalage - nom / 2 < voisinGauche + ECART_NOMS_PX) {
-    const nomMax = Math.max(NOM_MIN_PX, W - MARGE_BORD_PX - debord - voisinGauche - ECART_NOMS_PX);
-    return { decalage: W - MARGE_BORD_PX - debord - Math.max(rond, nomMax) / 2 - centre, nomMax };
+    const place = W - MARGE_BORD_PX - debord - voisinGauche - ECART_NOMS_PX;
+    const droite = W - MARGE_BORD_PX - debord;
+    if (place >= rond) return { decalage: droite - place / 2 - centre, nomMax: nomLisible(place) };
+    const cible = droite - rond / 2;
+    return { decalage: cible - centre, nomMax: nomLisible(2 * (cible - voisinGauche - ECART_NOMS_PX)) };
   }
   return { decalage, nomMax: null };
 }

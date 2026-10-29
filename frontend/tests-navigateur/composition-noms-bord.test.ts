@@ -50,6 +50,16 @@ const lineupBacher = {
   ],
 };
 
+// L76 R5 — ligne à 5 défenseurs : le voisin (75 ou 80) est si près du bord que la place restante est plus étroite que le rond.
+const lineupVoisinProche = (voisin: string, yardSide: number) => ({
+  ...lineup,
+  starters: [
+    joueur(1, 'Lucas Perri', 1, 50),
+    joueur(2, 'Diop', 2, 12), joueur(3, 'Mata', 2, 40), joueur(4, voisin, 2, yardSide), joueur(5, 'Z. Athekame', 2, 100),
+    joueur(6, 'Tolisso', 3, 20), joueur(7, 'Nuamah', 3, 50), joueur(8, 'Fofana', 5, 20), joueur(9, 'Lacazette', 5, 50),
+  ],
+});
+
 async function ouvrir(largeur: number, composition: typeof lineup): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: 900 }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
   await page.route('**/api/**', (route) => route.fulfill({ status: 404, json: {} }));
@@ -67,6 +77,7 @@ async function ecartsDeLigne(page: Page) {
     for (const j of document.querySelectorAll('[data-testid="terrain"] [data-testid="joueur"]')) {
       const r = j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect();
       const l = j.getAttribute('data-ligne')!;
+      if (r.width === 0) continue; // nom masqué (largeur nulle) : plus rien à recouvrir
       lignes.set(l, [...(lignes.get(l) ?? []), { nom: j.querySelector('[data-testid="nom-joueur"]')!.textContent ?? '', gauche: r.left, droite: r.right }]);
     }
     return [...lignes.values()].flatMap((l) => {
@@ -83,6 +94,19 @@ describe.each([320, 390])('R5 — écart entre les noms d\'une même ligne à %i
       const ecarts = await ecartsDeLigne(page);
       expect(ecarts.length).toBeGreaterThan(0); // dont la paire Bacher / Z. Athekame
       for (const e of ecarts) expect(e.ecart, e.paire).toBeGreaterThanOrEqual(4 - 0.01);
+    } finally { await page.close(); }
+  });
+
+  it.each([['Bacher', 75], ['Tagliafico', 80]] as const)('voisin %s à yardSide %i : au moins 4 px, et le rond du bord reste dans le terrain', async (voisin, yardSide) => {
+    const page = await ouvrir(largeur, lineupVoisinProche(voisin, yardSide));
+    try {
+      for (const e of await ecartsDeLigne(page)) expect(e.ecart, e.paire).toBeGreaterThanOrEqual(4 - 0.01);
+      const dehors = await page.evaluate(() => {
+        const t = document.querySelector('[data-testid="terrain"]')!.getBoundingClientRect();
+        return [...document.querySelectorAll('[data-testid="terrain"] [data-testid="rond-joueur"]')]
+          .filter((r) => { const b = r.getBoundingClientRect(); return b.left < t.left - 0.5 || b.right > t.right + 0.5; }).length;
+      });
+      expect(dehors).toBe(0);
     } finally { await page.close(); }
   });
 
