@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import type { LiveMatchSummary, SeasonMatch } from '@/types/api';
@@ -46,9 +46,15 @@ function direct(partial: Partial<LiveMatchSummary> = {}): LiveMatchSummary {
   };
 }
 
-function serve(live: LiveMatchSummary | null, season: SeasonMatch[] = [NICE_A_VENIR]) {
+type Saison = SeasonMatch[] | 'echec' | 'attente';
+
+function serve(live: LiveMatchSummary | null, season: Saison = [NICE_A_VENIR]) {
   return vi.fn((url: string) => {
-    if (url === '/api/season-matches') return Promise.resolve(okJson(season));
+    if (url === '/api/season-matches') {
+      if (season === 'attente') return new Promise(() => {});
+      if (season === 'echec') return Promise.resolve({ ok: false, status: 503, json: async () => ({}) });
+      return Promise.resolve(okJson(season));
+    }
     if (url === '/api/live-match/current') return Promise.resolve(okJson(live));
     if (url.startsWith('/api/wiki-image')) return Promise.resolve(okJson({ imageUrl: null }));
     return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
@@ -141,11 +147,31 @@ describe('<DashboardHero /> — match en direct (L84)', () => {
     expect(await screen.findByText('Prochain rendez-vous')).toBeInTheDocument();
   });
 
-  it('R7 — le direct s’affiche aussi quand la liste de la saison est vide ou en échec', async () => {
+  it('R7 — le direct s’affiche aussi quand la liste de la saison est vide', async () => {
     vi.stubGlobal('fetch', serve(direct(), []));
     renderHero();
 
     expect(await screen.findByText('Match en direct')).toBeInTheDocument();
     expect(screen.queryByTestId('message-aucun-match')).not.toBeInTheDocument();
+  });
+
+  it('R7 — le direct s’affiche quand la liste de la saison répond 503, sans message d’erreur', async () => {
+    const fetchMock = serve(direct(), 'echec');
+    vi.stubGlobal('fetch', fetchMock);
+    renderHero();
+
+    expect(await screen.findByText('Match en direct')).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/api/season-matches', expect.anything()));
+    await new Promise((r) => setTimeout(r, 50));
+    expect(screen.queryByTestId('message-erreur-prochain-match')).not.toBeInTheDocument();
+    expect(screen.getByText('Match en direct')).toBeInTheDocument();
+  });
+
+  it('R7 — le direct s’affiche tant que la liste de la saison est en attente, sans squelette', async () => {
+    vi.stubGlobal('fetch', serve(direct(), 'attente'));
+    renderHero();
+
+    expect(await screen.findByText('Match en direct')).toBeInTheDocument();
+    expect(screen.queryByTestId('squelette-prochain-match')).not.toBeInTheDocument();
   });
 });
