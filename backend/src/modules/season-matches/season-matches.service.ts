@@ -14,8 +14,16 @@ import {
   CHAMPIONS_LEAGUE_365SCORES_ID,
   CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID,
 } from '../../config/constants';
-import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
-import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
+import {
+  scores365Headers,
+  SCORES365_API_BASE,
+  SCORES365_REFERER,
+} from '../../config/scores365-http';
+import {
+  Scores365GamesResponseSchema,
+  type Scores365Game,
+  type Scores365GamesResponse,
+} from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { FixturesService } from '../fixtures/fixtures.service';
 import { isKickoffTimeConfirmed } from './kickoff-confirmation';
@@ -118,11 +126,15 @@ export const TRACKED_COMPETITIONS: Record<
  * qualifications de Ligue des champions. Un tour absent d'ici n'est pas
  * affiché — jamais de libellé anglais à l'écran.
  */
-export function stageLabel(competitionId: number, stageName?: string): string | null {
+export function stageLabel(
+  competitionId: number,
+  stageName?: string,
+): string | null {
   if (!stageName) return null;
   if (competitionId === CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID) {
     const nth = /^(\d)(?:st|nd|rd|th) Round$/.exec(stageName);
-    if (nth) return `${nth[1]}${nth[1] === '1' ? 'er' : 'e'} tour de qualification`;
+    if (nth)
+      return `${nth[1]}${nth[1] === '1' ? 'er' : 'e'} tour de qualification`;
     if (stageName === 'Playoffs') return 'Barrages';
   }
   return null;
@@ -167,7 +179,11 @@ type Fetcher = typeof fetch;
 @Injectable()
 export class SeasonMatchesService implements OnModuleInit {
   private readonly logger = new Logger(SeasonMatchesService.name);
-  private readonly cacheFile = path.resolve(process.cwd(), 'data', 'season-matches-cache.json');
+  private readonly cacheFile = path.resolve(
+    process.cwd(),
+    'data',
+    'season-matches-cache.json',
+  );
 
   /** Test seam — overriden via spec, defaults to global fetch. */
   fetcher: Fetcher = (input, init) => fetch(input, init);
@@ -193,14 +209,21 @@ export class SeasonMatchesService implements OnModuleInit {
 
   onModuleInit() {
     this.getMatches({ force: true }).catch((err) =>
-      this.logger.warn(`Initial season-matches refresh failed: ${(err as Error).message}`),
+      this.logger.warn(
+        `Initial season-matches refresh failed: ${(err as Error).message}`,
+      ),
     );
   }
 
-  @Cron('0 */30 * * * *', { name: 'season-matches-refresh', timeZone: 'Europe/Paris' })
+  @Cron('0 */30 * * * *', {
+    name: 'season-matches-refresh',
+    timeZone: 'Europe/Paris',
+  })
   async scheduledRefresh() {
     await this.getMatches({ force: true }).catch((err) =>
-      this.logger.warn(`Periodic season-matches refresh failed: ${(err as Error).message}`),
+      this.logger.warn(
+        `Periodic season-matches refresh failed: ${(err as Error).message}`,
+      ),
     );
   }
 
@@ -212,11 +235,16 @@ export class SeasonMatchesService implements OnModuleInit {
     }));
   }
 
-  private async loadMatches(opts: { force?: boolean }): Promise<StoredSeasonMatch[]> {
+  private async loadMatches(opts: {
+    force?: boolean;
+  }): Promise<StoredSeasonMatch[]> {
     if (!opts.force) {
       const cached = this.readCache();
       if (cached) return cached;
-      if (this.degradedAt !== null && Date.now() - this.degradedAt < CACHE_TTL_MS) {
+      if (
+        this.degradedAt !== null &&
+        Date.now() - this.degradedAt < CACHE_TTL_MS
+      ) {
         const previous = this.readCacheRaw();
         if (previous) return previous;
       }
@@ -237,8 +265,15 @@ export class SeasonMatchesService implements OnModuleInit {
       // de même. Borne d'âge : après GUARD_MAX_MS de garde, on écrit.
       const shorter = !!previous && matches.length < previous.length;
       const expired =
-        this.degradedSince !== null && Date.now() - this.degradedSince > GUARD_MAX_MS && matches.length > 0;
-      if ((!complete || shorter || matches.length === 0) && previous && previous.length > 0 && !expired) {
+        this.degradedSince !== null &&
+        Date.now() - this.degradedSince > GUARD_MAX_MS &&
+        matches.length > 0;
+      if (
+        (!complete || shorter || matches.length === 0) &&
+        previous &&
+        previous.length > 0 &&
+        !expired
+      ) {
         this.logger.warn(
           `365scores : parcours incomplet (${matches.length} matchs contre ${previous.length} en cache) — cache existant conservé`,
         );
@@ -269,22 +304,41 @@ export class SeasonMatchesService implements OnModuleInit {
    * un HTTP 5xx/429. `null` : la page a échoué (journalisé) ; une page lue mais
    * vide n'est PAS un échec.
    */
-  private async fetchPage(url: string, what: string): Promise<Scores365GamesResponse | null> {
+  private async fetchPage(
+    url: string,
+    what: string,
+  ): Promise<Scores365GamesResponse | null> {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        const res = await this.fetcher(url, { headers: SCORES365_HEADERS, signal: AbortSignal.timeout(8_000) });
-        if (res.ok) return parseExternal(Scores365GamesResponseSchema, await res.json(), `365scores season ${what}`);
-        this.logger.warn(`365scores ${what} → HTTP ${res.status} (essai ${attempt}/2)`);
+        const res = await this.fetcher(url, {
+          headers: SCORES365_HEADERS,
+          signal: AbortSignal.timeout(8_000),
+        });
+        if (res.ok)
+          return parseExternal(
+            Scores365GamesResponseSchema,
+            await res.json(),
+            `365scores season ${what}`,
+          );
+        this.logger.warn(
+          `365scores ${what} → HTTP ${res.status} (essai ${attempt}/2)`,
+        );
         if (res.status < 500 && res.status !== 429) return null;
       } catch (err) {
-        this.logger.warn(`365scores ${what} en échec (essai ${attempt}/2) : ${(err as Error)?.message ?? err}`);
+        this.logger.warn(
+          `365scores ${what} en échec (essai ${attempt}/2) : ${(err as Error)?.message ?? err}`,
+        );
       }
-      if (attempt < 2 && this.retryDelayMs > 0) await new Promise((r) => setTimeout(r, this.retryDelayMs));
+      if (attempt < 2 && this.retryDelayMs > 0)
+        await new Promise((r) => setTimeout(r, this.retryDelayMs));
     }
     return null;
   }
 
-  private async fetchFrom365Scores(): Promise<{ matches: StoredSeasonMatch[]; complete: boolean }> {
+  private async fetchFrom365Scores(): Promise<{
+    matches: StoredSeasonMatch[];
+    complete: boolean;
+  }> {
     const seasonStart = getCurrentSeason().startDate.getTime();
     const games = new Map<number, Scores365Game>();
 
@@ -293,7 +347,8 @@ export class SeasonMatchesService implements OnModuleInit {
     // `paging.nextPage` (newer) — the latter is only the fallback cursor of
     // step 3, used when the fixtures page of step 2 fails.
     const baseUrl = `${SCORES365_API_BASE}/web/games`;
-    let url: string | null = `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`;
+    let url: string | null =
+      `${baseUrl}/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitors=${OL_365SCORES_ID}&limit=${PAGE_LIMIT}`;
     let nextPageHref: string | null = null;
     // Faux dès qu'une page échoue (après son nouvel essai) : la saison peut manquer de matchs.
     let complete = true;
@@ -338,7 +393,9 @@ export class SeasonMatchesService implements OnModuleInit {
     }
 
     // 3. Walk the forward cursor down to the empty page that ends the season.
-    let forwardUrl: string | null = nextPageHref ? `${SCORES365_API_BASE}${nextPageHref}` : null;
+    let forwardUrl: string | null = nextPageHref
+      ? `${SCORES365_API_BASE}${nextPageHref}`
+      : null;
     for (let page = 0; forwardUrl; page++) {
       if (page >= FORWARD_PAGES) {
         this.logger.warn(
@@ -359,7 +416,9 @@ export class SeasonMatchesService implements OnModuleInit {
     }
 
     const all = Array.from(games.values());
-    this.logger.log(`365scores: ${all.length} événements OL (toutes compétitions, brut)`);
+    this.logger.log(
+      `365scores: ${all.length} événements OL (toutes compétitions, brut)`,
+    );
 
     const inSeason = all.filter(
       (g) => new Date(g.startTime).getTime() >= seasonStart,
@@ -380,13 +439,18 @@ export class SeasonMatchesService implements OnModuleInit {
       return acc;
     }, {});
     this.logger.log(
-      `season-matches: ${matches.length} retenus — ${Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(', ')}`,
+      `season-matches: ${matches.length} retenus — ${Object.entries(counts)
+        .map(([k, v]) => `${k}=${v}`)
+        .join(', ')}`,
     );
 
     return { matches, complete };
   }
 
-  private toSeasonMatch(g: Scores365Game, siblings: Scores365Game[]): StoredSeasonMatch {
+  private toSeasonMatch(
+    g: Scores365Game,
+    siblings: Scores365Game[],
+  ): StoredSeasonMatch {
     // 365scores statusGroups: 1=scheduled-soon, 2=scheduled-future, 3=live, 4=ended
     // (cf. live-match.types.ts). Treating 2 as IN_PLAY would tag a "next L1 match
     // in 4 days" as in-play, so map both 1 and 2 to SCHEDULED.
@@ -428,8 +492,8 @@ export class SeasonMatchesService implements OnModuleInit {
       homeTeamId: remapId(home?.id),
       awayTeam: away?.name ?? '',
       awayTeamId: remapId(away?.id),
-      homeScore: hasScore ? home?.score ?? null : null,
-      awayScore: hasScore ? away?.score ?? null : null,
+      homeScore: hasScore ? (home?.score ?? null) : null,
+      awayScore: hasScore ? (away?.score ?? null) : null,
       competition,
       competitionCode,
       competitionId: compId,
@@ -440,11 +504,20 @@ export class SeasonMatchesService implements OnModuleInit {
   }
 
   /** La manche aller, jouée, de la confrontation dont `g` est la manche retour ; `undefined` si elle manque. */
-  private firstLeg(g: Scores365Game, siblings: Scores365Game[]): Scores365Game | undefined {
+  private firstLeg(
+    g: Scores365Game,
+    siblings: Scores365Game[],
+  ): Scores365Game | undefined {
     if (g.legNum !== 2) return undefined;
-    const ids = (m: Scores365Game) => [m.homeCompetitor?.id, m.awayCompetitor?.id].sort().join();
+    const ids = (m: Scores365Game) =>
+      [m.homeCompetitor?.id, m.awayCompetitor?.id].sort().join();
     return siblings.find(
-      (o) => o.id !== g.id && o.legNum === 1 && o.competitionId === g.competitionId && o.statusGroup === 4 && ids(o) === ids(g),
+      (o) =>
+        o.id !== g.id &&
+        o.legNum === 1 &&
+        o.competitionId === g.competitionId &&
+        o.statusGroup === 4 &&
+        ids(o) === ids(g),
     );
   }
 
@@ -456,12 +529,22 @@ export class SeasonMatchesService implements OnModuleInit {
   ): { home: number; away: number } | null {
     const home = g.homeCompetitor;
     const away = g.awayCompetitor;
-    if (status !== 'FINISHED' || home?.score === undefined || away?.score === undefined) return null;
+    if (
+      status !== 'FINISHED' ||
+      home?.score === undefined ||
+      away?.score === undefined
+    )
+      return null;
     const first = this.firstLeg(g, siblings);
     if (!first) return null;
     const goals = (teamId: number | undefined) =>
-      (first.homeCompetitor?.id === teamId ? first.homeCompetitor?.score : first.awayCompetitor?.score) ?? 0;
-    return { home: home.score + goals(home.id), away: away.score + goals(away.id) };
+      (first.homeCompetitor?.id === teamId
+        ? first.homeCompetitor?.score
+        : first.awayCompetitor?.score) ?? 0;
+    return {
+      home: home.score + goals(home.id),
+      away: away.score + goals(away.id),
+    };
   }
 
   /**
@@ -480,20 +563,34 @@ export class SeasonMatchesService implements OnModuleInit {
   ): number | null {
     const home = g.homeCompetitor;
     const away = g.awayCompetitor;
-    if (status !== 'FINISHED' || g.competitionId === LIGUE1_365SCORES_ID) return null;
+    if (status !== 'FINISHED' || g.competitionId === LIGUE1_365SCORES_ID)
+      return null;
     // Une manche aller ne se joue pas aux tirs au but, quoi que dise isQualified.
     if (g.legNum === 1) return null;
     // Un match à journée (phase de ligue, championnat) ne se rejoue pas aux tirs au but.
     if (g.roundNum != null) return null;
-    if (home?.score === undefined || away?.score === undefined || home.score !== away.score) return null;
-    const winner = home.isQualified === true ? home : away.isQualified === true ? away : null;
+    if (
+      home?.score === undefined ||
+      away?.score === undefined ||
+      home.score !== away.score
+    )
+      return null;
+    const winner =
+      home.isQualified === true
+        ? home
+        : away.isQualified === true
+          ? away
+          : null;
     if (!winner) return null;
     if (g.legNum === 2) {
       const first = this.firstLeg(g, siblings);
       if (!first) return null;
       const goals = (teamId: number) =>
-        (first.homeCompetitor?.id === teamId ? first.homeCompetitor.score : first.awayCompetitor?.score) ?? 0;
-      if (goals(home.id) + home.score !== goals(away.id) + away.score) return null;
+        (first.homeCompetitor?.id === teamId
+          ? first.homeCompetitor.score
+          : first.awayCompetitor?.score) ?? 0;
+      if (goals(home.id) + home.score !== goals(away.id) + away.score)
+        return null;
     }
     return remapId(winner.id);
   }
@@ -507,7 +604,8 @@ export class SeasonMatchesService implements OnModuleInit {
         g.competitionId in TRACKED_COMPETITIONS
       )
         continue;
-      const key = `#${g.competitionId ?? '?'} ${g.competitionDisplayName ?? ''}`.trim();
+      const key =
+        `#${g.competitionId ?? '?'} ${g.competitionDisplayName ?? ''}`.trim();
       untracked.set(key, (untracked.get(key) ?? 0) + 1);
     }
     if (untracked.size === 0) return;
@@ -526,7 +624,9 @@ export class SeasonMatchesService implements OnModuleInit {
       const { ts, data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
       if (Date.now() - ts < CACHE_TTL_MS) return data;
     } catch (err) {
-      this.logger.warn(`Failed to read season-matches cache ${this.cacheFile}: ${(err as Error)?.message ?? err}`);
+      this.logger.warn(
+        `Failed to read season-matches cache ${this.cacheFile}: ${(err as Error)?.message ?? err}`,
+      );
     }
     return null;
   }
@@ -537,7 +637,9 @@ export class SeasonMatchesService implements OnModuleInit {
       const { data } = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
       return data;
     } catch (err) {
-      this.logger.warn(`Failed to read season-matches cache (raw): ${(err as Error)?.message ?? err}`);
+      this.logger.warn(
+        `Failed to read season-matches cache (raw): ${(err as Error)?.message ?? err}`,
+      );
       return null;
     }
   }
@@ -547,7 +649,10 @@ export class SeasonMatchesService implements OnModuleInit {
     atomicWriteJsonSync(this.cacheFile, { ts: Date.now(), data });
   }
 
-  private matchesChanged(prev: StoredSeasonMatch[] | null, next: StoredSeasonMatch[]): boolean {
+  private matchesChanged(
+    prev: StoredSeasonMatch[] | null,
+    next: StoredSeasonMatch[],
+  ): boolean {
     if (!prev || prev.length !== next.length) return true;
     for (let i = 0; i < next.length; i++) {
       const p = prev[i];

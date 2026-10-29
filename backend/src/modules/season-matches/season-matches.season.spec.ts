@@ -400,7 +400,9 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       svc.fetcher = (input: unknown, init?: RequestInit) => {
         if (pred(new URL(String(input))) && n < times) {
           n++;
-          return Promise.reject(new Error('The operation was aborted due to timeout'));
+          return Promise.reject(
+            new Error('The operation was aborted due to timeout'),
+          );
         }
         return real(input as string, init);
       };
@@ -410,7 +412,8 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       `https://x${season.forward[0].paging?.nextPage ?? ''}`,
     ).searchParams.get('aftergame');
     const isSecondForward = (u: URL) =>
-      u.pathname === '/web/games/' && u.searchParams.get('aftergame') === secondForwardCursor;
+      u.pathname === '/web/games/' &&
+      u.searchParams.get('aftergame') === secondForwardCursor;
 
     it('un timeout sur une page de la marche avant est réessayé : la saison reste complète (46 matchs)', async () => {
       await withCwd(async () => {
@@ -508,12 +511,18 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
     const isResults = (u: URL) => u.pathname === '/web/games/results/';
 
     /** Fait échouer (timeout) toute requête dont l'URL satisfait `pred`. */
-    function failAll(svc: SeasonMatchesService, pred: (url: URL) => boolean): { calls: () => number } {
+    function failAll(
+      svc: SeasonMatchesService,
+      pred: (url: URL) => boolean,
+    ): { calls: () => number } {
       const real = svc.fetcher;
       let calls = 0;
       svc.fetcher = (input: unknown, init?: RequestInit) => {
         calls++;
-        if (pred(new URL(String(input)))) return Promise.reject(new Error('The operation was aborted due to timeout'));
+        if (pred(new URL(String(input))))
+          return Promise.reject(
+            new Error('The operation was aborted due to timeout'),
+          );
         return real(input as string, init);
       };
       return { calls: () => calls };
@@ -534,7 +543,9 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
         expect(await svc.getMatches({ force: true })).toHaveLength(46);
         expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('cache existant conservé'),
+        );
       });
     });
 
@@ -556,7 +567,9 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
         expect(await svc.getMatches({ force: true })).toHaveLength(46);
         expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('cache existant conservé'),
+        );
       });
     });
 
@@ -603,12 +616,16 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
         const { svc } = buildService();
         svc.retryDelayMs = 0;
         const warn = jest.spyOn(svc['logger'], 'warn').mockImplementation();
-        const fetcher = jest.fn(async () => new Response('{}', { status: 200 }));
+        const fetcher = jest.fn(
+          async () => new Response('{}', { status: 200 }),
+        );
         svc.fetcher = fetcher as unknown as typeof svc.fetcher;
 
         expect(await svc.getMatches({ force: true })).toHaveLength(46);
         expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(aged);
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('cache existant conservé'),
+        );
 
         const callsAfterGuard = fetcher.mock.calls.length;
         expect(await svc.getMatches()).toHaveLength(46);
@@ -622,9 +639,13 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       `https://x${season.forward[0].paging?.nextPage ?? ''}`,
     ).searchParams.get('aftergame');
     const isSecondForward = (u: URL) =>
-      u.pathname === '/web/games/' && u.searchParams.get('aftergame') === forwardCursor;
+      u.pathname === '/web/games/' &&
+      u.searchParams.get('aftergame') === forwardCursor;
 
-    function interceptEmpty(svc: SeasonMatchesService, pred: (u: URL) => boolean) {
+    function interceptEmpty(
+      svc: SeasonMatchesService,
+      pred: (u: URL) => boolean,
+    ) {
       const real = svc.fetcher;
       svc.fetcher = (input: unknown, init?: RequestInit) =>
         pred(new URL(String(input)))
@@ -650,7 +671,9 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
         expect(await svc.getMatches({ force: true })).toHaveLength(46);
         expect(fs.readFileSync(cacheFile, 'utf-8')).toBe(before);
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('cache existant conservé'));
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('cache existant conservé'),
+        );
       });
     });
 
@@ -676,7 +699,9 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
         }
 
         expect(n).toBeLessThan(46);
-        expect(JSON.parse(fs.readFileSync(cacheFile, 'utf-8')).data).toHaveLength(n);
+        expect(
+          JSON.parse(fs.readFileSync(cacheFile, 'utf-8')).data,
+        ).toHaveLength(n);
       });
     });
 
@@ -685,11 +710,14 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
       const delay = svc.retryDelayMs;
       svc.retryDelayMs = 0;
       const timeouts: number[] = [];
-      const spy = jest.spyOn(AbortSignal, 'timeout').mockImplementation((ms: number) => {
-        timeouts.push(ms);
-        return new AbortController().signal;
-      });
-      svc.fetcher = (() => Promise.reject(new Error('timeout'))) as typeof svc.fetcher;
+      const spy = jest
+        .spyOn(AbortSignal, 'timeout')
+        .mockImplementation((ms: number) => {
+          timeouts.push(ms);
+          return new AbortController().signal;
+        });
+      svc.fetcher = (() =>
+        Promise.reject(new Error('timeout'))) as typeof svc.fetcher;
       jest.spyOn(svc['logger'], 'warn').mockImplementation();
       try {
         await svc['fetchPage']('https://x/y', 'test');
@@ -705,31 +733,39 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
     const isFixtures = (u: URL) => u.pathname === '/web/games/fixtures/';
 
     /** Répond `status` aux `times` premières requêtes de la page des matchs à venir ; compte ses appels. */
-    function httpStatus(svc: SeasonMatchesService, status: number, times: number): { calls: () => number } {
+    function httpStatus(
+      svc: SeasonMatchesService,
+      status: number,
+      times: number,
+    ): { calls: () => number } {
       const real = svc.fetcher;
       let calls = 0;
       svc.fetcher = (input: unknown, init?: RequestInit) => {
         if (isFixtures(new URL(String(input)))) {
           calls++;
-          if (calls <= times) return Promise.resolve(new Response('', { status }));
+          if (calls <= times)
+            return Promise.resolve(new Response('', { status }));
         }
         return real(input as string, init);
       };
       return { calls: () => calls };
     }
 
-    it.each([503, 429])('HTTP %i sur la page des matchs à venir : réessayé une fois, saison complète', async (status) => {
-      await withCwd(async () => {
-        const { svc } = buildService();
-        svc.retryDelayMs = 0;
-        const h = httpStatus(svc, status, 1);
+    it.each([503, 429])(
+      'HTTP %i sur la page des matchs à venir : réessayé une fois, saison complète',
+      async (status) => {
+        await withCwd(async () => {
+          const { svc } = buildService();
+          svc.retryDelayMs = 0;
+          const h = httpStatus(svc, status, 1);
 
-        const matches = await svc.getMatches({ force: true });
+          const matches = await svc.getMatches({ force: true });
 
-        expect(h.calls()).toBe(2);
-        expect(matches).toHaveLength(46);
-      });
-    });
+          expect(h.calls()).toBe(2);
+          expect(matches).toHaveLength(46);
+        });
+      },
+    );
 
     it('HTTP 503 persistant : deux essais, pas plus', async () => {
       await withCwd(async () => {
@@ -809,13 +845,15 @@ describe('SeasonMatchesService — saison réelle du 2026-10-03 (L39)', () => {
 
           expect(requested).toContain(season.results.paging?.nextPage);
           // Jamais le curseur d'une page sans match.
-          expect(requested.some((u) => u.includes('aftergame=999'))).toBe(false);
+          expect(requested.some((u) => u.includes('aftergame=999'))).toBe(
+            false,
+          );
           // 2 appels + les 10 pages : la saison est complète, jusqu'à J34.
           expect(requested).toHaveLength(12);
           expect(matches).toHaveLength(46);
-          expect(
-            matches.filter((m) => m.status === 'SCHEDULED'),
-          ).toHaveLength(36);
+          expect(matches.filter((m) => m.status === 'SCHEDULED')).toHaveLength(
+            36,
+          );
           expect(matches[matches.length - 1]).toMatchObject({
             date: '2027-05-29T17:00:00.000Z',
             matchday: 34,
