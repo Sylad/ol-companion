@@ -979,6 +979,7 @@ lots:
     notes:
       - { date: 2026-10-09, text: "QA L77 09-10 : « Statistiques » affiche « Pas encore de statistiques. » pour un match à venir — ajouter aussi « may show … when le match n'a pas commencé » à la ligne de /match" }
     started: 2026-10-29
+    review: { date: 2026-10-29, verdict: "conforme (1 constat mineur, en note : la clause L162/L173 de la ligne 61 n'excepte pas le message des Bleus à venir) — orchestré (vague 2026-10-29-oa1, 0 passe(s) de correction + passe des mineurs)", commit: null }
   - id: L80
     title: "Page match à venir : « Chargement du match… » sans requête /api/live-match/<id>/stats émise, vu 1 fois sur 5 chargements à 390 px (QA L32 09-10, non reproduit en solo ×3) — vérifier la condition enabled / la clé de la query stats et prévoir une sortie (erreur + Réessayer) après N s"
     status: todo
