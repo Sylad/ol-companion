@@ -856,6 +856,7 @@ lots:
     estimate: 1
     created: 2026-10-06
     started: 2026-10-29
+    docs_ok: { date: 2026-10-29, reason: "Reformatage prettier seul (aucune ligne de comportement, commande, clé ou défaut modifiée) : README, CLAUDE.md et docs/ restent vrais." }
   - id: L69
     title: orchestrate.ux déclaré (port 5174) pour la revue UX automatique des vagues — suite de cadence L95
     status: done
