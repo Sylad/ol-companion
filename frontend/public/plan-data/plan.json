@@ -747,14 +747,16 @@
     {
       "id": "L232",
       "title": "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine",
-      "status": "doing",
-      "started": "2026-10-29"
+      "status": "done",
+      "started": "2026-10-29",
+      "finished": "2026-10-29"
     },
     {
       "id": "L233",
       "title": "Composition : un contour de sélection bien visible au clavier",
-      "status": "doing",
-      "started": "2026-10-29"
+      "status": "done",
+      "started": "2026-10-29",
+      "finished": "2026-10-29"
     }
   ]
 }

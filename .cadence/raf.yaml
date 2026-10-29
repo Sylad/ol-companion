@@ -2652,21 +2652,25 @@ lots:
   - id: L232
     title: "Composition /players à 320 px : les noms d'une ligne recouvrent le rond et la pastille de note de la ligne voisine (19 recouvrements mesurés le 29-10, ex. J. Duranville sur la note de Tolisso ; 17 déjà avant L76) — écarter les lignes sous 640 px, et règle de test navigateur « aucun élément d'un joueur ne recouvre celui d'un autre » à 320 et 390 px"
     public: "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-29
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "compliant : aucun écart ; 0 recouvrement mesuré à 320, 390 et 1440 px sur les données réelles (19 avec l'ancien rapport 3/4 à 320 px), R1 vert (4/4) et composition-noms-bord vert (17/17) — orchestré (vague 2026-10-29-ol4, 0 passe(s) de correction)", commit: 786ad901f4d31fe038b15461680a12e3d70af613 }
+    ux: { date: 2026-10-29, verdict: "conforme : vu par le lead (capture 320 px de la revue UX 29-10) — terrain plus haut sous 640 px, aucune ligne de joueurs ne recouvre la voisine (0 recouvrement mesuré à 320, 390 et 1440 px, 19 avant)" }
+    finished: 2026-10-29
   - id: L233
     title: "Composition /players : l'anneau de focus du lien joueur (ring-ol-red/60) contraste à 1,8–2,0:1 sur le terrain, sous 3:1 (WCAG 1.4.11) — anneau plein ou anneau clair avec décalage"
     public: "Composition : un contour de sélection bien visible au clavier"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-10-29
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "compliant (1 commit bc235c7 ; anneau blanc décalé mesuré sur les 11 liens à 1440 et 390 px, 2 notes mineures sur le rognage du bord gauche du terrain et sur la portée des tests) — orchestré (vague 2026-10-29-ol4, 0 passe(s) de correction)", commit: bc235c7c525d21db0c214ef8a8e060539859fea2 }
+    ux: { date: 2026-10-29, verdict: "conforme : vu par le lead (capture 390 px de la revue UX 29-10) — anneau de focus blanc plein décalé, bien visible sur le terrain (≈ 15:1 contre 1,8:1 avant)" }
+    finished: 2026-10-29
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
