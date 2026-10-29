@@ -317,13 +317,88 @@ describe('R6 — ligne entière vers le match', () => {
   });
 });
 
+// ---- R7 (L64) : géométrie réelle de la barre collante, calculée depuis le CSS livré ----
+// jsdom ne calcule ni les @media ni var()/calc() : on lit src/index.css, on retient les règles `html` / `:root` qui
+// s'appliquent à la largeur simulée, on pose les variables que la page écrit sur <html> (--barre-filtres-h mesurée par
+// FixturesPage, --bandeau-demo-h par DemoBanner), et on calcule en pixels. Le test rougit si la valeur calculée change.
+type Decl = Record<string, { value: string; spec: number }>;
+function cssDeclarations(w: number): Decl {
+  const css = readFileSync(resolve(__dirname, '../index.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const out: Decl = {};
+  const walk = (src: string) => {
+    let i = 0;
+    while (i < src.length) {
+      const open = src.indexOf('{', i);
+      if (open < 0) break;
+      let depth = 1;
+      let j = open + 1;
+      while (j < src.length && depth > 0) depth += src[j] === '{' ? 1 : src[j] === '}' ? -1 : 0, j++;
+      const head = src.slice(i, open);
+      const sel = head.slice(head.lastIndexOf(';') + 1).trim().replace(/\s+/g, ' ');
+      const body = src.slice(open + 1, j - 1);
+      i = j;
+      if (sel.startsWith('@media')) {
+        const c = /^@media \(\s*(max|min)-width:\s*([\d.]+)px\s*\)$/.exec(sel);
+        if (c && (c[1] === 'max' ? w <= Number(c[2]) : w >= Number(c[2]))) walk(body);
+      } else if (sel.startsWith('@layer')) walk(body);
+      else if (!sel.startsWith('@')) {
+        const names = sel.split(',').map((x) => x.trim());
+        const spec = names.includes(':root') ? 10 : names.includes('html') ? 1 : 0;
+        if (!spec) continue;
+        for (const d of body.split(';')) {
+          const m = /^\s*(--[\w-]+|[a-z-]+)\s*:\s*([\s\S]+?)\s*$/.exec(d);
+          if (m && (!out[m[1]] || spec >= out[m[1]].spec)) out[m[1]] = { value: m[2], spec };
+        }
+      }
+    }
+  };
+  walk(css);
+  return out;
+}
+/** Résout var(--x, repli) puis calc() en pixels ; NaN si une variable n'a ni valeur ni repli. */
+function px(expr: string, vars: Record<string, string>): number {
+  let e = expr;
+  for (let n = 0; n < 6 && /var\(/.test(e); n++)
+    e = e.replace(/var\(\s*(--[\w-]+)\s*(?:,\s*([^()]*))?\)/g, (_, name: string, repli?: string) => vars[name] ?? repli ?? 'NaN');
+  e = e.replace(/calc/g, '').replace(/px/g, '');
+  return /^[\d.\s+()\-NaN]*$/.test(e) ? Number(Function(`return (${e})`)()) : NaN;
+}
+/** Ce que le navigateur calcule sous `largeur` : variables posées sur <html> par les composants (`posees`) comprises. */
+function geometrie(largeur: number, posees: Record<string, string> = {}) {
+  const decl = cssDeclarations(largeur);
+  const vars: Record<string, string> = {};
+  for (const [k, v] of Object.entries(decl)) if (k.startsWith('--')) vars[k] = v.value;
+  Object.assign(vars, posees);
+  const lu = (prop: string) => (decl[prop] ? px(decl[prop].value, vars) : null);
+  const style = tid('barre-filtres').getAttribute('style') ?? '';
+  const topInline = /(?:^|;)\s*top:\s*([^;]+)/.exec(style)?.[1];
+  const topClasse = eff(stickyAncestor(tid('barre-filtres'), largeur) ?? tid('barre-filtres'), largeur, /^top-/);
+  return {
+    ligneDirect: vars['--ligne-direct-h'] === undefined ? null : px(vars['--ligne-direct-h'], vars),
+    // le style en ligne l'emporte sur la classe Tailwind
+    topBarre: topInline ? px(topInline, vars) : topClasse === 'top-0' ? 0 : NaN,
+    scrollPaddingTop: lu('scroll-padding-top'),
+    scrollPaddingBottom: lu('scroll-padding-bottom'),
+  };
+}
+
 describe('R7 — filtres collants au téléphone', () => {
   it('R7 — 390 px : après défilement, les pastilles restent visibles en haut', async () => {
     renderPage();
     await loaded();
     const sticky = stickyAncestor(tid('barre-filtres'), 390);
     expect(sticky).toBeDefined();
-    expect(eff(sticky!, 390, /^top-/)).toBe('top-0');
+    // L64 : la barre colle à 36 px du haut, sous la ligne collante de la pastille du direct — pas à top 0 —, et sous le
+    // bandeau démo (--bandeau-demo-h) quand il est affiché. Valeur CALCULÉE depuis le CSS livré, à chaque largeur < 1024 px.
+    for (const w of [320, 390, 768, 1023]) {
+      expect(geometrie(w).topBarre, `${w} px`).toBe(36);
+      expect(geometrie(w, { '--bandeau-demo-h': '30px' }).topBarre, `${w} px + bandeau démo`).toBe(66);
+    }
+    // ces 36 px sont la hauteur de la ligne collante du direct posée par AppShell (sticky, h-9 = 36 px, téléphone seulement)
+    const shell = readFileSync(resolve(__dirname, '../components/layout/app-shell.tsx'), 'utf8');
+    const ligne = /data-testid="ligne-direct"\s*className="([^"]+)"/.exec(shell)?.[1].split(/\s+/) ?? [];
+    expect(ligne).toEqual(expect.arrayContaining(['sticky', 'h-9', 'lg:hidden']));
+    expect(geometrie(390).ligneDirect).toBe(36);
     expect(sticky).toContainElement(tid('filtre-competition'));
     expect(sticky).toContainElement(tid('filtre-statut'));
     const bg = eff(sticky!, 390, /^bg-/);
@@ -348,19 +423,23 @@ describe('R7 — filtres collants au téléphone', () => {
   it("R7 — 390 px : un lien focalisé au clavier n'est jamais sous la barre collante ni sous la navigation du bas", async () => {
     renderPage();
     await loaded();
-    const css = readFileSync(resolve(__dirname, '../index.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-    const media = /@media[^{]*\(\s*max-width:\s*1023(?:\.98)?px\s*\)[^{]*\{/g;
-    let found = false;
-    for (let m = media.exec(css); m; m = media.exec(css)) {
-      let depth = 1;
-      let i = m.index + m[0].length;
-      const start = i;
-      while (i < css.length && depth > 0) depth += css[i] === '{' ? 1 : css[i] === '}' ? -1 : 0, i++;
-      const body = css.slice(start, i - 1);
-      const html = /(^|[}\s,])html\s*\{([^}]*)\}/.exec(body);
-      if (html && /scroll-padding-top:\s*124px/.test(html[2]) && /scroll-padding-bottom:\s*72px/.test(html[2])) found = true;
+    // L64 : scroll-padding-top = hauteur de la barre + 36 px (ligne du direct) + bandeau démo ; -bottom = 72 px (navigation du bas).
+    // La barre mesure 115 à 163 px à 390 px selon le nombre de compétitions, 139 px à 320 px : la valeur suit la mesure.
+    for (const [w, barre] of [[390, 115], [390, 163], [320, 139], [768, 90], [1023, 90]] as const) {
+      const g = geometrie(w, { '--barre-filtres-h': `${barre}px` });
+      expect(g.scrollPaddingTop, `${w} px, barre ${barre} px`).toBe(barre + 36);
+      expect(g.scrollPaddingBottom, `${w} px`).toBe(72);
+      expect(geometrie(w, { '--barre-filtres-h': `${barre}px`, '--bandeau-demo-h': '30px' }).scrollPaddingTop, `${w} px + bandeau`).toBe(barre + 36 + 30);
     }
-    expect(found).toBe(true);
+    // barre pas encore mesurée : repli de 124 px, ligne du direct comprise
+    expect(geometrie(390).scrollPaddingTop).toBe(124 + 36);
+    // au bureau la barre n'est ni collante ni sous la ligne du direct : aucun scroll-padding, ligne du direct à 0
+    for (const w of [1024, 1440]) {
+      const g = geometrie(w, { '--barre-filtres-h': '115px' });
+      expect(g.scrollPaddingTop, `${w} px`).toBeNull();
+      expect(g.scrollPaddingBottom, `${w} px`).toBeNull();
+      expect(g.ligneDirect, `${w} px`).toBe(0);
+    }
     // et la barre collante existe bien à cette largeur
     expect(stickyAncestor(tid('barre-filtres'), 390)).toBeDefined();
   });

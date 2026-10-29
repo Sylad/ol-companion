@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "465825ee656c8d1312d6cece0630b8ab2be37a91"
+    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "4cd428d2bb37eadcb3fd8445ade6490cec81f546"
   },
   "resceaux": [
     {
@@ -17,6 +17,15 @@
       "apres": "465825ee656c8d1312d6cece0630b8ab2be37a91",
       "porteur": "L51",
       "ficheAmendee": "d8a444b"
+    },
+    {
+      "test": "frontend/src/routes/fixtures.acceptation-L50.test.tsx",
+      "raison": "Depuis L64 la barre des filtres est collée à 36 px sous la ligne du direct et scroll-padding-top = barre + 36 ; les assertions top-0 et 124 px restaient vertes sans mesurer R7. Fiche amendée (8a67e82), le test mesure la règle amendée et rougit sur 5 sabotages.",
+      "date": "2026-10-29",
+      "avant": "465825ee656c8d1312d6cece0630b8ab2be37a91",
+      "apres": "4cd428d2bb37eadcb3fd8445ade6490cec81f546",
+      "porteur": "L229",
+      "ficheAmendee": "8a67e82"
     }
   ]
 }
