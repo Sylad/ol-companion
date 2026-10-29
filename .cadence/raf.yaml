@@ -1040,6 +1040,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-29
+    review: { date: 2026-10-29, verdict: "compliant, 1 minor note (README/CLAUDE.md : le statut « Mi-temps » du bandeau en direct n'est pas décrit) — orchestré (vague 2026-10-29-ol84, 2 passe(s) de correction + passe des mineurs)", commit: d728ecaefa2159557dc816dea8b8a2a4b0b683d3 }
   - id: L85
     title: "Accueil : pendant le chargement et en erreur réseau, « Aucun match programmé. », « Points 0 », « Forme 0V » s'affichent comme des valeurs, et « Erreur de chargement. » n'a pas de Réessayer — squelettes ou « — » tant que isLoading, message + refetch si isError, état vide réel avec lien vers le calendrier (dashboard-hero, last-result, dashboard-stats) (revue UX L2)"
     public: "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur"
