@@ -597,8 +597,8 @@ describe('Page match en écran FM (L186)', () => {
   it('R18 — 264 px : les trois rôles de Joueurs en vue sont affichés, la ligne « Buts attendus : 0,35 » ne déborde pas de sa cellule ni sur la colonne adverse (bord droit ≤ bord de la cellule)', () => {
     show({ performers: 'trois' });
     const bloc = tid('joueurs-en-vue');
-    // R18 — « Joueurs en vue montre tous ses rôles réels (Attaquant, Milieu de Terrain, Défenseur, chacun avec la statistique de son rôle) »
-    for (const r of ['Attaquant', 'Milieu de Terrain', 'Défenseur']) expect(within(bloc).getAllByText(r).length).toBeGreaterThan(0);
+    // R18 — « Joueurs en vue montre tous ses rôles réels (Attaquant, Milieu de terrain, Défenseur, chacun avec la statistique de son rôle) »
+    for (const r of ['Attaquant', 'Milieu de terrain', 'Défenseur']) expect(within(bloc).getAllByText(r).length).toBeGreaterThan(0);
     const lignes = [/Buts attendus\s*:\s*0,35/, /Passes décisives\s*:\s*3/, /Tacles\s*:\s*5/];
     // R18 — « la ligne de statistique PEUT RETOMBER À LA LIGNE (pas de white-space: nowrap, overflow-wrap) »
     for (const re of lignes) {

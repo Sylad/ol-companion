@@ -7,7 +7,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L186.test.tsx": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6",
+    "frontend/src/routes/match.disposition-L186.test.tsx": "ddbe024d7f5eea48358c6d1949c3653d287bedc7",
     "frontend/src/routes/match.socle-L186.test.tsx": "3d8e14f4806784e11b5b98113299a8d4ed6077b6"
   },
   "resceaux": [
@@ -24,6 +24,15 @@
       "date": "2026-10-19",
       "avant": "47f1db172201386322d2149f2f7ca49b6bcbfda9",
       "apres": "3d8e14f4806784e11b5b98113299a8d4ed6077b6"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L186.test.tsx",
+      "raison": "L78 normalise les libellés français de 365scores à la casse du français : « Milieu de Terrain » devient « Milieu de terrain » dans Joueurs en vue ; la fiche page-match-fm est amendée dans le même sens (commit docs(L78)). Le test exigeait la majuscule brute de la source.",
+      "date": "2026-10-29",
+      "avant": "d50ef17bbe99bbbeddb31e9c6050a7b02dcc9ca6",
+      "apres": "ddbe024d7f5eea48358c6d1949c3653d287bedc7",
+      "porteur": "L78",
+      "ficheAmendee": "7e60ded"
     }
   ]
 }
