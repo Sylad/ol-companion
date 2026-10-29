@@ -135,15 +135,32 @@ describe.each([320, 390])('R5 — écart entre les noms d\'une même ligne à %i
     try {
       const m = await page.evaluate(() => {
         const nom = [...document.querySelectorAll('[data-testid="nom-joueur"]')].find((e) => e.scrollWidth > e.clientWidth + 0.5);
-        return nom ? { title: nom.getAttribute('title'), lien: nom.closest('a')!.getAttribute('aria-label'), ellipse: getComputedStyle(nom).textOverflow } : null;
+        return nom ? { largeur: nom.getBoundingClientRect().width, visibilite: getComputedStyle(nom).visibility, title: nom.getAttribute('title'), lien: nom.closest('a')!.getAttribute('aria-label'), ellipse: getComputedStyle(nom).textOverflow } : null;
       });
       // À 320 px les deux noms ne tiennent pas côte à côte : celui du bord est tronqué ; à 390 px l'écart tient sans tronquer.
       if (largeur === 320) expect(m, 'nom tronqué à 320 px').not.toBeNull();
       if (m) {
         expect(m.ellipse).toBe('ellipsis');
+        // Tronqué, pas masqué : le nom reste visible avec ses points de suspension.
+        expect(m.largeur).toBeGreaterThan(0);
+        expect(m.visibilite).toBe('visible');
         expect(m.title).toBe('Z. Athekame');
         expect(m.lien).toBe('Fiche de Z. Athekame');
       }
+    } finally { await page.close(); }
+  });
+});
+
+describe('nom de bord masqué (place trop étroite)', () => {
+  it('à 320 px, le nom masqué garde son nom complet dans le title du lien (survolable)', async () => {
+    const page = await ouvrir(320, lineupVoisinProche('Bacher', 75));
+    try {
+      const masques = await page.evaluate(() =>
+        [...document.querySelectorAll('[data-testid="nom-joueur"]')]
+          .filter((e) => getComputedStyle(e).visibility === 'hidden')
+          .map((e) => ({ lien: e.closest('a')!.getAttribute('aria-label'), title: e.closest('a')!.getAttribute('title') })));
+      expect(masques.length).toBeGreaterThan(0);
+      for (const m of masques) expect(m.title, m.lien!).toBe(m.lien!.replace('Fiche de ', ''));
     } finally { await page.close(); }
   });
 });
