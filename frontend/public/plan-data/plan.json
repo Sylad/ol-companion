@@ -233,8 +233,9 @@
     {
       "id": "L84",
       "title": "Accueil : pendant un match en direct, le bandeau montre ce match",
-      "status": "doing",
-      "started": "2026-10-29"
+      "status": "done",
+      "started": "2026-10-29",
+      "finished": "2026-10-29"
     },
     {
       "id": "L85",
