@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-29 11:31",
+  "generated": "2026-10-29 20:05",
   "entries": [
+    {
+      "slug": "2026-10-29-accueil-pendant-un-match-en-direct-le-bandeau-montre-ce-matc",
+      "title": "Accueil : pendant un match en direct, le bandeau montre ce match",
+      "date": "2026-10-29",
+      "lots": [
+        "L84"
+      ],
+      "captures": [
+        "captures/accueil-direct-L84.png"
+      ],
+      "alts": [
+        "Accueil pendant Lens – Lyon : le bandeau du haut affiche « Match en direct », le score 1 : 0 et « En cours » au lieu du prochain match"
+      ],
+      "html": "<p>Sur l'accueil, pendant un match de l'OL en direct, le bandeau du haut montre ce match : « Match en direct », les deux clubs, le score et « En cours ». Il n'affiche plus le match suivant (par exemple « Prochain rendez-vous · Nice · dans 8 jours ») au-dessus de la carte du direct. Hors direct, rien ne change.</p>"
+    },
     {
       "slug": "2026-10-29-composition-sur-petit-ecran-les-noms-ne-recouvrent-plus-la-l",
       "title": "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine",
