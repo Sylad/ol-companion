@@ -5,7 +5,9 @@ import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { nextMatchVenue } from '@/lib/stadium';
 import { useWikiImage } from '@/hooks/use-wiki-image';
 import { TeamLogo } from './team-logo';
-import { OL_TEAM_ID, type SeasonMatch } from '@/types/api';
+import { OL_365SCORES_ID, OL_TEAM_ID, type LiveMatchSummary, type SeasonMatch } from '@/types/api';
+import { useCurrentLiveMatch } from '@/hooks/use-live-match';
+import { competitionLabel } from '@/lib/competitions';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
@@ -36,12 +38,40 @@ function isSameLocalDay(iso: string): boolean {
     && d.getDate() === now.getDate();
 }
 
+// 365scores retire un match des matchs à venir avant le coup d'envoi et ne le met dans les
+// résultats qu'à la fin (L84) : la liste de la saison ne porte pas le match en cours, c'est
+// /api/live-match/current qui le dit. Les identifiants de ce flux sont ceux de 365scores,
+// le bandeau lit ceux de la liste de la saison (OL = 523).
+function liveAsMatch(live: LiveMatchSummary): SeasonMatch {
+  const id = (side: LiveMatchSummary['home']) => (side.id === OL_365SCORES_ID ? OL_TEAM_ID : side.id);
+  return {
+    id: live.gameId,
+    date: live.startTime,
+    homeTeam: live.home.name,
+    homeTeamId: id(live.home),
+    awayTeam: live.away.name,
+    awayTeamId: id(live.away),
+    homeScore: live.home.score,
+    awayScore: live.away.score,
+    competition: competitionLabel(live.competitionId, live.competitionName),
+    status: 'IN_PLAY',
+    matchday: null,
+    round: null,
+    timeConfirmed: true,
+    competitionCode: 'L1',
+    competitionId: live.competitionId,
+  };
+}
+
 export function DashboardHero() {
   // Toutes les compétitions suivies (L45) : /api/fixtures n'a que la Ligue 1.
   const { data: fixtures, isPending, isError, refetch } = useSeasonMatches();
   const { data: stadiumImg } = useWikiImage('Groupama Stadium');
+  const { data: live } = useCurrentLiveMatch();
+  const liveMatch = live?.status === 'live' ? live : null;
 
   const nextMatch = useMemo<SeasonMatch | null>(() => {
+    if (liveMatch) return liveAsMatch(liveMatch);
     if (!fixtures) return null;
     const upcoming = fixtures.filter(
       (f) => f.status === 'SCHEDULED' || f.status === 'TIMED' || f.status === 'IN_PLAY',
@@ -50,9 +80,9 @@ export function DashboardHero() {
     return upcoming.reduce((earliest, f) =>
       new Date(f.date).getTime() < new Date(earliest.date).getTime() ? f : earliest,
     );
-  }, [fixtures]);
+  }, [fixtures, liveMatch]);
 
-  if (!fixtures && isPending) {
+  if (!liveMatch && !fixtures && isPending) {
     return (
       <section
         data-testid="squelette-prochain-match"
@@ -65,7 +95,7 @@ export function DashboardHero() {
     );
   }
 
-  if (!fixtures && isError) {
+  if (!liveMatch && !fixtures && isError) {
     return (
       <section className="flex min-h-[260px] items-center justify-center rounded-md bg-surface border border-border p-8">
         <RetryMessage
