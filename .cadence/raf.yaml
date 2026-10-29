@@ -1035,10 +1035,11 @@ lots:
   - id: L84
     title: "Accueil : pendant Lens – Lyon (09-10, 56'), le bandeau affiche « Prochain rendez-vous · Nice · dans 8 jours » au-dessus de la carte LIVE — /api/fixtures ne demande que FINISHED et SCHEDULED (fixtures.service.ts l.111-115), un match IN_PLAY n'y est jamais ; faire porter le bandeau par /api/live-match/current (ou le masquer tant que la carte du direct est là), à traiter avec L45 (revue UX L2)"
     public: "Accueil : pendant un match en direct, le bandeau montre ce match"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-09
+    started: 2026-10-29
   - id: L85
     title: "Accueil : pendant le chargement et en erreur réseau, « Aucun match programmé. », « Points 0 », « Forme 0V » s'affichent comme des valeurs, et « Erreur de chargement. » n'a pas de Réessayer — squelettes ou « — » tant que isLoading, message + refetch si isError, état vide réel avec lien vers le calendrier (dashboard-hero, last-result, dashboard-stats) (revue UX L2)"
     public: "Accueil : pas de faux « Aucun match » au chargement, Réessayer en cas d'erreur"
