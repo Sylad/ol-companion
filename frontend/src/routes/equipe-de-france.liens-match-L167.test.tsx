@@ -1,11 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 import { EquipeDeFrancePage } from './equipe-de-france';
 
 // L167 — acceptation de l'écran page-match-equipe-de-france, côté /equipe-de-france (R1, R2).
 // Appel simulé (A2) : GET /api/france. Horloge : seul Date est simulé.
+// Stabilité (L231) : rouges à la porte du 29-10, verts au rejeu — le premier rendu (routeur, requête simulée)
+// dépassait les 1 s de `findBy` sous charge, et les rendus d'une boucle restaient montés
+// (leur minuteur de `useNow` vivait encore). D'où : délai d'attente large, un seul rendu monté à la
+// fois, horloge réinstallée proprement à chaque rendu.
 // Non couvert ici (voir le rapport) : les cas « back » de R1 (FranceService, jest dans backend/).
 
 const FR = { id: 5061, name: 'France' };
@@ -17,7 +21,11 @@ const RESULTS = [
 ];
 const nextMatch = (date: string) => ({ id: 4999, date, timeConfirmed: true, home: FR, away: { id: 7, name: 'Azerbaïdjan' }, competition: 'Qualifications Coupe du monde' });
 
+const ATTENTE_MS = 15_000;
+
 async function renderPage(next: string, now: string) {
+  cleanup();
+  vi.useRealTimers();
   vi.useFakeTimers({ toFake: ['Date'] });
   vi.setSystemTime(new Date(now));
   vi.stubGlobal('fetch', vi.fn(async (url: string) =>
@@ -31,7 +39,7 @@ async function renderPage(next: string, now: string) {
       <RouterProvider router={router} />
     </QueryClientProvider>,
   );
-  return screen.findByTestId('prochain-match');
+  return screen.findByTestId('prochain-match', undefined, { timeout: ATTENTE_MS });
 }
 
 afterEach(() => {
@@ -41,6 +49,7 @@ afterEach(() => {
 beforeEach(() => {
   document.body.className = '';
 });
+vi.setConfig({ testTimeout: 30_000 });
 
 const KICKOFF = '2026-11-12T20:00:00Z'; // jeu. 12/11 21:00 à Paris
 const url = (a: Element) => new URL(a.getAttribute('href')!, 'http://x');
@@ -48,7 +57,7 @@ const url = (a: Element) => new URL(a.getAttribute('href')!, 'http://x');
 describe('R1 — accès depuis /equipe-de-france', () => {
   it('R1 — chaque ligne de résultat est un lien d’au moins 44 px', async () => {
     await renderPage(KICKOFF, '2026-11-10T10:00:00Z');
-    const lignes = await screen.findAllByTestId('resultat-ligne');
+    const lignes = await screen.findAllByTestId('resultat-ligne', undefined, { timeout: ATTENTE_MS });
     expect(lignes).toHaveLength(RESULTS.length);
     for (const li of lignes) {
       const lien = within(li).getByTestId('lien-resultat-match');
@@ -66,14 +75,12 @@ describe('R1 — accès depuis /equipe-de-france', () => {
       const bloc = await renderPage(KICKOFF, now);
       // R1 — « le bloc « Prochain match » porte un bouton-lien « Voir le match » … de 00:00 (heure de Paris) le jour du coup d’envoi jusqu’à 3 h après le coup d’envoi »
       expect(within(bloc).getByTestId('lien-prochain-match')).toHaveTextContent('Voir le match');
-      document.body.innerHTML = '';
     }
   });
 
   it('R1 — hors fenêtre (demain 20:45 vu aujourd’hui 21:00, ou veille du match) : pas de bouton, date conservée', async () => {
     // (témoin : dans la fenêtre, le bouton existe)
     expect(within(await renderPage(KICKOFF, '2026-11-12T10:00:00Z')).getByTestId('lien-prochain-match')).toBeInTheDocument();
-    document.body.innerHTML = '';
     for (const [next, now] of [['2026-11-12T19:45:00Z', '2026-11-11T20:00:00Z'], [KICKOFF, '2026-11-11T10:00:00Z'], [KICKOFF, '2026-11-12T23:30:00Z']]) {
       const bloc = await renderPage(next, now);
       if (now < '2026-11-12') {
@@ -82,7 +89,6 @@ describe('R1 — accès depuis /equipe-de-france', () => {
       }
       // R1 — « seulement dans une fenêtre … hors fenêtre … »
       expect(within(bloc).queryByTestId('lien-prochain-match')).toBeNull();
-      document.body.innerHTML = '';
     }
   });
 
@@ -92,7 +98,6 @@ describe('R1 — accès depuis /equipe-de-france', () => {
     expect(within(bloc).getByTestId('prochain-match-date')).toHaveTextContent('Jeu. 12/11 · 21h00');
     expect(bloc).not.toHaveTextContent('Aujourd’hui');
     expect(within(bloc).queryByTestId('prochain-match-en-direct')).toBeNull();
-    document.body.innerHTML = '';
     bloc = await renderPage(KICKOFF, '2026-11-12T20:30:00Z');
     // R1 — « une fois le coup d’envoi passé la pastille « En direct » la remplace »
     expect(within(bloc).getByTestId('prochain-match-en-direct')).toHaveTextContent('En direct');
@@ -101,7 +106,7 @@ describe('R1 — accès depuis /equipe-de-france', () => {
 
   it('R1 — les résultats restent une liste <ul>/<li> avec les testid de L113', async () => {
     await renderPage(KICKOFF, '2026-11-10T10:00:00Z');
-    const lignes = await screen.findAllByTestId('resultat-ligne');
+    const lignes = await screen.findAllByTestId('resultat-ligne', undefined, { timeout: ATTENTE_MS });
     // R1 — « Les lignes de résultat sont des <li data-testid=resultat-ligne> d’une <ul>, chacune contenant le lien »
     for (const li of lignes) {
       expect(li.tagName).toBe('LI');
@@ -116,7 +121,7 @@ describe('R1 — accès depuis /equipe-de-france', () => {
 describe('R2 — format du lien', () => {
   it('R2 — le lien d’un résultat pointe vers /match/<id>?matchupId=<home>-<away>-<id>', async () => {
     await renderPage(KICKOFF, '2026-11-10T10:00:00Z');
-    const liens = await screen.findAllByTestId('lien-resultat-match');
+    const liens = await screen.findAllByTestId('lien-resultat-match', undefined, { timeout: ATTENTE_MS });
     // R2 — « /match/<id>?matchupId=<idDomicile>-<idExtérieur>-<id> »
     expect(url(liens[0]).pathname).toBe('/match/4672325');
     expect(url(liens[0]).searchParams.get('matchupId')).toBe('5061-2373-4672325');
