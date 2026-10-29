@@ -203,6 +203,12 @@
       "finished": "2026-10-09"
     },
     {
+      "id": "L76",
+      "title": "Composition des joueurs : les noms en bord de terrain ne sont plus coupés",
+      "status": "doing",
+      "started": "2026-10-29"
+    },
+    {
       "id": "L77",
       "title": "Match à venir : « vs » à la place d'un faux score « -1 · -1 »",
       "status": "done",

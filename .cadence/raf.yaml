@@ -935,8 +935,10 @@ lots:
     finished: 2026-10-09
   - id: L76
     title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
+    public: "Composition des joueurs : les noms en bord de terrain ne sont plus coupés"
     status: doing
     estimate: 1
+    visible: true
     created: 2026-10-09
     started: 2026-10-29
   - id: L77
