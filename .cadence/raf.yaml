@@ -2655,6 +2655,7 @@ lots:
     visible: true
     created: 2026-10-29
     started: 2026-10-29
+    review: { date: 2026-10-29, verdict: "compliant : aucun écart ; 0 recouvrement mesuré à 320, 390 et 1440 px sur les données réelles (19 avec l'ancien rapport 3/4 à 320 px), R1 vert (4/4) et composition-noms-bord vert (17/17) — orchestré (vague 2026-10-29-ol4, 0 passe(s) de correction)", commit: 786ad901f4d31fe038b15461680a12e3d70af613 }
   - id: L233
     title: "Composition /players : l'anneau de focus du lien joueur (ring-ol-red/60) contraste à 1,8–2,0:1 sur le terrain, sous 3:1 (WCAG 1.4.11) — anneau plein ou anneau clair avec décalage"
     public: "Composition : un contour de sélection bien visible au clavier"
