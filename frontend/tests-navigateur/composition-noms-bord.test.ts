@@ -50,6 +50,17 @@ const lineupBacher = {
   ],
 };
 
+// L76 R5 — miroir du cas Bacher : le joueur de bord est à GAUCHE (la bordure du terrain fait 1 px, repère des voisins).
+const lineupBacherMiroir = {
+  ...lineup,
+  starters: [
+    joueur(1, 'Lucas Perri', 1, 50),
+    joueur(2, 'Z. Athekame', 2, 0), joueur(3, 'Bacher', 2, 34), joueur(4, 'Niakhaté', 2, 70),
+    joueur(5, 'Tolisso', 3, 20), joueur(6, 'Caqueret', 3, 50), joueur(7, 'Nuamah', 3, 80),
+    joueur(8, 'Fofana', 5, 20), joueur(9, 'Lacazette', 5, 50), joueur(10, 'Cherki', 5, 80),
+  ],
+};
+
 // L76 R5 — ligne à 5 défenseurs : le voisin (75 ou 80) est si près du bord que la place restante est plus étroite que le rond.
 const lineupVoisinProche = (voisin: string, yardSide: number) => ({
   ...lineup,
@@ -93,6 +104,15 @@ describe.each([320, 390])('R5 — écart entre les noms d\'une même ligne à %i
     try {
       const ecarts = await ecartsDeLigne(page);
       expect(ecarts.length).toBeGreaterThan(0); // dont la paire Bacher / Z. Athekame
+      for (const e of ecarts) expect(e.ecart, e.paire).toBeGreaterThanOrEqual(4 - 0.01);
+    } finally { await page.close(); }
+  });
+
+  it('cas miroir Z. Athekame (bord gauche) / Bacher : au moins 4 px', async () => {
+    const page = await ouvrir(largeur, lineupBacherMiroir);
+    try {
+      const ecarts = await ecartsDeLigne(page);
+      expect(ecarts.length).toBeGreaterThan(0);
       for (const e of ecarts) expect(e.ecart, e.paire).toBeGreaterThanOrEqual(4 - 0.01);
     } finally { await page.close(); }
   });

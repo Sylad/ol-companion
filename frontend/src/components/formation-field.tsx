@@ -95,14 +95,15 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
       // La pastille de note (absolute, hors de offsetWidth) dépasse à droite du bloc : on la compte.
       const pastille = el.querySelector<HTMLElement>('[data-testid="pastille-note"]');
       const debord = pastille ? Math.max(0, pastille.offsetLeft + pastille.offsetWidth - el.offsetWidth) : 0;
-      const t = terrain.getBoundingClientRect();
+      // Origine = bord intérieur de la bordure du terrain, comme centre, décalage et clientWidth.
+      const origine = terrain.getBoundingClientRect().left + terrain.clientLeft;
       // Voisins de la même ligne : leur nom tel qu'il est posé (un joueur central n'est pas déplacé).
       const noms = [...terrain.querySelectorAll<HTMLElement>(`[data-testid="joueur"][data-ligne="${player.yardLine}"]`)]
         .filter((j) => j !== el)
         .map((j) => j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect());
       const centre = (x / 100) * terrain.clientWidth;
-      const voisinGauche = Math.max(-Infinity, ...noms.filter((r) => r.left + r.width / 2 - t.left < centre).map((r) => r.right - t.left));
-      const voisinDroite = Math.min(Infinity, ...noms.filter((r) => r.left + r.width / 2 - t.left >= centre).map((r) => r.left - t.left));
+      const voisinGauche = Math.max(-Infinity, ...noms.filter((r) => r.left + r.width / 2 - origine < centre).map((r) => r.right - origine));
+      const voisinDroite = Math.min(Infinity, ...noms.filter((r) => r.left + r.width / 2 - origine >= centre).map((r) => r.left - origine));
       // scrollWidth : largeur du nom entier, même tronqué par un précédent calcul.
       const suivant = placerJoueurDeBord({
         x, largeurTerrain: terrain.clientWidth, nom: nom.scrollWidth, rond: rond.offsetWidth, debord,
