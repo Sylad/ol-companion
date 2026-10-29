@@ -936,12 +936,14 @@ lots:
   - id: L76
     title: "Composition /players : noms des joueurs excentrés (Tolisso, Nuamah, Athekame) coupés par le bord du terrain à 390 et 1440 px (vu revue UX L56)"
     public: "Composition des joueurs : les noms en bord de terrain ne sont plus coupés"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-10-09
     started: 2026-10-29
-    review: { date: 2026-10-29, verdict: "compliant — orchestré (vague 2026-10-29-ol, 2 passe(s) de correction)", commit: 4753a9d2fe340adc992efd52ea87c09c9b444695 }
+    review: { date: 2026-10-29, verdict: "conforme — orchestré (vague 2026-10-29-ol3) : joueurs de bord recalés à 4 px au moins du nom voisin, nom tronqué avec points de suspension et nom complet en title/aria ; test Chromium composition-noms-bord 17/17, R1/R2/R4 sans régression", commit: e56d3d51e0d728171c3091f4b0b61fee697ea267 }
+    ux: { date: 2026-10-29, verdict: "conforme : vu par le lead (captures de la revue UX 29-10, 390 et 320 px) — Bacher et Z. Athek… séparés, plus aucun nom coupé par le bord ni masqué par son voisin de ligne ; défauts antérieurs (chevauchement vertical des lignes à 320 px, contraste de l'anneau de focus) ouverts en lots" }
+    finished: 2026-10-29
   - id: L77
     title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
     public: "Match à venir : « vs » à la place d'un faux score « -1 · -1 »"
@@ -959,7 +961,7 @@ lots:
     finished: 2026-10-09
   - id: L78
     title: "Postes : « Milieu de Terrain » (libellé FR de 365scores) traverse positionLabelFr tel quel sur /player/<id> (majuscule à Terrain) et tp.role brut dans « Joueurs en vue » de /match — ajouter les libellés français 365scores à position-fr.ts et normaliser la casse (QA L56 09-10)"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-09
     started: 2026-10-29
@@ -968,6 +970,7 @@ lots:
       - { date: 2026-10-29, text: "29-10 : test scellé L186 R18 rescellé (porteur L78, 23e46e4) ; reste : Joueurs en vue de /match affiche encore tp.role brut (« Milieu de Terrain ») — le passer par roleFr / la normalisation de position-fr.ts" }
     docs_ok: { date: 2026-10-29, reason: "Correctif de casse (« Milieu de Terrain » → « Milieu de terrain ») dans position-fr.ts et stat-fr.ts ; aucune règle, clé ni commande nouvelle : README et CLAUDE.md ne décrivent pas ce libellé, la fiche page-match-fm est déjà amendée (7e60ded), lot non visible donc pas de Nouveauté" }
     review: { date: 2026-10-29, verdict: "compliant — orchestré (vague 2026-10-29-ol2, 1 passe(s) de correction)", commit: f2de02c2f71820d74d4263fe30f7bcce2f57bb09 }
+    finished: 2026-10-29
   - id: L79
     title: "Page match à venir : pas de bloc « Faits du match » et colonne centrale vide à 1440 (grille xl 3 colonnes) — état « Le match n'a pas commencé » ou grille repliée ; ajouter « may be absent when le match n'a pas commencé » à la ligne shows de /match dans docs/qa/expectations.md (QA L56 09-10)"
     status: todo
@@ -2641,6 +2644,18 @@ lots:
     title: "Tests L167 (equipe-de-france.liens-match-L167.test.tsx, R1/R2) instables : rouges à la porte de verify --gate du 29-10 (sha a67fbc0), verts au rejeu juste après — dépendance à l'heure réelle ou à la charge ; figer l'horloge (vi.useFakeTimers / setSystemTime) et prouver 5 passes vertes sous charge"
     status: todo
     estimate: 0.25
+    created: 2026-10-29
+  - id: L232
+    title: "Composition /players à 320 px : les noms d'une ligne recouvrent le rond et la pastille de note de la ligne voisine (19 recouvrements mesurés le 29-10, ex. J. Duranville sur la note de Tolisso ; 17 déjà avant L76) — écarter les lignes sous 640 px, et règle de test navigateur « aucun élément d'un joueur ne recouvre celui d'un autre » à 320 et 390 px"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-29
+  - id: L233
+    title: "Composition /players : l'anneau de focus du lien joueur (ring-ol-red/60) contraste à 1,8–2,0:1 sur le terrain, sous 3:1 (WCAG 1.4.11) — anneau plein ou anneau clair avec décalage"
+    status: todo
+    estimate: 0.1
+    visible: true
     created: 2026-10-29
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }

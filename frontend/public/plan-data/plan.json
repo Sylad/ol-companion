@@ -205,8 +205,9 @@
     {
       "id": "L76",
       "title": "Composition des joueurs : les noms en bord de terrain ne sont plus coupés",
-      "status": "doing",
-      "started": "2026-10-29"
+      "status": "done",
+      "started": "2026-10-29",
+      "finished": "2026-10-29"
     },
     {
       "id": "L77",
