@@ -2647,6 +2647,8 @@ lots:
     estimate: 0.25
     created: 2026-10-29
     started: 2026-10-29
+    notes:
+      - { date: 2026-10-29, text: "test d'acceptation rescellé (lot livré L167, frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx, fiche inchangée) : Tests R1/R2 instables sous charge (rouges à la porte du 29-10, verts au rejeu) : rendus démontés entre tests, horloge factice réinstallée à chaque test, attente élargie ; le contrat de la fiche L167 ne change pas" }
   - id: L232
     title: "Composition /players à 320 px : les noms d'une ligne recouvrent le rond et la pastille de note de la ligne voisine (19 recouvrements mesurés le 29-10, ex. J. Duranville sur la note de Tolisso ; 17 déjà avant L76) — écarter les lignes sous 640 px, et règle de test navigateur « aucun élément d'un joueur ne recouvre celui d'un autre » à 320 et 390 px"
     public: "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine"
