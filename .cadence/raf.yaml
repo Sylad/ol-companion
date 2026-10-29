@@ -852,9 +852,10 @@ lots:
     finished: 2026-10-06
   - id: L68
     title: "Lint : season-matches.service.ts et season-matches.season.spec.ts — 59 erreurs prettier (31 avant L67), reformater dans un commit dédié — revue de code L67"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-06
+    started: 2026-10-29
   - id: L69
     title: orchestrate.ux déclaré (port 5174) pour la revue UX automatique des vagues — suite de cadence L95
     status: done
