@@ -9,7 +9,7 @@
   "vert": true,
   "empreintes": {
     "frontend/src/routes/match.equipe-de-france-L167.test.tsx": "c0128c03f2b6fd849b4d36635b11f4f35014dd8f",
-    "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "7251a8127e69760166038d00d5237fc752025bb0",
+    "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx": "0336144b5e1e889e1408d8bfa03b6a2b3aab3f95",
     "frontend/src/routes/match.equipe-de-france.complement-L167.test.tsx": "bad83bbaf0a14bc7e6b652c1290b94b061621d57"
   },
   "resceaux": [
@@ -71,6 +71,14 @@
       "apres": "c0128c03f2b6fd849b4d36635b11f4f35014dd8f",
       "porteur": "L186",
       "ficheAmendee": "f4790dd"
+    },
+    {
+      "test": "frontend/src/routes/equipe-de-france.liens-match-L167.test.tsx",
+      "raison": "Tests R1/R2 instables sous charge (rouges à la porte du 29-10, verts au rejeu) : rendus démontés entre tests, horloge factice réinstallée à chaque test, attente élargie ; le contrat de la fiche L167 ne change pas",
+      "date": "2026-10-29",
+      "avant": "7251a8127e69760166038d00d5237fc752025bb0",
+      "apres": "0336144b5e1e889e1408d8bfa03b6a2b3aab3f95",
+      "porteur": "L231"
     }
   ]
 }
