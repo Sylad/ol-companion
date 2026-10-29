@@ -138,7 +138,7 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
         aria-label={`Fiche de ${player.name}`}
         // Nom masqué (visibility: hidden, pas de survol possible sur lui) : l'infobulle du lien porte le nom complet.
         title={place.nomMax === 0 ? player.name : undefined}
-        className="flex flex-col items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ol-red/60 rounded-md"
+        className="flex flex-col items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-md"
       >
         <div data-testid="rond-joueur" className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-ol-blue-bright to-ol-blue border-2 border-white/90 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center transition-transform group-hover:scale-110">
           <span className="font-mono tabular-nums text-white font-bold text-xs sm:text-sm">
