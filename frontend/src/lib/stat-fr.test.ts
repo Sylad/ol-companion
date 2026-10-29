@@ -29,6 +29,11 @@ describe('stat-fr — glossaire et nombres français (L179)', () => {
     expect(roleFr('Meilleur buteur')).toBe('Meilleur buteur');
   });
 
+  it('R1 — un rôle déjà français de 365scores est ramené à la casse du français (L78)', () => {
+    expect(roleFr('Milieu de Terrain')).toBe('Milieu de terrain');
+    expect(roleFr('Gardien De But')).toBe('Gardien de but');
+  });
+
   it('R2 — une valeur décimale s’écrit avec la virgule, un entier ou un texte non décimal ne bouge pas', () => {
     expect(statValueFr('0.5')).toBe('0,5');
     expect(statValueFr('0.24')).toBe('0,24');

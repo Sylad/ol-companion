@@ -1,3 +1,5 @@
+import { positionLabelFr } from './position-fr';
+
 /** Libellés de statistiques 365scores laissés en anglais (ou en français approximatif) → nom français. */
 const STAT_NAME_FR: Record<string, string> = {
   Tackles: 'Tacles',
@@ -9,7 +11,7 @@ const STAT_NAME_FR: Record<string, string> = {
   'Yellow:Red': 'Jaunes : rouges',
 };
 
-/** Rôles que 365scores écrit en anglais sur un match à venir. */
+/** Rôles que 365scores écrit en anglais sur un match à venir ; un rôle déjà français passe par la casse de position-fr. */
 const ROLE_FR: Record<string, string> = {
   Attacker: 'Attaquant',
   Midfielder: 'Milieu de terrain',
@@ -22,7 +24,7 @@ export function statNameFr(name: string): string {
 }
 
 export function roleFr(role: string): string {
-  return ROLE_FR[role] ?? role;
+  return ROLE_FR[role] ?? positionLabelFr(role);
 }
 
 /** Nombre au format français : `digits` décimales, virgule (1,03). */
