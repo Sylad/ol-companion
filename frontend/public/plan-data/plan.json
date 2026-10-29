@@ -747,7 +747,8 @@
     {
       "id": "L232",
       "title": "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-29"
     },
     {
       "id": "L233",
