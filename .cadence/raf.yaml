@@ -967,6 +967,7 @@ lots:
       - { date: 2026-10-29, text: "test d'acceptation rescellé (lot livré L186, frontend/src/routes/match.disposition-L186.test.tsx, fiche amendée en 7e60ded) : L78 normalise les libellés français de 365scores à la casse du français : « Milieu de Terrain » devient « Milieu de terrain » dans Joueurs en vue ; la fiche page-match-fm est amendée dans le même sens (commit docs(L78)). Le test exigeait la majuscule brute de la source." }
       - { date: 2026-10-29, text: "29-10 : test scellé L186 R18 rescellé (porteur L78, 23e46e4) ; reste : Joueurs en vue de /match affiche encore tp.role brut (« Milieu de Terrain ») — le passer par roleFr / la normalisation de position-fr.ts" }
     docs_ok: { date: 2026-10-29, reason: "Correctif de casse (« Milieu de Terrain » → « Milieu de terrain ») dans position-fr.ts et stat-fr.ts ; aucune règle, clé ni commande nouvelle : README et CLAUDE.md ne décrivent pas ce libellé, la fiche page-match-fm est déjà amendée (7e60ded), lot non visible donc pas de Nouveauté" }
+    review: { date: 2026-10-29, verdict: "compliant — orchestré (vague 2026-10-29-ol2, 1 passe(s) de correction)", commit: f2de02c2f71820d74d4263fe30f7bcce2f57bb09 }
   - id: L79
     title: "Page match à venir : pas de bloc « Faits du match » et colonne centrale vide à 1440 (grille xl 3 colonnes) — état « Le match n'a pas commencé » ou grille repliée ; ajouter « may be absent when le match n'a pas commencé » à la ligne shows de /match dans docs/qa/expectations.md (QA L56 09-10)"
     status: todo
