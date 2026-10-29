@@ -2643,9 +2643,10 @@ lots:
     finished: 2026-10-28
   - id: L231
     title: "Tests L167 (equipe-de-france.liens-match-L167.test.tsx, R1/R2) instables : rouges à la porte de verify --gate du 29-10 (sha a67fbc0), verts au rejeu juste après — dépendance à l'heure réelle ou à la charge ; figer l'horloge (vi.useFakeTimers / setSystemTime) et prouver 5 passes vertes sous charge"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-29
+    started: 2026-10-29
   - id: L232
     title: "Composition /players à 320 px : les noms d'une ligne recouvrent le rond et la pastille de note de la ligne voisine (19 recouvrements mesurés le 29-10, ex. J. Duranville sur la note de Tolisso ; 17 déjà avant L76) — écarter les lignes sous 640 px, et règle de test navigateur « aucun élément d'un joueur ne recouvre celui d'un autre » à 320 et 390 px"
     public: "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine"
