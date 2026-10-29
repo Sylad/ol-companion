@@ -63,9 +63,15 @@ export default {
           '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.6)' },
           '50%': { opacity: '0.85', boxShadow: '0 0 0 6px rgba(239, 68, 68, 0)' },
         },
+        // Même halo, sans toucher à l'opacité : un texte qui s'éteint à 0,85 passe sous 4,5:1 (WCAG 1.4.3).
+        'pulse-live-halo': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.6)' },
+          '50%': { boxShadow: '0 0 0 6px rgba(239, 68, 68, 0)' },
+        },
       },
       animation: {
         'pulse-live': 'pulse-live 1.6s ease-in-out infinite',
+        'pulse-live-halo': 'pulse-live-halo 1.6s ease-in-out infinite',
       },
     },
   },

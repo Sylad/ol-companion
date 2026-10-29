@@ -171,8 +171,10 @@ export function DashboardHero() {
         <div className="space-y-4 min-w-0">
           <div className="flex items-center gap-3">
             <span className={cn(
-              'eyebrow',
-              isLive ? 'text-live animate-pulse-live px-2 py-0.5 rounded-sm bg-live/10' : 'text-ol-red-bright'
+              isLive
+                // Pas de `eyebrow` ici : sa couleur grise (@layer utilities) sort après `text-live`.
+                ? 'text-[11px] font-semibold uppercase tracking-[0.12em] text-live animate-pulse-live-halo px-2 py-0.5 rounded-sm bg-live/10'
+                : 'eyebrow text-ol-red-bright'
             )}>
               {pulseLabel}
             </span>

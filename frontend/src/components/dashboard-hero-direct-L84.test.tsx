@@ -95,6 +95,19 @@ describe('<DashboardHero /> — match en direct (L84)', () => {
     expect(container).not.toHaveTextContent(/dans \d+ jours?/);
   });
 
+  it('R8 — le libellé « Match en direct » reste rouge : il ne porte pas `eyebrow`, dont le gris sort après `text-live` dans la feuille', async () => {
+    vi.stubGlobal('fetch', serve(direct()));
+    renderHero();
+
+    const badge = await screen.findByText('Match en direct');
+    expect(badge).toHaveClass('text-live');
+    expect(badge).not.toHaveClass('eyebrow');
+    expect(badge).toHaveClass('uppercase', 'font-semibold', 'text-[11px]');
+    // la pulsation ne baisse pas l'opacité du texte (4,5:1 tenu à chaque instant du cycle)
+    expect(badge).toHaveClass('animate-pulse-live-halo');
+    expect(badge).not.toHaveClass('animate-pulse-live');
+  });
+
   it('R2 — OL à l’extérieur : le score reste dans le sens domicile / extérieur et le lieu est « Extérieur »', async () => {
     vi.stubGlobal('fetch', serve(direct()));
     renderHero();
