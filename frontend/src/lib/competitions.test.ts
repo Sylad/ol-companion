@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { COMPETITION_GLOSSARY, competitionLabel, competitionLong, competitionShort } from './competitions';
+import { COMPETITION_GLOSSARY, competitionCodeOf, competitionLabel, competitionLong, competitionShort } from './competitions';
 
 describe('glossaire des compétitions', () => {
   it('donne un nom long et un nom court par compétition suivie', () => {
@@ -34,5 +34,17 @@ describe('L72 — nom d\'une compétition lue chez 365scores', () => {
     expect(competitionLabel(99, 'Trophée X')).toBe('Trophée X');
     expect(competitionLabel(undefined, 'France, Ligue 1')).toBe('France, Ligue 1');
     expect(competitionLabel(undefined, undefined)).toBe('');
+  });
+});
+
+describe('L84 — code d\'une compétition lue chez 365scores', () => {
+  it('donne le code suivi de chaque identifiant, L1 par défaut hors liste', () => {
+    expect(competitionCodeOf(35)).toBe('L1');
+    expect(competitionCodeOf(37)).toBe('CDF');
+    expect(competitionCodeOf(573)).toBe('UEL');
+    expect(competitionCodeOf(572)).toBe('UCL');
+    expect(competitionCodeOf(332)).toBe('UCL');
+    expect(competitionCodeOf(9999)).toBe('L1');
+    expect(competitionCodeOf(undefined)).toBe('L1');
   });
 });

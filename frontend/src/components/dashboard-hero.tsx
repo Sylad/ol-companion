@@ -7,7 +7,8 @@ import { useWikiImage } from '@/hooks/use-wiki-image';
 import { TeamLogo } from './team-logo';
 import { OL_365SCORES_ID, OL_TEAM_ID, type LiveMatchSummary, type SeasonMatch } from '@/types/api';
 import { useCurrentLiveMatch } from '@/hooks/use-live-match';
-import { competitionLabel } from '@/lib/competitions';
+import { competitionCodeOf, competitionLabel } from '@/lib/competitions';
+import { deriveClock } from '@/lib/match-clock';
 import { cn } from '@/lib/utils';
 import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
@@ -58,7 +59,7 @@ function liveAsMatch(live: LiveMatchSummary): SeasonMatch {
     matchday: null,
     round: null,
     timeConfirmed: true,
-    competitionCode: 'L1',
+    competitionCode: competitionCodeOf(live.competitionId),
     competitionId: live.competitionId,
   };
 }
@@ -133,7 +134,10 @@ export function DashboardHero() {
   const dayKnown = isLive || hasKickoffTime(nextMatch);
   const isMatchday = isLive || (dayKnown && isSameLocalDay(nextMatch.date));
   const isSoon = !isLive && dayKnown && hoursUntil(nextMatch.date) <= 36;
-  const status = isLive ? 'En cours' : dayKnown ? countdown(nextMatch.date) : 'À confirmer';
+  // Même phase que la carte du direct (deriveClock) : à la mi-temps le match est « live » côté
+  // backend, mais la carte dit « Pause · mi-temps » — le bandeau ne dit pas « En cours ».
+  const halfTime = isLive && liveMatch !== null && deriveClock(liveMatch).phase === 'half-time';
+  const status = halfTime ? 'Mi-temps' : isLive ? 'En cours' : dayKnown ? countdown(nextMatch.date) : 'À confirmer';
   const pulseLabel = isLive
     ? 'Match en direct'
     : isMatchday

@@ -141,12 +141,32 @@ describe('<DashboardHero /> — match en direct (L84)', () => {
     expect(screen.queryByText('Match en direct')).not.toBeInTheDocument();
   });
 
-  it('R5 — match à venir ou terminé dans /live-match/current : le bandeau ne s’y fie pas', async () => {
-    vi.stubGlobal('fetch', serve(direct({ status: 'ended', statusGroup: 4 })));
+  it.each([
+    ['terminé', { status: 'ended', statusGroup: 4 }],
+    ['à venir', { status: 'upcoming', statusGroup: 2 }],
+  ] as const)('R5 — match %s dans /live-match/current : le bandeau ne s’y fie pas', async (_nom, partial) => {
+    vi.stubGlobal('fetch', serve(direct(partial)));
     renderHero();
 
     expect(await screen.findByText('Prochain rendez-vous')).toBeInTheDocument();
     expect(screen.queryByText('Match en direct')).not.toBeInTheDocument();
+  });
+
+  it('R9 — à la mi-temps, le statut du bandeau dit « Mi-temps » comme la carte du direct, pas « En cours »', async () => {
+    vi.stubGlobal('fetch', serve(direct({ statusText: 'Mi-temps', gameTimeDisplay: '' })));
+    renderHero();
+
+    await screen.findByText('Match en direct');
+    expect(screen.getByText('Statut').nextSibling).toHaveTextContent('Mi-temps');
+    expect(screen.queryByText('En cours')).not.toBeInTheDocument();
+  });
+
+  it('R9 — en jeu, le statut reste « En cours »', async () => {
+    vi.stubGlobal('fetch', serve(direct({ statusText: 'Deuxième mi-temps' })));
+    renderHero();
+
+    await screen.findByText('Match en direct');
+    expect(screen.getByText('Statut').nextSibling).toHaveTextContent('En cours');
   });
 
   it('R6 — /live-match/current en échec : le bandeau garde le prochain match', async () => {

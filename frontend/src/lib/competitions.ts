@@ -37,3 +37,8 @@ export function competitionLabel(competitionId: number | undefined, rawName: str
   const code = competitionId === undefined ? undefined : CODE_BY_365SCORES_ID[competitionId];
   return code ? competitionLong(code) : (rawName ?? '');
 }
+
+/** Code suivi d'un identifiant 365scores ; L1 faute d'identifiant connu (le défaut d'avant L84). */
+export function competitionCodeOf(competitionId: number | undefined): CompetitionCode {
+  return (competitionId === undefined ? undefined : CODE_BY_365SCORES_ID[competitionId]) ?? 'L1';
+}
