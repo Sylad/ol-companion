@@ -79,4 +79,19 @@ describe.each([390, 1440])('noms des joueurs du terrain à %i px', (largeur) => 
     expect(m.droiteN).toBeGreaterThanOrEqual(0);
     expect(Math.abs(m.centre)).toBeLessThan(1);
   });
+
+  it('R4 — la pastille de note d\'un joueur de touche est entière dans le terrain', async () => {
+    const m = await page.evaluate(() => {
+      const t = document.querySelector('[data-testid="terrain"]')!.getBoundingClientRect();
+      return [...document.querySelectorAll('[data-testid="terrain"] a [title^="Note"]')].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { note: el.textContent, gauche: r.left - t.left, droite: t.right - r.right };
+      });
+    });
+    expect(m.length).toBeGreaterThan(0);
+    for (const n of m) {
+      expect(n.gauche, `note ${n.note} à gauche`).toBeGreaterThanOrEqual(0);
+      expect(n.droite, `note ${n.note} à droite`).toBeGreaterThanOrEqual(0);
+    }
+  });
 });

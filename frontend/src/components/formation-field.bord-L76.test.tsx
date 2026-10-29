@@ -17,4 +17,9 @@ describe('decalageDansTerrain (L76)', () => {
   it('R3 — un nom plus large que le terrain n\'est pas déplacé (rien à gagner)', () => {
     expect(decalageDansTerrain(4, 320, 300)).toBe(0);
   });
+  it('R4 — un élément qui dépasse à droite du bloc (pastille de note) compte dans ce qui doit rester dans le terrain', () => {
+    // bloc 60 px à 96 % de 300 px : droite = 288 + 30 = 318 ; avec 6 px de pastille, 324 → recalage de 324 - 298 = 26
+    expect(decalageDansTerrain(96, 60, 300, 6)).toBe(-26);
+    expect(decalageDansTerrain(50, 60, 300, 6)).toBe(0);
+  });
 });

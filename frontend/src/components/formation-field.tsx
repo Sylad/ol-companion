@@ -84,13 +84,18 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
     const el = ref.current;
     const terrain = el?.offsetParent;
     if (!el || !terrain) return;
-    const mesurer = () => setDecalage(decalageDansTerrain(x, el.offsetWidth, terrain.clientWidth));
+    // La pastille de note (absolute, hors de offsetWidth) dépasse à droite du bloc : on la compte.
+    const mesurer = () => {
+      const pastille = el.querySelector<HTMLElement>('[data-testid="pastille-note"]');
+      const debord = pastille ? Math.max(0, pastille.offsetLeft + pastille.offsetWidth - el.offsetWidth) : 0;
+      setDecalage(decalageDansTerrain(x, el.offsetWidth, terrain.clientWidth, debord));
+    };
     mesurer();
     if (typeof ResizeObserver === 'undefined') return;
     const obs = new ResizeObserver(mesurer);
     obs.observe(terrain);
     return () => obs.disconnect();
-  }, [x, player.shortName]);
+  }, [x, player.shortName, player.ranking]);
   return (
     <div
       ref={ref}
@@ -126,6 +131,7 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
         </span>
         {player.ranking !== null && player.ranking > 0 && (
           <span
+            data-testid="pastille-note"
             className="absolute -top-1.5 -right-1.5 z-20 inline-flex items-center justify-center w-[18px] h-[18px] rounded-full text-[9px] font-bold leading-none border-2 border-bg"
             style={{
               backgroundColor: ratingColor(player.ranking),
@@ -141,11 +147,14 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
   );
 }
 
-/** Décalage (px) qui ramène dans le terrain un bloc de `largeur` px centré à `x` % d'un terrain de `largeurTerrain` px. */
-export function decalageDansTerrain(x: number, largeur: number, largeurTerrain: number): number {
+/**
+ * Décalage (px) qui ramène dans le terrain un bloc de `largeur` px centré à `x` % d'un terrain de `largeurTerrain` px.
+ * `debordDroit` : ce qui dépasse en plus du bloc à sa droite (pastille de note).
+ */
+export function decalageDansTerrain(x: number, largeur: number, largeurTerrain: number, debordDroit = 0): number {
   const gauche = (x / 100) * largeurTerrain - largeur / 2;
-  const droite = gauche + largeur;
-  if (largeur + 2 * MARGE_BORD_PX > largeurTerrain) return 0;
+  const droite = gauche + largeur + debordDroit;
+  if (largeur + debordDroit + 2 * MARGE_BORD_PX > largeurTerrain) return 0;
   if (gauche < MARGE_BORD_PX) return MARGE_BORD_PX - gauche;
   if (droite > largeurTerrain - MARGE_BORD_PX) return largeurTerrain - MARGE_BORD_PX - droite;
   return 0;
