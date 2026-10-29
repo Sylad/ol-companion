@@ -2606,12 +2606,14 @@ lots:
     finished: 2026-10-28
   - id: L229
     title: "Resceller L50 R7 sur la géométrie de L64 (barre des filtres collée à 36 px sous la ligne du direct, scroll-padding-top = barre + 36) : fiche L50 amendée, test d'acceptation corrigé pour mesurer l'effet réel, cadence spec reseal --porteur ce lot (les assertions top-0 et 124 px sont vertes sans mesurer la règle depuis L64)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-28
     started: 2026-10-29
     notes:
       - { date: 2026-10-29, text: "test d'acceptation rescellé (lot livré L50, frontend/src/routes/fixtures.acceptation-L50.test.tsx, fiche amendée en 8a67e82) : Depuis L64 la barre des filtres est collée à 36 px sous la ligne du direct et scroll-padding-top = barre + 36 ; les assertions top-0 et 124 px restaient vertes sans mesurer R7. Fiche amendée (8a67e82), le test mesure la règle amendée et rougit sur 5 sabotages." }
+    review: { date: 2026-10-29, verdict: "conforme : R7 de la fiche L50 suit la géométrie de L64 (barre à 36 px sous la ligne du direct, scroll-padding-top = barre + 36, bureau sans scroll-padding) ; test d'acceptation rescellé, rougit sur 7 sabotages ; README et commentaire alignés", commit: 244b545053649b1c91c5ae3dbcc139534c9a3059 }
+    finished: 2026-10-29
   - id: L230
     title: "Suites de L64 : pastille du direct sur ordinateur (25 → 55 px sur 3 lignes pendant un match), minute hors de la région role=status (lue toutes les 60 s par les lecteurs d'écran), libellé deriveClock (MI-TEMPS, TAB) au lieu de gameTimeDisplay brut, Nouveauté L64 à jour (score et minute)"
     public: "Téléphone : la pastille du direct affiche le score et la minute pendant un match"
