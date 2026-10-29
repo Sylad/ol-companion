@@ -2647,12 +2647,14 @@ lots:
     created: 2026-10-29
   - id: L232
     title: "Composition /players à 320 px : les noms d'une ligne recouvrent le rond et la pastille de note de la ligne voisine (19 recouvrements mesurés le 29-10, ex. J. Duranville sur la note de Tolisso ; 17 déjà avant L76) — écarter les lignes sous 640 px, et règle de test navigateur « aucun élément d'un joueur ne recouvre celui d'un autre » à 320 et 390 px"
+    public: "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-29
   - id: L233
     title: "Composition /players : l'anneau de focus du lien joueur (ring-ol-red/60) contraste à 1,8–2,0:1 sur le terrain, sous 3:1 (WCAG 1.4.11) — anneau plein ou anneau clair avec décalage"
+    public: "Composition : un contour de sélection bien visible au clavier"
     status: todo
     estimate: 0.1
     visible: true

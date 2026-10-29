@@ -743,6 +743,16 @@
       "status": "done",
       "started": "2026-10-28",
       "finished": "2026-10-28"
+    },
+    {
+      "id": "L232",
+      "title": "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine",
+      "status": "todo"
+    },
+    {
+      "id": "L233",
+      "title": "Composition : un contour de sélection bien visible au clavier",
+      "status": "todo"
     }
   ]
 }
