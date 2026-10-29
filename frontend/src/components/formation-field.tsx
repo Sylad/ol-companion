@@ -30,7 +30,7 @@ interface FormationFieldProps {
 
 export function FormationField({ starters, formation, retour }: FormationFieldProps) {
   return (
-    <div data-testid="terrain" className="relative aspect-[3/4] sm:aspect-[4/5] rounded-md overflow-hidden border border-border-strong shadow-2xl">
+    <div data-testid="terrain" className="relative aspect-[1/2] sm:aspect-[4/5] rounded-md overflow-hidden border border-border-strong shadow-2xl">
       <div
         className="absolute inset-0"
         style={{

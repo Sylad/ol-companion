@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-29 11:24",
+  "generated": "2026-10-29 11:31",
   "entries": [
+    {
+      "slug": "2026-10-29-composition-sur-petit-ecran-les-noms-ne-recouvrent-plus-la-l",
+      "title": "Composition sur petit écran : les noms ne recouvrent plus la ligne voisine",
+      "date": "2026-10-29",
+      "lots": [
+        "L232"
+      ],
+      "captures": [
+        "captures/2026-10-29-composition-320.png"
+      ],
+      "alts": [
+        "Composition de l'OL sur un écran de 320 px : les noms, les ronds et les notes de chaque ligne restent séparés de ceux de la ligne voisine"
+      ],
+      "html": "<p>Sur un téléphone, la composition de la page Effectif est plus haute : les lignes de joueurs sont écartées, et le nom d'un joueur ne passe plus sur le rond ni sur la note du joueur de la ligne voisine (par exemple J. Duranville sur la note de Tolisso). Sur grand écran, rien ne change.</p>"
+    },
     {
       "slug": "2026-10-29-composition-un-contour-de-selection-bien-visible-au-clavier",
       "title": "Composition : un contour de sélection bien visible au clavier",
