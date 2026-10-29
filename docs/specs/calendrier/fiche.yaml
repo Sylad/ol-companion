@@ -82,11 +82,11 @@ regles:
     tests: ["R6 — la ligne entière mène au match", "R6 — heure ou « Horaire à confirmer », jamais les deux"]
   - id: R7
     etat: charge
-    enonce: "Sous 1024 px, les deux groupes de filtres (compétition, statut) forment une barre collée en haut de la fenêtre pendant le défilement, sur fond opaque ; la légende des sigles est hors de la zone collante, dans le flux, et reste lisible au téléphone. Sous 1024 px, `html` porte scroll-padding-top 124 px (hauteur de la barre, 115 px à 390 px) et scroll-padding-bottom 72 px (barre de navigation du bas) pour qu'un élément focalisé ne passe jamais dessous (WCAG 2.4.11). Les pastilles passent à la ligne, sans défilement horizontal, jusqu'à 320 px (WCAG 1.4.10), et les noms de club se coupent aux espaces, sans ellipse. Les pastilles ont pour nom « <sigle> — <nom> · n matchs » (WCAG 2.5.3). Au bureau les filtres restent dans l'en-tête, non collants."
+    enonce: "Sous 1024 px, les deux groupes de filtres (compétition, statut) forment une barre collée pendant le défilement, sur fond opaque, à 36 px du haut de la fenêtre : juste sous la ligne collante de la pastille du direct (36 px, L64), et sous le bandeau démo quand il est affiché ; la légende des sigles est hors de la zone collante, dans le flux, et reste lisible au téléphone. Sous 1024 px, `html` porte scroll-padding-top = hauteur de la barre + 36 px (la ligne du direct) + hauteur du bandeau démo s'il est affiché (124 px + 36 px tant que la barre n'est pas mesurée) et scroll-padding-bottom 72 px (barre de navigation du bas) pour qu'un élément focalisé ne passe jamais dessous (WCAG 2.4.11). Les pastilles passent à la ligne, sans défilement horizontal, jusqu'à 320 px (WCAG 1.4.10), et les noms de club se coupent aux espaces, sans ellipse. Les pastilles ont pour nom « <sigle> — <nom> · n matchs » (WCAG 2.5.3). Au bureau les filtres restent dans l'en-tête, non collants."
     message: ~
     champs: [barre-filtres, filtre-competition, filtre-statut, legende-competitions]
     statut: sourcee
-    source: "lot L50 : « filtres collants au téléphone »"
+    source: "lot L50 : « filtres collants au téléphone » ; lot L64 : ligne du direct collante sur téléphone, filtres et scroll-padding décalés de 36 px (index.css, fixtures.tsx, app-shell.tsx)"
     tests: ["R7 — 390 px : après défilement, les pastilles restent visibles en haut", "R7 — 390 px : la légende des sigles est visible sous la barre", "R7 — 390 px : un lien focalisé au clavier n'est jamais sous la barre collante ni sous la navigation du bas", "R7 — 320 px : pas de défilement horizontal, nom des pastilles commençant par leur texte affiché", "R7 — 1440 px : la barre n'est pas collante"]
   - id: R8
     etat: charge
