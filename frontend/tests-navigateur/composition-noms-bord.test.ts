@@ -38,16 +38,75 @@ const lineup = {
   bench: [], injured: [],
 };
 
+// L76 R5 — cas réel : Bacher (yardSide 66) et Z. Athekame (100) sur la même ligne ; le recalage d'Athekame dans le terrain
+// le collait à Bacher (3,4 px de chevauchement à 390 px, nom de Bacher masqué à 320 px).
+const lineupBacher = {
+  ...lineup,
+  starters: [
+    joueur(1, 'Lucas Perri', 1, 50),
+    joueur(2, 'Niakhaté', 2, 30), joueur(3, 'Bacher', 2, 66), joueur(4, 'Z. Athekame', 2, 100),
+    joueur(5, 'Tolisso', 3, 20), joueur(6, 'Caqueret', 3, 50), joueur(7, 'Nuamah', 3, 80),
+    joueur(8, 'Fofana', 5, 20), joueur(9, 'Lacazette', 5, 50), joueur(10, 'Cherki', 5, 80),
+  ],
+};
+
+async function ouvrir(largeur: number, composition: typeof lineup): Promise<Page> {
+  const page = await navigateur.newPage({ viewport: { width: largeur, height: 900 }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
+  await page.route('**/api/**', (route) => route.fulfill({ status: 404, json: {} }));
+  await page.route('**/api/lineup*', (route) => route.fulfill({ status: 200, json: composition }));
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
+  await page.goto(`${url}/players`);
+  await page.locator('[data-testid="terrain"]').waitFor();
+  return page;
+}
+
+/** Écart (px) entre les noms voisins d'une même ligne, et nom entier dans le terrain. */
+async function ecartsDeLigne(page: Page) {
+  return page.evaluate(() => {
+    const lignes = new Map<string, { nom: string; gauche: number; droite: number }[]>();
+    for (const j of document.querySelectorAll('[data-testid="terrain"] [data-testid="joueur"]')) {
+      const r = j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect();
+      const l = j.getAttribute('data-ligne')!;
+      lignes.set(l, [...(lignes.get(l) ?? []), { nom: j.querySelector('[data-testid="nom-joueur"]')!.textContent ?? '', gauche: r.left, droite: r.right }]);
+    }
+    return [...lignes.values()].flatMap((l) => {
+      const t = [...l].sort((a, b) => a.gauche - b.gauche);
+      return t.slice(1).map((n, i) => ({ paire: `${t[i].nom} / ${n.nom}`, ecart: n.gauche - t[i].droite }));
+    });
+  });
+}
+
+describe.each([320, 390])('R5 — écart entre les noms d\'une même ligne à %i px', (largeur) => {
+  it('cas Bacher / Z. Athekame : au moins 4 px', async () => {
+    const page = await ouvrir(largeur, lineupBacher);
+    try {
+      const ecarts = await ecartsDeLigne(page);
+      expect(ecarts.length).toBeGreaterThan(0); // dont la paire Bacher / Z. Athekame
+      for (const e of ecarts) expect(e.ecart, e.paire).toBeGreaterThanOrEqual(4 - 0.01);
+    } finally { await page.close(); }
+  });
+
+  it('un nom de bord tronqué garde son nom complet dans le title et dans le nom accessible du lien', async () => {
+    const page = await ouvrir(largeur, lineupBacher);
+    try {
+      const m = await page.evaluate(() => {
+        const nom = [...document.querySelectorAll('[data-testid="nom-joueur"]')].find((e) => e.scrollWidth > e.clientWidth + 0.5);
+        return nom ? { title: nom.getAttribute('title'), lien: nom.closest('a')!.getAttribute('aria-label'), ellipse: getComputedStyle(nom).textOverflow } : null;
+      });
+      // À 320 px les deux noms ne tiennent pas côte à côte : celui du bord est tronqué ; à 390 px l'écart tient sans tronquer.
+      if (largeur === 320) expect(m, 'nom tronqué à 320 px').not.toBeNull();
+      if (m) {
+        expect(m.ellipse).toBe('ellipsis');
+        expect(m.title).toBe('Z. Athekame');
+        expect(m.lien).toBe('Fiche de Z. Athekame');
+      }
+    } finally { await page.close(); }
+  });
+});
+
 describe.each([390, 1440])('noms des joueurs du terrain à %i px', (largeur) => {
   let page: Page;
-  beforeAll(async () => {
-    page = await navigateur.newPage({ viewport: { width: largeur, height: 900 }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
-    await page.route('**/api/**', (route) => route.fulfill({ status: 404, json: {} }));
-    await page.route('**/api/lineup*', (route) => route.fulfill({ status: 200, json: lineup }));
-    await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
-    await page.goto(`${url}/players`);
-    await page.locator('[data-testid="terrain"]').waitFor();
-  });
+  beforeAll(async () => { page = await ouvrir(largeur, lineup); });
   afterAll(async () => { await page?.close(); });
 
   it('R1 — le nom de chaque titulaire est entièrement dans le terrain (aucun bord coupé)', async () => {

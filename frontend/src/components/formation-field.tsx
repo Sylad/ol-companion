@@ -7,6 +7,10 @@ import { hasJersey } from '@/lib/jersey';
 
 /** L76 : marge gardée entre le nom d'un joueur excentré et le bord du terrain. */
 const MARGE_BORD_PX = 2;
+/** L76 : écart minimal gardé entre le nom d'un joueur de bord recalé et le nom de son voisin de ligne. */
+const ECART_NOMS_PX = 4;
+/** L76 : largeur plancher d'un nom tronqué (quelques lettres et les points de suspension). */
+const NOM_MIN_PX = 24;
 
 const LINE_TO_Y: Record<number, number> = {
   1: 88,
@@ -77,33 +81,53 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
   const x = clamp(player.yardSide, 4, 96);
   const y = LINE_TO_Y[player.yardLine] ?? 50;
   const ref = useRef<HTMLDivElement>(null);
-  const [decalage, setDecalage] = useState(0);
+  const [place, setPlace] = useState<PlaceBord>({ decalage: 0, nomMax: null });
   // L76 : le nom (nowrap) est plus large que le rond ; centré sur un joueur excentré il dépassait du terrain (overflow-hidden
-  // le coupait). On le recale de ce qui dépasse, en pixels : la largeur du nom ne se connaît qu'une fois mesuré.
+  // le coupait). On le recale de ce qui dépasse, en pixels : la largeur du nom ne se connaît qu'une fois mesuré. Le recalage
+  // garde ECART_NOMS_PX avec le nom voisin de la même ligne, sinon le nom du joueur de bord est tronqué.
   useLayoutEffect(() => {
     const el = ref.current;
     const terrain = el?.offsetParent;
-    if (!el || !terrain) return;
-    // La pastille de note (absolute, hors de offsetWidth) dépasse à droite du bloc : on la compte.
+    const nom = el?.querySelector<HTMLElement>('[data-testid="nom-joueur"]');
+    const rond = el?.querySelector<HTMLElement>('[data-testid="rond-joueur"]');
+    if (!el || !terrain || !nom || !rond) return;
     const mesurer = () => {
+      // La pastille de note (absolute, hors de offsetWidth) dépasse à droite du bloc : on la compte.
       const pastille = el.querySelector<HTMLElement>('[data-testid="pastille-note"]');
       const debord = pastille ? Math.max(0, pastille.offsetLeft + pastille.offsetWidth - el.offsetWidth) : 0;
-      setDecalage(decalageDansTerrain(x, el.offsetWidth, terrain.clientWidth, debord));
+      const t = terrain.getBoundingClientRect();
+      // Voisins de la même ligne : leur nom tel qu'il est posé (un joueur central n'est pas déplacé).
+      const noms = [...terrain.querySelectorAll<HTMLElement>(`[data-testid="joueur"][data-ligne="${player.yardLine}"]`)]
+        .filter((j) => j !== el)
+        .map((j) => j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect());
+      const centre = (x / 100) * terrain.clientWidth;
+      const voisinGauche = Math.max(-Infinity, ...noms.filter((r) => r.left + r.width / 2 - t.left < centre).map((r) => r.right - t.left));
+      const voisinDroite = Math.min(Infinity, ...noms.filter((r) => r.left + r.width / 2 - t.left >= centre).map((r) => r.left - t.left));
+      // scrollWidth : largeur du nom entier, même tronqué par un précédent calcul.
+      const suivant = placerJoueurDeBord({
+        x, largeurTerrain: terrain.clientWidth, nom: nom.scrollWidth, rond: rond.offsetWidth, debord,
+        voisinGauche: Number.isFinite(voisinGauche) ? voisinGauche : null,
+        voisinDroite: Number.isFinite(voisinDroite) ? voisinDroite : null,
+      });
+      setPlace((p) => (p.decalage === suivant.decalage && p.nomMax === suivant.nomMax ? p : suivant));
     };
     mesurer();
     if (typeof ResizeObserver === 'undefined') return;
     const obs = new ResizeObserver(mesurer);
     obs.observe(terrain);
     return () => obs.disconnect();
-  }, [x, player.shortName, player.ranking]);
+  }, [x, player.shortName, player.ranking, player.yardLine]);
+  const tronque = place.nomMax !== null;
   return (
     <div
       ref={ref}
+      data-testid="joueur"
+      data-ligne={player.yardLine}
       className="absolute z-10"
       style={{
         left: `${x}%`,
         top: `${y}%`,
-        transform: `translate(calc(-50% + ${decalage}px), -50%)`,
+        transform: `translate(calc(-50% + ${place.decalage}px), -50%)`,
       }}
     >
       <Link
@@ -113,18 +137,20 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
         aria-label={`Fiche de ${player.name}`}
         className="flex flex-col items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ol-red/60 rounded-md"
       >
-        <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-ol-blue-bright to-ol-blue border-2 border-white/90 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center transition-transform group-hover:scale-110">
+        <div data-testid="rond-joueur" className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-ol-blue-bright to-ol-blue border-2 border-white/90 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center transition-transform group-hover:scale-110">
           <span className="font-mono tabular-nums text-white font-bold text-xs sm:text-sm">
             {hasJersey(player.jerseyNumber) ? player.jerseyNumber : ''}
           </span>
         </div>
         <span
           data-testid="nom-joueur"
-          className="px-1.5 py-0.5 rounded-sm text-[10px] sm:text-[11px] font-semibold text-white whitespace-nowrap leading-none"
+          title={tronque ? player.name : undefined}
+          className="px-1.5 py-0.5 rounded-sm text-[10px] sm:text-[11px] font-semibold text-white whitespace-nowrap leading-none overflow-hidden text-ellipsis max-w-full"
           style={{
             backgroundColor: 'rgba(8, 9, 13, 0.78)',
             backdropFilter: 'blur(2px)',
             textShadow: '0 1px 2px rgba(0,0,0,0.9)',
+            maxWidth: place.nomMax ?? undefined,
           }}
         >
           {player.shortName}
@@ -145,6 +171,46 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
       </Link>
     </div>
   );
+}
+
+interface PlaceBord {
+  decalage: number;
+  /** Largeur maximale du nom (px) quand il est tronqué avec des points de suspension, sinon null. */
+  nomMax: number | null;
+}
+
+interface EntreePlaceBord {
+  x: number;
+  largeurTerrain: number;
+  /** Largeur du nom entier. */
+  nom: number;
+  /** Largeur du rond du numéro. */
+  rond: number;
+  /** Ce qui dépasse à droite du bloc (pastille de note). */
+  debord: number;
+  /** Bord droit du nom voisin à gauche, bord gauche du nom voisin à droite, en px depuis le bord gauche du terrain. */
+  voisinGauche: number | null;
+  voisinDroite: number | null;
+}
+
+/**
+ * L76 : place un joueur dans le terrain. Le décalage ramène le bloc dans le terrain (decalageDansTerrain) ; s'il rapproche le nom
+ * à moins de ECART_NOMS_PX du nom voisin, il ne le fait pas : le nom est alors tronqué à la place disponible entre le bord du
+ * terrain et le voisin (plancher NOM_MIN_PX).
+ */
+export function placerJoueurDeBord(e: EntreePlaceBord): PlaceBord {
+  const { x, largeurTerrain: W, nom, rond, debord, voisinGauche, voisinDroite } = e;
+  const centre = (x / 100) * W;
+  const decalage = decalageDansTerrain(x, Math.max(rond, nom), W, debord);
+  if (decalage > 0 && voisinDroite !== null && centre + decalage + nom / 2 > voisinDroite - ECART_NOMS_PX) {
+    const nomMax = Math.max(NOM_MIN_PX, voisinDroite - ECART_NOMS_PX - MARGE_BORD_PX);
+    return { decalage: MARGE_BORD_PX + Math.max(rond, nomMax) / 2 - centre, nomMax };
+  }
+  if (decalage < 0 && voisinGauche !== null && centre + decalage - nom / 2 < voisinGauche + ECART_NOMS_PX) {
+    const nomMax = Math.max(NOM_MIN_PX, W - MARGE_BORD_PX - debord - voisinGauche - ECART_NOMS_PX);
+    return { decalage: W - MARGE_BORD_PX - debord - Math.max(rond, nomMax) / 2 - centre, nomMax };
+  }
+  return { decalage, nomMax: null };
 }
 
 /**
