@@ -941,6 +941,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-29
+    review: { date: 2026-10-29, verdict: "compliant — orchestré (vague 2026-10-29-ol, 2 passe(s) de correction)", commit: 4753a9d2fe340adc992efd52ea87c09c9b444695 }
   - id: L77
     title: "Tableau de bord, carte « À venir » : score « -1 · -1 » affiché pour un match non joué (Lens – Lyon, capture vague 2026-10-09-0842) — masquer le score tant que le match n'a pas commencé"
     public: "Match à venir : « vs » à la place d'un faux score « -1 · -1 »"
