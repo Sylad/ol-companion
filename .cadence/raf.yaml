@@ -973,11 +973,12 @@ lots:
     finished: 2026-10-29
   - id: L79
     title: "Page match à venir : pas de bloc « Faits du match » et colonne centrale vide à 1440 (grille xl 3 colonnes) — état « Le match n'a pas commencé » ou grille repliée ; ajouter « may be absent when le match n'a pas commencé » à la ligne shows de /match dans docs/qa/expectations.md (QA L56 09-10)"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-10-09
     notes:
       - { date: 2026-10-09, text: "QA L77 09-10 : « Statistiques » affiche « Pas encore de statistiques. » pour un match à venir — ajouter aussi « may show … when le match n'a pas commencé » à la ligne de /match" }
+    started: 2026-10-29
   - id: L80
     title: "Page match à venir : « Chargement du match… » sans requête /api/live-match/<id>/stats émise, vu 1 fois sur 5 chargements à 390 px (QA L32 09-10, non reproduit en solo ×3) — vérifier la condition enabled / la clé de la query stats et prévoir une sortie (erreur + Réessayer) après N s"
     status: todo
