@@ -1,8 +1,12 @@
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import type { LineupPlayer } from '@/types/api';
 import type { PlayersSearch } from '@/lib/players-search';
 import { noteFr } from '@/lib/note-fr';
 import { hasJersey } from '@/lib/jersey';
+
+/** L76 : marge gardée entre le nom d'un joueur excentré et le bord du terrain. */
+const MARGE_BORD_PX = 2;
 
 const LINE_TO_Y: Record<number, number> = {
   1: 88,
@@ -22,7 +26,7 @@ interface FormationFieldProps {
 
 export function FormationField({ starters, formation, retour }: FormationFieldProps) {
   return (
-    <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-md overflow-hidden border border-border-strong shadow-2xl">
+    <div data-testid="terrain" className="relative aspect-[3/4] sm:aspect-[4/5] rounded-md overflow-hidden border border-border-strong shadow-2xl">
       <div
         className="absolute inset-0"
         style={{
@@ -72,13 +76,29 @@ function PitchLines() {
 function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: PlayersSearch }) {
   const x = clamp(player.yardSide, 4, 96);
   const y = LINE_TO_Y[player.yardLine] ?? 50;
+  const ref = useRef<HTMLDivElement>(null);
+  const [decalage, setDecalage] = useState(0);
+  // L76 : le nom (nowrap) est plus large que le rond ; centré sur un joueur excentré il dépassait du terrain (overflow-hidden
+  // le coupait). On le recale de ce qui dépasse, en pixels : la largeur du nom ne se connaît qu'une fois mesuré.
+  useLayoutEffect(() => {
+    const el = ref.current;
+    const terrain = el?.offsetParent;
+    if (!el || !terrain) return;
+    const mesurer = () => setDecalage(decalageDansTerrain(x, el.offsetWidth, terrain.clientWidth));
+    mesurer();
+    if (typeof ResizeObserver === 'undefined') return;
+    const obs = new ResizeObserver(mesurer);
+    obs.observe(terrain);
+    return () => obs.disconnect();
+  }, [x, player.shortName]);
   return (
     <div
+      ref={ref}
       className="absolute z-10"
       style={{
         left: `${x}%`,
         top: `${y}%`,
-        transform: 'translate(-50%, -50%)',
+        transform: `translate(calc(-50% + ${decalage}px), -50%)`,
       }}
     >
       <Link
@@ -94,6 +114,7 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
           </span>
         </div>
         <span
+          data-testid="nom-joueur"
           className="px-1.5 py-0.5 rounded-sm text-[10px] sm:text-[11px] font-semibold text-white whitespace-nowrap leading-none"
           style={{
             backgroundColor: 'rgba(8, 9, 13, 0.78)',
@@ -118,6 +139,16 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
       </Link>
     </div>
   );
+}
+
+/** Décalage (px) qui ramène dans le terrain un bloc de `largeur` px centré à `x` % d'un terrain de `largeurTerrain` px. */
+export function decalageDansTerrain(x: number, largeur: number, largeurTerrain: number): number {
+  const gauche = (x / 100) * largeurTerrain - largeur / 2;
+  const droite = gauche + largeur;
+  if (largeur + 2 * MARGE_BORD_PX > largeurTerrain) return 0;
+  if (gauche < MARGE_BORD_PX) return MARGE_BORD_PX - gauche;
+  if (droite > largeurTerrain - MARGE_BORD_PX) return largeurTerrain - MARGE_BORD_PX - droite;
+  return 0;
 }
 
 function clamp(v: number, min: number, max: number) {
