@@ -973,20 +973,24 @@ lots:
     finished: 2026-10-29
   - id: L79
     title: "Page match à venir : pas de bloc « Faits du match » et colonne centrale vide à 1440 (grille xl 3 colonnes) — état « Le match n'a pas commencé » ou grille repliée ; ajouter « may be absent when le match n'a pas commencé » à la ligne shows de /match dans docs/qa/expectations.md (QA L56 09-10)"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-10-09
     notes:
       - { date: 2026-10-09, text: "QA L77 09-10 : « Statistiques » affiche « Pas encore de statistiques. » pour un match à venir — ajouter aussi « may show … when le match n'a pas commencé » à la ligne de /match" }
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "conforme (1 constat mineur, en note : la clause L162/L173 de la ligne 61 n'excepte pas le message des Bleus à venir) — orchestré (vague 2026-10-29-oa1, 0 passe(s) de correction + passe des mineurs)", commit: null }
+    finished: 2026-10-29
   - id: L80
     title: "Page match à venir : « Chargement du match… » sans requête /api/live-match/<id>/stats émise, vu 1 fois sur 5 chargements à 390 px (QA L32 09-10, non reproduit en solo ×3) — vérifier la condition enabled / la clé de la query stats et prévoir une sortie (erreur + Réessayer) après N s"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-09
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "conforme (1 mineur, en note : le commit ajoute des tests sur `enabled` et la clé de la query ; la sortie à 15 s existait déjà depuis 34bbd10 et la cause racine reste non reproduite) — orchestré (vague 2026-10-29-oa1, 0 passe(s) de correction)", commit: 51bf774a78231215572eab1fa11bcae8eb4f773d }
+    notes:
+      - { date: 2026-10-29, text: "Cause non reproduite : enabled: !!(gameId && matchupId) et la clé sont justes, et en TanStack v5 une requête désactivée n'affiche pas « Chargement… » — le symptôme QA venait d'une requête émise restée sans réponse, couverte par la sortie à 15 s de 34bbd10 (R10 de L181) ; L80 ajoute les tests du hook" }
+    finished: 2026-10-29
   - id: L81
     title: "Carte Ligue 1 à 390 px : la légende « Aller / Retour » (MapLegend absolute z-[500] hors du conteneur Leaflet) recouvre l'en-tête de la bulle — nom du club, stade, bouton × — 25 % de la bulle de Lens masqués, mesuré QA L70 09-10 ; passer la légende sous les bulles ou la déplacer en bas de la carte au téléphone"
     public: "Carte Ligue 1 : la légende ne cache plus le haut d'une bulle sur téléphone"
