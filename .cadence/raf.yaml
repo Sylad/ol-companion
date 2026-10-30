@@ -1474,6 +1474,7 @@ lots:
     notes:
       - { date: 2026-10-18, text: "18-10 : depuis L8, la tuile Jeux vidéo est en tête, en pleine largeur, au-dessus des 3 tuiles « Bientôt » — le citer dans les attentes QA de /fcnoobz" }
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant — 1 note mineure (libellé « Bientôt » absent de l'écran) — orchestré (vague 2026-10-30-1530-ol, 0 passe(s) de correction)", commit: f76004156e4b9619eae8d06ca280e25d758b872f }
   - id: L124
     title: "Calendrier à 390 px : lignes de match ~20 % plus hautes que la maquette validée de L50 (2 926 px contre 2 447 pour 46 matchs) — resserrer score et noms sans perdre la lisibilité (suite de L50)"
     public: Calendrier plus compact sur téléphone
