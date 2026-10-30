@@ -207,7 +207,8 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
     [allMatches, club],
   );
   const played = matches.filter((m) => m.isPast);
-  const upcoming = matches.filter((m) => !m.isPast);
+  const live = matches.filter((m) => m.isLive);
+  const upcoming = matches.filter((m) => !m.isPast && !m.isLive);
   const isOL = club.id365 === OL_ID_365;
 
   // imageVersion comes from standings response when available — falls back to
@@ -291,6 +292,43 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                       <span className="num font-bold">
                         {olScore}–{oppScore}
                       </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {live.length > 0 && (
+            <div className="mb-2">
+              <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1 font-semibold">
+                En direct
+              </div>
+              <ul className="space-y-1">
+                {live.map((m) => {
+                  const olScore = m.isHome ? m.fixture.homeScore : m.fixture.awayScore;
+                  const oppScore = m.isHome ? m.fixture.awayScore : m.fixture.homeScore;
+                  return (
+                    <li
+                      key={m.fixture.id}
+                      data-testid="match-en-direct"
+                      className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]"
+                    >
+                      <span
+                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0 bg-ol-red"
+                        aria-label="en direct"
+                      >
+                        ●
+                      </span>
+                      <span className="text-fg-dim min-w-[68px] num">{formatDate(m.fixture.date)}</span>
+                      <span className="text-fg-muted">{m.isHome ? 'Domicile' : 'Extérieur'}</span>
+                      {olScore !== null && oppScore !== null ? (
+                        <span className="num font-bold">
+                          {olScore}–{oppScore}
+                        </span>
+                      ) : (
+                        <span className="text-fg-dim italic">en direct</span>
+                      )}
                     </li>
                   );
                 })}

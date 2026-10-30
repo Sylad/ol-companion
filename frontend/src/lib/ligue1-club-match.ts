@@ -78,6 +78,8 @@ export interface OlMatchVsClub {
   fixture: Fixture;
   isHome: boolean;
   isPast: boolean;
+  /** Match en cours (IN_PLAY) : ni joué (pas de résultat) ni à venir. */
+  isLive: boolean;
   outcome: 'W' | 'D' | 'L' | null;
 }
 
@@ -106,7 +108,7 @@ export function olMatchesVsClub(
       const oppScore = isHome ? f.awayScore : f.homeScore;
       outcome = olScore > oppScore ? 'W' : olScore < oppScore ? 'L' : 'D';
     }
-    result.push({ fixture: f, isHome, isPast, outcome });
+    result.push({ fixture: f, isHome, isPast, isLive: f.status === 'IN_PLAY', outcome });
   }
 
   return result.sort((a, b) => new Date(a.fixture.date).getTime() - new Date(b.fixture.date).getTime());
