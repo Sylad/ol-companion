@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-30 09:53",
+  "generated": "2026-10-30 10:15",
   "entries": [
+    {
+      "slug": "2026-10-30-accueil-le-sur-titre-match-en-direct-reste-lisible-sur-la-ph",
+      "title": "Accueil : le sur-titre « Match en direct » reste lisible sur la photo du stade",
+      "date": "2026-10-30",
+      "lots": [
+        "L234"
+      ],
+      "captures": [
+        "captures/accueil-surtitre-direct-L234.png"
+      ],
+      "alts": [
+        "Accueil à 390 px pendant un match : le sur-titre « Match en direct » en rouge sur un fond sombre uni, au-dessus du score"
+      ],
+      "html": "<p>Sur l'accueil, le sur-titre du bandeau (« Match en direct », mais aussi « Prochain rendez-vous », « Approche du coup d'envoi » et « Jour de match ») repose désormais sur un fond sombre uni. La photo du stade ne passe plus à travers : le texte reste lisible à toute largeur, sur téléphone comme sur grand écran.</p>"
+    },
     {
       "slug": "2026-10-30-accueil-le-sur-titre-du-bandeau-retrouve-sa-couleur",
       "title": "Accueil : le sur-titre du bandeau retrouve sa couleur",

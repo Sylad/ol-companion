@@ -63,7 +63,7 @@ describe('<DashboardHero /> — sur-titre (L89)', () => {
     ['Prochain rendez-vous', '2026-10-17T18:45:00Z'],
     ["Approche du coup d'envoi", '2026-10-10T18:45:00Z'],
     ['Jour de match', '2026-10-09T18:45:00Z'],
-  ])('R1 — « %s » est rouge, sans `eyebrow` (dont le gris l\'écraserait) et sur un fond opaque', async (libelle, date) => {
+  ])('L234 R1 — « %s » est rouge, sans `eyebrow` (dont le gris l\'écraserait) et sur un fond réellement opaque (bg-bg, pas bg-bg/90)', async (libelle, date) => {
     vi.stubGlobal('fetch', serve([match(date)]));
     renderHero();
 
@@ -71,10 +71,11 @@ describe('<DashboardHero /> — sur-titre (L89)', () => {
     expect(label).toHaveClass('text-ol-red-bright');
     expect(label).not.toHaveClass('eyebrow');
     expect(label).toHaveClass('uppercase', 'font-semibold', 'text-[11px]');
-    expect(label).toHaveClass('bg-bg/90');
+    expect(label).toHaveClass('bg-bg');
+    expect(label.className).not.toMatch(/bg-bg\/\d+/);
   });
 
-  it('R2 — « Match en direct » est aussi sur un fond opaque, pas `bg-live/10` que la photo traverse', async () => {
+  it('L234 R2 — « Match en direct » est aussi sur un fond réellement opaque, pas `bg-live/10` ni `bg-bg/90` que la photo traverse', async () => {
     vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-09T19:41:00Z') });
     const direct = {
       gameId: 4321, matchupId: '481-465-35', competitionId: 35, competitionName: 'France, Ligue 1',
@@ -87,7 +88,8 @@ describe('<DashboardHero /> — sur-titre (L89)', () => {
     renderHero();
 
     const label = await screen.findByText('Match en direct');
-    expect(label).toHaveClass('text-live', 'bg-bg/90');
+    expect(label).toHaveClass('text-live', 'bg-bg');
+    expect(label.className).not.toMatch(/bg-bg\/\d+/);
     expect(label).not.toHaveClass('bg-live/10');
     expect(label).not.toHaveClass('eyebrow');
   });

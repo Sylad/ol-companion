@@ -14,6 +14,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - never: « Not Found » (route inconnue, dont /match sans identifiant : attendu un h1 « Page introuvable » et les liens Accueil / Calendrier, L180)
 - api: /api/live-match/current — may be empty when aucun match n'est en cours ou proche ; « proche » = la fenêtre du backend (`live-match.service.ts`) : coup d'envoi dans les 24 h à venir, ou de 15 min avant à 3 h après le coup d'envoi, ou match fini depuis moins de 2 h. Au-delà de 24 h la réponse est vide (null mesuré ~32 h avant OL – Nice pendant que / annonçait « dans 1 jour » : conforme) ; ne la réclamer qu'à moins de 24 h
 - shows: les textes secondaires (jeton fg-dim) posés sur une photo, un halo ou un panneau semi-transparent (bandeau de /, surtitre de /about, le premier `<p>` de son `<header>` : aucun `.eyebrow` sur cette page) à ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390
+- shows: le sur-titre du bandeau de / (« Prochain rendez-vous », « Approche du coup d'envoi », « Jour de match », « Match en direct ») est posé sur un fond pleinement opaque (`bg-bg`, ni `/90` ni `bg-live/10`) : son texte tient ≥ 4,5:1 mesuré sur les pixels réels, à 1440 comme à 390 (L234)
 - shows: scrollWidth = clientWidth de la page, à 1440 comme à 390 (aucun défilement horizontal ; L156 : une table `sr-only` hors d'un `div.sr-only` gardait sa largeur de contenu, 480 px, et poussait la page à 520 px sur / et /standings)
 
 ## /

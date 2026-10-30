@@ -176,9 +176,9 @@ export function DashboardHero() {
           <div className="flex items-center gap-3">
             <span className={cn(
               // Pas de `eyebrow` : sa couleur grise (@layer utilities) sort après `text-live` et
-              // `text-ol-red-bright`. Le fond opaque (direct compris) tient 4,5:1 quand la photo du stade passe dessous.
+              // `text-ol-red-bright`. Le fond est pleinement opaque (bg-bg, pas /90 : la photo passait à travers, 4,435:1 au pire), direct compris, pour tenir 4,5:1 quand la photo du stade passe dessous.
               'text-[11px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-sm',
-              'bg-bg/90',
+              'bg-bg',
               isLive ? 'text-live animate-pulse-live-halo' : 'text-ol-red-bright'
             )}>
               {pulseLabel}
