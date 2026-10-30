@@ -1086,6 +1086,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant (0 blocking, 0 major, 2 minor notes) — orchestré (vague 2026-10-30-1000-ol, 0 passe(s) de correction)", commit: 3fb600675a5cbe1998917ca31d32e04834c519ab }
   - id: L89
     title: "Accueil : le sur-titre du bandeau (« Prochain rendez-vous », « Jour de match », « Match en direct ») est gris fg-dim au lieu du rouge prévu — .eyebrow (@layer utilities, index.css l.116) écrase text-ol-red-bright/text-live ; sur la photo, 10 % de son fond passe sous 4,5:1 à 390 (revue UX L2)"
     public: "Accueil : le sur-titre du bandeau retrouve sa couleur"
