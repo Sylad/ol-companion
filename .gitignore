@@ -37,3 +37,6 @@ Thumbs.db
 desktop.ini
 @eaDir/
 .token-savior-cache.json
+
+# dossier de travail du MCP Playwright (QA du lead), jamais versionné
+.playwright-mcp/
