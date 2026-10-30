@@ -1081,12 +1081,14 @@ lots:
   - id: L88
     title: "Accueil, libellés : strip de forme « W D » (D = nul) sous « 2N · 1D » (D = défaite) → V/N/D avec aria-label ; « 1.83 ppm », « 1.80 / match » → virgule fr-FR et « pts/match » ; « Stade Rennais FC 1901 » non raccourci par teamShortName ; info-bulle « 1 matchs » (season-summary.tsx l.220) (revue UX L2)"
     public: "Accueil : libellés harmonisés (forme V, N, D, virgule, clubs courts)"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-09
     started: 2026-10-30
     review: { date: 2026-10-30, verdict: "compliant (0 blocking, 0 major, 2 minor notes) — orchestré (vague 2026-10-30-1000-ol, 0 passe(s) de correction)", commit: 3fb600675a5cbe1998917ca31d32e04834c519ab }
+    ux: { date: 2026-10-30, verdict: "conforme, captures regardées par le lead (390 : forme « 3V / 2N · 1D » avec pastilles V N V N D V, « 1,83 pts/match ») ; mineurs : à 390 px « 1,83 » et « pts/match » se séparent sur deux lignes, constantes FORM_LETTER/FORM_LABEL doublées avec standings-table" }
+    finished: 2026-10-30
   - id: L89
     title: "Accueil : le sur-titre du bandeau (« Prochain rendez-vous », « Jour de match », « Match en direct ») est gris fg-dim au lieu du rouge prévu — .eyebrow (@layer utilities, index.css l.116) écrase text-ol-red-bright/text-live ; sur la photo, 10 % de son fond passe sous 4,5:1 à 390 (revue UX L2)"
     public: "Accueil : le sur-titre du bandeau retrouve sa couleur"
