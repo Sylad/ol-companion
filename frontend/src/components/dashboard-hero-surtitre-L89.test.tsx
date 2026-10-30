@@ -30,10 +30,10 @@ function match(date: string): SeasonMatch {
   };
 }
 
-function serve(matches: SeasonMatch[]) {
+function serve(matches: SeasonMatch[], live: unknown = null) {
   return vi.fn((url: string) => {
     if (url === '/api/season-matches') return Promise.resolve(okJson(matches));
-    if (url === '/api/live-match/current') return Promise.resolve(okJson(null));
+    if (url === '/api/live-match/current') return Promise.resolve(okJson(live));
     if (url.startsWith('/api/wiki-image')) return Promise.resolve(okJson({ imageUrl: 'https://exemple.test/stade.jpg' }));
     return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
   });
@@ -72,5 +72,23 @@ describe('<DashboardHero /> — sur-titre (L89)', () => {
     expect(label).not.toHaveClass('eyebrow');
     expect(label).toHaveClass('uppercase', 'font-semibold', 'text-[11px]');
     expect(label).toHaveClass('bg-bg/90');
+  });
+
+  it('R2 — « Match en direct » est aussi sur un fond opaque, pas `bg-live/10` que la photo traverse', async () => {
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-09T19:41:00Z') });
+    const direct = {
+      gameId: 4321, matchupId: '481-465-35', competitionId: 35, competitionName: 'France, Ligue 1',
+      status: 'live', statusGroup: 3, statusText: '2e mi-temps', gameTime: 56, gameTimeDisplay: "56'",
+      startTime: '2026-10-09T18:45:00Z',
+      home: { id: 481, name: 'Lens', symbolicName: 'LEN', imageVersion: 1, score: 1 },
+      away: { id: 465, name: 'Lyon', symbolicName: 'LYO', imageVersion: 1, score: 0 },
+    };
+    vi.stubGlobal('fetch', serve([match('2026-10-17T18:45:00Z')], direct));
+    renderHero();
+
+    const label = await screen.findByText('Match en direct');
+    expect(label).toHaveClass('text-live', 'bg-bg/90');
+    expect(label).not.toHaveClass('bg-live/10');
+    expect(label).not.toHaveClass('eyebrow');
   });
 });
