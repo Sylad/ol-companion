@@ -6,6 +6,8 @@ import { DashboardStats } from './dashboard-stats';
 
 const standings = vi.hoisted(() => ({ value: { data: undefined, isError: false, refetch: () => {} } as any }));
 vi.mock('@/hooks/use-standings', () => ({ useStandings: () => standings.value }));
+const seasonMatches = vi.hoisted(() => ({ value: { data: undefined } as any }));
+vi.mock('@/hooks/use-season-matches', () => ({ useSeasonMatches: () => seasonMatches.value }));
 const liveMatch = vi.hoisted(() => ({ value: { data: null } as any }));
 vi.mock('@/hooks/use-live-match', () => ({ useCurrentLiveMatch: () => liveMatch.value }));
 vi.mock('@/hooks/use-season-rankings', () => ({
@@ -57,18 +59,36 @@ describe('DashboardStats — L86', () => {
     away: { id: 465, name: 'Lyon', score: 0 },
   };
 
+  // 5 matchs terminés : 3V 2N 0D, 9 buts pour, 5 contre, 11 points
+  const termine = (home: boolean, pour: number, contre: number) => ({
+    competitionId: 35, status: 'FINISHED', homeTeamId: home ? 523 : 7, awayTeamId: home ? 7 : 523,
+    homeScore: home ? pour : contre, awayScore: home ? contre : pour,
+  });
+  const terminesL1 = [termine(true, 2, 0), termine(false, 3, 2), termine(true, 2, 1), termine(true, 1, 1), termine(false, 1, 1)];
+
   it('R1 — pendant un match de Ligue 1 perdu à cet instant, les tuiles ne le comptent ni joué ni perdu', () => {
     standings.value = { data: { table: [olLigne], currentMatchday: 7 }, isError: false, refetch: () => {} };
     liveMatch.value = { data: enDirect };
+    seasonMatches.value = { data: terminesL1 };
     render(<DashboardStats />);
     expect(screen.getByTestId('stat-points').textContent).toContain('5 matchs · 2.20 ppm');
     expect(screen.getByTestId('stat-forme').textContent).toContain('2N · 0D');
     expect(screen.getByTestId('stat-diff').textContent).toContain('9 pour · 5 contre');
   });
 
+  it('R2 — classement plus ancien que le direct (ligne sans le match en cours) : les tuiles gardent la ligne', () => {
+    standings.value = { data: { table: [{ ...olLigne, played: 5, lost: 0 }], currentMatchday: 7 }, isError: false, refetch: () => {} };
+    liveMatch.value = { data: enDirect };
+    seasonMatches.value = { data: terminesL1 };
+    render(<DashboardStats />);
+    expect(screen.getByTestId('stat-points').textContent).toContain('5 matchs');
+    expect(screen.getByTestId('stat-forme').textContent).toContain('2N · 0D');
+  });
+
   it('R3 — sans match en cours, les tuiles gardent le bilan du classement', () => {
     standings.value = { data: { table: [olLigne], currentMatchday: 7 }, isError: false, refetch: () => {} };
     liveMatch.value = { data: null };
+    seasonMatches.value = { data: terminesL1 };
     render(<DashboardStats />);
     expect(screen.getByTestId('stat-points').textContent).toContain('6 matchs');
     expect(screen.getByTestId('stat-forme').textContent).toContain('2N · 1D');
