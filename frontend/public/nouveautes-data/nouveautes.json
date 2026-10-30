@@ -1,7 +1,24 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-30 10:50",
+  "generated": "2026-10-30 13:25",
   "entries": [
+    {
+      "slug": "2026-10-30-calendrier-plus-compact-sur-telephone",
+      "title": "Calendrier plus compact sur téléphone",
+      "date": "2026-10-30",
+      "lots": [
+        "L124"
+      ],
+      "captures": [
+        "captures/2026-10-30-calendrier-compact-390.png",
+        "captures/2026-10-30-calendrier-compact-1440.png"
+      ],
+      "alts": [
+        "Le Calendrier sur téléphone : les lignes de match sont plus serrées, plus de matchs tiennent à l'écran",
+        "Le Calendrier sur ordinateur, lignes inchangées dans leur lisibilité"
+      ],
+      "html": "<p>Sur téléphone, les lignes du Calendrier sont plus serrées : les 46 matchs de la saison tiennent sur environ 8 % de hauteur en moins, donc moins de défilement pour parcourir la saison. Les noms des clubs, les scores et les écussons gardent leur taille ; seuls les espaces autour de l'horaire « à confirmer », de la date et du sigle de compétition se resserrent.</p>"
+    },
     {
       "slug": "2026-10-30-carte-ligue-1-la-bulle-d-un-club-montre-le-match-en-cours-av",
       "title": "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score",
