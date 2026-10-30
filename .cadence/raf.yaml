@@ -1489,9 +1489,10 @@ lots:
     finished: 2026-10-30
   - id: L125
     title: "Bandeau Olympique Lyonnais hors Calendrier sous 1024 px : rétablir leading-tight sur le titre non compact (24 px sur 30 px comme avant L50, 32 px depuis cc5b883 — tailwind-merge) et le tester (revue L50)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-12
+    started: 2026-10-30
   - id: L126
     title: "Joueurs : première ouverture de Stats saison sans réponse en 13 s (QA L50/L85 12-10) — mesurer la latence à froid de /api/players/season-stats, borner ou préchauffer"
     status: doing
