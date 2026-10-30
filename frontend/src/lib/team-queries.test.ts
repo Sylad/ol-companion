@@ -9,4 +9,8 @@ describe('teamShortName (L48)', () => {
     expect(teamShortName('OGC Nice')).toBe('Nice');
     expect(teamShortName('Lens')).toBe('Lens');
   });
+  it('L88 — donne « Rennes » pour Stade Rennais FC 1901 (le FC du milieu n’est pas retiré par les règles)', () => {
+    expect(teamShortName('Stade Rennais FC 1901')).toBe('Rennes');
+    expect(teamShortName('  Stade Rennais FC 1901 ')).toBe('Rennes');
+  });
 });

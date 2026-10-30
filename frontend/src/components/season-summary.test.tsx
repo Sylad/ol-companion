@@ -22,6 +22,17 @@ const stats: TeamSeasonStats = {
   chart: [],
 };
 
+async function renderBody(over: Partial<TeamSeasonStats>) {
+  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: async () => ({ ...stats, ...over }) })));
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={client}>
+      <SeasonSummary />
+    </QueryClientProvider>,
+  );
+  await screen.findByText('Matchs joués');
+}
+
 describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
   afterEach(() => vi.unstubAllGlobals());
 
@@ -87,5 +98,19 @@ describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
     const label = screen.getByText('Match nul');
     expect(label).toHaveClass('text-draw');
     expect(label).not.toHaveClass('text-fg-dim');
+  });
+
+  // L88 — décimales françaises et singulier dans la pastille par compétition.
+  it('R2 — les buts par match prennent la virgule (1,83 / match), pas le point', async () => {
+    await renderBody({ goalsForPerMatch: 1.8333, goalsAgainstPerMatch: 1 });
+    expect(screen.getByText('1,83 / match')).toBeInTheDocument();
+    expect(screen.getByText('1,00 / match')).toBeInTheDocument();
+  });
+
+  it('R4 — l’info-bulle d’une compétition à 1 match dit « 1 match », pas « 1 matchs »', async () => {
+    await renderBody({ perCompetition: [{ competitionCode: 'CDF', played: 1, won: 1, draw: 0, lost: 0, goalsFor: 2, goalsAgainst: 0, points: 0 }] });
+    const chip = document.querySelector('div[title]') as HTMLElement;
+    expect(chip.title).toMatch(/^1 match · /);
+    expect(chip.title).not.toContain('1 matchs');
   });
 });

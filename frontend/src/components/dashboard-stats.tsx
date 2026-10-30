@@ -7,6 +7,7 @@ import { useSeasonRankings } from '@/hooks/use-season-rankings';
 import { OL_TEAM_ID, type FormOutcome } from '@/types/api';
 import { RetryMessage } from './retry-message';
 import { cn } from '@/lib/utils';
+import { decimalFr } from '@/lib/stat-fr';
 
 export function DashboardStats() {
   const { data: standings, isError, refetch } = useStandings();
@@ -38,7 +39,7 @@ export function DashboardStats() {
       <StatCard
         label="Points"
         value={ol ? `${ol.points}` : '—'}
-        sub={ol ? `${ol.played} matchs · ${(ol.points / Math.max(1, ol.played)).toFixed(2)} ppm` : ''}
+        sub={ol ? `${ol.played} match${ol.played > 1 ? 's' : ''} · ${decimalFr(ol.points / Math.max(1, ol.played), 2)} pts/match` : ''}
         icon={Target}
         testId="stat-points"
       />
@@ -72,6 +73,10 @@ export function DashboardStats() {
     </div>
   );
 }
+
+// Même alphabet que « 3V · 2N · 1D » sous la tuile : V victoire, N nul, D défaite (l'API garde W/D/L).
+const FORM_LETTER: Record<FormOutcome, string> = { W: 'V', D: 'N', L: 'D' };
+const FORM_LABEL: Record<FormOutcome, string> = { W: 'Victoire', D: 'Match nul', L: 'Défaite' };
 
 interface StatCardProps {
   label: string;
@@ -108,13 +113,15 @@ function StatCard({ label, value, suffix, sub, icon: Icon, valueClass, trend, fo
           {[...formStrip].reverse().map((o, i) => (
             <span
               key={i}
+              role="img"
+              aria-label={FORM_LABEL[o]}
+              title={FORM_LABEL[o]}
               className={cn(
                 'inline-flex items-center justify-center w-[14px] h-[14px] rounded-full text-[8px] font-bold leading-none',
                 o === 'W' ? 'bg-win text-bg' : o === 'L' ? 'bg-loss text-bg' : 'bg-transparent border border-fg-dim text-fg-dim',
               )}
-              title={o === 'W' ? 'Victoire' : o === 'L' ? 'Défaite' : 'Match nul'}
             >
-              {o}
+              {FORM_LETTER[o]}
             </span>
           ))}
         </div>

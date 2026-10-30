@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { DashboardStats } from './dashboard-stats';
@@ -71,7 +71,7 @@ describe('DashboardStats — L86', () => {
     liveMatch.value = { data: enDirect };
     seasonMatches.value = { data: terminesL1 };
     render(<DashboardStats />);
-    expect(screen.getByTestId('stat-points').textContent).toContain('5 matchs · 2.20 ppm');
+    expect(screen.getByTestId('stat-points').textContent).toContain('5 matchs · 2,20 pts/match');
     expect(screen.getByTestId('stat-forme').textContent).toContain('2N · 0D');
     expect(screen.getByTestId('stat-diff').textContent).toContain('9 pour · 5 contre');
   });
@@ -105,5 +105,42 @@ describe('DashboardStats — L86', () => {
     render(<DashboardStats />);
     expect(screen.getByTestId('stat-position').textContent).toContain('Ligue 1 · J7');
     expect(screen.getByTestId('stat-position').textContent).not.toContain('en direct');
+  });
+});
+
+// L88 — libellés de l'accueil : V/N/D, virgule française, « pts/match ».
+describe('DashboardStats — L88', () => {
+  const olLigne = {
+    position: 2, team: 'Olympique Lyonnais', teamId: 523, played: 6, won: 3, draw: 2, lost: 1,
+    goalsFor: 9, goalsAgainst: 6, goalDifference: 3, points: 11, recentForm: ['W', 'D', 'L', 'W', 'D', 'W'],
+  };
+  const rendre = (ligne = olLigne) => {
+    standings.value = { data: { table: [ligne], currentMatchday: 6 }, isError: false, refetch: () => {} };
+    liveMatch.value = { data: null };
+    seasonMatches.value = { data: undefined };
+    render(<DashboardStats />);
+  };
+
+  it('R1 — la bande de forme écrit V/N/D (N = nul), plus W/D/L, avec un nom accessible par pastille', () => {
+    rendre();
+    const bande = screen.getByTestId('stat-forme');
+    const pastilles = within(bande).getAllByRole('img');
+    // la bande est affichée du plus ancien au plus récent
+    expect(pastilles.map((p) => p.textContent)).toEqual(['V', 'N', 'V', 'D', 'N', 'V']);
+    expect(pastilles.map((p) => p.getAttribute('aria-label'))).toEqual([
+      'Victoire', 'Match nul', 'Victoire', 'Défaite', 'Match nul', 'Victoire',
+    ]);
+  });
+
+  it('R2 — « Points » : 11 pts en 6 matchs → « 1,83 pts/match » (virgule), jamais « ppm »', () => {
+    rendre();
+    const texte = screen.getByTestId('stat-points').textContent ?? '';
+    expect(texte).toContain('6 matchs · 1,83 pts/match');
+    expect(texte).not.toMatch(/ppm|1\.83/);
+  });
+
+  it('R2 — un seul match joué : « 1 match », pas « 1 matchs »', () => {
+    rendre({ ...olLigne, played: 1, won: 1, draw: 0, lost: 0, points: 3, recentForm: ['W'] } as never);
+    expect(screen.getByTestId('stat-points').textContent).toContain('1 match · 3,00 pts/match');
   });
 });

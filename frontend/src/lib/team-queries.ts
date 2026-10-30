@@ -56,6 +56,7 @@ export function teamWikiQuery(teamId: number, fallbackName: string): string {
 /** Noms que les règles ci-dessous ne raccourcissent pas (L48 : 22 caractères tronqués à 390 px). */
 const SHORT_NAME_BY_FULL_NAME: Record<string, string> = {
   'Olympique de Marseille': 'Marseille',
+  'Stade Rennais FC 1901': 'Rennes', // le « FC » est au milieu : les règles ne le retirent pas (L88)
 };
 
 export function teamShortName(name: string): string {

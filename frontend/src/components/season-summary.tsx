@@ -14,6 +14,7 @@ import type { TeamSeasonChartPoint, PerCompetitionTeamStats } from '@/types/api'
 import { cn } from '@/lib/utils';
 import { RetryMessage } from '@/components/retry-message';
 import { competitionLong } from '@/lib/competitions';
+import { decimalFr } from '@/lib/stat-fr';
 
 // Cumulative goal-difference sparkline → bleu OL (trajectoire neutre, pas
 // "victoire" → pas de vert). Le dot du dernier point est rouge OL bright,
@@ -112,14 +113,14 @@ function SummaryBody({ data }: { data: NonNullable<ReturnType<typeof useTeamSeas
           icon={Goal}
           label="Buts marqués"
           value={data.goalsFor.toString()}
-          sub={`${data.goalsForPerMatch.toFixed(2)} / match`}
+          sub={`${decimalFr(data.goalsForPerMatch, 2)} / match`}
           valueClass="text-fg-bright"
         />
         <Tile
           icon={Shield}
           label="Buts encaissés"
           value={data.goalsAgainst.toString()}
-          sub={`${data.goalsAgainstPerMatch.toFixed(2)} / match`}
+          sub={`${decimalFr(data.goalsAgainstPerMatch, 2)} / match`}
           valueClass="text-fg-bright"
         />
         <Tile
@@ -224,7 +225,7 @@ function CompChip({ c }: { c: PerCompetitionTeamStats }) {
   return (
     <div
       className="inline-flex items-center gap-2 rounded-md border border-border bg-surface-2/40 px-3 py-1.5 text-xs"
-      title={`${c.played} matchs · ${c.won}V · ${c.draw}N · ${c.lost}D · ${c.goalsFor}-${c.goalsAgainst}${c.competitionCode === 'L1' ? ` · ${c.points} pts` : ''}`}
+      title={`${c.played} match${c.played > 1 ? 's' : ''} · ${c.won}V · ${c.draw}N · ${c.lost}D · ${c.goalsFor}-${c.goalsAgainst}${c.competitionCode === 'L1' ? ` · ${c.points} pts` : ''}`}
     >
       <span className="font-semibold text-fg-bright">{label}</span>
       <span className="text-fg-muted num">
