@@ -89,7 +89,7 @@ export function DashboardHero() {
         data-testid="squelette-prochain-match"
         role="status"
         aria-busy="true"
-        className="rounded-md bg-surface border border-border min-h-[345px] lg:min-h-[260px] p-8 animate-pulse"
+        className="rounded-md bg-surface border border-border min-h-[220px] lg:min-h-[260px] p-8 animate-pulse"
       >
         <span className="sr-only">Chargement…</span>
       </section>
@@ -150,7 +150,7 @@ export function DashboardHero() {
     <section
       data-testid="carte-prochain-match"
       className={cn(
-        'relative overflow-hidden rounded-md border bg-surface min-h-[260px]',
+        'relative overflow-hidden rounded-md border bg-surface min-h-[220px] lg:min-h-[260px]',
         isMatchday
           ? 'border-ol-red shadow-[0_0_0_1px_rgba(244,30,55,0.22),0_24px_70px_-45px_rgba(244,30,55,0.75)]'
           : 'border-border',
@@ -214,16 +214,20 @@ export function DashboardHero() {
               <CalendarDays className="h-3.5 w-3.5" strokeWidth={2} />
               {formatKickoffLong(nextMatch)}
             </span>
-            {venue && (
-              <span className="inline-flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
+            {/* Sous lg le panneau « Tableau de bord match » est masqué (L90) : « Domicile » /
+                « Extérieur » finit donc cette ligne. À partir de lg le panneau le dit, et sans stade la
+                ligne n'existe pas. */}
+            <span className={cn('inline-flex items-center gap-1.5', !venue && 'lg:hidden')}>
+              <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
+              <span>
                 {venue}
+                <span className="lg:hidden">{venue ? ' · ' : ''}{olIsHome ? 'Domicile' : 'Extérieur'}</span>
               </span>
-            )}
+            </span>
           </div>
         </div>
 
-        <div className="rounded-md border border-border bg-surface/70 p-4 backdrop-blur-md min-w-0 lg:min-w-[260px]">
+        <div className="hidden lg:block rounded-md border border-border bg-surface/70 p-4 backdrop-blur-md min-w-0 lg:min-w-[260px]">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-fg-muted font-semibold">
             {isLive ? (
               <Radio className="h-3.5 w-3.5 text-ol-red-bright animate-pulse" strokeWidth={2} />
