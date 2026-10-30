@@ -764,8 +764,9 @@
     {
       "id": "L234",
       "title": "Accueil : le sur-titre « Match en direct » reste lisible sur la photo du stade",
-      "status": "doing",
-      "started": "2026-10-30"
+      "status": "done",
+      "started": "2026-10-30",
+      "finished": "2026-10-30"
     }
   ]
 }
