@@ -1093,10 +1093,11 @@ lots:
   - id: L89
     title: "Accueil : le sur-titre du bandeau (« Prochain rendez-vous », « Jour de match », « Match en direct ») est gris fg-dim au lieu du rouge prévu — .eyebrow (@layer utilities, index.css l.116) écrase text-ol-red-bright/text-live ; sur la photo, 10 % de son fond passe sous 4,5:1 à 390 (revue UX L2)"
     public: "Accueil : le sur-titre du bandeau retrouve sa couleur"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-09
+    started: 2026-10-30
   - id: L90
     title: "Accueil, téléphone : masquer sous lg le panneau « Tableau de bord match » du bandeau (180 px qui répètent statut, adversaire, lieu ; barre 24/46/72 % sans légende), « · Domicile/Extérieur » en fin de ligne lieu — maquette de la revue L2 (tmp/ux-ol-L2/rapport.md) à valider avant de coder (revue UX L2)"
     public: "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler"
