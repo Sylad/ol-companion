@@ -2722,6 +2722,7 @@ lots:
     created: 2026-10-30
     notes:
       - { date: 2026-10-30, text: "titre remplacé : « Accueil 390 px : le sur-titre « Match en direct » (text-live sur bg-live/10) passe sous 4,5:1 sur la photo du stade (44 % du fond, au plus bas 3,83:1, WCAG 1.4.3, mesuré par le ux-reviewer de L89) — lui donner un fond opaque comme hors direct »" }
+      - { date: 2026-10-30, text: "QA du 30-10 : texte du sur-titre à 5,22:1 aux deux largeurs sur fond opaque rgb(10,10,16). Les 19 px à 4,435 (déjà vus par la QA de L89) sont les 2 colonnes de bord de la capture, hors du span et sans glyphe : artefact de mesure, pas un défaut. À préciser dans expectations.md : contraste mesuré sur la boîte du texte, pas sur la capture du span." }
     started: 2026-10-30
     review: { date: 2026-10-30, verdict: "compliant — orchestré (vague 2026-10-30-1045-ol, 0 passe(s) de correction)", commit: 1daea410dec25a97be1250e5becf234a6d84f6f0 }
     ux: { date: 2026-10-30, verdict: "conforme, capture 390 regardée par le lead (« MATCH EN DIRECT » rouge sur fond opaque, lisible) ; test Chromium du contraste minimum sur pixels réels ; mineur : l'avatar du club montre un aplat gris dans la capture (photo blanche de la fixture de mesure)" }
