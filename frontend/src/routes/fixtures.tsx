@@ -485,7 +485,7 @@ function MatchLink({
 function KickoffTbd() {
   const [first, ...rest] = KICKOFF_TBD.split(' ');
   return (
-    <div className="text-right text-[10px] uppercase leading-tight tracking-wider text-fg-muted">
+    <div className="text-right text-[10px] uppercase leading-[1.1] tracking-wider text-fg-muted">
       <span className="block whitespace-nowrap">{first}</span>{' '}
       <span className="block whitespace-nowrap">{rest.join(' ')}</span>
     </div>
@@ -496,7 +496,7 @@ function KickoffTbd() {
 function CompetitionTag({ fixture }: { fixture: SeasonMatch }) {
   const long = competitionLong(fixture.competitionCode);
   return (
-    <span data-testid="competition-match" className="whitespace-nowrap text-[11px] font-semibold text-fg-muted">
+    <span data-testid="competition-match" className="whitespace-nowrap text-[11px] font-semibold leading-[1.2] text-fg-muted">
       <abbr title={long} className="no-underline">
         <span aria-hidden="true">{competitionShort(fixture.competitionCode)}</span>
         <span className="sr-only">{long}</span>
@@ -527,7 +527,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
     <article
       data-testid="ligne-match"
       className={cn(
-        'relative grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-2 sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
+        'relative grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-[7px] sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
         // Sous 360 px : colonne de la date resserrée et marges réduites, pour laisser la place aux noms (L48).
         'max-[359px]:grid-cols-[40px_1fr_auto] max-[359px]:gap-1 max-[359px]:px-2',
         isLive && 'border-l-[3px] border-l-live',
@@ -536,7 +536,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
       <DateBlock data-testid="date-match" className="block text-center" {...(iso ? { dateTime: iso, title } : {})}>
         <div className="whitespace-nowrap text-xs font-semibold text-fg max-[359px]:text-[10px]">{day}</div>
         {detail && (
-          <div className="text-[10px] uppercase tracking-wider text-fg-muted">
+          <div className="text-[10px] uppercase leading-[1.1] tracking-wider text-fg-muted">
             {detailShort ? (
               <>
                 {/* Sous 360 px « à confirmer » (64 px) déborde la colonne de 40 px : forme courte à l'écran, forme entière pour les lecteurs d'écran (L48). */}
