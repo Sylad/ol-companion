@@ -1112,6 +1112,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "conforme (1 note mineure : le squelette de 220 px sous lg laisse un saut de 17,5 px vers le bandeau chargé de 237,5 px à 390 px) — orchestré (vague 2026-10-30-1130-ol, 0 passe(s) de correction + passe des mineurs)", commit: 6361c88fbaa7d9b9fc0e9249335476e55880d499 }
   - id: L91
     title: "Carte Ligue 1 : la bulle d'un club liste le match en cours sous « À venir » (bilan 0 V 0 N 0 D, marqueur « Pas encore joué ») alors que /api/season-matches le donne IN_PLAY avec son score (Lens 2-1 Lyon 90+6', 09-10) — isPast (ligue1-map.tsx l.145) ignore le statut ; afficher le score en cours ou « en direct » ; ajouter la ligne never correspondante à docs/qa/expectations.md (QA L81 09-10)"
     public: "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score"
