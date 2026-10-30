@@ -1098,6 +1098,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "conforme (3 commits relus : 97f9c62, dab2a9d, c2fa598). Le sur-titre est rouge rgb(239,67,67) dans Chromium, sans .eyebrow, sur un fond rgba(10,10,16,0.9). Contraste mesuré sur les pixels réels : 5,22:1 à 1440 px, 5,19:1 au 10e centile à 390 px (contre 4,64 sans le fond ; le seul pixel sous 4,5 est un coin arrondi). Les tests R1 et R2 tombent si eyebrow ou bg-bg/90 revient. Le test R8 de L84 reste compatible. La Nouveauté est en U+202F et régénérée. docs/qa/expectations.md et CLAUDE.md restent justes. Aucun constat. — orchestré (vague 2026-10-30-1015-ol, 2 passe(s) de correction)", commit: c2fa598ec5f80f5abf93344168f7f03c02654dee }
   - id: L90
     title: "Accueil, téléphone : masquer sous lg le panneau « Tableau de bord match » du bandeau (180 px qui répètent statut, adversaire, lieu ; barre 24/46/72 % sans légende), « · Domicile/Extérieur » en fin de ligne lieu — maquette de la revue L2 (tmp/ux-ol-L2/rapport.md) à valider avant de coder (revue UX L2)"
     public: "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler"
