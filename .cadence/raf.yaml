@@ -1498,6 +1498,7 @@ lots:
     estimate: 0.25
     created: 2026-10-12
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant : 0 bloquant, 0 majeur, 1 mineur (invalidation perdue pendant une reconstruction en vol, note) — orchestré (vague 2026-10-30-1855-ol, 0 passe(s) de correction)", commit: 64788b2dfc4a07a10a5073b8df0d9e7b9f34d4ca }
   - id: L127
     title: "Page match à 320 px : « Frankowski » (10 lettres) déborde de 4 px de sa pastille — le passage en 10 px de R8 se fait sur w.length > 10 (lineup-card.tsx:82) au lieu de la largeur ; corriger le seuil ou mesurer, test (UX L43)"
     status: done
