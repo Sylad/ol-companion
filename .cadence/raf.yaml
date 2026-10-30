@@ -1121,6 +1121,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant — orchestré (vague 2026-10-30-1130-ol, 0 passe(s) de correction)", commit: 0e912dc1bf4bd33a0a548a009c957b03e7af425a }
   - id: L92
     title: "QA : attentes ## * — exclure la pastille LIVE de la carte du direct (svg.animate-pulse qui pulse tant que le match est en cours) de la ligne never sur .animate-pulse visible après 8 s (QA L81 09-10)"
     status: todo
