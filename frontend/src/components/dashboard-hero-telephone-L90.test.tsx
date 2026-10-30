@@ -76,7 +76,9 @@ describe('<DashboardHero /> — téléphone (L90)', () => {
     expect(suffixe).not.toBeNull();
     expect(suffixe).toHaveTextContent('· Domicile');
     expect(stade.closest('.inline-flex')).not.toHaveClass('lg:hidden');
-    expect(stade.textContent).toBe('Groupama Stadium · Décines-Charpieu · Domicile');
+    // Le « · » reste collé à « Domicile » (espace insécable après) : la ligne ne peut pas se couper
+    // entre les deux ; elle peut en revanche se couper avant le « · ».
+    expect(stade.textContent).toBe('Groupama Stadium · Décines-Charpieu ·\u00a0Domicile');
   });
 
   it('R2 — à l’extérieur : « · Extérieur » après le stade de l’adversaire', async () => {

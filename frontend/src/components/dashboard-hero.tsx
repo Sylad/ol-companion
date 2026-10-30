@@ -221,7 +221,7 @@ export function DashboardHero() {
               <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
               <span>
                 {venue}
-                <span className="lg:hidden">{venue ? ' · ' : ''}{olIsHome ? 'Domicile' : 'Extérieur'}</span>
+                <span className="lg:hidden">{venue ? ' ·\u00a0' : ''}{olIsHome ? 'Domicile' : 'Extérieur'}</span>
               </span>
             </span>
           </div>
