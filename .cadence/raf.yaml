@@ -1074,11 +1074,14 @@ lots:
   - id: L87
     title: "Accueil : le pied du tracker « Journée 1 → 6 · Actuellement 2e · 11 pts » est coupé en deux à 1440 et 390 — la ligne est dans le bloc h-[280px] rempli par le graphique et la section est overflow-hidden (position-tracker.tsx l.46, 89-91, 136-148) ; sortir le pied du bloc (revue UX L2)"
     public: "Accueil : le pied du tracker de classement n'est plus coupé"
-    status: doing
+    status: dropped
     estimate: 0.25
     visible: true
     created: 2026-10-09
     started: 2026-10-30
+    finished: 2026-10-30
+    notes:
+      - { date: 2026-10-30, text: "abandonné : déjà tenu par L150 : pied hors du bloc à hauteur fixe (position-tracker.pied-L150.test.tsx), rendu du 30-10 entier à 1440 et 390 (vague 2026-10-30-1015-ol)" }
   - id: L88
     title: "Accueil, libellés : strip de forme « W D » (D = nul) sous « 2N · 1D » (D = défaite) → V/N/D avec aria-label ; « 1.83 ppm », « 1.80 / match » → virgule fr-FR et « pts/match » ; « Stade Rennais FC 1901 » non raccourci par teamShortName ; info-bulle « 1 matchs » (season-summary.tsx l.220) (revue UX L2)"
     public: "Accueil : libellés harmonisés (forme V, N, D, virgule, clubs courts)"
@@ -1093,12 +1096,14 @@ lots:
   - id: L89
     title: "Accueil : le sur-titre du bandeau (« Prochain rendez-vous », « Jour de match », « Match en direct ») est gris fg-dim au lieu du rouge prévu — .eyebrow (@layer utilities, index.css l.116) écrase text-ol-red-bright/text-live ; sur la photo, 10 % de son fond passe sous 4,5:1 à 390 (revue UX L2)"
     public: "Accueil : le sur-titre du bandeau retrouve sa couleur"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-09
     started: 2026-10-30
     review: { date: 2026-10-30, verdict: "conforme (3 commits relus : 97f9c62, dab2a9d, c2fa598). Le sur-titre est rouge rgb(239,67,67) dans Chromium, sans .eyebrow, sur un fond rgba(10,10,16,0.9). Contraste mesuré sur les pixels réels : 5,22:1 à 1440 px, 5,19:1 au 10e centile à 390 px (contre 4,64 sans le fond ; le seul pixel sous 4,5 est un coin arrondi). Les tests R1 et R2 tombent si eyebrow ou bg-bg/90 revient. Le test R8 de L84 reste compatible. La Nouveauté est en U+202F et régénérée. docs/qa/expectations.md et CLAUDE.md restent justes. Aucun constat. — orchestré (vague 2026-10-30-1015-ol, 2 passe(s) de correction)", commit: c2fa598ec5f80f5abf93344168f7f03c02654dee }
+    ux: { date: 2026-10-30, verdict: "conforme, capture 390 regardée par le lead (sur-titre « Prochain rendez-vous » rouge sur fond opaque) ; contraste mesuré par le ux-reviewer 5,22:1 à 1440, 5,19:1 à 390 ; l'état « Match en direct » reste sous 4,5:1 à 390 → lot suivant" }
+    finished: 2026-10-30
   - id: L90
     title: "Accueil, téléphone : masquer sous lg le panneau « Tableau de bord match » du bandeau (180 px qui répètent statut, adversaire, lieu ; barre 24/46/72 % sans légende), « · Domicile/Extérieur » en fin de ligne lieu — maquette de la revue L2 (tmp/ux-ol-L2/rapport.md) à valider avant de coder (revue UX L2)"
     public: "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler"
@@ -2706,6 +2711,13 @@ lots:
     review: { date: 2026-10-29, verdict: "compliant (1 commit bc235c7 ; anneau blanc décalé mesuré sur les 11 liens à 1440 et 390 px, 2 notes mineures sur le rognage du bord gauche du terrain et sur la portée des tests) — orchestré (vague 2026-10-29-ol4, 0 passe(s) de correction)", commit: bc235c7c525d21db0c214ef8a8e060539859fea2 }
     ux: { date: 2026-10-29, verdict: "conforme : vu par le lead (capture 390 px de la revue UX 29-10) — anneau de focus blanc plein décalé, bien visible sur le terrain (≈ 15:1 contre 1,8:1 avant)" }
     finished: 2026-10-29
+  - id: L234
+    title: "Accueil 390 px : le sur-titre « Match en direct » (text-live sur bg-live/10) passe sous 4,5:1 sur la photo du stade (44 % du fond, au plus bas 3,83:1, WCAG 1.4.3, mesuré par le ux-reviewer de L89) — lui donner un fond opaque comme hors direct"
+    public: "Accueil : le sur-titre « Match en direct » reste lisible sur la photo du stade"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-30
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

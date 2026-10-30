@@ -252,12 +252,6 @@
       "finished": "2026-10-30"
     },
     {
-      "id": "L87",
-      "title": "Accueil : le pied du tracker de classement n'est plus coupé",
-      "status": "doing",
-      "started": "2026-10-30"
-    },
-    {
       "id": "L88",
       "title": "Accueil : libellés harmonisés (forme V, N, D, virgule, clubs courts)",
       "status": "done",
@@ -267,8 +261,9 @@
     {
       "id": "L89",
       "title": "Accueil : le sur-titre du bandeau retrouve sa couleur",
-      "status": "doing",
-      "started": "2026-10-30"
+      "status": "done",
+      "started": "2026-10-30",
+      "finished": "2026-10-30"
     },
     {
       "id": "L90",
@@ -765,6 +760,11 @@
       "status": "done",
       "started": "2026-10-29",
       "finished": "2026-10-29"
+    },
+    {
+      "id": "L234",
+      "title": "Accueil : le sur-titre « Match en direct » reste lisible sur la photo du stade",
+      "status": "todo"
     }
   ]
 }
