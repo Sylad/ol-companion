@@ -1,5 +1,7 @@
 import { TrendingUp, Target, Activity, Award } from 'lucide-react';
 import { useStandings } from '@/hooks/use-standings';
+import { useCurrentLiveMatch } from '@/hooks/use-live-match';
+import { standingsWithoutLive } from '@/lib/standings-without-live';
 import { useSeasonRankings } from '@/hooks/use-season-rankings';
 import { OL_TEAM_ID, type FormOutcome } from '@/types/api';
 import { RetryMessage } from './retry-message';
@@ -9,7 +11,10 @@ export function DashboardStats() {
   const { data: standings, isError, refetch } = useStandings();
   const { data: rankings } = useSeasonRankings();
 
-  const ol = standings?.table.find((t) => t.teamId === OL_TEAM_ID);
+  const { data: live } = useCurrentLiveMatch();
+
+  // Le match en cours n'est pas encore joué (L86) : comme le bilan de la saison, on le laisse de côté.
+  const ol = standingsWithoutLive(standings?.table.find((t) => t.teamId === OL_TEAM_ID), live);
   const positionTrend = useMemoTrend(rankings ?? []);
   const matchday = standings?.currentMatchday ?? 0;
 
