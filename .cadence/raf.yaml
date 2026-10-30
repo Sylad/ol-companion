@@ -1066,6 +1066,7 @@ lots:
     visible: true
     created: 2026-10-09
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "conforme, 3 mineurs (bande de forme non refaite pendant un direct, capture de la Nouveauté antérieure au libellé « Classement en direct », sources des champs de la fiche accueil) — orchestré (vague 2026-10-30-0810-ol, 3 passe(s) de correction)", commit: c947bbdf4cd9a971d1e7d46b869b29a14b08c562 }
   - id: L87
     title: "Accueil : le pied du tracker « Journée 1 → 6 · Actuellement 2e · 11 pts » est coupé en deux à 1440 et 390 — la ligne est dans le bloc h-[280px] rempli par le graphique et la section est overflow-hidden (position-tracker.tsx l.46, 89-91, 136-148) ; sortir le pied du bloc (revue UX L2)"
     public: "Accueil : le pied du tracker de classement n'est plus coupé"
