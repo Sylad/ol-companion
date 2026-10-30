@@ -102,6 +102,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - shows: un clic au centre de chaque marqueur ouvre la bulle de ce club, et la bulle n'est recouverte par aucun contrôle de la carte (L73, QA L70)
 - never: « Chargement de la carte… » après 8 s
 - never: « Pas de match OL recensé » (ni marqueur « Pas encore joué » faute de données : tant que /api/season-matches n'a pas répondu, « Chargement de la carte… » ; en erreur, un message avec « Réessayer », L194)
+- never: dans la bulle d'un club dont le match de Ligue 1 est en cours (/api/season-matches `IN_PLAY`), ce match sous « À venir » : il est sous « En direct » avec son score du côté de l'OL (« 2–1 »), ou « en direct » sans score, et n'entre pas dans le bilan V N D (L91, QA L81 09-10 : Lens 2-1 Lyon 90+6')
 - api: /api/season-matches — lu par la carte
 
 ## /equipe-de-france
