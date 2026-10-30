@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-29 20:06",
+  "generated": "2026-10-30 08:09",
   "entries": [
+    {
+      "slug": "2026-10-30-accueil-un-match-en-cours-n-est-plus-compte-comme-joue-dans",
+      "title": "Accueil : un match en cours n'est plus compté comme joué dans les tuiles",
+      "date": "2026-10-30",
+      "lots": [
+        "L86"
+      ],
+      "captures": [
+        "captures/L86-tuiles-en-direct.png"
+      ],
+      "alts": [
+        "Les tuiles de l'accueil pendant un match en direct : 11 points, 5 matchs, 2N · 0D"
+      ],
+      "html": "<p>Sur l'accueil, pendant un match de Ligue 1 de l'OL, les tuiles Points, Différence buts et Forme ne comptent plus ce match comme déjà joué : à la 56e minute, elles affichaient « 6 matchs » et une défaite de plus alors que le bilan de la saison, juste dessous, disait 5 matchs. Les deux disent désormais la même chose, et le match entre dans les tuiles à son coup de sifflet final.</p>"
+    },
     {
       "slug": "2026-10-29-accueil-pendant-un-match-en-direct-le-bandeau-montre-ce-matc",
       "title": "Accueil : pendant un match en direct, le bandeau montre ce match",
