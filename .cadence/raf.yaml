@@ -1116,10 +1116,11 @@ lots:
   - id: L91
     title: "Carte Ligue 1 : la bulle d'un club liste le match en cours sous « À venir » (bilan 0 V 0 N 0 D, marqueur « Pas encore joué ») alors que /api/season-matches le donne IN_PLAY avec son score (Lens 2-1 Lyon 90+6', 09-10) — isPast (ligue1-map.tsx l.145) ignore le statut ; afficher le score en cours ou « en direct » ; ajouter la ligne never correspondante à docs/qa/expectations.md (QA L81 09-10)"
     public: "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-09
+    started: 2026-10-30
   - id: L92
     title: "QA : attentes ## * — exclure la pastille LIVE de la carte du direct (svg.animate-pulse qui pulse tant que le match est en cours) de la ligne never sur .animate-pulse visible après 8 s (QA L81 09-10)"
     status: todo
