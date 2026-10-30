@@ -93,4 +93,17 @@ describe('DashboardStats — L86', () => {
     expect(screen.getByTestId('stat-points').textContent).toContain('6 matchs');
     expect(screen.getByTestId('stat-forme').textContent).toContain('2N · 1D');
   });
+
+  it('R4 — le rang compte le match en cours : la tuile Position le dit « classement en direct », sinon « Ligue 1 · J… »', () => {
+    standings.value = { data: { table: [olLigne], currentMatchday: 7 }, isError: false, refetch: () => {} };
+    liveMatch.value = { data: enDirect };
+    seasonMatches.value = { data: terminesL1 };
+    const { unmount } = render(<DashboardStats />);
+    expect(screen.getByTestId('stat-position').textContent).toContain('Classement en direct · J7');
+    unmount();
+    liveMatch.value = { data: null };
+    render(<DashboardStats />);
+    expect(screen.getByTestId('stat-position').textContent).toContain('Ligue 1 · J7');
+    expect(screen.getByTestId('stat-position').textContent).not.toContain('en direct');
+  });
 });

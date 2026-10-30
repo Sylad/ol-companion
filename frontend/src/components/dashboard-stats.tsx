@@ -16,7 +16,10 @@ export function DashboardStats() {
   const { data: seasonMatches } = useSeasonMatches();
 
   // Le match en cours n'est pas encore joué (L86) : comme le bilan de la saison, on le laisse de côté.
-  const ol = standingsWithoutLive(standings?.table.find((t) => t.teamId === OL_TEAM_ID), live, seasonMatches);
+  const olClassement = standings?.table.find((t) => t.teamId === OL_TEAM_ID);
+  const ol = standingsWithoutLive(olClassement, live, seasonMatches);
+  // Le rang, lui, vient du classement qui compte le match en cours : on le dit (L86, Nielsen #4).
+  const rangEnDirect = ol !== olClassement;
   const positionTrend = useMemoTrend(rankings ?? []);
   const matchday = standings?.currentMatchday ?? 0;
 
@@ -27,7 +30,7 @@ export function DashboardStats() {
         label="Position"
         value={ol ? `${ol.position}` : '—'}
         suffix={ol ? (ol.position === 1 ? 'er' : 'e') : ''}
-        sub={ol ? (matchday > 0 ? `Ligue 1 · J${matchday}` : 'Ligue 1') : ''}
+        sub={ol ? (matchday > 0 ? `${rangEnDirect ? 'Classement en direct' : 'Ligue 1'} · J${matchday}` : rangEnDirect ? 'Classement en direct' : 'Ligue 1') : ''}
         icon={Award}
         testId="stat-position"
         trend={ol ? positionTrend : null}
