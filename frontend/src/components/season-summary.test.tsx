@@ -108,7 +108,7 @@ describe('<SeasonSummary /> — noms de compétitions (L49)', () => {
   });
 
   it('R4 — l’info-bulle d’une compétition à 1 match dit « 1 match », pas « 1 matchs »', async () => {
-    await renderBody({ perCompetition: [{ competitionCode: 'CDF', played: 1, won: 1, draw: 0, lost: 0, goalsFor: 2, goalsAgainst: 0, points: 0 }] });
+    await renderBody({ perCompetition: [{ competitionCode: 'CDF', played: 1, won: 1, draw: 0, lost: 0, goalsFor: 2, goalsAgainst: 0, cleanSheets: 1, points: 0 }] });
     const chip = document.querySelector('div[title]') as HTMLElement;
     expect(chip.title).toMatch(/^1 match · /);
     expect(chip.title).not.toContain('1 matchs');
