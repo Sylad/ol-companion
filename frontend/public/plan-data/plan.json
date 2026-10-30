@@ -268,14 +268,16 @@
     {
       "id": "L90",
       "title": "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler",
-      "status": "doing",
-      "started": "2026-10-30"
+      "status": "done",
+      "started": "2026-10-30",
+      "finished": "2026-10-30"
     },
     {
       "id": "L91",
       "title": "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score",
-      "status": "doing",
-      "started": "2026-10-30"
+      "status": "done",
+      "started": "2026-10-30",
+      "finished": "2026-10-30"
     },
     {
       "id": "L94",

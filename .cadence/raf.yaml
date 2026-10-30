@@ -1107,21 +1107,25 @@ lots:
   - id: L90
     title: "Accueil, téléphone : masquer sous lg le panneau « Tableau de bord match » du bandeau (180 px qui répètent statut, adversaire, lieu ; barre 24/46/72 % sans légende), « · Domicile/Extérieur » en fin de ligne lieu — maquette de la revue L2 (tmp/ux-ol-L2/rapport.md) à valider avant de coder (revue UX L2)"
     public: "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-09
     started: 2026-10-30
     review: { date: 2026-10-30, verdict: "conforme (1 note mineure : le squelette de 220 px sous lg laisse un saut de 17,5 px vers le bandeau chargé de 237,5 px à 390 px) — orchestré (vague 2026-10-30-1130-ol, 0 passe(s) de correction + passe des mineurs)", commit: 6361c88fbaa7d9b9fc0e9249335476e55880d499 }
+    ux: { date: 2026-10-30, verdict: "conforme, capture 390 regardée par le lead (bandeau sans le panneau Tableau de bord match sous lg, lieu intégré à la ligne du stade) ; mineur : squelette 220 px contre bandeau chargé 237,5 px à 390 (saut de 17,5 px) ; l'écusson adverse de la capture vient des données simulées" }
+    finished: 2026-10-30
   - id: L91
     title: "Carte Ligue 1 : la bulle d'un club liste le match en cours sous « À venir » (bilan 0 V 0 N 0 D, marqueur « Pas encore joué ») alors que /api/season-matches le donne IN_PLAY avec son score (Lens 2-1 Lyon 90+6', 09-10) — isPast (ligue1-map.tsx l.145) ignore le statut ; afficher le score en cours ou « en direct » ; ajouter la ligne never correspondante à docs/qa/expectations.md (QA L81 09-10)"
     public: "Carte Ligue 1 : la bulle d'un club montre le match en cours avec son score"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-09
     started: 2026-10-30
     review: { date: 2026-10-30, verdict: "compliant — orchestré (vague 2026-10-30-1130-ol, 0 passe(s) de correction)", commit: 0e912dc1bf4bd33a0a548a009c957b03e7af425a }
+    ux: { date: 2026-10-30, verdict: "conforme, capture 390 regardée par le lead (bulle de Marseille : rubrique « EN DIRECT » distincte de Joués, match en cours plus sous « À venir »)" }
+    finished: 2026-10-30
   - id: L92
     title: "QA : attentes ## * — exclure la pastille LIVE de la carte du direct (svg.animate-pulse qui pulse tant que le match est en cours) de la ligne never sur .animate-pulse visible après 8 s (QA L81 09-10)"
     status: todo
