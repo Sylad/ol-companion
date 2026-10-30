@@ -1489,19 +1489,21 @@ lots:
     finished: 2026-10-30
   - id: L125
     title: "Bandeau Olympique Lyonnais hors Calendrier sous 1024 px : rétablir leading-tight sur le titre non compact (24 px sur 30 px comme avant L50, 32 px depuis cc5b883 — tailwind-merge) et le tester (revue L50)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-12
     started: 2026-10-30
     docs_ok: { date: 2026-10-30, reason: "Correction de style (leading-tight rétabli sur le titre non compact du bandeau OL sous 1024 px, retour à l'état d'avant L50) : aucun comportement, commande, clé ni nom documenté ne change ; docs/qa/expectations.md et les Nouveautés ne décrivent pas la hauteur de ligne." }
     review: { date: 2026-10-30, verdict: "conforme — orchestré (vague 2026-10-30-1855-ol, 1 passe(s) de correction)", commit: d5ad8440ed4bbb1b02119a183e021c1820545241 }
+    finished: 2026-10-30
   - id: L126
     title: "Joueurs : première ouverture de Stats saison sans réponse en 13 s (QA L50/L85 12-10) — mesurer la latence à froid de /api/players/season-stats, borner ou préchauffer"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-12
     started: 2026-10-30
     review: { date: 2026-10-30, verdict: "compliant : 0 bloquant, 0 majeur, 1 mineur (invalidation perdue pendant une reconstruction en vol, note) — orchestré (vague 2026-10-30-1855-ol, 0 passe(s) de correction)", commit: 64788b2dfc4a07a10a5073b8df0d9e7b9f34d4ca }
+    finished: 2026-10-30
   - id: L127
     title: "Page match à 320 px : « Frankowski » (10 lettres) déborde de 4 px de sa pastille — le passage en 10 px de R8 se fait sur w.length > 10 (lineup-card.tsx:82) au lieu de la largeur ; corriger le seuil ou mesurer, test (UX L43)"
     status: done
