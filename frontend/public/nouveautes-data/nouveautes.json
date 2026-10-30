@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-30 10:15",
+  "generated": "2026-10-30 10:36",
   "entries": [
+    {
+      "slug": "2026-10-30-accueil-au-telephone-un-bandeau-plus-court-le-direct-visible",
+      "title": "Accueil au téléphone : un bandeau plus court, le direct visible sans défiler",
+      "date": "2026-10-30",
+      "lots": [
+        "L90"
+      ],
+      "captures": [
+        "captures/2026-10-30-accueil-bandeau-390.png"
+      ],
+      "alts": [
+        "Accueil à 390 px : le bandeau du prochain match, sans panneau Tableau de bord match, finit par « Groupama Stadium · Décines-Charpieu · Domicile »"
+      ],
+      "html": "<p>Sur l'accueil, au téléphone, le bandeau du prochain match est plus court (environ 240 px au lieu de 400) : le panneau « Tableau de bord match », qui répétait le statut, l'adversaire et le lieu, n'est plus affiché, et la ligne du lieu se termine par « Domicile » ou « Extérieur ». Le reste de l'accueil, dont le direct, remonte d'autant. Sur ordinateur, rien ne change.</p>"
+    },
     {
       "slug": "2026-10-30-accueil-le-sur-titre-match-en-direct-reste-lisible-sur-la-ph",
       "title": "Accueil : le sur-titre « Match en direct » reste lisible sur la photo du stade",
