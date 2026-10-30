@@ -1481,6 +1481,7 @@ lots:
     visible: true
     created: 2026-10-11
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant: les lignes du Calendrier à 390 px sont resserrées (somme des 46 lignes 2 438 px contre 2 447 pour la maquette de L50 ; liste complète 2 904 px contre 3 163 avant), lisibilité conservée (noms 13 px, scores 14 px, pas d'ellipse ni de défilement horizontal) ; 2 notes mineures (seuil R1 mesuré sur la liste entière avec 5 % de marge, changement de padding aussi valable à 1440 px) — orchestré (vague 2026-10-30-1530-ol, 0 passe(s) de correction)", commit: 090d83ee4ae81cb5fa3166ba96be26632ebf62f8 }
   - id: L125
     title: "Bandeau Olympique Lyonnais hors Calendrier sous 1024 px : rétablir leading-tight sur le titre non compact (24 px sur 30 px comme avant L50, 32 px depuis cc5b883 — tailwind-merge) et le tester (revue L50)"
     status: todo
