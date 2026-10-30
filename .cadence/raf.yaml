@@ -1494,9 +1494,10 @@ lots:
     created: 2026-10-12
   - id: L126
     title: "Joueurs : première ouverture de Stats saison sans réponse en 13 s (QA L50/L85 12-10) — mesurer la latence à froid de /api/players/season-stats, borner ou préchauffer"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-12
+    started: 2026-10-30
   - id: L127
     title: "Page match à 320 px : « Frankowski » (10 lettres) déborde de 4 px de sa pastille — le passage en 10 px de R8 se fait sur w.length > 10 (lineup-card.tsx:82) au lieu de la largeur ; corriger le seuil ou mesurer, test (UX L43)"
     status: done
