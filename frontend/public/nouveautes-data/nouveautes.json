@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-10-30 09:33",
+  "generated": "2026-10-30 09:53",
   "entries": [
+    {
+      "slug": "2026-10-30-accueil-le-sur-titre-du-bandeau-retrouve-sa-couleur",
+      "title": "Accueil : le sur-titre du bandeau retrouve sa couleur",
+      "date": "2026-10-30",
+      "lots": [
+        "L89"
+      ],
+      "captures": [
+        "captures/accueil-surtitre-L89.png"
+      ],
+      "alts": [
+        "Accueil à 390 px : le sur-titre « Prochain rendez-vous » du bandeau est en rouge, sur un fond sombre"
+      ],
+      "html": "<p>Sur l'accueil, le sur-titre du bandeau (« Prochain rendez-vous », « Approche du coup d'envoi », « Jour de match ») est de nouveau écrit en rouge, comme prévu, et non plus en gris. Il repose sur un fond sombre qui le garde lisible quand la photo du stade passe derrière, y compris sur téléphone.</p>"
+    },
     {
       "slug": "2026-10-30-accueil-libelles-harmonises-forme-v-n-d-virgule-clubs-courts",
       "title": "Accueil : des libellés cohérents (forme V/N/D, virgule, clubs courts)",
