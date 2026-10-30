@@ -247,7 +247,8 @@
     {
       "id": "L86",
       "title": "Accueil : un match en cours n'est plus compté comme joué dans les tuiles",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-10-30"
     },
     {
       "id": "L87",
