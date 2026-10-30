@@ -1493,6 +1493,7 @@ lots:
     estimate: 0.25
     created: 2026-10-12
     started: 2026-10-30
+    docs_ok: { date: 2026-10-30, reason: "Correction de style (leading-tight rétabli sur le titre non compact du bandeau OL sous 1024 px, retour à l'état d'avant L50) : aucun comportement, commande, clé ni nom documenté ne change ; docs/qa/expectations.md et les Nouveautés ne décrivent pas la hauteur de ligne." }
   - id: L126
     title: "Joueurs : première ouverture de Stats saison sans réponse en 13 s (QA L50/L85 12-10) — mesurer la latence à froid de /api/players/season-stats, borner ou préchauffer"
     status: doing
