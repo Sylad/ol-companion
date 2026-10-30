@@ -1128,9 +1128,10 @@ lots:
     finished: 2026-10-30
   - id: L92
     title: "QA : attentes ## * — exclure la pastille LIVE de la carte du direct (svg.animate-pulse qui pulse tant que le match est en cours) de la ligne never sur .animate-pulse visible après 8 s (QA L81 09-10)"
-    status: todo
+    status: doing
     estimate: 0.1
     created: 2026-10-09
+    started: 2026-10-30
   - id: L93
     title: "QA : attentes — nommer le sélecteur du surtitre de /about (aucun .eyebrow sur la page) et rafraîchir le compte daté du tracker (6 points le 10-10)"
     status: done
