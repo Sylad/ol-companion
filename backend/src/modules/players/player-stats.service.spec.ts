@@ -373,4 +373,143 @@ describe('PlayerStatsService', () => {
       });
     });
   });
+
+  describe('latence à froid (L126)', () => {
+    const matchN = (n: number) =>
+      Array.from({ length: n }, (_, i) => ({
+        id: 5000 + i,
+        date: `2026-0${(i % 9) + 1}-10T20:00:00+02:00`,
+        homeTeam: 'Lyon',
+        homeTeamId: 523,
+        awayTeam: `Adv ${i}`,
+        awayTeamId: 1000 + i,
+        homeScore: 1,
+        awayScore: 0,
+        competition: 'Ligue 1',
+        competitionCode: 'L1' as const,
+        competitionId: 35,
+        status: 'FINISHED' as const,
+        matchday: null,
+      }));
+    const ok = () =>
+      ({ ok: true, status: 200, json: async () => fixture }) as any;
+    afterEach(() => jest.restoreAllMocks());
+
+    it('R1 — la reconstruction lit plusieurs détails en même temps, jamais plus de 6, et plus vite que l\'un après l\'autre', async () => {
+      await withCwd(async () => {
+        const { svc, seasonMatches } = buildService();
+        seasonMatches.getMatches.mockResolvedValue(matchN(18));
+        let enVol = 0;
+        let maxEnVol = 0;
+        svc.fetcher = jest.fn(async () => {
+          enVol++;
+          maxEnVol = Math.max(maxEnVol, enVol);
+          await new Promise((r) => setTimeout(r, 30));
+          enVol--;
+          return ok();
+        });
+        const t0 = Date.now();
+        await svc.getAll();
+        const duree = Date.now() - t0;
+        expect(maxEnVol).toBeGreaterThan(1);
+        expect(maxEnVol).toBeLessThanOrEqual(6);
+        // 18 × 30 ms = 540 ms l'un après l'autre ; 3 vagues de 6 ≈ 90 ms.
+        expect(duree).toBeLessThan(300);
+        expect(svc.fetcher).toHaveBeenCalledTimes(18);
+      });
+    });
+
+    it('R2 — le résultat ne dépend pas de l\'ordre d\'arrivée des détails', async () => {
+      await withCwd(async () => {
+        const matches = matchN(8);
+        const run = async (retardDe: (i: number) => number) => {
+          const { svc, seasonMatches } = buildService();
+          seasonMatches.getMatches.mockResolvedValue(matches);
+          svc.fetcher = jest.fn(async (url: any) => {
+            const i = Number(String(url).match(/gameId=(\d+)/)![1]) - 5000;
+            await new Promise((r) => setTimeout(r, retardDe(i)));
+            return ok();
+          });
+          return svc.getAll();
+        };
+        const croissant = await run((i) => i * 5);
+        const decroissant = await run((i) => (7 - i) * 5);
+        expect(decroissant).toEqual(croissant);
+      });
+    });
+
+    it('R3 — un détail en échec parmi les parallèles est relu une fois et nommé s\'il manque encore, les autres sont gardés', async () => {
+      await withCwd(async () => {
+        const { svc, seasonMatches } = buildService();
+        seasonMatches.getMatches.mockResolvedValue(matchN(8));
+        const appels: Record<string, number> = {};
+        svc.fetcher = jest.fn(async (url: any) => {
+          const id = String(url).match(/gameId=(\d+)/)![1];
+          appels[id] = (appels[id] ?? 0) + 1;
+          return id === '5003' ? ({ ok: false, status: 503 } as any) : ok();
+        });
+        expect(await svc.getAll()).not.toHaveLength(0);
+        expect(appels['5003']).toBe(2);
+        expect(appels['5000']).toBe(1);
+      });
+    });
+
+    it('R4 — au démarrage, une copie absente est préchauffée en arrière-plan : la première lecture ne relit rien', async () => {
+      await withCwd(async () => {
+        const { svc } = buildService();
+        svc.onModuleInit();
+        svc.onApplicationBootstrap();
+        await new Promise((r) => setTimeout(r, 50));
+        const fetcher = svc.fetcher as jest.Mock;
+        const apresPrechauffage = fetcher.mock.calls.length;
+        expect(apresPrechauffage).toBeGreaterThan(0);
+        expect(await svc.getAll()).toHaveLength(11);
+        expect(fetcher.mock.calls.length).toBe(apresPrechauffage);
+        svc.onModuleDestroy();
+      });
+    });
+
+    it('R5 — copie fraîche lue sur le disque : aucun préchauffage ; liste des matchs en échec : journalisé, pas de rejet', async () => {
+      await withCwd(async () => {
+        const { svc: premier } = buildService();
+        await premier.getAll();
+        const { svc, seasonMatches } = buildService();
+        svc.onModuleInit();
+        svc.onApplicationBootstrap();
+        await new Promise((r) => setTimeout(r, 20));
+        expect(svc.fetcher as jest.Mock).not.toHaveBeenCalled();
+        expect(seasonMatches.getMatches).not.toHaveBeenCalled();
+        svc.onModuleDestroy();
+      });
+      await withCwd(async () => {
+        const { svc, seasonMatches } = buildService();
+        seasonMatches.getMatches.mockRejectedValue(new Error('503'));
+        const warn = jest.spyOn((svc as any).logger, 'warn');
+        const rejets: unknown[] = [];
+        const ecouteur = (e: unknown) => rejets.push(e);
+        process.on('unhandledRejection', ecouteur);
+        svc.onApplicationBootstrap();
+        await new Promise((r) => setTimeout(r, 20));
+        process.off('unhandledRejection', ecouteur);
+        expect(rejets).toEqual([]);
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('préchauffage impossible'),
+        );
+      });
+    });
+
+    it('R6 — season-matches-changed préchauffe la copie invalidée sans attendre une lecture', async () => {
+      await withCwd(async () => {
+        const { svc, bus } = buildService();
+        svc.onModuleInit();
+        await svc.getAll();
+        const fetcher = svc.fetcher as jest.Mock;
+        const avant = fetcher.mock.calls.length;
+        bus.emit('season-matches-changed', { count: 1 });
+        await new Promise((r) => setTimeout(r, 50));
+        expect(fetcher.mock.calls.length).toBeGreaterThan(avant);
+        svc.onModuleDestroy();
+      });
+    });
+  });
 });

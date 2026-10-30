@@ -151,6 +151,14 @@ describe('AppModule (e2e)', () => {
         .mockImplementation(() => {});
     }
 
+    // Le préchauffage de player-stats (L126) part à onApplicationBootstrap, pas à onModuleInit.
+    const { PlayerStatsService } = require('../src/modules/players/player-stats.service') as {
+      PlayerStatsService: { prototype: { onApplicationBootstrap: () => void } };
+    };
+    jest
+      .spyOn(PlayerStatsService.prototype, 'onApplicationBootstrap')
+      .mockImplementation(() => {});
+
     const moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
     })

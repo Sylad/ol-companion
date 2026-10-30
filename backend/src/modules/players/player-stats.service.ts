@@ -1,4 +1,10 @@
-import { Injectable, Logger, OnModuleInit, Optional } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnApplicationBootstrap,
+  OnModuleInit,
+  Optional,
+} from '@nestjs/common';
 import { Subscription } from 'rxjs';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -32,6 +38,8 @@ const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1h
 /** Après une reconstruction sans aucun match lu, on réessaie dans 5 min, pas à chaque requête. */
 const RETRY_AFTER_FAILURE_MS = 5 * 60 * 1000;
+/** Détails de match lus en même temps : la reconstruction à froid (une trentaine de matchs) ne se lit plus l'un après l'autre (L126). */
+const DETAIL_CONCURRENCY = 6;
 const CACHE_FILE_NAME = 'player-stats-cache.json';
 
 /**
@@ -47,7 +55,9 @@ interface CachedFile {
 }
 
 @Injectable()
-export class PlayerStatsService implements OnModuleInit {
+export class PlayerStatsService
+  implements OnModuleInit, OnApplicationBootstrap
+{
   private readonly logger = new Logger(PlayerStatsService.name);
   private cache = new Map<number, PlayerSeasonStats>();
   private cacheBuiltAt = 0;
@@ -80,8 +90,17 @@ export class PlayerStatsService implements OnModuleInit {
           'Invalidating player-stats cache (season-matches-changed)',
         );
         this.invalidate();
+        this.warm();
       }
     });
+  }
+
+  /**
+   * Préchauffe (L126) : au démarrage, une copie absente ou périmée est reconstruite en arrière-plan, pour que
+   * la première ouverture de Stats saison trouve la copie prête au lieu d'attendre les détails de match.
+   */
+  onApplicationBootstrap() {
+    this.warm();
   }
 
   onModuleDestroy() {
@@ -109,6 +128,16 @@ export class PlayerStatsService implements OnModuleInit {
    */
   invalidate(): void {
     this.cacheBuiltAt = 0;
+  }
+
+  /** Reconstruit sans attendre si la copie n'est pas fraîche ; un échec est journalisé, jamais une promesse rejetée. */
+  private warm(): void {
+    if (this.isFresh()) return;
+    this.rebuild().catch((err) =>
+      this.logger.warn(
+        `player-stats : préchauffage impossible (${(err as Error).message})`,
+      ),
+    );
   }
 
   private isFresh(): boolean {
@@ -144,18 +173,21 @@ export class PlayerStatsService implements OnModuleInit {
     let succeeded = 0;
     // Un détail en échec (timeout, HTTP non-2xx, charge illisible) est relu une fois après la passe, puis nommé s'il reste manquant (L53).
     let missing: SeasonMatch[] = [];
-    for (const m of finished) {
-      if (await this.accumulateMatch(acc, m)) succeeded++;
+    // Lus en parallèle (L126), accumulés dans l'ordre des matchs : le résultat ne dépend pas de l'ordre d'arrivée.
+    const games = await this.readDetails(finished);
+    finished.forEach((m, i) => {
+      if (this.accumulate(acc, m, games[i])) succeeded++;
       else missing.push(m);
-    }
+    });
     // Rien de lu : 365scores est tombé, rejouer les N détails ne ferait qu'allonger l'attente (chacun jusqu'à 10 s).
-    if (succeeded > 0) {
+    if (succeeded > 0 && missing.length > 0) {
       const retry = missing;
       missing = [];
-      for (const m of retry) {
-        if (await this.accumulateMatch(acc, m)) succeeded++;
+      const again = await this.readDetails(retry);
+      retry.forEach((m, i) => {
+        if (this.accumulate(acc, m, again[i])) succeeded++;
         else missing.push(m);
-      }
+      });
     }
 
     // Panne de 365scores, pas une saison sans stat : aucun match lu, ou moins que pour la copie actuelle (panne partielle). On la garde.
@@ -189,14 +221,43 @@ export class PlayerStatsService implements OnModuleInit {
     );
   }
 
-  /** Lit un match et l'ajoute à l'accumulateur ; faux si son détail est illisible (échec journalisé). */
-  private async accumulateMatch(
+  /** Lit les détails avec au plus `DETAIL_CONCURRENCY` appels en vol ; `null` pour un détail illisible (échec journalisé), dans l'ordre de `matches`. */
+  private async readDetails(
+    matches: SeasonMatch[],
+  ): Promise<(Scores365GameDetailed | null)[]> {
+    const out: (Scores365GameDetailed | null)[] = new Array(matches.length).fill(
+      null,
+    );
+    let next = 0;
+    const worker = async () => {
+      while (next < matches.length) {
+        const i = next++;
+        try {
+          out[i] = await this.fetchGameDetail(matches[i].id);
+        } catch (err) {
+          this.logger.warn(
+            `Skip match ${matches[i].id}: ${(err as Error).message}`,
+          );
+        }
+      }
+    };
+    await Promise.all(
+      Array.from(
+        { length: Math.min(DETAIL_CONCURRENCY, matches.length) },
+        worker,
+      ),
+    );
+    return out;
+  }
+
+  /** Ajoute un match lu à l'accumulateur ; faux si son détail est illisible (`null`) ou ne s'accumule pas. */
+  private accumulate(
     acc: Map<number, any>,
     m: SeasonMatch,
-  ): Promise<boolean> {
+    game: Scores365GameDetailed | null,
+  ): boolean {
+    if (!game) return false;
     try {
-      const game = await this.fetchGameDetail(m.id);
-      if (!game) return false;
       accumulateGame(acc, game, this.toContext(m));
       return true;
     } catch (err) {
