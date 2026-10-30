@@ -1468,11 +1468,12 @@ lots:
     created: 2026-10-11
   - id: L123
     title: "QA — docs/qa/expectations.md : /fcnoobz passe à 4 cartes (tuile Jeux vidéo = lien) et nouvelle section /fcnoobz/jeux-video (h1, 4 blocs, ligne de vérification, never des états, api /jeux-video-data/football-manager.json) — brouillon du contrôle QA L25 dans ~/projects/developpeur/tmp/qa-ol-l25/ et le rapport du 11-10"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-11
     notes:
       - { date: 2026-10-18, text: "18-10 : depuis L8, la tuile Jeux vidéo est en tête, en pleine largeur, au-dessus des 3 tuiles « Bientôt » — le citer dans les attentes QA de /fcnoobz" }
+    started: 2026-10-30
   - id: L124
     title: "Calendrier à 390 px : lignes de match ~20 % plus hautes que la maquette validée de L50 (2 926 px contre 2 447 pour 46 matchs) — resserrer score et noms sans perdre la lisibilité (suite de L50)"
     public: Calendrier plus compact sur téléphone
