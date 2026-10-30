@@ -1074,10 +1074,11 @@ lots:
   - id: L87
     title: "Accueil : le pied du tracker « Journée 1 → 6 · Actuellement 2e · 11 pts » est coupé en deux à 1440 et 390 — la ligne est dans le bloc h-[280px] rempli par le graphique et la section est overflow-hidden (position-tracker.tsx l.46, 89-91, 136-148) ; sortir le pied du bloc (revue UX L2)"
     public: "Accueil : le pied du tracker de classement n'est plus coupé"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-09
+    started: 2026-10-30
   - id: L88
     title: "Accueil, libellés : strip de forme « W D » (D = nul) sous « 2N · 1D » (D = défaite) → V/N/D avec aria-label ; « 1.83 ppm », « 1.80 / match » → virgule fr-FR et « pts/match » ; « Stade Rennais FC 1901 » non raccourci par teamShortName ; info-bulle « 1 matchs » (season-summary.tsx l.220) (revue UX L2)"
     public: "Accueil : libellés harmonisés (forme V, N, D, virgule, clubs courts)"
