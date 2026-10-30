@@ -175,10 +175,10 @@ export function DashboardHero() {
         <div className="space-y-4 min-w-0">
           <div className="flex items-center gap-3">
             <span className={cn(
-              isLive
-                // Pas de `eyebrow` ici : sa couleur grise (@layer utilities) sort après `text-live`.
-                ? 'text-[11px] font-semibold uppercase tracking-[0.12em] text-live animate-pulse-live-halo px-2 py-0.5 rounded-sm bg-live/10'
-                : 'eyebrow text-ol-red-bright'
+              // Pas de `eyebrow` : sa couleur grise (@layer utilities) sort après `text-live` et
+              // `text-ol-red-bright`. Le fond opaque tient 4,5:1 quand la photo du stade passe dessous.
+              'text-[11px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-sm',
+              isLive ? 'text-live animate-pulse-live-halo bg-live/10' : 'text-ol-red-bright bg-bg/90'
             )}>
               {pulseLabel}
             </span>
