@@ -4,6 +4,8 @@ import { KnowledgeHeader } from './knowledge-header';
 
 vi.mock('@/hooks/use-wiki-image', () => ({ useWikiImage: () => ({ data: undefined }) }));
 vi.mock('@/hooks/use-standings', () => ({ useStandings: () => ({ data: undefined }) }));
+vi.mock('@/hooks/use-live-match', () => ({ useCurrentLiveMatch: () => ({ data: null }) }));
+vi.mock('@/hooks/use-season-matches', () => ({ useSeasonMatches: () => ({ data: undefined }) }));
 
 // tailwind-merge retire un `leading-*` placé avant une taille de police (`text-base`, `text-2xl`, `lg:text-[34px]`) :
 // ces tests verrouillent l'ordre des classes pour que le bandeau reste identique au bureau (≥ lg).

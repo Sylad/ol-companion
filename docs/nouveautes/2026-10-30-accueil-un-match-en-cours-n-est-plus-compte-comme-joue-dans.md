@@ -7,5 +7,4 @@ lots: [L86]
 captures:
   - { file: captures/L86-tuiles-en-direct.png, alt: "Les tuiles de l'accueil pendant un match en direct : 11 points, 5 matchs, 2N · 0D" }
 ---
-Sur l'accueil, pendant un match de Ligue 1 de l'OL, les tuiles Points, Différence buts et Forme ne comptent plus ce match comme déjà joué : à la 56e minute, elles affichaient « 6 matchs » et une défaite de plus alors que le bilan de la saison, juste dessous, disait 5 matchs. Les deux disent désormais la même chose, et le match entre dans les tuiles à son coup de sifflet final.
-
+Sur l'accueil, pendant un match de Ligue 1 de l'OL, les tuiles Points, Différence buts et Forme ne comptent plus ce match comme déjà joué : à la 56e minute, elles affichaient « 6 matchs » et une défaite de plus alors que le bilan de la saison, juste dessous, disait 5 matchs. Les deux disent désormais la même chose, et le match entre dans les tuiles à son coup de sifflet final. Le bandeau « Olympique Lyonnais », en haut de l'accueil, du classement, de la carte et des coupes, suit la même règle : ses points sont ceux des matchs terminés, et son rang, qui compte le match en cours, est marqué « en direct ».
