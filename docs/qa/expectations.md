@@ -111,7 +111,12 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - api: /api/france
 
 ## /fcnoobz
-- shows: le titre « FC NOOBZ » ; 3 cartes (Lecteur de sauvegarde FM, Histoire du club, Palmarès virtuel) ; l'image du club
+- shows: le titre « FC NOOBZ » ; 4 cartes : la tuile « Jeux vidéo » en tête, en pleine largeur, au-dessus des 3 tuiles « Bientôt » (Lecteur de sauvegarde FM, Histoire du club, Palmarès virtuel) ; la tuile « Jeux vidéo » est un lien vers /fcnoobz/jeux-video (signe « Voir la page → » visible), les 3 autres ne sont pas des liens ; l'image du club (L8, L123)
+
+## /fcnoobz/jeux-video
+- shows: le h1 « Jeux vidéo » ; le lien « ← FC Noobz » ; 4 blocs, chacun non vide : « Prochaine sortie » (nom, date « Jour. JJ/MM/AAAA », plateformes), « Éditions précédentes » (au moins une édition avec sa date), « Nouveautés annoncées » (au moins une, titre et description), « La série » (présentation de Football Manager) ; la ligne « Infos vérifiées le JJ/MM/AAAA sur footballmanager.com. Les dates peuvent changer. » (11/10/2026 le 11-10) ; scrollWidth = clientWidth à 1440 comme à 390
+- never: « Chargement de Football Manager… » ; « Réessayer » (état d'erreur) ; « Aucune info Football Manager pour le moment. » (état vide) ; « Date à confirmer » tant que le fichier porte une date de sortie
+- api: /jeux-video-data/football-manager.json — fichier statique, relu à la main sur les sources en ligne (L25, L123)
 
 ## /about
 - shows: le titre « Vibe coded with Claude Code » ; les sections Frontend, Backend, Infra (titres h3, pas h2), chacune non vide ; chaque lien de « Mes autres sites » répond 2xx
