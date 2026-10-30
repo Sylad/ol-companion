@@ -25,7 +25,7 @@ function fini(home: boolean, pour: number, contre: number, over: Partial<SeasonM
     competitionCode: 'L1', competitionId: 35, ...over,
   };
 }
-// 5 matchs terminés : 3V 2N 0D, 9 buts pour, 5 contre, 11 points (la ligne `ol` compte en plus le match en cours)
+// 5 matchs terminés : 3V 2N 0D, 9 buts pour, 4 contre, 11 points (la ligne `ol` compte en plus le match en cours)
 const termines = [fini(true, 2, 0), fini(false, 3, 1), fini(true, 1, 0), fini(true, 1, 1), fini(false, 2, 2)];
 
 describe('standingsWithoutLive — L86', () => {
