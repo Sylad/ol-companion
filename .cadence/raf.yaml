@@ -1132,6 +1132,7 @@ lots:
     estimate: 0.1
     created: 2026-10-09
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant (1 note : l'exclusion ne couvre pas les autres svg.animate-pulse de direct hors carte) — orchestré (vague 2026-10-30-1310-ol, 0 passe(s) de correction)", commit: cb18e3354be11793e71e386715b1f0b534f7d1d3 }
   - id: L93
     title: "QA : attentes — nommer le sélecteur du surtitre de /about (aucun .eyebrow sur la page) et rafraîchir le compte daté du tracker (6 points le 10-10)"
     status: done
