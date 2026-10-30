@@ -2713,12 +2713,14 @@ lots:
     ux: { date: 2026-10-29, verdict: "conforme : vu par le lead (capture 390 px de la revue UX 29-10) — anneau de focus blanc plein décalé, bien visible sur le terrain (≈ 15:1 contre 1,8:1 avant)" }
     finished: 2026-10-29
   - id: L234
-    title: "Accueil 390 px : le sur-titre « Match en direct » (text-live sur bg-live/10) passe sous 4,5:1 sur la photo du stade (44 % du fond, au plus bas 3,83:1, WCAG 1.4.3, mesuré par le ux-reviewer de L89) — lui donner un fond opaque comme hors direct"
+    title: "Accueil 390 px : le sur-titre du bandeau sur la photo du stade passe sous 4,5:1 — « Match en direct » (text-live sur bg-live/10, au plus bas 3,83:1, ux-reviewer de L89) et même « Prochain rendez-vous » (bg-bg/90 : 19 px sous 4,5, pire 4,435, QA du 30-10) — fond réellement opaque pour toutes les variantes (Prochain rendez-vous, Jour de match, Match en direct), contraste minimum mesuré sur les pixels réels ≥ 4,5:1 à 1440 et 390 ; ligne shows: correspondante sous ## / dans docs/qa/expectations.md"
     public: "Accueil : le sur-titre « Match en direct » reste lisible sur la photo du stade"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-30
+    notes:
+      - { date: 2026-10-30, text: "titre remplacé : « Accueil 390 px : le sur-titre « Match en direct » (text-live sur bg-live/10) passe sous 4,5:1 sur la photo du stade (44 % du fond, au plus bas 3,83:1, WCAG 1.4.3, mesuré par le ux-reviewer de L89) — lui donner un fond opaque comme hors direct »" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
