@@ -32,3 +32,17 @@ describe.each([
     }
   });
 });
+
+describe('L125 — titre non compact sous 1024 px', () => {
+  it('le titre non compact est en text-2xl leading-tight (24 px sur 30 px), pas 32 px', () => {
+    render(<KnowledgeHeader />);
+    const classes = screen.getByText('Olympique Lyonnais').className.split(/\s+/);
+    expect(classes).toContain('text-2xl');
+    expect(classes).toContain('leading-tight');
+  });
+
+  it('le titre compact garde la hauteur de ligne de text-base', () => {
+    render(<KnowledgeHeader compact />);
+    expect(screen.getByText('Olympique Lyonnais').className.split(/\s+/)).not.toContain('leading-tight');
+  });
+});

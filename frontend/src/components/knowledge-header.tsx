@@ -54,9 +54,10 @@ export function KnowledgeHeader({ compact = false }: { compact?: boolean }) {
         <p
           className={cn(
             'font-display font-bold text-fg-bright tracking-tight',
-            compact ? 'text-base' : 'text-2xl',
+            compact ? 'text-base' : 'text-2xl leading-tight',
             // Après les tailles : tailwind-merge retire un `leading-*` placé avant `text-base` / `text-2xl` / `lg:text-[34px]`
-            // (une taille de police impose sa hauteur de ligne). Au bureau : 34 px, leading-tight, comme avant L50.
+            // (une taille de police impose sa hauteur de ligne) : le titre non compact a donc son `leading-tight` dans la même
+            // chaîne que `text-2xl` (24 px sur 30 px, pas 32 px). Au bureau : 34 px, leading-tight, comme avant L50.
             'lg:text-[34px] lg:leading-tight',
           )}
         >
