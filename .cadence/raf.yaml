@@ -1476,10 +1476,11 @@ lots:
   - id: L124
     title: "Calendrier à 390 px : lignes de match ~20 % plus hautes que la maquette validée de L50 (2 926 px contre 2 447 pour 46 matchs) — resserrer score et noms sans perdre la lisibilité (suite de L50)"
     public: Calendrier plus compact sur téléphone
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-11
+    started: 2026-10-30
   - id: L125
     title: "Bandeau Olympique Lyonnais hors Calendrier sous 1024 px : rétablir leading-tight sur le titre non compact (24 px sur 30 px comme avant L50, 32 px depuis cc5b883 — tailwind-merge) et le tester (revue L50)"
     status: todo
