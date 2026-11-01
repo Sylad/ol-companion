@@ -208,3 +208,54 @@ describe('<DashboardHero /> — match en direct (L84)', () => {
     expect(screen.queryByTestId('squelette-prochain-match')).not.toBeInTheDocument();
   });
 });
+
+// L240 — Lyon-Angers fini : le direct dit « ended » mais la liste de la saison (cache) sert le
+// match en IN_PLAY. Le bandeau ne doit pas rester sur « Match en direct / En cours ».
+describe('<DashboardHero /> — match fini encore IN_PLAY dans la liste (L240)', () => {
+  const ANGERS_IN_PLAY: SeasonMatch = {
+    ...NICE_A_VENIR,
+    id: 4735223,
+    date: '2026-11-01T16:15:00Z',
+    awayTeam: 'Angers',
+    awayTeamId: 99,
+    homeScore: 2,
+    awayScore: 0,
+    status: 'IN_PLAY',
+  };
+  const PROCHAIN: SeasonMatch = { ...NICE_A_VENIR, id: 7, date: '2026-11-08T16:15:00Z', awayTeam: 'Brest', awayTeamId: 98 };
+  const FINI = direct({
+    gameId: 4735223,
+    status: 'ended',
+    statusGroup: 4,
+    statusText: 'Fin du match',
+    startTime: '2026-11-01T16:15:00Z',
+    home: { id: 465, name: 'Lyon', symbolicName: 'LYO', imageVersion: 1, score: 2 },
+    away: { id: 99, name: 'Angers', symbolicName: 'ANG', imageVersion: 1, score: 0 },
+  });
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-11-01T19:27:00Z') });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it('R1 — direct « ended » + liste en IN_PLAY : ni « Match en direct » ni « En cours », le prochain match prend la place', async () => {
+    vi.stubGlobal('fetch', serve(FINI, [ANGERS_IN_PLAY, PROCHAIN]));
+    const { container } = renderHero();
+
+    await waitFor(() => expect(container).toHaveTextContent('Brest'));
+    expect(container).not.toHaveTextContent('Match en direct');
+    expect(container).not.toHaveTextContent('En cours');
+    expect(container).not.toHaveTextContent('Angers');
+  });
+
+  it('R2 — sans direct, un IN_PLAY vieux de plus de 3 h n’est plus présenté comme en direct', async () => {
+    vi.stubGlobal('fetch', serve(null, [ANGERS_IN_PLAY, PROCHAIN]));
+    const { container } = renderHero();
+
+    await waitFor(() => expect(container).toHaveTextContent('Brest'));
+    expect(container).not.toHaveTextContent('Match en direct');
+  });
+});

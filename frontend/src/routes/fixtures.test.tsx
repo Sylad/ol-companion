@@ -604,7 +604,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 
     it('L109 — un match EN COURS à égalité n\'affiche pas ses scores en --draw : le nul ne colore qu\'un match terminé', async () => {
       const live = season.map((m) =>
-        m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, status: 'IN_PLAY', homeScore: 1, awayScore: 1 } : m,
+        m.status === 'FINISHED' && m.awayTeam.includes('Rennes') ? { ...m, status: 'IN_PLAY', date: new Date().toISOString(), homeScore: 1, awayScore: 1 } : m,
       );
       vi.stubGlobal('fetch', serve(live as typeof season));
       renderPage();
