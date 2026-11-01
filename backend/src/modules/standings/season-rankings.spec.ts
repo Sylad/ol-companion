@@ -31,7 +31,7 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     const rankings = computeOlRankingsByRound(realGames, OL);
     expect(rankings.map((r) => [r.matchday, r.position, r.points])).toEqual([
       [1, 3, 3],
-      [2, 3, 4],
+      [2, 4, 4],
       [3, 2, 7],
       [4, 4, 8],
       [5, 2, 11],
@@ -47,26 +47,70 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     expect(j7).toEqual({ matchday: 7, position: 1, points: 14 });
   });
 
-  it("J2 réelle : Lyon et Lille (4 pts, +2, Lille 4 buts contre 3) sont 3es ex æquo, Lyon est 3e", () => {
+  it("J2 réelle : Lyon et Lille (4 pts, +2, sans confrontation directe) se départagent aux buts marqués, Lille 4 contre 3 : Lyon est 4e", () => {
     const j2 = computeOlRankingsByRound(realGames, OL).find((r) => r.matchday === 2);
-    expect(j2).toEqual({ matchday: 2, position: 3, points: 4 });
+    expect(j2).toEqual({ matchday: 2, position: 4, points: 4 });
   });
 
-  it("le départage suit les deux premiers critères LFP : points, différence de buts", () => {
+  it("critère 2 : à points égaux, la meilleure différence de buts passe devant", () => {
+    const games = [game(1, [1, 2], [2, 0]), game(1, [3, 3], [4, 0]), game(1, [5, 1], [6, 0])]; // +2, +3, +1
+    expect(computeOlRankingsByRound(games, 1)).toEqual([{ matchday: 1, position: 2, points: 3 }]);
+    expect(computeOlRankingsByRound(games, 3)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
+    expect(computeOlRankingsByRound(games, 5)).toEqual([{ matchday: 1, position: 3, points: 3 }]);
+  });
+
+  const placeOf = (games: LeagueGame[], id: number) => computeOlRankingsByRound(games, id)[0].position;
+
+  it("critère 3 : à points et différence égaux, le match direct passe avant les buts marqués", () => {
     const games = [
-      game(1, [1, 2], [2, 0]), // 1 : 3 pts, +2
-      game(1, [3, 3], [4, 0]), // 3 : 3 pts, +3 (devant 1)
-      game(1, [5, 1], [6, 0]), // 5 : 3 pts, +1
+      game(1, [10, 1], [20, 0]), // A (10) bat B (20) en direct
+      game(1, [10, 0], [30, 1]), // A : 3 pts, 0, 1 but marqué
+      game(1, [20, 4], [40, 3]), // B : 3 pts, 0, 4 buts marqués — devant A sans le match direct
     ];
-    expect(computeOlRankingsByRound(games, 1)).toEqual([{ matchday: 1, position: 2, points: 3 }]); // +2 derrière le +3
-    expect(computeOlRankingsByRound(games, 3)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
-    expect(computeOlRankingsByRound(games, 5)).toEqual([{ matchday: 1, position: 3, points: 3 }]); // +1
+    expect(placeOf(games, 10)).toBe(2); // derrière le seul club 30 (+1)
+    expect(placeOf(games, 20)).toBe(3);
   });
 
-  it("à égalité de points et de différence, le nombre de buts marqués ne départage pas : meilleure place partagée", () => {
-    const games = [game(1, [1, 3], [2, 1]), game(1, [3, 2], [4, 0])]; // 1 : +2, 3 buts ; 3 : +2, 2 buts
-    expect(computeOlRankingsByRound(games, 3)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
-    expect(computeOlRankingsByRound(games, 1)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
+  it("critère 3 : les matchs contre un club hors du groupe à égalité ne comptent pas en confrontation directe", () => {
+    const games = [
+      game(1, [10, 1], [30, 0]), // A bat C (hors groupe : C est 0 pt)
+      game(1, [10, 0], [31, 1]), // A : 3 pts, 0, 1 but
+      game(1, [20, 4], [40, 3]), // B : 4 buts marqués
+      game(1, [20, 0], [41, 1]), // B : 3 pts, 0, 4 buts
+    ];
+    expect(placeOf(games, 20)).toBeLessThan(placeOf(games, 10)); // aucun match A-B, victoire de A sur C sans effet : B a la meilleure attaque
+  });
+
+  it("critère 4 : sans confrontation directe, la meilleure attaque départage (J2 réelle)", () => {
+    const games = [game(1, [10, 3], [11, 1]), game(1, [20, 4], [21, 2])]; // 10 et 20 : 3 pts, +2
+    expect(computeOlRankingsByRound(games, 10)).toEqual([{ matchday: 1, position: 2, points: 3 }]);
+    expect(computeOlRankingsByRound(games, 20)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
+  });
+
+  it("critère 5 : à buts marqués égaux, le plus de victoires passe devant", () => {
+    const games = [
+      game(1, [10, 2], [11, 0]), game(1, [10, 0], [12, 2]), // A : V + D, 3 pts, 0, 2 buts, 1 victoire
+      game(1, [20, 1], [21, 1]), game(1, [20, 1], [22, 1]), game(1, [20, 0], [23, 0]), // B : 3 nuls, 3 pts, 0, 2 buts
+    ];
+    expect(placeOf(games, 10)).toBe(2); // derrière 12 (+2)
+    expect(placeOf(games, 20)).toBe(3);
+  });
+
+  it("critère 6 : à victoires égales, la victoire à l'extérieur passe devant", () => {
+    const games = [
+      game(1, [11, 0], [10, 2]), game(1, [10, 0], [12, 2]), // A : victoire à l'extérieur
+      game(1, [20, 2], [21, 0]), game(1, [22, 2], [20, 0]), // B : victoire à domicile
+    ];
+    expect(placeOf(games, 10)).toBe(3); // derrière 12 et 22 (+2)
+    expect(placeOf(games, 20)).toBe(4);
+  });
+
+  it("à égalité totale, les clubs partagent la meilleure place, sans dépendre de l'ordre des matchs", () => {
+    const a = [game(1, [OL, 1], [2, 0]), game(1, [3, 1], [4, 0])];
+    const b = [...a].reverse();
+    expect(computeOlRankingsByRound(a, OL)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
+    expect(computeOlRankingsByRound(b, OL)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
+    expect(computeOlRankingsByRound(a, 3)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
   });
 
   it("les matchs d'une journée plus tardive n'entrent pas dans le classement d'une journée antérieure", () => {
@@ -94,14 +138,6 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
       { matchday: 1, position: 2, points: 1 },
       { matchday: 2, position: 1, points: 4 },
     ]);
-  });
-
-  it("égalité de points et de différence : les clubs partagent la meilleure place, sans dépendre de l'ordre des matchs", () => {
-    const a = [game(1, [OL, 1], [2, 0]), game(1, [3, 1], [4, 0])];
-    const b = [...a].reverse();
-    expect(computeOlRankingsByRound(a, OL)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
-    expect(computeOlRankingsByRound(b, OL)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
-    expect(computeOlRankingsByRound(a, 3)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
   });
 
   it("aucun match : liste vide", () => {
