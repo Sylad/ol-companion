@@ -791,8 +791,9 @@
     {
       "id": "L239",
       "title": "Menu : l'Équipe de France séparée de la partie OL",
-      "status": "doing",
-      "started": "2026-11-01"
+      "status": "done",
+      "started": "2026-11-01",
+      "finished": "2026-11-01"
     }
   ]
 }
