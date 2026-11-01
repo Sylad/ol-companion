@@ -2767,6 +2767,11 @@ lots:
     finished: 2026-11-01
     notes:
       - { date: 2026-11-01, text: "Mineur de la revue (non corrigé) : la mention football-data.org s'affiche pour tout match de Ligue 1 à venir, même quand football-data se tait et que l'heure vient de 365scores (match.tsx:699)" }
+  - id: L236
+    title: "Étude de faisabilité — sources de statistiques citées dans les vidéos foot : Sofascore (rejeté le 10-05 : 403 Cloudflare côté serveur, re-tester depuis dark-blue et le navigateur) et DataScout (à identifier : qui, quelles données, accès gratuit et public ?). Livrable : docs/etudes/sources-stats.md — par source : données disponibles en plus de 365scores, accès réel mesuré (statut HTTP, échantillon), conditions d'utilisation, coût. Sans compte payant, sans achat, sans démarche auprès d'un éditeur ; aucune ligne de code de l'app. Demande de Sylvain du 01-11"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
