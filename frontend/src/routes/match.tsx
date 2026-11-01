@@ -21,6 +21,9 @@ import { eventLabelFr } from '@/lib/event-fr';
 import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 
 
+/** Ligue 1 chez 365scores : seule compétition dont football-data.org décide l'heure du coup d'envoi. */
+const LIGUE_1_365SCORES_ID = 35;
+
 type StatDef = { key: string; label: string; fmt?: (n: number) => string };
 
 /** Mesures comparées par des barres au centre (L160 R9). */
@@ -44,6 +47,27 @@ const TEAM_STATS: StatDef[] = [
   { key: 'Fautes faites', label: 'Fautes' },
   { key: 'Hors jeu', label: 'Hors-jeu' },
 ];
+
+const LIEN_SOURCE = 'underline underline-offset-2 hover:text-fg-muted';
+
+/**
+ * Source des données de la page (L235). Tout ce que la page affiche vient de 365scores ; football-data.org
+ * n'intervient que pour l'heure du coup d'envoi d'un match de Ligue 1 à venir (`footballDataSaysKickoff`).
+ */
+function SourcesMatch({ footballData }: { footballData: boolean }) {
+  return (
+    <p data-testid="sources-match" className="text-[11px] leading-snug text-fg-dim text-center">
+      Statistiques, compositions et direct :{' '}
+      <a href="https://www.365scores.com/fr/football/league/ligue-1-35" target="_blank" rel="noopener noreferrer" className={LIEN_SOURCE}>365scores</a>.
+      {footballData && (
+        <>
+          {' '}Heure du coup d’envoi :{' '}
+          <a href="https://www.football-data.org/" target="_blank" rel="noopener noreferrer" className={LIEN_SOURCE}>football-data.org</a>.
+        </>
+      )}
+    </p>
+  );
+}
 
 function StatRow({
   label,
@@ -672,6 +696,7 @@ export function MatchPage() {
           </div>
         )}
       </div>
+      <SourcesMatch footballData={isUpcoming && data.competitionId === LIGUE_1_365SCORES_ID} />
     </div>
   );
 }
