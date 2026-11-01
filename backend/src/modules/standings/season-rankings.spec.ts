@@ -12,7 +12,12 @@ const OL = 465;
 // Résultats réels de la Ligue 1 2026-27 (J1 à J9) lus chez 365scores le 01-11-2026. Les 18 scores de la
 // J1 et de la J2 ont été recoupés le même jour avec psg.fr (pages « Les résultats de la 1re / 2e journée de
 // Ligue 1 2026-2027 », qui reprend les scores de la LFP) : identiques, voir le test « J1-J2 ». L'écart avec
-// la référence de Sylvain et Sofascore (Lyon 3e à la J2) ne vient donc pas des données.
+// la référence de Sylvain et Sofascore (Lyon 3e à la J2) ne vient donc pas des données. Une seconde source de
+// CLASSEMENT, indépendante de notre calcul, donne aussi Lyon 4e et Lille 3e à l'issue de la J2 : le tableau
+// « Évolution du classement » de fr.wikipedia.org/wiki/Championnat_de_France_de_football_2026-2027 (wikitexte
+// relevé le 01-11-2026 : Lille 3, 3, 4, 1… ; Lyon 4, 4, 3, 4…). Wikipédia met aussi Lyon 4e à la J1, derrière
+// Lille à égalité totale (3 pts, +2, 2 buts, 1 victoire à l'extérieur chacun) : ici l'égalité restante vaut la
+// meilleure place du groupe (3e), fair-play et tirage au sort n'étant pas calculables.
 const real = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../../../test/fixtures/ligue1-2026-results-j1-j9.json'), 'utf-8'),
 ) as { games: unknown[] };
@@ -65,7 +70,7 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     expect(fixture.sort()).toEqual([...psgFr].sort());
   });
 
-  it("J2 réelle : Lyon et Lille (4 pts, +2, sans confrontation directe) se départagent aux buts marqués, Lille 4 contre 3 : Lyon est 4e", () => {
+  it("J2 réelle : Lyon et Lille (4 pts, +2, sans confrontation directe) se départagent aux buts marqués, Lille 4 contre 3 : Lyon est 4e, comme sur Wikipédia FR (seconde source de classement)", () => {
     const j2 = computeOlRankingsByRound(realGames, OL).find((r) => r.matchday === 2);
     expect(j2).toEqual({ matchday: 2, position: 4, points: 4 });
   });
