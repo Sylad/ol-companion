@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { DIVIDER, NAV_ITEMS, isNavActive } from './sidebar';
+import { DIVIDER, FRANCE_PATH, NAV_ITEMS, isNavActive } from './sidebar';
 import { GROUP_TITLE, SECONDARY_ITEMS } from './sidebar-links';
 import { NewsBadge } from '@/components/news-badge';
 import { useNewsBadge } from '@/hooks/use-news-badge';
@@ -15,6 +15,8 @@ import { useNewsBadge } from '@/hooks/use-news-badge';
 const BAR_PATHS: readonly string[] = ['/', '/fixtures', '/standings', '/news'];
 const BAR_ITEMS = NAV_ITEMS.filter((i) => BAR_PATHS.includes(i.to));
 const MOVED_ITEMS = NAV_ITEMS.filter((i) => !BAR_PATHS.includes(i.to));
+const MOVED_OL_ITEMS = MOVED_ITEMS.filter((i) => i.to !== FRANCE_PATH);
+const MOVED_FRANCE_ITEMS = MOVED_ITEMS.filter((i) => i.to === FRANCE_PATH);
 // Pages derrière « Plus », avec leur libellé : le nom accessible du bouton dit laquelle
 // est la page actuelle (revue UX L24, WCAG 1.3.1 : la couleur seule ne suffit pas).
 const MORE_PAGES: readonly { to: string; label: string }[] = [
@@ -101,6 +103,28 @@ export function BottomNav() {
       active ? 'bg-surface-2 text-fg-bright' : 'text-fg-muted hover:bg-surface-2/60 hover:text-fg',
     );
 
+  const movedList = (items: typeof MOVED_ITEMS, withFirstLink: boolean) => (
+    <ul className="space-y-1">
+      {items.map(({ to, label, icon: Icon }, i) => {
+        const active = isNavActive({ to }, path);
+        return (
+          <li key={to}>
+            <Link
+              ref={withFirstLink && i === 0 ? firstLink : undefined}
+              to={to}
+              onClick={() => setOpen(false)}
+              aria-current={active ? 'page' : undefined}
+              className={sheetLink(active)}
+            >
+              <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
+              <span className="font-medium">{label}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+
   return (
     <>
       {open && (
@@ -139,25 +163,9 @@ export function BottomNav() {
                 <X className="h-5 w-5" aria-hidden />
               </button>
             </div>
-            <ul className="space-y-1">
-              {MOVED_ITEMS.map(({ to, label, icon: Icon }, i) => {
-                const active = isNavActive({ to }, path);
-                return (
-                  <li key={to}>
-                    <Link
-                      ref={i === 0 ? firstLink : undefined}
-                      to={to}
-                      onClick={() => setOpen(false)}
-                      aria-current={active ? 'page' : undefined}
-                      className={sheetLink(active)}
-                    >
-                      <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
-                      <span className="font-medium">{label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            {movedList(MOVED_OL_ITEMS, true)}
+            <div data-divider aria-hidden="true" className={DIVIDER} />
+            {movedList(MOVED_FRANCE_ITEMS, false)}
             <div data-divider aria-hidden="true" className={DIVIDER} />
             <ul className="space-y-1">
               <li>

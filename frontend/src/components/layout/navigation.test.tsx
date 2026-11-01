@@ -86,6 +86,19 @@ describe('barre latérale (bureau)', () => {
     expect(labels).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Joueurs', 'Actu', 'Coupes', 'Carte L1', 'Équipe de France']);
     for (const label of labels) expect(screen.getByRole('link', { name: label })).toBeInTheDocument();
   });
+
+  // L239 : un trait entre la partie OL et l'Équipe de France, le même que devant FC Noobz.
+  it('L239 — la barre latérale a le même trait avant « Équipe de France » et avant « FC Noobz », ordre inchangé', async () => {
+    await renderAt('/', () => <Sidebar eventStreamStatus="connected" />);
+    const nav = screen.getByRole('navigation');
+    const traits = [...nav.children].filter((el) => el.className === DIVIDER);
+    expect(traits).toHaveLength(2);
+    expect(traits[0].previousElementSibling).toHaveTextContent('Carte L1');
+    expect(traits[0].nextElementSibling).toHaveTextContent('Équipe de France');
+    expect(traits[1].previousElementSibling).toHaveTextContent('Équipe de France');
+    expect(traits[1].nextElementSibling).toHaveTextContent('FC Noobz');
+    expect([...nav.querySelectorAll('a')].map((a) => a.textContent?.trim())).toEqual([...NAV_ITEMS.map((i) => i.label), 'FC Noobz']);
+  });
 });
 
 describe('pastille « nouveau » (L22)', () => {
@@ -226,11 +239,12 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(title.className).toBe(GROUP_TITLE);
     const lists = within(dialog).getAllByRole('list');
     expect(lists.map((l) => within(l).getAllByRole('link').map((a) => a.textContent?.trim()))).toEqual([
-      ['Joueurs', 'Coupes', 'Carte L1', 'Équipe de France'],
+      ['Joueurs', 'Coupes', 'Carte L1'],
+      ['Équipe de France'],
       ['FC Noobz'],
       ['Nouveautés', 'Plan de travail', 'À propos'],
     ]);
-    expect(dialog.querySelectorAll('[data-divider]')).toHaveLength(2);
+    expect(dialog.querySelectorAll('[data-divider]')).toHaveLength(3);
     for (const d of dialog.querySelectorAll('[data-divider]')) expect(d.className).toBe(DIVIDER);
   });
 

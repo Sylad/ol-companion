@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Home, CalendarDays, ListOrdered, Newspaper, Trophy, Users, MapPin, Flag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -7,6 +8,9 @@ import type { EventStreamStatus } from '@/hooks/use-event-stream';
 
 /** Trait entre les groupes de pages, repris par le panneau « Plus » du téléphone (L24). */
 export const DIVIDER = 'my-3 mx-3 h-px bg-border';
+
+/** Première entrée après la partie OL : un trait la précède dans la barre latérale et dans « Plus » (L239). */
+export const FRANCE_PATH = '/equipe-de-france';
 
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: Home, exact: true },
@@ -82,8 +86,10 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
           const active = isNavActive(item, path);
           const Icon = item.icon;
           return (
+            <Fragment key={item.to}>
+            {/* L239 : trait entre la partie OL et l'Équipe de France */}
+            {item.to === FRANCE_PATH && <div className={DIVIDER} />}
             <Link
-              key={item.to}
               to={item.to}
               aria-current={active ? 'page' : undefined}
               className={cn(
@@ -106,6 +112,7 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
                 {item.label}
               </span>
             </Link>
+            </Fragment>
           );
         })}
 
