@@ -777,8 +777,9 @@
     {
       "id": "L235",
       "title": "Page d'un match : la source des statistiques est indiquée",
-      "status": "doing",
-      "started": "2026-11-01"
+      "status": "done",
+      "started": "2026-11-01",
+      "finished": "2026-11-01"
     }
   ]
 }
