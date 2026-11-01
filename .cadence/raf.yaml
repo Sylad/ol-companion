@@ -2814,11 +2814,19 @@ lots:
     finished: 2026-11-01
   - id: L241
     title: "Tracker de classement de l'accueil (position-tracker.tsx) : Sylvain se souvient que l'OL était 1er il y a deux semaines, la courbe ne montre jamais mieux que 2e (J5) ; vérifier, journée par journée, la position tracée contre le classement officiel de Ligue 1 à la fin de chaque journée (source et méthode de calcul du backend : classement recalculé depuis les résultats, départage, journée en retard, match décalé) ; si le tracé est faux, le corriger avec un test sur des résultats réels ; s'il est juste (OL 1er seulement entre deux matchs d'une même journée), le dire dans l'info-bulle (i) du tracker. Demande de Sylvain du 01-11"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-2200-ol, 0 passe(s) de correction)", commit: bd6c173390eb61689041790442d8d1f261ca44f4 }
+    notes:
+      - { date: 2026-11-01, text: "Vérifié par le lead contre la série de Sylvain (site de référence) et Sofascore : 3-3-2-4-2-4-1-5-3 ; le calcul donne 3-4-2-4-2-4-1-5-3, seule la J2 diffère (Lyon et Lille à 4 pts et +2, Lille 4 buts contre 3 : notre départage aux buts marqués met Lyon 4e, les références 3e) ; suite en lot à part" }
+    finished: 2026-11-01
+  - id: L242
+    title: "Départage du classement recalculé (season-rankings.ts, L241) : après la J2, Lyon et Lille ont 4 pts et +2, Lille 4 buts contre 3 ; notre calcul (points, différence de buts, buts marqués) met Lyon 4e, la référence de Sylvain et Sofascore le mettent 3e. Établir l'ordre officiel de départage LFP pour 2026-2027 (règlement, source citée) et les résultats de la J1-J2 dans une seconde source, puis l'appliquer ; le test des résultats réels doit rendre 3-3-2-4-2-4-1-5-3"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
