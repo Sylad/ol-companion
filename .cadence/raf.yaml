@@ -2804,11 +2804,14 @@ lots:
     finished: 2026-11-01
   - id: L240
     title: "Bug : un match fini reste « En cours » sur l'accueil. Mesuré en prod le 01-11 à 19:27 UTC (Lyon-Angers, coup d'envoi 16:15 UTC, fini vers 18:10 heure de Paris) : /api/live-match/current dit status ended, « Fin du match », alors que /api/season-matches sert encore le match 4735223 en IN_PLAY (2-0) ; la tuile du haut (dashboard-hero, prochain match lu dans season-matches) affiche « MATCH EN DIRECT / EN COURS » pendant que la tuile du dernier résultat dit « TERMINÉ ». Cause probable : le cache de season-matches (CACHE_TTL_MS 30 min, season-matches.service.ts:152) ou la liste 365scores en retard sur le flux direct. Attendu : dès que le flux direct dit fini, aucune tuile ne montre le match en cours (le direct fait foi sur le statut d'un match en IN_PLAY), test qui reproduit le cas, et vérifier qu'un match en IN_PLAY depuis plus de ~3 h n'est plus présenté comme en direct"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "compliant (1 minor note: le seuil de 3 h n'est pas réévalué avec le temps) — orchestré (vague 2026-11-01-2035-ol, 0 passe(s) de correction)", commit: 9ce8eb8ceac6d5441a1b7db9d496e8a562f63e31 }
+    notes:
+      - { date: 2026-11-01, text: "Mineur de la revue (non corrigé) : le seuil de 3 h de settleInPlay est calculé dans un useMemo qui ne dépend que de [raw, live] ; si les deux réponses restent identiques (flux direct muet), le filet des 3 h n'est réévalué qu'au prochain changement de données (use-season-matches.ts:29)" }
+    finished: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
