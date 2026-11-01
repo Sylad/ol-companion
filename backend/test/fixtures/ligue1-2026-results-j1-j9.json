@@ -1,0 +1,1347 @@
+{
+ "games": [
+  {
+   "id": 4735294,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-21T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 4
+   },
+   "awayCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735295,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-22T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 5
+   },
+   "awayCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735290,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-22T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735291,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-22T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735293,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-22T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735296,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-22T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735298,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-23T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735297,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-23T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735292,
+   "seasonNum": 94,
+   "roundNum": 1,
+   "statusGroup": 4,
+   "startTime": "2026-08-23T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735281,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-28T21:00:00+02:00",
+   "homeCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735282,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-29T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735286,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-29T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735287,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-29T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735288,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-29T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735289,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-29T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735284,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-30T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735283,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-30T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735285,
+   "seasonNum": 94,
+   "roundNum": 2,
+   "statusGroup": 4,
+   "startTime": "2026-08-30T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735274,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-03T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735277,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-04T19:00:00+02:00",
+   "homeCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735273,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-04T21:05:00+02:00",
+   "homeCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735278,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-05T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735275,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-05T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735279,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-05T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735272,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-06T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 6
+   }
+  },
+  {
+   "id": 4735280,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-06T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735276,
+   "seasonNum": 94,
+   "roundNum": 3,
+   "statusGroup": 4,
+   "startTime": "2026-09-06T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735264,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-11T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735263,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-12T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735265,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-12T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735266,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-12T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735269,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-12T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735271,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-12T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735267,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-13T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735268,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-13T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735270,
+   "seasonNum": 94,
+   "roundNum": 4,
+   "statusGroup": 4,
+   "startTime": "2026-09-13T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735258,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-18T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735256,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-19T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735255,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-19T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735259,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-19T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 4
+   },
+   "awayCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735260,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-19T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735262,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-19T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735261,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-20T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735257,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-20T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735254,
+   "seasonNum": 94,
+   "roundNum": 5,
+   "statusGroup": 4,
+   "startTime": "2026-09-20T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735252,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-09T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735251,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-10T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735248,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-10T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735249,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-10T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735250,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-10T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735253,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-10T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 5
+   },
+   "awayCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735247,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-11T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735246,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-11T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 4
+   },
+   "awayCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735245,
+   "seasonNum": 94,
+   "roundNum": 6,
+   "statusGroup": 4,
+   "startTime": "2026-10-11T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735242,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-16T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735237,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-17T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735236,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-17T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735241,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-17T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735244,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-18T15:00:00+02:00",
+   "homeCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 5
+   }
+  },
+  {
+   "id": 4735238,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-18T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 4
+   },
+   "awayCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735240,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-18T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735243,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-18T17:15:00+02:00",
+   "homeCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735239,
+   "seasonNum": 94,
+   "roundNum": 7,
+   "statusGroup": 4,
+   "startTime": "2026-10-18T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735233,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-23T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 534,
+    "name": "Brest",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735232,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-24T20:45:00+02:00",
+   "homeCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735230,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-25T15:00:00+01:00",
+   "homeCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735228,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-25T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 482,
+    "name": "Toulouse",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735229,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-25T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735231,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-25T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille",
+    "score": 4
+   },
+   "awayCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 3
+   }
+  },
+  {
+   "id": 4735234,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-25T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735235,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-25T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 0
+   },
+   "awayCompetitor": {
+    "id": 472,
+    "name": "Lorient",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735227,
+   "seasonNum": 94,
+   "roundNum": 8,
+   "statusGroup": 4,
+   "startTime": "2026-10-26T20:30:00+01:00",
+   "homeCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735221,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-10-30T19:00:00+01:00",
+   "homeCompetitor": {
+    "id": 470,
+    "name": "OGC Nice",
+    "score": 5
+   },
+   "awayCompetitor": {
+    "id": 477,
+    "name": "Rennes",
+    "score": 2
+   }
+  },
+  {
+   "id": 4735226,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-10-30T19:00:00+01:00",
+   "homeCompetitor": {
+    "id": 485,
+    "name": "Le Havre",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG",
+    "score": 5
+   }
+  },
+  {
+   "id": 4735225,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-10-30T21:05:00+01:00",
+   "homeCompetitor": {
+    "id": 478,
+    "name": "Lille",
+    "score": 1
+   },
+   "awayCompetitor": {
+    "id": 481,
+    "name": "Lens",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735218,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-10-31T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 488,
+    "name": "Troyes",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 468,
+    "name": "Le Mans",
+    "score": 0
+   }
+  },
+  {
+   "id": 4735219,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-11-01T15:00:00+01:00",
+   "homeCompetitor": {
+    "id": 479,
+    "name": "Strasbourg",
+    "score": 5
+   },
+   "awayCompetitor": {
+    "id": 476,
+    "name": "Auxerre",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735220,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-11-01T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 6075,
+    "name": "Paris FC",
+    "score": 3
+   },
+   "awayCompetitor": {
+    "id": 471,
+    "name": "Monaco",
+    "score": 1
+   }
+  },
+  {
+   "id": 4735223,
+   "seasonNum": 94,
+   "roundNum": 9,
+   "statusGroup": 4,
+   "startTime": "2026-11-01T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 465,
+    "name": "Lyon",
+    "score": 2
+   },
+   "awayCompetitor": {
+    "id": 493,
+    "name": "Angers",
+    "score": 0
+   }
+  }
+ ]
+}
