@@ -60,7 +60,7 @@ describe('StandingsService — tracker de classement recalculé (L241)', () => {
   it("écrit une entrée par journée, OL 1er à l'issue de la J7, et le dit sur le flux d'événements", async () => {
     await refresh();
     expect(written().map((r) => [r.matchday, r.position])).toEqual([
-      [1, 3], [2, 4], [3, 2], [4, 4], [5, 2], [6, 4], [7, 1], [8, 5], [9, 3],
+      [1, 3], [2, 3], [3, 2], [4, 4], [5, 2], [6, 4], [7, 1], [8, 5], [9, 3],
     ]);
     expect(emit).toHaveBeenCalledWith('season-rankings-changed', { matchdays: 9 });
   });

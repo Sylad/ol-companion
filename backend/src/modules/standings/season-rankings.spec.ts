@@ -31,7 +31,7 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     const rankings = computeOlRankingsByRound(realGames, OL);
     expect(rankings.map((r) => [r.matchday, r.position, r.points])).toEqual([
       [1, 3, 3],
-      [2, 4, 4],
+      [2, 3, 4],
       [3, 2, 7],
       [4, 4, 8],
       [5, 2, 11],
@@ -47,7 +47,12 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     expect(j7).toEqual({ matchday: 7, position: 1, points: 14 });
   });
 
-  it("le départage suit les règles LFP : points, différence de buts, buts marqués", () => {
+  it("J2 réelle : Lyon et Lille (4 pts, +2, Lille 4 buts contre 3) sont 3es ex æquo, Lyon est 3e", () => {
+    const j2 = computeOlRankingsByRound(realGames, OL).find((r) => r.matchday === 2);
+    expect(j2).toEqual({ matchday: 2, position: 3, points: 4 });
+  });
+
+  it("le départage suit les deux premiers critères LFP : points, différence de buts", () => {
     const games = [
       game(1, [1, 2], [2, 0]), // 1 : 3 pts, +2
       game(1, [3, 3], [4, 0]), // 3 : 3 pts, +3 (devant 1)
@@ -58,9 +63,10 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     expect(computeOlRankingsByRound(games, 5)).toEqual([{ matchday: 1, position: 3, points: 3 }]); // +1
   });
 
-  it("à égalité de points et de différence, plus de buts marqués passe devant", () => {
+  it("à égalité de points et de différence, le nombre de buts marqués ne départage pas : meilleure place partagée", () => {
     const games = [game(1, [1, 3], [2, 1]), game(1, [3, 2], [4, 0])]; // 1 : +2, 3 buts ; 3 : +2, 2 buts
-    expect(computeOlRankingsByRound(games, 3)).toEqual([{ matchday: 1, position: 2, points: 3 }]);
+    expect(computeOlRankingsByRound(games, 3)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
+    expect(computeOlRankingsByRound(games, 1)).toEqual([{ matchday: 1, position: 1, points: 3 }]);
   });
 
   it("les matchs d'une journée plus tardive n'entrent pas dans le classement d'une journée antérieure", () => {
@@ -90,7 +96,7 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
     ]);
   });
 
-  it("égalité parfaite (points, différence, buts marqués) : les clubs partagent la meilleure place, sans dépendre de l'ordre des matchs", () => {
+  it("égalité de points et de différence : les clubs partagent la meilleure place, sans dépendre de l'ordre des matchs", () => {
     const a = [game(1, [OL, 1], [2, 0]), game(1, [3, 1], [4, 0])];
     const b = [...a].reverse();
     expect(computeOlRankingsByRound(a, OL)).toEqual([{ matchday: 1, position: 1, points: 3 }]);

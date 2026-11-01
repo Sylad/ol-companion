@@ -52,20 +52,19 @@ export function parseLeagueGames(raw: unknown, seasonNum: number): LeagueGame[] 
   return out;
 }
 
-interface Row { id: number; points: number; goalsFor: number; goalDifference: number; }
+interface Row { id: number; points: number; goalDifference: number; }
 
 function tableUpTo(games: LeagueGame[], round: number): Row[] {
   const rows = new Map<number, Row>();
   const row = (id: number): Row => {
     let r = rows.get(id);
-    if (!r) rows.set(id, (r = { id, points: 0, goalsFor: 0, goalDifference: 0 }));
+    if (!r) rows.set(id, (r = { id, points: 0, goalDifference: 0 }));
     return r;
   };
   for (const g of games) {
     if (g.statusGroup !== FINISHED || g.roundNum > round) continue;
     for (const [side, other] of [[g.home, g.away], [g.away, g.home]] as const) {
       const r = row(side.id);
-      r.goalsFor += side.score;
       r.goalDifference += side.score - other.score;
       r.points += side.score > other.score ? 3 : side.score === other.score ? 1 : 0;
     }
@@ -73,19 +72,25 @@ function tableUpTo(games: LeagueGame[], round: number): Row[] {
   return [...rows.values()];
 }
 
-/** Vrai si `a` est strictement devant `b` : points, différence de buts, buts marqués (règles LFP, sans le face-à-face). */
+/**
+ * Vrai si `a` est strictement devant `b` : points, puis différence de buts générale
+ * (les deux premiers critères du règlement LFP, ligue1.com/fr/articles/l1_article_2830-).
+ * Les suivants (confrontations directes, meilleure attaque, victoires…) ne sont PAS
+ * appliqués : à égalité de points et de différence, les clubs partagent la meilleure
+ * place. Cas réel, J2 2026-27 : Lyon et Lille à 4 pts et +2 (Lille 4 buts marqués
+ * contre 3) sont 3es ex æquo, comme dans les références de Sylvain et Sofascore ;
+ * départager à la meilleure attaque aurait mis Lyon 4e.
+ */
 const isAhead = (a: Row, b: Row): boolean =>
-  a.points !== b.points ? a.points > b.points
-    : a.goalDifference !== b.goalDifference ? a.goalDifference > b.goalDifference
-      : a.goalsFor > b.goalsFor;
+  a.points !== b.points ? a.points > b.points : a.goalDifference > b.goalDifference;
 
 /**
  * Une entrée par journée où l'OL a joué son match : sa place dans le classement
  * des matchs terminés de la journée 1 à cette journée (un match joué plus tard
  * compte dans sa journée d'origine, `roundNum`). Un match de l'OL reporté ne
- * donne pas de point pour sa journée. À égalité parfaite avec d'autres clubs,
- * l'OL prend la meilleure place du groupe (cas réel : J3 et J4, Lyon et Paris FC
- * à 7 puis 8 points, +4, 6 buts).
+ * donne pas de point pour sa journée. À égalité de points et de différence
+ * de buts avec d'autres clubs, l'OL prend la meilleure place du groupe (cas réels : J2,
+ * Lyon et Lille à 4 points, +2 ; J3 et J4, Lyon et Paris FC à 7 puis 8 points, +4).
  */
 export function computeOlRankingsByRound(games: LeagueGame[], olId: number): OlSeasonRanking[] {
   const olRounds = new Set<number>();
@@ -97,8 +102,7 @@ export function computeOlRankingsByRound(games: LeagueGame[], olId: number): OlS
     .map((matchday) => {
       const table = tableUpTo(games, matchday);
       const ol = table.find((r) => r.id === olId) as Row; // l'OL a un match terminé dans cette journée
-      // Les clubs à égalité parfaite (points, différence, buts marqués) partagent la
-      // meilleure place : le face-à-face, lui, n'est pas appliqué.
+      // Les clubs à égalité de points et de différence partagent la meilleure place.
       return { matchday, position: 1 + table.filter((r) => isAhead(r, ol)).length, points: ol.points };
     });
 }
