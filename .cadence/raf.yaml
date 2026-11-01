@@ -2823,12 +2823,13 @@ lots:
       - { date: 2026-11-01, text: "Vérifié par le lead contre la série de Sylvain (site de référence) et Sofascore : 3-3-2-4-2-4-1-5-3 ; le calcul donne 3-4-2-4-2-4-1-5-3, seule la J2 diffère (Lyon et Lille à 4 pts et +2, Lille 4 buts contre 3 : notre départage aux buts marqués met Lyon 4e, les références 3e) ; suite en lot à part" }
     finished: 2026-11-01
   - id: L242
-    title: "Départage du classement recalculé (season-rankings.ts, L241) : après la J2, Lyon et Lille ont 4 pts et +2, Lille 4 buts contre 3 ; notre calcul (points, différence de buts, buts marqués) met Lyon 4e, la référence de Sylvain et Sofascore le mettent 3e. Établir l'ordre officiel de départage LFP pour 2026-2027 (règlement, source citée) et les résultats de la J1-J2 dans une seconde source, puis l'appliquer ; le test des résultats réels doit rendre 3-3-2-4-2-4-1-5-3"
+    title: "Départage du classement recalculé (season-rankings.ts, L241) selon l'ordre officiel LFP 2026-2027 (ligue1.com/fr/articles/l1_article_2830- : points, différence de buts générale, confrontations directes, buts marqués, victoires, victoires à l'extérieur ; fair-play et tirage au sort non calculables), source citée dans le code ; décision de Sylvain du 01-11 : la règle officielle prime sur Sofascore ; le test des résultats réels rend 3-4-2-4-2-4-1-5-3 (Lyon 4e à la J2 derrière Lille aux buts marqués, comme Wikipédia FR)"
     status: doing
     estimate: 0.25
     created: 2026-11-01
     notes:
       - { date: 2026-11-01, text: "Lead, 01-11 : l'ordre officiel LFP (ligue1.com/fr/articles/l1_article_2830-) est points, différence de buts générale, points puis différence de buts en confrontations directes, buts marqués, victoires, victoires à l'extérieur, fair-play, tirage au sort. Appliqué à la J2 (Lyon et Lille 4 pts, +2, pas de confrontation directe, Lille 4 buts contre 3), il donne aussi Lyon 4e : l'écart avec les références vient sans doute des DONNÉES. Comparer d'abord les résultats J1-J2 de test/fixtures/ligue1-2026-results-j1-j9.json avec ligue1.com, puis coder l'ordre officiel complet en citant la source" }
+      - { date: 2026-11-01, text: "titre remplacé : « Départage du classement recalculé (season-rankings.ts, L241) : après la J2, Lyon et Lille ont 4 pts et +2, Lille 4 buts contre 3 ; notre calcul (points, différence de buts, buts marqués) met Lyon 4e, la référence de Sylvain et Sofascore le mettent 3e. Établir l'ordre officiel de départage LFP pour 2026-2027 (règlement, source citée) et les résultats de la J1-J2 dans une seconde source, puis l'appliquer ; le test des résultats réels doit rendre 3-3-2-4-2-4-1-5-3 »" }
     started: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
