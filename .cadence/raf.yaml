@@ -2773,6 +2773,11 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-11-01
+  - id: L237
+    title: "Idées pour améliorer le site, vu d'un supporter de l'OL : étude (pas de code) — parcourir le site actuel et ce que les supporters consultent (avant, pendant et après un match, mercato, histoire du club, féminines, groupe Lyonnais, tribunes), comparer à ce qu'offrent les sites et applis de référence (OL officiel, L'Équipe, Sofascore, sites de supporters), et proposer une liste classée d'idées : valeur pour un supporter, effort, données nécessaires et disponibles gratuitement ; chaque idée retenue devient un lot. Livrable docs/etudes/idees-supporter.md. Demande de Sylvain du 01-11"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
