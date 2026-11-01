@@ -2824,11 +2824,12 @@ lots:
     finished: 2026-11-01
   - id: L242
     title: "Départage du classement recalculé (season-rankings.ts, L241) : après la J2, Lyon et Lille ont 4 pts et +2, Lille 4 buts contre 3 ; notre calcul (points, différence de buts, buts marqués) met Lyon 4e, la référence de Sylvain et Sofascore le mettent 3e. Établir l'ordre officiel de départage LFP pour 2026-2027 (règlement, source citée) et les résultats de la J1-J2 dans une seconde source, puis l'appliquer ; le test des résultats réels doit rendre 3-3-2-4-2-4-1-5-3"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-11-01
     notes:
       - { date: 2026-11-01, text: "Lead, 01-11 : l'ordre officiel LFP (ligue1.com/fr/articles/l1_article_2830-) est points, différence de buts générale, points puis différence de buts en confrontations directes, buts marqués, victoires, victoires à l'extérieur, fair-play, tirage au sort. Appliqué à la J2 (Lyon et Lille 4 pts, +2, pas de confrontation directe, Lille 4 buts contre 3), il donne aussi Lyon 4e : l'écart avec les références vient sans doute des DONNÉES. Comparer d'abord les résultats J1-J2 de test/fixtures/ligue1-2026-results-j1-j9.json avec ligue1.com, puis coder l'ordre officiel complet en citant la source" }
+    started: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
