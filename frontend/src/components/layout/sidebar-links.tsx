@@ -1,4 +1,4 @@
-import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Megaphone, ListTodo } from 'lucide-react';
+import { Globe, Newspaper, Youtube, BarChart3, ExternalLink, Sparkles, Megaphone, ListTodo, Mic } from 'lucide-react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 import { NewsBadge } from '@/components/news-badge';
@@ -27,6 +27,8 @@ const SOURCES: ExternalSource[] = [
     label: 'Sofascore',
     icon: BarChart3,
   },
+  // Avant-match, live commenté et débrief des matchs de l'OL entre supporters (L238).
+  { href: 'https://julienlegone.fr/', label: 'Julien le Gone', icon: Mic },
 ];
 
 // Pages internes du bas de la barre latérale ; au téléphone, dans « Plus » (bottom-nav).

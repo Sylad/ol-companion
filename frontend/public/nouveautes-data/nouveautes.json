@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-11-01 18:01",
+  "generated": "2026-11-01 19:39",
   "entries": [
+    {
+      "slug": "2026-11-01-nouveau-lien-vers-julien-le-gone-dans-les-ressources",
+      "title": "Nouveau lien vers Julien le Gone dans les ressources",
+      "date": "2026-11-01",
+      "lots": [
+        "L238"
+      ],
+      "captures": [
+        "captures/2026-11-01-ressources-julien-le-gone-1440.png"
+      ],
+      "alts": [
+        "Barre latérale : le groupe Ressources, avec le lien Julien le Gone sous Sofascore"
+      ],
+      "html": "<p>Les Ressources de la barre latérale ont un lien de plus : <strong>Julien le Gone</strong>, juste après Sofascore. Ce site réunit des supporters de l'OL autour de l'avant-match, du live commenté et du débrief des matchs. Le lien s'ouvre dans un nouvel onglet, comme les autres ressources. Il n'apparaît que dans la barre latérale (écrans larges), qui porte seule les Ressources.</p>"
+    },
     {
       "slug": "2026-11-01-page-d-un-match-la-source-des-statistiques-est-indiquee",
       "title": "Page d'un match : la source des statistiques est indiquée",
