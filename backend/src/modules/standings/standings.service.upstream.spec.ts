@@ -107,7 +107,8 @@ describe('StandingsService — rendus dégradés de 365scores (L35)', () => {
 
     const standings = await service().getCurrentStandings({ force: true });
 
-    expect(calls).toHaveLength(1);
+    // Un seul appel au classement (les résultats de la ligue, L241, sont un autre appel).
+    expect(calls.filter((u) => u.includes('/web/standings/'))).toHaveLength(1);
     expect(standings?.table.map((t) => t.team)).toEqual(NAMES_IN_ORDER);
     expect(standings?.table.map((t) => t.position)).toEqual(
       Array.from({ length: 18 }, (_, i) => i + 1),

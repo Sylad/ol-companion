@@ -6,6 +6,11 @@ import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
+import {
+  computeOlRankingsByRound,
+  fetchLeagueResults,
+  type OlSeasonRanking,
+} from './season-rankings';
 import { describeClubsResolvedFromGames, readScores365Standings } from './scores365-standings';
 
 export type FormOutcome = 'W' | 'D' | 'L';
@@ -79,24 +84,7 @@ export function computeCurrentMatchday(playedCounts: number[]): number {
   return bestPlayed;
 }
 
-/**
- * A round is "complete enough" to record the season-rankings snapshot when
- * a clear majority of clubs have played `currentMatchday` games. We tolerate
- * a couple of outliers in either direction (rescheduled-ahead AND not-yet-
- * caught-up) so that one quirky fixture cannot block the tracker forever.
- *
- * Threshold: ≥ 14/18 teams at `currentMatchday`. With the standard 18-team
- * Ligue 1 format that means at most 4 outliers, well above what real
- * scheduling drift produces.
- */
-export function isRoundComplete(playedCounts: number[], currentMatchday: number): boolean {
-  if (!playedCounts.length || currentMatchday <= 0) return false;
-  const atMatchday = playedCounts.filter((p) => p === currentMatchday).length;
-  const threshold = Math.max(1, Math.ceil(playedCounts.length * 0.75));
-  return atMatchday >= threshold;
-}
 export interface HistoryEntry { season: string; finalPosition: number; points: number; }
-export interface OlSeasonRanking { matchday: number; position: number; points: number; }
 
 const CACHE_TTL_MS = 3600_000;
 const HISTORY_FILE = path.resolve(process.cwd(), 'data', 'standings-history.json');
@@ -165,7 +153,6 @@ export class StandingsService implements OnModuleInit {
       const season = seasonName?.split('/')[0] ?? new Date().getFullYear().toString();
       const playedCounts = rows.map((r) => r.gamePlayed ?? 0);
       const currentMatchday = computeCurrentMatchday(playedCounts);
-      const roundComplete = isRoundComplete(playedCounts, currentMatchday);
 
       const mappedRows: StandingEntry[] = rows.map((r) => {
         const c = r.competitor;
@@ -213,14 +200,7 @@ export class StandingsService implements OnModuleInit {
       const previous = this.readCache();
       this.writeCache(result);
       this.updateHistory(result);
-      if (roundComplete) {
-        this.updateSeasonRankings(result);
-      } else {
-        const atCurrent = playedCounts.filter((p) => p === currentMatchday).length;
-        this.logger.log(
-          `Skip season-rankings update: round ${currentMatchday} not yet complete (${atCurrent}/${playedCounts.length} teams at MD${currentMatchday})`,
-        );
-      }
+      if (reading.seasonNum !== undefined) await this.refreshSeasonRankings(reading.seasonNum);
       if (this.standingsTableChanged(previous, result)) {
         this.bus.emit('standings-changed', { currentMatchday: result.currentMatchday });
       }
@@ -253,30 +233,22 @@ export class StandingsService implements OnModuleInit {
     }
   }
 
-  private updateSeasonRankings(standings: SeasonStandings): void {
-    const ol = standings.table.find(e => e.teamId === OL_TEAM_ID);
-    if (!ol || !ol.played) return;
-    // Anchor on OL's own `played` count rather than the league-wide
-    // `currentMatchday`. The position-tracker is "OL's path through the
-    // season", so the natural index is "after OL's Nth match". This stays
-    // correct even when one club has a rescheduled fixture pushing the
-    // league-wide max ahead of OL.
-    const matchday = ol.played;
-    const rankings = this.getSeasonRankings();
-    const idx = rankings.findIndex(r => r.matchday === matchday);
-    const existing = idx >= 0 ? rankings[idx] : null;
-    const entry: OlSeasonRanking = {
-      matchday,
-      position: ol.position,
-      points: ol.points,
-    };
-    if (existing && existing.position === entry.position && existing.points === entry.points) {
+  /**
+   * L241 — recalcule la position de l'OL à la fin de chaque journée depuis les
+   * résultats de toute la Ligue 1 et réécrit `season-rankings.json` s'il change.
+   * Un appel 365scores en échec ou sans match laisse le fichier tel quel.
+   */
+  private async refreshSeasonRankings(seasonNum: number): Promise<void> {
+    const games = await fetchLeagueResults(fetch, seasonNum, LIGUE1_365SCORES_ID);
+    if (!games) {
+      this.logger.warn('Season rankings: league results unavailable, tracker kept as is');
       return;
     }
-    if (idx >= 0) rankings[idx] = entry; else rankings.push(entry);
-    rankings.sort((a, b) => a.matchday - b.matchday);
+    const rankings = computeOlRankingsByRound(games, OL_365SCORES_ID);
+    const current = this.getSeasonRankings();
+    if (JSON.stringify(current) === JSON.stringify(rankings)) return;
     atomicWriteJsonSync(SEASON_FILE, rankings);
-    this.bus.emit('season-rankings-changed', entry);
+    this.bus.emit('season-rankings-changed', { matchdays: rankings.length });
   }
 
   private standingsTableChanged(prev: SeasonStandings | null, next: SeasonStandings): boolean {

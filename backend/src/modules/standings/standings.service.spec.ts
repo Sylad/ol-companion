@@ -1,4 +1,4 @@
-import { sortByLfpRules, computeCurrentMatchday, isRoundComplete } from './standings.service';
+import { sortByLfpRules, computeCurrentMatchday } from './standings.service';
 
 describe('sortByLfpRules', () => {
   it('sorts by points desc first', () => {
@@ -101,33 +101,5 @@ describe('computeCurrentMatchday', () => {
     // Mid-week: just two teams played MD33 ahead, rest at MD32.
     const counts = [32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 33, 33];
     expect(computeCurrentMatchday(counts)).toBe(32);
-  });
-});
-
-describe('isRoundComplete', () => {
-  it('returns false for an empty league', () => {
-    expect(isRoundComplete([], 0)).toBe(false);
-  });
-
-  it('returns true when 18/18 teams are aligned', () => {
-    expect(isRoundComplete(Array(18).fill(30), 30)).toBe(true);
-  });
-
-  it('returns true when one team is rescheduled-ahead — no longer freezes the tracker', () => {
-    // The exact bug Sylvain reported 2026-05-10: 17 teams at MD32, Nantes at MD33.
-    // The mode-based currentMatchday is 32, and 17/18 ≥ 14 → round complete.
-    const counts = [31, 32, 32, 32, 32, 32, 32, 31, 32, 32, 32, 31, 32, 32, 32, 32, 33, 32];
-    // 14 teams at 32 → above the 14/18 threshold (75%).
-    expect(isRoundComplete(counts, 32)).toBe(true);
-  });
-
-  it('returns false during a round that is genuinely mid-flight', () => {
-    // 5 teams at MD32, 13 at MD31 — round 32 not played by anyone yet meaningfully.
-    const counts = [31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32];
-    expect(isRoundComplete(counts, 32)).toBe(false);
-  });
-
-  it('returns false when currentMatchday is non-positive', () => {
-    expect(isRoundComplete([0, 0, 0], 0)).toBe(false);
   });
 });
