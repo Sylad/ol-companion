@@ -9,7 +9,10 @@ import {
 
 const OL = 465;
 
-// Résultats réels de la Ligue 1 2026-27 (J1 à J9) lus chez 365scores le 01-11-2026.
+// Résultats réels de la Ligue 1 2026-27 (J1 à J9) lus chez 365scores le 01-11-2026. Les 18 scores de la
+// J1 et de la J2 ont été recoupés le même jour avec psg.fr (pages « Les résultats de la 1re / 2e journée de
+// Ligue 1 2026-2027 », qui reprend les scores de la LFP) : identiques, voir le test « J1-J2 ». L'écart avec
+// la référence de Sylvain et Sofascore (Lyon 3e à la J2) ne vient donc pas des données.
 const real = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../../../test/fixtures/ligue1-2026-results-j1-j9.json'), 'utf-8'),
 ) as { games: unknown[] };
@@ -45,6 +48,21 @@ describe('computeOlRankingsByRound — classement à la fin de chaque journée (
   it("J7 réelle : l'OL est 1er à 14 points devant Monaco, Lille, PSG et Paris FC à 14 — départage à la différence de buts (+8)", () => {
     const j7 = computeOlRankingsByRound(realGames, OL).find((r) => r.matchday === 7);
     expect(j7).toEqual({ matchday: 7, position: 1, points: 14 });
+  });
+
+  it("J1-J2 : les 18 scores de la fixture sont ceux de psg.fr (seconde source, relevée le 01-11-2026)", () => {
+    const psgFr = [
+      '1 Olympique de Marseille 4-0 Strasbourg', '1 Lens 5-2 Auxerre', '1 Toulouse 0-2 Lyon',
+      '1 OGC Nice 0-0 Lorient', '1 Troyes 0-0 Paris FC', '1 Le Mans 2-2 Brest', '1 Angers 0-2 Lille',
+      '1 Le Havre 0-1 Monaco', '1 Rennes 2-2 PSG', '2 Lille 2-2 PSG', '2 Strasbourg 2-1 Lens',
+      '2 Auxerre 1-3 Angers', '2 Brest 2-2 Toulouse', '2 Lorient 1-2 Troyes', '2 Lyon 1-1 Le Havre',
+      '2 Paris FC 3-0 OGC Nice', '2 Rennes 3-2 Le Mans', '2 Monaco 2-0 Olympique de Marseille',
+    ];
+    type Raw = { roundNum: number; homeCompetitor: { name: string; score: number }; awayCompetitor: { name: string; score: number } };
+    const fixture = (real.games as Raw[])
+      .filter((g) => g.roundNum <= 2)
+      .map((g) => `${g.roundNum} ${g.homeCompetitor.name} ${g.homeCompetitor.score}-${g.awayCompetitor.score} ${g.awayCompetitor.name}`);
+    expect(fixture.sort()).toEqual([...psgFr].sort());
   });
 
   it("J2 réelle : Lyon et Lille (4 pts, +2, sans confrontation directe) se départagent aux buts marqués, Lille 4 contre 3 : Lyon est 4e", () => {
