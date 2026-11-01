@@ -780,6 +780,11 @@
       "status": "done",
       "started": "2026-11-01",
       "finished": "2026-11-01"
+    },
+    {
+      "id": "L238",
+      "title": "Nouveau lien vers Julien le Gone dans les ressources",
+      "status": "todo"
     }
   ]
 }
