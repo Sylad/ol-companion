@@ -2762,6 +2762,7 @@ lots:
     visible: true
     created: 2026-11-01
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "compliant (1 note mineure : l'attribution football-data.org est affichée même quand football-data se tait pour l'heure d'un match de Ligue 1 à venir ; rien de bloquant, de majeur ni d'utilisabilité) — orchestré (vague 2026-11-01-1800-ol, 0 passe(s) de correction)", commit: 25fbd9b1bb171611ec5b36ce6368798ed3555623 }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
