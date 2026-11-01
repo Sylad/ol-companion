@@ -784,8 +784,14 @@
     {
       "id": "L238",
       "title": "Nouveau lien vers Julien le Gone dans les ressources",
-      "status": "doing",
-      "started": "2026-11-01"
+      "status": "done",
+      "started": "2026-11-01",
+      "finished": "2026-11-01"
+    },
+    {
+      "id": "L239",
+      "title": "Menu : l'Équipe de France séparée de la partie OL",
+      "status": "todo"
     }
   ]
 }

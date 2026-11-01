@@ -2781,12 +2781,21 @@ lots:
   - id: L238
     title: Lien vers Julien le Gone (https://julienlegone.fr/ — avant-match, live commenté et débrief des matchs de l'OL entre supporters) dans les Ressources de la barre latérale (sidebar-links.tsx, après Sofascore), icône cohérente avec les autres liens, ouverture dans un nouvel onglet comme eux ; page À propos si elle liste ces ressources ; demande de Sylvain du 01-11
     public: Nouveau lien vers Julien le Gone dans les ressources
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-1940-ol, 0 passe(s) de correction)", commit: cb3a5c002f701a1327de84514837c1a2bf86d481 }
+    ux: { date: 2026-11-01, verdict: "conforme — capture 1440 regardée par le lead : lien Julien le Gone en dernier des Ressources, icône micro, même style que les autres liens" }
+    finished: 2026-11-01
+  - id: L239
+    title: "Menu : séparateur entre « Carte L1 » et « Équipe de France », comme celui au-dessus de « FC Noobz », pour séparer la partie OL, l'Équipe de France et FC Noobz (même trait, mêmes marges ; ordre des liens inchangé) ; demande de Sylvain du 01-11"
+    public: "Menu : l'Équipe de France séparée de la partie OL"
+    status: todo
+    estimate: 0.1
+    visible: true
+    created: 2026-11-01
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
