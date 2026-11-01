@@ -76,9 +76,11 @@ export function PositionTracker() {
           <span
             id="info-position-tracker"
             role="tooltip"
-            className="pointer-events-none absolute right-0 top-full z-10 mt-1 hidden w-56 rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs text-fg shadow-lg group-hover:block group-focus-within:block"
+            className="pointer-events-none absolute right-0 top-full z-10 mt-1 hidden w-64 rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs text-fg shadow-lg group-hover:block group-focus-within:block"
           >
-            Position de l'OL au fil des journées de Ligue 1
+            Place de l'OL à la fin de chaque journée de Ligue 1, recalculée depuis les résultats de
+            tous les clubs. Entre deux matchs d'une même journée, l'OL a pu être mieux placé ou moins
+            bien : seule la fin de journée est tracée.
           </span>
         </div>
       </header>

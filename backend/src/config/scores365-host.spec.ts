@@ -280,6 +280,8 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
       expect(standings?.table).toHaveLength(18);
       expect(pathsAndQueries()).toEqual([
         '/web/standings/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=35',
+        // L241 : résultats de toute la ligue pour le tracker de classement.
+        '/web/games/results/?appTypeId=5&langId=1&timezoneName=Europe/Paris&userCountryId=75&competitions=35',
       ]);
       expectAllOnApiBase();
     });
