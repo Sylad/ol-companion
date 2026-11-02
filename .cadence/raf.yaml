@@ -2835,11 +2835,12 @@ lots:
     finished: 2026-11-01
   - id: L243
     title: "sortByLfpRules (standings.service.ts:34-51, tri local du classement du moment) applique les confrontations directes après les buts marqués ; l'ordre officiel LFP (ligue1.com/fr/articles/l1_article_2830-, appliqué par season-rankings.ts depuis L242) les met juste après la différence de buts générale : aligner sur la même fonction ou le même ordre, une seule source dans le code, test sur un cas où l'ordre change le classement (revue de L242)"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-01
     started: 2026-11-02
     review: { date: 2026-11-02, verdict: "conforme : 2 notes mineures (un test de groupe des confrontations directes qui ne peut pas échouer, `compare` à renommer `compareLfp` dans CLAUDE.md) — orchestré (vague 2026-11-02-0810-ol, 1 passe(s) de correction)", commit: 868ea780e62c197abf302ff354ad63ff3860cfc2 }
+    finished: 2026-11-02
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
