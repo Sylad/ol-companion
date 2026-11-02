@@ -2776,6 +2776,7 @@ lots:
     estimate: 0.25
     created: 2026-11-01
     started: 2026-11-02
+    review: { date: 2026-11-02, verdict: "compliant — étude conforme au lot, 0 bloquant, 0 majeur ; 2 notes mineures (CLAUDE.md l.120/174 périmé, coût Sofascore non mesuré) — orchestré (vague 2026-11-02-1205-cont, 0 passe(s) de correction)", commit: af43cbe249bc7d24384462732deeecbf0c4d1286 }
   - id: L237
     title: "Idées pour améliorer le site, vu d'un supporter de l'OL : étude (pas de code) — parcourir le site actuel et ce que les supporters consultent (avant, pendant et après un match, mercato, histoire du club, féminines, groupe Lyonnais, tribunes), comparer à ce qu'offrent les sites et applis de référence (OL officiel, L'Équipe, Sofascore, sites de supporters), et proposer une liste classée d'idées : valeur pour un supporter, effort, données nécessaires et disponibles gratuitement ; chaque idée retenue devient un lot. Livrable docs/etudes/idees-supporter.md. Demande de Sylvain du 01-11"
     status: todo
