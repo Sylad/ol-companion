@@ -87,12 +87,12 @@ describe('StandingsService — départage LFP du classement du moment (L243)', (
 
   beforeEach(() => {
     resultsAnswer = () => json(lyonBeatParisFc);
-    globalThis.fetch = ((input: unknown) =>
+    globalThis.fetch = (input: unknown) =>
       Promise.resolve(
         String(input).includes('/web/games/results/')
           ? resultsAnswer()
           : json(standingsBody()),
-      )) as typeof fetch;
+      );
   });
 
   afterEach(() => {
