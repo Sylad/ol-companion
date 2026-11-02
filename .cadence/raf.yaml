@@ -2845,9 +2845,10 @@ lots:
       - { date: 2026-11-02, text: "Mineurs de la revue (02-11) : test standings.service.spec.ts:226 ne peut pas échouer (inclure C dans le groupe ne change pas l'ordre — cas à refaire où B bat C et A perd contre C) ; CLAUDE.md:123 et commentaire spec:31 citent encore compare au lieu de compareLfp ; awayWins toujours 0 (critère 6 sans effet) ; compareLfp non transitif à 3+ égalités (hérité L242)." }
   - id: L244
     title: "Tracker de classement faux en prod : fetchLeagueResults (season-rankings.ts:169-171) arrête la pagination 365scores dès qu'un match de J1 est lu, alors que les matchs de J1 tiennent sur deux pages (3 en page 4, 6 en page 5, dont Toulouse 0-2 Lyon) ; le tracker commence à J2 et affiche « Actuellement 6e · 14 pts » à côté de « 3e · 17 pts » ; les confrontations directes de /api/standings (L243) lisent ce même jeu incomplet. Paginer jusqu'à ce que la journée 1 soit complète (9 matchs) ou que previousPage manque ; test sur deux pages de J1 ; vérifier la série 3-4-2-4-2-4-1-5-3 (QA de L243, 02-11)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-11-02
+    started: 2026-11-02
   - id: L245
     title: "Attendus QA /standings et / : le tracker commence à J1 ; ses points et sa place à la dernière journée égalent ceux de /api/standings quand tous les clubs ont joué autant de matchs (QA de L243)"
     status: todo
