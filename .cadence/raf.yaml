@@ -2772,11 +2772,12 @@ lots:
       - { date: 2026-11-01, text: "Mineur de la revue (non corrigé) : la mention football-data.org s'affiche pour tout match de Ligue 1 à venir, même quand football-data se tait et que l'heure vient de 365scores (match.tsx:699)" }
   - id: L236
     title: "Étude de faisabilité — sources de statistiques citées dans les vidéos foot : Sofascore (rejeté le 10-05 : 403 Cloudflare côté serveur, re-tester depuis dark-blue et le navigateur) et DataScout (à identifier : qui, quelles données, accès gratuit et public ?). Livrable : docs/etudes/sources-stats.md — par source : données disponibles en plus de 365scores, accès réel mesuré (statut HTTP, échantillon), conditions d'utilisation, coût. Sans compte payant, sans achat, sans démarche auprès d'un éditeur ; aucune ligne de code de l'app. Demande de Sylvain du 01-11"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-01
     started: 2026-11-02
     review: { date: 2026-11-02, verdict: "compliant — étude conforme au lot, 0 bloquant, 0 majeur ; 2 notes mineures (CLAUDE.md l.120/174 périmé, coût Sofascore non mesuré) — orchestré (vague 2026-11-02-1205-cont, 0 passe(s) de correction)", commit: af43cbe249bc7d24384462732deeecbf0c4d1286 }
+    finished: 2026-11-02
   - id: L237
     title: "Idées pour améliorer le site, vu d'un supporter de l'OL : étude (pas de code) — parcourir le site actuel et ce que les supporters consultent (avant, pendant et après un match, mercato, histoire du club, féminines, groupe Lyonnais, tribunes), comparer à ce qu'offrent les sites et applis de référence (OL officiel, L'Équipe, Sofascore, sites de supporters), et proposer une liste classée d'idées : valeur pour un supporter, effort, données nécessaires et disponibles gratuitement ; chaque idée retenue devient un lot. Livrable docs/etudes/idees-supporter.md. Demande de Sylvain du 01-11"
     status: todo
