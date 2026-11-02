@@ -205,16 +205,36 @@ describe('fetchLeagueResults — pages de résultats de la Ligue 1', () => {
     const pages: Record<string, Response> = {
       first: page([raw(3, 3)], '/p2'),
       '/p2': page([raw(2, 2)], '/p1'),
-      '/p1': page([raw(1, 1)], '/never'),
+      '/p1': page(Array.from({ length: 9 }, (_, i) => ({ ...raw(10 + i, 1), homeCompetitor: { id: 100 + i, score: 1 }, awayCompetitor: { id: 200 + i, score: 0 } })), '/never'),
     };
     const fetcher = jest.fn(async (u: string) => {
       urls.push(u);
       return u.includes('/web/games/results/') ? pages.first : pages[u.replace('https://webws.365scores.com', '')];
     });
     const games = await fetchLeagueResults(fetcher as never, 94, 35);
-    expect(games?.map((g) => g.roundNum).sort()).toEqual([1, 2, 3]);
+    expect(games?.map((g) => g.roundNum).sort()).toEqual([1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3]);
     expect(urls).toHaveLength(3);
     expect(urls[0]).toContain('competitions=35');
+  });
+
+  it("L244 — une journée 1 répartie sur deux pages (3 puis 6 matchs) est lue en entier avant l'arrêt", async () => {
+    const r1 = (id: number) => ({ ...raw(id, 1), homeCompetitor: { id: id * 2, score: 1 }, awayCompetitor: { id: id * 2 + 1, score: 0 } });
+    const pages: Record<string, Response> = {
+      first: page([raw(20, 2), r1(1), r1(2), r1(3)], '/p2'),
+      '/p2': page([r1(4), r1(5), r1(6), r1(7), r1(8), r1(9)], '/never'),
+    };
+    const fetcher = jest.fn(async (u: string) =>
+      u.includes('/web/games/results/') ? pages.first : pages[u.replace('https://webws.365scores.com', '')]);
+    const games = await fetchLeagueResults(fetcher as never, 94, 35);
+    expect(games?.filter((g) => g.roundNum === 1)).toHaveLength(9);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it("L244 — la pagination s'arrête sans previousPage même si la journée 1 est incomplète", async () => {
+    const fetcher = jest.fn(async () => page([raw(1, 1)]));
+    const games = await fetchLeagueResults(fetcher as never, 94, 35);
+    expect(games).toHaveLength(1);
+    expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
   it("s'arrête quand une page n'apporte aucun match nouveau (pas de boucle)", async () => {

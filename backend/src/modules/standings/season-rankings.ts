@@ -25,6 +25,8 @@ type Fetcher = (url: string, init?: RequestInit) => Promise<Response>;
 
 const FINISHED = 4; // statusGroup 365scores d'un match terminé
 const MAX_PAGES = 40;
+/** Matchs d'une journée de Ligue 1 (18 clubs) : la journée 1 est complète à ce nombre. */
+const MATCHES_PER_ROUND = 9;
 const HEADERS = scores365Headers(SCORES365_REFERER.ligue1);
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
@@ -143,7 +145,8 @@ export function computeOlRankingsByRound(games: LeagueGame[], olId: number): OlS
 
 /**
  * Tous les matchs terminés de la saison : la page des derniers résultats, puis
- * `paging.previousPage` en remontant, jusqu'à la journée 1. `null` si un appel
+ * `paging.previousPage` en remontant, jusqu'à ce que la journée 1 soit complète (9 matchs, qui
+ * peuvent tenir sur deux pages) ou que `previousPage` manque. `null` si un appel
  * échoue ou si rien n'est lisible : l'appelant garde alors le tracé existant.
  */
 export async function fetchLeagueResults(
@@ -167,7 +170,7 @@ export async function fetchLeagueResults(
         if (!byKey.has(key)) { byKey.set(key, g); added++; }
       }
       const previous: unknown = isRecord(body.paging) ? body.paging.previousPage : undefined;
-      const reachedRoundOne = [...byKey.values()].some((g) => g.roundNum === 1);
+      const reachedRoundOne = [...byKey.values()].filter((g) => g.roundNum === 1).length >= MATCHES_PER_ROUND;
       url = added > 0 && !reachedRoundOne && typeof previous === 'string' ? `${SCORES365_API_BASE}${previous}` : null;
     }
   } catch {
