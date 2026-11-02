@@ -2849,6 +2849,7 @@ lots:
     estimate: 0.25
     created: 2026-11-02
     started: 2026-11-02
+    review: { date: 2026-11-02, verdict: "compliant (L244, 341ad6e) : la pagination s'arrête à 9 matchs de J1 ou sans `previousPage`, testée sur deux pages (3 puis 6 matchs), 2 notes mineures (ponctuation du README, seuil en dur assumé) — orchestré (vague 2026-11-02-0840-ol, 0 passe(s) de correction)", commit: 341ad6e18ebcaa43ac8509b4f60dae514e20a1dc }
   - id: L245
     title: "Attendus QA /standings et / : le tracker commence à J1 ; ses points et sa place à la dernière journée égalent ceux de /api/standings quand tous les clubs ont joué autant de matchs (QA de L243)"
     status: todo
