@@ -52,7 +52,7 @@ export function parseLeagueGames(raw: unknown, seasonNum: number): LeagueGame[] 
   return out;
 }
 
-interface Row {
+export interface Row {
   id: number;
   points: number;
   goalDifference: number;
@@ -108,7 +108,7 @@ function headToHead(games: LeagueGame[], round: number, group: Set<number>, id: 
  * Cas réel, J2 2026-27 : Lyon et Lille (4 pts, +2, pas de confrontation directe) se
  * départagent aux buts marqués, Lille (4) devant Lyon (3) : Lyon est 4e.
  */
-function compare(games: LeagueGame[], round: number, table: Row[], a: Row, b: Row): number {
+export function compareLfp(games: LeagueGame[], round: number, table: Row[], a: Row, b: Row): number {
   if (a.points !== b.points) return a.points - b.points;
   if (a.goalDifference !== b.goalDifference) return a.goalDifference - b.goalDifference;
   const group = new Set(table.filter((r) => r.points === a.points && r.goalDifference === a.goalDifference).map((r) => r.id));
@@ -123,7 +123,7 @@ function compare(games: LeagueGame[], round: number, table: Row[], a: Row, b: Ro
  * Une entrée par journée où l'OL a joué son match : sa place dans le classement
  * des matchs terminés de la journée 1 à cette journée (un match joué plus tard
  * compte dans sa journée d'origine, `roundNum`). Un match de l'OL reporté ne
- * donne pas de point pour sa journée. Départage : `compare` (ordre LFP complet) ; à égalité
+ * donne pas de point pour sa journée. Départage : `compareLfp` (ordre LFP complet) ; à égalité
  * totale avec d'autres clubs, l'OL prend la meilleure place du groupe.
  */
 export function computeOlRankingsByRound(games: LeagueGame[], olId: number): OlSeasonRanking[] {
@@ -137,7 +137,7 @@ export function computeOlRankingsByRound(games: LeagueGame[], olId: number): OlS
       const table = tableUpTo(games, matchday);
       const ol = table.find((r) => r.id === olId) as Row; // l'OL a un match terminé dans cette journée
       // Les clubs à égalité totale partagent la meilleure place.
-      return { matchday, position: 1 + table.filter((r) => compare(games, matchday, table, r, ol) > 0).length, points: ol.points };
+      return { matchday, position: 1 + table.filter((r) => compareLfp(games, matchday, table, r, ol) > 0).length, points: ol.points };
     });
 }
 

@@ -7,8 +7,10 @@ import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
 import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
 import {
+  compareLfp,
   computeOlRankingsByRound,
   fetchLeagueResults,
+  type LeagueGame,
   type OlSeasonRanking,
 } from './season-rankings';
 import { describeClubsResolvedFromGames, readScores365Standings } from './scores365-standings';
@@ -31,26 +33,25 @@ export interface SeasonStandings {
 }
 
 /**
- * LFP tie-break rules (https://ligue1.com — art 2160):
- *   1. points (desc)
- *   2. goal difference (desc)
- *   3. goals for (desc)
- * H2H criteria (4. and 5.) not enforced here — head-to-head requires per-match
- * data we don't have at the standings level. 365scores already returns the
- * official LFP order for those edge cases; the three criteria below match
- * 100% of the snapshots audited 2026-04 → 2026-05. This is a defence-in-depth
- * pass that re-asserts the basic ordering and makes the service deterministic
- * regardless of how 365scores happens to rank rows on a given day.
+ * Classement selon l'ordre de départage officiel LFP, le MÊME que celui du tracker de
+ * saison : `compareLfp` (season-rankings.ts) — points, différence de buts, confrontations
+ * directes (lues dans `games`, les résultats de la Ligue 1), buts marqués, victoires,
+ * victoires à l'extérieur. Les victoires à l'extérieur ne figurent pas dans une ligne du
+ * classement : elles valent 0 ici (critère 6 sans effet). Sans `games`, les confrontations
+ * directes ne départagent personne. `idOf` donne l'identifiant 365scores d'une ligne,
+ * celui des résultats ; égalité totale : ordre d'entrée conservé.
  */
-export function sortByLfpRules<T extends Pick<StandingEntry, 'points' | 'goalDifference' | 'goalsFor'>>(
-  rows: T[],
-): T[] {
-  return [...rows].sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
-    if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
-    return 0;
-  });
+export function sortByLfpRules<
+  T extends Pick<StandingEntry, 'teamId' | 'points' | 'goalDifference' | 'goalsFor'> & { won?: number },
+>(rows: T[], games: LeagueGame[] = [], idOf: (row: T) => number = (r) => r.teamId): T[] {
+  const stats = rows.map((r) => ({
+    row: r,
+    lfp: { id: idOf(r), points: r.points, goalDifference: r.goalDifference, goalsFor: r.goalsFor, wins: r.won ?? 0, awayWins: 0 },
+  }));
+  const table = stats.map((s) => s.lfp);
+  return stats
+    .sort((a, b) => compareLfp(games, Infinity, table, b.lfp, a.lfp))
+    .map((s) => s.row);
 }
 
 /**
@@ -154,6 +155,10 @@ export class StandingsService implements OnModuleInit {
       const playedCounts = rows.map((r) => r.gamePlayed ?? 0);
       const currentMatchday = computeCurrentMatchday(playedCounts);
 
+      // Résultats de toute la Ligue 1 : confrontations directes du départage et tracker.
+      const games =
+        reading.seasonNum !== undefined ? await fetchLeagueResults(fetch, reading.seasonNum, LIGUE1_365SCORES_ID) : null;
+
       const mappedRows: StandingEntry[] = rows.map((r) => {
         const c = r.competitor;
         const gf = r.for ?? 0;
@@ -180,12 +185,12 @@ export class StandingsService implements OnModuleInit {
         };
       });
 
-      // Defence in depth — re-apply LFP tie-break rules (points, GD, goals for)
-      // and re-number positions. Audit 2026-05-06 confirmed 365scores serves
-      // the correct LFP order, but we don't trust an external feed for the
-      // ordering of our flagship table. If 365scores ever drifts (or ties go
-      // to head-to-head), positions 1..18 stay deterministic on our side.
-      const sorted = sortByLfpRules(mappedRows).map((row, idx) => ({
+      // Defence in depth — re-apply the official LFP tie-break order (same function as the
+      // season tracker) and re-number positions, so 1..18 stay deterministic on our side
+      // even if 365scores drifts. Without league results, head-to-head cannot apply.
+      const sorted = sortByLfpRules(mappedRows, games ?? [], (r) =>
+        r.teamId === OL_TEAM_ID ? OL_365SCORES_ID : r.teamId,
+      ).map((row, idx) => ({
         ...row,
         position: idx + 1,
       }));
@@ -200,7 +205,7 @@ export class StandingsService implements OnModuleInit {
       const previous = this.readCache();
       this.writeCache(result);
       this.updateHistory(result);
-      if (reading.seasonNum !== undefined) await this.refreshSeasonRankings(reading.seasonNum);
+      this.refreshSeasonRankings(games);
       if (this.standingsTableChanged(previous, result)) {
         this.bus.emit('standings-changed', { currentMatchday: result.currentMatchday });
       }
@@ -238,8 +243,7 @@ export class StandingsService implements OnModuleInit {
    * résultats de toute la Ligue 1 et réécrit `season-rankings.json` s'il change.
    * Un appel 365scores en échec ou sans match laisse le fichier tel quel.
    */
-  private async refreshSeasonRankings(seasonNum: number): Promise<void> {
-    const games = await fetchLeagueResults(fetch, seasonNum, LIGUE1_365SCORES_ID);
+  private refreshSeasonRankings(games: LeagueGame[] | null): void {
     if (!games) {
       this.logger.warn('Season rankings: league results unavailable, tracker kept as is');
       return;
