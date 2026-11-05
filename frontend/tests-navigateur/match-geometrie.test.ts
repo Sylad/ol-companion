@@ -128,7 +128,7 @@ describe.each(ECRANS)('page match à %i × %i', (largeur, hauteur) => {
         return { top: r.top, bottom: r.bottom };
       }),
     );
-    expect(rangees.length).toBeGreaterThanOrEqual(3); // Faits, Statistiques | Momentum, Carte des tirs, Joueurs en vue | Classement
+    expect(rangees.length).toBeGreaterThanOrEqual(3); // Faits, Statistiques | Momentum, Carte des tirs | pile
     for (let i = 1; i < rangees.length; i++) {
       expect(rangees[i].top - rangees[i - 1].bottom).toBeCloseTo(16, 0);
     }

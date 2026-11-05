@@ -43,7 +43,7 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
     }
   });
 
-  it('R5 — les libellés sont du texte horizontal, après le terrain, sur une ligne sous 1024 px', () => {
+  it('R5 — les libellés sont du texte horizontal, sur une seule ligne, sous le terrain', () => {
     renderMap({ homeIsOl: true, homeName: 'Lyon', awayName: 'Rennes' });
     const carte = screen.getByTestId('carte-tirs');
     const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
@@ -53,11 +53,10 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
       expect(el.className + el.parentElement!.className).not.toMatch(/writing-mode|vertical|rotate/);
       expect(terrain.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
-    // sous 1024 px une seule ligne ; dès lg, l'un sous l'autre dans la colonne de légende (L248)
+    // une seule ligne : les deux libellés sont frères, dans la même rangée
     expect(gauche.parentElement).toBe(droite.parentElement);
     expect(gauche.parentElement!.className).toMatch(/\bflex\b/);
-    expect(gauche.parentElement!.className.split(/\s+/)).not.toContain('flex-col');
-    expect(gauche.parentElement!.className).toMatch(/lg:flex-col/);
+    expect(gauche.parentElement!.className).not.toMatch(/flex-col|flex-wrap/);
   });
 
   it('R5 — la couleur suit le club (OL rouge, adversaire bleu) et reste ≥ 4,5:1, OL à domicile comme à l\'extérieur', () => {
