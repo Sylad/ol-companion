@@ -773,8 +773,8 @@
 :root {
   --ligne-fait: 44px;
 }
-/* Bordure néon : mêmes teintes et ombres que les bords néon de la barre latérale, rouge en haut, bleu en bas. */
-.faits-bloc {
+/* Bordure néon du panneau du score (L246, avant : bloc Faits) : mêmes teintes et ombres que les bords néon de la barre latérale, rouge en haut, bleu en bas. */
+.entete-neon {
   border: 1px solid transparent;
   background:
     linear-gradient(hsl(var(--surface)), hsl(var(--surface))) padding-box,
@@ -785,8 +785,11 @@
     0 -8px 36px 2px hsl(0 90% 50% / 0.2), 0 8px 36px 2px hsl(224 90% 50% / 0.2);
 }
 @media (forced-colors: active) {
-  .faits-bloc { border-color: CanvasText; }
+  .entete-neon { border-color: CanvasText; }
 }
+
+/* Le bloc Faits : bordure ordinaire, sans halo (L246). */
+.faits-bloc { border: 1px solid hsl(var(--border)); }
 
 .faits-repere {
   display: flex; align-items: center; gap: 6px; width: 100%; height: 32px; margin: 0; padding: 0 20px;
@@ -816,7 +819,7 @@
 }
 /* L167 R5 — match des Bleus : bordure néon aux couleurs du drapeau (bleu en haut, blanc au milieu, rouge en bas ; halos
    bleus vers le haut, rouges vers le bas, mêmes rayons) et barre de défilement aux jetons --sb-* du thème des Bleus. */
-body.theme-bleus .faits-bloc {
+body.theme-bleus .entete-neon {
   background:
     linear-gradient(hsl(var(--surface)), hsl(var(--surface))) padding-box,
     linear-gradient(180deg, hsl(224 95% 65% / .95) 0%, hsl(0 0% 100% / .85) 50%, hsl(0 95% 65% / .95) 100%) border-box;

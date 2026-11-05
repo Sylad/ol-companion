@@ -487,7 +487,7 @@ export function MatchPage() {
       )}
 
       {/* Header */}
-      <section data-testid="entete-score" className="rounded-md bg-surface border border-border overflow-hidden">
+      <section data-testid="entete-score" className="entete-neon rounded-md bg-surface overflow-hidden">
         <header className="px-5 py-3 flex items-center justify-between flex-wrap gap-x-3 gap-y-1 border-b border-border">
           <div className="flex items-center gap-2">
             {isPaused ? (

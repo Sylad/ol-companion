@@ -384,8 +384,8 @@ describe('page-match-faits-bornes (L161)', () => {
     // R3 — « une ligne de repère de 32 px » : hauteur déclarée sur .faits-repere (largeurs 1440 et 320 : aucune règle ne la change)
     for (const w of [1440, 320]) expect(valeur('.faits-repere', 'height', w) ?? valeur('.faits-repere', 'min-height', w)).toBe('32px');
     // R3 — « Texte --fg-muted sur le fond du repère : 7,11:1 mesuré (WCAG 1.4.3 exige 4,5:1) »
-    // fond = --surface-2 à son opacité posé sur le fond du bloc (le padding-box de .faits-bloc est --surface)
-    expect(valeur('.faits-bloc', 'background')).toMatch(/^linear-gradient\(hsl\(var\(--surface\)\), hsl\(var\(--surface\)\)\) padding-box/);
+    // fond = --surface-2 à son opacité posé sur le fond du bloc (bg-surface, L246 : plus de dégradé de bordure)
+    expect(screen.getByTestId('faits-match').className).toMatch(/\bbg-surface\b/);
     const fondRepere = hslDe(valeur('.faits-repere', 'background'))!;
     expect(fondRepere.c).toEqual(jeton('surface-2'));
     const fond = fondu(rgbDe(fondRepere.c), fondRepere.a, rgbDe(jeton('surface')));
@@ -524,21 +524,24 @@ describe('page-match-faits-bornes (L161)', () => {
     expect(contrasteHsl(curseurFx, pisteFx)).toBeGreaterThanOrEqual(3);
   });
 
-  it('R13 — le bloc Faits a une bordure de 1 px et un box-shadow composé des teintes rouge (0) et bleue (224) du néon', () => {
+  it('R13 (L246) — le panneau du score porte la bordure néon de 1 px (box-shadow rouge 0 et bleu 224) ; le bloc Faits n\'a ni halo ni dégradé', () => {
     show(18);
+    expect(valeur('.faits-bloc', 'box-shadow')).toBeUndefined();
+    expect(valeur('.faits-bloc', 'border')).toBe('1px solid hsl(var(--border))');
+    expect(screen.getByTestId('entete-score').className).toMatch(/\bentete-neon\b/);
     // R13 — « Bordure de 1 px en dégradé vertical » ; « Le bloc n'est donc plus en overflow: hidden. »
-    expect(valeur('.faits-bloc', 'border')).toBe('1px solid transparent');
+    expect(valeur('.entete-neon', 'border')).toBe('1px solid transparent');
     expect(screen.getByTestId('faits-match').className).not.toMatch(/overflow-hidden/);
     // R13 — « les trois ombres des bords néon (...) hsl(0 95% 60% / 0,7) (...) et leurs trois équivalents bleus à la teinte 224 »
     // lues sur la déclaration box-shadow de .faits-bloc elle-même (pas dans l'ensemble des sources : la barre latérale porte les mêmes ombres)
-    const ombres = valeur('.faits-bloc', 'box-shadow') ?? '';
+    const ombres = valeur('.entete-neon', 'box-shadow') ?? '';
     expect(ombres).toMatch(/hsl\(0 95% 60%\s*\/\s*0?\.7\)[^;]*hsl\(224 95% 60%\s*\/\s*0?\.7\)|hsl\(224 95% 60%\s*\/\s*0?\.7\)[^;]*hsl\(0 95% 60%\s*\/\s*0?\.7\)/);
     expect(ombres).toMatch(/hsl\(0 95% 55%\s*\/\s*0?\.45\)/);
     expect(ombres).toMatch(/hsl\(224 95% 55%\s*\/\s*0?\.45\)/);
     expect(ombres).toMatch(/hsl\(0 90% 50%\s*\/\s*0?\.2\)/);
     expect(ombres).toMatch(/hsl\(224 90% 50%\s*\/\s*0?\.2\)/);
-    // R13 — « Bordure de 1 px en dégradé vertical » : le dégradé rouge (0) vers bleu (224) est posé en border-box sur .faits-bloc
-    const fond = valeur('.faits-bloc', 'background') ?? '';
+    // R13 — « Bordure de 1 px en dégradé vertical » : le dégradé rouge (0) vers bleu (224) est posé en border-box sur .entete-neon
+    const fond = valeur('.entete-neon', 'background') ?? '';
     expect(fond).toMatch(/linear-gradient\(180deg,\s*hsl\(0 [^)]*\)[^;]*hsl\(224 [^)]*\)[^;]*\)\s*border-box/);
   });
 

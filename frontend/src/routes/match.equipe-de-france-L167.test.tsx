@@ -148,7 +148,7 @@ describe('R5 — bordure néon et barre de défilement du bloc Faits', () => {
     show(FRANCE_AT_HOME);
     await waitFor(() => expect(bleus()).toBe(true));
     const bloc = screen.getByTestId('faits-match');
-    const d = decls('theme-bleus', 'faits-bloc');
+    const d = decls('theme-bleus', 'entete-neon');
     // R5 — « dégradé vertical hsl(224 95% 65% / .95) → blanc → hsl(0 95% 65% / .95) »
     expect(d).toMatch(/hsl\(\s*224 95% 65%\s*\/\s*\.95\)/);
     expect(d).toMatch(/hsl\(\s*0 95% 65%\s*\/\s*\.95\)/);
@@ -171,7 +171,7 @@ describe('R5 — bordure néon et barre de défilement du bloc Faits', () => {
     const fr = show(FRANCE_AT_HOME);
     await waitFor(() => expect(bleus()).toBe(true));
     // R5 — « halos bleus vers le haut et rouges vers le bas » : règles réservées au thème des Bleus
-    expect(decls('theme-bleus', 'faits-bloc')).toContain('224 95% 65%');
+    expect(decls('theme-bleus', 'entete-neon')).toContain('224 95% 65%');
     fr.unmount();
     show('465-1-10', { competitionId: 35 });
     // R5 — « Sur un match de l’OL, rien ne change. »
