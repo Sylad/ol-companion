@@ -2888,7 +2888,7 @@ lots:
   - id: L248
     title: "Page de match, carte des tirs : terrain à l'horizontale dans la largeur de la carte, au plus 348 px, pour gagner de la hauteur ; points de tir, légende et sens d'attaque tournés avec lui (OL attaque à gauche ou à droite, plus en haut ou en bas), marqueurs de taille constante à l'écran, rendu vérifié à 1440 et 390 px ; et la ligne des attendus QA de /match/$gameId cite .entete-neon au lieu de .faits-bloc depuis L246 (demande de Sylvain du 05-11)"
     public: "Carte des tirs : le terrain passe à l'horizontale"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     screen: component
@@ -2899,6 +2899,9 @@ lots:
       - { date: 2026-11-05, text: "titre remplacé : « Page de match, carte des tirs : terrain à l'horizontale, à taille égale, pour gagner de la hauteur ; points de tir, légende et sens d'attaque tournés avec lui (OL attaque à gauche ou à droite, plus en haut ou en bas), rendu vérifié à 1440 et 390 px ; et la ligne des attendus QA de /match/$gameId cite .entete-neon au lieu de .faits-bloc depuis L246 (demande de Sylvain du 05-11) »" }
       - { date: 2026-11-05, text: "test d'acceptation rescellé (lot livré L186, frontend/src/routes/match.disposition-L186.test.tsx, frontend/src/routes/match.socle-L186.test.tsx, fiche amendée en 5f9faa2) : L248 passe la carte des tirs à l'horizontale à la demande de Sylvain du 05-11, ce qui renverse l'orientation fixée par L186 ; disposition inchangée" }
       - { date: 2026-11-05, text: "test d'acceptation rescellé (lot livré L160, frontend/src/routes/match.disposition-L160.test.tsx, fiche amendée en 5f9faa2) : L248 passe la carte des tirs à l'horizontale à la demande de Sylvain du 05-11, ce qui renverse l'orientation fixée par L186 ; disposition inchangée" }
+    review: { date: 2026-11-05, verdict: "conforme : rotation seule, disposition identique, marqueurs à taille constante, 323 tests ciblés, géométrie Chromium et porte complète vertes", commit: 8f38b96e57d27d23ea8013379fd1ed5a818803e3 }
+    ux: { date: 2026-11-05, verdict: "conforme : captures 2000 et 1440 regardées, validées par Sylvain" }
+    finished: 2026-11-05
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
