@@ -801,6 +801,11 @@
       "status": "done",
       "started": "2026-11-05",
       "finished": "2026-11-05"
+    },
+    {
+      "id": "L248",
+      "title": "Carte des tirs : le terrain passe à l'horizontale",
+      "status": "todo"
     }
   ]
 }
