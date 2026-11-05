@@ -2886,7 +2886,7 @@ lots:
     review: { date: 2026-11-05, verdict: "conforme : rescellement fait par le programme, aucune ligne de test changée dans ce lot", commit: 3f99ea7ebddbb6931cc14d88729e5de80727db23 }
     finished: 2026-11-05
   - id: L248
-    title: "Page de match, carte des tirs : terrain à l'horizontale, à taille égale, pour gagner de la hauteur ; points de tir, légende et sens d'attaque tournés avec lui (OL attaque à gauche ou à droite, plus en haut ou en bas), rendu vérifié à 1440 et 390 px ; et la ligne des attendus QA de /match/$gameId cite .entete-neon au lieu de .faits-bloc depuis L246 (demande de Sylvain du 05-11)"
+    title: "Page de match, carte des tirs : terrain à l'horizontale dans la largeur de la carte, au plus 348 px, pour gagner de la hauteur ; points de tir, légende et sens d'attaque tournés avec lui (OL attaque à gauche ou à droite, plus en haut ou en bas), marqueurs de taille constante à l'écran, rendu vérifié à 1440 et 390 px ; et la ligne des attendus QA de /match/$gameId cite .entete-neon au lieu de .faits-bloc depuis L246 (demande de Sylvain du 05-11)"
     public: "Carte des tirs : le terrain passe à l'horizontale"
     status: doing
     estimate: 0.1
@@ -2896,6 +2896,7 @@ lots:
     started: 2026-11-05
     notes:
       - { date: 2026-11-05, text: "test d'acceptation rescellé (lot livré L161, frontend/src/routes/match.faits-bornes-L161.test.tsx, fiche inchangée) : L246 a déplacé le halo vers le panneau du score à la demande de Sylvain, le test de L161 suit" }
+      - { date: 2026-11-05, text: "titre remplacé : « Page de match, carte des tirs : terrain à l'horizontale, à taille égale, pour gagner de la hauteur ; points de tir, légende et sens d'attaque tournés avec lui (OL attaque à gauche ou à droite, plus en haut ou en bas), rendu vérifié à 1440 et 390 px ; et la ligne des attendus QA de /match/$gameId cite .entete-neon au lieu de .faits-bloc depuis L246 (demande de Sylvain du 05-11) »" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
