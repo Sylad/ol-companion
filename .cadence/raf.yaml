@@ -2892,6 +2892,7 @@ lots:
     estimate: 0.1
     visible: true
     screen: component
+    delivered: { date: 2026-11-05, sha: 754bf205822e78975267930cb260a41a38f6c34f }
     created: 2026-11-05
     started: 2026-11-05
     notes:
