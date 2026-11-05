@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-11-05 19:29",
+  "generated": "2026-11-05 20:21",
   "entries": [
+    {
+      "slug": "2026-11-05-carte-des-tirs-le-terrain-passe-a-l-horizontale",
+      "title": "Carte des tirs : le terrain passe à l'horizontale",
+      "date": "2026-11-05",
+      "lots": [
+        "L248"
+      ],
+      "captures": [
+        "captures/L248-carte-tirs-horizontale-1440.png"
+      ],
+      "alts": [
+        "La carte des tirs à l'horizontale, buts à gauche et à droite, avec Joueurs en vue et le classement dessous"
+      ],
+      "html": "<p>Sur la page d'un match, le terrain de la carte des tirs est maintenant couché, à la même taille, les buts à gauche et à droite. Les flèches suivent : « OL attaque → ». Joueurs en vue et le classement passent sous la carte.</p>"
+    },
     {
       "slug": "2026-11-05-match-en-direct-l-effet-lumineux-passe-sur-le-panneau-du-sco",
       "title": "Match en direct : l'effet lumineux passe sur le panneau du score",
