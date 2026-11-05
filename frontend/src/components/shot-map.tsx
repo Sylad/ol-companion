@@ -53,48 +53,45 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
           <LegendDot colors={teamColors(palette, !homeIsOl)} label={clubLegendLabel(awaySymbolRaw, awayName, awayIsClub)} />
         </div>
       </header>
-      <div className="p-4 lg:px-5 lg:py-3 lg:flex lg:items-start lg:gap-4">
-        {/* Sous lg, le terrain déborde de 8 px de chaque côté de la marge : à 390 px, ces 16 px gardent les marqueurs à la taille de R17. */}
-        <div className="-mx-2 lg:mx-0 lg:w-[348px] lg:shrink-0">
+      <div className="p-4">
+        <div className="relative w-full">
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[348px] mx-auto h-auto block" role="img" aria-label="Carte des tirs">
             <Pitch />
             {shots.map((s) => {
-              const isHome = s.competitorId === homeId;
-              // Le club à domicile attaque à droite, le visiteur à gauche ; y = axe court.
-              const x = isHome ? (s.side / 100) * W : (1 - s.side / 100) * W;
-              const y = (s.line / 100) * H;
-              const r = Math.max(5.28, Math.min(9 * K, (2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9) * K));
-              return (
-                <ShotMarker
-                  key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
-                  x={x}
-                  y={y}
-                  r={r}
-                  colors={teamColors(palette, isHome === homeIsOl)}
-                  outcome={s.outcome}
-                  shot={s}
-                  playerName={playerNames[s.playerId]}
-                />
-              );
-            })}
+                const isHome = s.competitorId === homeId;
+                // Le club à domicile attaque à droite, le visiteur à gauche ; y = axe court.
+                const x = isHome ? (s.side / 100) * W : (1 - s.side / 100) * W;
+                const y = (s.line / 100) * H;
+                const r = Math.max(5.28, Math.min(9 * K, (2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9) * K));
+                return (
+                  <ShotMarker
+                    key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
+                    x={x}
+                    y={y}
+                    r={r}
+                    colors={teamColors(palette, isHome === homeIsOl)}
+                    outcome={s.outcome}
+                    shot={s}
+                    playerName={playerNames[s.playerId]}
+                  />
+                );
+              })}
           </svg>
         </div>
-        <div className="min-w-0 lg:flex-1">
-          {/* Sens d'attaque : hors du terrain, jamais posé dessus (les tirs se concentrent dans les surfaces). */}
-          <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 lg:mt-0 lg:flex-col lg:items-start lg:gap-1 text-[10px] uppercase tracking-wider font-bold">
-            <span className={teamColors(palette, !homeIsOl).text}>← {awaySymbol} attaque</span>
-            <span className={cn('text-right lg:text-left', teamColors(palette, homeIsOl).text)}>{homeSymbol} attaque →</span>
-          </div>
-          <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
-            <OutcomeLegend label="But" kind="goal" />
-            <OutcomeLegend label="Cadré" kind="on-target" />
-            <OutcomeLegend label="Bloqué" kind="blocked" />
-            <OutcomeLegend label="Manqué" kind="off-target" />
-          </div>
-          <p className="text-[10px] text-fg-dim mt-2 leading-relaxed">
-            Taille du marqueur = qualité du tir (xG). Le rond avec un halo = but.
-          </p>
+        {/* Sens d'attaque : une ligne sous le terrain, jamais posée dessus (les tirs se concentrent dans les surfaces). */}
+        <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 text-[10px] uppercase tracking-wider font-bold">
+          <span className={teamColors(palette, !homeIsOl).text}>← {awaySymbol} attaque</span>
+          <span className={cn('text-right', teamColors(palette, homeIsOl).text)}>{homeSymbol} attaque →</span>
         </div>
+        <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
+          <OutcomeLegend label="But" kind="goal" />
+          <OutcomeLegend label="Cadré" kind="on-target" />
+          <OutcomeLegend label="Bloqué" kind="blocked" />
+          <OutcomeLegend label="Manqué" kind="off-target" />
+        </div>
+        <p className="text-[10px] text-fg-dim mt-2 leading-relaxed">
+          Taille du marqueur = qualité du tir (xG). Le rond avec un halo = but.
+        </p>
       </div>
     </section>
   );

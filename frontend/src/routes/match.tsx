@@ -469,8 +469,7 @@ export function MatchPage() {
   const teamRows = nonZero(TEAM_STATS);
   const hasMomentum = !!data.momentum && data.momentum.length > 0;
   const hasShots = data.shots.length > 0;
-  const hasJoueurs = data.topPerformers.length > 0 || isUpcoming;
-  const hasPile = hasJoueurs || !!data.standings;
+  const hasPile = data.topPerformers.length > 0 || isUpcoming || !!data.standings;
   const hasSides = !!homeLineup || !!awayLineup || teamRows.length > 0;
 
   return (
@@ -612,7 +611,7 @@ export function MatchPage() {
             )}
           </div>
           {(hasShots || hasPile) && (
-            <div data-testid="rangee-tirs-joueurs" className="grid grid-cols-1 gap-4 [&>*]:min-w-0 items-start">
+            <div data-testid="rangee-tirs-joueurs" className={cn('grid gap-4 [&>*]:min-w-0 items-start', hasShots && hasPile && 'grid-cols-1 lg:grid-cols-2')}>
               {hasShots && (
                 <ShotMap
                   shots={data.shots}
@@ -627,8 +626,8 @@ export function MatchPage() {
                 />
               )}
               {hasPile && (
-                <div data-testid="colonne-centre-bas" className={cn('flex flex-col gap-4 min-w-0', hasJoueurs && !!data.standings && 'lg:grid lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start')}>
-                  {hasJoueurs && (
+                <div data-testid="colonne-centre-bas" className="flex flex-col gap-4 min-w-0">
+                  {(data.topPerformers.length > 0 || isUpcoming) && (
                     <section data-testid="joueurs-en-vue" className="rounded-md bg-surface border border-border overflow-hidden">
                       <header className="px-5 py-3 border-b border-border">
                         <h2 className="eyebrow min-w-0">Joueurs en vue</h2>
