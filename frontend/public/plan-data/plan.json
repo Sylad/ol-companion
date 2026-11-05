@@ -798,7 +798,8 @@
     {
       "id": "L246",
       "title": "Match en direct : l'effet lumineux passe sur le panneau du score",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-11-05"
     }
   ]
 }
