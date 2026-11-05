@@ -7,8 +7,8 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L186.test.tsx": "ddbe024d7f5eea48358c6d1949c3653d287bedc7",
-    "frontend/src/routes/match.socle-L186.test.tsx": "3d8e14f4806784e11b5b98113299a8d4ed6077b6"
+    "frontend/src/routes/match.disposition-L186.test.tsx": "cef9c873a5700e0bbe1f5d73b535712e85c239a5",
+    "frontend/src/routes/match.socle-L186.test.tsx": "23c0ac18f876d2a0f4f14a901ab33cdf338cffa0"
   },
   "resceaux": [
     {
@@ -33,6 +33,24 @@
       "apres": "ddbe024d7f5eea48358c6d1949c3653d287bedc7",
       "porteur": "L78",
       "ficheAmendee": "7e60ded"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L186.test.tsx",
+      "raison": "L248 passe la carte des tirs à l'horizontale à la demande de Sylvain du 05-11, ce qui renverse l'orientation fixée par L186 ; disposition inchangée",
+      "date": "2026-11-05",
+      "avant": "ddbe024d7f5eea48358c6d1949c3653d287bedc7",
+      "apres": "cef9c873a5700e0bbe1f5d73b535712e85c239a5",
+      "porteur": "L248",
+      "ficheAmendee": "5f9faa2"
+    },
+    {
+      "test": "frontend/src/routes/match.socle-L186.test.tsx",
+      "raison": "L248 passe la carte des tirs à l'horizontale à la demande de Sylvain du 05-11, ce qui renverse l'orientation fixée par L186 ; disposition inchangée",
+      "date": "2026-11-05",
+      "avant": "3d8e14f4806784e11b5b98113299a8d4ed6077b6",
+      "apres": "23c0ac18f876d2a0f4f14a901ab33cdf338cffa0",
+      "porteur": "L248",
+      "ficheAmendee": "5f9faa2"
     }
   ]
 }

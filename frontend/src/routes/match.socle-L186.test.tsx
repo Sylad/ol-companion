@@ -592,8 +592,8 @@ describe('Page match en écran FM (L186) — règles R1 à R15', () => {
     expect(within(entete).getByText('OL Lyon')).toBeTruthy();
     expect(within(entete).getByText('Rennes')).toBeTruthy();
     expect(entete.textContent).not.toMatch(/LYO|REN\b/);
-    // R5 — « (terrain à la verticale depuis L186 ») : la carte est celle de L186
-    expect(within(c).getByRole('img', { name: 'Carte des tirs' }).getAttribute('viewBox')).toBe('0 0 450 700');
+    // R5 — « (terrain à l'horizontale depuis L248 ») : la carte est celle de L248
+    expect(within(c).getByRole('img', { name: 'Carte des tirs' }).getAttribute('viewBox')).toBe('0 0 700 450');
   });
 
   it('R5 — avec un vrai sigle adverse, la légende garde « RCL Lens »', () => {
@@ -602,9 +602,9 @@ describe('Page match en écran FM (L186) — règles R1 à R15', () => {
     // R5 — « Légende de la carte des tirs « sigle + nom » (OL Lyon, RCL Lens) »
     expect(within(c).getByText('OL Lyon')).toBeTruthy();
     expect(within(c).getByText('RCL Lens')).toBeTruthy();
-    // R5 — « « ↓ <visiteur> attaque » à gauche et « <domicile> attaque ↑ » à droite »
-    expect(within(c).getByText('↓ RCL attaque')).toBeTruthy();
-    expect(within(c).getByText('OL attaque ↑')).toBeTruthy();
+    // R5 — « « ← <visiteur> attaque » à gauche et « <domicile> attaque → » à droite »
+    expect(within(c).getByText('← RCL attaque')).toBeTruthy();
+    expect(within(c).getByText('OL attaque →')).toBeTruthy();
   });
 
   it('R6 — 4-2-3-1 contre 4-4-2 : terrains de même hauteur ±1 px', () => {

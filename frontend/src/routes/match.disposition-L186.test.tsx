@@ -173,8 +173,8 @@ describe('Page match en écran FM (L186)', () => {
   it("R5 — les libellés d'attaque ne sont pas posés sur le terrain : ni dans son conteneur, ni en position absolue", () => {
     show();
     const carte = tid('carte-tirs');
-    const bas = within(carte).getByText('↓ RCL attaque');
-    const haut = within(carte).getByText('OL attaque ↑');
+    const bas = within(carte).getByText('← RCL attaque');
+    const haut = within(carte).getByText('OL attaque →');
     for (const l of [bas, haut]) {
       // R5 — « jamais posés sur le terrain »
       expect(carteSvg().contains(l)).toBe(false);
@@ -185,9 +185,9 @@ describe('Page match en écran FM (L186)', () => {
   it('R5 — les libellés sont du texte horizontal, sur une seule ligne, sous le terrain', () => {
     show();
     const carte = tid('carte-tirs');
-    const bas = within(carte).getByText('↓ RCL attaque');
-    const haut = within(carte).getByText('OL attaque ↑');
-    // R5 — « une ligne horizontale sous la surface de jeu, « ↓ <visiteur> attaque » à gauche et « <domicile> attaque ↑ » à droite »
+    const bas = within(carte).getByText('← RCL attaque');
+    const haut = within(carte).getByText('OL attaque →');
+    // R5 — « une ligne horizontale sous la surface de jeu, « ← <visiteur> attaque » à gauche et « <domicile> attaque → » à droite »
     expect(before(carteSvg(), bas)).toBe(true);
     expect(before(carteSvg(), haut)).toBe(true);
     expect(before(bas, haut)).toBe(true);
@@ -196,13 +196,13 @@ describe('Page match en écran FM (L186)', () => {
 
   it("R5 — la couleur suit le club (OL rouge, adversaire bleu) et reste ≥ 4,5:1, OL à domicile comme à l'extérieur", () => {
     show();
-    // R5 — « (b) Texte qui porte une équipe (libellés « ↓ RCL attaque » / « OL attaque ↑ ») : OL = --ol-red-bright, adversaire = hsl(226 70% 70%) »
-    expect(css(within(tid('carte-tirs')).getByText('OL attaque ↑'))).toMatch(/ol-red-bright/);
-    expect(css(within(tid('carte-tirs')).getByText('↓ RCL attaque'))).toMatch(/226[ _]70%[ _]70%/);
+    // R5 — « (b) Texte qui porte une équipe (libellés « ← RCL attaque » / « OL attaque → ») : OL = --ol-red-bright, adversaire = hsl(226 70% 70%) »
+    expect(css(within(tid('carte-tirs')).getByText('OL attaque →'))).toMatch(/ol-red-bright/);
+    expect(css(within(tid('carte-tirs')).getByText('← RCL attaque'))).toMatch(/226[ _]70%[ _]70%/);
     cleanup();
     show({ olHome: false });
-    expect(css(within(tid('carte-tirs')).getByText('↓ OL attaque'))).toMatch(/ol-red-bright/);
-    expect(css(within(tid('carte-tirs')).getByText('RCL attaque ↑'))).toMatch(/226[ _]70%[ _]70%/);
+    expect(css(within(tid('carte-tirs')).getByText('← OL attaque'))).toMatch(/ol-red-bright/);
+    expect(css(within(tid('carte-tirs')).getByText('RCL attaque →'))).toMatch(/226[ _]70%[ _]70%/);
   });
 
   // ------------------------------------------------------------------ R8
@@ -328,9 +328,9 @@ describe('Page match en écran FM (L186)', () => {
   it("R13 — OL à l'extérieur : libellés d'attaque, OL en rouge à gauche et adversaire en bleu à droite", () => {
     show({ olHome: false });
     const carte = tid('carte-tirs');
-    // R13 — « libellés d'attaque (« ↓ OL attaque » rouge à gauche, « RCL attaque ↑ » bleu à droite, L186) »
-    const gauche = within(carte).getByText('↓ OL attaque');
-    const droite = within(carte).getByText('RCL attaque ↑');
+    // R13 — « libellés d'attaque (« ← OL attaque » rouge à gauche, « RCL attaque → » bleu à droite, L248) »
+    const gauche = within(carte).getByText('← OL attaque');
+    const droite = within(carte).getByText('RCL attaque →');
     expect(css(gauche)).toMatch(/ol-red-bright/);
     expect(css(droite)).toMatch(/226[ _]70%[ _]70%/);
     expect(before(gauche, droite)).toBe(true);
@@ -455,18 +455,18 @@ describe('Page match en écran FM (L186)', () => {
   });
 
   // ------------------------------------------------------------------ R17
-  it('R17 — la carte des tirs est plus haute que large (terrain vertical) et sa largeur ne dépasse pas 224 px', () => {
+  it('R17 — le terrain est plus large que haut (viewBox 700 × 450) et sa largeur ne dépasse pas 348 px', () => {
     show();
     const svg = carteSvg();
-    // R17 — « viewBox 450 × 700, largeur au plus 224 px, centré dans son bloc »
-    expect(svg.getAttribute('viewBox')).toBe('0 0 450 700');
+    // R17 — « viewBox 700 × 450 [...] au plus 348 px, hauteur en proportion, centré dans son bloc »
+    expect(svg.getAttribute('viewBox')).toBe('0 0 700 450');
     const decl = chainTo(svg, tid('carte-tirs')).slice(0, 2).map(css).join(' ') + (svg.getAttribute('width') ?? '');
-    expect(decl).toMatch(/max-w-\[224px\]|max-width:\s*224px|width:\s*224px|^.*\b224\b/);
+    expect(decl).toMatch(/max-w-\[348px\]|max-width:\s*348px|width:\s*348px/);
   });
 
-  it('R17 — à 224 px de large, le plus petit tir manqué mesure au moins 4,9 px de diamètre et son trait au moins 1,5 px (rayon et épaisseur du code multipliés par 1,6 par rapport à l\'ancienne carte)', () => {
+  it('R17 — à la largeur de référence de 348 px, le plus petit tir manqué mesure au moins 4,9 px de diamètre et son trait au moins 1,5 px (rayon et épaisseur du code multipliés par 1,6 par rapport à l\'ancienne carte)', () => {
     show();
-    const echelle = 224 / 450;
+    const echelle = 348 / 700;
     // R17 — « la règle est « diamètre ≥ 4,9 px et trait ≥ 1,5 px » »
     const manque = marqueurs(carteSvg()).filter((m) => /Manqué/.test(m.titre));
     expect(manque.length).toBeGreaterThan(0);
@@ -479,7 +479,7 @@ describe('Page match en écran FM (L186)', () => {
     }
   });
 
-  it('R17 — mêmes tirs : autant de marqueurs de chaque club et de chaque issue qu\'avant, positions tournées (x, y) → (y, 700 − x)', () => {
+  it('R17 — mêmes tirs : autant de marqueurs de chaque club et de chaque issue qu\'avant, à la position (side/100 × 700, line/100 × 450), side inversé pour le visiteur', () => {
     show();
     const m = marqueurs(carteSvg());
     // R17 — « Les tirs sont les mêmes que sur l'ancienne carte, ceux des DEUX équipes, avec les mêmes formes par issue »
@@ -488,40 +488,37 @@ describe('Page match en écran FM (L186)', () => {
     expect(m.filter((x) => /Cadré/.test(x.titre))).toHaveLength(1);
     expect(m.filter((x) => /Bloqué/.test(x.titre))).toHaveLength(1);
     expect(m.filter((x) => /Manqué/.test(x.titre))).toHaveLength(2);
-    // R17 — « seule leur position est tournée » : « positions tournées (x, y) → (y, 700 − x) ».
-    // (x_ancien, y_ancien) = position dans l'ancien repère 700 × 450 de la carte d'avant L186
-    // (shot-map.tsx, b428094~1:62-63 : x = side/100 × 700, inversé pour le visiteur ; y = line/100 × 450).
-    // Nouvelle position attendue dans le repère 450 × 700 : (y_ancien, 700 − x_ancien), à ±1 unité.
+    // R17 — « à la position (x, y) = (side/100 × 700, line/100 × 450) pour le club à domicile [...] ((1 − side/100) × 700, line/100 × 450) pour le visiteur », à ±1 unité.
     const d = stats();
     for (const x of m) {
       const tir = d.shots.find((s) => x.titre.startsWith(s.time));
       expect(tir, `tir de la fixture pour « ${x.titre} »`).toBeDefined();
       const domicile = tir!.competitorId === d.home.id;
-      const xAncien = domicile ? (tir!.side / 100) * 700 : (1 - tir!.side / 100) * 700;
-      const yAncien = (tir!.line / 100) * 450;
+      const xAttendu = domicile ? (tir!.side / 100) * 700 : (1 - tir!.side / 100) * 700;
+      const yAttendu = (tir!.line / 100) * 450;
       const c = x.g.querySelector('circle');
       expect(c, `centre du marqueur « ${x.titre} »`).not.toBeNull();
-      expect(Math.abs(Number(c!.getAttribute('cx')) - yAncien), `abscisse de « ${x.titre} »`).toBeLessThanOrEqual(1);
-      expect(Math.abs(Number(c!.getAttribute('cy')) - (700 - xAncien)), `ordonnée de « ${x.titre} »`).toBeLessThanOrEqual(1);
+      expect(Math.abs(Number(c!.getAttribute('cx')) - xAttendu), `abscisse de « ${x.titre} »`).toBeLessThanOrEqual(1);
+      expect(Math.abs(Number(c!.getAttribute('cy')) - yAttendu), `ordonnée de « ${x.titre} »`).toBeLessThanOrEqual(1);
     }
   });
 
-  it('R17 — le club à domicile tire vers le haut, libellés « ↓ visiteur attaque » et « domicile attaque ↑ »', () => {
+  it('R17 — le club à domicile tire vers la droite, libellés « ← visiteur attaque » et « domicile attaque → »', () => {
     show();
     const carte = tid('carte-tirs');
-    // R17 — « le club à domicile attaque vers le haut, le visiteur vers le bas » ; R5 — « « ↓ <visiteur> attaque » à gauche et « <domicile> attaque ↑ » à droite »
-    expect(within(carte).getByText('↓ RCL attaque')).toBeInTheDocument();
-    expect(within(carte).getByText('OL attaque ↑')).toBeInTheDocument();
+    // R17 — le club à domicile attaque vers la droite, le visiteur vers la gauche ; R5 — « « ← <visiteur> attaque » à gauche et « <domicile> attaque → » à droite »
+    expect(within(carte).getByText('← RCL attaque')).toBeInTheDocument();
+    expect(within(carte).getByText('OL attaque →')).toBeInTheDocument();
     cleanup();
     show({ olHome: false });
-    expect(within(tid('carte-tirs')).getByText('↓ OL attaque')).toBeInTheDocument();
-    expect(within(tid('carte-tirs')).getByText('RCL attaque ↑')).toBeInTheDocument();
+    expect(within(tid('carte-tirs')).getByText('← OL attaque')).toBeInTheDocument();
+    expect(within(tid('carte-tirs')).getByText('RCL attaque →')).toBeInTheDocument();
   });
 
-  it('R17 — à 224 px, les lignes du terrain mesurent au moins 1 px (trait de 2 unités)', () => {
+  it('R17 — les lignes du terrain mesurent 2 unités de viewBox', () => {
     show();
     const svg = carteSvg();
-    // R17 — « Les lignes du terrain (cadre, ligne médiane, rond central, surfaces) passent de 1 à 2 unités de viewBox »
+    // R17 — « Les lignes du terrain (cadre, ligne médiane, rond central, surfaces) gardent 2 unités de viewBox »
     const lignes = Array.from(svg.querySelectorAll('[stroke-width]')).filter((e) => !e.closest('g') && e.getAttribute('stroke') !== 'none');
     expect(lignes.length).toBeGreaterThan(0);
     for (const l of lignes) expect(Number(l.getAttribute('stroke-width'))).toBeGreaterThanOrEqual(2);
