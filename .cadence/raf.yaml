@@ -2871,6 +2871,12 @@ lots:
     review: { date: 2026-11-05, verdict: "conforme : diff relu par le lead, halo déplacé sur le panneau du score, tests adaptés", commit: a1e7cf540c95cd325cc13257143d4cc0b41756ba }
     ux: { date: 2026-11-05, verdict: "demande de Sylvain appliquée, à vérifier par lui sur la page de match en direct" }
     finished: 2026-11-05
+  - id: L247
+    title: "Rescellement du test d'acceptation L167 : L246 a déplacé le halo vers le panneau du score à la demande de Sylvain"
+    status: doing
+    estimate: 0.1
+    created: 2026-11-05
+    started: 2026-11-05
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
@@ -2883,3 +2889,4 @@ acknowledged:
   - { sha: c7107320d83cf6c49d17497e7fa94e222c084b75, subject: "config: précheck d'orchestrate sur le modèle local de cadence (décision du lead 24-10)", date: 2026-10-24, reason: "réglage d'outillage (précheck local de cadence), pas un lot du projet — lead 24-10" }
   - { sha: 3986098636674c7c436639a69c723eee7096b846, subject: "config: la documentation suit le code (docs.sync) et l'étude de cas du projet est déclarée (docs.articles) — outillage cadence, lead 24-10", date: 2026-10-24, reason: "réglage d'outillage cadence (docs.sync, docs.articles), pas un lot du projet — lead 24-10" }
   - { sha: 63b21dbf859ab064b11765d4e8391b9c629da051, subject: "plan: L219 migration du plan vers .cadence/raf.yaml (cadence L284)", date: 2026-10-24, reason: "commit de plan du lead dont le message cite un lot de cadence, pas de ce dépôt — lead 24-10" }
+  - { sha: 73a1f8ff1f528651e6d508cace22e130d9f4365e, subject: "chore: --continue ne tire pas L120 (étude sur disque Windows, basse priorité)", date: 2026-11-05, reason: commit d'outillage qui cite L120 sans y travailler }
