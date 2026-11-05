@@ -2862,12 +2862,15 @@ lots:
   - id: L246
     title: "Page match en direct : retirer l'effet lumineux de la bordure du panneau « Faits du match » et le mettre sur le premier panneau, celui du score (demande de Sylvain du 05-11)"
     public: "Match en direct : l'effet lumineux passe sur le panneau du score"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     screen: component
     created: 2026-11-05
     started: 2026-11-05
+    review: { date: 2026-11-05, verdict: "conforme : diff relu par le lead, halo déplacé sur le panneau du score, tests adaptés", commit: a1e7cf540c95cd325cc13257143d4cc0b41756ba }
+    ux: { date: 2026-11-05, verdict: "demande de Sylvain appliquée, à vérifier par lui sur la page de match en direct" }
+    finished: 2026-11-05
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
