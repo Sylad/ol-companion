@@ -2888,11 +2888,12 @@ lots:
   - id: L248
     title: "Page de match, carte des tirs : terrain à l'horizontale, à taille égale, pour gagner de la hauteur ; points de tir, légende et sens d'attaque tournés avec lui (OL attaque à gauche ou à droite, plus en haut ou en bas), rendu vérifié à 1440 et 390 px ; et la ligne des attendus QA de /match/$gameId cite .entete-neon au lieu de .faits-bloc depuis L246 (demande de Sylvain du 05-11)"
     public: "Carte des tirs : le terrain passe à l'horizontale"
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     screen: component
     created: 2026-11-05
+    started: 2026-11-05
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
