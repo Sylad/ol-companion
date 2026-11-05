@@ -1,7 +1,22 @@
 {
   "project": "ol-companion",
-  "generated": "2026-11-01 19:50",
+  "generated": "2026-11-05 19:29",
   "entries": [
+    {
+      "slug": "2026-11-05-match-en-direct-l-effet-lumineux-passe-sur-le-panneau-du-sco",
+      "title": "Match en direct : l'effet lumineux passe sur le panneau du score",
+      "date": "2026-11-05",
+      "lots": [
+        "L246"
+      ],
+      "captures": [
+        "captures/L246-panneau-score-halo-1440.png"
+      ],
+      "alts": [
+        "Le panneau du score entouré de son halo lumineux"
+      ],
+      "html": "<p>Sur la page d'un match, le contour lumineux entoure maintenant le panneau du score, le premier de la page. Le bloc « Faits du match » reprend une bordure simple.</p>"
+    },
     {
       "slug": "2026-11-01-menu-l-equipe-de-france-separee-de-la-partie-ol",
       "title": "Menu : l'Équipe de France séparée de la partie OL",
