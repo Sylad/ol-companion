@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import type { LiveMatchShot } from '@/types/api';
 import { clubLegendLabel, clubSymbol } from '@/lib/club-symbol';
 import { teamColors, type MatchPalette, type TeamColors } from '@/lib/match-palette';
@@ -17,8 +18,10 @@ const SIX_W = 40;
 const SIX_H = 130;
 const SIX_Y = (H - SIX_H) / 2;
 const SPOT_DIST = 75;
-/** Marqueurs 60 % plus grands que sur la carte de 520 px d'avant L186 (rayons, croix, halo, traits) : le terrain est rendu à 348 px de long. */
+/** Marqueurs 60 % plus grands que sur la carte de 520 px d'avant L186 (rayons, croix, halo, traits), pour un terrain de 348 px de long. */
 const K = 1.6;
+/** Largeur de terrain à laquelle K vaut tel quel : à une autre largeur, les marqueurs sont compensés et gardent leur taille à l'écran. */
+const MAX_WIDTH = 348;
 const LINE = 2;
 
 interface Props {
@@ -36,8 +39,27 @@ interface Props {
   playerNames?: Record<number, string>;
 }
 
+/** Facteur qui garde les marqueurs à leur taille à l'écran. Sans mesure (0 px), le terrain est tenu pour large de MAX_WIDTH. */
+function useMarkerCompensation(svg: RefObject<SVGSVGElement>, drawn: boolean) {
+  const [width, setWidth] = useState(0);
+  useLayoutEffect(() => {
+    const el = svg.current;
+    if (!el) return;
+    const measure = () => setWidth(el.getBoundingClientRect().width);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [svg, drawn]);
+  return width > 0 ? MAX_WIDTH / width : 1;
+}
+
 export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbol: homeSymbolRaw, awaySymbol: awaySymbolRaw, playerNames = {}, palette = 'ol' }: Props) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const compensation = useMarkerCompensation(svgRef, shots.length > 0);
   if (!shots.length) return null;
+  const k = K * compensation;
   // « OL » est le sigle fixe du seul club suivi de la palette OL.
   const homeIsClub = palette === 'ol' && homeIsOl;
   const awayIsClub = palette === 'ol' && !homeIsOl;
@@ -55,20 +77,21 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
       </header>
       <div className="p-4">
         <div className="relative w-full">
-          <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[348px] mx-auto h-auto block" role="img" aria-label="Carte des tirs">
+          <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[348px] mx-auto h-auto block" role="img" aria-label="Carte des tirs">
             <Pitch />
             {shots.map((s) => {
                 const isHome = s.competitorId === homeId;
                 // Le club à domicile attaque à droite, le visiteur à gauche ; y = axe court.
                 const x = isHome ? (s.side / 100) * W : (1 - s.side / 100) * W;
                 const y = (s.line / 100) * H;
-                const r = Math.max(5.28, Math.min(9 * K, (2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9) * K));
+                const r = Math.max(3.3 * k, Math.min(9 * k, (2 + Math.sqrt(Math.max(s.xg, 0.005)) * 9) * k));
                 return (
                   <ShotMarker
                     key={`${s.playerId}-${s.time}-${s.line}-${s.side}`}
                     x={x}
                     y={y}
                     r={r}
+                    k={k}
                     colors={teamColors(palette, isHome === homeIsOl)}
                     outcome={s.outcome}
                     shot={s}
@@ -123,6 +146,7 @@ function ShotMarker({
   x,
   y,
   r,
+  k,
   colors,
   outcome,
   shot,
@@ -131,6 +155,7 @@ function ShotMarker({
   x: number;
   y: number;
   r: number;
+  k: number;
   colors: TeamColors;
   outcome: string;
   shot: LiveMatchShot;
@@ -151,13 +176,13 @@ function ShotMarker({
   ].filter(Boolean).join(' · ');
 
   if (isBlocked) {
-    const half = Math.max(r, 3 * K);
+    const half = Math.max(r, 3 * k);
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={Math.max(half, 6 * K)} fill="transparent" />
-        <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={1.75 * K} strokeLinecap="round" />
-        <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={1.75 * K} strokeLinecap="round" />
+        <circle cx={x} cy={y} r={Math.max(half, 6 * k)} fill="transparent" />
+        <line x1={x - half / 1.4} y1={y - half / 1.4} x2={x + half / 1.4} y2={y + half / 1.4} stroke={stroke} strokeWidth={1.75 * k} strokeLinecap="round" />
+        <line x1={x - half / 1.4} y1={y + half / 1.4} x2={x + half / 1.4} y2={y - half / 1.4} stroke={stroke} strokeWidth={1.75 * k} strokeLinecap="round" />
       </g>
     );
   }
@@ -165,8 +190,8 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={Math.max(r, 6 * K)} fill="transparent" />
-        <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={2 * K} />
+        <circle cx={x} cy={y} r={Math.max(r, 6 * k)} fill="transparent" />
+        <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={2 * k} />
       </g>
     );
   }
@@ -174,15 +199,15 @@ function ShotMarker({
     return (
       <g aria-label={title}>
         <title>{title}</title>
-        <circle cx={x} cy={y} r={r + 2 * K} fill="none" stroke="white" strokeWidth={1 * K} opacity={0.6} />
-        <circle cx={x} cy={y} r={r} fill={fill} stroke="white" strokeWidth={1.25 * K} />
+        <circle cx={x} cy={y} r={r + 2 * k} fill="none" stroke="white" strokeWidth={1 * k} opacity={0.6} />
+        <circle cx={x} cy={y} r={r} fill={fill} stroke="white" strokeWidth={1.25 * k} />
       </g>
     );
   }
   return (
     <g aria-label={title}>
       <title>{title}</title>
-      <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={1.5 * K} />
+      <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={1.5 * k} />
     </g>
   );
 }
