@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "5eee983ffbb9428fb1b7950323fde58e1d177cca"
+    "frontend/src/routes/match.faits-bornes-L161.test.tsx": "3f2594869206e5e8d97b17df87348fd72d2cafbb"
   },
   "resceaux": [
     {
@@ -54,6 +54,14 @@
       "apres": "5eee983ffbb9428fb1b7950323fde58e1d177cca",
       "porteur": "L186",
       "ficheAmendee": "f4790dd"
+    },
+    {
+      "test": "frontend/src/routes/match.faits-bornes-L161.test.tsx",
+      "raison": "L246 a déplacé le halo vers le panneau du score à la demande de Sylvain, le test de L161 suit",
+      "date": "2026-11-05",
+      "avant": "5eee983ffbb9428fb1b7950323fde58e1d177cca",
+      "apres": "3f2594869206e5e8d97b17df87348fd72d2cafbb",
+      "porteur": "L248"
     }
   ]
 }
