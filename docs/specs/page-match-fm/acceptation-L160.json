@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.disposition-L160.test.tsx": "44aad235d31cb4b074a275fc85c4a898bd7ca72d"
+    "frontend/src/routes/match.disposition-L160.test.tsx": "1a8cd4b3ee24aa700f3127bfdb1779993354e6ae"
   },
   "resceaux": [
     {
@@ -59,6 +59,15 @@
       "avant": "5e254fde28b5d0959ad33559a25d9356f5192970",
       "apres": "44aad235d31cb4b074a275fc85c4a898bd7ca72d",
       "porteur": "L186"
+    },
+    {
+      "test": "frontend/src/routes/match.disposition-L160.test.tsx",
+      "raison": "L248 passe la carte des tirs à l'horizontale à la demande de Sylvain du 05-11, ce qui renverse l'orientation fixée par L186 ; disposition inchangée",
+      "date": "2026-11-05",
+      "avant": "44aad235d31cb4b074a275fc85c4a898bd7ca72d",
+      "apres": "1a8cd4b3ee24aa700f3127bfdb1779993354e6ae",
+      "porteur": "L248",
+      "ficheAmendee": "5f9faa2"
     }
   ]
 }

@@ -786,9 +786,9 @@ describe('Page match en écran FM (L160)', () => {
   it('R13 — OL à l\'extérieur : libellés d\'attaque, OL en rouge à gauche et adversaire en bleu à droite', () => {
     show({ olHome: false });
     const carte = tid('carte-tirs');
-    // L186 — R13 : « libellés d'attaque (« ↓ OL attaque » rouge à gauche, « RCL attaque ↑ » bleu à droite, L186) »
-    const gauche = within(carte).getByText(/↓ OL attaque/);
-    const droite = within(carte).getByText(/RCL attaque ↑/);
+    // L248 — R13 : « libellés d'attaque (« ← OL attaque » rouge à gauche, « RCL attaque → » bleu à droite, L248) »
+    const gauche = within(carte).getByText(/← OL attaque/);
+    const droite = within(carte).getByText(/RCL attaque →/);
     expect(css(gauche)).toMatch(/ol-red-bright/);
     expect(css(droite)).toMatch(/226[ _]70%[ _]70%/);
   });
