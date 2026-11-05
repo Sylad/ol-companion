@@ -34,7 +34,7 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
     const carte = screen.getByTestId('carte-tirs');
     const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
     const surface = terrain.parentElement as HTMLElement;
-    for (const re of [/↓ .* attaque/, /.* attaque ↑/]) {
+    for (const re of [/← .* attaque/, /.* attaque →/]) {
       const label = within(carte).getByText(re);
       expect(surface.contains(label), String(re)).toBe(false);
       for (const a of [label, ...ancestors(label, carte)]) {
@@ -43,28 +43,29 @@ describe('ShotMap — libellés d\'attaque hors du terrain (L160)', () => {
     }
   });
 
-  it('R5 — les libellés sont du texte horizontal, sur une seule ligne, sous le terrain', () => {
+  it('R5 — les libellés sont du texte horizontal, après le terrain, sur une ligne sous 1024 px', () => {
     renderMap({ homeIsOl: true, homeName: 'Lyon', awayName: 'Rennes' });
     const carte = screen.getByTestId('carte-tirs');
     const terrain = within(carte).getByRole('img', { name: 'Carte des tirs' });
-    const gauche = within(carte).getByText(/↓ .* attaque/);
-    const droite = within(carte).getByText(/.* attaque ↑/);
+    const gauche = within(carte).getByText(/← .* attaque/);
+    const droite = within(carte).getByText(/.* attaque →/);
     for (const el of [gauche, droite]) {
       expect(el.className + el.parentElement!.className).not.toMatch(/writing-mode|vertical|rotate/);
       expect(terrain.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
-    // une seule ligne : les deux libellés sont frères, dans la même rangée
+    // sous 1024 px une seule ligne ; dès lg, l'un sous l'autre dans la colonne de légende (L248)
     expect(gauche.parentElement).toBe(droite.parentElement);
     expect(gauche.parentElement!.className).toMatch(/\bflex\b/);
-    expect(gauche.parentElement!.className).not.toMatch(/flex-col|flex-wrap/);
+    expect(gauche.parentElement!.className.split(/\s+/)).not.toContain('flex-col');
+    expect(gauche.parentElement!.className).toMatch(/lg:flex-col/);
   });
 
   it('R5 — la couleur suit le club (OL rouge, adversaire bleu) et reste ≥ 4,5:1, OL à domicile comme à l\'extérieur', () => {
     for (const homeIsOl of [true, false]) {
       const { unmount } = renderMap({ homeIsOl, homeName: homeIsOl ? 'Lyon' : 'Rennes', awayName: homeIsOl ? 'Rennes' : 'Lyon' });
       const carte = screen.getByTestId('carte-tirs');
-      const olLabel = within(carte).getByText(homeIsOl ? /OL attaque ↑/ : /↓ OL attaque/);
-      const advLabel = within(carte).getByText(homeIsOl ? /↓ REN attaque/ : /REN attaque ↑/);
+      const olLabel = within(carte).getByText(homeIsOl ? /OL attaque →/ : /← OL attaque/);
+      const advLabel = within(carte).getByText(homeIsOl ? /← REN attaque/ : /REN attaque →/);
       expect(olLabel.className).toMatch(/text-ol-red-bright/);
       expect(advLabel.className).toMatch(/226_70%_70%/);
       unmount();
