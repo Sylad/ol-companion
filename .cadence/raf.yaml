@@ -2872,7 +2872,7 @@ lots:
     delivered: { date: 2026-11-05, sha: 2fb3c8e4a079039fb51a7070842abd652e1e9482 }
     created: 2026-11-05
     started: 2026-11-05
-    review: { date: 2026-11-05, verdict: "conforme : diff relu par le lead, halo déplacé sur le panneau du score, tests adaptés", commit: a1e7cf540c95cd325cc13257143d4cc0b41756ba }
+    review: { date: 2026-11-16, verdict: "conforme : commits postérieurs (plan, Nouveauté, capture, données régénérées) cohérents, capture fidèle au halo sur le panneau du score, plan-data 42/42 verts", commit: 2fb3c8e4a079039fb51a7070842abd652e1e9482 }
     ux: { date: 2026-11-05, verdict: "demande de Sylvain appliquée, à vérifier par lui sur la page de match en direct" }
     finished: 2026-11-05
   - id: L247
