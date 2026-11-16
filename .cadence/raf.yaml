@@ -2904,6 +2904,12 @@ lots:
     review: { date: 2026-11-05, verdict: "conforme : rotation seule, disposition identique, marqueurs à taille constante, 323 tests ciblés, géométrie Chromium et porte complète vertes", commit: 8f38b96e57d27d23ea8013379fd1ed5a818803e3 }
     ux: { date: 2026-11-05, verdict: "conforme : captures 2000 et 1440 regardées, validées par Sylvain" }
     finished: 2026-11-05
+  - id: L249
+    title: "Mise à jour mensuelle des technos et dépendances (D-1 du registre parent) : versions mineures et correctifs, majeures proposées à part ; noter chaque régression trouvée et sa correction"
+    status: todo
+    estimate: 0.5
+    every: 30
+    created: 2026-11-16
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
