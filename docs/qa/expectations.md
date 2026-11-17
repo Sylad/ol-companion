@@ -106,7 +106,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - api: /api/season-matches — lu par la carte
 
 ## /equipe-de-france
-- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur », chacune un lien [data-testid=lien-resultat-match] vers /match/<id>?matchupId=<home>-<away>-<id>, L167) et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; le prochain match donne toujours son jour (« Jeu. 12/11 ») puis l'heure ou « Horaire à confirmer » ; au téléphone, le bouton « Plus » actif
+- shows: le titre « Équipe de France » ; trois blocs « Prochain match », « Derniers résultats » (5 lignes, « Domicile – Extérieur », chacune un lien [data-testid=lien-resultat-match] vers /match/<id>?matchupId=<home>-<away>-<id>, L167) et « Effectif » (Gardiens, Défenseurs, Milieux, Attaquants avec leur nombre) ; le prochain match donne toujours son jour (« Jeu. 12/11 ») puis l'heure ou « Horaire à confirmer » (« Prochain match » may show « Aucun match programmé. » [data-testid=message-aucun-match] when /api/france répond `"nextMatch":null`, entre deux fenêtres internationales : conforme, mesuré le 17-11 après France – Turquie du 15-11, L252) ; au téléphone, le bouton « Plus » actif
 - never: « Impossible de charger l’équipe de France. » ; « Aucune donnée sur l’équipe de France pour le moment. » ; une heure de coup d'envoi présentée comme sûre quand elle est « à confirmer » ; « Date et horaire à confirmer » ou « Week-end du … » pour le prochain match des Bleus (le jour est connu)
 - api: /api/france
 
