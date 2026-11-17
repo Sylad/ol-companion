@@ -2931,6 +2931,7 @@ lots:
     estimate: 0.5
     created: 2026-11-17
     started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; config 12 et schedule 12 chargés en prod (node dist/main.js démarre, /api/health ok, 8 crons montés) ; peerDependencies acceptent core 11 ; overrides compatibles Jest 30 ; 538/538 tests", commit: 17216e116c64de95426ca408842449900dc1e7f9 }
   - id: L252
     title: "Attendus QA /equipe-de-france : le bloc Prochain match peut afficher « Aucun match programmé. » quand /api/france renvoie nextMatch null — relevé par la QA de L249 le 17-11"
     status: done
@@ -2943,6 +2944,12 @@ lots:
     title: "Backend : node:20 → node:22 (Node 20 en fin de vie depuis le 30-04-2026), à grouper avec L251 (NestJS 12) — relevé par la revue de L250 le 17-11"
     status: todo
     estimate: 0.25
+    created: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme : image backend node:22-alpine (revue groupée avec L251)", commit: f0e08cbc058d61f9c322f7429ce97fe63aeb5da5 }
+  - id: L254
+    title: "README.md:115,119 et HOW-IT-WORKS.md:19,65 : stack backend à jour (TypeScript 6, @nestjs/schedule 12, node:22-alpine) — suite de la revue de L251 du 17-11"
+    status: todo
+    estimate: 0.05
     created: 2026-11-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
