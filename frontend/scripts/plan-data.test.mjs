@@ -296,7 +296,7 @@ describe('plan publié (.cadence/raf.yaml → public/plan-data/plan.json)', () =
 
   // Le bundle construit (npm run build, qui relance aussi cette vérification) : aucune
   // note, aucun verdict UX, aucun titre brut du plan dans les fichiers servis.
-  // Lit et décode tout dist/ (~35 Mo, captures des Nouveautés comprises) : ~1,5 s seul, plus de 5 s (délai par
+  // Lit et décode tout dist/ (~35 Mo, captures des Nouveautés comprises) : 4,5 s sous Vitest même seul, plus de 5 s (délai par
   // défaut) quand la porte lance les 165 fichiers en parallèle sur une machine chargée (L250, 17-11). Délai explicite.
   it.skipIf(!existsSync(DIST))('dist/ (bundle construit) ne contient aucun texte privé du plan', () => {
     expect(scanDir(realRaf, committed(), DIST)).toEqual([]);
