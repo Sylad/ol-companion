@@ -2906,7 +2906,7 @@ lots:
     finished: 2026-11-05
   - id: L249
     title: "Mise à jour mensuelle des technos et dépendances (D-1 du registre parent) : versions mineures et correctifs, majeures proposées à part ; noter chaque régression trouvée et sa correction"
-    status: doing
+    status: done
     estimate: 0.5
     every: 30
     created: 2026-11-16
@@ -2914,6 +2914,7 @@ lots:
     review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; aucune majeure directe ; non vérifié : tests Chromium, npm audit, image Docker", commit: aaf2e533aedd4c76ee6f32a624d096cc16731b76 }
     notes:
       - { date: 2026-11-17, text: "revue : CLAUDE.md:102 cite encore TanStack Router 1.78, Query 5.59, Recharts 2.13 (déjà faux avant) ; npm ci à refaire en local" }
+    finished: 2026-11-17
   - id: L250
     title: "vitest 2 → 5 avec vite 5 → 8 et @vitejs/plugin-react 6 : supprime les 6 failles restantes du frontend — proposé par L249 le 17-11"
     status: todo
