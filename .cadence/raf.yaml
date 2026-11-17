@@ -2929,6 +2929,7 @@ lots:
     title: "@nestjs/* 11 → 12 (cli, schematics, config, schedule) : supprime les 19 failles modérées du backend — proposé par L249 le 17-11"
     status: done
     estimate: 0.5
+    delivered: { date: 2026-11-17, sha: 74f7d46caa731a5740496bca7754eda5cf09b471 }
     created: 2026-11-17
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; config 12 et schedule 12 chargés en prod (node dist/main.js démarre, /api/health ok, 8 crons montés) ; peerDependencies acceptent core 11 ; overrides compatibles Jest 30 ; 538/538 tests", commit: 17216e116c64de95426ca408842449900dc1e7f9 }
@@ -2945,6 +2946,7 @@ lots:
     title: "Backend : node:20 → node:22 (Node 20 en fin de vie depuis le 30-04-2026), à grouper avec L251 (NestJS 12) — relevé par la revue de L250 le 17-11"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-17, sha: 74f7d46caa731a5740496bca7754eda5cf09b471 }
     created: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : image backend node:22-alpine (revue groupée avec L251)", commit: f0e08cbc058d61f9c322f7429ce97fe63aeb5da5 }
     started: 2026-11-17
