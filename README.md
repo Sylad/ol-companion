@@ -111,12 +111,12 @@ Page Actu (revue UX L5) : en-tête compact (une ligne sous 1024 px), articles d'
 
 | Couche | Tech |
 |---|---|
-| Frontend | React 18 + TypeScript 5 + Vite 5 + Tailwind 3 + TanStack Router/Query + Recharts + Leaflet 1.9 + Lucide |
+| Frontend | React 18 + TypeScript 5 + Vite 8 (tests Vitest 5) + Tailwind 3 + TanStack Router/Query + Recharts + Leaflet 1.9 + Lucide |
 | Backend | NestJS 11 + TypeScript 5 + `@nestjs/schedule` v5 (cron) |
 | Live updates | SSE (`@nestjs/common` `@Sse` + `EventSource` côté client + `invalidateQueries` TanStack) |
 | Storage | JSON cache local (TTL 1h sur fixtures, 5 s en live, archive auto par saison) |
 | Sources externes | [365scores](https://www.365scores.com/) (classement, calendrier de la saison, live stats, shot map, lineups), [football-data.org](https://www.football-data.org/) (free tier : prochain match, heure des coups d'envoi fixée ou non), Wikipedia FR (logos du tableau de bord ; les écussons du classement, du calendrier et des coupes viennent du CDN 365scores) |
-| Build | Docker multi-stage (node:20-alpine → nginx:alpine) |
+| Build | Docker multi-stage (frontend node:22-alpine → nginx:alpine, backend node:20-alpine) |
 | Déploiement | Images sur GHCR (CI GitHub), chart Helm sur k3s via ArgoCD (GitOps), exposé par un tunnel Cloudflare |
 | Route inconnue (L180) | `notFoundComponent` de la racine (`routes/not-found.tsx`) : `h1` « Page introuvable » et liens Accueil / Calendrier, y compris pour `/match` sans identifiant ; jamais le « Not Found » anglais de TanStack. Test : `src/router.route-inconnue-L180.test.tsx` |
 | Cache HTTP | nginx sert `index.html` et les fichiers aux noms fixes en `no-cache` (revalidés à chaque visite), `/assets/` (noms à empreinte) en cache d'un an ; un fichier absent de `/assets/` répond 404, jamais la page |

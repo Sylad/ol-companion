@@ -9,10 +9,10 @@ process.env.TZ = 'Europe/Paris';
 
 // Commande dédiée (orchestrate.accept) : seulement les fichiers du lot (CADENCE_ACCEPTATION).
 // Les chemins de l'acceptation sont relatifs à la racine du dépôt.
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(import.meta.dirname, '..');
 export default defineConfig({
   plugins: [react()],
-  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  resolve: { alias: { '@': path.resolve(import.meta.dirname, './src') } },
   test: {
     environment: 'jsdom',
     globals: true,

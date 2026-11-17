@@ -99,9 +99,9 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 
 ## Stack précise
 
-- React 18.3 · Vite 5.4 · TanStack Router 1.78 · TanStack Query 5.59 · Recharts 2.13 · Tailwind 3.4 · Lucide
+- React 18.3 · Vite 8.3 (Rolldown, Oxc) · Vitest 5.1 · @vitejs/plugin-react 6 · TanStack Router 1.78 · TanStack Query 5.59 · Recharts 2.13 · Tailwind 3.4 · Lucide
 - NestJS 11 (aucun SDK LLM : l'app n'appelle jamais Claude, SDK Anthropic retiré en L17)
-- Docker multi-stage (`node:20-alpine` → `nginx:alpine`)
+- Docker multi-stage : frontend `node:22-alpine` → `nginx:alpine` (Vitest 5 exige Node 22.12+, CI frontend en Node 22, L250), backend `node:20-alpine`
 
 ## Règles projet (durables)
 

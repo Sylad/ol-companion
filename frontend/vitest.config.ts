@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname, './src'),
     },
   },
   test: {
@@ -23,6 +23,6 @@ export default defineConfig({
     css: false,
     include: ['src/**/*.{test,spec}.{ts,tsx}', 'scripts/**/*.test.mjs'],
     // Tests d'acceptation des lots pas encore verts (docs/specs/*/acceptation-<lot>.json, vert: false).
-    exclude: [...configDefaults.exclude, ...acceptationIgnored(path.resolve(__dirname, '..')).map((f) => path.relative(__dirname, path.resolve(__dirname, '..', f)))],
+    exclude: [...configDefaults.exclude, ...acceptationIgnored(path.resolve(import.meta.dirname, '..')).map((f) => path.relative(import.meta.dirname, path.resolve(import.meta.dirname, '..', f)))],
   },
 });

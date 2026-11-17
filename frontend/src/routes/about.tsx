@@ -7,7 +7,7 @@ const STACK = [
     icon: Palette,
     items: [
       'React 18 + TypeScript 5.6',
-      'Vite 5 (dev server + build)',
+      'Vite 8 (dev server + build) · tests Vitest 5',
       'Tailwind CSS 3 + tokens HSL custom',
       'TanStack Router (code-based)',
       'TanStack Query (cache & mutations)',
@@ -32,7 +32,7 @@ const STACK = [
     group: 'Infra',
     icon: Code2,
     items: [
-      'Docker multi-stage (node:20-alpine → nginx:alpine)',
+      'Docker multi-stage (frontend node:22-alpine → nginx:alpine, backend node:20-alpine)',
       'Images publiées sur GHCR par la CI GitHub Actions',
       'Kubernetes k3s, déployé par ArgoCD (GitOps, chart Helm)',
       'Volume persistant Kubernetes pour les caches JSON',
