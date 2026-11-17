@@ -2928,9 +2928,10 @@ lots:
     created: 2026-11-17
   - id: L252
     title: "Attendus QA /equipe-de-france : le bloc Prochain match peut afficher « Aucun match programmé. » quand /api/france renvoie nextMatch null — relevé par la QA de L249 le 17-11"
-    status: todo
+    status: doing
     estimate: 0.05
     created: 2026-11-17
+    started: 2026-11-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
