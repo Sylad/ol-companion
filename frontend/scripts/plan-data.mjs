@@ -193,7 +193,13 @@ function forms(s) {
 
 /** Textes privés du plan présents dans `text`. */
 export function findLeaks(raf, text, plan) {
-  return privateTexts(raf, plan).filter((s) => forms(s).some((f) => text.includes(f)));
+  return leakFinder(raf, plan)(text);
+}
+
+/** Textes privés et leurs formes calculés une fois, puis cherchés dans chaque texte (scanDir : un calcul pour tout dist/). */
+function leakFinder(raf, plan) {
+  const candidats = privateTexts(raf, plan).map((s) => [s, forms(s)]);
+  return (text) => candidats.filter(([, fs]) => fs.some((f) => text.includes(f))).map(([s]) => s);
 }
 
 /** Parcourt un dossier construit ; retourne { file, text } pour chaque fuite. */
@@ -204,9 +210,10 @@ export function scanDir(raf, plan, dir) {
       return statSync(p).isDirectory() ? walk(p) : [p];
     });
   const out = [];
+  const leaks = leakFinder(raf, plan);
   for (const file of walk(dir).sort()) {
     const text = readFileSync(file).toString('utf8');
-    for (const t of findLeaks(raf, text, plan)) out.push({ file: relative(dir, file), text: t });
+    for (const t of leaks(text)) out.push({ file: relative(dir, file), text: t });
   }
   return out;
 }
