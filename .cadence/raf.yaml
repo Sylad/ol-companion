@@ -2906,10 +2906,24 @@ lots:
     finished: 2026-11-05
   - id: L249
     title: "Mise à jour mensuelle des technos et dépendances (D-1 du registre parent) : versions mineures et correctifs, majeures proposées à part ; noter chaque régression trouvée et sa correction"
-    status: todo
+    status: doing
     estimate: 0.5
     every: 30
     created: 2026-11-16
+    started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; aucune majeure directe ; non vérifié : tests Chromium, npm audit, image Docker", commit: aaf2e533aedd4c76ee6f32a624d096cc16731b76 }
+    notes:
+      - { date: 2026-11-17, text: "revue : CLAUDE.md:102 cite encore TanStack Router 1.78, Query 5.59, Recharts 2.13 (déjà faux avant) ; npm ci à refaire en local" }
+  - id: L250
+    title: "vitest 2 → 5 avec vite 5 → 8 et @vitejs/plugin-react 6 : supprime les 6 failles restantes du frontend — proposé par L249 le 17-11"
+    status: todo
+    estimate: 0.5
+    created: 2026-11-17
+  - id: L251
+    title: "@nestjs/* 11 → 12 (cli, schematics, config, schedule) : supprime les 19 failles modérées du backend — proposé par L249 le 17-11"
+    status: todo
+    estimate: 0.5
+    created: 2026-11-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
