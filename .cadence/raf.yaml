@@ -2918,10 +2918,12 @@ lots:
     finished: 2026-11-17
   - id: L250
     title: "vitest 2 → 5 avec vite 5 → 8 et @vitejs/plugin-react 6 : supprime les 6 failles restantes du frontend — proposé par L249 le 17-11"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-11-17
     started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; seule la chaîne Vite/Vitest/plugin-react a bougé dans le lockfile ; Chromium 128/128 sous charge ; front en Node 22, back en Node 20 voulu (images séparées) ; non vérifié : CI GitHub, docker", commit: f23991b55224d6a7db5cc4894db0e2655c8f4fa7 }
+    finished: 2026-11-17
   - id: L251
     title: "@nestjs/* 11 → 12 (cli, schematics, config, schedule) : supprime les 19 failles modérées du backend — proposé par L249 le 17-11"
     status: todo
@@ -2935,6 +2937,11 @@ lots:
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme (relu par le lead) : attendu QA ajouté, texte fidèle au constat de la QA ; docs/tests seulement", commit: null }
     finished: 2026-11-17
+  - id: L253
+    title: "Backend : node:20 → node:22 (Node 20 en fin de vie depuis le 30-04-2026), à grouper avec L251 (NestJS 12) — relevé par la revue de L250 le 17-11"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-17
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
