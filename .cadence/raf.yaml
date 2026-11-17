@@ -2918,9 +2918,10 @@ lots:
     finished: 2026-11-17
   - id: L250
     title: "vitest 2 → 5 avec vite 5 → 8 et @vitejs/plugin-react 6 : supprime les 6 failles restantes du frontend — proposé par L249 le 17-11"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-11-17
+    started: 2026-11-17
   - id: L251
     title: "@nestjs/* 11 → 12 (cli, schematics, config, schedule) : supprime les 19 failles modérées du backend — proposé par L249 le 17-11"
     status: todo
