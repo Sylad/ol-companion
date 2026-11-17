@@ -6,9 +6,6 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-// Pas exporté par l'index du paquet : c'est lui qui monte crons, intervalles
-// et timeouts au démarrage (onApplicationBootstrap).
-import { SchedulerOrchestrator } from '@nestjs/schedule/dist/scheduler.orchestrator';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import request from 'supertest';
 import { App } from 'supertest/types';
@@ -42,14 +39,35 @@ const STARTUP_REFRESHERS = [
   ['live-match/live-match.service', 'LiveMatchService'],
 ] as const;
 
-const inertScheduler: Partial<Record<keyof SchedulerOrchestrator, () => void>> =
-  {
-    onApplicationBootstrap: () => {},
-    onApplicationShutdown: () => {},
-    addCron: () => {},
-    addInterval: () => {},
-    addTimeout: () => {},
-  };
+/**
+ * SchedulerOrchestrator monte crons, intervalles et timeouts au démarrage
+ * (onApplicationBootstrap). L'index de @nestjs/schedule ne l'exporte pas, et
+ * depuis la v12 (paquet ESM avec un champ `exports`) l'import profond
+ * `@nestjs/schedule/dist/scheduler.orchestrator` est refusé : on charge le
+ * fichier par son chemin, à côté de l'index résolu. Même chemin absolu que
+ * celui qu'importe ScheduleModule → même classe, donc même jeton d'injection.
+ */
+const { SchedulerOrchestrator } = require(
+  path.join(
+    path.dirname(require.resolve('@nestjs/schedule')),
+    'scheduler.orchestrator.js',
+  ),
+) as { SchedulerOrchestrator: abstract new (...args: never[]) => unknown };
+
+type OrchestratorHook =
+  | 'onApplicationBootstrap'
+  | 'onApplicationShutdown'
+  | 'addCron'
+  | 'addInterval'
+  | 'addTimeout';
+
+const inertScheduler: Record<OrchestratorHook, () => void> = {
+  onApplicationBootstrap: () => {},
+  onApplicationShutdown: () => {},
+  addCron: () => {},
+  addInterval: () => {},
+  addTimeout: () => {},
+};
 
 const BACKEND_DATA = path.resolve(__dirname, '..', 'data');
 
@@ -152,9 +170,12 @@ describe('AppModule (e2e)', () => {
     }
 
     // Le préchauffage de player-stats (L126) part à onApplicationBootstrap, pas à onModuleInit.
-    const { PlayerStatsService } = require('../src/modules/players/player-stats.service') as {
-      PlayerStatsService: { prototype: { onApplicationBootstrap: () => void } };
-    };
+    const { PlayerStatsService } =
+      require('../src/modules/players/player-stats.service') as {
+        PlayerStatsService: {
+          prototype: { onApplicationBootstrap: () => void };
+        };
+      };
     jest
       .spyOn(PlayerStatsService.prototype, 'onApplicationBootstrap')
       .mockImplementation(() => {});

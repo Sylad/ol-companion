@@ -21,20 +21,21 @@
   },
   "dependencies": {
     "@nestjs/common": "^11.2.10",
-    "@nestjs/config": "^4.0.4",
+    "@nestjs/config": "^12.1.1",
     "@nestjs/core": "^11.2.10",
     "@nestjs/platform-express": "^11.2.10",
-    "@nestjs/schedule": "^5.0.1",
+    "@nestjs/schedule": "^12.0.4",
     "@nestjs/throttler": "^6.8.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.29.14",
     "@eslint/eslintrc": "^3.3.7",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.24",
-    "@nestjs/schematics": "^11.1.0",
+    "@nestjs/cli": "^12.0.13",
+    "@nestjs/schematics": "^12.0.13",
     "@nestjs/testing": "^11.2.10",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
@@ -52,7 +53,7 @@
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.73.0"
   },
   "jest": {
@@ -64,6 +65,16 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
+      "^.+/node_modules/@nestjs/(schedule|config)/.+\\.js$": [
+        "babel-jest",
+        {
+          "babelrc": false,
+          "configFile": false,
+          "plugins": [
+            "@babel/plugin-transform-modules-commonjs"
+          ]
+        }
+      ],
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
@@ -73,6 +84,15 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@nestjs/(schedule|config)/)"
+    ]
+  },
+  "overrides": {
+    "glob": "^14.0.6",
+    "test-exclude": {
+      "minimatch": "^11.0.5"
     }
   }
 }

@@ -101,7 +101,8 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 
 - React 18.3 · Vite 8.3 (Rolldown, Oxc) · Vitest 5.1 · @vitejs/plugin-react 6 · TanStack Router 1.78 · TanStack Query 5.59 · Recharts 2.13 · Tailwind 3.4 · Lucide
 - NestJS 11 (aucun SDK LLM : l'app n'appelle jamais Claude, SDK Anthropic retiré en L17)
-- Docker multi-stage : frontend `node:22-alpine` → `nginx:alpine` (Vitest 5 exige Node 22.12+, CI frontend en Node 22, L250), backend `node:20-alpine`
+- Backend (L251) : @nestjs/core, common, platform-express, testing en 11 ; @nestjs/cli, schematics, config, schedule en 12, TypeScript 6. config et schedule 12 sont ESM uniquement : Jest (Node 22) ne les charge que transformés en CommonJS (`transformIgnorePatterns` + `babel-jest` avec `@babel/plugin-transform-modules-commonjs`, dans `package.json` et `test/jest-e2e.json`) — un autre paquet ESM-only (core 12…) doit être ajouté au motif. `overrides` npm (glob 14, minimatch 11 sous test-exclude) : ferment les failles de la chaîne de Jest. Note : `docs/etudes/montee-nestjs12-node22-L251.md`.
+- Docker multi-stage : frontend `node:22-alpine` → `nginx:alpine` (Vitest 5 exige Node 22.12+, CI frontend en Node 22, L250), backend `node:22-alpine` (L253, Node 20 en fin de vie)
 
 ## Règles projet (durables)
 

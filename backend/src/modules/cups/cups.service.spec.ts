@@ -17,6 +17,17 @@ describe('CupsService — appel des matchs à venir en échec', () => {
   const cwd = process.cwd();
   let tmp: string;
 
+  // Premier chargement (transformation ts-jest et babel des paquets ESM de
+  // @nestjs/config et @nestjs/schedule 12) hors du délai de 5 s des tests :
+  // le premier test attend déjà ~2,3 s de vraies relances, et à cache Jest
+  // froid sous charge il débordait (L251). Les tests rechargent toujours le
+  // module (resetModules) : seule la transformation, mise en mémoire, est reprise.
+  beforeAll(() => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('./cups.service');
+    jest.resetModules();
+  });
+
   beforeEach(() => {
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'cups-'));
     process.chdir(tmp);

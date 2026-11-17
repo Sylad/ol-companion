@@ -4,8 +4,17 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
+    "^.+/node_modules/@nestjs/(schedule|config)/.+\\.js$": [
+      "babel-jest",
+      {
+        "babelrc": false,
+        "configFile": false,
+        "plugins": ["@babel/plugin-transform-modules-commonjs"]
+      }
+    ],
     "^.+\\.(t|j)s$": "ts-jest"
   },
+  "transformIgnorePatterns": ["/node_modules/(?!@nestjs/(schedule|config)/)"],
   "moduleNameMapper": {
     "^(\\.{1,2}/.*)\\.js$": "$1"
   }
