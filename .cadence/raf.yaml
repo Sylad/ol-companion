@@ -2927,9 +2927,10 @@ lots:
     finished: 2026-11-17
   - id: L251
     title: "@nestjs/* 11 → 12 (cli, schematics, config, schedule) : supprime les 19 failles modérées du backend — proposé par L249 le 17-11"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-11-17
+    started: 2026-11-17
   - id: L252
     title: "Attendus QA /equipe-de-france : le bloc Prochain match peut afficher « Aucun match programmé. » quand /api/france renvoie nextMatch null — relevé par la QA de L249 le 17-11"
     status: done
