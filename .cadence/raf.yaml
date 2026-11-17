@@ -2909,6 +2909,7 @@ lots:
     status: done
     estimate: 0.5
     every: 30
+    delivered: { date: 2026-11-17, sha: aaf2e533aedd4c76ee6f32a624d096cc16731b76 }
     created: 2026-11-16
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; aucune majeure directe ; non vérifié : tests Chromium, npm audit, image Docker", commit: aaf2e533aedd4c76ee6f32a624d096cc16731b76 }
