@@ -5,6 +5,8 @@ node_modules/
 dist/
 .angular/
 .vite/
+# Rapports et artefacts de Vitest 5 (L250)
+.vitest/
 *.tsbuildinfo
 
 # Données runtime (caches API qui se regénèrent au démarrage)
