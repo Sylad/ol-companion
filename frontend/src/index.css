@@ -64,6 +64,14 @@
     font-size: 100%;
   }
 
+  /* L261 : le navigateur pose `font-size: smaller` (≈ 0,83 em) sur sup, sub et small ; dans un texte de 12 px le « e »
+     de « 5e » tombait à 9 px (QA du 18-11, tracker de classement). Même réduction, jamais sous le plancher de 12 px. */
+  sup,
+  sub,
+  small {
+    font-size: max(0.75rem, 0.83em);
+  }
+
   body {
     @apply bg-bg text-fg font-sans relative;
     font-feature-settings: 'cv11', 'ss01';

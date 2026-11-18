@@ -53,3 +53,17 @@
 - Test Chromium `tests-navigateur/classement-premier-ecran-L259.test.ts` : 320×800 et 390×844, 1re ligne et Lyon 5e
   au-dessus de la barre du bas ; Lyon 17e atteint par le lien, sous l'en-tête collant, focus sur sa ligne ; ordre des
   titres (H1 d'abord, sans saut) et tableau avant tracker à 320, 390, 1440.
+
+## Plancher de 12 px mesuré sur la page (L261, QA du 18-11)
+- Test Chromium `tests-navigateur/plancher-12px-L261.test.ts` : les 16 pages des attendus + la 404, à 390 et 1440 px
+  (onglets Effectif / Stats saison de /players compris), `getComputedStyle(el).fontSize` de tout élément porteur de texte
+  visible ; AUCUNE exception. Données : réponses réelles de l'API de prod du 18-11 (`tests-navigateur/donnees/api-prod-2026-11-18.json`),
+  horloge figée au 18-11 13 h 10. Une page ou un endpoint nouveau s'ajoute à `PAGES` / au fichier de données.
+- `sup`, `sub`, `small` : `font-size: max(0.75rem, 0.83em)` (`index.css`) — le « e » de « 5e » du tracker était à 9 px.
+- Composition de /match : un nom qui ne tient pas à 12 px passe le bloc **en quinconce** (`useQuinconce`, `lineup-card.tsx`,
+  `data-quinconce`) : pastilles toutes élargies à la largeur nécessaire (bornée), rangée trop fournie posée une sur deux en bas
+  (grille, `data-decalee`). Décision (hypothèse du lead à confirmer par Sylvain sur capture) : plutôt que rétrécir sous 12 px
+  ou changer la colonne de 280 px (R4 de L186), on garde 12 px + même largeur (R7) + jamais coupé (L43). Le rétrécissement
+  jusqu'à 8 px ne reste qu'en dernier recours (mot plus large que la pastille élargie). Tests : `lineup-card.quinconce-L261.test.tsx`
+  et le bloc « composition de /match » du test Chromium (320/390/1440 : 12 px, disjointes, dans le terrain, même largeur).
+- README, puce « Classement Ligue 1 » : ordre bandeau → tableau → tracker et lien « Voir l'OL (Ne) » (suite de L259).

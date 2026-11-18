@@ -57,9 +57,10 @@ export const fontSizeTailwind: Record<string, TailleTailwind> = {
 export const NOMS_TAILLES = Object.keys(fontSizeTailwind);
 
 /**
- * Noms de joueurs dans une pastille de largeur fixe (composition de /match, L43 R8) : de la plus grande à la plus petite.
- * Départ à 12 px comme tout texte. Seule exception de l'app au plancher de 12 px : un nom d'UN mot plus large que sa
- * pastille (à 320 px une pastille offre 52 px : « Kalimuendo » en mesure 59 à 10 px) descend, à la mesure, par pas de
- * 0,5 px jusqu'à 8 px, car la règle L43 interdit de le couper en milieu de mot ou de le tronquer. Un nom qui tient garde 12 px.
+ * Noms de joueurs dans une pastille (composition de /match, L43 R8) : de la plus grande à la plus petite. Départ à 12 px
+ * comme tout texte. Depuis L261, un nom trop large pour sa pastille passe la composition en quinconce (pastilles
+ * élargies, `lineup-card.tsx`) au lieu de rétrécir ; ces pas ne servent qu'en DERNIER RECOURS, pour un mot plus large
+ * encore que la pastille élargie (aucun dans les compositions réelles du 18-11) : il descend, à la mesure, par pas de
+ * 0,5 px jusqu'à 8 px, car la règle L43 interdit de le couper en milieu de mot ou de le tronquer.
  */
 export const TAILLES_NOM_PASTILLE = Array.from({ length: 9 }, (_, i) => `${(12 - i * 0.5) / 16}rem`);
