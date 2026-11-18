@@ -2997,6 +2997,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-18, sha: 6a6a4406ecd300971f3400a3b0bfad51ac482a69 }
     created: 2026-11-18
     started: 2026-11-18
     notes:
