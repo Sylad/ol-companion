@@ -53,10 +53,13 @@ export function DashboardStats() {
         icon={Activity}
         testId="stat-diff"
       />
+      {/* L257 : le gros chiffre est le bilan de Ligue 1 de la saison (« Bilan championnat » : aucun chiffre dans le libellé, que L85 interdit dans une tuile en chargement), pas une série. Sous le seul libellé
+          « Forme », « 5V » au-dessus de D V D V D se lisait « 5 victoires de suite » (revue UX L255, Nielsen 2) :
+          la tuile dit ce qu'elle compte et sur combien de matchs, la bande dit sa période. */}
       <StatCard
-        label="Forme"
+        label="Bilan championnat"
         value={ol ? `${ol.won}V` : '—'}
-        sub={ol ? `${ol.draw}N · ${ol.lost}D` : ''}
+        sub={ol ? `${ol.draw}N · ${ol.lost}D en ${ol.played} match${ol.played > 1 ? 's' : ''}` : ''}
         icon={TrendingUp}
         testId="stat-forme"
         formStrip={ol?.recentForm}
@@ -109,7 +112,15 @@ function StatCard({ label, value, suffix, sub, icon: Icon, valueClass, trend, fo
       </div>
       {sub && <div className="text-xs text-fg-dim mt-1">{sub}</div>}
       {formStrip && formStrip.length > 0 && (
-        <div className="flex items-center gap-1 mt-2.5">
+        <>
+        <div data-testid="libelle-forme-recente" className="text-xs text-fg-dim mt-2.5" aria-hidden="true">
+          {formePeriode(formStrip.length)}
+        </div>
+        <div
+          role="group"
+          aria-label={`${formePeriode(formStrip.length)} de Ligue 1, du plus ancien au plus récent`}
+          className="flex items-center gap-1 mt-1"
+        >
           {[...formStrip].reverse().map((o, i) => (
             <span
               key={i}
@@ -125,9 +136,15 @@ function StatCard({ label, value, suffix, sub, icon: Icon, valueClass, trend, fo
             </span>
           ))}
         </div>
+        </>
       )}
     </div>
   );
+}
+
+/** Période de la bande de forme (L257) : « Forme · 5 derniers matchs », « Forme · dernier match ». */
+function formePeriode(n: number): string {
+  return n > 1 ? `Forme · ${n} derniers matchs` : 'Forme · dernier match';
 }
 
 function useMemoTrend(rankings: { matchday: number; position: number }[]): 'up' | 'down' | 'flat' | null {

@@ -10,3 +10,13 @@
 
 ## Workflows
 - Une mise en page de graphique se mesure dans Chromium (`tests-navigateur/`), jamais dans jsdom (aucune mesure de texte).
+
+## Accueil — tuile « Bilan championnat » (L257, ex-« Forme »)
+- `components/dashboard-stats.tsx` : le gros chiffre (« 5V ») est le bilan de Ligue 1 de la saison ; sous-texte
+  « 2N · 3D en 10 matchs ». La bande de pastilles a son propre libellé visible « Forme · N derniers matchs »
+  (« Forme · dernier match » pour 1) et un groupe nommé « … de Ligue 1, du plus ancien au plus récent ».
+  Avant, « 5V » sous « Forme » au-dessus de D V D V D se lisait « 5 victoires de suite » (revue UX L255, M2).
+- Décision : libellé sans chiffre (« Bilan championnat », pas « Bilan Ligue 1 ») car l'acceptation L85 interdit tout
+  chiffre et « Ligue 1 » dans une tuile en chargement ; `data-testid="stat-forme"` gardé.
+- Tests : `dashboard-stats.test.tsx` (L257 R1–R4), Chromium `tests-navigateur/accueil-tuile-forme.test.ts`
+  (320, 390, 1440 : textes dans la tuile, sans recouvrement ; `CAPTURES_DIR` enregistre les captures).

@@ -144,3 +144,52 @@ describe('DashboardStats — L88', () => {
     expect(screen.getByTestId('stat-points').textContent).toContain('1 match · 3,00 pts/match');
   });
 });
+
+// L257 — revue UX L255 (M2) : « 5V » sous « Forme », au-dessus de D V D V D, se lisait « 5 victoires de suite ».
+// La tuile dit ce qu'elle compte (bilan de Ligue 1, sur combien de matchs) et la bande dit sa période.
+describe('DashboardStats — L257', () => {
+  const olLigne = {
+    position: 5, team: 'Olympique Lyonnais', teamId: 523, played: 10, won: 5, draw: 2, lost: 3,
+    goalsFor: 14, goalsAgainst: 11, goalDifference: 3, points: 17, recentForm: ['L', 'W', 'L', 'W', 'L'],
+  };
+  const rendre = (ligne: object = olLigne) => {
+    standings.value = { data: { table: [ligne], currentMatchday: 10 }, isError: false, refetch: () => {} };
+    liveMatch.value = { data: null };
+    seasonMatches.value = { data: undefined };
+    render(<DashboardStats />);
+  };
+  const libelle = (tuile: HTMLElement) => tuile.querySelector('.eyebrow')?.textContent ?? '';
+
+  it('R1 — le gros chiffre est nommé bilan de championnat (Ligue 1), sans chiffre dans le libellé (L85), et dit sur combien de matchs, jamais sous le seul libellé « Forme »', () => {
+    rendre();
+    const tuile = screen.getByTestId('stat-forme');
+    expect(libelle(tuile)).toBe('Bilan championnat');
+    expect(tuile.textContent).toContain('5V');
+    expect(tuile.textContent).toContain('2N · 3D en 10 matchs');
+  });
+
+  it('R2 — la bande des pastilles a son propre libellé : forme des N derniers matchs (sa période), visible et lu', () => {
+    rendre();
+    const tuile = screen.getByTestId('stat-forme');
+    const legende = within(tuile).getByTestId('libelle-forme-recente');
+    expect(legende.textContent).toBe('Forme · 5 derniers matchs');
+    const groupe = within(tuile).getByRole('group', { name: /5 derniers matchs de Ligue 1, du plus ancien au plus récent/ });
+    expect(within(groupe).getAllByRole('img').map((p) => p.textContent)).toEqual(['D', 'V', 'D', 'V', 'D']);
+  });
+
+  it('R3 — la période suit la longueur de la bande (6 matchs)', () => {
+    rendre({ ...olLigne, recentForm: ['W', 'D', 'L', 'W', 'D', 'W'] });
+    expect(screen.getByTestId('libelle-forme-recente').textContent).toBe('Forme · 6 derniers matchs');
+  });
+
+  it('R3 — un seul match : « dernier match », et « 1 match » au singulier sous le bilan', () => {
+    rendre({ ...olLigne, played: 1, won: 1, draw: 0, lost: 0, points: 3, recentForm: ['W'] });
+    expect(screen.getByTestId('libelle-forme-recente').textContent).toBe('Forme · dernier match');
+    expect(screen.getByTestId('stat-forme').textContent).toContain('0N · 0D en 1 match');
+  });
+
+  it('R4 — sans bande de forme, pas de libellé de forme orphelin', () => {
+    rendre({ ...olLigne, recentForm: undefined });
+    expect(screen.queryByTestId('libelle-forme-recente')).toBeNull();
+  });
+});
