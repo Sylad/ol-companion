@@ -2958,11 +2958,43 @@ lots:
     created: 2026-11-17
   - id: L255
     title: "Revue UX — bonnes pratiques d'une appli web standard (D-13 du registre parent) : chaque page en vrai navigateur à 390 et 1440 px, au clavier, contre WCAG 2.2 AA, les heuristiques de Nielsen et la skill interface-utilisable (tailles de texte en rem ≥ 12 px, cibles ≥ 24 px, contrastes, focus visible, états vides et d'erreur) ; constats mesurés, sous-lots proposés"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-11-18
     started: 2026-11-18
+    ux: { date: 2026-11-18, verdict: "revue faite (D-13) : 0 bloquant, 4 majeurs, 8 mineurs → 5 lots ouverts ; rapport tmp/ux-2026-11-18/ol-companion.md" }
+    finished: 2026-11-18
+  - id: L256
+    title: "Accueil : étiquettes de l'axe Y du graphique « diff. de buts » rognées (« -4 » lu 4, « 12 » lu I2 ; season-summary.tsx:148, marge gauche -12) — revue UX L255"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-11-18
+  - id: L257
+    title: "Accueil : la carte Forme affiche « 5V » (bilan de Ligue 1) au-dessus des 5 derniers matchs D V D V D, lu « 5 victoires de suite » (Nielsen 2) — revue UX L255"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-11-18
+  - id: L258
+    title: Pastilles V/N/D en 8 px dans un rond de 14 px (la lettre est le seul repère hors couleur, WCAG 1.4.1) et notes des joueurs en 9 px ; 118 tailles en px → échelle en rem, 12 px minimum (comme TYPO-1 de maritime) — revue UX L255
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-11-18
+  - id: L259
+    title: "Classement au téléphone : aucune ligne au premier écran (tableau à y=776 à 320 px, sous la barre du bas) et H2 « Tracker » avant le H1 — revue UX L255"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-11-18
+  - id: L260
+    title: "Mineurs de la revue UX L255 : ordre des titres (/fixtures, /about, /standings), cibles < 24 px (calendrier, coupes, /news), alt des logos qui répètent le nom, libellés anglais restants, émojis lus comme icônes, 5 « Réessayer » pour une panne sans cause, titre de la 404, « Cliquez » au téléphone"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-11-18
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
