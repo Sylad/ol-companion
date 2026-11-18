@@ -808,6 +808,32 @@
       "status": "done",
       "started": "2026-11-05",
       "finished": "2026-11-05"
+    },
+    {
+      "id": "L256",
+      "title": "Accueil : les chiffres du graphique de différence de buts lisibles en entier",
+      "status": "doing",
+      "started": "2026-11-18"
+    },
+    {
+      "id": "L257",
+      "title": "Accueil : la carte Forme montre bien les derniers matchs",
+      "status": "todo"
+    },
+    {
+      "id": "L258",
+      "title": "Textes plus grands pour les résultats et les notes des joueurs",
+      "status": "todo"
+    },
+    {
+      "id": "L259",
+      "title": "Classement au téléphone : le tableau d'abord",
+      "status": "todo"
+    },
+    {
+      "id": "L260",
+      "title": "Petites améliorations d'accessibilité et de vocabulaire",
+      "status": "todo"
     }
   ]
 }
