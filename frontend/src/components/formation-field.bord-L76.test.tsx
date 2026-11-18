@@ -63,3 +63,30 @@ describe('placerJoueurDeBord (L76)', () => {
     expect(placerJoueurDeBord({ ...base, x: 96, nom: 60, voisinGauche: 290 }).nomMax).toBe(0);
   });
 });
+
+// L258 — la note est accrochée au ROND : ce qui dépasse se mesure depuis le bord droit du rond (`debord`), pas depuis le
+// bloc, dont la largeur suit le nom (et change quand le nom est tronqué). Avant, un nom large cachait la note dans le bloc :
+// la note du latéral droit (« Maitland-Niles », 90 %) sortait du terrain à 320 et 360 px une fois le nom tronqué.
+describe('placerJoueurDeBord — note qui dépasse du rond (L258)', () => {
+  const base = { largeurTerrain: 300, rond: 36, voisinGauche: null, voisinDroite: null };
+  it('nom large, note dans le bloc : rien de plus que le recalage du nom', () => {
+    // nom 60, rond 36 + 10 px de note : bord droit de la note = centre + 28 ≤ centre + 30 (bord du nom)
+    expect(placerJoueurDeBord({ ...base, x: 96, nom: 60, debord: 10 })).toEqual({ decalage: -20, nomMax: null });
+  });
+  it('nom étroit : la note qui dépasse du rond est ramenée dans le terrain', () => {
+    // nom 30 < rond : bord droit de la note = 288 + 18 + 10 = 316 → recalage de 316 - 298 = 18
+    expect(placerJoueurDeBord({ ...base, x: 96, nom: 30, debord: 10 }).decalage).toBe(-18);
+  });
+  it('nom tronqué par un voisin : la note reste dans le terrain et le nom garde 4 px avec le voisin', () => {
+    const e = { ...base, x: 90, nom: 100, debord: 10, voisinGauche: 220 };
+    const r = placerJoueurDeBord(e);
+    const centre = 270 + r.decalage;
+    expect(centre + 18 + 10).toBeLessThanOrEqual(298); // note dans le terrain
+    expect(centre - r.nomMax! / 2).toBeGreaterThanOrEqual(220 + 4); // écart gardé
+    expect(centre + r.nomMax! / 2).toBeLessThanOrEqual(298); // nom dans le terrain
+  });
+  it('sans note qui dépasse, le placement est celui de L76', () => {
+    const r = placerJoueurDeBord({ ...base, x: 96, nom: 60, debord: 0, voisinGauche: 250 });
+    expect(r.nomMax).toBe(44);
+  });
+});

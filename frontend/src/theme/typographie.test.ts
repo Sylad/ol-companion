@@ -1,5 +1,5 @@
 // L258 — une seule échelle de tailles de texte, en rem, définie dans src/theme/typographie.ts (revue UX L255, M3).
-// Ce test refuse toute taille de texte en px (ou taille arbitraire) écrite ailleurs dans src/.
+// Ce test refuse toute taille de texte en px (ou taille arbitraire), et toute taille en rem / em sous 12 px, écrite ailleurs dans src/.
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
@@ -24,7 +24,45 @@ const INTERDITS: Array<[string, RegExp]> = [
   ['font-size en px (CSS)', /font-size\s*:[^;}\n]*\d(?:\.\d+)?px/g],
   ['fontSize numérique (px implicites : React, Recharts)', /fontSize\s*[:=]\s*\d/g],
   ['fontSize en px dans une chaîne', /fontSize\s*[:=][^,;}\n]*\d(?:\.\d+)?px/g],
+  // Revue L258, constat 3 : formes que les motifs ci-dessus laissaient passer.
+  ['attribut de taille numérique ou en chaîne (JSX, SVG : fontSize={10}, fontSize="10", font-size="10")', /\bfont-?[sS]ize\s*=\s*\{?\s*["'`]?\s*\d/g],
+  ['taille en px calculée (fontSize: `${n}px`)', /fontSize\s*[:=][^;\n]*\}px/g],
+  ['raccourci font en px (font: 600 10px Inter, el.style.font = …)', /\bfont\s*[:=][^;}\n]*\d(?:\.\d+)?px/g],
 ];
+
+/** Une taille en rem ou em sous 12 px (0,75) écrite hors du thème : le plancher vaut aussi hors des jetons. */
+const TAILLE_REM = /(?:font-size|fontSize|\bfont)\s*[:=]([^;}\n]*)/g;
+function remSous12(texte: string): string[] {
+  return [...texte.matchAll(TAILLE_REM)].flatMap((m) =>
+    [...m[1].matchAll(/(\d*\.?\d+)r?em\b/g)].filter((n) => parseFloat(n[1]) < 0.75).map(() => m[0].trim()));
+}
+
+/** Tout ce que le test refuse dans un texte source, avec le motif en cause. */
+function fautes(texte: string): string[] {
+  return [
+    ...INTERDITS.flatMap(([quoi, motif]) => [...texte.matchAll(motif)].map((m) => `${quoi} : ${m[0]}`)),
+    ...remSous12(texte).map((m) => `taille en rem sous 12 px : ${m}`),
+  ];
+}
+
+describe('L258 — les motifs refusent chaque forme de taille hors échelle (test du test)', () => {
+  it.each([
+    'className="text-[10px]"', 'className="sm:text-[10px]"', 'text-[length:10px]', 'text-[0.5rem]',
+    '.a { font-size: 10px; }', 'style={{ fontSize: 10 }}', 'fontSize: "9px"', 'el.style.fontSize = "9px"',
+    '<text fontSize={9}>', '<text fontSize="10">', '<text font-size="10">', 'tick={{ fontSize: \'9px\' }}',
+    'fontSize: `${n}px`', 'el.style.fontSize = `${taille}px`', '.a { font: 600 10px Inter, sans-serif; }', "el.style.font = '700 9px Inter'",
+    '.a { font-size: 0.5rem; }', "fontSize: '0.6875rem'", '.a { font-size: clamp(0.5rem, 2vw, 1rem); }', '.a { font: 600 .7em Inter; }',
+  ])('refuse %s', (exemple) => {
+    expect(fautes(exemple)).not.toEqual([]);
+  });
+  it.each([
+    'fontSize: TAILLE.petite', '<text fontSize={TAILLE.petite}>', 'style={{ fontSize: size }}', 'el.style.fontSize = size',
+    '.a { font-size: 0.75rem; }', 'font-size: clamp(4rem, 14vw, 9rem)', 'html { font-size: 100%; }', 'font-family: Inter',
+    'className="text-petite text-xs"', 'const fontWeight = 600', '.a { font: inherit; }',
+  ])('laisse passer %s', (exemple) => {
+    expect(fautes(exemple)).toEqual([]);
+  });
+});
 
 describe('L258 — aucune taille de texte en px hors du thème', () => {
   const liste = fichiers(SRC);
@@ -40,6 +78,10 @@ describe('L258 — aucune taille de texte en px hors du thème', () => {
       });
       expect(trouves).toEqual([]);
     });
+  it('aucune taille en rem ou em sous 12 px (0,75 rem)', () => {
+    const trouves = liste.flatMap((f) => remSous12(readFileSync(f, 'utf8')).map((m) => `${path.relative(SRC, f)} ${m}`));
+    expect(trouves).toEqual([]);
+  });
 });
 
 const rem = (v: string) => {

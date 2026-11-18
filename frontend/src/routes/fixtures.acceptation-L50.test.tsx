@@ -105,6 +105,12 @@ const rowFor = (gameId: number) => {
   return r;
 };
 const text = (el: Element) => (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+/** Texte lu par un lecteur d'écran : sans les formes courtes `aria-hidden` d'un écran étroit (L258 : « WE », « 05/12 »). */
+const textLu = (el: Element) => {
+  const copie = el.cloneNode(true) as Element;
+  copie.querySelectorAll('[aria-hidden="true"]').forEach((n) => n.remove());
+  return text(copie);
+};
 const pill = (group: string, name: RegExp) => within(tid(group)).getByRole('button', { name });
 const monthTitles = () => screen.queryAllByTestId('titre-mois').map(text);
 const monthCounts = () => screen.queryAllByTestId('nombre-matchs-mois').map((e) => Number(/\d+/.exec(text(e))?.[0]));
@@ -229,7 +235,7 @@ describe('R4 — blocs par mois', () => {
     // un match à jour non fixé reste dans le mois de sa date de remplissage
     const dec = screen.getAllByTestId('bloc-mois')[3];
     expect(within(dec).getAllByTestId('ligne-match')).toHaveLength(2);
-    expect(text(within(rowFor(106)).getByTestId('date-match'))).toMatch(/Week-end\s*du 05\/12/);
+    expect(textLu(within(rowFor(106)).getByTestId('date-match'))).toMatch(/Week-end\s*du 05\/12/);
   });
   it('R4 — la somme des nombres de matchs égale « Matchs listés »', async () => {
     renderPage();
@@ -313,7 +319,7 @@ describe('R6 — ligne entière vers le match', () => {
     expect(score(107)).toBe('21h00');
     expect(score(106)).toMatch(/^Horaire\s*à confirmer$/);
     expect(score(106)).not.toMatch(/\d{2}h\d{2}/);
-    expect(text(within(rowFor(106)).getByTestId('date-match'))).toMatch(/^Week-end\s*du 05\/12$/);
+    expect(textLu(within(rowFor(106)).getByTestId('date-match'))).toMatch(/^Week-end\s*du 05\/12$/);
   });
 });
 

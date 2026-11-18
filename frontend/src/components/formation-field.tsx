@@ -94,9 +94,10 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
     const rond = el?.querySelector<HTMLElement>('[data-testid="rond-joueur"]');
     if (!el || !terrain || !nom || !rond) return;
     const mesurer = () => {
-      // La pastille de note (absolute dans le rond, L258) peut dépasser à droite du bloc : on la compte.
+      // La pastille de note (absolute dans le rond, L258) peut dépasser à droite du ROND : on la mesure depuis le rond, pas
+      // depuis le bloc, dont la largeur suit le nom et change quand le nom est tronqué (la note sortait alors du terrain).
       const pastille = el.querySelector<HTMLElement>('[data-testid="pastille-note"]');
-      const debord = pastille ? Math.max(0, rond.offsetLeft + pastille.offsetLeft + pastille.offsetWidth - el.offsetWidth) : 0;
+      const debord = pastille ? Math.max(0, rond.clientLeft + pastille.offsetLeft + pastille.offsetWidth - rond.offsetWidth) : 0;
       // Origine = bord intérieur de la bordure du terrain, comme centre, décalage et clientWidth.
       const origine = terrain.getBoundingClientRect().left + terrain.clientLeft;
       // Voisins de la même ligne : leur nom tel qu'il est posé (un joueur central n'est pas déplacé).
@@ -149,17 +150,21 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
         aria-label={`Fiche de ${player.name}`}
         // Nom masqué (visibility: hidden, pas de survol possible sur lui) : l'infobulle du lien porte le nom complet.
         title={place.nomMax === 0 ? player.name : undefined}
-        className="flex flex-col items-center gap-1.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-md"
+        className="flex flex-col items-center gap-1 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-md"
       >
         <div data-testid="rond-joueur" className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-ol-blue-bright to-ol-blue border-2 border-white/90 shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center transition-transform group-hover:scale-110">
           <span className="font-mono tabular-nums text-white font-bold text-xs sm:text-sm">
             {hasJersey(player.jerseyNumber) ? player.jerseyNumber : ''}
           </span>
-          {/* L258 : note accrochée au rond (avant : au coin du bloc, qui s'élargit avec le nom), lettre à 12 px, rond de 1,25 rem. */}
+          {/* L258 : note accrochée au rond (avant : au coin du bloc, qui s'élargit avec le nom), lettre à 12 px, rond de 1,25 rem.
+              Posée sur le haut du rond, à partir de son centre, son bas au-dessus de l'encre des chiffres (à `-right-4` elle
+              couvrait le « 9 » de « 19 » et le « 3 » de « 13 », captures du lead à 390 px). Mesures à 320 px : posée à côté
+              des chiffres elle dépasse de 21 px à droite et touche le rond voisin (défenseurs à 26 % d'écart) ; plus haute
+              (-13 px) elle touche le nom de la ligne du dessus (lignes 4 et 5 à 14 %). D'où -10 px, et le nom à 4 px du rond. */}
           {player.ranking !== null && player.ranking > 0 && (
             <span
               data-testid="pastille-note"
-              className="absolute -top-2 -right-4 z-20 inline-flex items-center justify-center h-5 min-w-5 px-1 rounded-full text-petite font-bold leading-none border border-bg"
+              className="absolute -top-[0.625rem] left-1/2 z-20 inline-flex items-center justify-center h-5 min-w-5 px-1 rounded-full text-petite font-bold leading-none border border-bg"
               style={{
                 backgroundColor: ratingColor(player.ranking),
                 color: ratingTextColor(player.ranking),
@@ -205,7 +210,7 @@ interface EntreePlaceBord {
   nom: number;
   /** Largeur du rond du numéro. */
   rond: number;
-  /** Ce qui dépasse à droite du bloc (pastille de note). */
+  /** Ce qui dépasse à droite du ROND (pastille de note, L258), en px ; le bloc est centré sur le rond. */
   debord: number;
   /** Bord droit du nom voisin à gauche, bord gauche du nom voisin à droite, en px depuis le bord gauche du terrain. */
   voisinGauche: number | null;
@@ -244,7 +249,9 @@ function nomLisible(place: number): number {
 export function placerJoueurDeBord(e: EntreePlaceBord): PlaceBord {
   const { x, largeurTerrain: W, nom, rond, debord, voisinGauche, voisinDroite } = e;
   const centre = (x / 100) * W;
-  const decalage = decalageDansTerrain(x, Math.max(rond, nom), W, debord);
+  const largeur = Math.max(rond, nom);
+  // Ce qui dépasse à droite d'un bloc de cette largeur, centré sur le rond (rien si le nom couvre déjà la note).
+  const decalage = decalageDansTerrain(x, largeur, W, Math.max(0, rond / 2 + debord - largeur / 2));
   if (decalage > 0 && voisinDroite !== null && centre + decalage + nom / 2 > voisinDroite - ECART_NOMS_PX) {
     const place = voisinDroite - ECART_NOMS_PX - MARGE_BORD_PX;
     if (place >= rond) return { decalage: MARGE_BORD_PX + place / 2 - centre, nomMax: nomLisible(place) };
@@ -252,10 +259,11 @@ export function placerJoueurDeBord(e: EntreePlaceBord): PlaceBord {
     return { decalage: cible - centre, nomMax: nomLisible(2 * (voisinDroite - ECART_NOMS_PX - cible)) };
   }
   if (decalage < 0 && voisinGauche !== null && centre + decalage - nom / 2 < voisinGauche + ECART_NOMS_PX) {
-    const place = W - MARGE_BORD_PX - debord - voisinGauche - ECART_NOMS_PX;
-    const droite = W - MARGE_BORD_PX - debord;
-    if (place >= rond) return { decalage: droite - place / 2 - centre, nomMax: nomLisible(place) };
-    const cible = droite - rond / 2;
+    const droite = W - MARGE_BORD_PX;
+    const place = droite - voisinGauche - ECART_NOMS_PX;
+    // Un nom tronqué assez large couvre le rond et sa note ; sinon le rond se cale pour que la note reste dans le terrain.
+    if (place >= rond + 2 * debord) return { decalage: droite - place / 2 - centre, nomMax: nomLisible(place) };
+    const cible = droite - debord - rond / 2;
     return { decalage: cible - centre, nomMax: nomLisible(2 * (cible - voisinGauche - ECART_NOMS_PX)) };
   }
   return { decalage, nomMax: null };

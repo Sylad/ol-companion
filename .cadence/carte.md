@@ -32,3 +32,13 @@
 - Décision : exception unique au plancher, les noms d'un mot trop long des pastilles de composition (/match) descendent
   à la mesure jusqu'à 8 px (règle L43 : jamais coupés ni tronqués ; 52 px de pastille à 320 px).
 - Tests Chromium : `tests-navigateur/tailles-texte-L258.test.ts` (390 et 1440 px, et la racine à 20 px fait passer les lettres à 15 px).
+- **Corrections après revue (L258)** :
+  - Calendrier sous 360 px (colonne de 40 px, jour à 12 px) : un jour ferme passe à la ligne à l'espace (« Sam. » / « 22 ») ;
+    « Week-end », qui ne se coupe jamais au trait d'union (L100), s'abrège en « WE » (`abbr` « Week-end ») sur « 05/12 » ;
+    formes entières en sr-only. Chromium `calendrier-densite.test.ts` : aucun texte de date sur les équipes à 320/359/360/390/1440.
+    Les acceptations L50 lisent le texte exposé (sans `aria-hidden`).
+  - Note des joueurs du terrain (/players) : posée sur le haut du rond à partir de son centre, `-top-[0.625rem]`, son bas au-dessus
+    de l'encre des chiffres ; nom à 4 px du rond (`gap-1`). Contraintes mesurées à 320 px : à côté du rond elle touche le rond
+    voisin (défenseurs à 26 %), plus haute le nom de la ligne du dessus (lignes 4/5 à 14 %). Son dépassement se mesure depuis le
+    rond (`placerJoueurDeBord.debord`), pas depuis le bloc du nom. Test Chromium : encre des chiffres via `measureText`.
+  - `typographie.test.ts` refuse aussi `fontSize={n}` / `fontSize="n"` (JSX, SVG), `font: … px`, `${n}px`, et rem/em < 0,75.

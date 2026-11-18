@@ -181,3 +181,72 @@ it('L258 — /match à 320 px : noms de la composition à 12 px, réduits à la 
     }
   } finally { await page.close(); }
 });
+
+// L258 (captures du lead à 390 px) — la note agrandie (12 px, pastille de 20 px) posée à cheval sur le rond recouvrait le
+// second chiffre des numéros à deux chiffres (« 19 », « 13 »). Composition réelle du 08-11 (Brest – OL, 4-3-3), numéros
+// et notes de la capture ; « 10 » ajouté pour la note la plus large.
+const terrainReel = (n: number, nom: string, yardLine: number, yardSide: number, ranking: number) => ({ ...joueurTerrain(n, nom, yardLine, yardSide, ranking), id: 1000 + n });
+const COMPO_REELLE = {
+  ...COMPO_JOUEURS,
+  starters: [
+    terrainReel(1, 'Greif', 1, 50, 4.9),
+    terrainReel(3, 'Abner', 2, 10, 6.6), terrainReel(19, 'Niakhaté', 2, 36, 5.9), terrainReel(21, 'Mata', 2, 64, 6.7), terrainReel(13, 'Maitland-Niles', 2, 90, 5.2),
+    terrainReel(8, 'Tolisso', 3, 15, 6.2), terrainReel(6, 'Tessmann', 3, 50, 6.6), terrainReel(99, 'N. Nartey', 3, 85, 10),
+    terrainReel(11, 'Nakamura', 5, 12, 7.1), terrainReel(18, 'Merah', 5, 50, 6.2), terrainReel(26, 'Boudache', 5, 88, 5.8),
+  ],
+};
+
+describe.each([320, 360, 390, 1440])('L258 — /players à %i px : la note ne recouvre aucun numéro, aucun rond voisin, aucun nom', (largeur) => {
+  it('pastilles de note, numéros, ronds et noms disjoints, notes dans le terrain', async () => {
+    const page = await ouvrir(largeur, '/players', (u) => (u.includes('/api/lineup') ? COMPO_REELLE : undefined));
+    try {
+      await page.locator('[data-testid="pastille-note"]').first().waitFor();
+      await page.evaluate(() => document.fonts.ready);
+      const m = await page.evaluate(() => {
+        const boite = (r: DOMRect) => ({ l: r.left, r: r.right, t: r.top, b: r.bottom });
+        const joueurs = [...document.querySelectorAll('[data-testid="joueur"]')].map((j) => {
+          const rond = j.querySelector('[data-testid="rond-joueur"]')!;
+          // Encre des chiffres (measureText), pas la boîte de la police, qui garde au-dessus des chiffres la place des
+          // capitales accentuées : la note peut couvrir le haut vide du rond, jamais un chiffre.
+          const span = rond.querySelector('span')!;
+          const plage = document.createRange();
+          plage.selectNodeContents(span);
+          const p = plage.getBoundingClientRect();
+          const cs = getComputedStyle(span);
+          const ctx = document.createElement('canvas').getContext('2d')!;
+          ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+          const t = ctx.measureText(span.textContent!);
+          const encre = {
+            l: p.left - t.actualBoundingBoxLeft, r: p.left + t.actualBoundingBoxRight,
+            t: p.top + t.fontBoundingBoxAscent - t.actualBoundingBoxAscent, b: p.top + t.fontBoundingBoxAscent + t.actualBoundingBoxDescent,
+          };
+          const note = j.querySelector('[data-testid="pastille-note"]')!;
+          return {
+            numero: rond.textContent!.replace(note.textContent!, ''),
+            rond: boite(rond.getBoundingClientRect()),
+            chiffres: encre,
+            note: boite(note.getBoundingClientRect()),
+            nom: boite(j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect()),
+          };
+        });
+        const terrain = boite(document.querySelector('[data-testid="joueur"]')!.parentElement!.getBoundingClientRect());
+        return { joueurs, terrain };
+      });
+      type B = { l: number; r: number; t: number; b: number };
+      const recouvre = (a: B, b: B) => Math.min(a.r, b.r) - Math.max(a.l, b.l) > 0.5 && Math.min(a.b, b.b) - Math.max(a.t, b.t) > 0.5;
+      expect(m.joueurs).toHaveLength(11);
+      const fautes: string[] = [];
+      for (const j of m.joueurs) {
+        for (const k of m.joueurs) {
+          if (recouvre(j.note, k.chiffres)) fautes.push(`note de ${j.numero} sur le numéro ${k.numero}`);
+          if (k !== j && recouvre(j.note, k.rond)) fautes.push(`note de ${j.numero} sur le rond ${k.numero}`);
+          if (recouvre(j.note, k.nom)) fautes.push(`note de ${j.numero} sur le nom de ${k.numero}`);
+          if (k !== j && recouvre(j.note, k.note)) fautes.push(`note de ${j.numero} sur la note de ${k.numero}`);
+        }
+        const t = m.terrain;
+        if (j.note.l < t.l || j.note.r > t.r || j.note.t < t.t || j.note.b > t.b) fautes.push(`note de ${j.numero} hors du terrain`);
+      }
+      expect(fautes).toEqual([]);
+    } finally { await page.close(); }
+  });
+});

@@ -45,6 +45,8 @@ const dateLong = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numer
  */
 function formatDateParts(match: SeasonMatch): {
   day: string;
+  /** Forme abrégée de `day` sous 360 px, quand il ne tient pas dans la colonne de 40 px sans se couper (L258). */
+  dayShort?: string;
   /** Seconde ligne de la colonne, seulement pour un jour non fixé (« du 05/12 », « à confirmer »). */
   detail?: string;
   /** Forme courte de `detail` sous 360 px, quand il ne tient pas dans la colonne de 40 px (L48). */
@@ -59,7 +61,9 @@ function formatDateParts(match: SeasonMatch): {
   const unconfirmed = match.status === 'SCHEDULED' || match.status === 'TIMED' ? unconfirmedDay(match) : null;
   if (unconfirmed?.kind === 'weekend') {
     const sat = `${pad2(unconfirmed.saturday.getDate())}/${pad2(unconfirmed.saturday.getMonth() + 1)}`;
-    return { day: 'Week-end', detail: `du ${sat}`, time: null, label: `Week-end du ${sat}` };
+    // L258 : à 12 px, « Week-end » (≈ 60 px) ne tient pas dans la colonne de 40 px sous 360 px, et ne doit pas se couper au
+    // trait d'union (L100) : forme « WE », et la date seule (« du 05/12 » se couperait en deux lignes).
+    return { day: 'Week-end', dayShort: 'WE', detail: `du ${sat}`, detailShort: sat, time: null, label: `Week-end du ${sat}` };
   }
   if (unconfirmed) {
     return { day: 'Date', detail: 'à confirmer', detailShort: 'à conf.', time: null, label: 'Date à confirmer' };
@@ -514,7 +518,7 @@ function CompetitionTag({ fixture }: { fixture: SeasonMatch }) {
 }
 
 function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
-  const { day, detail, detailShort, time, iso, title } = formatDateParts(fixture);
+  const { day, dayShort, detail, detailShort, time, iso, title } = formatDateParts(fixture);
   const DateBlock = iso ? 'time' : 'div';
   const hasScore = fixture.homeScore !== null && fixture.awayScore !== null;
   const isLive = fixture.status === 'IN_PLAY';
@@ -535,7 +539,20 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
       )}
     >
       <DateBlock data-testid="date-match" className="block text-center" {...(iso ? { dateTime: iso, title } : {})}>
-        <div className="whitespace-nowrap text-xs font-semibold text-fg max-[359px]:text-petite">{day}</div>
+        {/* L258 : sous 360 px, à 12 px, « Sam. 22 » (≈ 50 px) ne tient pas sur une ligne dans la colonne de 40 px : le jour
+            passe à la ligne à l'espace (« Sam. » / « 22 »), jamais plus petit ; « Week-end », qui ne se coupe pas (L100), s'abrège. */}
+        <div className="whitespace-nowrap text-xs font-semibold text-fg max-[359px]:whitespace-normal max-[359px]:leading-[1.1]">
+          {dayShort ? (
+            <>
+              <span className="whitespace-nowrap max-[359px]:sr-only">{day}</span>
+              <abbr title={day} aria-hidden="true" className="hidden no-underline max-[359px]:inline">
+                {dayShort}
+              </abbr>
+            </>
+          ) : (
+            day
+          )}
+        </div>
         {detail && (
           // L258 : 12 px sans interlettrage élargi : « DU 05/12 » (56,4 px) tient sur une ligne dans la colonne, passée de 56 à 60 px.
           <div className="text-petite uppercase leading-[1.1] text-fg-muted">

@@ -446,6 +446,30 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       expect(short).toHaveAttribute('aria-hidden', 'true');
     });
 
+    // L258 : à 12 px, « Week-end » (≈ 60 px) et « du 05/12 » ne tiennent pas dans la colonne de 40 px sous 360 px ;
+    // « Week-end » ne se coupe pas au trait d'union (L100) : forme abrégée « WE » (abbr), date seule, formes entières lues.
+    it('« Week-end du 05/12 » : « WE » et « 05/12 » sous 360 px, formes entières pour les lecteurs d’écran', async () => {
+      vi.stubGlobal('fetch', serve());
+      renderPage();
+      await screen.findAllByRole('article');
+
+      const [jour, detail] = Array.from(rowById(TROYES).children[0].children) as HTMLElement[];
+      const [jourLong, jourCourt] = Array.from(jour.children) as HTMLElement[];
+      expect(jourLong).toHaveTextContent('Week-end');
+      expect(jourLong.className.split(' ')).toEqual(expect.arrayContaining(['max-[359px]:sr-only', 'whitespace-nowrap']));
+      expect(jourCourt).toHaveTextContent(/^WE$/);
+      expect(jourCourt.tagName).toBe('ABBR');
+      expect(jourCourt).toHaveAttribute('title', 'Week-end');
+      expect(jourCourt).toHaveAttribute('aria-hidden', 'true');
+      expect(jourCourt.className.split(' ')).toEqual(expect.arrayContaining(['hidden', 'max-[359px]:inline']));
+
+      const [detailLong, detailCourt] = Array.from(detail.children) as HTMLElement[];
+      expect(detailLong).toHaveTextContent('du 05/12');
+      expect(detailLong.className.split(' ')).toContain('max-[359px]:sr-only');
+      expect(detailCourt).toHaveTextContent(/^05\/12$/);
+      expect(detailCourt).toHaveAttribute('aria-hidden', 'true');
+    });
+
     it('un match joué un week-end garde sa date ferme, même si timeConfirmed est faux', async () => {
       const played = season.map((m) => (m.status === 'FINISHED' ? { ...m, timeConfirmed: false } : m));
       vi.stubGlobal('fetch', serve(played));
@@ -467,7 +491,9 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       await screen.findAllByRole('article');
 
       const row = rowById(TROYES);
-      const date = within(row).getByText('du 05/12');
+      // L258 : « du 05/12 » est une forme longue (sr-only sous 360 px) dans le bloc de la seconde ligne, qui porte la couleur.
+      const date = within(row).getByText('du 05/12').closest('div')!;
+      expect(date).toHaveTextContent('05/12');
       expect(date).toHaveClass('text-fg-muted');
       expect(date).not.toHaveClass('text-fg-dim');
     });
