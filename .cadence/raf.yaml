@@ -3032,6 +3032,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-18, sha: 75763f297e56aa3be253734f6f24e0fde7322051 }
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : 0 bloquant, 0 suite — test navigateur qui mesure la taille calculée de tout texte visible sur chaque page à 390/1440 ; sup du rang et composition de /match corrigés ; README L259 à jour", commit: 75763f297e56aa3be253734f6f24e0fde7322051 }
