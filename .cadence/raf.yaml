@@ -2973,6 +2973,7 @@ lots:
     visible: true
     created: 2026-11-18
     started: 2026-11-18
+    review: { date: 2026-11-18, verdict: "conforme (revue du lead, lot de 2 lignes) : marge gauche du AreaChart -12 → 0 (season-summary.tsx:148), test Chromium 320–1440 px qui mesure x ≥ 0 des étiquettes de l'axe Y", commit: 6f5d8a98b93bae7bd917adc5cf2e259136b54c37 }
   - id: L257
     title: "Accueil : la carte Forme affiche « 5V » (bilan de Ligue 1) au-dessus des 5 derniers matchs D V D V D, lu « 5 victoires de suite » (Nielsen 2) — revue UX L255"
     public: "Accueil : la carte Forme montre bien les derniers matchs"
