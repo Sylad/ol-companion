@@ -3025,6 +3025,7 @@ lots:
     created: 2026-11-18
   - id: L261
     title: "Plancher de 12 px non tenu en prod (QA de L258) : le « e » (sup) du rang à 9 px sur / et /standings, des noms de la composition de /match à 8–10,5 px (tailles relatives en em) ; test navigateur qui mesure la taille CALCULÉE de tout texte visible, sur chaque page, à 390 et 1440 px ; ligne de plancher dans docs/qa/expectations.md"
+    public: Tous les textes du site à 12 px au moins, mesurés sur la page
     status: todo
     estimate: 0.25
     visible: true
