@@ -2981,10 +2981,11 @@ lots:
   - id: L257
     title: "Accueil : la carte Forme affiche « 5V » (bilan de Ligue 1) au-dessus des 5 derniers matchs D V D V D, lu « 5 victoires de suite » (Nielsen 2) — revue UX L255"
     public: "Accueil : la carte Forme montre bien les derniers matchs"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-11-18
+    started: 2026-11-18
   - id: L258
     title: Pastilles V/N/D en 8 px dans un rond de 14 px (la lettre est le seul repère hors couleur, WCAG 1.4.1) et notes des joueurs en 9 px ; 118 tailles en px → échelle en rem, 12 px minimum (comme TYPO-1 de maritime) — revue UX L255
     public: "Textes plus grands pour les résultats et les notes des joueurs"
