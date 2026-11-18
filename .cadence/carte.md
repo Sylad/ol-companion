@@ -42,3 +42,14 @@
     voisin (défenseurs à 26 %), plus haute le nom de la ligne du dessus (lignes 4/5 à 14 %). Son dépassement se mesure depuis le
     rond (`placerJoueurDeBord.debord`), pas depuis le bloc du nom. Test Chromium : encre des chiffres via `measureText`.
   - `typographie.test.ts` refuse aussi `fontSize={n}` / `fontSize="n"` (JSX, SVG), `font: … px`, `${n}px`, et rem/em < 0,75.
+
+## Classement (`/standings`) — premier écran au téléphone (L259, revue UX L255 M4)
+- Ordre de la page, à toute largeur : bandeau OL **compact** (une ligne sous 1024 px), section « Classement » (H1),
+  puis « Tracker de classement » (H2) en dessous. Avant : tracker d'abord, tableau à y = 815 à 320 px, H2 avant H1.
+- Lien « Voir l'OL (Ne) ↓ » au-dessus du tableau, sous 768 px seulement (`md:hidden`, 24 px de haut) : centre la ligne
+  de l'OL (`tr#ligne-ol`, `tabIndex=-1`) et y pose le focus. Pas dans l'en-tête de section : à 320 px il poussait
+  « Actualiser » hors du cadre.
+- Bureau 1440 : mêmes blocs, tableau au-dessus du tracker.
+- Test Chromium `tests-navigateur/classement-premier-ecran-L259.test.ts` : 320×800 et 390×844, 1re ligne et Lyon 5e
+  au-dessus de la barre du bas ; Lyon 17e atteint par le lien, sous l'en-tête collant, focus sur sa ligne ; ordre des
+  titres (H1 d'abord, sans saut) et tableau avant tracker à 320, 390, 1440.

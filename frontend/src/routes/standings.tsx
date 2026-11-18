@@ -3,7 +3,8 @@ import { KnowledgeHeader } from '@/components/knowledge-header';
 import { StandingsTable } from '@/components/standings-table';
 import { PositionTracker } from '@/components/position-tracker';
 import { RetryMessage } from '@/components/retry-message';
-import { AlertTriangle, Loader2, RefreshCw } from 'lucide-react';
+import { OL_TEAM_ID } from '@/types/api';
+import { AlertTriangle, ArrowDown, Loader2, RefreshCw } from 'lucide-react';
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -13,6 +14,14 @@ function formatRelative(iso: string): string {
   const h = Math.floor(min / 60);
   if (h < 24) return `il y a ${h} h`;
   return `il y a ${Math.floor(h / 24)} j`;
+}
+
+/** L259 : amène la ligne de l'OL sous l'en-tête collant du tableau et y pose le focus (clavier, lecteur d'écran). */
+function allerALigneOL() {
+  const ligne = document.getElementById('ligne-ol');
+  if (!ligne) return;
+  ligne.focus({ preventScroll: true });
+  ligne.scrollIntoView({ block: 'center' });
 }
 
 const STALE_MS = 60 * 60 * 1000;
@@ -41,11 +50,13 @@ export function StandingsPage() {
         : null
     : null;
 
-  return (
-    <div className="space-y-8">
-      <KnowledgeHeader />
+  const olRow = data?.table.find((row) => row.teamId === OL_TEAM_ID);
 
-      <PositionTracker />
+  return (
+    <div className="space-y-6 lg:space-y-8">
+      {/* L259 : bandeau compact sous 1024 px et tableau AVANT le tracker, à toute largeur : au téléphone la première
+          ligne et celle de l'OL sont au premier écran, et le H1 « Classement » précède le H2 du tracker (WCAG 1.3.1). */}
+      <KnowledgeHeader compact />
 
       <section className="rounded-md bg-surface border border-border overflow-clip">
         <header className="px-5 py-4 flex items-center justify-between gap-4 border-b border-border">
@@ -106,12 +117,30 @@ export function StandingsPage() {
               buttonTestId="standings-retry"
             />
           )}
+          {olRow && (
+            <div className="flex justify-end px-2 md:hidden">
+              <a
+                href="#ligne-ol"
+                onClick={(e) => {
+                  e.preventDefault();
+                  allerALigneOL();
+                }}
+                className="inline-flex min-h-6 items-center gap-1 rounded-sm px-1 text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
+              >
+                Voir l'OL
+                <span className="num">({olRow.position === 1 ? '1er' : `${olRow.position}e`})</span>
+                <ArrowDown className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
+              </a>
+            </div>
+          )}
           {data && data.table.length > 0 && <StandingsTable rows={data.table} />}
           {data && data.table.length === 0 && (
             <p className="py-20 text-center text-fg-muted">Aucune donnée disponible.</p>
           )}
         </div>
       </section>
+
+      <PositionTracker />
     </div>
   );
 }

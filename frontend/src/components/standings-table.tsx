@@ -125,7 +125,10 @@ export function StandingsTable({ rows }: StandingsTableProps) {
             return (
               <tr
                 key={row.teamId}
+                id={isOL ? 'ligne-ol' : undefined}
+                tabIndex={isOL ? -1 : undefined}
                 className={cn(
+                  isOL && 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ol-red',
                   'group transition-colors',
                   isOL
                     ? 'bg-ol-red/5 hover:bg-ol-red/10'
