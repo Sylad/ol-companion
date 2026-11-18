@@ -3029,13 +3029,14 @@ lots:
   - id: L261
     title: "Plancher de 12 px non tenu en prod (QA de L258) : le « e » (sup) du rang à 9 px sur / et /standings, des noms de la composition de /match à 8–10,5 px (tailles relatives en em) ; test navigateur qui mesure la taille CALCULÉE de tout texte visible, sur chaque page, à 390 et 1440 px ; ligne de plancher dans docs/qa/expectations.md"
     public: Tous les textes du site à 12 px au moins, mesurés sur la page
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : 0 bloquant, 0 suite — test navigateur qui mesure la taille calculée de tout texte visible sur chaque page à 390/1440 ; sup du rang et composition de /match corrigés ; README L259 à jour", commit: 75763f297e56aa3be253734f6f24e0fde7322051 }
     ux: { date: 2026-11-18, verdict: "conforme (lead, captures regardées) : composition de /match lisible à 390 px (numéro et nom par carte, sans débordement), plus aucun texte sous 12 px" }
+    finished: 2026-11-18
   - id: L262
     title: "/standings à 320×568 : la ligne de l'OL passe 17 px sous la barre du bas au premier écran ; attendus QA de /standings (1re ligne visible, lien « Voir l'OL ») dans docs/qa/expectations.md (QA de L259)"
     public: "Classement : la ligne de l'OL visible même sur un très petit téléphone"
