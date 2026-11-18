@@ -2994,7 +2994,7 @@ lots:
   - id: L258
     title: Pastilles V/N/D en 8 px dans un rond de 14 px (la lettre est le seul repère hors couleur, WCAG 1.4.1) et notes des joueurs en 9 px ; 118 tailles en px → échelle en rem, 12 px minimum (comme TYPO-1 de maritime) — revue UX L255
     public: "Textes plus grands pour les résultats et les notes des joueurs"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-11-18
@@ -3003,6 +3003,7 @@ lots:
       - { date: 2026-11-18, text: "test d'acceptation rescellé (lot livré L50, frontend/src/routes/fixtures.acceptation-L50.test.tsx, fiche amendée en b2f37e0) : L258 : sous 360 px la date affiche une forme courte (« WE », « 05/12 ») marquée aria-hidden ; le test lit désormais le texte du lecteur d'écran, qui reste « Week-end du 05/12 » — contrat de L50 inchangé" }
     review: { date: 2026-11-18, verdict: "conforme : seconde revue après 4d84b6c — calendrier sans débordement à 320/390, README à jour, test des tailles refuse fontSize numérique, font: px et rem < 12 px ; test L50 rescellé (porteur L258) ; note : « 10,0 » touche le rond voisin de 0,5 px à 320", commit: 22c983979a4372f5ed167b14bea6a3d21268e9a1 }
     ux: { date: 2026-11-18, verdict: "conforme (lead, captures regardées) : texte ≥ 12 px en rem, pastilles et notes lisibles sans chevaucher les numéros, calendrier à 320 px avec « WE 05/12 » (lecteur d'écran : « Week-end du 05/12 »)" }
+    finished: 2026-11-18
   - id: L259
     title: "Classement au téléphone : aucune ligne au premier écran (tableau à y=776 à 320 px, sous la barre du bas) et H2 « Tracker » avant le H1 — revue UX L255"
     public: "Classement au téléphone : le tableau d'abord"
