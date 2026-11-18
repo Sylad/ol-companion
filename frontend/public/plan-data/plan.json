@@ -847,6 +847,11 @@
       "title": "Tous les textes du site à 12 px au moins, mesurés sur la page",
       "status": "doing",
       "started": "2026-11-18"
+    },
+    {
+      "id": "L262",
+      "title": "Classement : la ligne de l'OL visible même sur un très petit téléphone",
+      "status": "todo"
     }
   ]
 }
