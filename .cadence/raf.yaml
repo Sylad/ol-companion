@@ -3012,6 +3012,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-18, sha: 4cbf78af6b8ba538b1cceb0c74aeddae5b19f8e4 }
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : test 7/7 rouge sans la correction (1re ligne à y=815 sous la barre), vert avec ; bureau 1440 inchangé ; suite : README « Classement Ligue 1 » à mettre à jour (porté par L261)", commit: 5f22fa0f1d860347f3767d4d36780c247e4682df }
