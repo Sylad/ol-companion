@@ -60,7 +60,7 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
       )}
 
       <div className="flex flex-col flex-1 p-4 lg:p-5 gap-2">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-petite uppercase tracking-wider">
           <span className={cn('px-2 py-0.5 rounded-sm border font-semibold', tone)}>
             {source}
           </span>

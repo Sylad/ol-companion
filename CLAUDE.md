@@ -80,6 +80,7 @@ PORT=3002
 
 - React 18, TypeScript strict, TanStack Router code-based, TanStack Query pour data fetching.
 - Tailwind 3.4 + tokens HSL custom (`--ol-blue`, `--ol-red`, neon edges).
+- **Tailles de texte (L258)** : une seule échelle, en rem, dans `frontend/src/theme/typographie.ts` (`text-petite` 12 px, `text-moyenne` 14, `text-grande` 16, plus `dense`, `titre`, `score*`, `display-*` ; les `text-xs`… de Tailwind restent permis), racine `html { font-size: 100% }`. Jamais de `text-[Npx]`, de `font-size` en px ni de `fontSize` numérique (Recharts : `TAILLE.petite`) : `typographie.test.ts` les refuse. Une nouvelle taille s'ajoute au thème ; `cn` (tailwind-merge) connaît ses noms. Seule exception sous 12 px : les noms d'un mot trop long dans les pastilles de composition de /match, réduits à la mesure jusqu'à 8 px (`TAILLES_NOM_PASTILLE`).
 - Composants : 18+ dans `src/components/`, hooks `src/hooks/use-*.ts`, utils `src/lib/`.
 - Sidebar sticky avec `NAV_ITEMS` et `SidebarLinks` (sources externes).
 - BottomNav mobile (lg:hidden).

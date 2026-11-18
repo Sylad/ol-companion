@@ -40,7 +40,7 @@ export function MapPage() {
             <Ligue1Map />
           </Suspense>
 
-          <p className="mt-3 px-1 text-[11px] text-fg-dim">
+          <p className="mt-3 px-1 text-petite text-fg-dim">
             Tuiles cartographiques :{' '}
             <a
               href="https://www.openstreetmap.org/copyright"

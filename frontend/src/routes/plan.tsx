@@ -68,8 +68,8 @@ function LotCard({ lot, newsSlug, target }: { lot: PlanLot; newsSlug?: string; t
       )}
     >
       {/* L'identifiant du lot n'est pas montré aux visiteurs : il reste l'ancre /plan#<id>. */}
-      <div className="mb-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
-        <span className={cn('rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-[0.08em]', badge.className)}>
+      <div className="mb-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-petite uppercase tracking-[0.14em] text-fg-muted font-semibold">
+        <span className={cn('rounded-full border px-2 py-0.5 text-petite font-bold tracking-[0.08em]', badge.className)}>
           {badge.label}
         </span>
         {/* Écart porté par le gap flex, sans « · » : rien d'orphelin quand la date passe
@@ -263,7 +263,7 @@ export function PlanPage() {
     ) : (
       <div className="space-y-10">
         <p className={cn(CARD, 'px-5 py-4 text-fg')}>
-          <span className="block mb-1 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
+          <span className="block mb-1 text-petite uppercase tracking-[0.14em] text-fg-muted font-semibold">
             En ce moment
           </span>
           {summary(g)}
@@ -310,7 +310,7 @@ export function PlanPage() {
   return (
     <div className="space-y-6">
       <header data-testid="plan-entete" className="flex flex-col gap-1.5 mb-2">
-        <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
+        <p className="flex items-center gap-2 text-petite uppercase tracking-[0.22em] text-fg-muted font-semibold">
           <ListTodo className="h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
           <span>
             Plan de travail<span className="hidden sm:inline"> · OL Companion</span>

@@ -91,7 +91,7 @@ export function LastResult() {
             {olIsHome ? 'À domicile' : "À l'extérieur"}
           </h2>
         </div>
-        <span data-testid="badge-dernier-resultat" className={cn('whitespace-nowrap text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm border', resultTone)}>
+        <span data-testid="badge-dernier-resultat" className={cn('whitespace-nowrap text-petite font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm border', resultTone)}>
           {resultLabel}
         </span>
       </header>

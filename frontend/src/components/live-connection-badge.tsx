@@ -33,10 +33,11 @@ export function LiveConnectionBadge({
   return (
     // Le score et la minute changent chaque minute : ils restent HORS de la région live (role=status),
     // qui n'annonce que l'état du flux (WAI-ARIA : une région polie ne relit pas un chronomètre).
+    // L258 : 12 px (ex-10), interligne 1,25 : sur deux lignes dans la barre latérale (192 px), la pastille garde ses 40 px.
     <div
       data-testid="pastille-direct"
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] shadow-lg backdrop-blur-md',
+        'inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-petite leading-tight font-bold uppercase tracking-[0.12em] shadow-lg backdrop-blur-md',
         matchEnCours
           ? 'border-ol-red/45 bg-surface/80 text-fg-bright'
           : connected

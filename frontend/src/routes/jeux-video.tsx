@@ -33,7 +33,7 @@ export function JeuxVideoPage() {
         <Link
           to="/fcnoobz"
           data-testid="lien-retour"
-          className="mb-4 inline-flex min-h-[44px] items-center text-[13px] underline"
+          className="mb-4 inline-flex min-h-[44px] items-center text-dense underline"
           style={{ color: GREEN }}
         >
           ← FC Noobz
@@ -109,12 +109,12 @@ function Contenu({ data }: { data: JeuxVideoData }) {
               </p>
               <p
                 data-testid="sortie-date"
-                className={sortie.date ? 'num text-[22px] font-bold text-fg-bright' : 'num text-lg font-bold text-fg-muted'}
+                className={sortie.date ? 'num text-2xl font-bold text-fg-bright' : 'num text-lg font-bold text-fg-muted'}
               >
                 {formatSortie(sortie.date)}
               </p>
               {sortie.plateformes && (
-                <p data-testid="sortie-plateformes" className="mt-2.5 text-[13px] text-fg-muted">
+                <p data-testid="sortie-plateformes" className="mt-2.5 text-dense text-fg-muted">
                   {sortie.plateformes}
                 </p>
               )}
@@ -153,7 +153,7 @@ function Contenu({ data }: { data: JeuxVideoData }) {
                   <div data-testid="nouveaute-titre" className="text-sm font-semibold text-fg-bright">
                     {n.titre}
                   </div>
-                  <div data-testid="nouveaute-description" className="mt-0.5 text-[13px] leading-snug text-fg-muted">
+                  <div data-testid="nouveaute-description" className="mt-0.5 text-dense leading-snug text-fg-muted">
                     {n.description}
                   </div>
                 </li>

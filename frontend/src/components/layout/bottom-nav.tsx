@@ -150,7 +150,7 @@ export function BottomNav() {
             <div className="sticky -top-4 z-10 -mx-4 -mt-4 mb-2 flex items-center justify-between bg-surface px-4 pt-4">
               <h2
                 id="more-pages-title"
-                className="text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold"
+                className="text-petite uppercase tracking-[0.14em] text-fg-muted font-semibold"
               >
                 Plus de pages
               </h2>
@@ -229,7 +229,7 @@ export function BottomNav() {
               >
                 {active && <span data-active-marker aria-hidden="true" className={ACTIVE_MARKER} />}
                 <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.25 : 1.75} />
-                <span className="text-[10px] font-medium tracking-wide">{item.label}</span>
+                <span className="text-petite font-medium tracking-wide">{item.label}</span>
               </Link>
             );
           })}
@@ -266,7 +266,7 @@ export function BottomNav() {
             </span>
             {/* L59 : la page courante cachée est nommée à l'écran (le nom accessible la contient,
                 WCAG 2.5.3) ; un libellé long est tronqué par le CSS, le texte reste entier. */}
-            <span className="max-w-full truncate px-1 text-[10px] font-medium tracking-wide">
+            <span className="max-w-full truncate px-1 text-petite font-medium tracking-wide">
               {currentMore && !open ? currentMore.label : 'Plus'}
             </span>
           </button>

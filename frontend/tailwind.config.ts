@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
+import { fontSizeTailwind } from './src/theme/typographie';
 
 export default {
   darkMode: 'class',
@@ -48,11 +49,8 @@ export default {
         display: ['Manrope', 'Inter', 'sans-serif'],
         mono: ['"Geist Mono"', '"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
-      fontSize: {
-        'display-xl': ['96px', { lineHeight: '1', letterSpacing: '-0.02em' }],
-        'display-lg': ['56px', { lineHeight: '1.05', letterSpacing: '-0.015em' }],
-        'display-md': ['32px', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
-      },
+      // L258 : échelle en rem définie une fois (src/theme/typographie.ts).
+      fontSize: fontSizeTailwind,
       borderRadius: {
         sm: '4px',
         DEFAULT: '6px',

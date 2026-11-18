@@ -73,7 +73,7 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
             </div>
           )}
           {!player.isStarting && (
-            <div className="absolute top-2 left-2 text-[9px] uppercase tracking-wider font-bold text-fg-dim bg-bg/60 backdrop-blur-sm px-1.5 py-0.5 rounded-sm">
+            <div className="absolute top-2 left-2 text-petite uppercase tracking-wider font-bold text-fg-dim bg-bg/60 backdrop-blur-sm px-1.5 py-0.5 rounded-sm">
               Banc
             </div>
           )}
@@ -84,7 +84,7 @@ export function PlayerCard({ player, compact = false, rankingLabel = 'Note derni
         <div className="flex items-center gap-2 mb-0.5">
           <span
             className={cn(
-              'shrink-0 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm border',
+              'shrink-0 text-petite font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm border',
               tone,
             )}
           >

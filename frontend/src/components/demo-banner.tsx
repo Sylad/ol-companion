@@ -38,7 +38,7 @@ export function DemoBanner() {
       ref={ref}
       role="status"
       aria-live="polite"
-      className="sticky top-0 z-50 flex items-center justify-center gap-2 border-b border-ol-red/40 bg-surface-2/95 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-fg-bright backdrop-blur-md"
+      className="sticky top-0 z-50 flex items-center justify-center gap-2 border-b border-ol-red/40 bg-surface-2/95 px-4 py-1.5 text-petite font-semibold uppercase tracking-[0.16em] text-fg-bright backdrop-blur-md"
       style={{
         boxShadow: '0 0 24px hsl(var(--ol-red) / 0.18)',
       }}

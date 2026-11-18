@@ -231,7 +231,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
           <div className="font-display text-sm font-bold leading-tight truncate">
             {club.name}
           </div>
-          <div className="text-[11px] text-fg-dim leading-tight truncate">{club.stadium}</div>
+          <div className="text-petite text-fg-dim leading-tight truncate">{club.stadium}</div>
         </div>
       </header>
 
@@ -241,7 +241,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
             <span className="text-fg-dim">Position</span>
             <span className="num font-bold text-fg-bright text-base">
               {standingEntry.position}
-              <span className="text-[10px] text-fg-dim font-normal ml-0.5">/ 18</span>
+              <span className="text-petite text-fg-dim font-normal ml-0.5">/ 18</span>
             </span>
             <span className="text-fg-dim">·</span>
             <span className="num text-fg-muted">{standingEntry.points} pts</span>
@@ -253,7 +253,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
 
       {!isOL && (
         <>
-          <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1.5 font-semibold">
+          <div className="text-petite uppercase tracking-wider text-fg-dim mb-1.5 font-semibold">
             Bilan OL — saison
           </div>
           {matches.length === 0 ? (
@@ -268,7 +268,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
 
           {played.length > 0 && (
             <div className="mb-2">
-              <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1 font-semibold">
+              <div className="text-petite uppercase tracking-wider text-fg-dim mb-1 font-semibold">
                 Joués
               </div>
               <ul className="space-y-1">
@@ -279,9 +279,9 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                   const chipText = RESULT_CHIP_TEXT[m.outcome ?? 'FUTURE'];
                   const chipLetter = m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·';
                   return (
-                    <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
+                    <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-petite">
                       <span
-                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold shrink-0"
+                        className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-petite font-bold shrink-0"
                         style={{ background: chipColor, color: chipText }}
                         aria-label={chipLetter}
                       >
@@ -301,7 +301,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
 
           {live.length > 0 && (
             <div className="mb-2">
-              <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1 font-semibold">
+              <div className="text-petite uppercase tracking-wider text-fg-dim mb-1 font-semibold">
                 En direct
               </div>
               <ul className="space-y-1">
@@ -312,10 +312,10 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                     <li
                       key={m.fixture.id}
                       data-testid="match-en-direct"
-                      className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]"
+                      className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-petite"
                     >
                       <span
-                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0 bg-ol-red"
+                        className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-petite font-bold text-white shrink-0 bg-ol-red"
                         aria-label="en direct"
                       >
                         ●
@@ -338,14 +338,14 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
 
           {upcoming.length > 0 && (
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1 font-semibold">
+              <div className="text-petite uppercase tracking-wider text-fg-dim mb-1 font-semibold">
                 À venir
               </div>
               <ul className="space-y-1">
                 {upcoming.map((m) => (
-                  <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
+                  <li key={m.fixture.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-petite">
                     <span
-                      className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold text-white shrink-0"
+                      className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-petite font-bold text-white shrink-0"
                       style={{ background: RESULT_DARK }}
                       aria-label="à venir"
                     >
@@ -363,7 +363,7 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
 
           {cupMatches.length > 0 && (
             <div className="mt-3 pt-2 border-t border-border">
-              <div className="text-[10px] uppercase tracking-wider text-fg-dim mb-1.5 font-semibold flex items-center gap-1">
+              <div className="text-petite uppercase tracking-wider text-fg-dim mb-1.5 font-semibold flex items-center gap-1">
                 <span aria-hidden>🏆</span>
                 <span>Coupe de France</span>
               </div>
@@ -378,9 +378,9 @@ function ClubPopup({ club, standingEntry, ligue1Matches, allMatches }: ClubPopup
                     ? m.outcome === 'W' ? 'V' : m.outcome === 'L' ? 'D' : m.outcome === 'D' ? 'N' : '·'
                     : '·';
                   return (
-                    <li key={m.match.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
+                    <li key={m.match.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-petite">
                       <span
-                        className="inline-flex items-center justify-center w-4 h-4 rounded-sm text-[9px] font-bold shrink-0"
+                        className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-petite font-bold shrink-0"
                         style={{ background: chipColor, color: chipText }}
                         aria-label={chipLetter}
                       >
@@ -538,7 +538,7 @@ export function MapLegend() {
         <rect x="1" y="1" width="26" height="26" rx="4" fill={RESULT_COLORS[result]} stroke={RESULT_OUTLINE} strokeWidth="1.6" />
         <g dangerouslySetInnerHTML={{ __html: resultGlyph(result, 14) }} />
       </svg>
-      <span className="text-[10px] text-fg leading-tight">{label}</span>
+      <span className="text-petite text-fg leading-tight">{label}</span>
     </div>
   );
   return (
@@ -546,7 +546,7 @@ export function MapLegend() {
       className="border-t border-border bg-surface px-2.5 py-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5"
       aria-label="Légende des marqueurs"
     >
-      <div className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold mb-1.5 sm:mb-0 leading-none">
+      <div className="text-petite uppercase tracking-wider text-fg-muted font-semibold mb-1.5 sm:mb-0 leading-none">
         Aller / Retour
       </div>
       <div className="grid grid-cols-1 gap-1 sm:flex sm:flex-wrap sm:gap-x-4">

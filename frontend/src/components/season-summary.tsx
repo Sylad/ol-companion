@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { RetryMessage } from '@/components/retry-message';
 import { competitionLong } from '@/lib/competitions';
 import { decimalFr } from '@/lib/stat-fr';
+import { TAILLE } from '@/theme/typographie';
 
 // Cumulative goal-difference sparkline → bleu OL (trajectoire neutre, pas
 // "victoire" → pas de vert). Le dot du dernier point est rouge OL bright,
@@ -158,14 +159,14 @@ function SummaryBody({ data }: { data: NonNullable<ReturnType<typeof useTeamSeas
               <XAxis
                 dataKey="matchIndex"
                 stroke={AXIS_COLOR}
-                tick={{ fill: AXIS_COLOR, fontSize: 10 }}
+                tick={{ fill: AXIS_COLOR, fontSize: TAILLE.petite }}
                 tickLine={false}
                 axisLine={false}
                 interval={data.chart.length > 20 ? Math.floor(data.chart.length / 8) : 1}
               />
               <YAxis
                 stroke={AXIS_COLOR}
-                tick={{ fill: AXIS_COLOR, fontSize: 10 }}
+                tick={{ fill: AXIS_COLOR, fontSize: TAILLE.petite }}
                 tickLine={false}
                 axisLine={false}
                 width={28}

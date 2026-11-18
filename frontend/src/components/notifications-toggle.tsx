@@ -154,7 +154,7 @@ export function NotificationsToggle({ className }: { className?: string }) {
       </div>
       <div
         className={cn(
-          'mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider',
+          'mt-1 px-2 py-0.5 rounded text-petite font-bold uppercase tracking-wider',
           status === 'on' ? 'bg-ol-blue text-white' : 'bg-surface-2 text-fg-muted border border-border',
         )}
       >

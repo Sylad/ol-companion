@@ -67,14 +67,14 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
           params={{ gameId: String(match.id) }}
           search={{ matchupId: matchupId(match) }}
           aria-label={linkName}
-          className="text-[11px] uppercase tracking-wider font-semibold text-fg-muted after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+          className="text-petite uppercase tracking-wider font-semibold text-fg-muted after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
         >
           {match.stage}
         </Link>
         {resultBadge && (
           <span
             className={cn(
-              'relative z-20 inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-sm',
+              'relative z-20 inline-flex items-center justify-center w-5 h-5 text-petite font-bold rounded-sm',
               resultBadge.cls,
             )}
             role="img"
@@ -84,7 +84,7 @@ export function CupMatchRow({ match, tie }: { match: CupMatch; tie?: CupMatch[] 
             {resultBadge.label}
           </span>
         )}
-        <span className="ml-auto text-[11px] text-fg-dim">
+        <span className="ml-auto text-petite text-fg-dim">
           {day} · {isFinished ? 'Terminé' : isLive ? 'LIVE' : time}
           {shootout && (
             <>

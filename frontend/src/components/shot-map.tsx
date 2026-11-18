@@ -70,7 +70,7 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
     <section data-testid="carte-tirs" className="rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
         <h2 className="eyebrow min-w-0">Carte des tirs</h2>
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
+        <div className="flex items-center gap-3 text-petite uppercase tracking-wider text-fg-dim">
           <LegendDot colors={teamColors(palette, homeIsOl)} label={clubLegendLabel(homeSymbolRaw, homeName, homeIsClub)} />
           <LegendDot colors={teamColors(palette, !homeIsOl)} label={clubLegendLabel(awaySymbolRaw, awayName, awayIsClub)} />
         </div>
@@ -102,17 +102,17 @@ export function ShotMap({ shots, homeId, homeIsOl, homeName, awayName, homeSymbo
           </svg>
         </div>
         {/* Sens d'attaque : une ligne sous le terrain, jamais posée dessus (les tirs se concentrent dans les surfaces). */}
-        <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 text-[10px] uppercase tracking-wider font-bold">
+        <div data-testid="sens-attaque" className="flex items-center justify-between gap-3 mt-2 text-petite uppercase tracking-wider font-bold">
           <span className={teamColors(palette, !homeIsOl).text}>← {awaySymbol} attaque</span>
           <span className={cn('text-right', teamColors(palette, homeIsOl).text)}>{homeSymbol} attaque →</span>
         </div>
-        <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2 mt-4 text-[10px] uppercase tracking-wider text-fg-dim">
+        <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2 mt-4 text-petite uppercase tracking-wider text-fg-dim">
           <OutcomeLegend label="But" kind="goal" />
           <OutcomeLegend label="Cadré" kind="on-target" />
           <OutcomeLegend label="Bloqué" kind="blocked" />
           <OutcomeLegend label="Manqué" kind="off-target" />
         </div>
-        <p className="text-[10px] text-fg-dim mt-2 leading-relaxed">
+        <p className="text-petite text-fg-dim mt-2 leading-relaxed">
           Taille du marqueur = qualité du tir (xG). Le rond avec un halo = but.
         </p>
       </div>

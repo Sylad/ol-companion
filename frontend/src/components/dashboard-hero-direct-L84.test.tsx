@@ -102,7 +102,7 @@ describe('<DashboardHero /> — match en direct (L84)', () => {
     const badge = await screen.findByText('Match en direct');
     expect(badge).toHaveClass('text-live');
     expect(badge).not.toHaveClass('eyebrow');
-    expect(badge).toHaveClass('uppercase', 'font-semibold', 'text-[11px]');
+    expect(badge).toHaveClass('uppercase', 'font-semibold', 'text-petite');
     // la pulsation ne baisse pas l'opacité du texte (4,5:1 tenu à chaque instant du cycle)
     expect(badge).toHaveClass('animate-pulse-live-halo');
     expect(badge).not.toHaveClass('animate-pulse-live');

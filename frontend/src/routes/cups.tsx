@@ -97,7 +97,7 @@ function CupTab({
         <span className="font-display text-sm font-semibold">{cup.name}</span>
         <span
           className={cn(
-            'rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
+            'rounded-full border px-2 py-0.5 text-petite font-bold uppercase tracking-wider',
             cup.isEliminated
               ? 'border-fg-dim/40 text-fg-dim'
               : 'border-ol-red-bright/50 text-ol-red-bright',
@@ -170,7 +170,7 @@ function Stat({ label, value, tone }: { label: string; value: number; tone: stri
   return (
     <div className="flex items-center gap-1.5">
       <span className={cn('font-bold num', tone)}>{value}</span>
-      <span className="text-fg-dim uppercase tracking-wider text-[10px]">{label}</span>
+      <span className="text-fg-dim uppercase tracking-wider text-petite">{label}</span>
     </div>
   );
 }

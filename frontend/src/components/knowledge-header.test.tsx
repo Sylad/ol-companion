@@ -7,7 +7,7 @@ vi.mock('@/hooks/use-standings', () => ({ useStandings: () => ({ data: undefined
 vi.mock('@/hooks/use-live-match', () => ({ useCurrentLiveMatch: () => ({ data: null }) }));
 vi.mock('@/hooks/use-season-matches', () => ({ useSeasonMatches: () => ({ data: undefined }) }));
 
-// tailwind-merge retire un `leading-*` placé avant une taille de police (`text-base`, `text-2xl`, `lg:text-[34px]`) :
+// tailwind-merge retire un `leading-*` placé avant une taille de police (`text-base`, `text-2xl`, `lg:text-titre`) :
 // ces tests verrouillent l'ordre des classes pour que le bandeau reste identique au bureau (≥ lg).
 describe.each([
   ['compact', true],
@@ -16,7 +16,7 @@ describe.each([
   it('le titre garde 34 px et leading-tight au bureau', () => {
     render(<KnowledgeHeader compact={compact} />);
     const classes = screen.getByText('Olympique Lyonnais').className.split(/\s+/);
-    expect(classes).toContain('lg:text-[34px]');
+    expect(classes).toContain('lg:text-titre');
     expect(classes).toContain('lg:leading-tight');
   });
 

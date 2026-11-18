@@ -33,7 +33,7 @@ export function YoutubeChannelCard({ channel }: { channel: YoutubeChannel }) {
           </h3>
           <span
             className={cn(
-              'shrink-0 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-sm border',
+              'shrink-0 text-petite uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-sm border',
               TYPE_TONE[channel.type],
             )}
           >

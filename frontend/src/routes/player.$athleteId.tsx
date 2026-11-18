@@ -27,6 +27,7 @@ import { competitionLong, competitionShort } from '@/lib/competitions';
 import { noteFr } from '@/lib/note-fr';
 import { cn } from '@/lib/utils';
 import { OL_365SCORES_ID, type PlayerByMatch } from '@/types/api';
+import { TAILLE } from '@/theme/typographie';
 
 const OL_RED = 'hsl(0 73% 50%)';
 const OL_BLUE_BRIGHT = 'hsl(226 56% 51%)';
@@ -73,7 +74,7 @@ function ResultBadge({ result }: { result: PlayerByMatch['result'] }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded border tabular-nums',
+        'inline-flex items-center justify-center w-5 h-5 text-petite font-bold rounded border tabular-nums',
         tone,
       )}
       role="img"
@@ -130,13 +131,13 @@ function Sparkline({
         <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="2 4" vertical={false} />
         <XAxis
           dataKey="label"
-          tick={{ fill: 'hsl(var(--fg-dim))', fontSize: 10 }}
+          tick={{ fill: 'hsl(var(--fg-dim))', fontSize: TAILLE.petite }}
           interval="preserveStartEnd"
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fill: 'hsl(var(--fg-dim))', fontSize: 10 }}
+          tick={{ fill: 'hsl(var(--fg-dim))', fontSize: TAILLE.petite }}
           width={28}
           axisLine={false}
           tickLine={false}
@@ -173,7 +174,7 @@ function HeroStat({
       'rounded-md border border-border bg-surface-2 px-3 py-3',
       highlight && 'border-ol-red/40 bg-ol-red/5',
     )}>
-      <div className="flex items-center gap-1.5 text-fg-dim text-[10px] uppercase tracking-wider font-semibold">
+      <div className="flex items-center gap-1.5 text-fg-dim text-petite uppercase tracking-wider font-semibold">
         <Icon className="h-3 w-3" strokeWidth={2.5} />
         {label}
       </div>
@@ -435,7 +436,7 @@ export function PlayerDetailPage() {
                 Buts + passes par match
               </h2>
             </div>
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-ol-red-bright">
+            <span className="text-petite uppercase tracking-wider font-semibold text-ol-red-bright">
               {player.goalContributions} contribution{player.goalContributions > 1 ? 's' : ''}
             </span>
           </header>
@@ -450,7 +451,7 @@ export function PlayerDetailPage() {
                 Minutes par match
               </h2>
             </div>
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-ol-blue-fg">
+            <span className="text-petite uppercase tracking-wider font-semibold text-ol-blue-fg">
               {player.minutesPlayed} min total
             </span>
           </header>
@@ -468,7 +469,7 @@ export function PlayerDetailPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-fg-dim text-[11px] uppercase tracking-wider font-semibold border-b border-border">
+              <tr className="text-fg-dim text-petite uppercase tracking-wider font-semibold border-b border-border">
                 <th className="text-left px-4 py-2 font-semibold">Date</th>
                 <th className="text-left px-4 py-2 font-semibold">Adv.</th>
                 <th className="hidden sm:table-cell text-center px-2 py-2 font-semibold">Score</th>

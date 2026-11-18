@@ -128,7 +128,8 @@ function StatCard({ label, value, suffix, sub, icon: Icon, valueClass, trend, fo
               aria-label={FORM_LABEL[o]}
               title={FORM_LABEL[o]}
               className={cn(
-                'inline-flex items-center justify-center w-[14px] h-[14px] rounded-full text-[8px] font-bold leading-none',
+                // L258 : lettre à 12 px (seul repère hors couleur, WCAG 1.4.1) dans un rond de 1,25 rem (20 px), en rem pour suivre la police.
+                'inline-flex shrink-0 items-center justify-center w-5 h-5 rounded-full text-petite font-bold leading-none',
                 o === 'W' ? 'bg-win text-bg' : o === 'L' ? 'bg-loss text-bg' : 'bg-transparent border border-fg-dim text-fg-dim',
               )}
             >

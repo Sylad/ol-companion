@@ -85,7 +85,7 @@ export function AboutPage() {
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-1.5 mb-2">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
+        <p className="text-petite uppercase tracking-[0.22em] text-fg-muted font-semibold">
           À propos · OL Companion
         </p>
         <h1 lang="en" className="font-display text-3xl lg:text-4xl font-bold text-fg-bright">
@@ -104,7 +104,7 @@ export function AboutPage() {
           prend un rouge, démarre ou termine un match. Opt-in, désactivable en un clic.
         </p>
         <NotificationsToggle />
-        <p className="text-[11px] text-fg-dim mt-3 leading-snug">
+        <p className="text-petite text-fg-dim mt-3 leading-snug">
           Aucun serveur push externe — c'est ton onglet OL Companion (ou la PWA installée) qui
           déclenche la notif locale via le service worker, à partir du flux SSE en temps réel.
         </p>
@@ -225,7 +225,7 @@ export function AboutPage() {
                 </span>
                 <ExternalLink className="h-3.5 w-3.5 text-fg-dim group-hover:text-ol-red-bright transition-colors" />
               </div>
-              <span className="text-[10px] uppercase tracking-wider text-fg-dim">
+              <span className="text-petite uppercase tracking-wider text-fg-dim">
                 par {i.by}
               </span>
               <p className="text-xs text-fg-muted leading-relaxed mt-1">{i.why}</p>
@@ -266,7 +266,7 @@ export function AboutPage() {
           décris en langage naturel ce que tu rêves de voir exister, et itère.
           Tu seras surpris de ce qu'on peut construire en quelques sessions.
         </p>
-        <div className="text-[10px] uppercase tracking-[0.2em] text-fg-dim mt-4">
+        <div className="text-petite uppercase tracking-[0.2em] text-fg-dim mt-4">
           Allez l'OL · <span lang="en">Made with curiosity</span> · v2.0
         </div>
       </section>

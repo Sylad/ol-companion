@@ -12,6 +12,7 @@ import {
 import { Info, Loader2 } from 'lucide-react';
 import { useSeasonRankings } from '@/hooks/use-season-rankings';
 import { RetryMessage } from '@/components/retry-message';
+import { TAILLE } from '@/theme/typographie';
 
 interface ChartPoint {
   matchday: number;
@@ -129,19 +130,19 @@ function Chart({ data }: { data: ChartPoint[] }) {
             <XAxis
               dataKey="matchday"
               stroke={AXIS_COLOR}
-              tick={{ fill: AXIS_COLOR, fontSize: 11 }}
+              tick={{ fill: AXIS_COLOR, fontSize: TAILLE.petite }}
               tickLine={false}
               axisLine={false}
               ticks={matchdayTicks(data)}
               interval={0}
-              label={{ value: 'Journée', position: 'insideBottom', fill: AXIS_COLOR, fontSize: 10, dy: 8 }}
+              label={{ value: 'Journée', position: 'insideBottom', fill: AXIS_COLOR, fontSize: TAILLE.petite, dy: 8 }}
             />
             <YAxis
               reversed
               domain={[1, 18]}
               ticks={yTicks}
               stroke={AXIS_COLOR}
-              tick={{ fill: AXIS_COLOR, fontSize: 11 }}
+              tick={{ fill: AXIS_COLOR, fontSize: TAILLE.petite }}
               tickLine={false}
               axisLine={false}
               width={32}

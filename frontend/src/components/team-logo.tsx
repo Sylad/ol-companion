@@ -33,7 +33,7 @@ export function TeamLogo({ teamId, name, size = 24, className, src }: TeamLogoPr
         )}
         style={{ width: dim, height: dim }}
       >
-        <span className="text-[9px] font-semibold text-fg-dim uppercase">
+        <span className="text-petite font-semibold text-fg-dim uppercase">
           {name.slice(0, 2)}
         </span>
       </div>

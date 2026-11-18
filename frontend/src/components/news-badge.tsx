@@ -23,7 +23,7 @@ export function NewsBadge({
         data-news-badge
         aria-hidden="true"
         className={cn(
-          'grid h-[1.125rem] min-w-[1.125rem] place-items-center rounded-full bg-ol-red px-1 text-[10px] font-bold leading-none text-fg-bright',
+          'grid h-[1.125rem] min-w-[1.125rem] place-items-center rounded-full bg-ol-red px-1 text-petite font-bold leading-none text-fg-bright',
           className,
         )}
       >

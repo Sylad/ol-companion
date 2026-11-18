@@ -100,7 +100,7 @@ export function EquipeDeFrancePage() {
             ref={titreRef}
             tabIndex={-1}
             data-testid="titre-page"
-            className="font-display text-2xl font-bold leading-tight tracking-tight text-fg-bright outline-none lg:text-[34px]"
+            className="font-display text-2xl font-bold leading-tight tracking-tight text-fg-bright outline-none lg:text-titre"
           >
             Équipe de France
           </h1>
@@ -239,7 +239,7 @@ function NextMatchDate({ match, live }: { match: FranceNextMatch; live: boolean 
     return (
       <span
         data-testid="prochain-match-en-direct"
-        className="inline-flex items-center gap-1.5 rounded-full bg-ol-red px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
+        className="inline-flex items-center gap-1.5 rounded-full bg-ol-red px-2 py-0.5 text-petite font-bold uppercase tracking-wider text-white"
       >
         <Radio className="h-3 w-3 animate-pulse" strokeWidth={2.5} aria-hidden="true" />
         En direct
@@ -284,7 +284,7 @@ function ResultRow({ result }: { result: FranceResult }) {
       >
       <span
         data-testid="resultat-badge"
-        className={cn('flex h-5 w-5 shrink-0 items-center justify-center rounded text-[11px] font-bold', outcome.cls)}
+        className={cn('flex h-5 w-5 shrink-0 items-center justify-center rounded text-petite font-bold', outcome.cls)}
       >
         <span className="sr-only">{outcome.word}</span>
         <span aria-hidden="true">{outcome.letter}</span>

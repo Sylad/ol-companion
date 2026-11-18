@@ -269,7 +269,7 @@ describe('fiche joueur (/player/<id>) — « Joueurs » reste la page actuelle',
 // par le lecteur d'écran (relevé de la revue UX L29, WCAG 2.5.3 : le texte visible est
 // contenu dans le nom accessible).
 describe('libellé visible de « Plus » (téléphone)', () => {
-  const visibleText = () => screen.getByTestId('bouton-plus').querySelector('span.text-\\[10px\\]')!.textContent;
+  const visibleText = () => screen.getByTestId('bouton-plus').querySelector('span.text-petite')!.textContent;
 
   it('sur une page de la barre, la case dit « Plus »', async () => {
     await renderAt('/standings', () => <BottomNav />);
@@ -296,7 +296,7 @@ describe('libellé visible de « Plus » (téléphone)', () => {
 
   it('un libellé long est tronqué par le CSS, jamais coupé dans le texte', async () => {
     await renderAt('/equipe-de-france', () => <BottomNav />);
-    const span = screen.getByTestId('bouton-plus').querySelector('span.text-\\[10px\\]')!;
+    const span = screen.getByTestId('bouton-plus').querySelector('span.text-petite')!;
     expect(span.textContent).toBe('Équipe de France');
     expect(span.className).toContain('truncate');
   });

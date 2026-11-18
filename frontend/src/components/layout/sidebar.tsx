@@ -74,7 +74,7 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
             <div className="font-display text-base font-bold tracking-tight text-fg-bright leading-none">
               OL Companion
             </div>
-            <div className="text-[10px] uppercase tracking-[0.14em] text-fg-dim mt-1 font-semibold">
+            <div className="text-petite uppercase tracking-[0.14em] text-fg-dim mt-1 font-semibold">
               Olympique Lyonnais
             </div>
           </div>
@@ -127,7 +127,7 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
 
       <div className="space-y-2 px-6 py-3 border-t border-border">
         <LiveConnectionBadge status={eventStreamStatus} />
-        <div className="text-[10px] uppercase tracking-[0.14em] text-fg-dim">v2.0</div>
+        <div className="text-petite uppercase tracking-[0.14em] text-fg-dim">v2.0</div>
       </div>
       </div>
     </aside>

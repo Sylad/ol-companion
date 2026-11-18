@@ -191,7 +191,7 @@ describe('<BottomNav /> (téléphone)', () => {
     expect(grid.className).toMatch(/(^| )grid-cols-5( |$)/);
     expect(grid.children).toHaveLength(5);
     for (const label of within(nav).getAllByText(/^(Dashboard|Calendrier|Classement|Actu|Plus)$/)) {
-      expect(label.className).toMatch(/(^| )text-\[10px\]( |$)/);
+      expect(label.className).toMatch(/(^| )text-petite( |$)/);
     }
   });
 

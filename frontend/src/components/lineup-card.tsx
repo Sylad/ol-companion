@@ -3,6 +3,7 @@ import type { LiveMatchLineup, LiveMatchLineupPlayer } from '@/types/api';
 import { hasJersey } from '@/lib/jersey';
 import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
+import { TAILLES_NOM_PASTILLE } from '@/theme/typographie';
 
 interface Props {
   lineup: LiveMatchLineup;
@@ -45,14 +46,14 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
         {known && lineup.formation && (
           <span
             data-testid="formation-composition"
-            className={cn('shrink-0 whitespace-nowrap text-[10px] font-bold tabular-nums num px-2 py-0.5 rounded-sm border', chipClass)}
+            className={cn('shrink-0 whitespace-nowrap text-petite font-bold tabular-nums num px-2 py-0.5 rounded-sm border', chipClass)}
           >
             {lineup.formation}
           </span>
         )}
       </header>
       {lineup.probable ? (
-        <p data-testid="etiquette-probable" className="h-6 px-5 flex items-center text-[11px] text-fg-dim">
+        <p data-testid="etiquette-probable" className="h-6 px-5 flex items-center text-petite text-fg-dim">
           Composition probable
         </p>
       ) : (
@@ -72,8 +73,8 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
           ))}
         </div>
         {lineup.bench.length > 0 && (
-          <p data-testid="banc-composition" className="pt-2 border-t border-border text-[11px] text-fg-muted leading-relaxed">
-            <span className="uppercase tracking-wider text-[10px] text-fg-dim mr-1.5">Banc</span>
+          <p data-testid="banc-composition" className="pt-2 border-t border-border text-petite text-fg-muted leading-relaxed">
+            <span className="uppercase tracking-wider text-petite text-fg-dim mr-1.5">Banc</span>
             {lineup.bench.map((p, i) => (
               <Fragment key={p.id}>
                 {i > 0 && ', '}
@@ -88,7 +89,7 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
         )}
       </div>
       {!known && (
-        <p data-testid="note-repli" className="px-3 pb-3 text-[11px] text-fg-dim">
+        <p data-testid="note-repli" className="px-3 pb-3 text-petite text-fg-dim">
           Formation inconnue : rangées lues d’après les positions annoncées.
         </p>
       )}
@@ -107,9 +108,8 @@ function PlayerChip({
   borderColor: string;
   numClass: string;
 }) {
-  // Un nom ne se coupe qu'au tiret ou à l'espace : si un mot dépasse la pastille, 10 px au lieu de 11.
-  // Valeur de départ (avant mesure, ou sans géométrie) ; la mesure ci-dessous a le dernier mot.
-  const longWord = player.shortName.split(/[-\s]+/).some((w) => w.length > 10);
+  // Un nom ne se coupe qu'au tiret ou à l'espace : départ à 12 px (`text-petite`), la mesure ci-dessous
+  // descend par pas du thème (jusqu'à 8 px, exception documentée dans le thème) si un mot dépasse la pastille (L258, ex-11/10 px).
   const nameRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
     const el = nameRef.current;
@@ -132,13 +132,12 @@ function PlayerChip({
       )}
     >
       {hasJersey(player.jerseyNumber) && (
-        <span className={cn('num tabular-nums font-bold text-[11px]', numClass)}>{player.jerseyNumber}</span>
+        <span className={cn('num tabular-nums font-bold text-petite', numClass)}>{player.jerseyNumber}</span>
       )}
       <span
         ref={nameRef}
         className={cn(
-          'font-medium min-w-0 max-w-full [overflow-wrap:normal] [word-break:normal] [hyphens:manual]',
-          longWord ? 'text-[10px]' : 'text-[11px]',
+          'font-medium min-w-0 max-w-full [overflow-wrap:normal] [word-break:normal] [hyphens:manual] text-petite',
         )}
       >
         {player.shortName}
@@ -147,12 +146,12 @@ function PlayerChip({
   );
 }
 
-/** Tailles essayées, de la plus grande à la plus petite ; la dernière est le plancher. */
-export const NAME_FONT_SIZES = [11, 10, 9, 8];
+/** Tailles essayées, de la plus grande à la plus petite ; la dernière est le plancher (thème, L258 : 12 → 10 px, en rem). */
+export const NAME_FONT_SIZES = TAILLES_NOM_PASTILLE;
 
 /**
  * Le nom ne se coupe pas en milieu de mot : on prend la plus grande taille dont le mot le plus
- * long tient dans la pastille (scrollWidth ≤ largeur utile de la pastille), plancher 8 px. Mesure réelle, car
+ * long tient dans la pastille (scrollWidth ≤ largeur utile de la pastille), de 12 px (plancher 8 px, seule exception au plancher de 12 px). Mesure réelle, car
  * la largeur dépend de l'écran et de la police (« Omobamidele » déborde de 10 px à 320 px).
  */
 export function fitNameFont(el: HTMLElement): void {
@@ -161,7 +160,7 @@ export function fitNameFont(el: HTMLElement): void {
   const cs = getComputedStyle(box);
   const room = box.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
   for (const size of NAME_FONT_SIZES) {
-    el.style.fontSize = `${size}px`;
+    el.style.fontSize = size;
     if (el.scrollWidth <= room) return;
   }
 }

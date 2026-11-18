@@ -636,8 +636,8 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
         expect(el).toHaveTextContent('Horaire à confirmer');
         expect(el).toHaveClass('text-fg-muted');
         expect(el).not.toHaveClass('text-fg-dim');
-        // 10 px en capitales, sans graisse : plus discret qu'une heure (14 px, gras).
-        expect(el).toHaveClass('text-[10px]', 'uppercase');
+        // 12 px (text-petite, L258) en capitales, sans graisse : plus discret qu'une heure (14 px, gras).
+        expect(el).toHaveClass('text-petite', 'uppercase');
         expect(el.className).not.toMatch(/font-(semi)?bold/);
       }
     });
@@ -825,7 +825,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
 });
 
 // L48 — au téléphone (390 px, 320 px), la ligne compacte laisse la place au nom
-// des clubs : colonne date 56 px, nom en 1fr, colonne d'état à sa largeur utile.
+// des clubs : colonne date 60 px (56 avant L258), nom en 1fr, colonne d'état à sa largeur utile.
 describe('<FixturesPage /> — date lisible : mois nommé et année (L98)', () => {
   it('une date ferme porte un <time datetime> avec l’année, le mois étant dans le titre du bloc (L50)', async () => {
     vi.stubGlobal('fetch', serve());
@@ -856,11 +856,12 @@ describe('<FixturesPage /> — ligne compacte au téléphone (L48)', () => {
     vi.unstubAllGlobals();
   });
 
-  it('range date / clubs / état dans une grille 56px 1fr auto', async () => {
+  // L258 : colonne de date passée de 56 à 60 px (« DU 05/12 » à 12 px mesure 56,4 px).
+  it('range date / clubs / état dans une grille 60px 1fr auto', async () => {
     vi.stubGlobal('fetch', serve());
     renderPage();
     const [row] = await screen.findAllByRole('article');
-    expect(row.className).toContain('grid-cols-[56px_1fr_auto]');
+    expect(row.className).toContain('grid-cols-[60px_1fr_auto]');
     expect(row.className).not.toContain('72px');
     const state = row.lastElementChild as HTMLElement;
     expect(state.className).not.toContain('min-w-[72px]');

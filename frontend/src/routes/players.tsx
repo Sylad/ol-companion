@@ -322,7 +322,7 @@ function SeasonStatsTab({ tri, onTri, retour }: { tri: Tri; onTri: (t: Tri) => v
     <div className="overflow-x-auto -mx-5">
       <table className="w-full text-sm sm:min-w-[640px]">
         <thead>
-          <tr className="text-fg-dim text-[11px] uppercase tracking-wider font-semibold border-b border-border">
+          <tr className="text-fg-dim text-petite uppercase tracking-wider font-semibold border-b border-border">
             <th className="text-left px-4 py-2 font-semibold sticky left-0 bg-surface sm:static sm:bg-transparent">Joueur</th>
             <SortHeader label="Matchs" sortKey="matchs" current={tri} onSort={onTri} />
             <SortHeader label="Min" sortKey="minutes" current={tri} onSort={onTri} />
@@ -405,13 +405,13 @@ function PlayerStatsRow({ player, retour, tri }: { player: PlayerSeasonStats; re
           search={retour}
           className="flex flex-wrap sm:flex-nowrap items-center gap-x-2 group"
         >
-          <span className="text-[10px] font-mono text-fg-dim w-6 tabular-nums shrink-0">
+          <span className="text-petite font-mono text-fg-dim w-6 tabular-nums shrink-0">
             {hasJersey(player.jerseyNumber) ? `#${player.jerseyNumber}` : '—'}
           </span>
           <span className="font-semibold text-fg group-hover:text-ol-red-bright transition-colors">
             {player.name}
           </span>
-          <span className="basis-full pl-8 sm:basis-auto sm:pl-0 text-[10px] uppercase tracking-wider text-fg-dim">
+          <span className="basis-full pl-8 sm:basis-auto sm:pl-0 text-petite uppercase tracking-wider text-fg-dim">
             {positionShortFr(player.positionShort)}
           </span>
         </Link>

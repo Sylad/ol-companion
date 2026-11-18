@@ -38,7 +38,7 @@ export const SECONDARY_ITEMS = [
   { to: '/about', label: 'À propos', icon: Sparkles },
 ] as const;
 
-export const GROUP_TITLE = 'px-3 pb-2 text-[10px] uppercase tracking-[0.14em] text-fg-dim font-semibold';
+export const GROUP_TITLE = 'px-3 pb-2 text-petite uppercase tracking-[0.14em] text-fg-dim font-semibold';
 
 export function SidebarLinks() {
   const { location } = useRouterState();

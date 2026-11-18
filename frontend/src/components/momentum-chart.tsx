@@ -36,7 +36,7 @@ export function MomentumChart(props: {
     <section data-testid="elan" className="h-full rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-2 border-b border-border flex items-center justify-between">
         <h2 className="eyebrow min-w-0">Momentum</h2>
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-fg-dim">
+        <div className="flex items-center gap-3 text-petite uppercase tracking-wider text-fg-dim">
           <span className="inline-flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full" style={{ background: HOME }} />
             {props.homeName}
@@ -86,7 +86,7 @@ export function MomentumChart(props: {
             })}
           </svg>
         </div>
-        <p className="text-[10px] text-fg-dim mt-1 leading-snug">
+        <p className="text-petite text-fg-dim mt-1 leading-snug">
           Pression par minute, dérivée du play-by-play (tirs, corners, coups francs). Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
         </p>
       </div>

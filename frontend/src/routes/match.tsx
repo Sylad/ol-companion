@@ -56,7 +56,7 @@ const LIEN_SOURCE = 'underline underline-offset-2 hover:text-fg-muted';
  */
 function SourcesMatch({ footballData }: { footballData: boolean }) {
   return (
-    <p data-testid="sources-match" className="text-[11px] leading-snug text-fg-dim text-center">
+    <p data-testid="sources-match" className="text-petite leading-snug text-fg-dim text-center">
       Statistiques, compositions et direct :{' '}
       <a href="https://www.365scores.com/fr/football/league/ligue-1-35" target="_blank" rel="noopener noreferrer" className={LIEN_SOURCE}>365scores</a>.
       {footballData && (
@@ -93,7 +93,7 @@ function StatRow({
       {/* Valeur à gauche, libellé au centre, valeur à droite sur une ligne ; la barre comparée dessous, pleine largeur (L186 R16). */}
       <div className="[display:grid] [grid-template-columns:minmax(0,1fr)_auto_minmax(0,1fr)] items-baseline gap-2 leading-5 mb-0.5">
         <span className="text-left num tabular-nums font-bold text-fg-bright">{f(home)}</span>
-        <span className="text-[10px] uppercase tracking-wider text-fg-muted text-center">{label}</span>
+        <span className="text-petite uppercase tracking-wider text-fg-muted text-center">{label}</span>
         <span className="text-right num tabular-nums font-bold text-fg-bright">{f(away)}</span>
       </div>
       {/* La couleur suit l'équipe suivie (OL rouge, adversaire bleu ; France bleue, adversaire blanc), pas le côté ; 2 px de --surface entre les segments. */}
@@ -291,7 +291,7 @@ const NOM_EQUIPE_OL = '[overflow-wrap:anywhere] text-2xl max-[599px]:text-lg max
 const ENTETE_OL = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 const ENTETE_BLEUS = 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[599px]:px-3 max-[599px]:gap-x-2 max-[359px]:px-[6px] max-[359px]:gap-x-1';
 /** Comme `.big` de la maquette : 44 px, 36 px jusqu'à 599 px, 32 px sous 360 px, gras, blanc, PAS de police mono ni de chiffres tabulaires (la mono prenait 82 px à 36 px, Inter tabulaire 74 px, Inter 68 px). */
-const SCORE_BLEUS = 'font-sans font-bold text-[44px] text-white max-[599px]:text-[36px] max-[359px]:text-[32px]';
+const SCORE_BLEUS = 'font-sans font-bold text-score text-white max-[599px]:text-score-md max-[359px]:text-score-sm';
 /** Séparateur du score des Bleus : 4 px par côté sous 600 px (les colonnes de nom gagnent 8 px : « Bosnie-Herzégovine » sur deux lignes même à 0·0), 8 px au-dessus (L167 R13). */
 const SEP_SCORE_BLEUS = 'mx-1 min-[600px]:mx-2';
 /** 36 px sous 600 px comme les Bleus (L65) : à 48 px le score prend assez de largeur pour couper « Hoffenheim » ou « Leverkusen » à 360 px. */
@@ -491,22 +491,22 @@ export function MatchPage() {
         <header className="px-5 py-3 flex items-center justify-between flex-wrap gap-x-3 gap-y-1 border-b border-border">
           <div className="flex items-center gap-2">
             {isPaused ? (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-fg-muted/20 text-fg text-[10px] font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-fg-muted/20 text-fg text-petite font-bold uppercase tracking-wider">
                 <Pause className="h-3 w-3" strokeWidth={2.5} />
                 Pause
               </span>
             ) : isLive ? (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-ol-red text-white text-[10px] font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-ol-red text-white text-petite font-bold uppercase tracking-wider">
                 <Radio className="h-3 w-3 animate-pulse" strokeWidth={2.5} />
                 Live
               </span>
             ) : isUpcoming ? (
-              <span className="inline-flex items-center gap-1.5 text-fg-muted text-[10px] font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 text-fg-muted text-petite font-bold uppercase tracking-wider">
                 <Clock className="h-3 w-3" strokeWidth={2.5} />
                 À venir
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 text-fg-muted text-[10px] font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 text-fg-muted text-petite font-bold uppercase tracking-wider">
                 {clock.phase === 'suspended' ? <Pause className="h-3 w-3" strokeWidth={2.5} /> : <Trophy className="h-3 w-3" strokeWidth={2.5} />}
                 {clock.phase === 'suspended' ? clock.label : 'Terminé'}
               </span>
@@ -645,7 +645,7 @@ export function MatchPage() {
                         )}
                         {data.topPerformers.map((tp, i) => (
                           <div key={i} className="py-1.5">
-                            <div className="text-[10px] uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
+                            <div className="text-petite uppercase tracking-wider text-fg-dim text-center mb-0.5 whitespace-nowrap">
                               {roleFr(tp.role)}
                             </div>
                             <div className="[display:grid] [grid-template-columns:repeat(2,minmax(0,1fr))] gap-3">

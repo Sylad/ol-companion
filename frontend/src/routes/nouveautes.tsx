@@ -114,7 +114,7 @@ export function NouveautesPage() {
   return (
     <div className="space-y-6">
       <header data-testid="nouveautes-entete" className="flex flex-col gap-1.5 mb-2">
-        <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-fg-muted font-semibold">
+        <p className="flex items-center gap-2 text-petite uppercase tracking-[0.22em] text-fg-muted font-semibold">
           <Megaphone className="h-3.5 w-3.5 shrink-0 text-ol-red-bright" strokeWidth={2} aria-hidden />
           <span>
             Nouveautés<span className="hidden sm:inline"> · OL Companion</span>
@@ -167,10 +167,10 @@ export function NouveautesPage() {
               )}
             >
               <div className="flex items-start justify-between gap-3 mb-1.5">
-                <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 pt-0.5 text-[11px] uppercase tracking-[0.14em] text-fg-muted font-semibold">
+                <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 pt-0.5 text-petite uppercase tracking-[0.14em] text-fg-muted font-semibold">
                   <time dateTime={e.date}>{formatDate(e.date)}</time>
                   {fresh[index] && (
-                    <span className="rounded-full bg-ol-red px-2 py-0.5 text-[10px] font-bold tracking-[0.08em] text-fg-bright">
+                    <span className="rounded-full bg-ol-red px-2 py-0.5 text-petite font-bold tracking-[0.08em] text-fg-bright">
                       Nouveau
                     </span>
                   )}

@@ -9,6 +9,8 @@ import { hasJersey } from '@/lib/jersey';
 const MARGE_BORD_PX = 2;
 /** L76 : écart minimal gardé entre le nom d'un joueur de bord recalé et le nom de son voisin de ligne. */
 const ECART_NOMS_PX = 4;
+/** L258 : marge retirée à la largeur d'un nom tronqué, contre l'arrondi sous-pixel du moteur. */
+const ARRONDI_PX = 0.25;
 /** L76 : sous cette largeur (marges du nom et un caractère avec ses points de suspension) un nom tronqué ne se lit plus : il est masqué (nomMax 0). */
 const NOM_LISIBLE_MIN_PX = 24;
 
@@ -44,7 +46,7 @@ export function FormationField({ starters, formation, retour }: FormationFieldPr
         <PlayerOnField key={p.id} player={p} retour={retour} />
       ))}
 
-      <div className="absolute top-3 right-3 z-10 bg-ol-red-deep px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm border border-ol-red-bright/60 shadow-lg">
+      <div className="absolute top-3 right-3 z-10 bg-ol-red-deep px-2.5 py-1 text-petite font-bold uppercase tracking-wider rounded-sm border border-ol-red-bright/60 shadow-lg">
         {formation}
       </div>
     </div>
@@ -92,24 +94,32 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
     const rond = el?.querySelector<HTMLElement>('[data-testid="rond-joueur"]');
     if (!el || !terrain || !nom || !rond) return;
     const mesurer = () => {
-      // La pastille de note (absolute, hors de offsetWidth) dépasse à droite du bloc : on la compte.
+      // La pastille de note (absolute dans le rond, L258) peut dépasser à droite du bloc : on la compte.
       const pastille = el.querySelector<HTMLElement>('[data-testid="pastille-note"]');
-      const debord = pastille ? Math.max(0, pastille.offsetLeft + pastille.offsetWidth - el.offsetWidth) : 0;
+      const debord = pastille ? Math.max(0, rond.offsetLeft + pastille.offsetLeft + pastille.offsetWidth - el.offsetWidth) : 0;
       // Origine = bord intérieur de la bordure du terrain, comme centre, décalage et clientWidth.
       const origine = terrain.getBoundingClientRect().left + terrain.clientLeft;
       // Voisins de la même ligne : leur nom tel qu'il est posé (un joueur central n'est pas déplacé).
-      const noms = [...terrain.querySelectorAll<HTMLElement>(`[data-testid="joueur"][data-ligne="${player.yardLine}"]`)]
-        .filter((j) => j !== el)
-        .map((j) => j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect());
+      const voisins = [...terrain.querySelectorAll<HTMLElement>(`[data-testid="joueur"][data-ligne="${player.yardLine}"]`)].filter((j) => j !== el);
+      const noms = voisins.map((j) => j.querySelector('[data-testid="nom-joueur"]')!.getBoundingClientRect());
+      // L258 : à 12 px, deux noms voisins peuvent ne pas tenir côte à côte (320 px : 67 px par joueur) : partage de la place.
+      // Largeur ENTIÈRE des voisins (scrollWidth) et centres d'origine : le résultat ne dépend pas de l'ordre des mesures.
+      const plafond = plafondNom(x, nom.scrollWidth, voisins.map((j) => ({
+        x: Number(j.dataset.x),
+        nom: j.querySelector<HTMLElement>('[data-testid="nom-joueur"]')!.scrollWidth,
+      })), terrain.clientWidth);
+      const largeurNom = plafond === null ? nom.scrollWidth : Math.min(nom.scrollWidth, plafond);
       const centre = (x / 100) * terrain.clientWidth;
       const voisinGauche = Math.max(-Infinity, ...noms.filter((r) => r.left + r.width / 2 - origine < centre).map((r) => r.right - origine));
       const voisinDroite = Math.min(Infinity, ...noms.filter((r) => r.left + r.width / 2 - origine >= centre).map((r) => r.left - origine));
       // scrollWidth : largeur du nom entier, même tronqué par un précédent calcul.
-      const suivant = placerJoueurDeBord({
-        x, largeurTerrain: terrain.clientWidth, nom: nom.scrollWidth, rond: rond.offsetWidth, debord,
+      const bord = placerJoueurDeBord({
+        x, largeurTerrain: terrain.clientWidth, nom: largeurNom, rond: rond.offsetWidth, debord,
         voisinGauche: Number.isFinite(voisinGauche) ? voisinGauche : null,
         voisinDroite: Number.isFinite(voisinDroite) ? voisinDroite : null,
       });
+      const nomMax = plafond === null || plafond >= nom.scrollWidth ? bord.nomMax : nomLisible(Math.min(bord.nomMax ?? Infinity, plafond));
+      const suivant = { decalage: bord.decalage, nomMax };
       setPlace((p) => (p.decalage === suivant.decalage && p.nomMax === suivant.nomMax ? p : suivant));
     };
     mesurer();
@@ -124,6 +134,7 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
       ref={ref}
       data-testid="joueur"
       data-ligne={player.yardLine}
+      data-x={x}
       className="absolute z-10"
       style={{
         left: `${x}%`,
@@ -144,35 +155,38 @@ function PlayerOnField({ player, retour }: { player: LineupPlayer; retour: Playe
           <span className="font-mono tabular-nums text-white font-bold text-xs sm:text-sm">
             {hasJersey(player.jerseyNumber) ? player.jerseyNumber : ''}
           </span>
+          {/* L258 : note accrochée au rond (avant : au coin du bloc, qui s'élargit avec le nom), lettre à 12 px, rond de 1,25 rem. */}
+          {player.ranking !== null && player.ranking > 0 && (
+            <span
+              data-testid="pastille-note"
+              className="absolute -top-2 -right-4 z-20 inline-flex items-center justify-center h-5 min-w-5 px-1 rounded-full text-petite font-bold leading-none border border-bg"
+              style={{
+                backgroundColor: ratingColor(player.ranking),
+                color: ratingTextColor(player.ranking),
+              }}
+              title={`Note ${noteFr(player.ranking)}`}
+            >
+              {noteFr(player.ranking)}
+            </span>
+          )}
         </div>
         <span
           data-testid="nom-joueur"
           title={tronque ? player.name : undefined}
-          className="px-1.5 py-0.5 rounded-sm text-[10px] sm:text-[11px] font-semibold text-white whitespace-nowrap leading-none overflow-hidden text-ellipsis max-w-full"
+          className="px-1 py-0.5 rounded-sm text-petite font-semibold text-white whitespace-nowrap leading-none overflow-hidden text-ellipsis max-w-full"
           style={{
             backgroundColor: 'rgba(8, 9, 13, 0.78)',
             backdropFilter: 'blur(2px)',
             textShadow: '0 1px 2px rgba(0,0,0,0.9)',
-            maxWidth: place.nomMax ?? undefined,
+            // L258 : un quart de pixel de marge — les tailles en rem donnent des largeurs fractionnaires, que le moteur arrondit
+            // au 1/64 px : l'écart calculé de 4 px se mesurait 3,987.
+            maxWidth: place.nomMax === null ? undefined : Math.max(0, place.nomMax - ARRONDI_PX),
             // Nom masqué : sans marges ni affichage, mais en place (display: none ferait mesurer un scrollWidth nul au recalage suivant).
             ...(place.nomMax === 0 ? { padding: 0, visibility: 'hidden' as const } : null),
           }}
         >
           {player.shortName}
         </span>
-        {player.ranking !== null && player.ranking > 0 && (
-          <span
-            data-testid="pastille-note"
-            className="absolute -top-1.5 -right-1.5 z-20 inline-flex items-center justify-center w-[18px] h-[18px] rounded-full text-[9px] font-bold leading-none border-2 border-bg"
-            style={{
-              backgroundColor: ratingColor(player.ranking),
-              color: ratingTextColor(player.ranking),
-            }}
-            title={`Note ${noteFr(player.ranking)}`}
-          >
-            {noteFr(player.ranking)}
-          </span>
-        )}
       </Link>
     </div>
   );
@@ -196,6 +210,24 @@ interface EntreePlaceBord {
   /** Bord droit du nom voisin à gauche, bord gauche du nom voisin à droite, en px depuis le bord gauche du terrain. */
   voisinGauche: number | null;
   voisinDroite: number | null;
+}
+
+/**
+ * L258 : largeur maximale du nom d'un joueur au centre `x` (%) face à ses voisins immédiats de ligne, ou null s'il tient.
+ * Entre deux voisins, la place est l'écart des centres moins ECART_NOMS_PX ; chacun en garde la moitié, sauf si l'autre
+ * n'en prend pas autant (un nom court laisse sa place au long). Calcul symétrique : les deux plafonds ne se recouvrent jamais.
+ */
+export function plafondNom(x: number, nom: number, voisins: Array<{ x: number; nom: number }>, largeurTerrain: number): number | null {
+  const gauche = voisins.filter((v) => v.x < x).sort((a, b) => b.x - a.x)[0];
+  const droite = voisins.filter((v) => v.x >= x).sort((a, b) => a.x - b.x)[0];
+  let demi = Infinity;
+  for (const v of [gauche, droite]) {
+    if (!v) continue;
+    const place = (Math.abs(v.x - x) / 100) * largeurTerrain - ECART_NOMS_PX;
+    demi = Math.min(demi, place - Math.min(v.nom / 2, place / 2));
+  }
+  if (!Number.isFinite(demi) || nom <= 2 * demi) return null;
+  return Math.max(0, 2 * demi);
 }
 
 /** Largeur laissée au nom tronqué : 0 (masqué) quand elle est trop étroite pour se lire. */

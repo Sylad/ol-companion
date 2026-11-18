@@ -90,6 +90,8 @@ const rows = (block: HTMLElement) => within(block).getAllByTestId('rangee-compos
 const chips = (row: HTMLElement) => Array.from(row.children) as HTMLElement[];
 const sizes = (block: HTMLElement) => rows(block).map((r) => chips(r).length);
 const names = (row: HTMLElement) => chips(row).map((c) => c.textContent ?? '');
+/** Taille d'un nom en px (L258 : posée en rem par la mesure ; 12 px du thème avant mesure). */
+const pxOf = (el: HTMLElement) => (el.style.fontSize ? parseFloat(el.style.fontSize) * 16 : 12);
 const declared = (el: HTMLElement) =>
   `${el.className} ${el.getAttribute('style') ?? ''}`.replace(/\s+/g, ' ');
 const widthSignature = (el: HTMLElement) =>
@@ -269,7 +271,8 @@ describe('Page match — blocs Composition (L43)', () => {
     }
   });
 
-  it('R8 — nom sans tiret trop long : 10 px, jamais coupé en milieu de mot', () => {
+  // L258 : le nom part de 12 px (text-petite, en rem) ; seule la mesure (style) le réduit, par pas du thème jusqu'à 8 px.
+  it('R8 — nom sans tiret trop long : jamais coupé en milieu de mot, taille du thème (12 px) avant mesure', () => {
     const long = [...OPP_4141];
     long[4] = p('Papastathopoulos', 22, 2, 85);
     loaded(lineup('4-1-4-1', long, BENCH_OPP));
@@ -278,11 +281,11 @@ describe('Page match — blocs Composition (L43)', () => {
     expect(el.textContent).toBe('Papastathopoulos');
     const d = declared(el) + ' ' + declared(el.parentElement as HTMLElement);
     expect(d).not.toMatch(/truncate|line-clamp|text-ellipsis|break-all|break-words|overflow-wrap:\s*(anywhere|break-word)/);
-    // le nom déclare une taille réduite à 10 px (ou le bloc le fait pour ses noms les plus longs)
-    expect(d).toMatch(/text-\[10px\]|font-size:\s*10px/);
-    // un nom court garde 11 px
+    // la taille déclarée est celle du thème (12 px), jamais une taille en px écrite à la main
+    expect(d).toMatch(/text-petite/);
+    expect(d).not.toMatch(/text-\[\d+px\]/);
     const short = declared(screen.getByText('Samba'));
-    expect(short + ' ' + declared(screen.getByText('Samba').parentElement as HTMLElement)).toMatch(/text-\[11px\]|font-size:\s*11px/);
+    expect(short + ' ' + declared(screen.getByText('Samba').parentElement as HTMLElement)).toMatch(/text-petite/);
   });
 
   it('R8 — mesure : chaque nom prend la plus grande taille qui tient dans la pastille (7 noms de la QA 12-10)', () => {
@@ -290,7 +293,7 @@ describe('Page match — blocs Composition (L43)', () => {
     const opp = [...OPP_4141];
     noms.forEach((n, k) => { opp[k + 1] = p(n, 30 + k, 2, 40 + k); });
     const CLIENT = 58;
-    const wide = (el: HTMLElement) => (parseFloat(el.style.fontSize) || 11) * el.textContent!.length * 0.55;
+    const wide = (el: HTMLElement) => pxOf(el) * el.textContent!.length * 0.55;
     const sw = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
       return Math.max(wide(this), CLIENT);
     });
@@ -300,11 +303,12 @@ describe('Page match — blocs Composition (L43)', () => {
       render(<MatchPage />);
       for (const n of noms) {
         const el = screen.getByText(n);
-        const size = parseFloat(el.style.fontSize);
+        const size = pxOf(el);
         expect(wide(el), n).toBeLessThanOrEqual(CLIENT); // tient
-        if (size < 11) expect(n.length * (size + 1) * 0.55, n).toBeGreaterThan(CLIENT); // et pas plus petit que nécessaire
+        if (size < 12) expect(n.length * (size + 0.5) * 0.55, n).toBeGreaterThan(CLIENT); // et pas plus petit que nécessaire (pas de 0,5 px)
+        expect(size, n).toBeGreaterThanOrEqual(8); // plancher de l'exception du thème (TAILLES_NOM_PASTILLE)
       }
-      expect(screen.getByText('Samba').style.fontSize).toBe('11px');
+      expect(screen.getByText('Samba').style.fontSize).toBe('0.75rem');
     } finally {
       sw.mockRestore();
       cw.mockRestore();
@@ -321,7 +325,7 @@ describe('Page match — blocs Composition (L43)', () => {
     }
     vi.stubGlobal('ResizeObserver', FakeRO);
     let chipWidth = 40; // pastille étroite (rotation avant)
-    const wide = (el: HTMLElement) => (parseFloat(el.style.fontSize) || 11) * el.textContent!.length * 0.55;
+    const wide = (el: HTMLElement) => pxOf(el) * el.textContent!.length * 0.55;
     // Le span du nom est dimensionné par son contenu : sa clientWidth suit le texte, pas la pastille.
     const sw = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
       return wide(this);
@@ -337,11 +341,11 @@ describe('Page match — blocs Composition (L43)', () => {
       loaded(lineup('4-1-4-1', opp, BENCH_OPP));
       render(<MatchPage />);
       const el = screen.getByText('Augustinsson');
-      expect(parseFloat(el.style.fontSize)).toBeLessThan(11);
+      expect(pxOf(el)).toBeLessThan(12);
       expect(callbacks.some((c) => c.target === el.parentElement)).toBe(true);
       chipWidth = 200; // fenêtre élargie sans recharger
       callbacks.filter((c) => c.target === el.parentElement).forEach((c) => c.cb());
-      expect(el.style.fontSize).toBe('11px');
+      expect(el.style.fontSize).toBe('0.75rem');
     } finally {
       sw.mockRestore();
       cw.mockRestore();

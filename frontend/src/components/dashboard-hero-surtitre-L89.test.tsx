@@ -70,7 +70,7 @@ describe('<DashboardHero /> — sur-titre (L89)', () => {
     const label = await screen.findByText(libelle);
     expect(label).toHaveClass('text-ol-red-bright');
     expect(label).not.toHaveClass('eyebrow');
-    expect(label).toHaveClass('uppercase', 'font-semibold', 'text-[11px]');
+    expect(label).toHaveClass('uppercase', 'font-semibold', 'text-petite');
     expect(label).toHaveClass('bg-bg');
     expect(label.className).not.toMatch(/bg-bg\/\d+/);
   });

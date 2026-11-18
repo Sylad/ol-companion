@@ -321,7 +321,7 @@ function FilterPills<K extends string>({
         >
           {o.abbr && o.name ? <abbr title={o.name} className="no-underline">{o.label}</abbr> : o.label}
           {/* 10 px : fg-muted (≥ 4,5:1 dans les deux états) ; fg-dim (≥ 4,6:1 depuis L52) passerait aussi, mais le compteur suit le texte du bouton. */}
-          <span className="ml-1.5 text-[10px] text-fg-muted">
+          <span className="ml-1.5 text-petite text-fg-muted">
             {o.count}
           </span>
         </button>
@@ -387,7 +387,7 @@ function SummaryMatch({
 
   return (
     <div data-testid={testId} className="relative rounded-md border border-border bg-surface-2/35 px-3 py-2.5 transition-colors hover:border-border-strong lg:p-4">
-      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-fg-dim font-semibold">
+      <div className="flex items-center gap-2 text-petite uppercase tracking-[0.14em] text-fg-dim font-semibold">
         <Icon className="h-3.5 w-3.5 text-ol-red-bright" strokeWidth={2} />
         {label}
       </div>
@@ -404,7 +404,7 @@ function SummaryMatch({
           </div>
           <div className="text-xs text-fg-dim">{dateLabel} · {competitionLong(fixture.competitionCode)}</div>
           {shootoutName && (
-            <div data-testid="tirs-au-but-carte" className="text-[11px] font-semibold text-fg-muted">
+            <div data-testid="tirs-au-but-carte" className="text-petite font-semibold text-fg-muted">
               {fixture.shootoutWinnerId === OL_TEAM_ID ? 'Qualifié aux tirs au but' : 'Éliminé aux tirs au but'}
             </div>
           )}
@@ -478,14 +478,15 @@ function MatchLink({
 }
 
 /**
- * À la place de l'heure quand elle n'est pas fixée. 10 px en capitales, donc
+ * À la place de l'heure quand elle n'est pas fixée. 12 px en capitales (L258), donc
  * `fg-muted` (≥ 4,5:1 sur le fond, WCAG 1.4.3) plutôt que `fg-dim` (≥ 4,6:1 aussi depuis L52, mais plus pâle) ; reste
  * plus discret qu'une heure (14 px, gras).
  */
 function KickoffTbd() {
   const [first, ...rest] = KICKOFF_TBD.split(' ');
   return (
-    <div className="text-right text-[10px] uppercase leading-[1.1] tracking-wider text-fg-muted">
+    // L258 : 12 px (ex-10) ; interligne 1 et sans interlettrage élargi, pour que la ligne garde sa hauteur (L124 : ≤ 54 px).
+    <div className="text-right text-petite uppercase leading-none text-fg-muted">
       <span className="block whitespace-nowrap">{first}</span>{' '}
       <span className="block whitespace-nowrap">{rest.join(' ')}</span>
     </div>
@@ -496,7 +497,7 @@ function KickoffTbd() {
 function CompetitionTag({ fixture }: { fixture: SeasonMatch }) {
   const long = competitionLong(fixture.competitionCode);
   return (
-    <span data-testid="competition-match" className="whitespace-nowrap text-[11px] font-semibold leading-[1.2] text-fg-muted">
+    <span data-testid="competition-match" className="whitespace-nowrap text-petite font-semibold leading-none text-fg-muted">
       <abbr title={long} className="no-underline">
         <span aria-hidden="true">{competitionShort(fixture.competitionCode)}</span>
         <span className="sr-only">{long}</span>
@@ -527,16 +528,17 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
     <article
       data-testid="ligne-match"
       className={cn(
-        'relative grid grid-cols-[56px_1fr_auto] items-center gap-2 px-3 py-[7px] sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
+        'relative grid grid-cols-[60px_1fr_auto] items-center gap-2 px-3 py-[7px] sm:gap-3 sm:px-4 hover:bg-surface-2/45 transition-colors',
         // Sous 360 px : colonne de la date resserrée et marges réduites, pour laisser la place aux noms (L48).
         'max-[359px]:grid-cols-[40px_1fr_auto] max-[359px]:gap-1 max-[359px]:px-2',
         isLive && 'border-l-[3px] border-l-live',
       )}
     >
       <DateBlock data-testid="date-match" className="block text-center" {...(iso ? { dateTime: iso, title } : {})}>
-        <div className="whitespace-nowrap text-xs font-semibold text-fg max-[359px]:text-[10px]">{day}</div>
+        <div className="whitespace-nowrap text-xs font-semibold text-fg max-[359px]:text-petite">{day}</div>
         {detail && (
-          <div className="text-[10px] uppercase leading-[1.1] tracking-wider text-fg-muted">
+          // L258 : 12 px sans interlettrage élargi : « DU 05/12 » (56,4 px) tient sur une ligne dans la colonne, passée de 56 à 60 px.
+          <div className="text-petite uppercase leading-[1.1] text-fg-muted">
             {detailShort ? (
               <>
                 {/* Sous 360 px « à confirmer » (64 px) déborde la colonne de 40 px : forme courte à l'écran, forme entière pour les lecteurs d'écran (L48). */}
@@ -572,7 +574,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
             />
           </span>
           {!fixture.matchday && fixture.round && (
-            <span data-testid="tour-match" className="mt-0.5 block text-[11px] leading-tight text-fg-muted">
+            <span data-testid="tour-match" className="mt-0.5 block text-petite leading-[1.1] text-fg-muted">
               {fixture.round}
             </span>
           )}
@@ -583,7 +585,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
           {isLive ? (
             <div className="text-xs font-bold text-live animate-pulse-live">LIVE</div>
           ) : hasScore ? (
-            <div className="text-[10px] uppercase tracking-wider text-fg-dim">Terminé</div>
+            <div className="text-petite uppercase tracking-wider text-fg-dim">Terminé</div>
           ) : time ? (
             <div className="num text-sm font-semibold text-fg">{time}</div>
           ) : (
@@ -591,7 +593,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
           )}
         </div>
         {shootoutId !== null && (
-          <span data-testid="tirs-au-but-match" className="text-[11px] font-semibold text-fg-muted">
+          <span data-testid="tirs-au-but-match" className="text-petite font-semibold text-fg-muted">
             <abbr title="Qualifié aux tirs au but" className="no-underline">
               <span aria-hidden="true">t.a.b.</span>
               <span className="sr-only">tirs au but</span>
@@ -600,7 +602,7 @@ function CompactFixtureRow({ fixture }: { fixture: SeasonMatch }) {
         )}
         {fixture.aggregateScore && (
           // Le score de la ligne est celui du match seul ; le cumul des deux manches se lit dessous (L51).
-          <span data-testid="cumul-match" aria-hidden="true" className="num text-[11px] font-semibold text-fg-muted">
+          <span data-testid="cumul-match" aria-hidden="true" className="num text-petite font-semibold text-fg-muted">
             Cumul {fixture.aggregateScore.home}-{fixture.aggregateScore.away}
           </span>
         )}
@@ -639,7 +641,7 @@ function CompactTeamLine({
       </span>
       <span
         className={cn(
-          'min-w-0 flex-1 break-words text-[13px] leading-[1.35]',
+          'min-w-0 flex-1 break-words text-dense leading-[1.35]',
           isOL ? 'font-semibold text-fg-bright' : 'text-fg',
         )}
       >

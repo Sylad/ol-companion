@@ -89,7 +89,7 @@ function GoalBurst() {
         <div
           className="font-display font-black tracking-tight text-white mb-goal-text"
           style={{
-            fontSize: 'clamp(64px, 14vw, 144px)',
+            fontSize: 'clamp(4rem, 14vw, 9rem)',
             textShadow:
               '0 0 24px hsl(0 80% 55% / 0.85), 0 0 48px hsl(224 80% 55% / 0.7), 0 6px 20px rgba(0,0,0,0.6)',
           }}

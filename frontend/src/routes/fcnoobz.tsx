@@ -173,7 +173,7 @@ function FeatureTile({ icon: Icon, title, desc, status }: FeatureTileProps) {
           <Icon className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
         </div>
         <span
-          className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-sm"
+          className="inline-flex items-center gap-1 text-petite uppercase tracking-wider font-bold px-2 py-0.5 rounded-sm"
           style={{
             color: NOOBZ_GREEN,
             background: 'rgba(132, 204, 22, 0.1)',

@@ -58,6 +58,12 @@
     @apply h-full;
   }
 
+  /* L258 : racine à 100 % — 1 rem suit la taille de police choisie dans le navigateur (16 px par défaut) ;
+     toutes les tailles de texte sont en rem (src/theme/typographie.ts). */
+  html {
+    font-size: 100%;
+  }
+
   body {
     @apply bg-bg text-fg font-sans relative;
     font-feature-settings: 'cv11', 'ss01';
@@ -171,7 +177,7 @@
 
 @layer utilities {
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-dim;
+    @apply text-petite font-semibold uppercase tracking-[0.12em] text-fg-dim;
   }
 
   .num {
@@ -405,7 +411,7 @@
 }
 .mb-review-label {
   position: relative;
-  font-size: clamp(48px, 10vw, 112px);
+  font-size: clamp(3rem, 10vw, 7rem);
   line-height: 0.95;
   letter-spacing: 0.02em;
   text-shadow:
@@ -416,7 +422,7 @@
 .mb-review-sublabel {
   position: relative;
   margin-top: 0.7rem;
-  font-size: clamp(12px, 2vw, 16px);
+  font-size: clamp(0.75rem, 2vw, 1rem);
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -461,7 +467,7 @@
   100% { transform: scale(1); }
 }
 .mb-penalty-awarded-label {
-  font-size: clamp(54px, 12vw, 132px);
+  font-size: clamp(3.375rem, 12vw, 8.25rem);
   line-height: 0.88;
   text-shadow:
     0 0 24px hsl(var(--ol-red-bright) / 0.88),
@@ -496,7 +502,7 @@
   left: 50%;
   top: 8%;
   color: white;
-  font-size: clamp(42px, 9vw, 88px);
+  font-size: clamp(2.625rem, 9vw, 5.5rem);
   line-height: 1;
   text-shadow: 0 0 18px hsl(var(--fg) / 0.65), 0 10px 24px rgba(0, 0, 0, 0.75);
   animation: mb-penalty-ball 1.35s cubic-bezier(0.18, 0.72, 0.24, 1) forwards;
@@ -548,7 +554,7 @@
   width: 100%;
   transform: translateX(-50%);
   text-align: center;
-  font-size: clamp(42px, 9vw, 100px);
+  font-size: clamp(2.625rem, 9vw, 6.25rem);
   line-height: 0.95;
   text-shadow:
     0 0 24px hsl(var(--ol-red-bright) / 0.85),
@@ -639,7 +645,7 @@
   100% { opacity: 0; transform: translateX(20px); }
 }
 .mb-whistle-label {
-  font-size: clamp(46px, 10vw, 118px);
+  font-size: clamp(2.875rem, 10vw, 7.375rem);
   line-height: 0.92;
   text-shadow:
     0 0 24px hsl(var(--ol-red-bright) / 0.75),
@@ -649,7 +655,7 @@
 .mb-whistle-sublabel {
   margin-top: 0.7rem;
   color: hsl(var(--fg-muted));
-  font-size: clamp(12px, 2vw, 16px);
+  font-size: clamp(0.75rem, 2vw, 1rem);
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -725,7 +731,7 @@
   /* Opaque : translucide, la tuile claire dessous ramenait le lien à 4,43:1 (4,28:1 sur blanc). */
   background: hsl(var(--surface)) !important;
   color: hsl(var(--fg-muted)) !important;
-  font-size: 10px;
+  font-size: theme('fontSize.petite');
 }
 .leaflet-container .leaflet-control-attribution a {
   /* leaflet.css pose `.leaflet-container a` (même poids, chargé après) : 2,55:1 mesurés. */
@@ -794,7 +800,7 @@
 .faits-repere {
   display: flex; align-items: center; gap: 6px; width: 100%; height: 32px; margin: 0; padding: 0 20px;
   border: 0; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--surface-2) / 0.5);
-  color: hsl(var(--fg-muted)); font-size: 12px; font-weight: 600; text-align: left; cursor: pointer;
+  color: hsl(var(--fg-muted)); font-size: theme('fontSize.petite'); font-weight: 600; text-align: left; cursor: pointer;
 }
 .faits-repere:hover { color: hsl(var(--fg)); }
 .faits-repere[aria-disabled='true'] { cursor: default; }
@@ -837,15 +843,15 @@ body.theme-bleus .faits-liste::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 6
 .faits-liste-in { padding: 0 20px; }
 .faits-liste .ev {
   display: grid; grid-template-columns: 1fr 60px 1fr; gap: 12px; align-items: center;
-  height: var(--ligne-fait); padding: 4px 0; font-size: 14px; border-bottom: 1px solid hsl(var(--border));
+  height: var(--ligne-fait); padding: 4px 0; font-size: theme('fontSize.moyenne'); border-bottom: 1px solid hsl(var(--border));
 }
 .faits-liste .evl { text-align: right; }
 .faits-liste .evm { text-align: center; }
-.faits-liste .evm small { display: block; font-size: 10px; letter-spacing: 0.08em; color: hsl(var(--fg-dim)); }
+.faits-liste .evm small { display: block; font-size: theme('fontSize.petite'); letter-spacing: 0.08em; color: hsl(var(--fg-dim)); }
 .faits-liste .fw { font-weight: 500; }
 .faits-liste .evl .fw, .faits-liste .evr .fw { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; }
 @media (max-width: 599px) {
-  .faits-liste .ev { grid-template-columns: 1fr 44px 1fr; gap: 8px; font-size: 13px; }
+  .faits-liste .ev { grid-template-columns: 1fr 44px 1fr; gap: 8px; font-size: theme('fontSize.dense'); }
   .faits-liste-in { padding: 0 12px; }
 }
 
@@ -854,7 +860,7 @@ body.theme-bleus .faits-liste::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 6
     --ligne-fait: 60px;
   }
   /* Reflow à 320 px (WCAG 1.4.10) : le nom d'un joueur n'est jamais coupé, `minute · équipe` au-dessus du libellé. */
-  .faits-liste .ev { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; font-size: 13px; }
+  .faits-liste .ev { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; font-size: theme('fontSize.dense'); }
   .faits-liste .ev > :empty { display: none; }
   .faits-liste .evm { order: -1; display: flex; align-items: baseline; gap: 6px; text-align: left; }
   .faits-liste .evm small { display: inline; margin: 0; }
