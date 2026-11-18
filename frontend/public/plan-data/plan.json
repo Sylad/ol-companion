@@ -819,8 +819,9 @@
     {
       "id": "L257",
       "title": "Accueil : la carte Forme montre bien les derniers matchs",
-      "status": "doing",
-      "started": "2026-11-18"
+      "status": "done",
+      "started": "2026-11-18",
+      "finished": "2026-11-18"
     },
     {
       "id": "L258",
