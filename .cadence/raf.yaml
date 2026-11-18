@@ -2967,10 +2967,11 @@ lots:
     finished: 2026-11-18
   - id: L256
     title: "Accueil : étiquettes de l'axe Y du graphique « diff. de buts » rognées (« -4 » lu 4, « 12 » lu I2 ; season-summary.tsx:148, marge gauche -12) — revue UX L255"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-11-18
+    started: 2026-11-18
   - id: L257
     title: "Accueil : la carte Forme affiche « 5V » (bilan de Ligue 1) au-dessus des 5 derniers matchs D V D V D, lu « 5 victoires de suite » (Nielsen 2) — revue UX L255"
     status: todo
