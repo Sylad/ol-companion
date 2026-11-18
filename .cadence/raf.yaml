@@ -2971,6 +2971,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-18, sha: d9fded68d96b1d7f921b94f240bbab25d8ef5f26 }
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme (revue du lead, lot de 2 lignes) : marge gauche du AreaChart -12 → 0 (season-summary.tsx:148), test Chromium 320–1440 px qui mesure x ≥ 0 des étiquettes de l'axe Y", commit: 6f5d8a98b93bae7bd917adc5cf2e259136b54c37 }
