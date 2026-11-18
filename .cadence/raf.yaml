@@ -2984,6 +2984,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-18, sha: f0be75c41813750f9941e83c43725dce9e1bfa9d }
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : 0 bloquant ; notes mineures : test de la bande sur une suite palindromique (ordre non prouvé), README:27 dit encore « Forme »", commit: 09c7881283cb181ead0ea69f44564d87a52fbeef }
