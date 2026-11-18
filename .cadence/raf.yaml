@@ -3009,13 +3009,14 @@ lots:
   - id: L259
     title: "Classement au téléphone : aucune ligne au premier écran (tableau à y=776 à 320 px, sous la barre du bas) et H2 « Tracker » avant le H1 — revue UX L255"
     public: "Classement au téléphone : le tableau d'abord"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : test 7/7 rouge sans la correction (1re ligne à y=815 sous la barre), vert avec ; bureau 1440 inchangé ; suite : README « Classement Ligue 1 » à mettre à jour (porté par L261)", commit: 5f22fa0f1d860347f3767d4d36780c247e4682df }
     ux: { date: 2026-11-18, verdict: "conforme (lead, captures regardées) : classement au premier écran à 320 et 390 px, Lyon visible, lien « Voir l'OL (5e) », H1 avant H2" }
+    finished: 2026-11-18
   - id: L260
     title: "Mineurs de la revue UX L255 : ordre des titres (/fixtures, /about, /standings), cibles < 24 px (calendrier, coupes, /news), alt des logos qui répètent le nom, libellés anglais restants, émojis lus comme icônes, 5 « Réessayer » pour une panne sans cause, titre de la 404, « Cliquez » au téléphone"
     public: "Petites améliorations d'accessibilité et de vocabulaire"
