@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "4cd428d2bb37eadcb3fd8445ade6490cec81f546"
+    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "78314123da422557a0b66bba2537caaf3ad2f679"
   },
   "resceaux": [
     {
@@ -26,6 +26,23 @@
       "apres": "4cd428d2bb37eadcb3fd8445ade6490cec81f546",
       "porteur": "L229",
       "ficheAmendee": "8a67e82"
+    },
+    {
+      "test": "frontend/src/routes/fixtures.acceptation-L50.test.tsx",
+      "raison": "L258 : sous 360 px la date affiche une forme courte (« WE », « 05/12 ») marquée aria-hidden ; le test lit désormais le texte du lecteur d'écran, qui reste « Week-end du 05/12 » — contrat de L50 inchangé",
+      "date": "2026-11-18",
+      "avant": "4cd428d2bb37eadcb3fd8445ade6490cec81f546",
+      "apres": "78314123da422557a0b66bba2537caaf3ad2f679",
+      "porteur": "L258",
+      "ficheAmendee": "b2f37e0",
+      "amendements": [
+        {
+          "sha": "b2f37e0",
+          "lot": "L229",
+          "etat": "done",
+          "raison": "lot L229 fini : son commit de la fiche est publié et ne se réécrit pas, la fiche vivante fait foi"
+        }
+      ]
     }
   ]
 }
