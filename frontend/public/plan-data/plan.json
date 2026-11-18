@@ -845,7 +845,8 @@
     {
       "id": "L261",
       "title": "Tous les textes du site à 12 px au moins, mesurés sur la page",
-      "status": "todo"
+      "status": "doing",
+      "started": "2026-11-18"
     }
   ]
 }
