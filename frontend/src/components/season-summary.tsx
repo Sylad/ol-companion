@@ -143,9 +143,11 @@ function SummaryBody({ data }: { data: NonNullable<ReturnType<typeof useTeamSeas
             </span>
           </span>
         </div>
-        <div className="h-[160px] w-full">
+        {/* L256 : marge gauche à 0, jamais négative — à -12, « -4 » partait à x = -3 px (lu « 4 ») et « 12 » se lisait
+            « I2 ». Test Chromium : tests-navigateur/accueil-axe-diff-buts.test.ts (320 à 1440 px). */}
+        <div className="h-[160px] w-full" data-testid="graphique-diff-buts">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data.chart} margin={{ top: 8, right: 8, left: -12, bottom: 4 }}>
+            <AreaChart data={data.chart} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
               <defs>
                 <linearGradient id="gd-grad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={TRAJECTORY_COLOR} stopOpacity={0.4} />
