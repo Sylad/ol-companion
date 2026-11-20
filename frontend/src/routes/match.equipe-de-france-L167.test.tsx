@@ -20,8 +20,6 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 vi.mock('@/hooks/use-match-event-burst', () => ({ useMatchEventBurst: () => null }));
 const reel = vi.hoisted(() => ({ actif: false, apiGet: vi.fn() }));
-// L265 : « Ce que ça change » a sa propre requête (football-data), testée à part ; ce test compte les appels de la page.
-vi.mock('@/hooks/use-match-impact', () => ({ useMatchImpact: () => ({ isPending: true, data: undefined, error: null }) }));
 vi.mock('@/hooks/use-live-match', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/hooks/use-live-match')>();
   return { ...actual, useLiveMatchStats: (g: number | null, m: string | null) => (reel.actif ? actual.useLiveMatchStats(g, m) : hook) };

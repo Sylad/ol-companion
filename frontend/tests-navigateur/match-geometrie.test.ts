@@ -18,13 +18,13 @@ const joueur = (id: number, name: string) => ({
   id, name, shortName: name, jerseyNumber: id, positionShort: 'MC', yardLine: 50, yardSide: 2, ranking: 7,
 });
 
-function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, name: 'Belgique' }) {
+function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, name: 'Belgique' }, competition = { id: 7016, name: 'Ligue des nations' }) {
   const side = (id: number, name: string, symbolicName: string, score: number) => ({ id, name, symbolicName, imageVersion: 1, score });
   const lineup = (base: number) => ({
     formation: '4-3-3', starters: Array.from({ length: 11 }, (_, i) => joueur(base + i, `Joueur ${base + i}`)), bench: [],
   });
   return {
-    gameId: GAME_ID, matchupId: MATCHUP, competitionId: 7016, competitionName: 'Ligue des nations', status: 'ended',
+    gameId: GAME_ID, matchupId: MATCHUP, competitionId: competition.id, competitionName: competition.name, status: 'ended',
     statusGroup: 4, statusText: 'Terminé', gameTime: 90, gameTimeDisplay: "90'", startTime: '2026-10-05T20:45:00+02:00',
     timeConfirmed: true,
     home: side(domicile.id, domicile.name, 'FRA', 5),
@@ -67,14 +67,21 @@ afterAll(async () => {
   await serveur?.close();
 });
 
+/** L265 : réponse de `/api/match-impact` (match de Ligue 1 de l'OL terminé), servie quand `libererImpact` est appelé. */
+type Impact = { competition: { id: number; name: string }; corps: unknown; libererImpact?: Promise<void> };
+
 async function ouvrir(
   largeur: number, hauteur: number,
-  domicile?: { id: number; name: string }, visiteur?: { id: number; name: string }, matchup = MATCHUP,
+  domicile?: { id: number; name: string }, visiteur?: { id: number; name: string }, matchup = MATCHUP, impact?: Impact,
 ): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
-  await page.route('**/api/**', (route) => {
+  await page.route('**/api/**', async (route) => {
     const u = route.request().url();
-    if (u.includes(`/api/live-match/${GAME_ID}/stats`)) return route.fulfill({ json: stats(domicile, visiteur) });
+    if (u.includes(`/api/live-match/${GAME_ID}/stats`)) return route.fulfill({ json: stats(domicile, visiteur, impact?.competition) });
+    if (impact && u.includes('/api/match-impact?at=')) {
+      await impact.libererImpact;
+      return route.fulfill({ json: impact.corps });
+    }
     return route.fulfill({ status: 404, json: {} });
   });
   // Écussons et polices distants : hors sujet, et ils ne doivent pas retarder la mesure.
@@ -188,5 +195,53 @@ describe.each([360, 390])('en-tête du score d\'un match de l\'OL à %i px', (la
       });
       expect(coupes, `mots coupés à ${largeur} px`).toEqual([]);
     } finally { await page.close(); }
+  });
+});
+
+// L265 — « Ce que ça change » d'un match de Ligue 1 de l'OL terminé est dans la pile du centre (avant le mini-classement),
+// pas entre l'en-tête et la grille : placé là, il faisait passer la rangée Statistiques | Momentum sous le pli à 1366 × 768
+// (852 px, mesuré). La place du bloc est réservée pendant le chargement. Journée provisoire : badge + ligne de plus.
+const IMPACT = {
+  matchday: 10, finished: true, homeTeam: 'Lyon', awayTeam: 'Belgique', score: { home: 5, away: 1 },
+  before: { position: 3, points: 17 }, after: { position: 1, points: 20 },
+  remaining: 1, remainingInMatchday: 1, above: null, below: { place: 1, margin: 2 }, updatedAt: '2026-10-05T22:00:00Z',
+};
+const LIGUE_1 = { id: 35, name: 'Ligue 1' };
+
+describe.each([...ECRANS, [390, 844]] as const)('match de Ligue 1 de l\'OL terminé, avec « Ce que ça change », à %i × %i', (largeur, hauteur) => {
+  let page: Page;
+  let bloc: { pendant: Boite; apres: Boite };
+  beforeAll(async () => {
+    let liberer!: () => void;
+    const libererImpact = new Promise<void>((r) => { liberer = r; });
+    page = await ouvrir(largeur, hauteur, { id: OL_ID, name: 'Lyon' }, { id: 2373, name: 'Belgique' }, `${OL_ID}-2373-${GAME_ID}`, { competition: LIGUE_1, corps: IMPACT, libererImpact });
+    await page.getByTestId('ce-que-ca-change-chargement').waitFor();
+    const pendant = await boite(page, 'ce-que-ca-change');
+    liberer();
+    await page.getByTestId('ce-que-ca-change-provisoire').waitFor();
+    bloc = { pendant, apres: await boite(page, 'ce-que-ca-change') };
+    if (process.env.CAPTURES_DIR) await page.screenshot({ path: `${process.env.CAPTURES_DIR}/L265-match-${largeur}.png`, fullPage: true });
+  });
+  afterAll(async () => { await page?.close(); });
+
+  it('le bloc est dans la pile du centre, sous la rangée Statistiques | Momentum', async () => {
+    expect(await page.getByTestId('colonne-centre-bas').getByTestId('ce-que-ca-change').count()).toBe(1);
+    const rangee = await boite(page, 'rangee-stats-elan');
+    expect(bloc.apres.top).toBeGreaterThanOrEqual(rangee.bottom);
+  });
+
+  it('R16 — le bas de la rangée Statistiques | Momentum reste au-dessus du pli', async () => {
+    if (largeur < 1366) return; // R16 vaut pour l'écran de bureau
+    const rangee = await boite(page, 'rangee-stats-elan');
+    expect(rangee.bottom).toBeLessThanOrEqual(hauteur);
+  });
+
+  it('chargement : place réservée (titre + deux lignes), le bloc ne bouge pas et rien au-dessus de lui ne bouge', async () => {
+    const titre = await page.getByTestId('ce-que-ca-change').locator('h2').evaluate((h) => h.getBoundingClientRect().height);
+    const ligne = await page.getByTestId('ce-que-ca-change-phrase').evaluate((p) => parseFloat(getComputedStyle(p).lineHeight));
+    expect(bloc.pendant.height).toBeGreaterThanOrEqual(titre + 2 * ligne);
+    expect(bloc.apres.top).toBeCloseTo(bloc.pendant.top, 0);
+    // Seul ce qui est SOUS le bloc peut descendre (pile du centre ; à 1440 et 1366, le bloc est déjà sous le pli).
+    expect(bloc.apres.height).toBeGreaterThanOrEqual(bloc.pendant.height - 1);
   });
 });

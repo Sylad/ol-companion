@@ -17,8 +17,6 @@ const ev = (over: Record<string, unknown>) => ({
   extraPlayerName: 'Amane Romeo', extraPlayerShortName: 'Romeo', description: 'Substitution', ...over,
 });
 
-// L265 : « Ce que ça change » a sa propre requête (football-data), testée à part.
-vi.mock('@/hooks/use-match-impact', () => ({ useMatchImpact: () => ({ isPending: true, data: undefined, error: null }) }));
 vi.mock('@/hooks/use-live-match', () => ({
   useLiveMatchStats: () => ({
     isLoading: false,

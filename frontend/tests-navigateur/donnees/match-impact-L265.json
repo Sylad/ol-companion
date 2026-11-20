@@ -1,0 +1,23 @@
+{
+  "_note": "L265 — réponses de /api/match-impact pour Brest – Lyon (J10, 8-11, 2-0), ajoutées au jeu du 18-11. La route n'était pas en prod le 18-11 : réponses construites au format du backend, places avant/après = tracker de la prod (season-rankings : 3e 17 pts → 5e 17 pts), écarts aux places clés lus dans le classement à l’issue de la J10 servi par la prod (mini-classement du match : Paris FC 3e 20 pts, Nice 6e 17 pts). Page du match : journée encore provisoire (badge « Provisoire » + ligne des matchs restants, pour mesurer leurs tailles) ; accueil : journée complète. Les clés suivent l'`at` de chaque page (startTime de 365scores sur /match, date de /api/season-matches à l'accueil).",
+  "/api/match-impact?at=2026-11-08T17%3A15%3A00%2B01%3A00": {
+    "status": 200,
+    "body": {
+      "matchday": 10, "finished": true, "homeTeam": "Brest", "awayTeam": "Lyon", "score": { "home": 2, "away": 0 },
+      "before": { "position": 3, "points": 17 }, "after": { "position": 5, "points": 17 },
+      "remaining": 1, "remainingInMatchday": 1,
+      "above": { "place": 3, "gap": 3 }, "below": { "place": 5, "margin": 0 },
+      "updatedAt": "2026-11-08T18:30:00Z"
+    }
+  },
+  "/api/match-impact?at=2026-11-08T16%3A15%3A00.000Z": {
+    "status": 200,
+    "body": {
+      "matchday": 10, "finished": true, "homeTeam": "Brest", "awayTeam": "Lyon", "score": { "home": 2, "away": 0 },
+      "before": { "position": 3, "points": 17 }, "after": { "position": 5, "points": 17 },
+      "remaining": 0, "remainingInMatchday": 0,
+      "above": { "place": 3, "gap": 3 }, "below": { "place": 5, "margin": 0 },
+      "updatedAt": "2026-11-10T09:00:00Z"
+    }
+  }
+}

@@ -21,6 +21,7 @@ import { eventLabelFr } from '@/lib/event-fr';
 import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 import { FootballDataAttribution } from '@/components/football-data-attribution';
 import { CeQueCaChange } from '@/components/ce-que-ca-change';
+import { useMatchImpact } from '@/hooks/use-match-impact';
 
 
 /** Ligue 1 chez 365scores : seule compétition dont football-data.org décide l'heure du coup d'envoi. */
@@ -372,6 +373,12 @@ export function MatchPage() {
     matchupId ?? null,
   );
   const burst = useMatchEventBurst(data);
+  // L265 : un match de Ligue 1 de l'OL terminé dit ce qu'il change au classement (football-data.org seul).
+  // La requête est partagée avec le bloc (même clé) : la note des sources ne cite football-data que si
+  // le bloc affiche une donnée de football-data.
+  const impactAt =
+    data && data.status === 'ended' && data.competitionId === LIGUE_1_365SCORES_ID && !isFranceMatchup(matchupId) ? data.startTime : null;
+  const impact = useMatchImpact(impactAt);
   // Décidé sur l'URL et non sur la réponse : le thème est là dès le chargement, sans bascule rouge puis bleue (L167 R3).
   const bleus = isFranceMatchup(matchupId);
   useEffect(() => {
@@ -446,8 +453,7 @@ export function MatchPage() {
   const isLive = data.status === 'live';
   const isUpcoming = data.status === 'upcoming';
   const ligue1 = data.competitionId === LIGUE_1_365SCORES_ID;
-  // L265 : un match de Ligue 1 de l'OL terminé dit ce qu'il change au classement (football-data.org seul).
-  const ceQueCaChange = data.status === 'ended' && ligue1 && !bleus;
+  const ceQueCaChange = impactAt !== null;
   const clock = isUpcoming ? { phase: 'upcoming' as const, label: 'À VENIR', isActive: false } : deriveClock(data);
   const isPaused = clock.phase === 'half-time';
 
@@ -477,7 +483,7 @@ export function MatchPage() {
   const teamRows = nonZero(TEAM_STATS);
   const hasMomentum = !!data.momentum && data.momentum.length > 0;
   const hasShots = data.shots.length > 0;
-  const hasPile = data.topPerformers.length > 0 || isUpcoming || !!data.standings;
+  const hasPile = data.topPerformers.length > 0 || isUpcoming || !!data.standings || (ceQueCaChange && !estIntrouvable(impact.error));
   const hasSides = !!homeLineup || !!awayLineup || teamRows.length > 0;
 
   return (
@@ -560,8 +566,6 @@ export function MatchPage() {
           )}
         </div>
       </section>
-
-      {ceQueCaChange && <CeQueCaChange at={data.startTime} className="rounded-md bg-surface border border-border" />}
 
       {/* Écran de match (L160, L186) : à partir de 1440 px, trois colonnes indépendantes — domicile à gauche,
           match au centre, visiteur à droite ; dessous, une seule colonne dans l'ordre du DOM. Le centre est UNE
@@ -667,6 +671,9 @@ export function MatchPage() {
                       </div>
                     </section>
                   )}
+                  {/* L265 : à côté du classement qu'il commente, jamais entre l'en-tête et la grille (la rangée
+                      Statistiques | Momentum passait sous le pli à 1366 × 768, règle R16 de L186). */}
+                  {ceQueCaChange && <CeQueCaChange at={data.startTime} className="rounded-md bg-surface border border-border" />}
                   {!!data.standings && <MiniStandings rows={data.standings} />}
                 </div>
               )}
@@ -706,7 +713,7 @@ export function MatchPage() {
           </div>
         )}
       </div>
-      <SourcesMatch footballData={isUpcoming && ligue1 ? 'coup-envoi' : ceQueCaChange ? 'classement' : null} />
+      <SourcesMatch footballData={isUpcoming && ligue1 ? 'coup-envoi' : ceQueCaChange && impact.data ? 'classement' : null} />
     </div>
   );
 }

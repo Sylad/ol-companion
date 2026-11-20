@@ -19,8 +19,6 @@ vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, to, ...rest }: { children: React.ReactNode; to: string }) => <a href={to} {...(rest as object)}>{children}</a>,
 }));
 vi.mock('@/hooks/use-match-event-burst', () => ({ useMatchEventBurst: () => null }));
-// L265 : « Ce que ça change » a sa propre requête (football-data), testée à part.
-vi.mock('@/hooks/use-match-impact', () => ({ useMatchImpact: () => ({ isPending: true, data: undefined, error: null }) }));
 vi.mock('@/hooks/use-live-match', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/hooks/use-live-match')>();
   return { ...actual, useLiveMatchStats: () => hook };

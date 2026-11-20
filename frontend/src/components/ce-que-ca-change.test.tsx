@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LastResult } from './last-result';
 import { CeQueCaChange } from './ce-que-ca-change';
 
+// Le setup commun garde ce hook « en chargement » partout ; ici, le vrai.
+vi.unmock('@/hooks/use-match-impact');
+
 // L265 — « Ce que ça change » : le bloc lit /api/match-impact (football-data.org) et dit toujours son état.
 
 const IMPACT = {

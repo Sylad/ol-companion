@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { BadRequestException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import type { ConfigService } from '@nestjs/config';
-import { LEAGUE_MATCHES_TTL_MS, LeagueMatchesService } from './league-matches.service';
+import { LEAGUE_MATCHES_FAILURE_WAIT_MS, LEAGUE_MATCHES_TTL_MS, LeagueMatchesService } from './league-matches.service';
 import { MatchImpactController } from './match-impact.controller';
 
 const fdMatch = (id: number, home: number, away: number, score: [number, number] | null, matchday = 1) => ({
@@ -81,6 +81,61 @@ describe('LeagueMatchesService (L265) — un appel football-data, copie de 15 mi
     reply = ok([]);
     expect(await new LeagueMatchesService(config('')).getMatches()).toBeNull();
     expect(calls).toHaveLength(0);
+  });
+
+  it('après un 429 : les lectures suivantes servent la copie sans rappeler football-data, jusqu’au délai', async () => {
+    const ts = Date.now() - LEAGUE_MATCHES_TTL_MS - 1;
+    fs.mkdirSync('data');
+    fs.writeFileSync('data/ligue1-matches-fd.json', JSON.stringify({ ts, matches: [{ id: 7 }] }));
+    reply = () => Promise.resolve(new Response('{}', { status: 429 }));
+    const service = new LeagueMatchesService(config('cle'));
+    const debut = Date.now();
+    const now = jest.spyOn(Date, 'now');
+    try {
+      now.mockReturnValue(debut);
+      await service.getMatches();
+      expect(calls).toHaveLength(1);
+      now.mockReturnValue(debut + 60_000);
+      expect(await service.getMatches()).toEqual({ matches: [{ id: 7 }], fetchedAt: ts });
+      now.mockReturnValue(debut + LEAGUE_MATCHES_FAILURE_WAIT_MS - 1);
+      await service.getMatches();
+      expect(calls).toHaveLength(1); // échec puis deux lectures : toujours un seul appel
+      // Délai écoulé : un nouvel essai, qui réussit et remet la copie à jour.
+      reply = ok([fdMatch(1, 523, 511, [2, 0])]);
+      now.mockReturnValue(debut + LEAGUE_MATCHES_FAILURE_WAIT_MS);
+      const frais = await service.getMatches();
+      expect(calls).toHaveLength(2);
+      expect(frais!.matches[0].id).toBe(1);
+    } finally {
+      now.mockRestore();
+    }
+  });
+
+  it.each([
+    ['erreur réseau', () => Promise.reject(new Error('réseau'))],
+    ['réponse sans match', () => Promise.resolve(new Response(JSON.stringify({ matches: [] }), { status: 200 }))],
+  ])('sans copie, %s : null, et la lecture suivante ne rappelle pas', async (_nom, r) => {
+    reply = r as () => Promise<Response>;
+    const service = new LeagueMatchesService(config('cle'));
+    expect(await service.getMatches()).toBeNull();
+    expect(await service.getMatches()).toBeNull();
+    expect(calls).toHaveLength(1);
+  });
+
+  it('un succès efface l’échec : copie périmée plus tard → nouvel appel aussitôt', async () => {
+    reply = ok([fdMatch(1, 523, 511, [2, 0])]);
+    const service = new LeagueMatchesService(config('cle'));
+    const debut = Date.now();
+    const now = jest.spyOn(Date, 'now');
+    try {
+      now.mockReturnValue(debut);
+      await service.getMatches();
+      now.mockReturnValue(debut + LEAGUE_MATCHES_TTL_MS);
+      await service.getMatches();
+      expect(calls).toHaveLength(2);
+    } finally {
+      now.mockRestore();
+    }
   });
 
   it('deux lectures simultanées : un seul appel', async () => {

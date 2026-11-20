@@ -14,7 +14,10 @@ import { mkdirSync } from 'node:fs';
 import { chromium, type Browser, type Page } from 'playwright';
 import { createServer, type ViteDevServer } from 'vite';
 
-const API = JSON.parse(readFileSync(new URL('./donnees/api-prod-2026-11-18.json', import.meta.url), 'utf8')) as Record<string, { status: number; body: unknown }>;
+type Reponses = Record<string, { status: number; body: unknown }>;
+const lire = (nom: string) => JSON.parse(readFileSync(new URL(`./donnees/${nom}`, import.meta.url), 'utf8')) as Reponses;
+// L265 : « Ce que ça change » (accueil et page de Brest – Lyon) a ses réponses à part (`_note` du fichier).
+const API: Reponses = { ...lire('api-prod-2026-11-18.json'), ...lire('match-impact-L265.json') };
 const CAPTURES = process.env.CAPTURES_DIR;
 
 let serveur: ViteDevServer;
@@ -143,6 +146,26 @@ describe.each([320, 390, 1440])('L261 — composition de /match à %i px', (larg
       }
       // Le cas de la QA : à 1440, la Turquie (5 défenseurs, « Çalhanoğlu ») passe en quinconce.
       if (largeur === 1440 && chemin.includes('5061')) expect(blocs.some((b) => b.quinconce)).toBe(true);
+    } finally { await page.close(); }
+  });
+});
+
+// L265 — le plancher ci-dessus ne vaut pour « Ce que ça change » que si le bloc est rendu : badge « Provisoire »
+// (`text-petite`) et ligne des matchs restants (`text-xs`) sur la page de Brest – Lyon, phrase seule à l'accueil.
+describe.each([390, 1440])('L265 — « Ce que ça change » rendu et mesuré à %i px', (largeur) => {
+  it.each([
+    ['/', false],
+    ['/match/4735215?matchupId=534-465-4735215', true],
+  ] as const)('%s', async (chemin, provisoire) => {
+    const page = await ouvrir(largeur, chemin);
+    try {
+      await page.getByTestId('ce-que-ca-change-phrase').waitFor();
+      expect(await page.getByTestId('ce-que-ca-change-provisoire').count()).toBe(provisoire ? 1 : 0);
+      const tailles = await page.getByTestId('ce-que-ca-change').evaluate((bloc) =>
+        [...bloc.querySelectorAll('*')].filter((e) => [...e.childNodes].some((c) => c.nodeType === 3 && c.textContent!.trim()))
+          .map((e) => parseFloat(getComputedStyle(e).fontSize)));
+      expect(tailles.length).toBeGreaterThanOrEqual(provisoire ? 4 : 2);
+      expect(Math.min(...tailles)).toBeGreaterThanOrEqual(12);
     } finally { await page.close(); }
   });
 });

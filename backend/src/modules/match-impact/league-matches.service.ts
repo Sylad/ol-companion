@@ -12,6 +12,13 @@ import type { FdLeagueMatch } from './match-impact';
 /** Fraîcheur de la copie : au plus 4 appels par heure, le résultat d'un match y entre en 15 min. */
 export const LEAGUE_MATCHES_TTL_MS = 15 * 60_000;
 
+/**
+ * Après un appel en échec (refus, 429, réseau, réponse vide), aucun nouvel appel avant ce délai : la
+ * copie (ou rien) est servie. Sinon chaque visite relançait football-data, dont la clé est partagée
+ * avec le calendrier et l'heure des coups d'envoi (10 appels par minute).
+ */
+export const LEAGUE_MATCHES_FAILURE_WAIT_MS = 15 * 60_000;
+
 interface CacheFile { ts: number; matches: FdLeagueMatch[]; }
 
 export interface LeagueMatches { matches: FdLeagueMatch[]; fetchedAt: number; }
@@ -33,27 +40,39 @@ export function toFdLeagueMatch(m: FootballDataMatch): FdLeagueMatch {
  * (`/v4/competitions/2015/matches`, un seul appel, offre gratuite). Lu à la
  * demande, jamais au démarrage : copie sur disque de 15 min ; un appel en échec
  * sert la dernière copie (quel que soit son âge, `fetchedAt` la date), et sans
- * copie rend `null`.
+ * copie rend `null` ; il n'est pas retenté avant `LEAGUE_MATCHES_FAILURE_WAIT_MS`.
  */
 @Injectable()
 export class LeagueMatchesService {
   private readonly logger = new Logger(LeagueMatchesService.name);
   private readonly cacheFile = path.resolve(process.cwd(), 'data', 'ligue1-matches-fd.json');
   private inFlight: Promise<LeagueMatches | null> | null = null;
+  /** Instant du dernier appel en échec (mémoire du processus) ; `null` après un succès. */
+  private failedAt: number | null = null;
 
   constructor(private readonly config: ConfigService) {}
 
   async getMatches(): Promise<LeagueMatches | null> {
     const cached = this.readCache();
     if (cached && Date.now() - cached.ts < LEAGUE_MATCHES_TTL_MS) return { matches: cached.matches, fetchedAt: cached.ts };
+    if (this.failedAt !== null && Date.now() - this.failedAt < LEAGUE_MATCHES_FAILURE_WAIT_MS) {
+      return cached ? { matches: cached.matches, fetchedAt: cached.ts } : null;
+    }
     this.inFlight ??= this.refresh(cached).finally(() => { this.inFlight = null; });
     return this.inFlight;
   }
 
   private async refresh(cached: CacheFile | null): Promise<LeagueMatches | null> {
+    const result = await this.fetchFresh(cached);
+    this.failedAt = result.ok ? null : Date.now();
+    return result.value;
+  }
+
+  /** `ok` faux : l'appel a échoué (la copie, ou `null`, est rendue). Sans clé, rien n'est appelé : pas un échec. */
+  private async fetchFresh(cached: CacheFile | null): Promise<{ ok: boolean; value: LeagueMatches | null }> {
     const stale = cached ? { matches: cached.matches, fetchedAt: cached.ts } : null;
     const apiKey = this.config.get<string>('footballApiKey');
-    if (!apiKey) return stale;
+    if (!apiKey) return { ok: true, value: stale };
     const url = `https://api.football-data.org/v4/competitions/${LIGUE1_FOOTBALL_DATA_ID}/matches`;
     try {
       const res = await fetch(url, {
@@ -62,21 +81,21 @@ export class LeagueMatchesService {
       });
       if (!res.ok) {
         this.logger.warn(`Ligue 1 (football-data) → HTTP ${res.status} — ${stale ? 'copie gardée' : 'aucune copie'}`);
-        return stale;
+        return { ok: false, value: stale };
       }
       const data = parseExternal(FootballDataMatchesResponseSchema, await res.json(), 'football-data Ligue 1');
       const matches = (data.matches ?? []).map(toFdLeagueMatch);
       if (matches.length === 0) {
         this.logger.warn('Ligue 1 (football-data) : 0 match — copie gardée');
-        return stale;
+        return { ok: false, value: stale };
       }
       const ts = Date.now();
       fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
       atomicWriteJsonSync(this.cacheFile, { ts, matches });
-      return { matches, fetchedAt: ts };
+      return { ok: true, value: { matches, fetchedAt: ts } };
     } catch (err) {
       this.logger.warn(`Ligue 1 (football-data) en échec : ${(err as Error)?.message ?? err}`);
-      return stale;
+      return { ok: false, value: stale };
     }
   }
 

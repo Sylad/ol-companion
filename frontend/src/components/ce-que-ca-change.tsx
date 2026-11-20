@@ -7,12 +7,19 @@ import { cn } from '@/lib/utils';
 /**
  * L265 — « Ce que ça change » sous un match de Ligue 1 terminé (page du match, « Dernier résultat »).
  * Données : football-data.org seul (`/api/match-impact`), la mention est portée par la page.
- * Rien pendant le chargement ni si football-data ne connaît pas le match (404) ; une panne ou un
- * résultat pas encore enregistré le disent, jamais un bloc vide.
+ * Pendant le chargement, le bloc réserve sa place (titre + deux lignes de phrase, `aria-busy`) : rien ne saute quand
+ * la phrase arrive. Rien si football-data ne connaît pas le match (404) ; une panne ou un résultat pas
+ * encore enregistré le disent, jamais un bloc vide.
  */
 export function CeQueCaChange({ at, className }: { at: string; className?: string }) {
   const { data, error, isPending } = useMatchImpact(at);
-  if (isPending && !error) return null;
+  if (isPending && !error) {
+    return (
+      <Cadre className={className} enCours>
+        <p data-testid="ce-que-ca-change-chargement" className="text-sm leading-snug min-h-[2.75em] text-fg-dim">Calcul du classement…</p>
+      </Cadre>
+    );
+  }
   if (!data) {
     if (estIntrouvable(error)) return null;
     return (
@@ -43,10 +50,10 @@ export function CeQueCaChange({ at, className }: { at: string; className?: strin
   );
 }
 
-function Cadre({ children, className, provisoire = false }: { children: ReactNode; className?: string; provisoire?: boolean }) {
+function Cadre({ children, className, provisoire = false, enCours = false }: { children: ReactNode; className?: string; provisoire?: boolean; enCours?: boolean }) {
   const titre = useId();
   return (
-    <section data-testid="ce-que-ca-change" aria-labelledby={titre} className={cn('px-5 py-3', className)}>
+    <section data-testid="ce-que-ca-change" aria-labelledby={titre} aria-busy={enCours || undefined} className={cn('px-5 py-3', className)}>
       <h2 id={titre} className="eyebrow mb-1 flex flex-wrap items-center gap-2">
         Ce que ça change
         {provisoire && (
