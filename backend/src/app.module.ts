@@ -15,6 +15,7 @@ import { DemoModule } from './modules/demo/demo.module';
 import { DemoModeMiddleware } from './modules/demo/demo-mode.middleware';
 import { HealthModule } from './modules/health/health.module';
 import { FixturesModule } from './modules/fixtures/fixtures.module';
+import { CalendarModule } from './modules/calendar/calendar.module';
 import { SeasonMatchesModule } from './modules/season-matches/season-matches.module';
 import { StandingsModule } from './modules/standings/standings.module';
 import { NewsModule } from './modules/news/news.module';
@@ -43,6 +44,7 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     EventsModule,
     HealthModule,
     FixturesModule,
+    CalendarModule,
     SeasonMatchesModule,
     StandingsModule,
     NewsModule,

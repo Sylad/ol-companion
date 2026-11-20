@@ -244,4 +244,38 @@ describe('AppModule (e2e)', () => {
   it('ne réécrit pas backend/data/', () => {
     expect(snapshotMtimes(BACKEND_DATA)).toEqual(backendDataBefore);
   });
+
+  it('GET /api/calendar.ics (L264) : sans match football-data → 503, jamais un calendrier vide', async () => {
+    fs.rmSync(path.join(tmpDir, 'data', 'fixtures-cache.json'), { force: true });
+    await request(app!.getHttpServer()).get('/api/calendar.ics').expect(503);
+  });
+
+  it('GET /api/calendar.ics (L264) : servi depuis le cache football-data, en text/calendar, sans appel sortant', async () => {
+    const match = {
+      id: 559603,
+      date: '2026-12-05T00:00:00Z',
+      homeTeam: 'ESTAC Troyes',
+      homeTeamId: 531,
+      awayTeam: 'Olympique Lyonnais',
+      awayTeamId: 523,
+      homeScore: null,
+      awayScore: null,
+      competition: 'Ligue 1',
+      status: 'SCHEDULED',
+      matchday: 13,
+    };
+    fs.writeFileSync(
+      path.join(tmpDir, 'data', 'fixtures-cache.json'),
+      JSON.stringify({ ts: Date.now(), data: [match] }),
+    );
+    const before = outbound.length;
+    const res = await request(app!.getHttpServer())
+      .get('/api/calendar.ics')
+      .expect(200)
+      .expect('Content-Type', /^text\/calendar; charset=utf-8/);
+    expect(res.text.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true);
+    expect(res.text).toContain('UID:fd-559603@ol.sladoire.dev\r\n');
+    expect(res.text).toContain('DTSTART;VALUE=DATE:20261204\r\n');
+    expect(outbound.slice(before)).toEqual([]);
+  });
 });

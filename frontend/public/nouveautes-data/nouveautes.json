@@ -3,6 +3,23 @@
   "generated": "2026-11-05 20:32",
   "entries": [
     {
+      "slug": "2026-11-20-les-matchs-de-ligue-1-de-l-ol-dans-votre-agenda",
+      "title": "Les matchs de Ligue 1 de l'OL dans votre agenda",
+      "date": "2026-11-20",
+      "lots": [
+        "L264"
+      ],
+      "captures": [
+        "captures/L264-abonnement-calendrier-1440.png",
+        "captures/L264-abonnement-calendrier-390.png"
+      ],
+      "alts": [
+        "Page Calendrier à 1440 px : le bouton S'abonner ouvert sous le titre, avec les liens Apple Calendrier, Outlook et Google Agenda, l'adresse à copier et la mention de football-data.org",
+        "Le même panneau d'abonnement à 390 px (téléphone), les boutons l'un sous l'autre"
+      ],
+      "html": "<p>Un bouton « S'abonner » en haut de la page Calendrier ajoute les matchs de Ligue 1 de l'OL à votre agenda (Apple Calendrier, Outlook, Google Agenda, ou tout agenda qui accepte une adresse). L'agenda se met à jour seul : quand la Ligue fixe l'horaire d'un match, l'événement change d'heure au lieu d'apparaître deux fois. Tant que l'horaire n'est pas fixé, le match figure sans heure, sur le week-end prévu.</p>\n<p>Les coupes (Coupe de France, Ligue Europa, Ligue des champions) n'y sont pas : la source de ce calendrier, football-data.org, ne les fournit pas. Le panneau le dit, et chaque événement cite football-data.org.</p>"
+    },
+    {
       "slug": "2026-11-20-joueurs-en-vue-chaque-chiffre-dit-ce-qu-il-compte",
       "title": "Joueurs en vue : chaque chiffre dit ce qu'il compte",
       "date": "2026-11-20",

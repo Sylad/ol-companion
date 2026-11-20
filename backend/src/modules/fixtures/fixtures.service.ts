@@ -67,8 +67,13 @@ interface CacheFile {
   upcomingAt?: number;
 }
 
-/** Les 20 derniers résultats suffisent au tableau de bord (dernier résultat). */
-const FINISHED_LIMIT = 20;
+/**
+ * Les matchs joués de toute la saison : le calendrier `.ics` (L264) publie la
+ * saison entière, et un match sorti du flux disparaît des agendas abonnés.
+ * Une saison compte 34 journées de Ligue 1 (20 suffisaient au seul tableau de
+ * bord).
+ */
+const FINISHED_LIMIT = 40;
 /**
  * Toute la fin de saison, pas les 10 prochains matchs : le calendrier a besoin
  * de savoir, journée par journée, si l'heure est fixée. `limit` va de 1 à 500

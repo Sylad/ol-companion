@@ -26,6 +26,7 @@ import {
   type StatusTab,
 } from '@/lib/calendar';
 import { FootballDataSourceNote } from '@/components/football-data-attribution';
+import { CalendarSubscribe } from '@/components/calendar-subscribe';
 
 const TABS: { key: StatusTab; label: string }[] = [
   { key: 'all', label: 'Tout' },
@@ -141,11 +142,16 @@ export function FixturesPage() {
           la section ne devient pas le conteneur de défilement de la barre des filtres
           (max-lg:sticky) ni de la vue rapide (lg:sticky), qui sinon ne collent plus. */}
       <section className="rounded-md bg-surface border border-border overflow-clip">
-        <header className="px-5 py-4 border-b border-border">
-          <div className="eyebrow mb-1 whitespace-nowrap">Saison {seasonLabel(data)}</div>
-          <h1 ref={titleRef} tabIndex={-1} data-testid="titre-page" className="font-display text-xl font-bold text-fg-bright leading-none focus:outline-none">
-            Calendrier
-          </h1>
+        <header className="flex flex-wrap items-center justify-between gap-x-3 px-5 py-4 border-b border-border">
+          <div>
+            <div className="eyebrow mb-1 whitespace-nowrap">Saison {seasonLabel(data)}</div>
+            <h1 ref={titleRef} tabIndex={-1} data-testid="titre-page" className="font-display text-xl font-bold text-fg-bright leading-none focus:outline-none">
+              Calendrier
+            </h1>
+          </div>
+          {/* L264 : abonnement .ics (Ligue 1, football-data seul). Affiché avec le calendrier : pendant le chargement
+              la page n'a aucun bouton (L51). */}
+          {data && <CalendarSubscribe className="contents" />}
         </header>
 
         {data && (

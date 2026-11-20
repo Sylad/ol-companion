@@ -84,7 +84,9 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux ; un match dont l'horaire n'est pas fixé a aussi un jour de remplissage : la ligne dit « Week-end du dd/mm » (vendredi à dimanche, « du dd/mm » à l'écran) ou « Date à confirmer » (`unconfirmedDay`, L47), jamais le jour de remplissage présenté comme sûr (L73, QA L32)
 - never: « Aucun match dans cette catégorie. » quand la pastille choisie annonce au moins 1 match ; une heure « 01:00 » ou « 02:00 » (minuit UTC)
 - shows: sous la liste, la ligne « Heures des coups d’envoi de Ligue 1 : Football data provided by the Football-Data.org API », la mention en lien vers https://www.football-data.org/ (L267)
+- shows: en haut, un bouton « S’abonner » (clavier, 44 px de haut) qui ouvre un panneau : liens « Apple Calendrier, Outlook… » (webcal://…/api/calendar.ics) et « Google Agenda », l’adresse https à copier, la phrase « Coupe de France, Ligue Europa et Ligue des champions n’y sont pas » et la mention football-data (L264)
 - api: /api/season-matches
+- api: /api/calendar.ics — text/calendar, Ligue 1 seule (football-data) ; 503 si football-data n’a fourni aucun match
 
 ## /news
 - shows: « Chaînes YouTube recommandées » avec au moins une carte ; « À la une » avec au moins 10 liens d'articles

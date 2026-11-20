@@ -252,7 +252,7 @@ describe('FixturesService — appel football-data refusé ou en échec (L39)', (
         'https://api.football-data.org/v4/teams/523/matches?status=SCHEDULED&limit=100',
       );
       expect(requested).toContain(
-        'https://api.football-data.org/v4/teams/523/matches?status=FINISHED&limit=20',
+        'https://api.football-data.org/v4/teams/523/matches?status=FINISHED&limit=40',
       );
     });
   });
