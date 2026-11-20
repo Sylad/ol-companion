@@ -872,8 +872,9 @@
     {
       "id": "L267",
       "title": "Sources des données citées et appelées sous notre vrai nom",
-      "status": "doing",
-      "started": "2026-11-20"
+      "status": "done",
+      "started": "2026-11-20",
+      "finished": "2026-11-20"
     }
   ]
 }
