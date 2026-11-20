@@ -3085,10 +3085,11 @@ lots:
   - id: L265
     title: "« Ce que ça change » sur un match terminé et sur « Dernier résultat » : pour J1 à J10 la phrase correspond au tracker ; journée incomplète marquée provisoire (P3 de docs/etudes/idees-supporter.md, L237)"
     public: Ce que le résultat change au classement
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-11-20
+    started: 2026-11-20
   - id: L266
     title: "Page du match à venir, « Joueurs en vue » : « Moussa Niakhate · Tacles : 0,1 » (vu le 20-11 sur Lille – Lyon) — sans doute une moyenne affichée comme un nombre de tacles ; afficher la statistique avec son vrai sens (par match, total) ou ne pas l'afficher, avec test (relevé par L237)"
     public: "Joueurs en vue : statistiques avec leur vrai sens"
