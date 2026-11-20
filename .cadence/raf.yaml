@@ -3100,6 +3100,8 @@ lots:
     ux: { date: 2026-11-20, verdict: "conforme 20-11 lead d'après les captures 1440/390 (accueil, calendrier, carte, match, À propos) : mention lisible, lien souligné, même gris que la ligne de sources L235, aucun débordement ; mineur : « Heure des coups d'envoi » (accueil) vs « Heures des coups d'envoi » (calendrier)" }
     review: { date: 2026-11-20, verdict: "conforme r2 lead : correctif 792db9d (README:158, HOW-IT-WORKS:57, « Heures », commentaire de test) conforme à la revue r1", commit: 792db9d7201617667ea37120d4edced26545138e }
     finished: 2026-11-20
+    notes:
+      - { date: 2026-11-20, text: "QA prod conforme 16/16 pages à 1440 et 390 px, aucune source en 403/429, mention football-data.org visible (tmp/qa-L267.md)" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
