@@ -53,6 +53,41 @@ describe('<CeQueCaChange /> (L265)', () => {
     expect(urls).toEqual(['/api/match-impact?at=2026-11-01T19%3A45%3A00Z']);
   });
 
+  it('revue UX r1 (m3) : le badge « Provisoire » est neutre, jamais le jaune du nul (token draw)', async () => {
+    stub(() => ({ status: 200, body: IMPACT }));
+    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" />);
+    const badge = await screen.findByTestId('ce-que-ca-change-badge');
+    expect(badge.className).toMatch(/\btext-fg-muted\b/);
+    expect(badge.className).not.toMatch(/draw/);
+  });
+
+  it('revue UX r1 (M1) : avec gabarit, la place réservée porte le cas le plus long, hors du DOM et caché', async () => {
+    stub(() => ({ status: 200, body: IMPACT }));
+    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" gabarit />);
+    await screen.findByTestId('ce-que-ca-change-phrase');
+    const gabarit = screen.getByTestId('ce-que-ca-change-gabarit');
+    expect(gabarit.getAttribute('aria-hidden')).toBe('true');
+    expect(gabarit.className).toMatch(/\binvisible\b/);
+    expect(gabarit.textContent).toBe(''); // texte posé en CSS (content), jamais lu ni trouvé deux fois
+    const [phrase, ligne] = Array.from(gabarit.querySelectorAll('p')).map((p) => p.getAttribute('data-gabarit') ?? '');
+    expect(phrase).toBe('Lyon est 12e à l’issue de la 10e journée, à 10 points de la 3e place (Ligue des champions) et 10 points d’avance sur la 16e place (barrage de relégation).');
+    expect(ligne).toBe('Classement provisoire : 12 matchs des journées 1 à 10 restent à jouer.');
+  });
+
+  it('sans gabarit (accueil) : ni gabarit ni texte en double', async () => {
+    stub(() => ({ status: 200, body: IMPACT }));
+    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" />);
+    await screen.findByTestId('ce-que-ca-change-phrase');
+    expect(screen.queryByTestId('ce-que-ca-change-gabarit')).toBeNull();
+  });
+
+  it('titre : h2 par défaut (page du match), h3 dans une carte (accueil, WCAG 1.3.1)', async () => {
+    stub(() => ({ status: 200, body: IMPACT }));
+    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" titre="h3" />);
+    expect((await screen.findByRole('heading', { level: 3 })).textContent).toMatch(/^Ce que ça change/);
+    expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
+  });
+
   it('journée complète : ni badge ni ligne provisoire', async () => {
     stub(() => ({ status: 200, body: { ...IMPACT, remaining: 0, remainingInMatchday: 0 } }));
     withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" />);
@@ -91,6 +126,9 @@ describe('<LastResult /> — « Ce que ça change » (L265)', () => {
     const carte = screen.getByTestId('dernier-resultat');
     expect(carte.contains(bloc)).toBe(true);
     expect(bloc.nextElementSibling?.tagName).toBe('FOOTER');
+    // Sous-bloc de la carte : h3 sous son h2 (revue UX r1, m2).
+    expect(bloc.querySelector('h3')?.textContent).toMatch(/^Ce que ça change/);
+    expect(bloc.querySelector('h2')).toBeNull();
     expect(urls).toContain('/api/match-impact?at=2026-11-01T19%3A45%3A00Z');
   });
 

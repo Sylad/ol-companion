@@ -82,10 +82,14 @@ describe('L265 — « Ce que ça change » sur la page du match', () => {
     const phrase = await screen.findByTestId('ce-que-ca-change-phrase');
     expect(phrase.textContent).toBe('Lyon passe de 5e à 3e, à 2 points de la 1re place et 1 point d’avance sur la 4e place.');
     expect(appelsImpact()).toEqual(['/api/match-impact?at=2026-10-05T20%3A45%3A00%2B02%3A00']);
-    // Dans la pile du centre, juste avant le mini-classement qu'il commente (pas entre l'en-tête et la grille : R16).
+    // Revue UX r1 : rangée à part, dernière du centre, sous la rangée Carte des tirs | pile (hors de la pile étroite).
     const bloc = screen.getByTestId('ce-que-ca-change');
-    expect(screen.getByTestId('colonne-centre-bas').contains(bloc)).toBe(true);
-    expect(bloc.nextElementSibling).toBe(screen.getByTestId('classement-direct'));
+    expect(bloc.parentElement).toBe(screen.getByTestId('colonne-centre'));
+    expect(bloc.previousElementSibling).toBe(screen.getByTestId('rangee-tirs-joueurs'));
+    expect(bloc.nextElementSibling).toBeNull();
+    expect(screen.getByTestId('colonne-centre-bas').contains(bloc)).toBe(false);
+    expect(bloc.querySelector('h2')?.textContent).toMatch(/Ce que ça change/);
+    expect(screen.getByTestId('ce-que-ca-change-gabarit')).toBeInTheDocument(); // place du cas le plus long (M1)
     expect(screen.queryByTestId('ce-que-ca-change-provisoire')).toBeNull();
     const note = screen.getByTestId('sources-match');
     expect(note.textContent).toMatch(MENTION);
@@ -112,20 +116,21 @@ describe('L265 — « Ce que ça change » sur la page du match', () => {
     expect(screen.getByTestId('sources-match').textContent).not.toMatch(/football-data/i);
   });
 
-  it('match inconnu de football-data (404) : ni bloc, ni pile vide, ni mention', async () => {
+  it('match inconnu de football-data (404) : ni bloc, ni rangée vide, ni mention', async () => {
     courant = stats({});
     stub({ status: 404 });
     page();
+    expect(screen.getByTestId('ce-que-ca-change')).toBeInTheDocument(); // place réservée pendant le chargement
     await waitFor(() => expect(screen.queryByTestId('ce-que-ca-change')).toBeNull());
     expect(appelsImpact()).toHaveLength(1);
     expect(screen.getByTestId('sources-match').textContent).not.toMatch(/football-data/i);
-    // Sans autre bloc dans la pile, aucune pile vide ne reste à côté de la carte des tirs.
+    // Le bloc ne crée plus de pile : sans Joueurs en vue ni classement, aucune pile, même pendant le chargement.
     cleanup();
     courant = stats({ standings: undefined });
-    stub({ status: 404 });
+    stub(null);
     page();
-    expect(screen.getByTestId('colonne-centre-bas')).toBeInTheDocument(); // place réservée pendant le chargement
-    await waitFor(() => expect(screen.queryByTestId('colonne-centre-bas')).toBeNull());
+    expect(screen.getByTestId('ce-que-ca-change')).toBeInTheDocument();
+    expect(screen.queryByTestId('colonne-centre-bas')).toBeNull();
   });
 
   it('panne (503) : le bloc le dit, la note ne cite pas football-data', async () => {

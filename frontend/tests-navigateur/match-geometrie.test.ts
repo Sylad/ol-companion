@@ -198,50 +198,74 @@ describe.each([360, 390])('en-tête du score d\'un match de l\'OL à %i px', (la
   });
 });
 
-// L265 — « Ce que ça change » d'un match de Ligue 1 de l'OL terminé est dans la pile du centre (avant le mini-classement),
-// pas entre l'en-tête et la grille : placé là, il faisait passer la rangée Statistiques | Momentum sous le pli à 1366 × 768
-// (852 px, mesuré). La place du bloc est réservée pendant le chargement. Journée provisoire : badge + ligne de plus.
+// L265 — « Ce que ça change » d'un match de Ligue 1 de l'OL terminé : rangée à part en bas du centre, sur toute sa
+// largeur, sous la rangée Carte des tirs | pile (revue UX r1 : dans la pile de 264 px, 5 lignes et ~430 px vides sous la
+// carte des tirs). Jamais entre l'en-tête et la grille (R16 : Statistiques | Momentum sous le pli à 1366 × 768, 852 px).
+// La place réservée pendant le chargement couvre le bloc chargé, avec ou sans « Provisoire » : rien ne bouge de plus de 4 px.
 const IMPACT = {
   matchday: 10, finished: true, homeTeam: 'Lyon', awayTeam: 'Belgique', score: { home: 5, away: 1 },
-  before: { position: 3, points: 17 }, after: { position: 1, points: 20 },
-  remaining: 1, remainingInMatchday: 1, above: null, below: { place: 1, margin: 2 }, updatedAt: '2026-10-05T22:00:00Z',
+  before: { position: 3, points: 17 }, after: { position: 5, points: 17 },
+  remaining: 1, remainingInMatchday: 1, above: { place: 3, gap: 3 }, below: { place: 5, margin: 0 }, updatedAt: '2026-10-05T22:00:00Z',
 };
+const IMPACT_COMPLET = { ...IMPACT, remaining: 0, remainingInMatchday: 0 };
 const LIGUE_1 = { id: 35, name: 'Ligue 1' };
 
+/** Positions (page) de ce qui entoure le bloc : au-dessus (rangée tirs | pile), dessous (bas de la grille, note des sources).
+ *  La note des sources gagne la mention football-data à l'arrivée de la réponse : seul son HAUT est comparé (elle est la
+ *  dernière de la page, ce qu'elle gagne en dessous ne pousse rien). */
+const autour = async (page: Page) => ({
+  bloc: await boite(page, 'ce-que-ca-change'),
+  dessus: (await boite(page, 'rangee-tirs-joueurs')).top,
+  sources: (await boite(page, 'sources-match')).top,
+  grille: (await boite(page, 'grille-match')).bottom,
+});
+
 describe.each([...ECRANS, [390, 844]] as const)('match de Ligue 1 de l\'OL terminé, avec « Ce que ça change », à %i × %i', (largeur, hauteur) => {
-  let page: Page;
-  let bloc: { pendant: Boite; apres: Boite };
-  beforeAll(async () => {
-    let liberer!: () => void;
-    const libererImpact = new Promise<void>((r) => { liberer = r; });
-    page = await ouvrir(largeur, hauteur, { id: OL_ID, name: 'Lyon' }, { id: 2373, name: 'Belgique' }, `${OL_ID}-2373-${GAME_ID}`, { competition: LIGUE_1, corps: IMPACT, libererImpact });
-    await page.getByTestId('ce-que-ca-change-chargement').waitFor();
-    const pendant = await boite(page, 'ce-que-ca-change');
-    liberer();
-    await page.getByTestId('ce-que-ca-change-provisoire').waitFor();
-    bloc = { pendant, apres: await boite(page, 'ce-que-ca-change') };
-    if (process.env.CAPTURES_DIR) await page.screenshot({ path: `${process.env.CAPTURES_DIR}/L265-match-${largeur}.png`, fullPage: true });
-  });
-  afterAll(async () => { await page?.close(); });
+  for (const [cas, corps, attendu] of [
+    ['provisoire', IMPACT, 'ce-que-ca-change-provisoire'],
+    ['journée complète', IMPACT_COMPLET, 'ce-que-ca-change-phrase'],
+  ] as const) {
+    describe(cas, () => {
+      let page: Page;
+      let pendant: Awaited<ReturnType<typeof autour>>;
+      let apres: Awaited<ReturnType<typeof autour>>;
+      beforeAll(async () => {
+        let liberer!: () => void;
+        const libererImpact = new Promise<void>((r) => { liberer = r; });
+        page = await ouvrir(largeur, hauteur, { id: OL_ID, name: 'Lyon' }, { id: 2373, name: 'Belgique' }, `${OL_ID}-2373-${GAME_ID}`, { competition: LIGUE_1, corps, libererImpact });
+        await page.getByTestId('ce-que-ca-change-chargement').waitFor();
+        pendant = await autour(page);
+        liberer();
+        await page.getByTestId(attendu).waitFor();
+        apres = await autour(page);
+        if (process.env.CAPTURES_DIR && cas === 'provisoire') await page.screenshot({ path: `${process.env.CAPTURES_DIR}/L265-match-${largeur}.png`, fullPage: true });
+      });
+      afterAll(async () => { await page?.close(); });
 
-  it('le bloc est dans la pile du centre, sous la rangée Statistiques | Momentum', async () => {
-    expect(await page.getByTestId('colonne-centre-bas').getByTestId('ce-que-ca-change').count()).toBe(1);
-    const rangee = await boite(page, 'rangee-stats-elan');
-    expect(bloc.apres.top).toBeGreaterThanOrEqual(rangee.bottom);
-  });
+      it('rangée à part, dernière du centre, sur toute sa largeur, sous la rangée Carte des tirs | pile', async () => {
+        expect(await page.getByTestId('colonne-centre-bas').getByTestId('ce-que-ca-change').count()).toBe(0);
+        const centre = await boite(page, 'colonne-centre');
+        const rangee = await boite(page, 'rangee-tirs-joueurs');
+        expect(apres.bloc.top).toBeGreaterThanOrEqual(rangee.bottom);
+        expect(Math.abs(apres.bloc.left - centre.left)).toBeLessThanOrEqual(1);
+        expect(Math.abs(apres.bloc.right - centre.right)).toBeLessThanOrEqual(1);
+        if (largeur === 1440) expect(Math.round(apres.bloc.right - apres.bloc.left)).toBe(544);
+      });
 
-  it('R16 — le bas de la rangée Statistiques | Momentum reste au-dessus du pli', async () => {
-    if (largeur < 1366) return; // R16 vaut pour l'écran de bureau
-    const rangee = await boite(page, 'rangee-stats-elan');
-    expect(rangee.bottom).toBeLessThanOrEqual(hauteur);
-  });
+      it('R16 — le bas de la rangée Statistiques | Momentum reste au-dessus du pli', async () => {
+        if (largeur < 1366) return; // R16 vaut pour l'écran de bureau
+        const rangee = await boite(page, 'rangee-stats-elan');
+        expect(rangee.bottom).toBeLessThanOrEqual(hauteur);
+      });
 
-  it('chargement : place réservée (titre + deux lignes), le bloc ne bouge pas et rien au-dessus de lui ne bouge', async () => {
-    const titre = await page.getByTestId('ce-que-ca-change').locator('h2').evaluate((h) => h.getBoundingClientRect().height);
-    const ligne = await page.getByTestId('ce-que-ca-change-phrase').evaluate((p) => parseFloat(getComputedStyle(p).lineHeight));
-    expect(bloc.pendant.height).toBeGreaterThanOrEqual(titre + 2 * ligne);
-    expect(bloc.apres.top).toBeCloseTo(bloc.pendant.top, 0);
-    // Seul ce qui est SOUS le bloc peut descendre (pile du centre ; à 1440 et 1366, le bloc est déjà sous le pli).
-    expect(bloc.apres.height).toBeGreaterThanOrEqual(bloc.pendant.height - 1);
-  });
+      it('la place réservée couvre le bloc chargé : rien ne bouge de plus de 4 px à l\'arrivée de la réponse', () => {
+        expect(Math.abs(apres.dessus - pendant.dessus)).toBeLessThanOrEqual(4);
+        expect(Math.abs(apres.bloc.top - pendant.bloc.top)).toBeLessThanOrEqual(4);
+        expect(Math.abs(apres.bloc.height - pendant.bloc.height)).toBeLessThanOrEqual(4);
+        expect(Math.abs(apres.sources - pendant.sources)).toBeLessThanOrEqual(4);
+        expect(Math.abs(apres.grille - pendant.grille)).toBeLessThanOrEqual(4);
+        console.info(`L265 ${largeur} ${cas} : bloc ${pendant.bloc.height.toFixed(1)} → ${apres.bloc.height.toFixed(1)} px, sources ${pendant.sources.toFixed(1)} → ${apres.sources.toFixed(1)}`);
+      });
+    });
+  }
 });

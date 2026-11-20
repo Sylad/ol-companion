@@ -483,7 +483,7 @@ export function MatchPage() {
   const teamRows = nonZero(TEAM_STATS);
   const hasMomentum = !!data.momentum && data.momentum.length > 0;
   const hasShots = data.shots.length > 0;
-  const hasPile = data.topPerformers.length > 0 || isUpcoming || !!data.standings || (ceQueCaChange && !estIntrouvable(impact.error));
+  const hasPile = data.topPerformers.length > 0 || isUpcoming || !!data.standings;
   const hasSides = !!homeLineup || !!awayLineup || teamRows.length > 0;
 
   return (
@@ -671,14 +671,16 @@ export function MatchPage() {
                       </div>
                     </section>
                   )}
-                  {/* L265 : à côté du classement qu'il commente, jamais entre l'en-tête et la grille (la rangée
-                      Statistiques | Momentum passait sous le pli à 1366 × 768, règle R16 de L186). */}
-                  {ceQueCaChange && <CeQueCaChange at={data.startTime} className="rounded-md bg-surface border border-border" />}
                   {!!data.standings && <MiniStandings rows={data.standings} />}
                 </div>
               )}
             </div>
           )}
+          {/* L265 (revue UX r1) : rangée à part en bas du centre, sur toute sa largeur (544 px à 1440), sous la rangée
+              Carte des tirs | pile (R17, R18) — dans la pile de 264 px la phrase tenait sur 5 lignes et laissait ~430 px
+              vides sous la carte des tirs. Jamais entre l'en-tête et la grille (R16 : Statistiques | Momentum sous le pli
+              à 1366 × 768). Rien sur un 404 : aucune rangée vide. */}
+          {ceQueCaChange && <CeQueCaChange at={data.startTime} gabarit className="rounded-md bg-surface border border-border" />}
         </div>
         </div>
 

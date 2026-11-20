@@ -36,6 +36,7 @@ champs:
   - { id: message-joueurs-en-vue-vide, libelle: Message d'état vide de Joueurs en vue (match à venir sans chiffres), type: texte, source: statique, obligatoire: false }
   - { id: periode-joueurs-en-vue, libelle: Mention de période des chiffres de Joueurs en vue (match à venir), type: texte, source: statique, obligatoire: false }
   - { id: classement-direct, libelle: Classement en direct, type: carte, source: "GET /api/live-match/{gameId}/stats → standings", obligatoire: false }
+  - { id: ce-que-ca-change, libelle: « Ce que ça change » (place de l'OL avant/après la journée, badge Provisoire), type: carte, source: "GET /api/match-impact?at=<startTime> (football-data.org seul, L265)", obligatoire: false }
 
 regles:
   - id: R1
@@ -188,6 +189,17 @@ regles:
     statut: sourcee
     source: "demande du lot L186 : « à sa droite Joueurs en vue et Classement en direct empilés ; écran étroit : tout empilé dans l'ordre de lecture ». Alignement en haut (pas d'étirement) et pleine largeur d'un bloc resté seul : hypothèse de la maquette, si fausse seule la présentation change (aucune donnée) ; la pile peut être plus courte que la carte, le vide sous le Classement est accepté"
     tests: ["R18 — 1024 et 1366 : Joueurs en vue puis Classement en direct à droite de la carte des tirs", "R18 — 1023 : empilés", "R18 — 1440 : Joueurs en vue puis Classement en direct à droite de la carte des tirs, même haut (±1 px), 16 px d'écart entre eux", "R18 — 1440 : sans carte des tirs, la pile occupe toute la largeur du centre", "R18 — 1440 : sans Joueurs en vue ni Classement en direct, la carte des tirs occupe toute la largeur du centre (aucun trou à droite, cohérent avec R4)", "R18 — 264 px : les trois rôles de Joueurs en vue sont affichés, la ligne « Buts attendus : 0,35 » ne déborde pas de sa cellule ni sur la colonne adverse (bord droit ≤ bord de la cellule)", "R18 — 390 : carte des tirs, Joueurs en vue, Classement en direct empilés dans cet ordre"]
+  - id: R19
+    etat: charge
+    date: 2026-11-20
+    lot: L265
+    enonce: "Ajoutée le 20-11 (L265, revue UX r1) sans modifier R16 à R18. Sous un match de Ligue 1 de l'OL terminé, « Ce que ça change » est une rangée à part, la dernière du centre, sous la rangée Carte des tirs | pile (R17, R18) : un seul bloc, il occupe toute la largeur du centre (544 px à 1440 px), comme R4 et R18 (« une rangée qui n'a plus qu'un bloc occupe toute la largeur du centre ») ; sous 1024 px, il suit le Classement en direct, pleine largeur. Il n'est jamais dans la pile Joueurs en vue / Classement (264 px : la phrase y tenait sur 5 lignes et laissait ~430 px vides sous la carte des tirs) ni entre l'en-tête et la grille (R16 : la rangée Statistiques | Momentum passait sous le pli à 1366 × 768). Son titre est un h2, comme les autres blocs du centre. Pendant le chargement, sa place est celle du cas le plus long (titre à la hauteur du badge « Provisoire », phrase la plus longue et ligne des matchs restants, à la largeur du bloc) : à l'arrivée de la réponse, avec ou sans « Provisoire », ni le bloc ni le reste de la page ne bougent de plus de 4 px. 404 de football-data : aucun bloc, aucune rangée vide. Le badge « Provisoire » est neutre (texte --fg-muted sur --surface-2, 6,8:1), jamais le jaune du nul (--draw)."
+    message: "Calcul du classement…"
+    champs: [colonne-centre, rangee-tirs-joueurs, ce-que-ca-change]
+    statut: sourcee
+    source: "revue UX r1 de L265 du 20-11 (M1 : saut de 124 px du mini-classement à 1440, 62 px à 390 ; m1 : bloc dans la colonne la plus étroite ; m3 : couleur du nul réemployée, Nielsen 4), choix du lead : rangée à part sur toute la largeur du centre ; mesure : bloc de 130 px à 1440 et 166 px à 390, 0 px de décalage (tests-navigateur/match-geometrie.test.ts)"
+    tests: ["rangée à part, dernière du centre, sur toute sa largeur, sous la rangée Carte des tirs | pile", "la place réservée couvre le bloc chargé : rien ne bouge de plus de 4 px à l'arrivée de la réponse", "R16 — le bas de la rangée Statistiques | Momentum reste au-dessus du pli"]
 
 actions:
   - { id: A1, declencheur: ~, appel: "GET /api/live-match/{gameId}/stats", regles: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18] }
+  - { id: A2, declencheur: ~, appel: "GET /api/match-impact?at=<startTime>", regles: [R19] }

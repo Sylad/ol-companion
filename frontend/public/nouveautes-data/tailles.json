@@ -307,6 +307,18 @@
     390,
     844
   ],
+  "captures/L265-accueil-dernier-resultat-1440.png": [
+    1168,
+    290
+  ],
+  "captures/L265-match-1440.png": [
+    576,
+    776
+  ],
+  "captures/L265-match-390.png": [
+    382,
+    429
+  ],
   "captures/L266-joueurs-en-vue-1440.png": [
     544,
     292
@@ -650,13 +662,5 @@
   "captures/player-badges-L142.png": [
     1126,
     193
-  ],
-  "captures/L265-accueil-dernier-resultat-1440.png": [
-    1126,
-    279
-  ],
-  "captures/L265-match-390.png": [
-    390,
-    844
   ]
 }
