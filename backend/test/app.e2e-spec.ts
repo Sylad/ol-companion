@@ -247,7 +247,9 @@ describe('AppModule (e2e)', () => {
 
   it('GET /api/calendar.ics (L264) : sans match football-data → 503, jamais un calendrier vide', async () => {
     fs.rmSync(path.join(tmpDir, 'data', 'fixtures-cache.json'), { force: true });
-    await request(app!.getHttpServer()).get('/api/calendar.ics').expect(503);
+    const res = await request(app!.getHttpServer()).get('/api/calendar.ics').expect(503);
+    // L268 : une erreur n'est pas cachable (Cloudflare, agendas).
+    expect(res.headers['cache-control']).toBe('no-store');
   });
 
   it('GET /api/calendar.ics (L264) : servi depuis le cache football-data, en text/calendar, sans appel sortant', async () => {
@@ -276,6 +278,7 @@ describe('AppModule (e2e)', () => {
     expect(res.text.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true);
     expect(res.text).toContain('UID:fd-559603@ol.sladoire.dev\r\n');
     expect(res.text).toContain('DTSTART;VALUE=DATE:20261204\r\n');
+    expect(res.headers['cache-control']).toBe('public, max-age=900');
     expect(outbound.slice(before)).toEqual([]);
   });
 });

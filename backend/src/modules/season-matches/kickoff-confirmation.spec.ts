@@ -2,6 +2,7 @@ import {
   isKickoffTimeConfirmed,
   KICKOFF_WINDOW_MS,
 } from './kickoff-confirmation';
+import { footballDataTimeConfirmed } from '../fixtures/kickoff-time';
 
 /**
  * L39 — la règle « l'heure du coup d'envoi est-elle fixée ? », branche par
@@ -270,5 +271,22 @@ describe('isKickoffTimeConfirmed', () => {
       expect(confirmed(match, [champions, league])).toBe(false);
       expect(confirmed(match, [league, champions])).toBe(false);
     });
+  });
+});
+
+describe('L268 — journée reportée chez football-data, date à minuit UTC', () => {
+  // Si 365scores donne une autre heure, L46 la rend déjà « à confirmer ».
+  // Le défaut ne se voyait que quand 365scores tient le même minuit UTC :
+  // football-data passait pour « heure fixée » et /fixtures affichait 01:00.
+  it("/fixtures : même minuit UTC chez 365scores, « à confirmer », pas 01:00", () => {
+    const fdDate = '2026-10-10T00:00:00Z';
+    const said = {
+      competition: 'Ligue 1',
+      matchday: 6,
+      date: fdDate,
+      timeConfirmed: footballDataTimeConfirmed('POSTPONED', fdDate),
+    };
+    const match = seasonMatch({ date: fdDate });
+    expect(isKickoffTimeConfirmed(match, [said], NOW)).toBe(false);
   });
 });

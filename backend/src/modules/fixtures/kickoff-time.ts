@@ -8,10 +8,18 @@
  *
  * Mesuré en prod le 2026-10-03 : J13 (`2026-12-05T00:00:00Z`) et J15
  * (`2027-01-02T00:00:00Z`) en `SCHEDULED`, affichés « 01:00 » par le calendrier.
+ *
+ * L268 : un match reporté (`POSTPONED`) ou interrompu (`SUSPENDED`, retenu
+ * comme `POSTPONED` par `storedStatus`) n'a pas non plus d'heure quand sa date
+ * est à minuit UTC : c'est le même remplissage. Il passait pour « heure
+ * fixée » et s'affichait à 01:00 dans le `.ics` et sur /fixtures. Un match
+ * joué ou en cours garde son heure, quelle qu'elle soit.
  */
+const WITHOUT_TIME_STATUSES = new Set(['SCHEDULED', 'POSTPONED', 'SUSPENDED']);
+
 export function footballDataTimeConfirmed(
   status: string,
   utcDate: string,
 ): boolean {
-  return !(status === 'SCHEDULED' && /T00:00:00(\.0+)?Z$/.test(utcDate));
+  return !(WITHOUT_TIME_STATUSES.has(status) && /T00:00:00(\.0+)?Z$/.test(utcDate));
 }

@@ -83,6 +83,15 @@ describe('footballDataTimeConfirmed', () => {
     );
   });
 
+  it("L268 — reporté ou interrompu à 00:00:00Z : l'heure n'est pas fixée (pas « 01:00 »)", () => {
+    expect(footballDataTimeConfirmed('POSTPONED', '2026-12-05T00:00:00Z')).toBe(false);
+    expect(footballDataTimeConfirmed('SUSPENDED', '2026-12-05T00:00:00.000Z')).toBe(false);
+  });
+
+  it("L268 — reporté avec une vraie heure : l'heure reste celle de football-data", () => {
+    expect(footballDataTimeConfirmed('POSTPONED', '2026-12-05T19:45:00Z')).toBe(true);
+  });
+
   it('SCHEDULED avec une vraie heure (statut inconnu replié sur SCHEDULED) : heure fixée', () => {
     expect(footballDataTimeConfirmed('SCHEDULED', '2026-10-09T18:45:00Z')).toBe(
       true,
@@ -127,6 +136,31 @@ describe('FixturesService — heure de coup d’envoi fixée ou non (L39)', () =
       expect(matches.find((m) => m.matchday === 12)?.timeConfirmed).toBe(true);
       expect(matches.find((m) => m.matchday === 1)?.timeConfirmed).toBe(true);
     });
+  });
+
+  it("L268 — match interrompu (SUSPENDED) ou reporté (POSTPONED) à 00:00:00Z : heure non fixée", async () => {
+    const realScheduled = fixture.scheduled as { matches: Record<string, unknown>[] };
+    const j11 = realScheduled.matches[0];
+    fixture.scheduled = {
+      ...realScheduled,
+      matches: [
+        { ...j11, id: 900001, status: 'SUSPENDED', utcDate: '2026-11-21T00:00:00Z' },
+        { ...j11, id: 900002, status: 'POSTPONED', utcDate: '2026-11-28T00:00:00Z' },
+        ...realScheduled.matches.slice(1),
+      ],
+    };
+    try {
+      await withCwd(async () => {
+        const matches = await buildService().getFixtures({ force: true });
+        const suspended = matches.find((m) => m.id === 900001)!;
+        const postponed = matches.find((m) => m.id === 900002)!;
+        expect(suspended.status).toBe('POSTPONED');
+        expect(suspended.timeConfirmed).toBe(false);
+        expect(postponed.timeConfirmed).toBe(false);
+      });
+    } finally {
+      fixture.scheduled = realScheduled;
+    }
   });
 
   it('peekFixtures lit le cache sans appel réseau, même périmé, et le marque de la même façon', async () => {

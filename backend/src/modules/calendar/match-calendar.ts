@@ -179,6 +179,45 @@ export interface Revision {
 
 export type Revisions = Record<string, Revision>;
 
+function isRevision(value: unknown): value is Revision {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const r = value as Record<string, unknown>;
+  return (
+    typeof r.schedule === 'string' &&
+    typeof r.content === 'string' &&
+    Number.isInteger(r.sequence) &&
+    (r.sequence as number) >= 0 &&
+    typeof r.modified === 'string' &&
+    !Number.isNaN(new Date(r.modified).getTime())
+  );
+}
+
+/**
+ * L268 — les révisions lues sur disque, sans ce qui n'en est pas une. Un JSON
+ * valide d'une autre forme (`null`, tableau, nombre) ou une entrée `null` ou
+ * incomplète faisait une TypeError à chaque requête (`previous[uid]`,
+ * `rev.modified`). Le fichier entier d'une autre forme est ignoré ; une entrée
+ * invalide l'est seule (le match repart en `SEQUENCE` 0 et l'entrée est
+ * réécrite par `reviseEvents`), les autres sont gardées. `rejected` décrit ce
+ * qui a été écarté, `null` si rien.
+ */
+export function validRevisions(parsed: unknown): { revisions: Revisions; rejected: string | null } {
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    const kind = parsed === null ? 'null' : Array.isArray(parsed) ? 'tableau' : typeof parsed;
+    return { revisions: {}, rejected: `contenu de type ${kind}, objet attendu` };
+  }
+  const revisions: Revisions = {};
+  const bad: string[] = [];
+  for (const [uid, value] of Object.entries(parsed as Record<string, unknown>)) {
+    if (isRevision(value)) revisions[uid] = value;
+    else bad.push(uid);
+  }
+  return {
+    revisions,
+    rejected: bad.length === 0 ? null : `${bad.length} entrée(s) invalide(s) : ${bad.join(', ')}`,
+  };
+}
+
 /**
  * Révisions des événements (RFC 5545 § 3.8.7.2 à 3.8.7.4) :
  *

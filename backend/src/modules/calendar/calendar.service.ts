@@ -8,6 +8,7 @@ import {
   buildCalendar,
   eventBody,
   reviseEvents,
+  validRevisions,
   type Revisions,
 } from './match-calendar';
 
@@ -46,12 +47,18 @@ export class CalendarService {
 
   private readRevisions(): Revisions {
     if (!fs.existsSync(this.revisionsFile)) return {};
+    let parsed: unknown;
     try {
-      return JSON.parse(fs.readFileSync(this.revisionsFile, 'utf-8')) as Revisions;
+      parsed = JSON.parse(fs.readFileSync(this.revisionsFile, 'utf-8'));
     } catch (err: unknown) {
       this.logger.warn(`Révisions du calendrier illisibles (${this.revisionsFile}) : ${(err as Error)?.message ?? err}`);
       return {};
     }
+    const { revisions, rejected } = validRevisions(parsed);
+    if (rejected !== null) {
+      this.logger.warn(`Révisions du calendrier ignorées (${this.revisionsFile}) : ${rejected}`);
+    }
+    return revisions;
   }
 
   private writeRevisions(revisions: Revisions): void {
