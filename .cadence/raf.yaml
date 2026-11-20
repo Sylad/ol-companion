@@ -3093,6 +3093,8 @@ lots:
     review: { date: 2026-11-20, verdict: "conforme tmp/revue-L266.md : 0 bloquant ; notes : espace insécable non testé, stat-fr.ts plus atteinte en prod", commit: f6449c1201576be6699cdc198f59759f8e74fd31 }
     ux: { date: 2026-11-20, verdict: "conforme lead : capture 390, libellé « Tacles gagnés par match », mention « chiffres de la saison » lisible" }
     finished: 2026-11-20
+    notes:
+      - { date: 2026-11-20, text: "QA prod lead 20-11 (6ad5483) : /api/live-match/4735207/stats renvoie « Tacles gagnés par match » 0.1 et 1.0, buts en totaux" }
   - id: L267
     title: "Conformité des sources : retirer les en-têtes qui imitent un navigateur et le site de 365scores (User-Agent Chrome, Referer, Origin, X-Domain) — l'app se présente sous son vrai nom ; les six familles d'appels répondent 200 sans eux le 20-11 (règle de Sylvain « aucun contournement anti-robot ») ; afficher la mention exigée par football-data « Football data provided by the Football-Data.org API » là où ses données s'affichent et sur la page À propos ; tests (aucun en-tête imité dans les requêtes sortantes, mention présente) — suite de L263, docs/etudes/365scores-conditions.md"
     public: Sources des données citées et appelées sous notre vrai nom
