@@ -155,7 +155,7 @@ Les caches API (fixtures, standings, etc.) se peuplent au premier appel.
 
 ## Notes
 
-- **API 365scores non officielle** — ce projet appelle les endpoints web de 365scores avec des headers réalistes. Ils peuvent changer de structure ou bloquer du jour au lendemain. Si tu forks pour un autre club, regarde `backend/src/modules/standings/`, `live-match/`, `cups/bracket.service.ts`, `lineup/` pour le pattern (User-Agent + headers + parsing).
+- **API 365scores non officielle** — ce projet appelle les endpoints web de 365scores en se présentant sous son vrai nom : `User-Agent: ol-companion/<version> (+https://ol.sladoire.dev)`, plus `Accept` et `Accept-Language`, et rien d'autre (`outboundHeaders()` / `scores365Headers()`, `backend/src/config/outbound-http.ts`, L267). Aucun en-tête n'imite un navigateur ni le site de 365scores (ni `Referer`, ni `Origin`, ni `X-Domain`) : aucun contournement anti-robot. Ces endpoints peuvent changer de structure ou refuser ce client du jour au lendemain ; l'app affiche alors son erreur et l'on change de source, sans remettre d'en-tête imité. Leur usage public n'est pas couvert sans accord écrit (`docs/etudes/365scores-conditions.md`, § 3). Si tu forks pour un autre club, regarde `backend/src/modules/standings/`, `live-match/`, `cups/bracket.service.ts`, `lineup/` pour le pattern (requête qui se nomme + schéma + parsing).
 - **football-data.org** : API publique avec free tier (10 req/min, suffit pour Ligue 1).
 - **Aucun appel Claude au runtime** : pas de SDK Anthropic ni de clé Anthropic ; tout le contenu vient des sources ci-dessus.
 - **Reverse-engineering raisonnable** : un seul utilisateur, polling 30 s max sur les matchs live, 1 h sur le classement. Pas de proxy commercial, pas de scraping massif.

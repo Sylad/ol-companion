@@ -71,12 +71,15 @@ describe('L267 — mention de football-data.org', () => {
     const liste = screen.getByTestId('liste-mois');
     expect(liste.compareDocumentPosition(lien) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(within(screen.getByTestId('source-football-data')).getByText(MENTION)).toBe(lien);
+    expect(screen.getByTestId('source-football-data').textContent).toMatch(/^Heures des coups d’envoi de Ligue 1/);
   });
 
   it('Accueil : la mention en pied de page (heure du prochain match de Ligue 1)', async () => {
     withQuery(<DashboardPage />);
     await expectMention();
     expect(screen.getByTestId('source-football-data').className).toContain('text-fg-dim');
+    // Même libellé qu'au calendrier et sur la carte : « Heures », au pluriel (revue r1 de L267).
+    expect(screen.getByTestId('source-football-data').textContent).toMatch(/^Heures des coups d’envoi de Ligue 1/);
   });
 
   it('Carte : la mention avec les crédits de la carte', async () => {

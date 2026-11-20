@@ -54,7 +54,7 @@ Le cœur de l'app est le scraping **365scores** (classement Ligue 1 avec règles
 Sécurités mises en place avec Claude :
 
 - **Schémas Zod stricts** sur les payloads 365scores (`backend/src/config/scores365-game.schema.ts`, `standings/standings.schema.ts`) — si la forme change, on échoue fast au lieu de produire des données silencieusement cassées.
-- **Headers réalistes** centralisés dans `backend/src/config/scores365-http.ts` — User-Agent + Referer + X-Domain pour éviter les 403 anti-bot.
+- **En-têtes honnêtes** centralisés dans `backend/src/config/outbound-http.ts` (`outboundHeaders()`, repris par `scores365Headers()` de `scores365-http.ts`) — l'app se nomme (`User-Agent: ol-companion/<version> (+https://ol.sladoire.dev)`, plus `Accept` et `Accept-Language` pour 365scores) auprès de toutes ses sources, sans `Referer`, `Origin`, `X-Domain` ni User-Agent de navigateur (L267 : aucun contournement anti-robot ; mesuré le 20-11, les appels répondent 200 sans eux). Si une source refuse un jour ce client, l'app affiche son erreur et l'on change de source. `config/outbound-http.spec.ts` et `scores365-host.spec.ts` refusent tout retour d'en-tête imité.
 - **Caches TTL différenciés** : 5 s en live, 30 s en upcoming, 1 h sur le classement, archive saisonnière annuelle. Le backend ne hammer pas 365scores.
 - **Tests unitaires** sur les parsers les plus tordus (`live-match.aggregator.spec.ts`, `bracket.service.spec.ts`, `news.service.spec.ts`).
 

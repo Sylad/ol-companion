@@ -37,7 +37,7 @@ export function DashboardPage() {
         <PositionTracker />
       </Suspense>
       {/* L267 : l'heure du prochain match de Ligue 1 vient de football-data, qui exige sa mention. */}
-      <FootballDataSourceNote what="Heure des coups d’envoi de Ligue 1" />
+      <FootballDataSourceNote what="Heures des coups d’envoi de Ligue 1" />
     </div>
   );
 }

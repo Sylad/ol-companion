@@ -51,7 +51,8 @@ describe('L235 — source des données de la page match', () => {
     const lien = within(note).getByRole('link', { name: /football-data\.org/i });
     expect(lien.getAttribute('href')).toBe('https://www.football-data.org/');
     expect(lien.getAttribute('rel')).toBe('noopener noreferrer');
-    expect(within(note).getByRole('link', { name: /365scores/ })).toBeTruthy();    // L267 : la mention exigée par football-data (§ 7.1), mot pour mot.
+    expect(within(note).getByRole('link', { name: /365scores/ })).toBeTruthy();
+    // L267 : la mention exigée par football-data (§ 7.1), mot pour mot.
     expect(lien.textContent).toBe('Football data provided by the Football-Data.org API');
   });
 
