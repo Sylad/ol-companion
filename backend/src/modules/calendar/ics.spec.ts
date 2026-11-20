@@ -57,6 +57,25 @@ describe('foldLine', () => {
   });
 });
 
+describe('foldLine — caractères sur 4 octets (paire de substitution)', () => {
+  it.each([0, 1, 2, 3])(
+    'ne coupe jamais un caractère hors du plan de base (décalage %i)',
+    (offset) => {
+      const line = `SUMMARY:${'x'.repeat(offset)}${'🦁⚽'.repeat(30)}`;
+      const folded = foldLine(line);
+      const parts = folded.split(CRLF);
+      expect(parts.length).toBeGreaterThan(1);
+      for (const p of parts) {
+        expect(Buffer.byteLength(p, 'utf8')).toBeLessThanOrEqual(75);
+        // Une paire coupée laisse une demi-paire, encodée en U+FFFD.
+        expect(Buffer.from(p, 'utf8').toString('utf8')).toBe(p);
+        expect(p).not.toMatch(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/);
+      }
+      expect(unfold(folded)).toBe(line);
+    },
+  );
+});
+
 describe('serializeLines', () => {
   it('termine chaque ligne par CRLF, jamais par LF seul', () => {
     const text = serializeLines(['BEGIN:VCALENDAR', 'END:VCALENDAR']);

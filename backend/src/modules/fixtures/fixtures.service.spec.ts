@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FixturesService } from './fixtures.service';
+import { FixturesService, storedStatus } from './fixtures.service';
 import { footballDataTimeConfirmed } from './kickoff-time';
 import { EventBusService } from '../events/event-bus.service';
 
@@ -44,6 +44,22 @@ function buildService(
   const config = { get: () => apiKey } as unknown as ConfigService;
   return new FixturesService(config, new EventBusService());
 }
+
+describe('storedStatus — statuts de football-data v4', () => {
+  it.each([
+    ['SCHEDULED', 'SCHEDULED'],
+    ['TIMED', 'TIMED'],
+    ['IN_PLAY', 'IN_PLAY'],
+    ['PAUSED', 'IN_PLAY'],
+    ['FINISHED', 'FINISHED'],
+    ['AWARDED', 'FINISHED'],
+    ['POSTPONED', 'POSTPONED'],
+    ['SUSPENDED', 'POSTPONED'],
+    ['INCONNU', 'SCHEDULED'],
+  ])('%s → %s', (raw, stored) => {
+    expect(storedStatus(raw)).toBe(stored);
+  });
+});
 
 describe('footballDataTimeConfirmed', () => {
   it("SCHEDULED à 00:00:00Z : l'heure n'est pas fixée", () => {
@@ -244,16 +260,56 @@ describe('FixturesService — appel football-data refusé ou en échec (L39)', (
     return { svc: new FixturesService(config, bus), events };
   }
 
-  it('demande toute la fin de saison à football-data : limit=100 sur les matchs à venir', async () => {
+  it('demande toute la fin de saison à football-data, matchs en cours et reportés compris, en deux appels', async () => {
     await withCwd(async () => {
       await buildWithBus().svc.getFixtures({ force: true });
 
-      expect(requested).toContain(
-        'https://api.football-data.org/v4/teams/523/matches?status=SCHEDULED&limit=100',
+      expect(requested).toEqual(
+        expect.arrayContaining([
+          'https://api.football-data.org/v4/teams/523/matches?status=SCHEDULED,TIMED,IN_PLAY,PAUSED,SUSPENDED,POSTPONED&limit=100',
+          'https://api.football-data.org/v4/teams/523/matches?status=FINISHED,AWARDED&limit=40',
+        ]),
       );
-      expect(requested).toContain(
-        'https://api.football-data.org/v4/teams/523/matches?status=FINISHED&limit=40',
-      );
+      expect(requested).toHaveLength(2);
+    });
+  });
+
+  /**
+   * Revue r1 de L264 : un match en cours n'était dans aucune des deux
+   * réponses (`status=FINISHED`, `status=SCHEDULED`) ; le rafraîchissement le
+   * retirait du cache pendant le match et le `.ics` l'effaçait des agendas.
+   */
+  it.each(['IN_PLAY', 'PAUSED'])(
+    'match %s rendu par l’appel des matchs à venir : il reste dans le cache, en cours',
+    async (liveStatus) => {
+      await withCwd(async (dir) => {
+        const { svc } = buildWithBus();
+        await svc.getFixtures({ force: true });
+        const scheduled = (fixture.scheduled as { matches: { id: number; status: string }[] }).matches;
+        const live = { ...scheduled[0], status: liveStatus };
+        answers.scheduled = { matches: [live, ...scheduled.slice(1)] };
+
+        const matches = await svc.getFixtures({ force: true });
+
+        expect(matches).toHaveLength(15);
+        expect(matches.find((m) => m.id === live.id)?.status).toBe('IN_PLAY');
+        expect(readCache(dir).find((m) => m.id === live.id)?.status).toBe('IN_PLAY');
+      });
+    },
+  );
+
+  it('match présent dans les deux réponses (fin de match entre les deux appels) : une seule fois, terminé', async () => {
+    await withCwd(async () => {
+      const finishedMatches = (fixture.finished as { matches: { id: number; status: string }[] }).matches;
+      const scheduled = (fixture.scheduled as { matches: { id: number; status: string }[] }).matches;
+      answers.scheduled = { matches: [{ ...finishedMatches[0], status: 'IN_PLAY' }, ...scheduled] };
+
+      const matches = await buildWithBus().svc.getFixtures({ force: true });
+
+      expect(matches.filter((m) => m.id === finishedMatches[0].id)).toEqual([
+        expect.objectContaining({ status: 'FINISHED' }),
+      ]);
+      expect(matches).toHaveLength(15);
     });
   });
 

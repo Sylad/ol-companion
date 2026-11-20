@@ -85,6 +85,48 @@ const UPCOMING_LIMIT = 100;
 
 const isFinished = (m: StoredMatch): boolean => m.status === 'FINISHED';
 
+/**
+ * Statuts demandés à football-data, en liste séparée par des virgules (le
+ * filtre `status` de v4 l'accepte : « Drill down on a (comma separated list
+ * of) status », page « Lookup Tables » de la documentation v4, lue le
+ * 2026-11-20). Toujours deux appels, aucun de plus.
+ *
+ * Revue r1 de L264 : avec `FINISHED` d'un côté et `SCHEDULED` de l'autre, un
+ * match en cours (`IN_PLAY`, `PAUSED`), interrompu (`SUSPENDED`) ou reporté
+ * (`POSTPONED`) n'était dans aucune des deux réponses : il sortait du cache
+ * pendant le match, et un agenda abonné au `.ics` qui relisait à ce moment
+ * effaçait l'événement. `CANCELLED` reste dehors : un match annulé n'a plus de
+ * raison d'être dans un agenda.
+ */
+export const FINISHED_STATUSES = 'FINISHED,AWARDED';
+export const UPCOMING_STATUSES = 'SCHEDULED,TIMED,IN_PLAY,PAUSED,SUSPENDED,POSTPONED';
+
+/**
+ * Statut football-data → statut retenu par l'app. `PAUSED` (mi-temps) est un
+ * match en cours ; `AWARDED` (résultat sur tapis vert) un match terminé ;
+ * `SUSPENDED` (interrompu, à rejouer ou reprendre à une date à venir) se lit
+ * comme un report. Un statut inconnu se replie sur `SCHEDULED`.
+ */
+export function storedStatus(status: string): StoredMatch['status'] {
+  switch (status) {
+    case 'SCHEDULED':
+    case 'TIMED':
+    case 'IN_PLAY':
+    case 'FINISHED':
+    case 'POSTPONED':
+      return status;
+    case 'PAUSED':
+    case 'LIVE':
+      return 'IN_PLAY';
+    case 'AWARDED':
+      return 'FINISHED';
+    case 'SUSPENDED':
+      return 'POSTPONED';
+    default:
+      return 'SCHEDULED';
+  }
+}
+
 @Injectable()
 export class FixturesService implements OnModuleInit {
   private readonly logger = new Logger(FixturesService.name);
@@ -139,11 +181,12 @@ export class FixturesService implements OnModuleInit {
     const finishedAt = previousFile ? previousFile.finishedAt ?? previousFile.ts : now;
     const upcomingAt = previousFile ? previousFile.upcomingAt ?? previousFile.ts : now;
     try {
-      // Two separate calls — football-data v4 only accepts one status at a time.
+      // Deux appels : les matchs joués (limite à 40) et tout le reste de la
+      // saison, matchs en cours compris (cf. UPCOMING_STATUSES).
       // `null` = appel refusé ou en échec, à ne pas confondre avec « 0 match ».
       const [finished, scheduled] = await Promise.all([
-        this.fetchMatches(apiKey, 'FINISHED', FINISHED_LIMIT),
-        this.fetchMatches(apiKey, 'SCHEDULED', UPCOMING_LIMIT),
+        this.fetchMatches(apiKey, FINISHED_STATUSES, FINISHED_LIMIT),
+        this.fetchMatches(apiKey, UPCOMING_STATUSES, UPCOMING_LIMIT),
       ]);
 
       // Free tier doesn't return scheduled team matches — fallback via competition endpoint
@@ -173,7 +216,13 @@ export class FixturesService implements OnModuleInit {
       // qu'ils donnent au calendrier. La réponse fraîche l'emporte sur un match
       // gardé (un match à venir du cache, joué depuis, n'apparaît qu'une fois).
       // Une partie gardée depuis plus de 24 h est abandonnée (L46).
-      const fresh = [...(finished ?? []), ...(upcoming ?? [])];
+      // Un match qui change de statut entre les deux appels parallèles peut
+      // être dans les deux réponses : la réponse « joué » l'emporte.
+      const finishedIds = new Set((finished ?? []).map((m) => m.id));
+      const fresh = [
+        ...(finished ?? []),
+        ...(upcoming ?? []).filter((m) => !finishedIds.has(m.id)),
+      ];
       const freshIds = new Set(fresh.map((m) => m.id));
       const expired = (part: 'finished' | 'upcoming'): boolean =>
         now - (part === 'finished' ? finishedAt : upcomingAt) > KEPT_MAX_AGE_MS;
@@ -310,10 +359,7 @@ export class FixturesService implements OnModuleInit {
    * free tier) emit the exact same shape.
    */
   private toMatch(m: FootballDataMatch, fallbackMatchday?: number): StoredMatch {
-    const allowed: StoredMatch['status'][] = ['SCHEDULED', 'TIMED', 'IN_PLAY', 'FINISHED', 'POSTPONED'];
-    const status = (allowed as string[]).includes(m.status)
-      ? (m.status as StoredMatch['status'])
-      : 'SCHEDULED';
+    const status = storedStatus(m.status);
     return {
       id: m.id,
       date: m.utcDate,

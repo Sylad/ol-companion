@@ -172,12 +172,45 @@ describe('mise à jour sans doublon', () => {
     expect(b.text).toBe(a.text);
   });
 
-  it('score arrivé : même SEQUENCE (le moment n’a pas changé), date de modification nouvelle', () => {
+  it('score arrivé : même SEQUENCE (le moment n’a pas changé), date de modification nouvelle, révisions à réécrire', () => {
     const a = publish([fixed], {}, T0);
     const b = publish([{ ...fixed, status: 'FINISHED', homeScore: 1, homeTeam: 'Olympique Lyonnais', awayScore: 0 }], a.revisions, T1);
     const [e] = readEvents(b.text);
     expect(e.SEQUENCE).toBe('0');
     expect(e['LAST-MODIFIED']).toBe('20261125T083000Z');
+    // Sans écriture, la lecture suivante reprendrait l'ancienne révision et
+    // daterait DTSTAMP de chaque requête : le flux ne serait plus stable.
+    expect(b.changed).toBe(true);
+    expect(b.revisions[eventUid(fixed.id)].modified).toBe(T1.toISOString());
+    const c = publish([{ ...fixed, status: 'FINISHED', homeScore: 1, homeTeam: 'Olympique Lyonnais', awayScore: 0 }], b.revisions, new Date('2026-11-26T00:00:00Z'));
+    expect(c.changed).toBe(false);
+    expect(c.text).toBe(b.text);
+  });
+
+  it('match reporté : SUMMARY « reporté », STATUS:TENTATIVE, SEQUENCE + 1, ancienne date gardée', () => {
+    const a = publish([fixed], {}, T0);
+    const b = publish([{ ...fixed, status: 'POSTPONED' }], a.revisions, T1);
+    const [e] = readEvents(b.text);
+    expect(unescapeText(e.SUMMARY)).toBe('Olympique Lyonnais – OGC Nice · reporté');
+    expect(e.STATUS).toBe('TENTATIVE');
+    expect(e.SEQUENCE).toBe('1');
+    expect(e.DTSTART).toBe('20261206T160000Z');
+    expect(unescapeText(e.DESCRIPTION)).toContain('Match reporté : nouvelle date à venir.');
+  });
+
+  it('match reporté sans heure fixée : le jour seul, transparent', () => {
+    const [e] = readEvents(publish([{ ...tbd, status: 'POSTPONED' }]).text);
+    expect(unescapeText(e.SUMMARY)).toBe('Olympique Lyonnais – OGC Nice · reporté');
+    expect(e['DTSTART;VALUE=DATE']).toBe('20261205');
+    expect(e['DTEND;VALUE=DATE']).toBe('20261206');
+    expect(e.TRANSP).toBe('TRANSPARENT');
+  });
+
+  it('match en cours : même événement qu’avant le coup d’envoi, rien à réécrire', () => {
+    const a = publish([fixed], {}, T0);
+    const b = publish([{ ...fixed, status: 'IN_PLAY' }], a.revisions, T1);
+    expect(b.changed).toBe(false);
+    expect(b.text).toBe(a.text);
   });
 
   it('les révisions d’un match absent du flux sont gardées', () => {
