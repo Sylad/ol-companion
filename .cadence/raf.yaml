@@ -3091,6 +3091,7 @@ lots:
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "non conforme : 5 majeurs (6 tests scellés à resceller, bloc /match non testé, garde 15 min absente après échec, tests navigateur, README)", commit: 6b874490d0df5c3653318c8f834eec6001e9f84c }
+    ux: { date: 2026-11-20, verdict: "non conforme : 1 majeur (place réservée 85 px contre 209 px chargé sur /match, mini-classement saute de 124 px) — tmp/ux-L265.md ; choix du lead : bloc sous la carte des tirs, sur la largeur du centre" }
   - id: L266
     title: "Page du match à venir, « Joueurs en vue » : « Moussa Niakhate · Tacles : 0,1 » (vu le 20-11 sur Lille – Lyon) — sans doute une moyenne affichée comme un nombre de tacles ; afficher la statistique avec son vrai sens (par match, total) ou ne pas l'afficher, avec test (relevé par L237)"
     public: "Joueurs en vue : statistiques avec leur vrai sens"
