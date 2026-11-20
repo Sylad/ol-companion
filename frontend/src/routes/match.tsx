@@ -231,9 +231,12 @@ function PerformerCell({ player, align }: { player: LiveMatchTopPerformer['homeP
   return (
     <div className={cn('min-w-0', align === 'right' ? 'text-right' : 'text-left')}>
       <div className="font-semibold text-fg text-sm break-words">{player.name}</div>
-      <div data-stat-ligne className="text-xs text-fg-muted break-words">
-        {statNameFr(player.statName)} : <span className="num tabular-nums font-semibold text-fg">{statValueFr(player.statValue)}</span>
-      </div>
+      {/* L266 : le backend ne nomme que les chiffres au sens établi ; sans nom, pas de ligne plutôt qu'un chiffre trompeur. */}
+      {player.statName && player.statValue && (
+        <div data-stat-ligne className="text-xs text-fg-muted break-words">
+          {statNameFr(player.statName)}{'\u00a0:\u00a0'}<span className="num tabular-nums font-semibold text-fg">{statValueFr(player.statValue)}</span>
+        </div>
+      )}
     </div>
   );
 }

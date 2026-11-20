@@ -1,0 +1,1563 @@
+{
+ "_source": "GET https://webws.365scores.com/web/stats/?appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=5&competitions=35&withSeasons=true, relevé le 2026-11-20 (L266), tableaux 1, 3 et 9 seuls",
+ "stats": {
+  "athletesStats": {
+   "tables": [
+    {
+     "id": 1,
+     "name": "Buts",
+     "competitionId": 35,
+     "rows": [
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 3",
+       "entity": {
+        "id": 90958,
+        "name": "Lassine Sinayoko",
+        "shortName": "Sinayoko",
+        "createdAt": "2021-04-05T17:50:22.343Z",
+        "nameForURL": "lassine-sinayoko",
+        "countryId": 128,
+        "competitorId": 6075,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 54
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "9"
+        },
+        {
+         "typeId": 10,
+         "value": "3"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 1",
+       "entity": {
+        "id": 53791,
+        "name": "Amine Gouiri",
+        "shortName": "Gouiri",
+        "createdAt": "2016-09-14T12:16:07.19Z",
+        "nameForURL": "amine-gouiri",
+        "countryId": 139,
+        "competitorId": 469,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 73
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "7"
+        },
+        {
+         "typeId": 10,
+         "value": "1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 4",
+       "entity": {
+        "id": 151512,
+        "name": "Esteban Lepaul",
+        "createdAt": "2024-01-29T19:02:55.023Z",
+        "nameForURL": "esteban-lepaul",
+        "countryId": 5,
+        "competitorId": 477,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 24
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "7"
+        },
+        {
+         "typeId": 10,
+         "value": "4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 101407,
+        "name": "Cameron Archer",
+        "shortName": "Archer",
+        "createdAt": "2021-08-24T18:04:42.463Z",
+        "nameForURL": "cameron-archer",
+        "countryId": 1,
+        "competitorId": 476,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 68
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "6"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 2",
+       "entity": {
+        "id": 86597,
+        "name": "Elye Wahi",
+        "shortName": "E. Wahi",
+        "createdAt": "2020-12-05T19:09:57.94Z",
+        "nameForURL": "elye-wahi",
+        "countryId": 74,
+        "competitorId": 470,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 72
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "6"
+        },
+        {
+         "typeId": 10,
+         "value": "2"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 1",
+       "entity": {
+        "id": 61925,
+        "name": "Boulaye Dia",
+        "shortName": "Dia",
+        "createdAt": "2014-04-05T07:54:01.49Z",
+        "nameForURL": "boulaye-dia",
+        "countryId": 133,
+        "competitorId": 477,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 42
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "5"
+        },
+        {
+         "typeId": 10,
+         "value": "1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 1",
+       "entity": {
+        "id": 60318,
+        "name": "Ludovic Ajorque",
+        "shortName": "Ajorque",
+        "nameForURL": "ludovic-ajorque",
+        "countryId": 5,
+        "competitorId": 534,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 37
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "5"
+        },
+        {
+         "typeId": 10,
+         "value": "1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 2",
+       "entity": {
+        "id": 81034,
+        "name": "Casper Tengstedt",
+        "shortName": "Tengstedt C.",
+        "createdAt": "2020-09-13T11:15:04.13Z",
+        "nameForURL": "tengstedt-c.",
+        "countryId": 23,
+        "competitorId": 482,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 19
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "5"
+        },
+        {
+         "typeId": 10,
+         "value": "2"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 3",
+       "entity": {
+        "id": 2205,
+        "name": "Florian Thauvin",
+        "shortName": "Thauvin",
+        "nameForURL": "florian-thauvin",
+        "countryId": 5,
+        "competitorId": 481,
+        "competitionId": 0,
+        "positionName": "Avant Droit",
+        "positionShortName": "Avant Droit",
+        "imageVersion": 44
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "5"
+        },
+        {
+         "typeId": 10,
+         "value": "3"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 115749,
+        "name": "Ernest Nuamah",
+        "shortName": "Nuamah",
+        "createdAt": "2022-08-06T13:09:20.57Z",
+        "nameForURL": "ernest-nuamah",
+        "countryId": 65,
+        "competitorId": 465,
+        "competitionId": 0,
+        "positionName": "Avant Droit",
+        "positionShortName": "Avant Droit",
+        "imageVersion": 53
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 53924,
+        "name": "Ferran Torres",
+        "shortName": "Torres",
+        "createdAt": "2017-08-26T18:28:23.94Z",
+        "nameForURL": "ferran-torres",
+        "countryId": 2,
+        "competitorId": 480,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 93
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 150363,
+        "name": "Gessime Yassine",
+        "shortName": "Yassine",
+        "createdAt": "2024-01-13T17:18:18.097Z",
+        "nameForURL": "gessime-yassine",
+        "countryId": 127,
+        "competitorId": 479,
+        "competitionId": 0,
+        "positionName": "Avant Droit",
+        "positionShortName": "Avant Droit",
+        "imageVersion": 30
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 144612,
+        "name": "Paris Brunner",
+        "shortName": "P. Brunner",
+        "createdAt": "2023-09-19T12:54:17.487Z",
+        "nameForURL": "paris-brunner",
+        "countryId": 4,
+        "competitorId": 471,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 36
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 45213,
+        "name": "Sebastian Szymanski",
+        "shortName": "Szymanski",
+        "createdAt": "2016-04-02T17:54:48.33Z",
+        "nameForURL": "sebastian-szymanski",
+        "countryId": 37,
+        "competitorId": 477,
+        "competitionId": 0,
+        "positionName": "Milieu Offensif",
+        "positionShortName": "Milieu Offensif",
+        "imageVersion": 58
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 1",
+       "entity": {
+        "id": 46661,
+        "name": "Josh Maja",
+        "shortName": "Maja",
+        "createdAt": "2016-07-20T19:09:48.86Z",
+        "nameForURL": "josh-maja",
+        "countryId": 83,
+        "competitorId": 485,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 41
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 1",
+       "entity": {
+        "id": 105893,
+        "name": "Kamory Doumbia",
+        "shortName": "Doumbia",
+        "createdAt": "2021-10-31T14:21:05.103Z",
+        "nameForURL": "kamory-doumbia",
+        "countryId": 128,
+        "competitorId": 534,
+        "competitionId": 0,
+        "positionName": "Milieu Offensif",
+        "positionShortName": "Milieu Offensif",
+        "imageVersion": 61
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 1",
+       "entity": {
+        "id": 106382,
+        "name": "Louis Mafouta",
+        "shortName": "L. Mafouta",
+        "createdAt": "2022-01-23T11:13:28.7Z",
+        "nameForURL": "l.-mafouta",
+        "countryId": 204,
+        "competitorId": 468,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 27
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "4"
+        },
+        {
+         "typeId": 10,
+         "value": "1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 47349,
+        "name": "Achraf Hakimi",
+        "shortName": "Hakimi",
+        "createdAt": "2016-10-11T18:56:44.447Z",
+        "nameForURL": "hakimi",
+        "countryId": 127,
+        "competitorId": 480,
+        "competitionId": 0,
+        "positionName": "Arrière Droit",
+        "positionShortName": "Arrière Droit",
+        "imageVersion": 94
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "3"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 232658,
+        "name": "Adil Bourabaa",
+        "shortName": "A. Bourabaa",
+        "createdAt": "2026-02-02T22:50:01.677Z",
+        "nameForURL": "adil-bourabaa",
+        "countryId": 139,
+        "competitorId": 468,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 4
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "3"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Penalties Scored: 0",
+       "entity": {
+        "id": 44463,
+        "name": "Amine Harit",
+        "shortName": "Harit",
+        "createdAt": "2016-03-26T22:27:56.103Z",
+        "nameForURL": "amine-harit",
+        "countryId": 127,
+        "competitorId": 469,
+        "competitionId": 0,
+        "positionName": "Avant Gauche",
+        "positionShortName": "Avant Gauche",
+        "imageVersion": 54
+       },
+       "stats": [
+        {
+         "typeId": 1,
+         "value": "3"
+        },
+        {
+         "typeId": 10,
+         "value": "0"
+        }
+       ]
+      }
+     ],
+     "statsTypes": [
+      {
+       "typeId": 1,
+       "name": "Buts"
+      },
+      {
+       "typeId": 10,
+       "name": "Goal In Penalties"
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Pass. Décisiv.",
+     "competitionId": 35,
+     "rows": [
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 4.14",
+       "entity": {
+        "id": 2205,
+        "name": "Florian Thauvin",
+        "shortName": "Thauvin",
+        "nameForURL": "florian-thauvin",
+        "countryId": 5,
+        "competitorId": 481,
+        "competitionId": 0,
+        "positionName": "Avant Droit",
+        "positionShortName": "Avant Droit",
+        "imageVersion": 44
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "7"
+        },
+        {
+         "typeId": 44,
+         "value": "4.14"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 2.64",
+       "entity": {
+        "id": 61696,
+        "name": "Cristian Cásseres",
+        "shortName": "Cásseres",
+        "createdAt": "2014-03-23T22:25:58.553Z",
+        "nameForURL": "cristian-casseres",
+        "countryId": 110,
+        "competitorId": 482,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 46
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "6"
+        },
+        {
+         "typeId": 44,
+         "value": "2.64"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.31",
+       "entity": {
+        "id": 90958,
+        "name": "Lassine Sinayoko",
+        "shortName": "Sinayoko",
+        "createdAt": "2021-04-05T17:50:22.343Z",
+        "nameForURL": "lassine-sinayoko",
+        "countryId": 128,
+        "competitorId": 6075,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 54
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "5"
+        },
+        {
+         "typeId": 44,
+         "value": "1.31"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.05",
+       "entity": {
+        "id": 137133,
+        "name": "Panos Katseris",
+        "createdAt": "2022-09-15T11:51:23.21Z",
+        "nameForURL": "panos-katseris",
+        "countryId": 13,
+        "competitorId": 472,
+        "competitionId": 0,
+        "positionName": "Milieu Droit",
+        "positionShortName": "Milieu Droit",
+        "imageVersion": 31
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.05"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 0.77",
+       "entity": {
+        "id": 76007,
+        "name": "Pavel Šulc",
+        "shortName": "Šulc",
+        "createdAt": "2019-11-14T15:35:44.067Z",
+        "nameForURL": "pavel-sulc",
+        "countryId": 22,
+        "competitorId": 465,
+        "competitionId": 0,
+        "positionName": "Milieu Offensif",
+        "positionShortName": "Milieu Offensif",
+        "imageVersion": 46
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "0.77"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.69",
+       "entity": {
+        "id": 78408,
+        "name": "Sebastian Nanasi",
+        "shortName": "Nanasi",
+        "createdAt": "2020-06-18T16:09:46.88Z",
+        "nameForURL": "sebastian-nanasi",
+        "countryId": 24,
+        "competitorId": 479,
+        "competitionId": 0,
+        "positionName": "Avant Gauche",
+        "positionShortName": "Avant Gauche",
+        "imageVersion": 65
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.69"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.84",
+       "entity": {
+        "id": 6903,
+        "name": "Emerson Palmieri",
+        "shortName": "Emerson",
+        "createdAt": "2014-08-21T11:04:55.733Z",
+        "nameForURL": "emerson-palmieri",
+        "countryId": 3,
+        "competitorId": 469,
+        "competitionId": 0,
+        "positionName": "Arrière Gauche",
+        "positionShortName": "Arrière Gauche",
+        "imageVersion": 79
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.84"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.76",
+       "entity": {
+        "id": 15633,
+        "name": "Aleksandr Golovin",
+        "shortName": "Golovin",
+        "createdAt": "2014-09-27T09:00:09.06Z",
+        "nameForURL": "aleksandr-golovin",
+        "countryId": 14,
+        "competitorId": 471,
+        "competitionId": 0,
+        "positionName": "Milieu Offensif",
+        "positionShortName": "Milieu Offensif",
+        "imageVersion": 45
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.76"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.5",
+       "entity": {
+        "id": 53791,
+        "name": "Amine Gouiri",
+        "shortName": "Gouiri",
+        "createdAt": "2016-09-14T12:16:07.19Z",
+        "nameForURL": "amine-gouiri",
+        "countryId": 139,
+        "competitorId": 469,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 73
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.5"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.96",
+       "entity": {
+        "id": 2185,
+        "name": "Corentin Tolisso",
+        "shortName": "Tolisso",
+        "nameForURL": "corentin-tolisso",
+        "countryId": 5,
+        "competitorId": 465,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 52
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.96"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.18",
+       "entity": {
+        "id": 44491,
+        "name": "Gauthier Hein",
+        "shortName": "Hein",
+        "createdAt": "2016-08-13T17:18:06.27Z",
+        "nameForURL": "gauthier-hein",
+        "countryId": 5,
+        "competitorId": 470,
+        "competitionId": 0,
+        "positionName": "Avant Droit",
+        "positionShortName": "Avant Droit",
+        "imageVersion": 35
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.18"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 2.16",
+       "entity": {
+        "id": 150363,
+        "name": "Gessime Yassine",
+        "shortName": "Yassine",
+        "createdAt": "2024-01-13T17:18:18.097Z",
+        "nameForURL": "gessime-yassine",
+        "countryId": 127,
+        "competitorId": 479,
+        "competitionId": 0,
+        "positionName": "Avant Droit",
+        "positionShortName": "Avant Droit",
+        "imageVersion": 30
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "2.16"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.14",
+       "entity": {
+        "id": 62143,
+        "name": "Romain Faivre",
+        "shortName": "Faivre",
+        "createdAt": "2017-11-29T17:28:06.83Z",
+        "nameForURL": "r.-faivre",
+        "countryId": 5,
+        "competitorId": 476,
+        "competitionId": 0,
+        "positionName": "Milieu Offensif",
+        "positionShortName": "Milieu Offensif",
+        "imageVersion": 62
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.14"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.21",
+       "entity": {
+        "id": 60591,
+        "name": "Sofiane Diop",
+        "shortName": "Diop",
+        "createdAt": "2018-07-21T16:13:10.37Z",
+        "nameForURL": "sofiane-diop",
+        "countryId": 127,
+        "competitorId": 470,
+        "competitionId": 0,
+        "positionName": "Avant Gauche",
+        "positionShortName": "Avant Gauche",
+        "imageVersion": 46
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.21"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.55",
+       "entity": {
+        "id": 175726,
+        "name": "Zachary Athekame",
+        "shortName": "Z. Athekame",
+        "createdAt": "2024-07-19T23:52:47.7Z",
+        "nameForURL": "z.-athekame",
+        "countryId": 15,
+        "competitorId": 465,
+        "competitionId": 0,
+        "positionName": "Arrière Droit",
+        "positionShortName": "Arrière Droit",
+        "imageVersion": 28
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "3"
+        },
+        {
+         "typeId": 44,
+         "value": "1.55"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 0.58",
+       "entity": {
+        "id": 144636,
+        "name": "Senny Mayulu",
+        "shortName": "Mayulu",
+        "createdAt": "2023-09-19T12:54:16.58Z",
+        "nameForURL": "senny-mayulu",
+        "countryId": 5,
+        "competitorId": 480,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 28
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "2"
+        },
+        {
+         "typeId": 44,
+         "value": "0.58"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 0.52",
+       "entity": {
+        "id": 197896,
+        "name": "Soriba Diaoune",
+        "createdAt": "2024-09-17T10:56:17.403Z",
+        "nameForURL": "soriba-diaoune",
+        "countryId": 5,
+        "competitorId": 478,
+        "competitionId": 0,
+        "positionName": "Avant Gauche",
+        "positionShortName": "Avant Gauche",
+        "imageVersion": 19
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "2"
+        },
+        {
+         "typeId": 44,
+         "value": "0.52"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 0.24",
+       "entity": {
+        "id": 232658,
+        "name": "Adil Bourabaa",
+        "shortName": "A. Bourabaa",
+        "createdAt": "2026-02-02T22:50:01.677Z",
+        "nameForURL": "adil-bourabaa",
+        "countryId": 139,
+        "competitorId": 468,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 4
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "2"
+        },
+        {
+         "typeId": 44,
+         "value": "0.24"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 0.63",
+       "entity": {
+        "id": 61071,
+        "name": "Jordan Teze",
+        "shortName": "Teze",
+        "createdAt": "2018-08-04T15:44:44.693Z",
+        "nameForURL": "jordan-teze",
+        "countryId": 7,
+        "competitorId": 471,
+        "competitionId": 0,
+        "positionName": "Arrière Droit",
+        "positionShortName": "Arrière Droit",
+        "imageVersion": 41
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "2"
+        },
+        {
+         "typeId": 44,
+         "value": "0.63"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "secondaryStatName": "Passe décisive attendue: 1.21",
+       "entity": {
+        "id": 39779,
+        "name": "Ousmane Dembélé",
+        "shortName": "Dembélé",
+        "createdAt": "2015-11-22T15:26:39.77Z",
+        "nameForURL": "ousmane-dembele",
+        "countryId": 5,
+        "competitorId": 480,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 91
+       },
+       "stats": [
+        {
+         "typeId": 2,
+         "value": "2"
+        },
+        {
+         "typeId": 44,
+         "value": "1.21"
+        }
+       ]
+      }
+     ],
+     "statsTypes": [
+      {
+       "typeId": 2,
+       "name": "Pass. Décisiv."
+      },
+      {
+       "typeId": 44,
+       "name": "Passe décisive attendue"
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "Tacles Gagnés",
+     "competitionId": 35,
+     "rows": [
+      {
+       "position": 0,
+       "entity": {
+        "id": 61696,
+        "name": "Cristian Cásseres",
+        "shortName": "Cásseres",
+        "createdAt": "2014-03-23T22:25:58.553Z",
+        "nameForURL": "cristian-casseres",
+        "countryId": 110,
+        "competitorId": 482,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 46
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "2.7"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 130728,
+        "name": "Lamine Camara",
+        "shortName": "Camara",
+        "createdAt": "2023-04-15T12:41:26.313Z",
+        "nameForURL": "camara",
+        "countryId": 133,
+        "competitorId": 471,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 36
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "2.1"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 80031,
+        "name": "Adrien Monfray",
+        "shortName": "Monfray",
+        "createdAt": "2020-08-22T16:23:43.073Z",
+        "nameForURL": "adrien-monfray",
+        "countryId": 5,
+        "competitorId": 488,
+        "competitionId": 0,
+        "positionName": "Defenseur Central",
+        "positionShortName": "Defenseur Central",
+        "imageVersion": 10
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "2"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 129475,
+        "name": "Dermane Karim",
+        "createdAt": "2023-03-24T18:40:37.823Z",
+        "nameForURL": "karim-dermane",
+        "countryId": 71,
+        "competitorId": 488,
+        "competitionId": 0,
+        "positionName": "Milieu Offensif",
+        "positionShortName": "Milieu Offensif",
+        "imageVersion": 20
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "2"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 80136,
+        "name": "Rassoul N'Diaye",
+        "shortName": "Ndiaye",
+        "createdAt": "2020-08-05T16:37:34.1Z",
+        "nameForURL": "rassoul-n'diaye",
+        "countryId": 133,
+        "competitorId": 485,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 36
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "2"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 86659,
+        "name": "Vanderson",
+        "createdAt": "2020-11-18T19:33:15.593Z",
+        "nameForURL": "vanderson",
+        "countryId": 21,
+        "competitorId": 471,
+        "competitionId": 0,
+        "positionName": "Arrière Droit",
+        "positionShortName": "Arrière Droit",
+        "imageVersion": 52
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.8"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 144855,
+        "name": "Ismaëlo Ganiou",
+        "shortName": "I. Ganiou",
+        "createdAt": "2023-09-20T11:05:20.327Z",
+        "nameForURL": "ismaelo-ganiou",
+        "countryId": 5,
+        "competitorId": 481,
+        "competitionId": 0,
+        "positionName": "Defenseur Central",
+        "positionShortName": "Defenseur Central",
+        "imageVersion": 22
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.8"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 42570,
+        "name": "Pierre Lees-Melou",
+        "shortName": "Melou",
+        "createdAt": "2016-06-16T09:55:48.823Z",
+        "nameForURL": "pierre-lees-melou",
+        "countryId": 5,
+        "competitorId": 6075,
+        "competitionId": 0,
+        "positionName": "Defensive Midfield",
+        "positionShortName": "Defensive Midfield",
+        "imageVersion": 59
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.7"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 88744,
+        "name": "Mads Bidstrup",
+        "shortName": "Bidstrup",
+        "createdAt": "2021-02-17T18:20:22.437Z",
+        "nameForURL": "bidstrup",
+        "countryId": 23,
+        "competitorId": 465,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 53
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.7"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 132092,
+        "name": "Pape Diop",
+        "shortName": "Diop",
+        "createdAt": "2022-10-29T13:23:32.93Z",
+        "nameForURL": "pape-diop",
+        "countryId": 133,
+        "competitorId": 479,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 26
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.6"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 175726,
+        "name": "Zachary Athekame",
+        "shortName": "Z. Athekame",
+        "createdAt": "2024-07-19T23:52:47.7Z",
+        "nameForURL": "z.-athekame",
+        "countryId": 15,
+        "competitorId": 465,
+        "competitionId": 0,
+        "positionName": "Arrière Droit",
+        "positionShortName": "Arrière Droit",
+        "imageVersion": 28
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.6"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 80479,
+        "name": "Niels Nkounkou",
+        "shortName": "N. Nkounkou",
+        "createdAt": "2020-08-22T13:44:59.28Z",
+        "nameForURL": "niels-nkounkou",
+        "countryId": 5,
+        "competitorId": 470,
+        "competitionId": 0,
+        "positionName": "Arrière Gauche",
+        "positionShortName": "Arrière Gauche",
+        "imageVersion": 69
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.5"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 100594,
+        "name": "Bradley Locko",
+        "shortName": "Locko",
+        "createdAt": "2021-08-08T12:51:53.323Z",
+        "nameForURL": "b.-locko",
+        "countryId": 5,
+        "competitorId": 534,
+        "competitionId": 0,
+        "positionName": "Arrière Gauche",
+        "positionShortName": "Arrière Gauche",
+        "imageVersion": 54
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 115976,
+        "name": "Kévin Danois",
+        "shortName": "K. Danois",
+        "createdAt": "2022-08-07T12:16:51.1Z",
+        "nameForURL": "kevin-danois",
+        "countryId": 5,
+        "competitorId": 476,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 38
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 218475,
+        "name": "Noa Boissé",
+        "createdAt": "2025-08-09T11:16:07.433Z",
+        "nameForURL": "noa-boisse",
+        "countryId": 5,
+        "competitorId": 468,
+        "competitionId": 0,
+        "positionName": "Defenseur Central",
+        "positionShortName": "Defenseur Central",
+        "imageVersion": 3
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 2809,
+        "name": "Benjamin André",
+        "shortName": "André",
+        "nameForURL": "benjamin-andre",
+        "countryId": 5,
+        "competitorId": 478,
+        "competitionId": 0,
+        "positionName": "Defensive Midfield",
+        "positionShortName": "Defensive Midfield",
+        "imageVersion": 43
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 87891,
+        "name": "Jeyland Mitchell",
+        "shortName": "Mitchell",
+        "createdAt": "2021-01-17T05:10:44.68Z",
+        "nameForURL": "jeyland-mitchell",
+        "countryId": 153,
+        "competitorId": 479,
+        "competitionId": 0,
+        "positionName": "Defenseur Central",
+        "positionShortName": "Defenseur Central",
+        "imageVersion": 30
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 102622,
+        "name": "Mohamed Amoura",
+        "shortName": "Amoura",
+        "createdAt": "2021-09-17T18:05:13.067Z",
+        "nameForURL": "mohamed-amoura",
+        "countryId": 139,
+        "competitorId": 470,
+        "competitionId": 0,
+        "positionName": "Avant Centre",
+        "positionShortName": "Avant Centre",
+        "imageVersion": 44
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 218598,
+        "name": "Anis Ouzenadji",
+        "createdAt": "2025-08-09T17:11:11.353Z",
+        "nameForURL": "anis-ouzenadji",
+        "countryId": 139,
+        "competitorId": 488,
+        "competitionId": 0,
+        "positionName": "Arrière Gauche",
+        "positionShortName": "Arrière Gauche",
+        "imageVersion": 3
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.4"
+        }
+       ]
+      },
+      {
+       "position": 0,
+       "entity": {
+        "id": 179716,
+        "name": "Arthur Ebong",
+        "createdAt": "2024-01-14T11:28:56.343Z",
+        "nameForURL": "arthur-avom",
+        "countryId": 73,
+        "competitorId": 472,
+        "competitionId": 0,
+        "positionName": "Milieu Axial",
+        "positionShortName": "Milieu Axial",
+        "imageVersion": 21
+       },
+       "stats": [
+        {
+         "typeId": 38,
+         "value": "1.3"
+        }
+       ]
+      }
+     ],
+     "statsTypes": [
+      {
+       "typeId": 38,
+       "name": "Tackles"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

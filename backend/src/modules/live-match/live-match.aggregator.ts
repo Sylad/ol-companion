@@ -21,6 +21,7 @@ import type {
   Scores365GameDetailResponse,
   Scores365TopPerformerCategory,
 } from '../../config/scores365-game.schema';
+import { performerStat, type TopPerformerPeriod } from './top-performer-stats';
 
 /**
  * Parses a 365scores stat value like "5", "12'", "4/8", "70%" into a number.
@@ -239,32 +240,23 @@ function toShots(g: Scores365GameDetailed): LiveMatchShot[] {
 
 function toTopPerformers(g: Scores365GameDetailed): LiveMatchTopPerformer[] {
   const cats: Scores365TopPerformerCategory[] = g.topPerformers?.categories ?? [];
-  return cats.map((c) => {
-    const homeP = c.homePlayer;
-    const awayP = c.awayPlayer;
-    const firstStat = (
-      p: Scores365TopPerformerCategory['homePlayer'] | Scores365TopPerformerCategory['awayPlayer'],
-    ): { name?: string; value?: string | number } => p?.stats?.[0] ?? {};
+  // L266 : avant le coup d'envoi, chiffres de la saison ; ensuite, chiffres du match.
+  const period: TopPerformerPeriod = deriveStatus(g.statusGroup ?? 0) === 'upcoming' ? 'saison' : 'match';
+  const toPlayer = (p: Scores365TopPerformerCategory['homePlayer']): LiveMatchTopPerformer['homePlayer'] => {
+    if (!p) return null;
+    const stat = performerStat(p.stats, period);
     return {
-      role: c.name ?? '',
-      homePlayer: homeP
-        ? {
-            id: homeP.athleteId ?? homeP.id ?? 0,
-            name: homeP.name ?? '',
-            statName: firstStat(homeP).name ?? '',
-            statValue: String(firstStat(homeP).value ?? ''),
-          }
-        : null,
-      awayPlayer: awayP
-        ? {
-            id: awayP.athleteId ?? awayP.id ?? 0,
-            name: awayP.name ?? '',
-            statName: firstStat(awayP).name ?? '',
-            statValue: String(firstStat(awayP).value ?? ''),
-          }
-        : null,
+      id: p.athleteId ?? p.id ?? 0,
+      name: p.name ?? '',
+      statName: stat?.statName ?? '',
+      statValue: stat?.statValue ?? '',
     };
-  });
+  };
+  return cats.map((c) => ({
+    role: c.name ?? '',
+    homePlayer: toPlayer(c.homePlayer),
+    awayPlayer: toPlayer(c.awayPlayer),
+  }));
 }
 
 type FootballDataFixtures = FootballDataKickoff[];
