@@ -3073,6 +3073,7 @@ lots:
     status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-20, sha: 1432a112241355f47e997db7f74b39fcc95e4803 }
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "conforme r2 lead : a1ca104 corrige les 2 majeurs et 2 mineurs (statuts en liste sans appel de plus, POSTPONED testé, 3 mutants détectés), porte verte ; à confirmer en prod : statuts réels de football-data", commit: a1ca104b32a365bfbf2ec7b68b255995e51813f5 }
