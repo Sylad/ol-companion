@@ -3088,6 +3088,7 @@ lots:
     status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-20, sha: f0e154a6455058cedc2c06cf4cee15bcb97c1a90 }
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "conforme : correction r2 25d9815 relue par le lead (gabarit du cas le plus long généralisé, option gabarit retirée, test Chromium accueil 12 cas)", commit: 25d9815ad183741ec4e57c3efcbc6206681896fe }
