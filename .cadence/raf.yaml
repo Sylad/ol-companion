@@ -3083,10 +3083,11 @@ lots:
   - id: L266
     title: "Page du match à venir, « Joueurs en vue » : « Moussa Niakhate · Tacles : 0,1 » (vu le 20-11 sur Lille – Lyon) — sans doute une moyenne affichée comme un nombre de tacles ; afficher la statistique avec son vrai sens (par match, total) ou ne pas l'afficher, avec test (relevé par L237)"
     public: "Joueurs en vue : statistiques avec leur vrai sens"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-11-20
+    started: 2026-11-20
   - id: L267
     title: "Conformité des sources : retirer les en-têtes qui imitent un navigateur et le site de 365scores (User-Agent Chrome, Referer, Origin, X-Domain) — l'app se présente sous son vrai nom ; les six familles d'appels répondent 200 sans eux le 20-11 (règle de Sylvain « aucun contournement anti-robot ») ; afficher la mention exigée par football-data « Football data provided by the Football-Data.org API » là où ses données s'affichent et sur la page À propos ; tests (aucun en-tête imité dans les requêtes sortantes, mention présente) — suite de L263, docs/etudes/365scores-conditions.md"
     public: Sources des données citées et appelées sous notre vrai nom
