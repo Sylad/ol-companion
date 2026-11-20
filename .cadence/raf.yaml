@@ -3085,13 +3085,14 @@ lots:
   - id: L265
     title: "« Ce que ça change » sur un match terminé et sur « Dernier résultat » : pour J1 à J10 la phrase correspond au tracker ; journée incomplète marquée provisoire (P3 de docs/etudes/idees-supporter.md, L237)"
     public: Ce que le résultat change au classement
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-11-20
     started: 2026-11-20
-    review: { date: 2026-11-20, verdict: "conforme (r2) : 5 majeurs de r1 fermés, empreintes scellées égales, R19 ajoutée sans réécrire R16-R18, aucune donnée 365scores ; 1 mineur (titre de test périmé) — tmp/revue-L265-r2.md", commit: c781781a1ed4d10a1a28518fad293c847a84609d }
-    ux: { date: 2026-11-20, verdict: "non conforme (r2) : 1 majeur, accueil en journée provisoire, place réservée 90 px contre 146 chargé à 390 (saut 56/75 px) ; /match conforme — tmp/ux-L265-r2.md" }
+    review: { date: 2026-11-20, verdict: "conforme : correction r2 25d9815 relue par le lead (gabarit du cas le plus long généralisé, option gabarit retirée, test Chromium accueil 12 cas)", commit: 25d9815ad183741ec4e57c3efcbc6206681896fe }
+    ux: { date: 2026-11-20, verdict: "conforme r3 : 0 px sur l'accueil (16 cas) et /match (12 cas), vide sous phrase courte accepté (R19) — tmp/ux-L265-r3.md" }
+    finished: 2026-11-20
   - id: L266
     title: "Page du match à venir, « Joueurs en vue » : « Moussa Niakhate · Tacles : 0,1 » (vu le 20-11 sur Lille – Lyon) — sans doute une moyenne affichée comme un nombre de tacles ; afficher la statistique avec son vrai sens (par match, total) ou ne pas l'afficher, avec test (relevé par L237)"
     public: "Joueurs en vue : statistiques avec leur vrai sens"
