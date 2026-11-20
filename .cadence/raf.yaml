@@ -3087,10 +3087,11 @@ lots:
   - id: L267
     title: "Conformité des sources : retirer les en-têtes qui imitent un navigateur et le site de 365scores (User-Agent Chrome, Referer, Origin, X-Domain) — l'app se présente sous son vrai nom ; les six familles d'appels répondent 200 sans eux le 20-11 (règle de Sylvain « aucun contournement anti-robot ») ; afficher la mention exigée par football-data « Football data provided by the Football-Data.org API » là où ses données s'affichent et sur la page À propos ; tests (aucun en-tête imité dans les requêtes sortantes, mention présente) — suite de L263, docs/etudes/365scores-conditions.md"
     public: Sources des données citées et appelées sous notre vrai nom
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-11-20
+    started: 2026-11-20
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
