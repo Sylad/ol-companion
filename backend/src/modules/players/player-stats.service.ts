@@ -19,7 +19,6 @@ import { OL_TEAM_ID } from '../../config/constants';
 import {
   scores365Headers,
   SCORES365_API_BASE,
-  SCORES365_REFERER,
 } from '../../config/scores365-http';
 import {
   Scores365GameDetailResponseSchema,
@@ -33,7 +32,7 @@ import {
 } from './player-stats.aggregator';
 import type { PlayerSeasonStats } from './player-stats.types';
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
+const SCORES365_HEADERS = scores365Headers();
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1h
 /** Après une reconstruction sans aucun match lu, on réessaie dans 5 min, pas à chaque requête. */

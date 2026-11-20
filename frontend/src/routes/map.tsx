@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { useSeasonMatches } from '@/hooks/use-season-matches';
 import { seasonLabel } from '@/lib/season-label';
 import { KnowledgeHeader } from '@/components/knowledge-header';
+import { FootballDataAttribution } from '@/components/football-data-attribution';
 
 // Lazy-load Leaflet — keeps it out of the main bundle. Saves ~150 kB minified
 // for users who never visit /map.
@@ -50,7 +51,8 @@ export function MapPage() {
             >
               © OpenStreetMap contributors
             </a>{' '}
-            · Logos clubs : 365scores.
+            · Logos clubs : 365scores · Heures des coups d’envoi de Ligue 1 :{' '}
+            <FootballDataAttribution className="hover:text-fg" />.
           </p>
         </div>
       </section>

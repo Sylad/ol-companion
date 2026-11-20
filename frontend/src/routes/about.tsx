@@ -1,5 +1,6 @@
 import { ExternalLink, Sparkles, Code2, Palette, Server, Heart } from 'lucide-react';
 import { NotificationsToggle } from '@/components/notifications-toggle';
+import { FootballDataSourceNote } from '@/components/football-data-attribution';
 
 const STACK = [
   {
@@ -172,6 +173,7 @@ export function AboutPage() {
               <Sparkles className="h-3 w-3 text-ol-red-bright" />
               <span>Données live via 365scores · Logos via Wikipedia FR · Hébergé sur Kubernetes (k3s).</span>
             </div>
+            <FootballDataSourceNote what="Prochain match et heures des coups d’envoi de Ligue 1" className="mt-2" />
           </div>
         </div>
       </section>

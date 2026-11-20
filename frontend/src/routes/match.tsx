@@ -19,6 +19,7 @@ import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTo
 import { estIntrouvable } from '@/lib/api';
 import { eventLabelFr } from '@/lib/event-fr';
 import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
+import { FootballDataAttribution } from '@/components/football-data-attribution';
 
 
 /** Ligue 1 chez 365scores : seule compétition dont football-data.org décide l'heure du coup d'envoi. */
@@ -61,8 +62,7 @@ function SourcesMatch({ footballData }: { footballData: boolean }) {
       <a href="https://www.365scores.com/fr/football/league/ligue-1-35" target="_blank" rel="noopener noreferrer" className={LIEN_SOURCE}>365scores</a>.
       {footballData && (
         <>
-          {' '}Heure du coup d’envoi :{' '}
-          <a href="https://www.football-data.org/" target="_blank" rel="noopener noreferrer" className={LIEN_SOURCE}>football-data.org</a>.
+          {' '}Heure du coup d’envoi : <FootballDataAttribution />.
         </>
       )}
     </p>

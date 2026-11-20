@@ -48,10 +48,11 @@ describe('L235 — source des données de la page match', () => {
     courant = stats({ status: 'upcoming', statusGroup: 2 });
     render(<MatchPage />);
     const note = screen.getByTestId('sources-match');
-    const lien = within(note).getByRole('link', { name: /football-data\.org/ });
+    const lien = within(note).getByRole('link', { name: /football-data\.org/i });
     expect(lien.getAttribute('href')).toBe('https://www.football-data.org/');
     expect(lien.getAttribute('rel')).toBe('noopener noreferrer');
-    expect(within(note).getByRole('link', { name: /365scores/ })).toBeTruthy();
+    expect(within(note).getByRole('link', { name: /365scores/ })).toBeTruthy();    // L267 : la mention exigée par football-data (§ 7.1), mot pour mot.
+    expect(lien.textContent).toBe('Football data provided by the Football-Data.org API');
   });
 
   it('R3 — un match à venir hors Ligue 1 ne cite pas football-data.org (il ne décide pas de son heure)', () => {

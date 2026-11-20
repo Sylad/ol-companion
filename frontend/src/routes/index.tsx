@@ -4,6 +4,7 @@ import { DashboardHero } from '@/components/dashboard-hero';
 import { DashboardStats } from '@/components/dashboard-stats';
 import { LastResult } from '@/components/last-result';
 import { LiveMatchCard } from '@/components/live-match-card';
+import { FootballDataSourceNote } from '@/components/football-data-attribution';
 
 const SeasonSummary = lazy(() =>
   import('@/components/season-summary').then((mod) => ({ default: mod.SeasonSummary })),
@@ -35,6 +36,8 @@ export function DashboardPage() {
       <Suspense fallback={<DashboardPanelFallback label="Chargement du tracker..." />}>
         <PositionTracker />
       </Suspense>
+      {/* L267 : l'heure du prochain match de Ligue 1 vient de football-data, qui exige sa mention. */}
+      <FootballDataSourceNote what="Heure des coups d’envoi de Ligue 1" />
     </div>
   );
 }

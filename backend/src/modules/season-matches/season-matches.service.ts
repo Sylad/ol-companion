@@ -17,7 +17,6 @@ import {
 import {
   scores365Headers,
   SCORES365_API_BASE,
-  SCORES365_REFERER,
 } from '../../config/scores365-http';
 import {
   Scores365GamesResponseSchema,
@@ -168,7 +167,7 @@ const PAGE_LIMIT = 50;
  */
 const FORWARD_PAGES = 12;
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
+const SCORES365_HEADERS = scores365Headers();
 
 /**
  * Fetcher type aliased so tests can swap `fetch` without DI churn.

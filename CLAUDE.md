@@ -34,7 +34,7 @@ Endpoints clés :
 
 ## 365scores
 
-Headers obligatoires (sinon 403) : `X-Domain: fr`, `Referer: https://www.365scores.com/fr/football/league/ligue-1-35`, `User-Agent: Mozilla/5.0`.
+En-têtes honnêtes seulement (L267) : `User-Agent: ol-companion/<version> (+https://ol.sladoire.dev)`, `Accept`, `Accept-Language` ; ni `Referer`, ni `Origin`, ni `X-Domain`, ni User-Agent de navigateur (règle de Sylvain : aucun contournement anti-robot). Mesuré le 20-11 : les six familles d'appels répondent 200 sans eux (`docs/etudes/365scores-conditions.md`). Si 365scores refuse un jour ce client, l'app affiche son erreur et l'on change de source : on ne remet PAS d'en-tête imité. Conditions d'utilisation : usage public non couvert sans accord écrit (même étude, § 3).
 
 ## Workflow dev
 
@@ -139,14 +139,10 @@ Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu él
 - ✅ Écussons du calendrier et du dernier résultat : CDN 365scores par identifiant (`seasonTeamLogoUrl`, `TeamLogo src=`), pas `/api/wiki-image` — une trentaine de clubs d'un coup dépassait la limite de débit, et la recherche par nom rendait une photo de ville pour des clubs européens.
 - ❌ Ne pas déduire « heure non fixée » de l'heure elle-même : 17:00 UTC est aussi une vraie heure de coup d'envoi (19:00 l'été).
 
-### Headers 365scores obligatoires
-Sinon HTTP 403 :
-```
-X-Domain: fr
-Referer: https://www.365scores.com/fr/football/league/ligue-1-35
-User-Agent: Mozilla/5.0 ...
-```
-Centralisés dans `SCORES365_HEADERS`.
+### En-têtes sortants : l'app se nomme (L267)
+- Tout appel sortant (365scores, football-data, Wikipédia, RSS) porte `User-Agent: ol-companion/<version du backend> (+https://ol.sladoire.dev)` : `APP_USER_AGENT` / `outboundHeaders()` (`backend/src/config/outbound-http.ts`) ; 365scores via `scores365Headers()` (+ `Accept`, `Accept-Language`).
+- ❌ Jamais de `Referer`, `Origin`, `X-Domain` ni de User-Agent de navigateur : `config/outbound-http.spec.ts` (garde sur les sources + appels déroulés) et `scores365-host.spec.ts` le refusent. Un 403 d'une source n'est pas une raison de les remettre.
+- ✅ Mention exigée par football-data (§ 7.1 de ses conditions) : « Football data provided by the Football-Data.org API », composant `FootballDataAttribution` (`frontend/src/components/football-data-attribution.tsx`), sur l'accueil, le calendrier, la carte, la page d'un match de Ligue 1 à venir et À propos (`routes/attribution-football-data-L267.test.tsx`). Une nouvelle page qui affiche une donnée de football-data la reprend.
 
 ### Live-match
 - Cron `*/30 * * * * *` (30 sec) sur `live-match.service`, mais **diff signature** avant emit SSE — pas de spam.

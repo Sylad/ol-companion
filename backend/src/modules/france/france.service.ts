@@ -5,7 +5,7 @@ import { FRANCE_365SCORES_ID } from '../../config/constants';
 import { POSITION_BY_ID } from '../../config/scores365-positions';
 import { SquadsResponseSchema } from '../../config/scores365-squads';
 import { isKickoffTimeWithinHorizon } from '../../config/kickoff-horizon';
-import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game } from '../../config/scores365-game.schema';
 
 export interface FranceTeam {
@@ -48,7 +48,7 @@ export interface FranceOverview {
   squad: FrancePlayer[];
 }
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
+const SCORES365_HEADERS = scores365Headers();
 const QUERY = `appTypeId=5&langId=15&timezoneName=Europe/Paris&userCountryId=75&competitors=${FRANCE_365SCORES_ID}`;
 const RESULTS_COUNT = 5;
 /** Durée de la copie en mémoire : la page se lit à la demande, pas par cron. */

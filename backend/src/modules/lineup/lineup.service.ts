@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { OL_365SCORES_ID } from '../../config/constants';
-import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 import {
   Scores365GameDetailResponseSchema,
   Scores365GamesResponseSchema,
@@ -55,7 +55,7 @@ export interface LineupResponse {
 const CACHE_TTL_MS = 6 * 3600_000; // 6h
 const CACHE_FILE = path.resolve(process.cwd(), 'data', 'lineup-cache.json');
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
+const SCORES365_HEADERS = scores365Headers();
 
 @Injectable()
 export class LineupService implements OnModuleInit {

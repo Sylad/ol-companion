@@ -12,6 +12,7 @@ import {
 } from '../../config/football-data.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import { footballDataTimeConfirmed } from './kickoff-time';
+import { outboundHeaders } from '../../config/outbound-http';
 
 /** Un match tel qu'il est écrit dans le cache — sans champ dérivé. */
 interface StoredMatch {
@@ -241,7 +242,7 @@ export class FixturesService implements OnModuleInit {
       try {
         const url = `https://api.football-data.org/v4/competitions/${LIGUE1_FOOTBALL_DATA_ID}/matches?matchday=${md}`;
         const res = await fetch(url, {
-          headers: { 'X-Auth-Token': apiKey },
+          headers: outboundHeaders({ 'X-Auth-Token': apiKey }),
           signal: AbortSignal.timeout(10_000),
         });
         if (!res.ok) {
@@ -278,7 +279,7 @@ export class FixturesService implements OnModuleInit {
     const url = `https://api.football-data.org/v4/teams/${OL_TEAM_ID}/matches?status=${status}&limit=${limit}`;
     try {
       const res = await fetch(url, {
-        headers: { 'X-Auth-Token': apiKey },
+        headers: outboundHeaders({ 'X-Auth-Token': apiKey }),
         signal: AbortSignal.timeout(10_000),
       });
       if (!res.ok) {

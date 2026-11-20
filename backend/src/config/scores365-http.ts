@@ -1,10 +1,13 @@
-/**
- * 365scores anti-scraping requires browser-like headers (otherwise 403).
- * The Referer is the only field that meaningfully changes per endpoint;
- * all others are constant. See CLAUDE.md "365scores".
- */
+import { outboundHeaders } from './outbound-http';
 
-const BASE = 'https://www.365scores.com/fr/football';
+/**
+ * En-têtes des appels à 365scores (L267) : l'app se nomme (`APP_USER_AGENT`),
+ * demande du JSON en français, et rien d'autre. Ni User-Agent de navigateur,
+ * ni `Referer` / `Origin` / `X-Domain` imitant le site de 365scores : mesuré
+ * le 2026-11-20, chaque famille d'appels répond 200 sans eux
+ * (docs/etudes/365scores-conditions.md § 2.3). Si 365scores refuse un jour ce
+ * client honnête, on ne les remet pas (règle « aucun contournement anti-robot »).
+ */
 
 /**
  * Base URL of the 365scores JSON API (`/web/games/`, `/web/standings/`,
@@ -18,25 +21,10 @@ const BASE = 'https://www.365scores.com/fr/football';
  */
 export const SCORES365_API_BASE = 'https://webws.365scores.com';
 
-export const SCORES365_REFERER = {
-  default: BASE,
-  team: `${BASE}/team/lyon-465`,
-  ligue1: `${BASE}/league/ligue-1-35`,
-} as const;
-
-export type Scores365Referer = (typeof SCORES365_REFERER)[keyof typeof SCORES365_REFERER];
-
-/**
- * Build the headers required by the 365scores API (`SCORES365_API_BASE`).
- * @param referer one of `SCORES365_REFERER.*` — defaults to the generic football page.
- */
-export function scores365Headers(referer: Scores365Referer = SCORES365_REFERER.default): Record<string, string> {
-  return {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+/** En-têtes de tout appel à `SCORES365_API_BASE` (et au flux play-by-play). */
+export function scores365Headers(): Record<string, string> {
+  return outboundHeaders({
     'Accept': 'application/json',
     'Accept-Language': 'fr-FR,fr;q=0.9',
-    'X-Domain': 'fr',
-    'Referer': referer,
-    'Origin': 'https://www.365scores.com',
-  };
+  });
 }

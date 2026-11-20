@@ -3,6 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
+import { outboundHeaders } from '../../config/outbound-http';
 
 export interface NewsItem {
   title: string;
@@ -64,7 +65,7 @@ export class NewsService implements OnModuleInit {
     // (séquentiel = jusqu'à 24 s avec les timeouts 8 s). Review 2026-08-14.
     const fetched = await Promise.allSettled(RSS_SOURCES.map(async (source) => {
       const res = await fetch(source.url, {
-        headers: { 'User-Agent': 'OL-Companion/1.0' },
+        headers: outboundHeaders(),
         signal: AbortSignal.timeout(8000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

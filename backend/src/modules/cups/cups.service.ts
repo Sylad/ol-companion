@@ -11,7 +11,7 @@ import { Scores365StandingsResponseSchema } from '../standings/standings.schema'
 import { BracketService } from './bracket.service';
 import { OL_365SCORES_ID, LIGUE1_365SCORES_ID, CHAMPIONS_LEAGUE_QUALIFIERS_365SCORES_ID } from '../../config/constants';
 import { legLabel, stageLabel } from '../season-matches/season-matches.service';
-import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 import { Scores365GamesResponseSchema, type Scores365Game, type Scores365GamesResponse } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 
@@ -120,7 +120,7 @@ const UPCOMING_ATTEMPTS = 3;
 const UPCOMING_RETRY_DELAY_MS = 1_000;
 const CACHE_FILE = path.resolve(process.cwd(), 'data', 'cups-cache.json');
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
+const SCORES365_HEADERS = scores365Headers();
 
 @Injectable()
 export class CupsService implements OnModuleInit {

@@ -5,7 +5,7 @@ import * as path from 'path';
 import { atomicWriteJsonSync } from '../../common/atomic-write';
 import { EventBusService } from '../events/event-bus.service';
 import { LIGUE1_365SCORES_ID, OL_365SCORES_ID, OL_TEAM_ID } from '../../config/constants';
-import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 import {
   compareLfp,
   computeOlRankingsByRound,
@@ -91,7 +91,7 @@ const CACHE_TTL_MS = 3600_000;
 const HISTORY_FILE = path.resolve(process.cwd(), 'data', 'standings-history.json');
 const SEASON_FILE = path.resolve(process.cwd(), 'data', 'season-rankings.json');
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.ligue1);
+const SCORES365_HEADERS = scores365Headers();
 
 @Injectable()
 export class StandingsService implements OnModuleInit {

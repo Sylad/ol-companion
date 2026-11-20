@@ -23,6 +23,7 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 - shows: la carte du direct À venir affiche « vs » entre les deux clubs, tant que /api/live-match/current est `upcoming` avec des scores `null` (L73, QA L77)
 - never: « Aucun match programmé. » ; « Aucun match joué cette saison. » ; « Aucune donnée d'évolution disponible. » ; une heure « 01h00 » ou « 02h00 » (minuit UTC) ; « -1 · -1 » (L73)
 - api: /api/standings
+- shows: en bas de page, « Heure des coups d’envoi de Ligue 1 : Football data provided by the Football-Data.org API » (L267)
 - api: /api/season-matches — lu par le bandeau « Prochain rendez-vous » et par « Dernier résultat » (toutes compétitions) ; `/api/fixtures` n'est plus appelé par `/`
 - api: /api/standings/season-rankings
 - api: /api/season-matches/team-stats
@@ -82,6 +83,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - shows: tous les matchs de la saison, toutes compétitions où l'OL joue (Ligue 1, Ligue des champions et ses qualifications, Ligue Europa, coupes) : autant de lignes que /api/season-matches en renvoie (46 le 03-10) ; « Matchs listés » égal au nombre de lignes affichées, quel que soit le filtre de statut ou de compétition (au total, sans filtre) ; à 0 ligne la vue rapide est masquée (L51) et « Aucun match dans cette catégorie. » + « Afficher tous les matchs » la remplacent, sans « Matchs listés 0 » ; ce bouton rend le focus au titre « Calendrier », « Chargement des matchs… » est annoncé (role=status) ; les pastilles par compétition, dont la somme égale « Toutes »
 - shows: un score sur chaque match joué ; une heure ou « Horaire à confirmer » sur chaque match à venir, jamais les deux ; un match dont l'horaire n'est pas fixé a aussi un jour de remplissage : la ligne dit « Week-end du dd/mm » (vendredi à dimanche, « du dd/mm » à l'écran) ou « Date à confirmer » (`unconfirmedDay`, L47), jamais le jour de remplissage présenté comme sûr (L73, QA L32)
 - never: « Aucun match dans cette catégorie. » quand la pastille choisie annonce au moins 1 match ; une heure « 01:00 » ou « 02:00 » (minuit UTC)
+- shows: sous la liste, la ligne « Heures des coups d’envoi de Ligue 1 : Football data provided by the Football-Data.org API », la mention en lien vers https://www.football-data.org/ (L267)
 - api: /api/season-matches
 
 ## /news
@@ -104,6 +106,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - never: « Chargement de la carte… » après 8 s
 - never: « Pas de match OL recensé » (ni marqueur « Pas encore joué » faute de données : tant que /api/season-matches n'a pas répondu, « Chargement de la carte… » ; en erreur, un message avec « Réessayer », L194)
 - never: dans la bulle d'un club dont le match de Ligue 1 est en cours (/api/season-matches `IN_PLAY`), ce match sous « À venir » : il est sous « En direct » avec son score du côté de l'OL (« 2–1 »), ou « en direct » sans score, et n'entre pas dans le bilan V N D (L91, QA L81 09-10 : Lens 2-1 Lyon 90+6')
+- shows: dans les crédits sous la carte, « Football data provided by the Football-Data.org API » en lien vers https://www.football-data.org/ (L267)
 - api: /api/season-matches — lu par la carte
 
 ## /equipe-de-france
@@ -121,6 +124,7 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 
 ## /about
 - shows: le titre « Vibe coded with Claude Code » ; les sections Frontend, Backend, Infra (titres h3, pas h2), chacune non vide ; chaque lien de « Mes autres sites » répond 2xx
+- shows: la mention « Football data provided by the Football-Data.org API », en lien vers https://www.football-data.org/ (L267)
 
 ## /nouveautes
 - shows: le titre « Ce qui a changé » ; au moins 5 entrées, chacune avec une date, un titre et sa capture chargée

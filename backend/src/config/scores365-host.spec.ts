@@ -181,13 +181,15 @@ describe("365scores — hôte de l'API écrit une seule fois (L33)", () => {
       .filter((url) => !url.startsWith(`${apiBase}/web/`));
     expect(elsewhere).toEqual([]);
     expect(calls.filter((c) => c.url.includes(OLD_HOST))).toEqual([]);
-    // En-têtes anti-scraping inchangés (sinon 403).
+    // L267 : l'app se nomme, aucun en-tête n'imite un navigateur ni le site
+    // de 365scores (ni Referer, ni Origin, ni X-Domain).
+    const { APP_USER_AGENT } = require('./outbound-http') as { APP_USER_AGENT: string };
     for (const c of calls) {
-      expect(c.headers['X-Domain']).toBe('fr');
-      expect(c.headers['Origin']).toBe('https://www.365scores.com');
-      expect(c.headers['Referer']).toMatch(
-        /^https:\/\/www\.365scores\.com\/fr\/football/,
-      );
+      const names = Object.keys(c.headers).map((k) => k.toLowerCase());
+      expect(names).not.toContain('referer');
+      expect(names).not.toContain('origin');
+      expect(names).not.toContain('x-domain');
+      expect(c.headers['User-Agent']).toBe(APP_USER_AGENT);
     }
   }
 

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { z } from 'zod';
 import { parseExternal } from '../../common/zod-validation.pipe';
+import { outboundHeaders } from '../../config/outbound-http';
 
 export interface WikiImageResult {
   imageUrl: string | null;
@@ -18,7 +19,7 @@ function cacheSet(key: string, value: WikiImageResult): void {
   }
   CACHE.set(key, value);
 }
-const HEADERS = { 'User-Agent': 'OLCompanion/2.0 (https://github.com/Sylad/ol-companion)' };
+const HEADERS = outboundHeaders();
 
 const PageSchema = z.object({
   title: z.string().optional(),

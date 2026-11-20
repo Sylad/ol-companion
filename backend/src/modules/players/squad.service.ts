@@ -3,7 +3,7 @@ import { parseExternal } from '../../common/zod-validation.pipe';
 import { OL_365SCORES_ID } from '../../config/constants';
 import { POSITION_BY_ID } from '../../config/scores365-positions';
 import { SquadsResponseSchema } from '../../config/scores365-squads';
-import { scores365Headers, SCORES365_API_BASE, SCORES365_REFERER } from '../../config/scores365-http';
+import { scores365Headers, SCORES365_API_BASE } from '../../config/scores365-http';
 
 export interface SquadPlayer {
   athleteId: number;
@@ -14,7 +14,7 @@ export interface SquadPlayer {
   jerseyNumber: number | null;
 }
 
-const SCORES365_HEADERS = scores365Headers(SCORES365_REFERER.team);
+const SCORES365_HEADERS = scores365Headers();
 /** L'effectif change au mercato, pas d'un match à l'autre : une lecture par heure suffit. */
 const CACHE_TTL_MS = 60 * 60 * 1000;
 

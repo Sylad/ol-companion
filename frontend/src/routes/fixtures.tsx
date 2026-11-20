@@ -25,6 +25,7 @@ import {
   type CompetitionFilter,
   type StatusTab,
 } from '@/lib/calendar';
+import { FootballDataSourceNote } from '@/components/football-data-attribution';
 
 const TABS: { key: StatusTab; label: string }[] = [
   { key: 'all', label: 'Tout' },
@@ -264,6 +265,8 @@ export function FixturesPage() {
               </div>
             </div>
           )}
+          {/* L267 : football-data décide de l'heure des matchs de Ligue 1 à venir ; sa mention est due là où elle s'affiche. */}
+          {data && <FootballDataSourceNote what="Heures des coups d’envoi de Ligue 1" className="mt-3 lg:mt-5" />}
         </div>
       </section>
     </div>

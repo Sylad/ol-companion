@@ -1,4 +1,4 @@
-import { SCORES365_API_BASE, scores365Headers, SCORES365_REFERER } from '../../config/scores365-http';
+import { SCORES365_API_BASE, scores365Headers } from '../../config/scores365-http';
 
 /**
  * L241 — position de l'OL à la fin de chaque journée de Ligue 1, recalculée
@@ -27,7 +27,7 @@ const FINISHED = 4; // statusGroup 365scores d'un match terminé
 const MAX_PAGES = 40;
 /** Matchs d'une journée de Ligue 1 (18 clubs) : la journée 1 est complète à ce nombre. */
 const MATCHES_PER_ROUND = 9;
-const HEADERS = scores365Headers(SCORES365_REFERER.ligue1);
+const HEADERS = scores365Headers();
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 const validScore = (v: unknown): v is number => typeof v === 'number' && Number.isInteger(v) && v >= 0;
