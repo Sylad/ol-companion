@@ -3092,6 +3092,8 @@ lots:
     visible: true
     created: 2026-11-20
     started: 2026-11-20
+    ux: { date: 2026-11-20, verdict: "conforme 20-11 lead d'après les captures 1440/390 (accueil, calendrier, carte, match, À propos) : mention lisible, lien souligné, même gris que la ligne de sources L235, aucun débordement ; mineur : « Heure des coups d'envoi » (accueil) vs « Heures des coups d'envoi » (calendrier)" }
+    review: { date: 2026-11-20, verdict: "non-conforme 20-11 r1 (084a40a) : code conforme (16/16, garde rouge sur l'ancien code, mention sur toutes les pages football-data) ; majeur doc : README.md:158 et HOW-IT-WORKS.md:57 décrivent encore les en-têtes imités — tmp/revue-L267.md", commit: 084a40ad6b9cde5769e658e46be18de6a6fc96a4 }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
