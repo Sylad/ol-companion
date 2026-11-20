@@ -6,6 +6,7 @@ import { teamShortName } from '@/lib/team-queries';
 import { RetryMessage } from './retry-message';
 import { cn } from '@/lib/utils';
 import { seasonTeamLogoUrl } from '@/lib/calendar';
+import { CeQueCaChange } from './ce-que-ca-change';
 
 const WEEKDAY = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
 
@@ -142,6 +143,9 @@ export function LastResult() {
           )}
         </div>
       </div>
+
+      {/* L265 : ce que le résultat change au classement, Ligue 1 seule (football-data.org). */}
+      {lastFinished.competitionCode === 'L1' && <CeQueCaChange at={lastFinished.date} className="border-t border-border" />}
 
       {/* L134 : la date ne se coupe jamais — c'est le tour (long) qui passe à la ligne. */}
       <footer className="px-5 py-2.5 bg-surface-2/30 border-t border-border text-xs text-fg-dim flex items-center justify-between gap-3">

@@ -121,6 +121,20 @@ export function compareLfp(games: LeagueGame[], round: number, table: Row[], a: 
   );
 }
 
+export interface RankedRow extends Row { position: number; }
+
+/**
+ * Le classement complet à l'issue de la journée `round` (matchs terminés de journée ≤ `round`),
+ * dans l'ordre LFP de `compareLfp`. Les clubs à égalité totale partagent la meilleure place du
+ * groupe, comme dans `computeOlRankingsByRound` (L265 : « Ce que ça change » lit ce tableau).
+ */
+export function rankedTableUpTo(games: LeagueGame[], round: number): RankedRow[] {
+  const table = tableUpTo(games, round);
+  return table
+    .map((r) => ({ ...r, position: 1 + table.filter((o) => compareLfp(games, round, table, o, r) > 0).length }))
+    .sort((a, b) => a.position - b.position || a.id - b.id);
+}
+
 /**
  * Une entrée par journée où l'OL a joué son match : sa place dans le classement
  * des matchs terminés de la journée 1 à cette journée (un match joué plus tard

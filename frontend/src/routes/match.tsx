@@ -20,6 +20,7 @@ import { estIntrouvable } from '@/lib/api';
 import { eventLabelFr } from '@/lib/event-fr';
 import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 import { FootballDataAttribution } from '@/components/football-data-attribution';
+import { CeQueCaChange } from '@/components/ce-que-ca-change';
 
 
 /** Ligue 1 chez 365scores : seule compétition dont football-data.org décide l'heure du coup d'envoi. */
@@ -53,16 +54,17 @@ const LIEN_SOURCE = 'underline underline-offset-2 hover:text-fg-muted';
 
 /**
  * Source des données de la page (L235). Tout ce que la page affiche vient de 365scores ; football-data.org
- * n'intervient que pour l'heure du coup d'envoi d'un match de Ligue 1 à venir (`footballDataSaysKickoff`).
+ * n'intervient que pour l'heure du coup d'envoi d'un match de Ligue 1 à venir (`footballDataSaysKickoff`)
+ * et pour « Ce que ça change » sous un match de Ligue 1 terminé (L265).
  */
-function SourcesMatch({ footballData }: { footballData: boolean }) {
+function SourcesMatch({ footballData }: { footballData: 'coup-envoi' | 'classement' | null }) {
   return (
     <p data-testid="sources-match" className="text-petite leading-snug text-fg-dim text-center">
       Statistiques, compositions et direct :{' '}
       <a href="https://www.365scores.com/fr/football/league/ligue-1-35" target="_blank" rel="noopener noreferrer" className={LIEN_SOURCE}>365scores</a>.
       {footballData && (
         <>
-          {' '}Heure du coup d’envoi : <FootballDataAttribution />.
+          {' '}{footballData === 'coup-envoi' ? 'Heure du coup d’envoi' : 'Ce que ça change (classement)'} : <FootballDataAttribution />.
         </>
       )}
     </p>
@@ -443,6 +445,9 @@ export function MatchPage() {
   const symbolIsOl = !bleus;
   const isLive = data.status === 'live';
   const isUpcoming = data.status === 'upcoming';
+  const ligue1 = data.competitionId === LIGUE_1_365SCORES_ID;
+  // L265 : un match de Ligue 1 de l'OL terminé dit ce qu'il change au classement (football-data.org seul).
+  const ceQueCaChange = data.status === 'ended' && ligue1 && !bleus;
   const clock = isUpcoming ? { phase: 'upcoming' as const, label: 'À VENIR', isActive: false } : deriveClock(data);
   const isPaused = clock.phase === 'half-time';
 
@@ -555,6 +560,8 @@ export function MatchPage() {
           )}
         </div>
       </section>
+
+      {ceQueCaChange && <CeQueCaChange at={data.startTime} className="rounded-md bg-surface border border-border" />}
 
       {/* Écran de match (L160, L186) : à partir de 1440 px, trois colonnes indépendantes — domicile à gauche,
           match au centre, visiteur à droite ; dessous, une seule colonne dans l'ordre du DOM. Le centre est UNE
@@ -699,7 +706,7 @@ export function MatchPage() {
           </div>
         )}
       </div>
-      <SourcesMatch footballData={isUpcoming && data.competitionId === LIGUE_1_365SCORES_ID} />
+      <SourcesMatch footballData={isUpcoming && ligue1 ? 'coup-envoi' : ceQueCaChange ? 'classement' : null} />
     </div>
   );
 }

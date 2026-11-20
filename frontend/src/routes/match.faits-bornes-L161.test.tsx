@@ -29,6 +29,8 @@ vi.mock('@tanstack/react-router', () => ({
 vi.mock('@/hooks/use-match-event-burst', () => ({ useMatchEventBurst: () => null }));
 // Par défaut le hook est simulé (`hook`) ; le test « un seul appel » (R6) prend le vrai hook et compte les appels d'apiGet.
 const reel = vi.hoisted(() => ({ actif: false, apiGet: vi.fn() }));
+// L265 : « Ce que ça change » a sa propre requête (football-data), testée à part ; ce test compte les appels de la page.
+vi.mock('@/hooks/use-match-impact', () => ({ useMatchImpact: () => ({ isPending: true, data: undefined, error: null }) }));
 vi.mock('@/hooks/use-live-match', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/hooks/use-live-match')>();
   return { ...actual, useLiveMatchStats: (gameId: number | null, matchupId: string | null) => (reel.actif ? actual.useLiveMatchStats(gameId, matchupId) : hook) };

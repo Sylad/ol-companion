@@ -13,6 +13,8 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 vi.mock('@/hooks/use-match-event-burst', () => ({ useMatchEventBurst: () => null }));
 vi.mock('@/components/match-event-burst', () => ({ MatchEventBurst: () => null }));
+// L265 : « Ce que ça change » a sa propre requête (football-data), testée à part.
+vi.mock('@/hooks/use-match-impact', () => ({ useMatchImpact: () => ({ isPending: true, data: undefined, error: null }) }));
 vi.mock('@/hooks/use-live-match', () => ({ useLiveMatchStats: () => ({ isLoading: false, isError: false, data: courant }) }));
 
 import { MatchPage } from './match';
@@ -33,8 +35,8 @@ function stats(over: Partial<LiveMatchStats>): LiveMatchStats {
 afterEach(cleanup);
 
 describe('L235 — source des données de la page match', () => {
-  it('R1 — un match terminé nomme 365scores, avec un lien externe sûr, et ne cite pas football-data.org', () => {
-    courant = stats({});
+  it('R1 — un match terminé hors Ligue 1 nomme 365scores, avec un lien externe sûr, et ne cite pas football-data.org', () => {
+    courant = stats({ competitionId: 37, competitionName: 'Coupe de France' });
     render(<MatchPage />);
     const note = screen.getByTestId('sources-match');
     const lien = within(note).getByRole('link', { name: /365scores/ });
@@ -60,6 +62,14 @@ describe('L235 — source des données de la page match', () => {
     courant = stats({ status: 'upcoming', statusGroup: 2, competitionId: 573, competitionName: 'Ligue Europa' });
     render(<MatchPage />);
     expect(screen.getByTestId('sources-match').textContent).not.toMatch(/football-data/i);
+  });
+
+  it('L265 — un match de Ligue 1 terminé cite football-data.org pour « Ce que ça change », avec la mention exacte', () => {
+    courant = stats({});
+    render(<MatchPage />);
+    const note = screen.getByTestId('sources-match');
+    expect(note.textContent).toMatch(/Ce que ça change \(classement\) : Football data provided by the Football-Data\.org API\./);
+    expect(note.textContent).not.toMatch(/Heure du coup d’envoi/);
   });
 
   it('R4 — la note est discrète : après la grille du match, texte secondaire, hors du flux des blocs de données', () => {

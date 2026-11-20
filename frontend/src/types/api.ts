@@ -29,6 +29,33 @@ export interface HistoryEntry {
   points: number;
 }
 
+/**
+ * L265 — `GET /api/match-impact?at=` : ce qu'un match de Ligue 1 de l'OL change à son classement,
+ * calculé par le backend avec les seuls matchs de football-data.org (même départage que le tracker).
+ */
+export interface MatchImpact {
+  matchday: number;
+  /** Le match est terminé selon football-data ; sinon `before`, `after`, `above`, `below` sont nuls. */
+  finished: boolean;
+  homeTeam: string;
+  awayTeam: string;
+  score: { home: number | null; away: number | null };
+  /** Place à l'issue de la journée précédente ; `null` à la première journée. */
+  before: { position: number; points: number } | null;
+  /** Place à l'issue de la journée du match. */
+  after: { position: number; points: number } | null;
+  /** Matchs des journées 1 à `matchday` pas encore joués (> 0 : classement provisoire). */
+  remaining: number;
+  /** Dont ceux de la journée du match. */
+  remainingInMatchday: number;
+  /** Place clé juste au-dessus de l'OL et son avance en points (0 = égalité). */
+  above: { place: number; gap: number } | null;
+  /** Place clé que l'OL tient et son avance en points sur la place suivante. */
+  below: { place: number; margin: number } | null;
+  /** Lecture de football-data.org dont vient le calcul. */
+  updatedAt: string;
+}
+
 export interface OlSeasonRanking {
   matchday: number;
   position: number;
