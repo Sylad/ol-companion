@@ -2788,12 +2788,14 @@ lots:
     finished: 2026-11-02
   - id: L237
     title: "Idées pour améliorer le site, vu d'un supporter de l'OL : étude (pas de code) — parcourir le site actuel et ce que les supporters consultent (avant, pendant et après un match, mercato, histoire du club, féminines, groupe Lyonnais, tribunes), comparer à ce qu'offrent les sites et applis de référence (OL officiel, L'Équipe, Sofascore, sites de supporters), et proposer une liste classée d'idées : valeur pour un supporter, effort, données nécessaires et disponibles gratuitement ; chaque idée retenue devient un lot. Livrable docs/etudes/idees-supporter.md. Demande de Sylvain du 01-11"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-01
     started: 2026-11-20
     notes:
       - { date: 2026-11-20, text: "20-11 : étude docs/etudes/idees-supporter.md (0f93bcd) — 14 idées, 13 lots proposés P0-P12 ; ouverts par le lead : P0, P2, P3 (ordre conseillé, sans dépendance) et le défaut « Tacles : 0,1 » ; le reste attend le classement de Sylvain" }
+    review: { date: 2026-11-20, verdict: "conforme 20-11 lead : étude seule (docs/etudes/idees-supporter.md, aucun code), 14 idées sourcées avec licences, non-vérifiés listés, P0 (365scores) remonté à Sylvain", commit: 0f93bcd55e6acccdfa927b1d57760f0da40b7cef }
+    finished: 2026-11-20
   - id: L238
     title: Lien vers Julien le Gone (https://julienlegone.fr/ — avant-match, live commenté et débrief des matchs de l'OL entre supporters) dans les Ressources de la barre latérale (sidebar-links.tsx, après Sofascore), icône cohérente avec les autres liens, ouverture dans un nouvel onglet comme eux ; page À propos si elle liste ces ressources ; demande de Sylvain du 01-11
     public: Nouveau lien vers Julien le Gone dans les ressources
