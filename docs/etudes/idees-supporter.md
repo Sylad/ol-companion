@@ -14,6 +14,8 @@ Les trois premières idées du classement (fiche d'avant-match, abonnement au ca
 
 Un point préalable : l'app dépend entièrement de 365scores, dont les conditions d'utilisation n'ont pas pu être lues (§ 4). Toute idée qui lit davantage 365scores en hérite ; le premier lot proposé (P0) lève ce doute.
 
+> Précision du 2026-11-20 (L263) : conditions lues, verdicts dans [`365scores-conditions.md`](365scores-conditions.md). La réutilisation publique est interdite sans accord écrit (§ 7.1 de leurs conditions) ; les en-têtes imitant un navigateur ne passent aucune barrière aujourd'hui (200 sans eux) mais sont à retirer ; le choix sur 365scores revient à Sylvain.
+
 ## 1. Méthode, et ce qui n'a pas été mesuré
 
 - **Le site actuel** : routes et modules lus dans le code (`frontend/src/router.tsx`, `backend/src/modules/`), lots livrés lus dans `.cadence/raf.yaml`, puis parcours de la prod le 2026-11-20 dans Chromium (Playwright, sans connexion ni envoi) : `/`, `/fixtures`, `/players`, `/news`, `/cups`, `/standings` à 390 px et la page du prochain match (Lille – Lyon, J11, `/match/4735207`) à 1440 px. Captures hors dépôt, dans `ol-companion-…captures/L237_*.png`.
