@@ -3086,6 +3086,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-20, sha: 6ad5483459a71ff219212193ac6ad77a4044bd29 }
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "conforme tmp/revue-L266.md : 0 bloquant ; notes : espace insécable non testé, stat-fr.ts plus atteinte en prod", commit: f6449c1201576be6699cdc198f59759f8e74fd31 }
