@@ -3080,6 +3080,8 @@ lots:
     review: { date: 2026-11-20, verdict: "conforme r2 lead : a1ca104 corrige les 2 majeurs et 2 mineurs (statuts en liste sans appel de plus, POSTPONED testé, 3 mutants détectés), porte verte ; à confirmer en prod : statuts réels de football-data", commit: a1ca104b32a365bfbf2ec7b68b255995e51813f5 }
     ux: { date: 2026-11-20, verdict: "conforme lead : captures 390/320/1440, panneau lisible, attribution, Échap rend le focus" }
     finished: 2026-11-20
+    notes:
+      - { date: 2026-11-20, text: "QA prod lead 20-11 (c4499be) : /api/calendar.ics 200 text/calendar, 34 événements (passés et à venir : la liste de statuts est acceptée par football-data), attribution présente" }
   - id: L265
     title: "« Ce que ça change » sur un match terminé et sur « Dernier résultat » : pour J1 à J10 la phrase correspond au tracker ; journée incomplète marquée provisoire (P3 de docs/etudes/idees-supporter.md, L237)"
     public: Ce que le résultat change au classement
