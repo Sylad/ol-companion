@@ -75,7 +75,7 @@ afterEach(() => {
 });
 
 describe('L265 — « Ce que ça change » sur la page du match', () => {
-  it('Ligue 1 terminé : le bloc dit la place avant/après, avant le mini-classement, et la note cite football-data', async () => {
+  it('Ligue 1 terminé : le bloc dit la place avant/après, en dernière rangée du centre (sous le mini-classement), et la note cite football-data', async () => {
     courant = stats({});
     stub({ status: 200, body: IMPACT });
     page();

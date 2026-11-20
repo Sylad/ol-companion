@@ -680,7 +680,7 @@ export function MatchPage() {
               Carte des tirs | pile (R17, R18) — dans la pile de 264 px la phrase tenait sur 5 lignes et laissait ~430 px
               vides sous la carte des tirs. Jamais entre l'en-tête et la grille (R16 : Statistiques | Momentum sous le pli
               à 1366 × 768). Rien sur un 404 : aucune rangée vide. */}
-          {ceQueCaChange && <CeQueCaChange at={data.startTime} gabarit className="rounded-md bg-surface border border-border" />}
+          {ceQueCaChange && <CeQueCaChange at={data.startTime} className="rounded-md bg-surface border border-border" />}
         </div>
         </div>
 

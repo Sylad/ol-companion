@@ -61,9 +61,9 @@ describe('<CeQueCaChange /> (L265)', () => {
     expect(badge.className).not.toMatch(/draw/);
   });
 
-  it('revue UX r1 (M1) : avec gabarit, la place réservée porte le cas le plus long, hors du DOM et caché', async () => {
+  it('revues UX r1 et r2 (M1) : la place réservée porte le cas le plus long, hors du DOM et caché', async () => {
     stub(() => ({ status: 200, body: IMPACT }));
-    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" gabarit />);
+    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" />);
     await screen.findByTestId('ce-que-ca-change-phrase');
     const gabarit = screen.getByTestId('ce-que-ca-change-gabarit');
     expect(gabarit.getAttribute('aria-hidden')).toBe('true');
@@ -74,11 +74,14 @@ describe('<CeQueCaChange /> (L265)', () => {
     expect(ligne).toBe('Classement provisoire : 12 matchs des journées 1 à 10 restent à jouer.');
   });
 
-  it('sans gabarit (accueil) : ni gabarit ni texte en double', async () => {
-    stub(() => ({ status: 200, body: IMPACT }));
-    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" />);
-    await screen.findByTestId('ce-que-ca-change-phrase');
-    expect(screen.queryByTestId('ce-que-ca-change-gabarit')).toBeNull();
+  it('revue UX r2 (M1) : à l’accueil (h3) aussi, le gabarit réserve la place du cas le plus long dès le chargement', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {}))); // réponse qui n'arrive pas
+    withClient(<CeQueCaChange at="2026-11-01T19:45:00Z" titre="h3" />);
+    await screen.findByTestId('ce-que-ca-change-chargement');
+    const gabarit = screen.getByTestId('ce-que-ca-change-gabarit');
+    expect(gabarit.getAttribute('aria-hidden')).toBe('true');
+    expect(gabarit.textContent).toBe('');
+    expect(gabarit.querySelectorAll('p[data-gabarit]').length).toBe(2);
   });
 
   it('titre : h2 par défaut (page du match), h3 dans une carte (accueil, WCAG 1.3.1)', async () => {

@@ -7,30 +7,30 @@ import { cn } from '@/lib/utils';
 /**
  * L265 — « Ce que ça change » sous un match de Ligue 1 terminé (page du match, « Dernier résultat »).
  * Données : football-data.org seul (`/api/match-impact`), la mention est portée par la page.
- * Place réservée : le titre a toujours la hauteur du badge « Provisoire ». Avec `gabarit` (page du match, revue UX r1,
- * M1 : le mini-classement sautait de 124 px), le corps superpose, invisible, le cas le plus long (phrase la plus longue
- * que forme `ceQueCaChange` + ligne « Classement provisoire ») au contenu réel : même hauteur en chargement, chargé
- * (avec ou sans « Provisoire »), en panne ou en attente, à toute largeur, rien ne saute. Le gabarit est écrit en CSS
- * (`content`), pas dans le DOM : aucun texte en double pour un lecteur d'écran ni pour une recherche de texte. Sans
- * `gabarit` (accueil : le bloc y est au-dessus de la carte suivante et le cas le plus long laisserait 60 px vides sous
- * la phrase courante à 390 px), le chargement réserve deux lignes de phrase (écart mesuré ≤ 20 px, accepté en revue).
+ * Place réservée : le titre a toujours la hauteur du badge « Provisoire », et le corps superpose, invisible, le cas le
+ * plus long (phrase la plus longue que forme `ceQueCaChange` + ligne « Classement provisoire ») au contenu réel : même
+ * hauteur en chargement, chargé (avec ou sans « Provisoire »), en panne ou en attente, à toute largeur, rien ne saute
+ * (revue UX r1, M1 sur /match : 124 px ; revue UX r2, M1 sur l'accueil : la réserve de deux lignes laissait « OL en
+ * chiffres » descendre de 56 px à 390, 75 à 375, quand la journée est provisoire). Le vide sous une phrase courte est le
+ * prix accepté (R19). Le gabarit est écrit en CSS (`content`), pas dans le DOM : aucun texte en double pour un lecteur
+ * d'écran ni pour une recherche de texte.
  * Rien si football-data ne connaît pas le match (404) ; une panne ou un résultat pas encore enregistré le disent,
  * jamais un bloc vide. `titre` : h2 sur la page du match (bloc du même rang que les autres), h3 dans la carte
  * « Dernier résultat » de l'accueil, dont le h2 est le titre de la carte (WCAG 1.3.1).
  */
-export function CeQueCaChange({ at, className, titre = 'h2', gabarit = false }: { at: string; className?: string; titre?: 'h2' | 'h3'; gabarit?: boolean }) {
+export function CeQueCaChange({ at, className, titre = 'h2' }: { at: string; className?: string; titre?: 'h2' | 'h3' }) {
   const { data, error, isPending } = useMatchImpact(at);
   if (isPending && !error) {
     return (
-      <Cadre className={className} titre={titre} gabarit={gabarit} enCours>
-        <p data-testid="ce-que-ca-change-chargement" className={cn('text-sm leading-snug text-fg-dim', !gabarit && 'min-h-[2.75em]')}>Calcul du classement…</p>
+      <Cadre className={className} titre={titre} enCours>
+        <p data-testid="ce-que-ca-change-chargement" className="text-sm leading-snug text-fg-dim">Calcul du classement…</p>
       </Cadre>
     );
   }
   if (!data) {
     if (estIntrouvable(error)) return null;
     return (
-      <Cadre className={className} titre={titre} gabarit={gabarit}>
+      <Cadre className={className} titre={titre}>
         <p data-testid="ce-que-ca-change-erreur" className="text-sm leading-snug text-fg-muted">
           Classement après le match indisponible pour l’instant.
         </p>
@@ -40,7 +40,7 @@ export function CeQueCaChange({ at, className, titre = 'h2', gabarit = false }: 
   const texte = ceQueCaChange(data);
   if (!texte) {
     return (
-      <Cadre className={className} titre={titre} gabarit={gabarit}>
+      <Cadre className={className} titre={titre}>
         <p data-testid="ce-que-ca-change-attente" className="text-sm leading-snug text-fg-muted">
           Classement en attente du résultat officiel.
         </p>
@@ -48,7 +48,7 @@ export function CeQueCaChange({ at, className, titre = 'h2', gabarit = false }: 
     );
   }
   return (
-    <Cadre className={className} titre={titre} gabarit={gabarit} provisoire={texte.provisoire !== null}>
+    <Cadre className={className} titre={titre} provisoire={texte.provisoire !== null}>
       <p data-testid="ce-que-ca-change-phrase" className="text-sm text-fg-bright leading-snug">{texte.phrase}</p>
       {texte.provisoire && (
         <p data-testid="ce-que-ca-change-provisoire" className="mt-1 text-xs text-fg-muted leading-snug">{texte.provisoire}</p>
@@ -68,7 +68,7 @@ const CAS_LE_PLUS_LONG = ceQueCaChange({
   updatedAt: '',
 })!;
 
-function Cadre({ children, className, titre: Titre, gabarit, provisoire = false, enCours = false }: { children: ReactNode; className?: string; titre: 'h2' | 'h3'; gabarit: boolean; provisoire?: boolean; enCours?: boolean }) {
+function Cadre({ children, className, titre: Titre, provisoire = false, enCours = false }: { children: ReactNode; className?: string; titre: 'h2' | 'h3'; provisoire?: boolean; enCours?: boolean }) {
   const titre = useId();
   return (
     <section data-testid="ce-que-ca-change" aria-labelledby={titre} aria-busy={enCours || undefined} className={cn('px-5 py-3', className)}>
@@ -84,15 +84,13 @@ function Cadre({ children, className, titre: Titre, gabarit, provisoire = false,
           </span>
         )}
       </Titre>
-      {gabarit ? (
-        <div data-testid="ce-que-ca-change-corps" className="grid [&>*]:[grid-area:1/1]">
-          <div data-testid="ce-que-ca-change-gabarit" aria-hidden="true" className="invisible pointer-events-none select-none">
-            <p className="text-sm leading-snug before:content-[attr(data-gabarit)]" data-gabarit={CAS_LE_PLUS_LONG.phrase} />
-            <p className="mt-1 text-xs leading-snug before:content-[attr(data-gabarit)]" data-gabarit={CAS_LE_PLUS_LONG.provisoire ?? ''} />
-          </div>
-          <div className="min-w-0">{children}</div>
+      <div data-testid="ce-que-ca-change-corps" className="grid [&>*]:[grid-area:1/1]">
+        <div data-testid="ce-que-ca-change-gabarit" aria-hidden="true" className="invisible pointer-events-none select-none">
+          <p className="text-sm leading-snug before:content-[attr(data-gabarit)]" data-gabarit={CAS_LE_PLUS_LONG.phrase} />
+          <p className="mt-1 text-xs leading-snug before:content-[attr(data-gabarit)]" data-gabarit={CAS_LE_PLUS_LONG.provisoire ?? ''} />
         </div>
-      ) : children}
+        <div className="min-w-0">{children}</div>
+      </div>
     </section>
   );
 }
