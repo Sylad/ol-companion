@@ -3075,6 +3075,8 @@ lots:
     visible: true
     created: 2026-11-20
     started: 2026-11-20
+    review: { date: 2026-11-20, verdict: "conforme après 2 corrections : match IN_PLAY/PAUSED absent du .ics, branche POSTPONED non testée (tmp/revue-L264.md)", commit: 53929aac7d9525cc1050be117131d1a9b61bcb3c }
+    ux: { date: 2026-11-20, verdict: "conforme lead : captures 390/320/1440, panneau lisible, attribution, Échap rend le focus" }
   - id: L265
     title: "« Ce que ça change » sur un match terminé et sur « Dernier résultat » : pour J1 à J10 la phrase correspond au tracker ; journée incomplète marquée provisoire (P3 de docs/etudes/idees-supporter.md, L237)"
     public: Ce que le résultat change au classement
