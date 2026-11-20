@@ -3121,6 +3121,7 @@ lots:
     title: "Calendrier .ics : un match reporté dont la date est un remplissage à minuit UTC est marqué « heure fixée » (footballDataTimeConfirmed ne regarde que SCHEDULED) et s'affiche à 01:00 ; la réponse 503 ne doit pas être mise en cache ; révisions null (notes 6 et 7 de tmp/revue-L264.md)"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-20, sha: a361493f8f464a1de318a66825a2d24dbbbd5d01 }
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: compliant, commit: 450bd436b7dd16315b1ffa56c2ec2421a34e625a }
