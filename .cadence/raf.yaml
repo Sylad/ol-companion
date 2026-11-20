@@ -2790,6 +2790,7 @@ lots:
     title: "Idées pour améliorer le site, vu d'un supporter de l'OL : étude (pas de code) — parcourir le site actuel et ce que les supporters consultent (avant, pendant et après un match, mercato, histoire du club, féminines, groupe Lyonnais, tribunes), comparer à ce qu'offrent les sites et applis de référence (OL officiel, L'Équipe, Sofascore, sites de supporters), et proposer une liste classée d'idées : valeur pour un supporter, effort, données nécessaires et disponibles gratuitement ; chaque idée retenue devient un lot. Livrable docs/etudes/idees-supporter.md. Demande de Sylvain du 01-11"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-20, sha: 3cd5e7f5ed8b9956fd027da0a78a6bdfc0d1d372 }
     created: 2026-11-01
     started: 2026-11-20
     notes:
@@ -3057,6 +3058,7 @@ lots:
     title: "Étude (pas de code) : conditions d'utilisation de 365scores lues dans un navigateur ; les en-têtes qui imitent un navigateur envoyés par l'app (403 sans eux) au regard de la règle de Sylvain « aucun contournement anti-robot » ; couverture d'OL Lyonnes, champ diffuseur, contenu des blocs previousMeetings / recentMatches / missingPlayers — un verdict sourcé par question dans docs/etudes/ (P0 de docs/etudes/idees-supporter.md, L237)"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-20, sha: 3cd5e7f5ed8b9956fd027da0a78a6bdfc0d1d372 }
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "conforme 20-11 lead : étude seule (docs/etudes/365scores-conditions.md, a03a7d2), clauses citées, requêtes honnêtes uniquement ; décision 365scores remontée à Sylvain", commit: a03a7d25e32f8ff4e762e43e3d928b8cb5561ec3 }
@@ -3090,6 +3092,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-20, sha: 3cd5e7f5ed8b9956fd027da0a78a6bdfc0d1d372 }
     created: 2026-11-20
     started: 2026-11-20
     ux: { date: 2026-11-20, verdict: "conforme 20-11 lead d'après les captures 1440/390 (accueil, calendrier, carte, match, À propos) : mention lisible, lien souligné, même gris que la ligne de sources L235, aucun débordement ; mineur : « Heure des coups d'envoi » (accueil) vs « Heures des coups d'envoi » (calendrier)" }
