@@ -853,6 +853,21 @@
       "id": "L262",
       "title": "Classement : la ligne de l'OL visible même sur un très petit téléphone",
       "status": "todo"
+    },
+    {
+      "id": "L264",
+      "title": "S'abonner au calendrier de l'OL dans son agenda",
+      "status": "todo"
+    },
+    {
+      "id": "L265",
+      "title": "Ce que le résultat change au classement",
+      "status": "todo"
+    },
+    {
+      "id": "L266",
+      "title": "Joueurs en vue : statistiques avec leur vrai sens",
+      "status": "todo"
     }
   ]
 }
