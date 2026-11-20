@@ -3070,13 +3070,14 @@ lots:
   - id: L264
     title: "Abonnement au calendrier .ics depuis /fixtures : un agenda (Google, Apple) importe la saison ; un match à l'heure non fixée n'a pas d'heure ; un changement d'heure met à jour l'événement sans le dupliquer (P2 de docs/etudes/idees-supporter.md, L237)"
     public: S'abonner au calendrier de l'OL dans son agenda
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-11-20
     started: 2026-11-20
-    review: { date: 2026-11-20, verdict: "conforme après 2 corrections : match IN_PLAY/PAUSED absent du .ics, branche POSTPONED non testée (tmp/revue-L264.md)", commit: 53929aac7d9525cc1050be117131d1a9b61bcb3c }
+    review: { date: 2026-11-20, verdict: "conforme r2 lead : a1ca104 corrige les 2 majeurs et 2 mineurs (statuts en liste sans appel de plus, POSTPONED testé, 3 mutants détectés), porte verte ; à confirmer en prod : statuts réels de football-data", commit: a1ca104b32a365bfbf2ec7b68b255995e51813f5 }
     ux: { date: 2026-11-20, verdict: "conforme lead : captures 390/320/1440, panneau lisible, attribution, Échap rend le focus" }
+    finished: 2026-11-20
   - id: L265
     title: "« Ce que ça change » sur un match terminé et sur « Dernier résultat » : pour J1 à J10 la phrase correspond au tracker ; journée incomplète marquée provisoire (P3 de docs/etudes/idees-supporter.md, L237)"
     public: Ce que le résultat change au classement
@@ -3112,6 +3113,11 @@ lots:
     finished: 2026-11-20
     notes:
       - { date: 2026-11-20, text: "QA prod conforme 16/16 pages à 1440 et 390 px, aucune source en 403/429, mention football-data.org visible (tmp/qa-L267.md)" }
+  - id: L268
+    title: "Calendrier .ics : un match reporté dont la date est un remplissage à minuit UTC est marqué « heure fixée » (footballDataTimeConfirmed ne regarde que SCHEDULED) et s'affiche à 01:00 ; la réponse 503 ne doit pas être mise en cache ; révisions null (notes 6 et 7 de tmp/revue-L264.md)"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-20
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
