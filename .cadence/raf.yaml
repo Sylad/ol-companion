@@ -1448,10 +1448,14 @@ lots:
       - { date: 2026-10-11, text: "QA prod 11-10 (362b2aa) : 3/3 pages conformes aux deux largeurs ; simulation hors ligne de « Réessayer » conforme (chargement + focus sur la zone de statut, erreur → focus sur le bouton, succès → focus sur le h1). À préciser dans docs/qa/expectations.md (## *) : la ligne never « Chargement de … » doit exclure les citations entre « » du texte des entrées de /nouveautes (l'entrée L119 cite ce message)." }
   - id: L120
     title: "FC Noobz — étude de faisabilité (basse priorité) : lire les sauvegardes Football Manager de E:\\Documents\\Sports Interactive (FM21–FM26, .fm de 70 à 450 Mo, format binaire compressé non documenté) ou, à défaut, les exports de FM (vues imprimées en HTML/texte, exported teams) — oui/non/partiel avec preuves, lecture seule, aucun fichier de Sylvain modifié ; données locales Windows → import local qui publie un résumé dans l'app"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-11
     started: 2026-11-21
+    review: { date: 2026-11-21, verdict: "conforme (étude seule, revue du lead : sauvegardes FM21–FM27 en zstd, fmsave 0.14.2 MIT lit FM27 et partiellement FM26, refuse FM24/FM21 ; palmarès saison par saison illisible ; lecture seule vérifiée par mtime/taille ; aucune donnée de sauvegarde commitée ; découpage I1–I3 proposé, 4 questions pour Sylvain)", commit: 207fac5325404f045d52dddcea03cc96a2c8ea75 }
+    finished: 2026-11-21
+    notes:
+      - { date: 2026-11-21, text: "Suite en attente de Sylvain : champs publics de /fcnoobz, FM21–FM24 à la main ou rien, import manuel ou planifié, conditions Sports Interactive avant I3 (docs/etudes/fc-noobz-faisabilite.md §6)" }
   - id: L121
     title: "FC Noobz — suivi de mes clubs par édition de Football Manager (FC Noobz, Grenoble, SLA… : saisons, divisions, titres), alimenté par l'import local de l'étude (basse priorité ; forme fixée par la fiche d'écran)"
     public: Mes carrières Football Manager, édition par édition
