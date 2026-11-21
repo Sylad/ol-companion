@@ -11,20 +11,24 @@ vi.mock('recharts', () => {
 
 import { SeasonSummary } from './season-summary';
 import { PositionTracker } from './position-tracker';
+import { MODES_PANNES, aucuneErreurAnnoncee, erreurAnnoncee } from '@/test/pannes';
+import type { ComponentType, ReactNode } from 'react';
 
 // L85 (finding M2 de la revue UX L2) — « Erreur de chargement. » de l'accueil a son « Réessayer ».
 // R9 (à ajouter à la fiche par le lead) : ces deux blocs en erreur sans cache ont message + « Réessayer » ;
 // une erreur de rafraîchissement avec des données déjà là n'efface rien.
 
-function renderWith(ui: JSX.Element) {
+function renderWith(ui: JSX.Element, wrapper?: ComponentType<{ children: ReactNode }>) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return { client, ...render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>) };
+  return { client, ...render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>, { wrapper }) };
 }
 
-describe.each([
+// L260/t2 : chaque bloc est joué seul (role=alert) et dans l'app (PannesProvider : message sans rôle, région annoncée).
+const CAS = [
   ['OL en chiffres', <SeasonSummary />, { played: 0 }],
   ['tracker de classement', <PositionTracker />, []],
-])('R9 — %s en erreur', (_nom, ui, ok) => {
+] as const;
+describe.each(CAS.flatMap(([nom, ui, ok]) => MODES_PANNES.map((m) => [nom, m.mode, ui, ok, m] as const)))('R9 — %s en erreur, %s', (_nom, _mode, ui, ok, { fournisseur, wrapper }) => {
   afterEach(() => vi.unstubAllGlobals());
 
   it('affiche un message et « Réessayer », qui relance l’appel', async () => {
@@ -35,9 +39,9 @@ describe.each([
         : { ok: true, status: 200, json: async () => ok }),
     );
     vi.stubGlobal('fetch', fetchMock);
-    renderWith(ui);
+    renderWith(ui, wrapper);
     const bouton = await screen.findByRole('button', { name: 'Réessayer' });
-    expect(screen.getByRole('alert')).toHaveTextContent('Impossible de charger');
+    await erreurAnnoncee(fournisseur, /^Impossible de charger/);
     expect(screen.queryByText('Erreur de chargement.')).not.toBeInTheDocument();
     const appels = fetchMock.mock.calls.length;
     fail = false;
@@ -48,10 +52,10 @@ describe.each([
 
   it('R9 — le message porte l’id de champ de la fiche', async () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 500, json: async () => ({}) })));
-    renderWith(ui);
-    await screen.findByRole('alert');
+    renderWith(ui, wrapper);
+    const message = await erreurAnnoncee(fournisseur, /^Impossible de charger/);
     const id = _nom === 'OL en chiffres' ? 'message-erreur-season-summary' : 'message-erreur-position-tracker';
-    expect(screen.getByTestId(id)).toBe(screen.getByRole('alert'));
+    expect(screen.getByTestId(id)).toBe(message);
   });
 
   it('R9 — données en cache puis échec du refetch : rien n’est effacé, aucun message', async () => {
@@ -62,7 +66,7 @@ describe.each([
         : { ok: true, status: 200, json: async () => ok }),
     );
     vi.stubGlobal('fetch', fetchMock);
-    const { client } = renderWith(ui);
+    const { client } = renderWith(ui, wrapper);
     await waitFor(() => expect(client.getQueryCache().getAll().some((q) => q.state.data !== undefined)).toBe(true));
     await waitFor(() => expect(client.isFetching()).toBe(0));
     const appels = fetchMock.mock.calls.length;
@@ -73,7 +77,7 @@ describe.each([
     });
     expect(fetchMock.mock.calls.length).toBeGreaterThan(appels);
     expect(client.getQueryCache().getAll().some((q) => q.state.status === 'error')).toBe(true);
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    await aucuneErreurAnnoncee(fournisseur);
     expect(screen.queryByRole('button', { name: 'Réessayer' })).not.toBeInTheDocument();
   });
 });

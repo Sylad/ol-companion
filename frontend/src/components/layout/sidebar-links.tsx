@@ -91,9 +91,10 @@ export function SidebarLinks() {
             className="group flex items-center gap-3 rounded-md px-3 py-2 text-xs text-fg-muted hover:bg-surface-2/60 hover:text-fg transition-colors"
           >
             <s.icon className="h-[14px] w-[14px] shrink-0" strokeWidth={1.75} />
-            <span className="flex-1 truncate">{s.label}</span>
+            {/* L260/t2 (WCAG 1.4.12, 1.4.4) : le nom passe à la ligne au lieu d'être coupé par une ellipse. */}
+            <span data-testid="nom-ressource" className="min-w-0 flex-1 break-words">{s.label}</span>
             <ExternalLink
-              className="h-[11px] w-[11px] opacity-0 group-hover:opacity-60 transition-opacity"
+              className="h-[11px] w-[11px] shrink-0 opacity-0 group-hover:opacity-60 transition-opacity"
               strokeWidth={2}
             />
           </a>

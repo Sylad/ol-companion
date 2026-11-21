@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Ligue1Map } from './ligue1-map';
+import { MODES_PANNES, aucuneErreurAnnoncee, erreurAnnoncee } from '@/test/pannes';
 
 // L194 — la carte distingue le chargement et l'erreur de l'API d'« aucun match » : sans donnée,
 // ni carte ni légende (ses marqueurs « Pas encore joué » seraient faux) ; en erreur, « Réessayer ».
@@ -11,7 +12,7 @@ const etat = vi.hoisted(() => ({
 vi.mock('@/hooks/use-season-matches', () => ({ useSeasonMatches: () => etat.value }));
 vi.mock('@/hooks/use-standings', () => ({ useStandings: () => ({ data: undefined }) }));
 
-describe('<Ligue1Map /> — chargement et erreur (L194)', () => {
+describe.each(MODES_PANNES)('<Ligue1Map /> — chargement et erreur (L194, $mode)', ({ fournisseur, wrapper }) => {
   beforeEach(() => {
     etat.value = { data: undefined, isLoading: false, isError: false, refetch: vi.fn() };
   });
@@ -24,10 +25,11 @@ describe('<Ligue1Map /> — chargement et erreur (L194)', () => {
     expect(document.body.textContent).not.toContain('Pas encore joué');
   });
 
-  it('R2 — en erreur sans donnée : une alerte « Réessayer » qui relance, ni carte ni légende', () => {
+  it('R2 — en erreur sans donnée : un message annoncé, « Réessayer » qui relance, ni carte ni légende', async () => {
     etat.value.isError = true;
-    const { container } = render(<Ligue1Map />);
-    expect(screen.getByRole('alert').textContent).toBe('Impossible de charger les résultats de la saison.');
+    const { container } = render(<Ligue1Map />, { wrapper });
+    const message = await erreurAnnoncee(fournisseur, 'Impossible de charger les résultats de la saison.');
+    expect(message.textContent).toBe('Impossible de charger les résultats de la saison.');
     expect(container.querySelector('.leaflet-container')).toBeNull();
     expect(document.body.textContent).not.toContain('Pas encore joué');
     expect(document.body.textContent).not.toContain('Pas de match OL recensé');
@@ -35,12 +37,12 @@ describe('<Ligue1Map /> — chargement et erreur (L194)', () => {
     expect(etat.value.refetch).toHaveBeenCalledTimes(1);
   });
 
-  it('R3 — un échec de rafraîchissement ne retire pas la carte déjà chargée', () => {
+  it('R3 — un échec de rafraîchissement ne retire pas la carte déjà chargée', async () => {
     etat.value.isError = true;
     etat.value.data = [];
-    const { container } = render(<Ligue1Map />);
+    const { container } = render(<Ligue1Map />, { wrapper });
     expect(container.querySelector('.leaflet-container')).not.toBeNull();
-    expect(screen.queryByRole('alert')).toBeNull();
+    await aucuneErreurAnnoncee(fournisseur);
   });
 
   it('R4 — une saison vraiment vide (liste vide chargée) affiche la carte et sa légende', () => {

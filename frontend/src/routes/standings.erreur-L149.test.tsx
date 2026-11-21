@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MODES_PANNES, aucuneErreurAnnoncee, erreurAnnoncee } from '@/test/pannes';
 
 // L149 — l'erreur du classement : message en français sans jargon de source, « Réessayer »
-// (RetryMessage, role=alert) ; le chargement annonce son état (role=status).
+// (RetryMessage : role=alert bloc seul, région annoncée dans l'app, L260/t2) ; le chargement annonce son état (role=status).
 
 const etat = vi.hoisted(() => ({
   value: { data: undefined as unknown, isLoading: false, isError: false, isFetching: false, refetch: vi.fn() },
@@ -14,15 +15,15 @@ vi.mock('@/components/standings-table', () => ({ StandingsTable: () => <div data
 
 import { StandingsPage } from './standings';
 
-describe('StandingsPage — erreur et chargement (L149)', () => {
+describe.each(MODES_PANNES)('StandingsPage — erreur et chargement (L149, $mode)', ({ fournisseur, wrapper }) => {
   beforeEach(() => {
     etat.value = { data: undefined, isLoading: false, isError: false, isFetching: false, refetch: vi.fn() };
   });
 
-  it('sans donnée, l\'erreur est une alerte avec « Réessayer » qui relance le chargement', () => {
+  it('sans donnée, l\'erreur est annoncée avec « Réessayer » qui relance le chargement', async () => {
     etat.value.isError = true;
-    render(<StandingsPage />);
-    const alerte = screen.getByRole('alert');
+    render(<StandingsPage />, { wrapper });
+    const alerte = await erreurAnnoncee(fournisseur, 'Impossible de charger le classement.');
     expect(alerte.textContent).toBe('Impossible de charger le classement.');
     expect(document.body.textContent).not.toContain('365scores');
     fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
@@ -35,11 +36,11 @@ describe('StandingsPage — erreur et chargement (L149)', () => {
     expect(screen.getByRole('status').textContent).toContain('Chargement du classement');
   });
 
-  it('avec des données déjà là, un échec de rafraîchissement n\'efface pas le tableau', () => {
+  it('avec des données déjà là, un échec de rafraîchissement n\'efface pas le tableau', async () => {
     etat.value.isError = true;
     etat.value.data = { table: [{ position: 1 }] };
-    render(<StandingsPage />);
+    render(<StandingsPage />, { wrapper });
     expect(screen.getByTestId('table')).toBeTruthy();
-    expect(screen.queryByRole('alert')).toBeNull();
+    await aucuneErreurAnnoncee(fournisseur);
   });
 });

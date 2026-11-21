@@ -88,4 +88,18 @@ describe('L260 — barre latérale', () => {
     expect(lien).toHaveAttribute('href', 'https://www.olympique-et-lyonnais.com/rubrique/une');
     expect(document.querySelector('aside')?.textContent).not.toMatch(/OL News/);
   });
+
+  // L260/t2 (revue m3) : avec l'espacement de texte WCAG 1.4.12, « Olympique et Lyonnais » dépassait les 143 px de la
+  // barre de 240 px et finissait en ellipse. Le nom passe à la ligne (mesure dans Chromium : tests-navigateur).
+  it('L260/t2 : les noms des ressources passent à la ligne, jamais tronqués par une ellipse', async () => {
+    monter('/', avecBarre);
+    await screen.findByRole('link', { name: /^Olympique et Lyonnais/ });
+    const noms = screen.getAllByTestId('nom-ressource');
+    expect(noms.length).toBeGreaterThanOrEqual(5);
+    for (const nom of noms) {
+      expect(nom.className).not.toMatch(/(^| )truncate( |$)/);
+      expect(nom.className).toMatch(/(^| )min-w-0( |$)/);
+      expect(nom.className).toMatch(/(^| )break-words( |$)/);
+    }
+  });
 });

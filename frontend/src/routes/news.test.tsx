@@ -3,6 +3,8 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NewsPage } from './news';
+import { MODES_PANNES, erreurAnnoncee } from '@/test/pannes';
+import type { ComponentType, ReactNode } from 'react';
 
 // L5 — revue UX d'Actualités (17-10-2026). Un test par règle des sous-tâches t1 à t7.
 
@@ -32,13 +34,14 @@ function serve(opts: { news?: unknown; channels?: unknown } = {}) {
   });
 }
 
-function renderPage(fetchMock = serve()) {
+function renderPage(fetchMock = serve(), wrapper?: ComponentType<{ children: ReactNode }>) {
   vi.stubGlobal('fetch', fetchMock);
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
     <QueryClientProvider client={client}>
       <NewsPage />
     </QueryClientProvider>,
+    { wrapper },
   );
   return fetchMock;
 }
@@ -57,12 +60,12 @@ describe('L5/t1 — cartes de chaînes YouTube contenues dans leur section', () 
   });
 });
 
-describe('L5/t2 — erreur des articles', () => {
-  it('/api/news en 500 : un seul message en role=alert, Réessayer relance l\'appel, aucun message « Aucun article »', async () => {
-    const fetchMock = renderPage(serve({ news: 'ERR' }));
-    const alerte = await screen.findByTestId('news-erreur');
-    expect(alerte).toHaveAttribute('role', 'alert');
-    expect(alerte).toHaveTextContent('Impossible de charger les articles.');
+// L260/t2 : bloc seul, role=alert ; dans l'app (PannesProvider), message sans rôle, dit par la région annoncée.
+describe.each(MODES_PANNES)('L5/t2 — erreur des articles ($mode)', ({ fournisseur, wrapper }) => {
+  it('/api/news en 500 : un seul message annoncé, Réessayer relance l\'appel, aucun message « Aucun article »', async () => {
+    const fetchMock = renderPage(serve({ news: 'ERR' }), wrapper);
+    const alerte = await erreurAnnoncee(fournisseur, 'Impossible de charger les articles.');
+    expect(alerte).toBe(screen.getByTestId('news-erreur'));
     expect(screen.queryByText(/Aucun article/)).toBeNull();
     const avant = fetchMock.mock.calls.filter(([u]) => u === '/api/news').length;
     const bouton = screen.getByTestId('news-reessayer');
@@ -73,10 +76,10 @@ describe('L5/t2 — erreur des articles', () => {
 });
 
 describe('L5/t4 — chaînes YouTube en erreur ou vides, articles vides', () => {
-  it('chaînes en erreur : message + Réessayer qui relance', async () => {
-    const fetchMock = renderPage(serve({ channels: 'ERR' }));
-    const alerte = await screen.findByTestId('chaines-erreur');
-    expect(alerte).toHaveAttribute('role', 'alert');
+  it.each(MODES_PANNES)('chaînes en erreur : message annoncé + Réessayer qui relance ($mode)', async ({ fournisseur, wrapper }) => {
+    const fetchMock = renderPage(serve({ channels: 'ERR' }), wrapper);
+    const alerte = await erreurAnnoncee(fournisseur, /^Impossible de charger les chaînes/);
+    expect(alerte).toBe(screen.getByTestId('chaines-erreur'));
     const avant = fetchMock.mock.calls.filter(([u]) => u === '/api/youtube-channels').length;
     await userEvent.click(screen.getByTestId('chaines-reessayer'));
     await vi.waitFor(() => expect(fetchMock.mock.calls.filter(([u]) => u === '/api/youtube-channels').length).toBe(avant + 1));

@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import season from '@/test/fixtures/season-matches-2026-10-03.json';
 import { FixturesPage } from './fixtures';
+import { MODES_PANNES, erreurAnnoncee } from '@/test/pannes';
+import type { ComponentType, ReactNode } from 'react';
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, to, params, search, ...rest }: any) => (
@@ -29,12 +31,13 @@ function serve(body: unknown = withAggregate) {
   );
 }
 
-function renderPage() {
+function renderPage(wrapper?: ComponentType<{ children: ReactNode }>) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
       <FixturesPage />
     </QueryClientProvider>,
+    { wrapper },
   );
 }
 
@@ -60,17 +63,24 @@ describe('<FixturesPage /> — états (L51)', () => {
     expect(screen.queryByRole('button')).toBeNull();
   });
 
-  it('erreur : annoncée aux lecteurs d’écran (role=alert) en couleur lisible (pas --loss, 3,85:1)', async () => {
+  // L260/t2 : bloc seul, role=alert ; dans l'app (PannesProvider), message sans rôle, dit par la région annoncée.
+  it.each(MODES_PANNES)('erreur : annoncée aux lecteurs d’écran ($mode) en couleur lisible (pas --loss, 3,85:1)', async ({ fournisseur, wrapper }) => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 500, json: async () => ({}) })));
-    renderPage();
-    const message = await screen.findByTestId('message-erreur');
-    expect(message).toHaveAttribute('role', 'alert');
-    expect(message).toHaveTextContent('Impossible de charger le calendrier.'); // L260
+    renderPage(wrapper);
+    const message = await erreurAnnoncee(fournisseur, 'Impossible de charger le calendrier.'); // L260
+    expect(message).toBe(screen.getByTestId('message-erreur'));
     expect(message.className).not.toContain('text-loss');
     expect(message.className).toContain('text-ol-red-bright');
   });
 
-  it('R2 — erreur : un bouton « Réessayer » relance /api/season-matches et rend le calendrier quand l’appel réussit', async () => {
+  // Le nom du premier est cité par la fiche (R2) ; le second rejoue le même scénario dans l'app (PannesProvider, L260/t2).
+  const [bloc, app] = MODES_PANNES;
+  it('R2 — erreur : un bouton « Réessayer » relance /api/season-matches et rend le calendrier quand l’appel réussit', () =>
+    reessayerRendLeCalendrier(bloc));
+  it('R2 — erreur dans l’app (PannesProvider) : « Réessayer » relance /api/season-matches et rend le calendrier', () =>
+    reessayerRendLeCalendrier(app));
+
+  async function reessayerRendLeCalendrier({ fournisseur, wrapper }: (typeof MODES_PANNES)[number]) {
     let appels = 0;
     const fetchMock = vi.fn((url: string) => {
       if (url !== '/api/season-matches') return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
@@ -78,16 +88,15 @@ describe('<FixturesPage /> — états (L51)', () => {
       return Promise.resolve(appels === 1 ? { ok: false, status: 500, json: async () => ({}) } : okJson(withAggregate));
     });
     vi.stubGlobal('fetch', fetchMock);
-    renderPage();
-    const message = await screen.findByTestId('message-erreur');
-    expect(message).toHaveAttribute('role', 'alert');
+    renderPage(wrapper);
+    await erreurAnnoncee(fournisseur, 'Impossible de charger le calendrier.');
     const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: 'Réessayer' }));
     expect(await screen.findByTestId('liste-mois')).toBeInTheDocument();
     expect(appels).toBe(2);
     expect(screen.queryByTestId('message-erreur')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
-  });
+  }
 
   it('R2 — erreur : un rafraîchissement en échec ne retire pas le calendrier déjà chargé (ni message, ni « Réessayer »)', async () => {
     let appels = 0;

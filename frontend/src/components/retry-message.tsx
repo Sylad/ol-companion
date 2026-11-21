@@ -4,6 +4,11 @@ import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffe
 // revient sur « Réessayer » si l'erreur revient dans la minute ; sans retour d'erreur, la marque s'éteint.
 let retryEn = 0;
 const FENETRE_MS = 60_000;
+// L260/t2 (revue M1) : dans le fournisseur, un bloc qui cesse d'être le premier en panne perd son bouton. S'il avait le
+// focus (posé après « Réessayer »), le nouveau premier le reprend, sinon il retombait sur <body> quand le bloc le plus
+// haut retombait en panne après les autres. Fenêtre courte : le relais ne vaut que pour le bouton qui remplace l'autre.
+let relaisEn = 0;
+const RELAIS_MS = 1_000;
 
 /**
  * L260 — une panne de l'API sans cause (tous les appels d'une page en 5xx ou sans réseau) affichait un « Réessayer »
@@ -32,26 +37,53 @@ const PannesContext = createContext<Registre | null>(null);
  * « Réessayer » et le récapitulatif des autres pannes. Les blocs d'une panne arrivent à quelques millisecondes
  * d'écart : le texte n'est posé qu'une fois la liste stable depuis ANNONCE_MS, d'où une seule annonce, la complète.
  * Quand plus rien n'est en panne, la région se vide aussitôt : une panne revenue après « Réessayer » est réannoncée.
+ *
+ * L260/t2 (revue m1, m2) : la région est vidée EFFACE_MS après l'annonce (comme le LiveAnnouncer de react-aria),
+ * sinon le parcours au clavier ou en lecture continue relisait le message une seconde fois ; vider une région ne
+ * s'annonce pas. Une panne qui s'ajoute plus de ANNONCE_MS après une annonce n'annonce que ce qui est nouveau
+ * (« Impossible aussi de charger … »), sans relire le message déjà dit ; tant que le bloc en tête ne change pas.
  */
 const ANNONCE_MS = 250;
+const EFFACE_MS = 7_000;
 
 export function PannesProvider({ children }: { children: React.ReactNode }) {
   const [pannes, setPannes] = useState<Panne[]>([]);
   const [annonce, setAnnonce] = useState('');
+  const dejaDit = useRef<{ tete: string; quoi: Set<string> } | null>(null);
   const inscrire = useCallback((panne: Panne) => {
     setPannes((l) => [...l.filter((p) => p.id !== panne.id), panne]);
     return () => setPannes((l) => l.filter((p) => p.id !== panne.id));
   }, []);
   const valeur = useMemo(() => ({ pannes, inscrire }), [pannes, inscrire]);
+  const ordre = dansLOrdre(pannes);
+  const tete = ordre[0]?.message ?? '';
+  const autres = ordre.length > 0 ? autresPannes(ordre) : [];
   const texte = texteAnnonce(pannes);
 
   useEffect(() => {
     if (!texte) {
+      dejaDit.current = null;
       setAnnonce('');
       return;
     }
-    const minuteur = setTimeout(() => setAnnonce(texte), ANNONCE_MS);
-    return () => clearTimeout(minuteur);
+    const poser = setTimeout(() => {
+      const dit = dejaDit.current;
+      if (dit && dit.tete === tete) {
+        const nouvelles = autres.filter((q) => !dit.quoi.has(q));
+        if (nouvelles.length === 0) return;
+        for (const q of nouvelles) dit.quoi.add(q);
+        setAnnonce(recapitulatif(nouvelles));
+      } else {
+        dejaDit.current = { tete, quoi: new Set(autres) };
+        setAnnonce(texte);
+      }
+    }, ANNONCE_MS);
+    const effacer = setTimeout(() => setAnnonce(''), ANNONCE_MS + EFFACE_MS);
+    return () => {
+      clearTimeout(poser);
+      clearTimeout(effacer);
+    };
+    // `tete` et `autres` se déduisent de `texte` : le texte seul déclenche.
   }, [texte]);
 
   return (
@@ -112,7 +144,7 @@ interface RetryMessageProps {
 
 /** Message d'erreur d'un bloc + « Réessayer » (L85) ; un seul « Réessayer » par page en cas de panne générale (L260). */
 export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, className }: RetryMessageProps) {
-  const boutonRef = useRef<HTMLButtonElement>(null);
+  const boutonRef = useRef<HTMLButtonElement | null>(null);
   const racineRef = useRef<HTMLDivElement>(null);
   const relancer = useRef(onRetry);
   relancer.current = onRetry;
@@ -131,16 +163,30 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
   const chef = !groupe || pannes[0].id === id;
   const autres = groupe && chef ? autresPannes(pannes) : [];
 
+  // Ref rappelée avec null juste avant le retrait du bouton : on sait encore s'il avait le focus. Seul un bouton retiré
+  // parce qu'un autre bloc passe en tête passe le relais (`chef` déjà faux) ; un bloc démonté (chargé) ne le passe pas.
+  const chefRef = useRef(chef);
+  chefRef.current = chef;
+  const refBouton = useCallback((bouton: HTMLButtonElement | null) => {
+    if (!bouton && !chefRef.current && boutonRef.current && document.activeElement === boutonRef.current) {
+      relaisEn = Date.now();
+    }
+    boutonRef.current = bouton;
+  }, []);
+
   useEffect(() => {
-    if (!retryEn || Date.now() - retryEn >= FENETRE_MS) {
+    const relais = relaisEn !== 0 && Date.now() - relaisEn < RELAIS_MS;
+    if (!relais) relaisEn = 0;
+    if (!relais && (!retryEn || Date.now() - retryEn >= FENETRE_MS)) {
       retryEn = 0;
       return;
     }
     // Dans le fournisseur, le rôle (chef ou non) n'est connu qu'une fois les blocs inscrits : le focus attend l'image suivante.
     const poser = () => {
-      if (retryEn && boutonRef.current) {
+      if ((retryEn || relaisEn) && boutonRef.current) {
         boutonRef.current.focus();
         retryEn = 0;
+        relaisEn = 0;
       }
     };
     if (!registre) {
@@ -163,7 +209,7 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
       )}
       {chef && (
         <button
-          ref={boutonRef}
+          ref={refBouton}
           type="button"
           data-testid={buttonTestId}
           onClick={(e) => {

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { blend, contrast, token } from '@/test/contraste';
 import type { CupInfo } from '@/types/api';
+import { MODES_PANNES, aucuneErreurAnnoncee, erreurAnnoncee } from '@/test/pannes';
 
 // L6 — revue UX de Coupes : page (t1 échec + Réessayer, t2 contrastes, t6 onglets, t7 téléphone).
 
@@ -24,37 +25,39 @@ beforeEach(() => {
   state = { isLoading: false, isError: false };
 });
 
-describe('L6 t1 — échec de /api/cups', () => {
-  it('t1 — message en role=alert et bouton « Réessayer » de 44 px qui relance la requête', () => {
+// L260/t2 : joué bloc seul (role=alert) et dans l'app (PannesProvider : message sans rôle, région annoncée).
+describe.each(MODES_PANNES)('L6 t1 — échec de /api/cups ($mode)', ({ fournisseur, wrapper }) => {
+  it('t1 — message annoncé et bouton « Réessayer » de 44 px qui relance la requête', async () => {
     state = { isLoading: false, isError: true };
-    render(<CupsPage />);
-    expect(screen.getByRole('alert')).toHaveTextContent('Impossible de charger les coupes.');
+    render(<CupsPage />, { wrapper });
+    await erreurAnnoncee(fournisseur, 'Impossible de charger les coupes.');
     const bouton = screen.getByRole('button', { name: 'Réessayer' });
     expect(bouton.className).toMatch(/min-h-\[44px\]/);
     fireEvent.click(bouton);
     expect(refetch).toHaveBeenCalledTimes(1);
   });
 
-  it('t1 — erreur de rafraîchissement avec des coupes en cache : pas de panneau d’erreur, les coupes restent affichées', () => {
+  it('t1 — erreur de rafraîchissement avec des coupes en cache : pas de panneau d’erreur, les coupes restent affichées', async () => {
     state = { data: [cup()], isLoading: false, isError: true };
-    render(<CupsPage />);
-    expect(screen.queryByRole('alert')).toBeNull();
+    render(<CupsPage />, { wrapper });
+    await aucuneErreurAnnoncee(fournisseur);
     expect(screen.queryByText('Impossible de charger les coupes.')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
     expect(screen.getByRole('group', { name: 'Choisir une coupe' })).toBeInTheDocument();
   });
 
-  it('t1 — le message est ≥ 4,5:1 sur le fond du panneau (ol-red-bright sur surface)', () => {
+  it('t1 — le message est ≥ 4,5:1 sur le fond du panneau (ol-red-bright sur surface)', async () => {
     expect(contrast(token('ol-red-bright'), token('surface'))).toBeGreaterThanOrEqual(4.5);
     state = { isLoading: false, isError: true };
-    render(<CupsPage />);
-    expect(screen.getByRole('alert').className).toMatch(/text-ol-red-bright/);
+    render(<CupsPage />, { wrapper });
+    expect((await erreurAnnoncee(fournisseur, 'Impossible de charger les coupes.')).className).toMatch(/text-ol-red-bright/);
   });
 
-  it('t1 — le message est dans un panneau (fond surface), pas posé sur la photo de fond', () => {
+  it('t1 — le message est dans un panneau (fond surface), pas posé sur la photo de fond', async () => {
     state = { isLoading: false, isError: true };
-    render(<CupsPage />);
-    expect(screen.getByRole('alert').closest('section')?.className).toMatch(/bg-surface/);
+    render(<CupsPage />, { wrapper });
+    const message = await erreurAnnoncee(fournisseur, 'Impossible de charger les coupes.');
+    expect(message.closest('section')?.className).toMatch(/bg-surface/);
   });
 });
 
