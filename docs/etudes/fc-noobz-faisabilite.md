@@ -8,10 +8,10 @@ défaut les exports du jeu, pour publier un résumé sur `/fcnoobz` (lot L121) ?
 
 | Édition | Sauvegardes `.fm` | Verdict | Pourquoi |
 |---|---|---|---|
-| **FM26** (26.1.2) | 27 fichiers, 104 à 234 Mo | **Oui, avec réserves** | `fmsave` (MIT) lit club géré, effectif complet (218 champs par joueur), stats de saison, historique des joueurs saison par saison, finances, classements. Build non vérifié par l'outil : compétitions non nommées, calendrier vide (0 match), tactiques et entraînement illisibles. |
+| **FM26** (26.1.2) | 464 fichiers, 31 à 259 Mo | **Oui, avec réserves** | `fmsave` (MIT) lit club géré, effectif complet (218 champs par joueur), stats de saison, historique des joueurs saison par saison, finances, classements. Build non vérifié par l'outil : compétitions non nommées, calendrier vide (0 match), tactiques et entraînement illisibles. |
 | **FM27** (27.0.1) | 4 fichiers, 70 à 77 Mo | **Oui, avec réserves** | Les 33 lecteurs de `fmsave` passent (statut `ok`), calendrier et classement de la division du club géré compris. Build « non vérifié » : 27 champs confirmés en jeu sur 838, le reste « non confirmé ». |
-| **FM24** (24.3) | même conteneur que FM26/27 | **Non** (sans rétro-ingénierie) | La décompression marche (300 Mo lisibles, noms de joueurs en clair) mais aucun outil libre ne connaît la disposition des enregistrements ; `fmsave` : « no game version found ». |
-| **FM21 à FM23** (21.1, 23.0) | conteneur à trames préfixées | **Non** (sans rétro-ingénierie) | Décompression possible (FM23 : 305 Mo, noms en clair, répertoire des sections lu), aucune disposition connue ; `fmsave` refuse (« save directory could not be decompressed »). |
+| **FM24** (24.3) | 320 fichiers, 70 à 398 Mo ; même conteneur que FM26/27 | **Non** (sans rétro-ingénierie) | La décompression marche (300 Mo lisibles, noms de joueurs en clair) mais aucun outil libre ne connaît la disposition des enregistrements ; `fmsave` : « no game version found ». |
+| **FM21 à FM23** (21.1, 23.0) | 16 + 127 + 165 fichiers, 40 à 456 Mo ; trames préfixées | **Non** (sans rétro-ingénierie) | Décompression possible (FM23 : 305 Mo, noms en clair, répertoire des sections lu), aucune disposition connue ; `fmsave` refuse (« save directory could not be decompressed »). |
 | Exports `exported teams` (`.fmf`) | FM23, FM24, FM26 | **Non utile** | Ce sont des équipes du mode « Versus » (`VERSUS_TEAM_TYPE_HANDLER`) : un effectif figé, au format binaire à étiquettes, sans résultat ni classement. Aucun lecteur libre. |
 | Exports HTML / texte (« imprimer → page web ») | **aucun** dans le dossier | — | Aucun `.html`, `.htm`, `.rtf` ni `.csv` produit par le jeu n'existe (recherche limitée à 3 niveaux, hors `graphics`). Le seul `.txt` utile est `FM21.txt`, des notes de Sylvain. |
 
@@ -31,7 +31,7 @@ saisissent à la main pour FM21 à FM24.
   après : identiques. Rien n'a été copié hors du scratchpad de la session ; les flux décompressés
   et les CSV d'essai y sont restés. **Aucune donnée de sauvegarde n'est dans ce dépôt** : ce
   document ne cite que des tailles, des comptes, des noms de champs et des numéros de build.
-- **Fichiers examinés** : une sauvegarde par édition (FM21, FM22, FM23, FM24, FM26, FM27), un
+- **Fichiers examinés** : une sauvegarde par édition (FM21, FM22, FM23, FM24, FM26, FM27 ; FM22 : en-tête seulement, identique à FM21 et FM23), un
   `.fmf` d'équipe exportée FM23 et FM26, un `.fmf` de vue FM21.
 - **Outils** : `xxd`, `strings`, `zstd` 1.5.5, un parcoureur de trames zstd écrit pour l'étude
   (lit les en-têtes de bloc sans décompresser), `fmsave` 0.14.2 installé dans un venv jetable
@@ -142,13 +142,13 @@ build ; tout FM21 à FM24.
 ## 5. Découpage proposé (non codé)
 
 Contrainte d'architecture : les sauvegardes sont sur le disque `E:` de Big-Blue et pèsent jusqu'à
-234 Mo ; le serveur de dark-blue ne les voit pas. Donc **un import local** sur Big-Blue, qui
+456 Mo (1 096 fichiers `.fm` en tout) ; le serveur de dark-blue ne les voit pas. Donc **un import local** sur Big-Blue, qui
 produit un petit résumé JSON, et c'est ce résumé, jamais la sauvegarde, qui part dans l'app.
 
 | Lot | Contenu | Estimation |
 |---|---|---|
 | **I1 — Import local** | `scripts/fcnoobz-import/` (Python 3.12, venv, `fmsave==0.14.2` épinglé) : pour chaque dossier `Football Manager 26` / `27`, prend la sauvegarde la plus récente (hors `last save overwrite backup`), lance `fmsave validate` et refuse l'import si un lecteur utilisé n'est pas `ok` ; écrit `fcnoobz-resume.json` avec une **liste blanche** de champs (édition, build, date en jeu, club géré, division et place actuelles, bilan de la saison, meilleurs buteurs/notes, saisons de l'historique des joueurs). Tests sur un JSON d'exemple fabriqué, jamais sur une vraie sauvegarde. | 0,5 j |
-| **I2 — Historique saison par saison** | Option A : le résumé de chaque sauvegarde est empilé par saison en jeu (`historique.json`, une entrée par (édition, saison)), ce qui reconstruit divisions et places au fil des sauvegardes déjà faites — dates en jeu à vérifier sur les 27 sauvegardes FM26. Option B : table tenue à la main pour FM21 à FM24 (club, saison, division, place, titre), même schéma. | 0,5 j |
+| **I2 — Historique saison par saison** | Option A : le résumé de chaque sauvegarde est empilé par saison en jeu (`historique.json`, une entrée par (édition, saison)), ce qui reconstruit divisions et places au fil des sauvegardes déjà faites — dates en jeu à vérifier sur les 464 sauvegardes FM26 (beaucoup de versions `(vNN)` d'un même instant). Option B : table tenue à la main pour FM21 à FM24 (club, saison, division, place, titre), même schéma. | 0,5 j |
 | **I3 — Publication** | Le résumé est versionné dans `frontend/public/fcnoobz-data/` (comme `plan-data/`), commité par Sylvain après relecture : aucun appel réseau, aucune donnée brute. Test qui refuse tout champ hors liste blanche. Le contenu exact suit la fiche d'écran de L121. | 0,25 j |
 | **L121** (existant) | L'écran, alimenté par I1 à I3. | (déjà estimé) |
 | **I4 — Veille (optionnel)** | Une ligne dans le lot mensuel des technos : version de `fmsave` et build de FM27 couvert ; un patch de FM27 peut casser la lecture jusqu'à la version suivante de `fmsave`. | — |
