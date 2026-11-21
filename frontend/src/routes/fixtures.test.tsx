@@ -220,14 +220,14 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
     await screen.findAllByRole('article');
 
     const palace = rowById(PALACE);
-    const logos = within(palace).getAllByRole('img');
+    const logos = [...palace.querySelectorAll('img')]; // L260 : alt vide, le nom du club est écrit à côté
     expect(logos.map((img) => img.getAttribute('src'))).toEqual([
       // L'OL porte l'identifiant football-data (523) dans l'API : repris en 465.
       expect.stringMatching(/imagecache\.365scores\.com\/.*\/Competitors\/465$/),
       expect.stringMatching(/imagecache\.365scores\.com\/.*\/Competitors\/10$/),
     ]);
     // 92 écussons affichés ; seul l'en-tête de page interroge encore wiki-image.
-    expect(screen.getAllByRole('article').flatMap((a) => within(a).getAllByRole('img'))).toHaveLength(92);
+    expect(screen.getAllByRole('article').flatMap((a) => [...a.querySelectorAll('img')])).toHaveLength(92);
     const wikiCalls = fetchMock.mock.calls.filter(([url]) => url.startsWith('/api/wiki-image'));
     expect(wikiCalls.length).toBeLessThanOrEqual(1);
   });
@@ -301,7 +301,7 @@ describe('<FixturesPage /> — toutes compétitions (L39)', () => {
       'Joués1',
     ]);
     expect(screen.getByTestId('vue-rapide')).toHaveTextContent(/Matchs listés\s*8$/);
-    expect(screen.queryByRole('heading', { level: 3, name: /Ligue 1/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /Ligue 1/ })).not.toBeInTheDocument();
 
     // L104 : « Matchs listés » compte les lignes affichées, filtre de statut compris.
     await user.click(within(status).getByRole('button', { name: /Joués/ }));

@@ -5,7 +5,7 @@ import { pageTitle } from './page-title';
 // L154 — WCAG 2.4.2 : chaque route a son titre de page, « <Page> · OL Companion ».
 describe('pageTitle', () => {
   it('donne un titre propre à chaque page', () => {
-    expect(pageTitle('/')).toBe('Dashboard · OL Companion');
+    expect(pageTitle('/')).toBe('Accueil · OL Companion');
     expect(pageTitle('/standings')).toBe('Classement · OL Companion');
     expect(pageTitle('/fixtures')).toBe('Calendrier · OL Companion');
     expect(pageTitle('/equipe-de-france')).toBe('Équipe de France · OL Companion');

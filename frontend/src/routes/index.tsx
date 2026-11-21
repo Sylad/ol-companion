@@ -25,15 +25,15 @@ export function DashboardPage() {
   return (
     <div className="space-y-6 lg:space-y-8">
       <KnowledgeHeader />
-      <h1 className="sr-only">Dashboard</h1>
+      <h1 className="sr-only">Accueil</h1>
       <DashboardHero />
       <LiveMatchCard />
       <DashboardStats />
       <LastResult />
-      <Suspense fallback={<DashboardPanelFallback label="Chargement des stats saison..." />}>
+      <Suspense fallback={<DashboardPanelFallback label="Chargement des statistiques de la saison…" />}>
         <SeasonSummary />
       </Suspense>
-      <Suspense fallback={<DashboardPanelFallback label="Chargement du tracker..." />}>
+      <Suspense fallback={<DashboardPanelFallback label="Chargement de l'évolution du classement…" />}>
         <PositionTracker />
       </Suspense>
       {/* L267 : l'heure du prochain match de Ligue 1 vient de football-data, qui exige sa mention. */}

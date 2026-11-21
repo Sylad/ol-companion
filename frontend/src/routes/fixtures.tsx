@@ -210,7 +210,7 @@ export function FixturesPage() {
             // RetryMessage : message en role=alert, ol-red-bright (pas --loss, 3,85:1 à 16 px, WCAG 1.4.3) + « Réessayer » (L51).
             <RetryMessage
               className="flex flex-col items-center gap-3 py-20 text-center"
-              message="Erreur de chargement."
+              message="Impossible de charger le calendrier."
               onRetry={() => void refetch()}
               messageTestId="message-erreur"
               buttonTestId="reessayer-calendrier"
@@ -255,12 +255,13 @@ export function FixturesPage() {
                     data-testid="bloc-mois"
                     className="rounded-md border border-border bg-surface-2/25 overflow-hidden"
                   >
-                    <h3 className="eyebrow flex items-baseline justify-between px-4 py-2 border-b border-border bg-surface-2/50">
+                    {/* L260 : h2 sous le h1 « Calendrier », sans saut de niveau (WCAG 1.3.1). */}
+                    <h2 className="eyebrow flex items-baseline justify-between px-4 py-2 border-b border-border bg-surface-2/50">
                       <span data-testid="titre-mois">{month.label}</span>
                       <span data-testid="nombre-matchs-mois" className="num normal-case tracking-normal font-normal">
                         {month.matches.length} {month.matches.length > 1 ? 'matchs' : 'match'}
                       </span>
-                    </h3>
+                    </h2>
                     <div className="divide-y divide-border">
                       {month.matches.map((f) => (
                         <CompactFixtureRow key={f.id} fixture={f} />

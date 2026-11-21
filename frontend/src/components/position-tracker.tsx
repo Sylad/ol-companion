@@ -62,7 +62,7 @@ export function PositionTracker() {
         <div>
           <div className="eyebrow mb-1">Saison en cours</div>
           <h2 className="font-display text-xl font-bold text-fg-bright leading-none">
-            Tracker de classement
+            Évolution du classement
           </h2>
         </div>
         <div className="group relative">

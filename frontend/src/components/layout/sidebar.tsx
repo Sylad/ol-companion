@@ -13,7 +13,7 @@ export const DIVIDER = 'my-3 mx-3 h-px bg-border';
 export const FRANCE_PATH = '/equipe-de-france';
 
 export const NAV_ITEMS = [
-  { to: '/', label: 'Dashboard', icon: Home, exact: true },
+  { to: '/', label: 'Accueil', icon: Home, exact: true },
   { to: '/fixtures', label: 'Calendrier', icon: CalendarDays, exact: false },
   { to: '/standings', label: 'Classement', icon: ListOrdered, exact: false },
   { to: '/players', label: 'Joueurs', icon: Users, exact: false },
@@ -67,7 +67,7 @@ export function Sidebar({ eventStreamStatus }: { eventStreamStatus: EventStreamS
         <Link to="/" className="flex items-center gap-3 group">
           <img
             src="/icon.png"
-            alt="OL Companion"
+            alt=""
             className="w-12 h-12 shrink-0 rounded-md transition-transform group-hover:scale-105 shadow-[0_0_18px_rgba(220,38,38,0.25)]"
           />
           <div className="min-w-0">

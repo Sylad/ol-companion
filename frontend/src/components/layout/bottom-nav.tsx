@@ -8,7 +8,7 @@ import { NewsBadge } from '@/components/news-badge';
 import { useNewsBadge } from '@/hooks/use-news-badge';
 
 // L24 (décision de Sylvain, option A, 02-10) : 4 pages + « Plus », soit 5 cases de 64 px
-// à 320 px. Avec 8 cases de 40 px, « Dashboard », « Calendrier » et « Classement »
+// à 320 px. Avec 8 cases de 40 px, « Accueil », « Calendrier » et « Classement »
 // débordaient (49 à 52 px). Joueurs, Coupes et Carte L1 passent dans le panneau « Plus »,
 // avec FC Noobz et les pages « Application », comme le « Plus » de finance-tracker.
 // La barre latérale (bureau) garde ses 8 pages (L113 : Équipe de France, derrière « Plus » au téléphone).

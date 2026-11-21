@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { FRANCE_365SCORES_ID, isFranceMatchup, teamColors, type MatchPalette } from '@/lib/match-palette';
 import { OL_365SCORES_ID as OL_ID, type LiveMatchTimelineEvent, type LiveMatchTopPerformer } from '@/types/api';
 import { estIntrouvable } from '@/lib/api';
-import { eventLabelFr } from '@/lib/event-fr';
+import { eventIconFr, eventTextFr } from '@/lib/event-fr';
 import { decimalFr, roleFr, statNameFr, statValueFr } from '@/lib/stat-fr';
 import { FootballDataAttribution } from '@/components/football-data-attribution';
 import { CeQueCaChange } from '@/components/ce-que-ca-change';
@@ -112,12 +112,22 @@ function TimelineRow({ event, homeId, homeSymbol, awaySymbol }: {
   event: LiveMatchTimelineEvent; homeId: number; homeSymbol: string; awaySymbol: string;
 }) {
   const isHome = event.competitorId === homeId;
-  const base = eventLabelFr(event.type, event.description);
+  const icone = eventIconFr(event.type);
+  const base = eventTextFr(event.type, event.description);
   const who = event.playerShortName ?? event.playerName;
   // Remplacement : playerId = entrant, extraPlayer = sortant (365scores type 1000).
   const isSub = event.type === 'substitution';
   const out = event.extraPlayerShortName ?? event.extraPlayerName;
-  const label = isSub && who && out ? `${base} · ${who} ↔ ${out}` : who ? `${base} · ${who}` : base;
+  // L260 : pictogramme et flèche masqués aux lecteurs d'écran ; la flèche entrant ↔ sortant se lit « remplace ».
+  const label = (
+    <>
+      {icone && <><span aria-hidden="true">{icone}</span>{' '}</>}
+      {base}
+      {isSub && who && out ? (
+        <>{` · ${who} `}<span aria-hidden="true">↔</span><span className="sr-only">remplace</span>{` ${out}`}</>
+      ) : who ? ` · ${who}` : null}
+    </>
+  );
   // Tooltip : nom complet, et entrant ↔ sortant ou passeur selon l'événement.
   let tooltip: string | undefined;
   if (event.playerName) {
@@ -560,7 +570,7 @@ export function MatchPage() {
           {(homeScorers.length > 0 || awayScorers.length > 0) && (
             <>
               <Scorers items={homeScorers} align="right" reflow={bleus} />
-              <div className="text-center text-fg-dim">⚽</div>
+              <div aria-hidden="true" className="text-center text-fg-dim">⚽</div>
               <Scorers items={awayScorers} align="left" reflow={bleus} />
             </>
           )}

@@ -96,7 +96,8 @@ describe('<StandingsTable /> — écussons (L32)', () => {
     renderTable();
     const fetchMock = vi.mocked(globalThis.fetch);
     expect(fetchMock.mock.calls.filter(([url]) => String(url).startsWith('/api/wiki-image'))).toHaveLength(0);
-    const logo = screen.getByAltText('Paris Saint-Germain Football Club');
+    const logo = document.querySelector('img[src*="/Competitors/524"]')!; // L260 : alt vide, le nom est à côté
+    expect(logo).toHaveAttribute('alt', '');
     expect(logo.getAttribute('src')).toContain('imagecache.365scores.com');
     expect(logo.getAttribute('src')).toContain('/Competitors/524');
   });

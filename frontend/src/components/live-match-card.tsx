@@ -4,7 +4,7 @@ import { Radio, Trophy, Clock, Pause } from 'lucide-react';
 import { useCurrentLiveMatch, useLiveMatchStats } from '@/hooks/use-live-match';
 import { deriveClock } from '@/lib/match-clock';
 import { MatchScore } from '@/components/match-score';
-import { eventLabelFr } from '@/lib/event-fr';
+import { eventIconFr, eventTextFr } from '@/lib/event-fr';
 import { decimalFr } from '@/lib/stat-fr';
 import { cn } from '@/lib/utils';
 import { OL_365SCORES_ID as OL_ID } from '@/types/api';
@@ -134,7 +134,11 @@ export function LiveMatchCard() {
             <div key={i} className="text-xs flex items-center gap-2 text-fg-muted">
               <span className="num tabular-nums text-fg w-9">{e.gameTimeDisplay}</span>
               <span className="font-semibold uppercase tracking-wider text-petite text-ol-red-bright">
-                {e.type === 'goal' ? '⚽ But' : e.type === 'yellow_card' ? '🟨' : e.type === 'red_card' ? '🟥' : eventLabelFr(e.type, e.description)}
+                {/* L260 : émoji masqué aux lecteurs d'écran ; un carton n'affiche que son carré, son nom reste lu. */}
+                {eventIconFr(e.type) && <span aria-hidden="true">{eventIconFr(e.type)} </span>}
+                <span className={e.type === 'yellow_card' || e.type === 'red_card' ? 'sr-only' : undefined}>
+                  {eventTextFr(e.type, e.description)}
+                </span>
               </span>
               <span className="ml-auto text-fg">
                 {e.competitorId === current.home.id ? current.home.symbolicName : current.away.symbolicName}

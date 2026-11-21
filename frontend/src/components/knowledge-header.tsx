@@ -45,7 +45,7 @@ export function KnowledgeHeader({ compact = false }: { compact?: boolean }) {
         )}
       >
         {logo?.imageUrl ? (
-          <img src={logo.imageUrl} alt="OL" className="w-full h-full object-contain p-1.5" />
+          <img src={logo.imageUrl} alt="" className="w-full h-full object-contain p-1.5" />
         ) : (
           <span className="font-display font-bold text-fg-muted">OL</span>
         )}

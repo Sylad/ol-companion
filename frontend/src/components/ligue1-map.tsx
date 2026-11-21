@@ -628,7 +628,7 @@ export function Ligue1Map() {
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
+            attribution="&copy; les contributeurs d’<a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a>"
             maxZoom={18}
           />
           <FrameFrance />

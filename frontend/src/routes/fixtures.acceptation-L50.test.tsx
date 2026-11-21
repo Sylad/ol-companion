@@ -190,7 +190,8 @@ describe('R2 — erreur', () => {
   it("R2 — erreur : le message s'affiche", async () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 500, json: async () => ({}) })));
     renderPage();
-    expect(await screen.findByTestId('message-erreur')).toHaveTextContent('Erreur de chargement.');
+    // Rescellé par L260 (fiche R2 amendée) : le message nomme ce qui a échoué, « Erreur de chargement. » ne le disait pas.
+    expect(await screen.findByTestId('message-erreur')).toHaveTextContent('Impossible de charger le calendrier.');
     expect(tid('titre-page')).toHaveTextContent('Calendrier');
     // Depuis L51, la fiche (R2) ajoute un bouton « Réessayer » : vérifié par le test de L51, plus exclu ici.
     for (const id of ['barre-filtres', 'liste-mois', 'message-chargement']) expect(screen.queryByTestId(id)).toBeNull();

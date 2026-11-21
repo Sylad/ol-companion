@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TeamLogo } from './team-logo';
 
@@ -22,10 +22,7 @@ describe('<TeamLogo />', () => {
 
     renderLogo(<TeamLogo teamId={10} name="Crystal Palace" src="https://cdn.example/Competitors/10" />);
 
-    expect(screen.getByRole('img', { name: 'Crystal Palace' })).toHaveAttribute(
-      'src',
-      'https://cdn.example/Competitors/10',
-    );
+    expect(document.querySelector('img')).toHaveAttribute('src', 'https://cdn.example/Competitors/10');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -33,10 +30,26 @@ describe('<TeamLogo />', () => {
     vi.stubGlobal('fetch', vi.fn());
     renderLogo(<TeamLogo teamId={10} name="Crystal Palace" src="https://cdn.example/Competitors/10" />);
 
-    fireEvent.error(screen.getByRole('img', { name: 'Crystal Palace' }));
+    fireEvent.error(document.querySelector('img')!);
 
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(document.querySelector('img')).toBeNull();
     expect(screen.getByText('Cr')).toBeInTheDocument();
+  });
+
+  // L260 : l'écusson est posé à côté du nom du club ; un alt qui le répète fait lire le nom deux fois (WCAG 1.1.1).
+  it('L260 — décoratif par défaut : alt vide, initiales de repli masquées aux lecteurs d’écran', () => {
+    vi.stubGlobal('fetch', vi.fn());
+    renderLogo(<TeamLogo teamId={10} name="Crystal Palace" src="https://cdn.example/Competitors/10" />);
+    expect(document.querySelector('img')).toHaveAttribute('alt', '');
+    expect(screen.queryByRole('img')).toBeNull();
+    fireEvent.error(document.querySelector('img')!);
+    expect(screen.getByText('Cr').closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  it('L260 — écusson seul, sans nom à côté : `label` le nomme', () => {
+    vi.stubGlobal('fetch', vi.fn());
+    renderLogo(<TeamLogo teamId={10} name="Crystal Palace" label="Crystal Palace" src="https://cdn.example/Competitors/10" />);
+    expect(screen.getByRole('img', { name: 'Crystal Palace' })).toBeInTheDocument();
   });
 
   it('sans adresse fournie : interroge /api/wiki-image comme avant', async () => {
@@ -47,7 +60,7 @@ describe('<TeamLogo />', () => {
 
     renderLogo(<TeamLogo teamId={481} name="Lens" />);
 
-    expect(await screen.findByRole('img', { name: 'Lens' })).toHaveAttribute('src', 'https://wiki.example/lens.png');
+    await waitFor(() => expect(document.querySelector('img')).toHaveAttribute('src', 'https://wiki.example/lens.png'));
     expect(fetchMock).toHaveBeenCalledWith(
       `/api/wiki-image?q=${encodeURIComponent('Racing Club de Lens')}`,
       expect.anything(),

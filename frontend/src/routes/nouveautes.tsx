@@ -209,7 +209,7 @@ export function NouveautesPage() {
                 <a
                   href={`#${e.slug}`}
                   onClick={onTitleClick(e.slug)}
-                  title="Lien vers cette nouveauté (copié au clic)"
+                  title="Lien vers cette nouveauté (copié quand on le suit)"
                   // « # » en pseudo-élément au survol et au focus : repère visuel du lien
                   // permanent, hors du texte du titre (et de son nom accessible).
                   className="rounded-sm hover:underline hover:decoration-ol-red-bright hover:underline-offset-4 after:ml-1.5 after:text-ol-red-bright after:opacity-0 after:content-['#'] hover:after:opacity-100 focus-visible:after:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ol-red-bright focus-visible:ring-offset-2 focus-visible:ring-offset-surface"

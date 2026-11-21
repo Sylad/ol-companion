@@ -28,7 +28,7 @@ describe('L6 t1 — échec de /api/cups', () => {
   it('t1 — message en role=alert et bouton « Réessayer » de 44 px qui relance la requête', () => {
     state = { isLoading: false, isError: true };
     render(<CupsPage />);
-    expect(screen.getByRole('alert')).toHaveTextContent('Erreur de chargement des données coupes.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Impossible de charger les coupes.');
     const bouton = screen.getByRole('button', { name: 'Réessayer' });
     expect(bouton.className).toMatch(/min-h-\[44px\]/);
     fireEvent.click(bouton);
@@ -39,7 +39,7 @@ describe('L6 t1 — échec de /api/cups', () => {
     state = { data: [cup()], isLoading: false, isError: true };
     render(<CupsPage />);
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(screen.queryByText('Erreur de chargement des données coupes.')).toBeNull();
+    expect(screen.queryByText('Impossible de charger les coupes.')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Réessayer' })).toBeNull();
     expect(screen.getByRole('group', { name: 'Choisir une coupe' })).toBeInTheDocument();
   });

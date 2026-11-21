@@ -4,7 +4,7 @@ import { FootballDataSourceNote } from '@/components/football-data-attribution';
 
 const STACK = [
   {
-    group: 'Frontend',
+    group: 'Interface (frontend)',
     icon: Palette,
     items: [
       'React 18 + TypeScript 5.6',
@@ -18,7 +18,7 @@ const STACK = [
     ],
   },
   {
-    group: 'Backend',
+    group: 'Serveur (backend)',
     icon: Server,
     items: [
       'NestJS 11 + TypeScript 5',
@@ -26,11 +26,11 @@ const STACK = [
       'Proxy 365scores (classement live, forme, calendrier de la saison)',
       'Proxy football-data.org (prochain match, heures de coup d’envoi)',
       'Proxy Wikipedia FR (logos / images)',
-      'Server-Sent Events (live updates)',
+      'Server-Sent Events (mises à jour en direct)',
     ],
   },
   {
-    group: 'Infra',
+    group: 'Infrastructure',
     icon: Code2,
     items: [
       'Docker multi-stage (frontend node:22-alpine → nginx:alpine, backend node:20-alpine)',
@@ -59,13 +59,13 @@ const INSPIRATIONS = [
   {
     name: '365scores',
     by: '365scores Ltd.',
-    why: 'Source de données officielle utilisée — classement, forme, départage LFP. Le départage par règles LFP était la raison du switch depuis football-data.org.',
+    why: 'Source de données officielle utilisée — classement, forme, départage LFP. Le départage par règles LFP était la raison du passage depuis football-data.org.',
     url: 'https://www.365scores.com/fr/football/league/ligue-1-35',
   },
   {
     name: 'Sofascore',
     by: 'Sofascore',
-    why: 'Référence UI pour les stats sportives — dense, lisible, cards homogènes. Pas pillé : étudié.',
+    why: 'Référence d’interface pour les stats sportives — dense, lisible, cartes homogènes. Pas pillé : étudié.',
     url: 'https://www.sofascore.com/fr/football/team/olympique-lyonnais/1649',
   },
   {
@@ -77,7 +77,7 @@ const INSPIRATIONS = [
   {
     name: 'shadcn/ui',
     by: 'shadcn',
-    why: 'Pattern composants Radix + Tailwind à copier-coller, philosophie minimaliste. Inspiration des cards et de la sidebar.',
+    why: 'Composants Radix + Tailwind à copier-coller, philosophie minimaliste. Inspiration des cartes et de la barre latérale.',
     url: 'https://ui.shadcn.com',
   },
 ];
@@ -99,10 +99,10 @@ export function AboutPage() {
       </header>
 
       <section className="rounded-md border border-border bg-surface p-5">
-        <h3 className="font-display text-lg font-semibold text-fg-bright mb-1">Notifications match</h3>
+        <h2 className="font-display text-lg font-semibold text-fg-bright mb-1">Notifications de match</h2>
         <p className="text-sm text-fg-muted mb-4">
-          Reçois une notification système (Android, desktop, ou PWA installée) quand Lyon marque,
-          prend un rouge, démarre ou termine un match. Opt-in, désactivable en un clic.
+          Reçois une notification système (Android, ordinateur, ou appli installée) quand Lyon marque,
+          prend un rouge, démarre ou termine un match. À activer toi-même, désactivable à tout moment.
         </p>
         <NotificationsToggle />
         <p className="text-petite text-fg-dim mt-3 leading-snug">
@@ -118,7 +118,7 @@ export function AboutPage() {
           <div className="shrink-0">
             <img
               src="/icon.png"
-              alt="OL Companion"
+              alt=""
               className="w-16 h-16 rounded-md shadow-[0_0_20px_rgba(220,38,38,0.3)]"
             />
           </div>
@@ -162,23 +162,25 @@ export function AboutPage() {
               {' '}a été mon premier complice : génération du logo OL Companion, maquettes UX
               et propositions de design qui ont guidé la construction. Une collab humaine et IA :
               ChatGPT pour les pistes visuelles, Claude Code pour l'implémentation, puis Codex
-              pour quelques passes de refonte et de review.
+              pour quelques passes de refonte et de revue.
             </p>
             <p className="text-fg leading-relaxed mt-3">
               Plus récemment, Codex a pris le relais sur une passe d'amélioration ciblée :
-              chargement progressif des routes, état de connexion live visible, lecture produit
-              du dashboard et ajustements de structure sans casser l'existant.
+              chargement progressif des routes, état de connexion en direct visible, lecture produit
+              du tableau de bord et ajustements de structure sans casser l'existant.
             </p>
             <div className="mt-4 flex items-center gap-1.5 text-xs text-fg-dim">
-              <Sparkles className="h-3 w-3 text-ol-red-bright" />
-              <span>Données live via 365scores · Logos via Wikipedia FR · Hébergé sur Kubernetes (k3s).</span>
+              <Sparkles className="h-3 w-3 text-ol-red-bright" aria-hidden="true" />
+              <span>Données en direct via 365scores · Logos via Wikipedia FR · Hébergé sur Kubernetes (k3s).</span>
             </div>
             <FootballDataSourceNote what="Prochain match et heures des coups d’envoi de Ligue 1" className="mt-2" />
           </div>
         </div>
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <section aria-labelledby="pile-technique" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* L260 : titres sans saut de niveau (WCAG 1.3.1) — h2 de la section, h3 de chaque groupe. */}
+        <h2 id="pile-technique" className="sr-only">Pile technique</h2>
         {STACK.map((s) => {
           const Icon = s.icon;
           return (
@@ -206,9 +208,9 @@ export function AboutPage() {
       </section>
 
       <section className="rounded-md border border-border bg-surface p-5">
-        <h3 className="font-display text-lg font-semibold text-fg-bright mb-1">
+        <h2 className="font-display text-lg font-semibold text-fg-bright mb-1">
           Inspirations &amp; sources
-        </h3>
+        </h2>
         <p className="text-sm text-fg-muted mb-5">
           Pas une copie, mais des principes que j'ai essayé d'appliquer.
         </p>
@@ -237,20 +239,20 @@ export function AboutPage() {
       </section>
 
       <section className="rounded-md border border-border bg-surface p-6 mb-6">
-        <h3 className="font-display text-lg font-semibold text-fg-bright mb-1">Mes autres sites</h3>
+        <h2 className="font-display text-lg font-semibold text-fg-bright mb-1">Mes autres sites</h2>
         <p className="text-sm text-fg-muted mb-5">
           Quatre autres apps perso vibe-codées avec Claude Code, toutes en open-source.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
             { tag: '🦖', name: 'Evatosorus', desc: 'Codex Mésozoïque (cadeau pour Eva)', url: 'https://evatosorus.pages.dev' },
-            { tag: '⚔️', name: 'Warhammer 40K Codex', desc: 'Fan codex narratif W40K', url: 'https://github.com/Sylad/warhammer40k' },
+            { tag: '⚔️', name: 'Warhammer 40K Codex', desc: 'Codex narratif de fan, W40K', url: 'https://github.com/Sylad/warhammer40k' },
             { tag: '💸', name: 'Finance Tracker', desc: 'Suivi finances perso (PDF Claude)', url: 'https://github.com/Sylad/finance-tracker' },
             { tag: '🌿', name: 'Eywa', desc: 'Codex Pandora (pour Eva)', url: 'https://avatar-pandora-12q.pages.dev' },
           ].map((s) => (
             <a key={s.name} href={s.url} target="_blank" rel="noopener"
               className="rounded-md border border-border p-3 flex items-center gap-3 hover:border-ol-red-bright transition-colors group">
-              <span className="text-2xl select-none">{s.tag}</span>
+              <span aria-hidden="true" className="text-2xl select-none">{s.tag}</span>
               <span className="flex-1 min-w-0">
                 <span className="block font-display font-semibold text-fg-bright group-hover:text-ol-red-bright transition-colors">{s.name}</span>
                 <span className="block text-xs text-fg-muted">{s.desc}</span>

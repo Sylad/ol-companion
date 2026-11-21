@@ -45,13 +45,44 @@ vi.mock('@/components/match-event-burst', () => ({ MatchEventBurst: () => null }
 
 import { MatchPage } from './match';
 
+/** Texte lu par un lecteur d'écran : sans les nœuds `aria-hidden`, espaces normalisées. */
+function lu(el: Element): string {
+  const copie = el.cloneNode(true) as Element;
+  copie.querySelectorAll('[aria-hidden="true"]').forEach((n) => n.remove());
+  return (copie.textContent ?? '').replace(/\s+/g, ' ').trim();
+}
+/** Texte à l'écran : sans les nœuds `sr-only`. */
+function visible(el: Element): string {
+  const copie = el.cloneNode(true) as Element;
+  copie.querySelectorAll('.sr-only').forEach((n) => n.remove());
+  return (copie.textContent ?? '').replace(/\s+/g, ' ').trim();
+}
+/** Émojis et flèches de texte hors d'un `aria-hidden`. */
+function emojisLus(racine: Element): string[] {
+  return [...racine.querySelectorAll('*')]
+    .flatMap((e) => [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => ({ e, t: n.textContent ?? '' })))
+    .filter(({ e, t }) => /[\p{Extended_Pictographic}↔▸]/u.test(t) && !e.closest('[aria-hidden="true"]'))
+    .map(({ t }) => t.trim());
+}
+
 describe('<MatchPage /> — faits du match (L9 t1)', () => {
   it('remplacement : entrant ↔ sortant dans la ligne elle-même, pas seulement au survol', () => {
     render(<MatchPage />);
     const faits = screen.getByTestId('faits-match');
     const ligne = within(faits).getByText(/Remplacement/);
-    expect(ligne).toHaveTextContent('↔ Remplacement · Kana ↔ Romeo');
+    // L260 : la flèche reste à l'écran, le lecteur d'écran lit « remplace » (texte sr-only).
+    expect(visible(ligne)).toBe('↔ Remplacement · Kana ↔ Romeo');
+    expect(lu(ligne)).toBe('Remplacement · Kana remplace Romeo');
     expect(ligne).toHaveAttribute('title', 'Marco Kana (entrant) ↔ Amane Romeo (sortant)');
+  });
+
+  // L260 — émojis décoratifs (🥅, ⚽, ↔…) masqués aux lecteurs d'écran : le libellé français porte le sens.
+  it('L260 — aucun émoji des faits du match n’est lu par un lecteur d’écran', () => {
+    render(<MatchPage />);
+    const faits = screen.getByTestId('faits-match');
+    expect(faits.textContent).toMatch(/🥅/u);
+    expect(emojisLus(faits)).toEqual([]);
+    expect(lu(within(faits).getByText(/Poteau/))).toBe('Poteau · Cherki');
   });
 
   it('Poteau et But annulé (VAR) en français, sans « Woodwork » ni « Var » bruts', () => {

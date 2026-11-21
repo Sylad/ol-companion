@@ -83,7 +83,7 @@ describe('barre latérale (bureau)', () => {
   it('garde les 8 pages principales, Joueurs, Coupes, Carte L1 et Équipe de France compris (L113)', async () => {
     await renderAt('/', () => <Sidebar eventStreamStatus="connected" />);
     const labels = NAV_ITEMS.map((i) => i.label);
-    expect(labels).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Joueurs', 'Actu', 'Coupes', 'Carte L1', 'Équipe de France']);
+    expect(labels).toEqual(['Accueil', 'Calendrier', 'Classement', 'Joueurs', 'Actu', 'Coupes', 'Carte L1', 'Équipe de France']);
     for (const label of labels) expect(screen.getByRole('link', { name: label })).toBeInTheDocument();
   });
 
@@ -179,12 +179,12 @@ describe('pastille « nouveau » (L22)', () => {
 
 describe('<BottomNav /> (téléphone)', () => {
   // L24 (décision de Sylvain, option A, 02-10) : à 320 px, 8 cases de 40 px coupaient
-  // « Dashboard », « Calendrier », « Classement » → 5 cases de 64 px, libellés en 10 px.
+  // « Accueil », « Calendrier », « Classement » → 5 cases de 64 px, libellés en 10 px.
   it('garde 5 cases : Dashboard, Calendrier, Classement, Actu puis « Plus »', async () => {
     await renderAt('/', () => <BottomNav />);
     const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
     const links = within(nav).getAllByRole('link').map((a) => a.textContent?.trim());
-    expect(links).toEqual(['Dashboard', 'Calendrier', 'Classement', 'Actu']);
+    expect(links).toEqual(['Accueil', 'Calendrier', 'Classement', 'Actu']);
     const plus = within(nav).getByRole('button', { name: 'Plus' });
     expect(plus).toHaveAttribute('aria-expanded', 'false');
     const grid = nav.querySelector('.grid')!;

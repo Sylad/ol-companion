@@ -138,9 +138,9 @@ describe.each([320, 390, 1440])('/standings à %i px', (largeur) => {
       expect(titres[0]).toEqual({ niveau: 1, texte: 'Classement' });
       for (let i = 1; i < titres.length; i++)
         expect(titres[i].niveau - titres[i - 1].niveau, `saut de niveau avant « ${titres[i].texte} »`).toBeLessThanOrEqual(1);
-      expect(titres.some((t) => t.texte === 'Tracker de classement')).toBe(true);
+      expect(titres.some((t) => t.texte === 'Évolution du classement')).toBe(true);
       const hautTableau = await page.locator('table').first().evaluate((t) => t.getBoundingClientRect().top);
-      const hautTracker = await page.getByRole('heading', { name: 'Tracker de classement' }).evaluate((h) => h.getBoundingClientRect().top);
+      const hautTracker = await page.getByRole('heading', { name: 'Évolution du classement' }).evaluate((h) => h.getBoundingClientRect().top);
       expect(hautTableau).toBeLessThan(hautTracker);
     } finally {
       await page.close();

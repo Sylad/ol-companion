@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Outlet, RouterProvider, createMemoryHistory, createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { DashboardPage } from './index';
@@ -63,8 +63,9 @@ describe('L131 — dernier résultat toutes compétitions', () => {
     season = [NEXT, LENS, PALACE];
     renderPage();
     const card = await screen.findByTestId('dernier-resultat', undefined, { timeout: 3000 });
-    expect(within(card).getByAltText('Crystal Palace')).toHaveAttribute('src', seasonTeamLogoUrl(1));
-    expect(within(card).getByAltText('Olympique Lyonnais')).toHaveAttribute('src', seasonTeamLogoUrl(523));
+    // L260 : écussons décoratifs (alt vide), le nom est écrit à côté.
+    expect(card.querySelector(`img[src="${seasonTeamLogoUrl(1)}"]`)).toHaveAttribute('alt', '');
+    expect(card.querySelector(`img[src="${seasonTeamLogoUrl(523)}"]`)).toHaveAttribute('alt', '');
   });
   it('ne lit plus /api/fixtures', async () => {
     season = [NEXT, LENS, PALACE];

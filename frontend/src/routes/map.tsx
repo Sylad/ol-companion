@@ -24,8 +24,8 @@ export function MapPage() {
             Carte Ligue 1
           </h1>
           <p className="text-xs text-fg-muted mt-2 max-w-prose">
-            Les 18 clubs de Ligue 1 sur la carte. Cliquez sur un marqueur pour voir
-            la position au classement et le bilan de l'OL face à l'adversaire cette saison.
+            Les 18 clubs de Ligue 1 sur la carte. Choisissez un club pour voir
+            sa position au classement et le bilan de l'OL face à l'adversaire cette saison.
           </p>
         </header>
 
@@ -49,7 +49,7 @@ export function MapPage() {
               rel="noopener"
               className="underline hover:text-fg"
             >
-              © OpenStreetMap contributors
+              © les contributeurs d’OpenStreetMap
             </a>{' '}
             · Logos clubs : 365scores · Heures des coups d’envoi de Ligue 1 :{' '}
             <FootballDataAttribution className="hover:text-fg" />.

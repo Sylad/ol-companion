@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OL_TEAM_ID, type Fixture } from '@/types/api';
 import { seasonTeamLogoUrl } from '@/lib/calendar';
@@ -237,9 +237,9 @@ describe('<DashboardHero /> — toutes compétitions (L45)', () => {
     vi.stubGlobal('fetch', fetchMock);
     renderHero();
 
-    const logo = await screen.findByAltText('Crystal Palace');
-    expect(logo).toHaveAttribute('src', seasonTeamLogoUrl(354));
-    expect(screen.getByAltText('Olympique Lyonnais')).toHaveAttribute('src', seasonTeamLogoUrl(OL_TEAM_ID));
+    // L260 : écussons décoratifs (alt vide), le nom du club est écrit dessous.
+    await waitFor(() => expect(document.querySelector(`img[src="${seasonTeamLogoUrl(354)}"]`)).toHaveAttribute('alt', ''));
+    expect(document.querySelector(`img[src="${seasonTeamLogoUrl(OL_TEAM_ID)}"]`)).toHaveAttribute('alt', '');
     // Le stade garde sa recherche Wikipédia ; aucun écusson n'en demande une.
     const clubCalls = fetchMock.mock.calls.filter(([url]) => /^\/api\/wiki-image.*(Palace|Lyonnais)/.test(decodeURIComponent(String(url))));
     expect(clubCalls).toHaveLength(0);

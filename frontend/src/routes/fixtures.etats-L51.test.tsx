@@ -65,7 +65,7 @@ describe('<FixturesPage /> — états (L51)', () => {
     renderPage();
     const message = await screen.findByTestId('message-erreur');
     expect(message).toHaveAttribute('role', 'alert');
-    expect(message).toHaveTextContent('Erreur de chargement.');
+    expect(message).toHaveTextContent('Impossible de charger le calendrier.'); // L260
     expect(message.className).not.toContain('text-loss');
     expect(message.className).toContain('text-ol-red-bright');
   });

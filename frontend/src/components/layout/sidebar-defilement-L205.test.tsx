@@ -24,7 +24,7 @@ describe('Sidebar — barre défilable à faible hauteur (L205, WCAG 2.4.11)', (
     expect(aside.contains(defile)).toBe(true);
     expect(defile.className).toMatch(/(^|\s)overflow-y-auto(\s|$)/);
     expect(defile.className).toMatch(/(^|\s)min-h-0(\s|$)/);
-    for (const nom of ['Dashboard', 'Équipe de France', 'FC Noobz', 'Sofascore']) {
+    for (const nom of ['Accueil', 'Équipe de France', 'FC Noobz', 'Sofascore']) {
       expect(defile.contains(screen.getByRole('link', { name: nom }))).toBe(true);
     }
     expect(defile.contains(screen.getByText('v2.0'))).toBe(true);

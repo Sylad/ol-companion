@@ -14,9 +14,14 @@ interface TeamLogoProps {
    * /api/wiki-image ; si elle ne charge pas, les initiales la remplacent.
    */
   src?: string;
+  /**
+   * L260 : l'écusson est décoratif par défaut (`alt=""`, WCAG 1.1.1) — partout il est posé à côté du nom du club,
+   * qu'un lecteur d'écran lirait deux fois. Donner `label` (le nom) seulement pour un écusson sans nom à côté.
+   */
+  label?: string;
 }
 
-export function TeamLogo({ teamId, name, size = 24, className, src }: TeamLogoProps) {
+export function TeamLogo({ teamId, name, size = 24, className, src, label }: TeamLogoProps) {
   // Sans adresse fournie : recherche Wikipédia (requête désactivée sinon).
   const { data, isLoading } = useWikiImage(src ? null : teamWikiQuery(teamId, name));
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -27,6 +32,9 @@ export function TeamLogo({ teamId, name, size = 24, className, src }: TeamLogoPr
   if ((!src && isLoading) || !imageUrl) {
     return (
       <div
+        role={label ? 'img' : undefined}
+        aria-label={label}
+        aria-hidden={label ? undefined : true}
         className={cn(
           'shrink-0 rounded-full bg-surface-2 border border-border flex items-center justify-center',
           className,
@@ -43,7 +51,7 @@ export function TeamLogo({ teamId, name, size = 24, className, src }: TeamLogoPr
   return (
     <img
       src={imageUrl}
-      alt={name}
+      alt={label ?? ''}
       loading="lazy"
       onError={src ? () => setFailedSrc(src) : undefined}
       className={cn('shrink-0 rounded-full object-contain bg-white/5', className)}

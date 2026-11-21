@@ -85,6 +85,6 @@ describe('L267 — mention de football-data.org', () => {
   it('Carte : la mention avec les crédits de la carte', async () => {
     withQuery(<MapPage />);
     const lien = await expectMention();
-    expect(lien.parentElement?.textContent).toContain('© OpenStreetMap contributors');
+    expect(lien.parentElement?.textContent).toContain('© les contributeurs d’OpenStreetMap');
   });
 });

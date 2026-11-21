@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 import { Sidebar } from './sidebar';
@@ -9,6 +9,7 @@ import { pageTitle } from '@/lib/page-title';
 import { useEventStream } from '@/hooks/use-event-stream';
 import { useMatchNotifications } from '@/hooks/use-match-notifications';
 import { LiveConnectionBadge } from '@/components/live-connection-badge';
+import { PannesProvider } from '@/components/retry-message';
 
 /** Routes « tableau de bord » qui remplissent l'écran au lieu d'être centrées à 1440 px. */
 const WIDE_ROUTE_PREFIXES = ['/match/'];
@@ -17,7 +18,9 @@ export function AppShell() {
   const eventStreamStatus = useEventStream();
   useMatchNotifications();
   const { location } = useRouterState();
-  useEffect(() => {
+  // Effet de mise en page (avant les effets ordinaires des pages) : une page qui connaît mieux son titre, comme la 404
+  // (L260), le pose dans son propre `useEffect`, qui passe après celui-ci.
+  useLayoutEffect(() => {
     document.title = pageTitle(location.pathname);
   }, [location.pathname]);
   const wide = WIDE_ROUTE_PREFIXES.some((p) => location.pathname.startsWith(p));
@@ -49,7 +52,10 @@ export function AppShell() {
           >
             <LiveConnectionBadge status={eventStreamStatus} className="pointer-events-auto" avecScore />
           </div>
-          <Outlet />
+          {/* L260 : une panne de l'API sur plusieurs blocs d'une page n'y montre qu'un seul « Réessayer ». */}
+          <PannesProvider>
+            <Outlet />
+          </PannesProvider>
         </div>
       </main>
       <BottomNav />

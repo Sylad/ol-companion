@@ -158,8 +158,8 @@ export function NewsPage() {
               )}
               {otherChannels.length > 0 && (
                 <details className="group">
-                  <summary className="cursor-pointer text-sm text-fg-muted hover:text-fg flex items-center gap-2 select-none">
-                    <span className="group-open:rotate-90 transition-transform inline-block">▸</span>
+                  <summary className="cursor-pointer min-h-11 text-sm text-fg-muted hover:text-fg flex items-center gap-2 select-none">
+                    <span aria-hidden="true" className="group-open:rotate-90 transition-transform inline-block">▸</span>
                     Voir {otherChannels.length} autres chaînes
                   </summary>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 mt-4">

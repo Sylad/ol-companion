@@ -31,7 +31,7 @@ export function CupsPage() {
       {isError && !data && (
         <section className="rounded-md bg-surface border border-border px-5 py-12">
           <RetryMessage
-            message="Erreur de chargement des données coupes."
+            message="Impossible de charger les coupes."
             onRetry={() => void refetch()}
             messageTestId="cups-erreur"
             buttonTestId="cups-reessayer"

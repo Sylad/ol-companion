@@ -23,7 +23,7 @@ import { CupsPage } from './cups';
 import { MapPage } from './map';
 
 const PAGES: [nom: string, page: () => ReactElement, h1: string][] = [
-  ['Dashboard', () => <DashboardPage />, 'Dashboard'],
+  ['Accueil', () => <DashboardPage />, 'Accueil'],
   ['Calendrier', () => <FixturesPage />, 'Calendrier'],
   ['Classement', () => <StandingsPage />, 'Classement'],
   ['Joueurs', () => <PlayersPage />, 'Joueurs'],

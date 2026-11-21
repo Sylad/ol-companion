@@ -33,7 +33,7 @@ const FC_NOOBZ = { to: '/fcnoobz', label: 'FC Noobz' } as const;
 /** Les 11 entrées de la barre latérale, dans l'ordre d'affichage. */
 const SIDEBAR_ENTRIES = [...NAV_ITEMS, FC_NOOBZ, ...SECONDARY_ITEMS].map(({ to, label }) => ({ to, label }));
 /** Les 4 pages de la barre du bas ; les 7 autres sont dans le panneau « Plus ». */
-const BAR_LABELS = ['Dashboard', 'Calendrier', 'Classement', 'Actu'];
+const BAR_LABELS = ['Accueil', 'Calendrier', 'Classement', 'Actu'];
 const BAR_ENTRIES = SIDEBAR_ENTRIES.filter((e) => BAR_LABELS.includes(e.label));
 const MORE_ENTRIES = SIDEBAR_ENTRIES.filter((e) => !BAR_LABELS.includes(e.label));
 
@@ -96,9 +96,9 @@ function expectStyleAgrees(links: Element[], looksActive: (a: Element) => boolea
 }
 
 const sidebar = () => <Sidebar eventStreamStatus="connected" />;
-/** Lien du logo, en tête de barre latérale : il pointe vers « / » comme « Dashboard ». */
-const logoLink = () => document.querySelector('aside img[alt="OL Companion"]')!.closest('a')!;
-const dashboardLink = (links: Element[]) => links.find((a) => label(a) === 'Dashboard')!;
+/** Lien du logo, en tête de barre latérale : il pointe vers « / » comme « Accueil ». */
+const logoLink = () => document.querySelector('aside img[src="/icon.png"]')!.closest('a')!;
+const dashboardLink = (links: Element[]) => links.find((a) => label(a) === 'Accueil')!;
 /** Entrées de navigation de la barre latérale : tous les liens internes sauf le logo. */
 const sidebarEntries = () => internalLinks(document.querySelector('aside')!).filter((a) => a !== logoLink());
 const barLinks = () => internalLinks(document.querySelector('nav[aria-label="Navigation principale"]')!);
@@ -123,14 +123,14 @@ describe('page actuelle — barre latérale (bureau)', () => {
     await renderAt(to, sidebar);
     expect(currentLabels(sidebarEntries())).toEqual([expected]);
     expectStyleAgrees(sidebarEntries(), hasActiveBackground);
-    // Les deux liens vers « / » : ni « Dashboard » ni le logo hors du tableau de bord.
+    // Les deux liens vers « / » : ni « Accueil » ni le logo hors du tableau de bord.
     expect(isCurrent(dashboardLink(sidebarEntries()))).toBe(to === '/');
     if (to !== '/') expect(logoLink()).not.toHaveAttribute('aria-current');
   });
 
   // Aucune entrée n'a de sous-route dans l'application ; ces deux pages ne sont sous
   // aucune entrée : « / » ne doit pas les revendiquer.
-  it.each(['/match/1', '/player/1'])('sur %s, « Dashboard » et le logo ne sont pas la page actuelle', async (url) => {
+  it.each(['/match/1', '/player/1'])('sur %s, « Accueil » et le logo ne sont pas la page actuelle', async (url) => {
     await renderAt(url, sidebar);
     expect(dashboardLink(sidebarEntries())).not.toHaveAttribute('aria-current');
     expect(logoLink()).not.toHaveAttribute('aria-current');
@@ -138,13 +138,13 @@ describe('page actuelle — barre latérale (bureau)', () => {
   });
 
   // Piège de activeOptions={{ exact: true }} seul : il compare aussi la chaîne de requête.
-  it('sur /?x=1, « Dashboard » reste la page actuelle', async () => {
+  it('sur /?x=1, « Accueil » reste la page actuelle', async () => {
     await renderAt('/?x=1', sidebar);
-    expect(currentLabels(sidebarEntries())).toEqual(['Dashboard']);
+    expect(currentLabels(sidebarEntries())).toEqual(['Accueil']);
     expectStyleAgrees(sidebarEntries(), hasActiveBackground);
   });
 
-  it('sur /fixtures?x=1, « Calendrier » est la page actuelle, pas « Dashboard »', async () => {
+  it('sur /fixtures?x=1, « Calendrier » est la page actuelle, pas « Accueil »', async () => {
     await renderAt('/fixtures?x=1', sidebar);
     expect(currentLabels(sidebarEntries())).toEqual(['Calendrier']);
     expectStyleAgrees(sidebarEntries(), hasActiveBackground);
@@ -157,11 +157,11 @@ describe('page actuelle — barre latérale (bureau)', () => {
     expectStyleAgrees(sidebarEntries(), hasActiveBackground);
   });
 
-  it.each(APP_URLS)('sur %s (route réelle), au plus une entrée est la page actuelle, et « Dashboard » seulement sur « / »', async (url) => {
+  it.each(APP_URLS)('sur %s (route réelle), au plus une entrée est la page actuelle, et « Accueil » seulement sur « / »', async (url) => {
     await renderAt(url, sidebar);
     const current = currentLabels(sidebarEntries());
     expect(current.length).toBeLessThanOrEqual(1);
-    expect(current.includes('Dashboard')).toBe(url === '/');
+    expect(current.includes('Accueil')).toBe(url === '/');
     if (url !== '/') expect(logoLink()).not.toHaveAttribute('aria-current');
     expectStyleAgrees(sidebarEntries(), hasActiveBackground);
   });
@@ -174,29 +174,29 @@ describe('page actuelle — barre du bas (téléphone)', () => {
     expectStyleAgrees(barLinks(), hasActiveTint);
   });
 
-  it.each(MORE_ENTRIES)('sur $to (page du panneau « Plus »), aucune case de la barre n’est la page actuelle, « Dashboard » compris', async ({ to }) => {
+  it.each(MORE_ENTRIES)('sur $to (page du panneau « Plus »), aucune case de la barre n’est la page actuelle, « Accueil » compris', async ({ to }) => {
     await renderAt(to, () => <BottomNav />);
     expect(currentLabels(barLinks())).toEqual([]);
     expectStyleAgrees(barLinks(), hasActiveTint);
   });
 
-  it.each(['/match/1', '/player/1'])('sur %s, « Dashboard » n’est pas la page actuelle', async (url) => {
+  it.each(['/match/1', '/player/1'])('sur %s, « Accueil » n’est pas la page actuelle', async (url) => {
     await renderAt(url, () => <BottomNav />);
     expect(currentLabels(barLinks())).toEqual([]);
     expectStyleAgrees(barLinks(), hasActiveTint);
   });
 
-  it('sur /?x=1, « Dashboard » reste la page actuelle', async () => {
+  it('sur /?x=1, « Accueil » reste la page actuelle', async () => {
     await renderAt('/?x=1', () => <BottomNav />);
-    expect(currentLabels(barLinks())).toEqual(['Dashboard']);
+    expect(currentLabels(barLinks())).toEqual(['Accueil']);
     expectStyleAgrees(barLinks(), hasActiveTint);
   });
 
-  it.each(APP_URLS)('sur %s (route réelle), au plus une case est la page actuelle, et « Dashboard » seulement sur « / »', async (url) => {
+  it.each(APP_URLS)('sur %s (route réelle), au plus une case est la page actuelle, et « Accueil » seulement sur « / »', async (url) => {
     await renderAt(url, () => <BottomNav />);
     const current = currentLabels(barLinks());
     expect(current.length).toBeLessThanOrEqual(1);
-    expect(current.includes('Dashboard')).toBe(url === '/');
+    expect(current.includes('Accueil')).toBe(url === '/');
     expectStyleAgrees(barLinks(), hasActiveTint);
   });
 });

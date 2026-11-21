@@ -100,9 +100,11 @@ export function NewsCard({ item, featured = false }: NewsCardProps) {
           </p>
         )}
 
+        {/* L260 : `pointer-events-none` — l'opacité de ce pied (repère au survol) l'empile au-dessus du lien étiré ; sans
+            elle, toucher « Lire l'article » ne suivait pas le lien (zone morte mesurée à 1440 px). */}
         <div
           aria-hidden="true"
-          className="flex items-center gap-1 text-fg-dim text-xs pt-1 lg:opacity-0 lg:group-hover:opacity-100 lg:group-has-[:focus-visible]:opacity-100 transition-opacity"
+          className="pointer-events-none flex items-center gap-1 text-fg-dim text-xs pt-1 lg:opacity-0 lg:group-hover:opacity-100 lg:group-has-[:focus-visible]:opacity-100 transition-opacity"
         >
           <span>Lire l'article</span>
           <ExternalLink className="h-3 w-3" strokeWidth={2} />
