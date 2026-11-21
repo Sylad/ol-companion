@@ -16,7 +16,7 @@ Si tu débarques sur ce repo et que tu te demandes ce que Claude a vraiment fait
 |---|---|---|
 | Choix produit, UX, ton | Humain | « Compagnon perso OL avec live match, classement règles LFP, bracket coupes, sans pub » |
 | Code React (frontend) | Claude Code | TanStack Router/Query, composants, theming Tailwind + tokens HSL OL |
-| Code NestJS (backend) | Claude Code | 11 modules, services, controllers, scheduler `@nestjs/schedule` v5, SSE |
+| Code NestJS (backend) | Claude Code | 11 modules, services, controllers, scheduler `@nestjs/schedule` 12, SSE |
 | Scraping 365scores | Claude Code | Reverse-engineering des endpoints `/web/games/`, `/web/standings/`, `/web/game/`, headers anti-403, schémas Zod pour validation |
 | Aggrégation live-match | Claude Code | Reconstruction des stats équipe à partir des stats joueurs, shot chart avec convention `side`/`line`, top performers par rôle |
 | Logo OL Companion | ChatGPT | Génération initiale, retouches humaines |
@@ -62,7 +62,7 @@ Si tu forks pour un autre club, regarde `backend/src/modules/standings/`, `live-
 
 ## Live updates — SSE déterministe, pas de polling client
 
-Le backend tourne un cron toutes les 30 s (via `@nestjs/schedule` v5) qui :
+Le backend tourne un cron toutes les 30 s (via `@nestjs/schedule` 12) qui :
 
 1. Re-fetch le live match côté 365scores
 2. Calcule une **signature** simple (score | gameTime | event count | shot count)
