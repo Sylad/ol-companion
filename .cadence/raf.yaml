@@ -3053,7 +3053,7 @@ lots:
     started: 2026-11-21
     ux: { date: 2026-11-21, verdict: "non conforme (tmp/ux-L260.md) : critères tenus aux 5 largeurs (titres, un seul Réessayer sur 50 mesures, cibles ≥ 24 px, alt, émojis, 404, aucun « Cliquez ») ; M1 WCAG 4.1.3 — le récapitulatif des pannes groupées n'est plus annoncé (role=alert perdu sauf le 1er bloc) ; note : test scellé L50 modifié sans rescellement d'acceptation-L50.json ; mineurs : « OL News » sans lang=en, R2 « Texte inchangé ; » et maquettes d'erreur non régénérées" }
     tasks:
-      - { id: t1, title: "Annoncer le récapitulatif des pannes groupées (WCAG 4.1.3), rescellement d'acceptation-L50, « OL News » en lang=en, règle R2 et maquettes d'erreur à jour", status: todo }
+      - { id: t1, title: "Annoncer le récapitulatif des pannes groupées (WCAG 4.1.3), rescellement d'acceptation-L50, « OL News » en lang=en, règle R2 et maquettes d'erreur à jour", status: doing }
   - id: L261
     title: "Plancher de 12 px non tenu en prod (QA de L258) : le « e » (sup) du rang à 9 px sur / et /standings, des noms de la composition de /match à 8–10,5 px (tailles relatives en em) ; test navigateur qui mesure la taille CALCULÉE de tout texte visible, sur chaque page, à 390 et 1440 px ; ligne de plancher dans docs/qa/expectations.md"
     public: Tous les textes du site à 12 px au moins, mesurés sur la page
