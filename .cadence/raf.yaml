@@ -2877,6 +2877,7 @@ lots:
     title: "Attendus QA /standings et / : le tracker commence à J1 ; ses points et sa place à la dernière journée égalent ceux de /api/standings quand tous les clubs ont joué autant de matchs (QA de L243)"
     status: done
     estimate: 0.1
+    delivered: { date: 2026-11-21, sha: 6b7cdebb7b50f6e5aa4468a60c8d64f7534c63ba }
     created: 2026-11-02
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "conforme (relu par le lead : attendus QA mesurables + test tracker = classement J1-J8, mutation rouge)", commit: fa1bc7343d90c99e71ee1ac14177594f52b86b1d }
@@ -2974,6 +2975,7 @@ lots:
     title: "README.md:115,119 et HOW-IT-WORKS.md:19,65 : stack backend à jour (TypeScript 6, @nestjs/schedule 12, node:22-alpine) — suite de la revue de L251 du 17-11"
     status: done
     estimate: 0.05
+    delivered: { date: 2026-11-21, sha: 6b7cdebb7b50f6e5aa4468a60c8d64f7534c63ba }
     created: 2026-11-17
     started: 2026-11-21
     review: { date: 2026-11-21, verdict: "conforme (revue du lead : 4 lignes de doc, versions recoupées avec backend/package.json et Dockerfile)", commit: 45dd0e0bfd54438a66d1dcdf8a57a9fedacb4a25 }
