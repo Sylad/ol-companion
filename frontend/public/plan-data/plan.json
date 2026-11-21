@@ -845,6 +845,9 @@
       "tasks": [
         {
           "status": "doing"
+        },
+        {
+          "status": "todo"
         }
       ]
     },
