@@ -6,7 +6,7 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "78314123da422557a0b66bba2537caaf3ad2f679"
+    "frontend/src/routes/fixtures.acceptation-L50.test.tsx": "4e7a4acb5a7d514502a0413af3f1f3116a8ec3aa"
   },
   "resceaux": [
     {
@@ -43,6 +43,15 @@
           "raison": "lot L229 fini : son commit de la fiche est publié et ne se réécrit pas, la fiche vivante fait foi"
         }
       ]
+    },
+    {
+      "test": "frontend/src/routes/fixtures.acceptation-L50.test.tsx",
+      "raison": "L260 (mineur de la revue UX L255, Nielsen 9 : une erreur dit ce qui a échoué) : fiche R2 amendée, le message d'erreur devient « Impossible de charger le calendrier. » au lieu de « Erreur de chargement. » ; le test ne change que la chaîne attendue, les autres assertions de R2 (titre, ni filtres, ni liste, ni chargement) restent. Revue UX de L260 (m3) : amendement fondé, à valider par le lead.",
+      "date": "2026-11-21",
+      "avant": "78314123da422557a0b66bba2537caaf3ad2f679",
+      "apres": "4e7a4acb5a7d514502a0413af3f1f3116a8ec3aa",
+      "porteur": "L260",
+      "ficheAmendee": "5670d20"
     }
   ]
 }

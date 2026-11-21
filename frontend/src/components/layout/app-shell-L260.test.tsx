@@ -81,4 +81,11 @@ describe('L260 — barre latérale', () => {
     expect(await screen.findByRole('link', { name: /^Accueil/ })).toBeInTheDocument();
     expect(document.querySelector('aside')?.textContent).not.toMatch(/Dashboard/);
   });
+
+  it('L260/t1 : le site d’actu des supporters porte son nom, plus le libellé anglais « OL News »', async () => {
+    monter('/', avecBarre);
+    const lien = await screen.findByRole('link', { name: /^Olympique et Lyonnais/ });
+    expect(lien).toHaveAttribute('href', 'https://www.olympique-et-lyonnais.com/rubrique/une');
+    expect(document.querySelector('aside')?.textContent).not.toMatch(/OL News/);
+  });
 });

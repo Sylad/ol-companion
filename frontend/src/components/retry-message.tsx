@@ -13,6 +13,7 @@ const FENETRE_MS = 60_000;
  */
 interface Panne {
   id: string;
+  message: string;
   quoi: string;
   relancer: { current: () => void };
   element: { current: HTMLElement | null };
@@ -25,14 +26,42 @@ interface Registre {
 
 const PannesContext = createContext<Registre | null>(null);
 
+/**
+ * L260/t1 (WCAG 4.1.3) : dans le fournisseur, les messages visibles n'ont pas de rôle ; UNE région assertive, présente
+ * dès le départ (une région ajoutée avec son texte n'est pas toujours lue), annonce le message du bloc qui porte
+ * « Réessayer » et le récapitulatif des autres pannes. Les blocs d'une panne arrivent à quelques millisecondes
+ * d'écart : le texte n'est posé qu'une fois la liste stable depuis ANNONCE_MS, d'où une seule annonce, la complète.
+ * Quand plus rien n'est en panne, la région se vide aussitôt : une panne revenue après « Réessayer » est réannoncée.
+ */
+const ANNONCE_MS = 250;
+
 export function PannesProvider({ children }: { children: React.ReactNode }) {
   const [pannes, setPannes] = useState<Panne[]>([]);
+  const [annonce, setAnnonce] = useState('');
   const inscrire = useCallback((panne: Panne) => {
     setPannes((l) => [...l.filter((p) => p.id !== panne.id), panne]);
     return () => setPannes((l) => l.filter((p) => p.id !== panne.id));
   }, []);
   const valeur = useMemo(() => ({ pannes, inscrire }), [pannes, inscrire]);
-  return <PannesContext.Provider value={valeur}>{children}</PannesContext.Provider>;
+  const texte = texteAnnonce(pannes);
+
+  useEffect(() => {
+    if (!texte) {
+      setAnnonce('');
+      return;
+    }
+    const minuteur = setTimeout(() => setAnnonce(texte), ANNONCE_MS);
+    return () => clearTimeout(minuteur);
+  }, [texte]);
+
+  return (
+    <PannesContext.Provider value={valeur}>
+      <div aria-live="assertive" aria-atomic="true" data-testid="annonce-pannes" className="sr-only">
+        {annonce}
+      </div>
+      {children}
+    </PannesContext.Provider>
+  );
 }
 
 /** « Impossible de charger le classement. » → « le classement » ; un autre texte est repris tel quel. */
@@ -56,6 +85,23 @@ function dansLOrdre(pannes: Panne[]): Panne[] {
   });
 }
 
+/** Ce que les autres blocs n'ont pas pu charger, sans répéter celui du premier. */
+function autresPannes(ordre: Panne[]): string[] {
+  return [...new Set(ordre.slice(1).map((p) => p.quoi))].filter((q) => q !== ordre[0].quoi);
+}
+
+function recapitulatif(autres: string[]): string {
+  return `Impossible aussi de charger ${enumeration(autres)}. « Réessayer » relance tout.`;
+}
+
+/** Texte de la région annoncée : message du premier bloc en panne, puis le récapitulatif s'il y en a d'autres. */
+function texteAnnonce(pannes: Panne[]): string {
+  if (pannes.length === 0) return '';
+  const ordre = dansLOrdre(pannes);
+  const autres = autresPannes(ordre);
+  return autres.length > 0 ? `${ordre[0].message} ${recapitulatif(autres)}` : ordre[0].message;
+}
+
 interface RetryMessageProps {
   message: string;
   onRetry: () => void;
@@ -77,13 +123,13 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
 
   useLayoutEffect(() => {
     if (!inscrire) return;
-    return inscrire({ id, quoi, relancer, element: racineRef });
-  }, [inscrire, id, quoi]);
+    return inscrire({ id, message, quoi, relancer, element: racineRef });
+  }, [inscrire, id, message, quoi]);
 
   const pannes = registre ? dansLOrdre(registre.pannes) : [];
   const groupe = pannes.length > 1 && pannes.some((p) => p.id === id);
   const chef = !groupe || pannes[0].id === id;
-  const autres = groupe && chef ? [...new Set(pannes.slice(1).map((p) => p.quoi))].filter((q) => q !== quoi) : [];
+  const autres = groupe && chef ? autresPannes(pannes) : [];
 
   useEffect(() => {
     if (!retryEn || Date.now() - retryEn >= FENETRE_MS) {
@@ -107,12 +153,12 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
 
   return (
     <div ref={racineRef} className={className ?? 'flex flex-col items-center gap-3 text-center'}>
-      <p data-testid={messageTestId} role={chef ? 'alert' : undefined} className="text-sm text-ol-red-bright">
+      <p data-testid={messageTestId} role={registre ? undefined : 'alert'} className="text-sm text-ol-red-bright">
         {message}
       </p>
       {autres.length > 0 && (
         <p data-testid="pannes-groupees" className="text-sm text-fg-muted">
-          Impossible aussi de charger {enumeration(autres)}. « Réessayer » relance tout.
+          {recapitulatif(autres)}
         </p>
       )}
       {chef && (

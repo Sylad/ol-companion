@@ -181,7 +181,10 @@ describe('L260 — une panne sans cause : un seul « Réessayer » par page, qui
     render(<Page relances={relances} />);
     expect(screen.getAllByRole('button', { name: 'Réessayer' })).toHaveLength(1);
     expect(screen.getByTestId('b1')).toBeInTheDocument();
-    expect(screen.getAllByRole('alert')).toHaveLength(1);
+    // L260/t1 : les messages n'ont plus de rôle dans le fournisseur, une seule région annonce le tout
+    // (retry-message.annonce-L260t1.test.tsx).
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+    expect(document.querySelectorAll('[aria-live="assertive"]')).toHaveLength(1);
     fireEvent.click(screen.getByTestId('b1'));
     expect(relances).toEqual(['matchs', 'classement', 'evolution']);
   });

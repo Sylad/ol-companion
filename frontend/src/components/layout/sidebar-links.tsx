@@ -14,7 +14,7 @@ const SOURCES: ExternalSource[] = [
   { href: 'https://www.ol.fr/fr', label: 'OL.fr', icon: Globe },
   {
     href: 'https://www.olympique-et-lyonnais.com/rubrique/une',
-    label: 'OL News',
+    label: 'Olympique et Lyonnais',
     icon: Newspaper,
   },
   {
