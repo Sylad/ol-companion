@@ -3046,10 +3046,11 @@ lots:
   - id: L260
     title: "Mineurs de la revue UX L255 : ordre des titres (/fixtures, /about, /standings), cibles < 24 px (calendrier, coupes, /news), alt des logos qui répètent le nom, libellés anglais restants, émojis lus comme icônes, 5 « Réessayer » pour une panne sans cause, titre de la 404, « Cliquez » au téléphone"
     public: "Petites améliorations d'accessibilité et de vocabulaire"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-11-18
+    started: 2026-11-21
   - id: L261
     title: "Plancher de 12 px non tenu en prod (QA de L258) : le « e » (sup) du rang à 9 px sur / et /standings, des noms de la composition de /match à 8–10,5 px (tailles relatives en em) ; test navigateur qui mesure la taille CALCULÉE de tout texte visible, sur chaque page, à 390 et 1440 px ; ligne de plancher dans docs/qa/expectations.md"
     public: Tous les textes du site à 12 px au moins, mesurés sur la page
