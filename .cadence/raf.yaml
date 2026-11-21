@@ -3159,6 +3159,17 @@ lots:
     finished: 2026-11-20
     notes:
       - { date: 2026-11-20, text: "QA prod 20-11 : /api/calendar.ics 200, cache-control public max-age=900, cf DYNAMIC, 34 événements dont 28 en date seule (heure non fixée)" }
+  - id: L269
+    title: "D-1 — Composition de /match : chaque ligne de la formation sur une seule ligne (4 défenseurs alignés), noms longs traités sans quinconce"
+    public: "Compositions : les lignes de la formation de nouveau alignées"
+    status: todo
+    estimate: 1
+    visible: true
+    screen: component
+    planned: { from: 2026-11-23, to: 2026-11-23 }
+    created: 2026-11-21
+    notes:
+      - { date: 2026-11-21, text: "D-1 (Sylvain, 21-11) : ligne de 4 défenseurs coupée en 2+2 par le quinconce de L261 (lineup-card.tsx:72-89, rangeeDecalee). Exigence : une ligne de formation = une ligne à l'écran, toujours. Garder le plancher de 12 px (L258/L261) : traiter les noms longs autrement (nom sur deux lignes, abréviation, colonne plus large) ; le quinconce sort ou ne reste qu'en dernier recours explicite. Critères d'acceptation : 4-3-3 et 4-2-3-1 Lille–Lyon du 21-11 à 1440, 1366 et 390 px, chaque rangée sur une seule ligne (même top à 1 px), aucun nom sous 12 px, tests-navigateur plancher-12px-L261 vert." }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }

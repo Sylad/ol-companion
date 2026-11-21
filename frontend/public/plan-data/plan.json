@@ -891,6 +891,11 @@
       "status": "done",
       "started": "2026-11-20",
       "finished": "2026-11-20"
+    },
+    {
+      "id": "L269",
+      "title": "Compositions : les lignes de la formation de nouveau alignées",
+      "status": "todo"
     }
   ]
 }

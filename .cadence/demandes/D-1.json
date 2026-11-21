@@ -1,0 +1,11 @@
+{
+ "id": "D-1",
+ "texte": "faudra revoir l'affichage des compo sur les pages de matchs, c'est pas bon on aligne plus 4 joueurs",
+ "date": "2026-11-21",
+ "etat": "ouverte",
+ "preuve": null,
+ "contexte": "Capture du 21-11 (Lille – Lyon, 4-3-3 des deux côtés) : la ligne de 4 défenseurs est rendue en quinconce, 2 en haut et 2 en bas (Perraud/Nianzou au-dessus d'Alexsandro/Ngoy ; Abner/Bacher au-dessus de Niakhate/Z. Athekame). C'est le mode quinconce de L261 (lineup-card.tsx:72-89, rangeeDecalee), déclenché quand un nom ne tient pas dans la pastille.",
+ "lots": [
+  "L269"
+ ]
+}
