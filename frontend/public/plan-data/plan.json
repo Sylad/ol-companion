@@ -840,14 +840,15 @@
     {
       "id": "L260",
       "title": "Petites améliorations d'accessibilité et de vocabulaire",
-      "status": "doing",
+      "status": "done",
       "started": "2026-11-21",
+      "finished": "2026-11-21",
       "tasks": [
         {
-          "status": "doing"
+          "status": "done"
         },
         {
-          "status": "doing"
+          "status": "done"
         }
       ]
     },
