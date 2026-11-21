@@ -87,3 +87,28 @@ describe.each([320, 390, 1440])('L260 — cibles ≥ 24 px à %i px', (largeur) 
     } finally { await page.close(); }
   });
 });
+
+// L260 (« intègre » de Sylvain) : liens de retour de /match et /player et « Ligue 1 → » du classement en direct,
+// relevés à 16-20 px de haut par la mesure ci-dessus. Mesurés un par un : le reste de ces pages a ses propres lots.
+describe.each([320, 390, 1440])('L260 — liens de retour ≥ 24 px à %i px', (largeur) => {
+  it.each([
+    ['/match/4735215?matchupId=534-465-4735215', /^Accueil$/],
+    ['/match/4672282?matchupId=5061-5047-4672282', /^Équipe de France$/],
+    ['/player/2185', /^Retour/],
+  ])('%s', async (chemin, nom) => {
+    const page = await ouvrir(largeur, chemin);
+    try {
+      const tailles = await page.evaluate((source) => {
+        const re = new RegExp(source);
+        return [...document.querySelectorAll('main a[href]')]
+          .filter((a) => re.test((a.textContent ?? '').trim()) || /^Ligue 1/.test((a.textContent ?? '').trim()))
+          .map((a) => { const r = a.getBoundingClientRect(); return `${(a.textContent ?? '').trim()} ${Math.round(r.width)}×${Math.round(r.height)}`; });
+      }, nom.source);
+      expect(tailles.some((t) => nom.test(t.replace(/ \d+×\d+$/, ''))), `lien ${nom} rendu : ${tailles}`).toBe(true);
+      for (const t of tailles) {
+        const [, l, h] = /(\d+)×(\d+)$/.exec(t)!;
+        expect(Number(l) >= 24 && Number(h) >= 24, t).toBe(true);
+      }
+    } finally { await page.close(); }
+  });
+});

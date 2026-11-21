@@ -501,12 +501,12 @@ export function MatchPage() {
       {burst && <MatchEventBurst key={burst.id} type={burst.type} />}
       <h1 className="sr-only">{data.home.name} – {data.away.name}</h1>
       {bleus ? (
-        <Link to="/equipe-de-france" data-testid="lien-retour-equipe" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
+        <Link to="/equipe-de-france" data-testid="lien-retour-equipe" className="inline-flex min-h-6 -my-0.5 items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
           <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Équipe de France
         </Link>
       ) : (
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
-          <ArrowLeft className="h-4 w-4" /> Accueil
+        <Link to="/" className="inline-flex min-h-6 -my-0.5 items-center gap-1.5 text-sm text-fg-muted hover:text-fg">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Accueil
         </Link>
       )}
 

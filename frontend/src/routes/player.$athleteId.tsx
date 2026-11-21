@@ -197,8 +197,9 @@ function retourLibelle(onglet: PlayersSearch['onglet']): string {
 
 function LienRetour({ retour, className }: { retour: PlayersSearch; className: string }) {
   return (
-    <Link to="/players" search={retour} className={className}>
-      <ArrowLeft className="h-4 w-4" /> {retourLibelle(retour.onglet)}
+    // L260 : cible d'au moins 24 px (WCAG 2.5.8), sans changer la mise en page (marge négative).
+    <Link to="/players" search={retour} className={`min-h-6 -my-0.5 ${className}`}>
+      <ArrowLeft className="h-4 w-4" aria-hidden="true" /> {retourLibelle(retour.onglet)}
     </Link>
   );
 }

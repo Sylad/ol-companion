@@ -16,4 +16,5 @@ D'autres retouches, surtout utiles avec un lecteur d'écran ou au doigt :
 - la page introuvable porte le titre « Page introuvable » dans l'onglet ;
 - les derniers mots anglais sont traduits : « Accueil » au lieu de « Dashboard », « Évolution du classement », la pile technique d'À propos, « © les contributeurs d'OpenStreetMap » ;
 - la carte dit « Choisissez un club » plutôt que « Cliquez », qui ne va pas au téléphone ;
-- sur la page Actu, « Voir les autres chaînes » est plus facile à toucher, et toute la carte d'un article répond au clic, pied compris.
+- sur la page Actu, « Voir les autres chaînes » est plus facile à toucher, et toute la carte d'un article répond au clic, pied compris ;
+- les liens de retour des pages de match et de joueur sont plus faciles à toucher.
