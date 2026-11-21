@@ -1450,6 +1450,7 @@ lots:
     title: "FC Noobz — étude de faisabilité (basse priorité) : lire les sauvegardes Football Manager de E:\\Documents\\Sports Interactive (FM21–FM26, .fm de 70 à 450 Mo, format binaire compressé non documenté) ou, à défaut, les exports de FM (vues imprimées en HTML/texte, exported teams) — oui/non/partiel avec preuves, lecture seule, aucun fichier de Sylvain modifié ; données locales Windows → import local qui publie un résumé dans l'app"
     status: done
     estimate: 0.5
+    delivered: { date: 2026-11-21, sha: 474a9eddf85398a4fe0fa228100f279a523b199d }
     created: 2026-10-11
     started: 2026-11-21
     review: { date: 2026-11-21, verdict: "conforme (étude seule, revue du lead : sauvegardes FM21–FM27 en zstd, fmsave 0.14.2 MIT lit FM27 et partiellement FM26, refuse FM24/FM21 ; palmarès saison par saison illisible ; lecture seule vérifiée par mtime/taille ; aucune donnée de sauvegarde commitée ; découpage I1–I3 proposé, 4 questions pour Sylvain)", commit: 207fac5325404f045d52dddcea03cc96a2c8ea75 }
@@ -3049,6 +3050,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-21, sha: 474a9eddf85398a4fe0fa228100f279a523b199d }
     created: 2026-11-18
     started: 2026-11-21
     ux: { date: 2026-11-21, verdict: "conforme UX conforme sur le fond (revue L260 r1) ; t2 : focus relayé, région vidée à 7 s, barre lisible en espacement WCAG 1.4.12 (capture du run)" }
