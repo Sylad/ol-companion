@@ -53,15 +53,19 @@ export function StandingsPage() {
   const olRow = data?.table.find((row) => row.teamId === OL_TEAM_ID);
 
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className="space-y-4 lg:space-y-8">
       {/* L259 : bandeau compact sous 1024 px et tableau AVANT le tracker, à toute largeur : au téléphone la première
-          ligne et celle de l'OL sont au premier écran, et le H1 « Classement » précède le H2 du tracker (WCAG 1.3.1). */}
+          ligne et celle de l'OL sont au premier écran, et le H1 « Classement » précède le H2 du tracker (WCAG 1.3.1).
+          L262 : à 320 × 568, Lyon 5e passait sous la barre du bas ; sous 1024 px, écarts resserrés (ici, en-tête de la
+          section, en-tête du tableau) et surtitre réduit à « Ligue 1 » sous 640 px (il passait sur deux lignes). */}
       <KnowledgeHeader compact />
 
       <section className="rounded-md bg-surface border border-border overflow-clip">
-        <header className="px-5 py-4 flex items-center justify-between gap-4 border-b border-border">
+        <header className="px-5 py-3 lg:py-4 flex items-center justify-between gap-4 border-b border-border">
           <div>
-            <div className="eyebrow mb-1">Ligue 1 Uber Eats</div>
+            <div className="eyebrow mb-1">
+              Ligue 1<span className="hidden sm:inline"> Uber Eats</span>
+            </div>
             <h1 className="font-display text-xl font-bold text-fg-bright leading-none">
               Classement
             </h1>
@@ -117,8 +121,9 @@ export function StandingsPage() {
               buttonTestId="standings-retry"
             />
           )}
+          {/* L262 : lien affiché tant que la barre du bas l'est (sous 1024 px, téléphone couché compris). */}
           {olRow && (
-            <div className="flex justify-end px-2 md:hidden">
+            <div className="flex justify-end px-2 lg:hidden">
               <a
                 href="#ligne-ol"
                 onClick={(e) => {

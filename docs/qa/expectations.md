@@ -33,6 +33,8 @@ de « à décider » attend une décision de Sylvain. Les textes se comparent sa
 ## /standings
 - shows: 18 lignes dans le tableau, chacune avec un nom de club et un écusson chargé ; positions de 1 à 18 ; la ligne de l'OL mise en avant
 - shows: la colonne Pts visible sans défilement horizontal — 390 only
+- shows: au premier écran (sans défiler), la 1re ligne du tableau entière au-dessus de la barre de navigation du bas (`nav[aria-label="Navigation principale"]`), à 320 × 568, 390 × 844 et 844 × 390 (téléphone couché) ; la ligne de l'OL (`tr#ligne-ol`) entière au-dessus de cette barre quand l'OL est 5e ou mieux, à 320 × 568 et 390 × 844 (L262, QA de L259 : à 320 × 568 elle passait 17 px dessous)
+- shows: tant que la barre du bas est affichée (sous 1024 px, téléphone couché compris), un lien « Voir l'OL (<place>) » au-dessus du tableau (« Voir l'OL (5e) », « Voir l'OL (1er) »), entier au premier écran, 24 px de haut au moins ; suivi, il amène la ligne de l'OL entière entre l'en-tête collant du tableau et la barre du bas, focus posé sur elle (OL 17e compris) ; absent à 1440 (L262 ; preuve rejouable : `cd frontend && npm run test:navigateur`, `tests-navigateur/classement-ligne-ol-L262.test.ts`)
 - never: « Aucune donnée disponible. » ; « Impossible de récupérer les données 365scores. » ; une ligne sans nom de club ; moins de 18 lignes
 - api: /api/standings — `table` de 18 entrées
 - api: /api/standings/season-rankings
