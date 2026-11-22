@@ -90,8 +90,6 @@ const rows = (block: HTMLElement) => within(block).getAllByTestId('rangee-compos
 const chips = (row: HTMLElement) => Array.from(row.children) as HTMLElement[];
 const sizes = (block: HTMLElement) => rows(block).map((r) => chips(r).length);
 const names = (row: HTMLElement) => chips(row).map((c) => c.textContent ?? '');
-/** Taille d'un nom en px (L258 : posée en rem par la mesure ; 12 px du thème avant mesure). */
-const pxOf = (el: HTMLElement) => (el.style.fontSize ? parseFloat(el.style.fontSize) * 16 : 12);
 const declared = (el: HTMLElement) =>
   `${el.className} ${el.getAttribute('style') ?? ''}`.replace(/\s+/g, ' ');
 const widthSignature = (el: HTMLElement) =>
@@ -288,68 +286,21 @@ describe('Page match — blocs Composition (L43)', () => {
     expect(short + ' ' + declared(screen.getByText('Samba').parentElement as HTMLElement)).toMatch(/text-petite/);
   });
 
-  it('R8 — mesure : chaque nom prend la plus grande taille qui tient dans la pastille (7 noms de la QA 12-10)', () => {
+  // L269 : plus aucune réduction de taille (l'exception de 8 px de L258 est levée) ; la place d'un nom long se prend sur
+  // les pastilles voisines (flex), mesurée dans Chromium (tests-navigateur/plancher-12px-L261.test.ts).
+  it('R8 (L269) — noms à 12 px, sans taille posée par le script, pastille qui ne descend pas sous son nom', () => {
     const noms = ['Frankowski', 'Omobamidele', 'Augustinsson', 'Coosemans', 'Thomasson', 'Greenwood', 'Guendouzi'];
     const opp = [...OPP_4141];
     noms.forEach((n, k) => { opp[k + 1] = p(n, 30 + k, 2, 40 + k); });
-    const CLIENT = 58;
-    const wide = (el: HTMLElement) => pxOf(el) * el.textContent!.length * 0.55;
-    const sw = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
-      return Math.max(wide(this), CLIENT);
-    });
-    const cw = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(CLIENT);
-    try {
-      loaded(lineup('4-1-4-1', opp, BENCH_OPP));
-      render(<MatchPage />);
-      for (const n of noms) {
-        const el = screen.getByText(n);
-        const size = pxOf(el);
-        expect(wide(el), n).toBeLessThanOrEqual(CLIENT); // tient
-        if (size < 12) expect(n.length * (size + 0.5) * 0.55, n).toBeGreaterThan(CLIENT); // et pas plus petit que nécessaire (pas de 0,5 px)
-        expect(size, n).toBeGreaterThanOrEqual(8); // plancher de l'exception du thème (TAILLES_NOM_PASTILLE)
-      }
-      expect(screen.getByText('Samba').style.fontSize).toBe('0.75rem');
-    } finally {
-      sw.mockRestore();
-      cw.mockRestore();
-    }
-  });
-
-  it('R8 — élargissement sans recharger : la taille remonte (observer la pastille, pas le span du nom)', () => {
-    const callbacks: Array<{ cb: () => void; target: Element }> = [];
-    class FakeRO {
-      constructor(private cb: () => void) {}
-      observe(target: Element) { callbacks.push({ cb: this.cb, target }); }
-      disconnect() {}
-      unobserve() {}
-    }
-    vi.stubGlobal('ResizeObserver', FakeRO);
-    let chipWidth = 40; // pastille étroite (rotation avant)
-    const wide = (el: HTMLElement) => pxOf(el) * el.textContent!.length * 0.55;
-    // Le span du nom est dimensionné par son contenu : sa clientWidth suit le texte, pas la pastille.
-    const sw = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockImplementation(function (this: HTMLElement) {
-      return wide(this);
-    });
-    const cw = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
-      return this.dataset.testid === undefined && this.textContent === 'Augustinsson'
-        ? Math.min(wide(this), chipWidth)
-        : chipWidth;
-    });
-    try {
-      const opp = [...OPP_4141];
-      opp[1] = p('Augustinsson', 30, 2, 40);
-      loaded(lineup('4-1-4-1', opp, BENCH_OPP));
-      render(<MatchPage />);
-      const el = screen.getByText('Augustinsson');
-      expect(pxOf(el)).toBeLessThan(12);
-      expect(callbacks.some((c) => c.target === el.parentElement)).toBe(true);
-      chipWidth = 200; // fenêtre élargie sans recharger
-      callbacks.filter((c) => c.target === el.parentElement).forEach((c) => c.cb());
-      expect(el.style.fontSize).toBe('0.75rem');
-    } finally {
-      sw.mockRestore();
-      cw.mockRestore();
-      vi.unstubAllGlobals();
+    loaded(lineup('4-1-4-1', opp, BENCH_OPP));
+    render(<MatchPage />);
+    for (const n of noms) {
+      const el = screen.getByText(n);
+      expect(el.style.fontSize, n).toBe('');
+      expect(declared(el), n).toMatch(/text-petite/);
+      const chip = el.parentElement as HTMLElement;
+      expect(chip.style.flex, n).toMatch(/^0 1 /); // part de la largeur commune, peut céder de la place
+      expect(declared(chip), n).not.toMatch(/min-w-0/); // min-width: auto = jamais plus étroite que son mot
     }
   });
 });

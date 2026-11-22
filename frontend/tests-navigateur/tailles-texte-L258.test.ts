@@ -158,27 +158,28 @@ const STATS = {
   lineups: { home: compo(100), away: compo(200) }, updatedAt: '2026-10-05T23:00:00Z',
 };
 
-it('L258 — /match à 320 px : noms de la composition à 12 px, réduits à la mesure (exception, plancher 8 px) seulement s’ils ne tiennent pas, jamais coupés', async () => {
+it('L258 / L269 — /match à 320 px : noms de la composition à 12 px, entiers dans leur pastille, rangées sur une ligne', async () => {
   const page = await ouvrir(320, `/match/${GAME_ID}?matchupId=465-2373-${GAME_ID}`, (u) => (u.includes(`/api/live-match/${GAME_ID}/stats`) ? STATS : undefined));
   try {
     await page.getByTestId('bloc-composition').first().waitFor();
     await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(300); // mesure du dernier recours (ResizeObserver) après le dernier rendu
     const noms = await page.$$eval('[data-testid="bloc-composition"] [data-testid="rangee-composition"] > span > span:last-child', (els) => els.map((e) => {
       const pastille = e.parentElement!;
       const cs = getComputedStyle(pastille);
       const place = pastille.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      return { nom: e.textContent!, police: parseFloat(getComputedStyle(e).fontSize), largeur: e.scrollWidth, place };
+      return { nom: e.textContent!, police: parseFloat(getComputedStyle(e).fontSize), largeur: e.scrollWidth, place, haut: pastille.getBoundingClientRect().top, rangee: [...pastille.parentElement!.parentElement!.children].indexOf(pastille.parentElement!) + (e.closest('[data-testid="bloc-composition"]') === document.querySelector('[data-testid="bloc-composition"]') ? 0 : 100) };
     }));
     expect(noms.length).toBe(22);
     for (const n of noms) {
-      // Tient, ou est au plancher (8 px) : hors réseau la police Inter n'est pas chargée, la police de repli est plus large
-      // et « Omobamidele » y déborde même à 8 px (comme avant L258, plancher inchangé).
-      if (n.largeur > n.place + 0.5) expect(n.police, `${n.nom} ne tient pas : au plancher`).toBe(8);
-      expect(n.police, n.nom).toBeGreaterThanOrEqual(8);
-      // Pas plus petit que nécessaire : un demi-pixel de plus ne tiendrait pas.
-      if (n.police < 12) expect(n.largeur * (n.police + 0.5) / n.police, n.nom).toBeGreaterThan(n.place - 0.5);
-      if (n.nom.length <= 6) expect(n.police, n.nom).toBe(12); // un nom qui tient garde 12 px
+      // L269 : plus aucune réduction (l'exception de 8 px est levée) ; la place se prend sur les voisines, ou le nom se
+      // coupe en syllabes en dernier recours.
+      expect(n.police, n.nom).toBe(12);
+      expect(n.largeur, `${n.nom} tient dans sa pastille`).toBeLessThanOrEqual(n.place + 0.5);
     }
+    const hauts = new Map<number, number[]>();
+    for (const n of noms) hauts.set(n.rangee, [...(hauts.get(n.rangee) ?? []), n.haut]);
+    for (const [r, h] of hauts) expect(Math.max(...h) - Math.min(...h), `rangée ${r} sur une ligne`).toBeLessThanOrEqual(1);
   } finally { await page.close(); }
 });
 

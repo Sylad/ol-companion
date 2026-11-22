@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { cn } from '@/lib/utils';
-import { NOMS_TAILLES, TAILLE, TAILLE_AFFICHE, TAILLE_APPOINT, TAILLES_NOM_PASTILLE, fontSizeTailwind } from './typographie';
+import { NOMS_TAILLES, TAILLE, TAILLE_AFFICHE, TAILLE_APPOINT, fontSizeTailwind } from './typographie';
 import config from '../../tailwind.config';
 
 const SRC = path.resolve(import.meta.dirname, '..');
@@ -96,9 +96,6 @@ describe('L258 — l’échelle du thème', () => {
   it('aucun pas sous 12 px, tout en rem', () => {
     for (const v of Object.values(TAILLE_APPOINT)) expect(rem(v)).toBeGreaterThanOrEqual(12);
     for (const [v] of Object.values(TAILLE_AFFICHE)) expect(rem(v)).toBeGreaterThanOrEqual(12);
-  });
-  it('noms de joueurs en pastille (seule exception, à la mesure) : départ à 12 px, pas de 0,5 px, plancher 8 px', () => {
-    expect(TAILLES_NOM_PASTILLE.map(rem)).toEqual([12, 11.5, 11, 10.5, 10, 9.5, 9, 8.5, 8]);
   });
   it('Tailwind lit l’échelle du thème', () => {
     expect(config.theme?.extend?.fontSize).toBe(fontSizeTailwind);

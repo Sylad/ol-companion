@@ -7,7 +7,8 @@
 // passage QA : Brest – Lyon et France – Turquie, dont « Çalhanoğlu » descendu à 8 px). Ressources externes refusées.
 //
 // Exceptions : AUCUNE. L'ancienne exception de L258 (noms d'un mot de la composition de /match jusqu'à 8 px) est levée
-// par L261 : un nom trop large pour sa pastille ne rétrécit plus, sa rangée passe en quinconce (`lineup-card.tsx`).
+// par L261 ; depuis L269, un nom trop large pour la pastille commune élargit la sienne (ses voisines cèdent la place) et
+// sa rangée reste sur une ligne ; il ne se coupe en syllabes qu'en dernier recours (`lineup-card.tsx`, `lib/coupure-nom.ts`).
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { mkdirSync } from 'node:fs';
@@ -17,7 +18,8 @@ import { createServer, type ViteDevServer } from 'vite';
 type Reponses = Record<string, { status: number; body: unknown }>;
 const lire = (nom: string) => JSON.parse(readFileSync(new URL(`./donnees/${nom}`, import.meta.url), 'utf8')) as Reponses;
 // L265 : « Ce que ça change » (accueil et page de Brest – Lyon) a ses réponses à part (`_note` du fichier).
-const API: Reponses = { ...lire('api-prod-2026-11-18.json'), ...lire('match-impact-L265.json') };
+// L269 : Lille – Lyon du 21-11 (capture de Sylvain) et sa variante 4-2-3-1, dans `lille-lyon-L269.json`.
+const API: Reponses = { ...lire('api-prod-2026-11-18.json'), ...lire('match-impact-L265.json'), ...lire('lille-lyon-L269.json') };
 const CAPTURES = process.env.CAPTURES_DIR;
 
 let serveur: ViteDevServer;
@@ -52,6 +54,7 @@ const PAGES: { chemin: string; onglets?: string[] }[] = [
   { chemin: '/plan' },
   { chemin: '/match/4735215?matchupId=534-465-4735215' }, // Brest – Lyon
   { chemin: '/match/4672282?matchupId=5061-5047-4672282' }, // France – Turquie
+  { chemin: '/match/4735207?matchupId=478-523-4735207' }, // Lille – Lyon (L269)
   { chemin: '/map' },
   { chemin: '/equipe-de-france' },
   { chemin: '/match' }, // 404
@@ -105,13 +108,19 @@ describe.each([390, 1440])('L261 — à %i px, aucun texte visible sous 12 px de
   });
 });
 
-// L261 — quinconce de la composition : pastilles de même largeur, deux à deux disjointes, dans le terrain ; nom entier
-// dans sa pastille (jamais coupé en milieu de mot, règle L43) ; ordre de gauche à droite gardé dans chaque rangée.
-describe.each([320, 390, 1440])('L261 — composition de /match à %i px', (largeur) => {
-  it.each([
-    ['Brest – Lyon', '/match/4735215?matchupId=534-465-4735215'],
-    ['France – Turquie', '/match/4672282?matchupId=5061-5047-4672282'],
-  ])('%s : noms à 12 px, pastilles disjointes dans le terrain', async (_, chemin) => {
+// L269 (D-1, capture de Sylvain du 21-11 : défense de Lille – Lyon coupée en 2 + 2 par le quinconce de L261) — une rangée
+// de la formation = une ligne à l'écran, toujours. Critères d'acceptation de la fiche du lot : 4-3-3 et 4-2-3-1 de
+// Lille – Lyon à 1440, 1366 et 390 px (plus 320, et les deux matchs du 18-11) : chaque rangée sur une seule ligne (même
+// haut à 1 px), aucun nom sous 12 px, nom entier dans sa pastille, pastilles disjointes dans le terrain, ordre de gauche
+// à droite gardé. Une pastille n'est plus large que la pastille commune que si son nom l'exige.
+const COMPOSITIONS = [
+  ['Lille – Lyon 4-3-3', '/match/4735207?matchupId=478-523-4735207'],
+  ['Lille – Lyon 4-2-3-1', '/match/4735299?matchupId=478-523-4735299'],
+  ['Brest – Lyon', '/match/4735215?matchupId=534-465-4735215'],
+  ['France – Turquie', '/match/4672282?matchupId=5061-5047-4672282'],
+] as const;
+describe.each([320, 390, 1366, 1440])('L269 — composition de /match à %i px', (largeur) => {
+  it.each(COMPOSITIONS)('%s : chaque rangée sur une ligne, noms à 12 px entiers, pastilles disjointes', async (titre, chemin) => {
     const page = await ouvrir(largeur, chemin);
     try {
       const blocs = await page.$$eval('[data-testid="terrain-composition"]', (terrains) => terrains.map((t) => {
@@ -120,18 +129,35 @@ describe.each([320, 390, 1440])('L261 — composition de /match à %i px', (larg
           const b = c.getBoundingClientRect();
           const nom = c.lastElementChild as HTMLElement;
           const cs = getComputedStyle(c);
+          const place = c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
           return {
-            nom: nom.textContent!, police: parseFloat(getComputedStyle(nom).fontSize), l: b.left, r: b.right, t: b.top, b: b.bottom,
-            deborde: nom.scrollWidth > c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) + 0.5,
+            nom: nom.textContent!.replaceAll('\u00AD', ''), coupe: nom.textContent!.includes('\u00AD'),
+            police: parseFloat(getComputedStyle(nom).fontSize), l: b.left, r: b.right, t: b.top, b: b.bottom, place,
+            deborde: nom.scrollWidth > place + 0.5,
           };
         }));
-        return { quinconce: t.hasAttribute('data-quinconce'), terrain: { l: tr.left, r: tr.right, t: tr.top, b: tr.bottom }, rangees };
+        // Largeur commune (L43 R7) : (rangée − (n − 1) × 4) / n pour la rangée la plus fournie.
+        const larg = Math.max(...rangees.map((r) => r.length));
+        const rangee = (t.querySelector('[data-testid="rangee-composition"]') as HTMLElement).clientWidth;
+        return { coupe: t.hasAttribute('data-coupe'), commune: (rangee - (larg - 1) * 4) / larg, terrain: { l: tr.left, r: tr.right, t: tr.top, b: tr.bottom }, rangees };
       }));
       expect(blocs).toHaveLength(2);
-      for (const { terrain, rangees } of blocs) {
+      if (CAPTURES) {
+        const clip = await page.$$eval('[data-testid="bloc-composition"]', (bs) => {
+          const r = bs.map((b) => b.getBoundingClientRect());
+          const x = Math.min(...r.map((b) => b.left)), y = Math.min(...r.map((b) => b.top)) + window.scrollY;
+          return { x, y, width: Math.max(...r.map((b) => b.right)) - x, height: Math.max(...r.map((b) => b.bottom)) + window.scrollY - y };
+        });
+        await page.screenshot({ path: `${CAPTURES}/L269-${largeur}-${titre.replace(/[^A-Za-z0-9-]+/g, '_')}.png`, fullPage: true, clip });
+      }
+      for (const { terrain, rangees, commune } of blocs) {
         const toutes = rangees.flat();
         expect(toutes).toHaveLength(11);
         const fautes: string[] = [];
+        for (const r of rangees) {
+          if (Math.max(...r.map((p) => p.t)) - Math.min(...r.map((p) => p.t)) > 1) fautes.push(`rangée ${r.map((p) => p.nom).join(' / ')} sur plusieurs lignes`);
+          for (let k = 1; k < r.length; k++) if (r[k].l < r[k - 1].r - 0.5) fautes.push(`${r[k].nom} pas à droite de ${r[k - 1].nom}`);
+        }
         for (const p of toutes) {
           if (p.police < 12) fautes.push(`${p.nom} à ${p.police} px`);
           if (p.deborde) fautes.push(`${p.nom} déborde de sa pastille`);
@@ -140,12 +166,15 @@ describe.each([320, 390, 1440])('L261 — composition de /match à %i px', (larg
             if (q !== p && Math.min(p.r, q.r) - Math.max(p.l, q.l) > 0.5 && Math.min(p.b, q.b) - Math.max(p.t, q.t) > 0.5) fautes.push(`${p.nom} recouvre ${q.nom}`);
           }
         }
-        expect(new Set(toutes.map((p) => Math.round((p.r - p.l) * 2) / 2)).size, 'même largeur pour toutes les pastilles').toBe(1);
-        for (const r of rangees) for (let k = 1; k < r.length; k++) if (r[k].l <= r[k - 1].l) fautes.push(`${r[k].nom} pas à droite de ${r[k - 1].nom}`);
+        // Une rangée non pleine garde la largeur commune pour tous ses noms qui y tiennent.
+        for (const r of rangees) {
+          const large = r.some((p) => p.r - p.l > commune + 1);
+          if (!large) for (const p of r) if (Math.abs(p.r - p.l - commune) > 1) fautes.push(`${p.nom} : ${(p.r - p.l).toFixed(1)} px au lieu de ${commune.toFixed(1)}`);
+        }
         expect(fautes).toEqual([]);
       }
-      // Le cas de la QA : à 1440, la Turquie (5 défenseurs, « Çalhanoğlu ») passe en quinconce.
-      if (largeur === 1440 && chemin.includes('5061')) expect(blocs.some((b) => b.quinconce)).toBe(true);
+      // Lille – Lyon : la place des noms se trouve sans les couper, à toute largeur testée (dernier recours inutile).
+      if (titre.startsWith('Lille')) expect(blocs.flatMap((b) => b.rangees.flat()).filter((p) => p.coupe).map((p) => p.nom)).toEqual([]);
     } finally { await page.close(); }
   });
 });

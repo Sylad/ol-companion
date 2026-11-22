@@ -1,9 +1,10 @@
-import { Fragment, useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import type { LiveMatchLineup, LiveMatchLineupPlayer } from '@/types/api';
 import { hasJersey } from '@/lib/jersey';
 import { positionShortFr } from '@/lib/position-fr';
 import { cn } from '@/lib/utils';
-import { TAILLE, TAILLES_NOM_PASTILLE } from '@/theme/typographie';
+import { TAILLE } from '@/theme/typographie';
+import { nomsDeRangee } from '@/lib/coupure-nom';
 
 interface Props {
   lineup: LiveMatchLineup;
@@ -34,8 +35,8 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
   const { rows, known } = buildRows(lineup);
   const widest = Math.max(1, ...rows.map((r) => r.length));
   const pitchRef = useRef<HTMLDivElement>(null);
-  const quinconce = useQuinconce(pitchRef, lineup.starters, widest);
-  const chipWidth = quinconce ? `${quinconce.largeur}px` : `calc((100% - ${(widest - 1) * 4}px) / ${widest})`;
+  const nomsCoupes = useNomsCoupes(pitchRef, rows, widest);
+  const chipWidth = `calc((100% - ${(widest - 1) * 4}px) / ${widest})`;
   const { chipClass, chipBorder, numClass } = ACCENTS[accent];
 
   return (
@@ -65,33 +66,24 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
         <div
           ref={pitchRef}
           data-testid="terrain-composition"
-          data-quinconce={quinconce ? true : undefined}
+          data-coupe={nomsCoupes ? true : undefined}
           className={cn(PITCH_HEIGHT, 'flex flex-col justify-around rounded-sm border border-border bg-surface-2/50 px-1 py-1.5')}
         >
-          {rows.map((row, i) => {
-            // L261 : en quinconce, une rangée qui ne tient plus sur une ligne avec les pastilles élargies alterne haut et bas.
-            const decalee = !!quinconce && rangeeDecalee(row.length, quinconce);
-            return (
-              <div
-                key={i}
-                data-testid="rangee-composition"
-                data-decalee={decalee || undefined}
-                className={decalee ? 'grid justify-center gap-1' : 'flex justify-center gap-1'}
-                style={decalee ? { gridTemplateColumns: `repeat(${row.length + 1}, ${(quinconce.largeur - 4) / 2}px)` } : undefined}
-              >
-                {row.map((p, k) => (
-                  <PlayerChip
-                    key={p.id}
-                    player={p}
-                    width={chipWidth}
-                    borderColor={chipBorder}
-                    numClass={numClass}
-                    place={decalee ? { gridColumn: `${k + 1} / span 2`, gridRow: (k % 2) + 1 } : undefined}
-                  />
-                ))}
-              </div>
-            );
-          })}
+          {rows.map((row, i) => (
+            // L269 : une rangée de la formation = une ligne à l'écran, toujours (plus de quinconce).
+            <div key={i} data-testid="rangee-composition" className="flex justify-center gap-1">
+              {row.map((p) => (
+                <PlayerChip
+                  key={p.id}
+                  player={p}
+                  nom={nomsCoupes?.get(p.id) ?? p.shortName}
+                  width={chipWidth}
+                  borderColor={chipBorder}
+                  numClass={numClass}
+                />
+              ))}
+            </div>
+          ))}
         </div>
         {lineup.bench.length > 0 && (
           <p data-testid="banc-composition" className="pt-2 border-t border-border text-petite text-fg-muted leading-relaxed">
@@ -120,98 +112,60 @@ export function LineupCard({ lineup, teamName, accent, reserveBand = false }: Pr
 
 function PlayerChip({
   player,
+  nom,
   width,
   borderColor,
   numClass,
-  place,
 }: {
   player: LiveMatchLineupPlayer;
+  /** Nom affiché : `shortName`, avec des césures douces en dernier recours (L269). */
+  nom: string;
   width: string;
   borderColor: string;
   numClass: string;
-  /** Case de la grille d'une rangée en quinconce (L261). */
-  place?: CSSProperties;
 }) {
-  // Un nom ne se coupe qu'au tiret ou à l'espace : départ à 12 px (`text-petite`), la mesure ci-dessous
-  // descend par pas du thème (jusqu'à 8 px, exception documentée dans le thème) si un mot dépasse la pastille (L258, ex-11/10 px).
-  const nameRef = useRef<HTMLSpanElement>(null);
-  useLayoutEffect(() => {
-    const el = nameRef.current;
-    if (!el) return;
-    const chip = el.parentElement;
-    const fit = () => fitNameFont(el);
-    fit();
-    if (typeof ResizeObserver === 'undefined' || !chip) return;
-    // La pastille, pas le span : celui-ci est dimensionné par son contenu et ne bouge pas quand l'écran s'élargit.
-    const ro = new ResizeObserver(fit);
-    ro.observe(chip);
-    return () => ro.disconnect();
-  }, [player.shortName, width]);
+  // L269 — le nom reste à 12 px (`text-petite`) et ne se coupe qu'à l'espace ou après un tiret. La pastille part de la
+  // largeur commune (L43 R7) mais ne descend jamais sous son mot le plus large (`min-width: auto` d'un élément flex =
+  // largeur min-content) : un nom long élargit sa pastille, ses voisines cèdent la place (flex-shrink), la rangée reste
+  // sur une ligne. `useNomsCoupes` ne coupe un mot (syllabes, trait d'union) que si la rangée ne tient pas autrement.
   return (
     <span
+      data-testid="pastille-composition"
       title={`${player.name}${player.positionShort ? ` · ${positionShortFr(player.positionShort)}` : ''}`}
-      style={{ flex: `0 0 ${width}`, borderColor, ...place }}
-      className={cn(
-        'flex flex-col items-center justify-center text-center gap-0.5 min-w-0 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight text-fg',
-      )}
+      style={{ flex: `0 1 ${width}`, borderColor }}
+      className="flex flex-col items-center justify-center text-center gap-0.5 rounded-sm border bg-surface-2/60 px-0.5 py-1 leading-tight text-fg"
     >
       {hasJersey(player.jerseyNumber) && (
         <span className={cn('num tabular-nums font-bold text-petite', numClass)}>{player.jerseyNumber}</span>
       )}
-      <span
-        ref={nameRef}
-        className={cn(
-          'font-medium min-w-0 max-w-full [overflow-wrap:normal] [word-break:normal] [hyphens:manual] text-petite',
-        )}
-      >
-        {player.shortName}
-      </span>
+      <span className="font-medium max-w-full [overflow-wrap:normal] [word-break:normal] [hyphens:manual] text-petite">{nom}</span>
     </span>
   );
 }
 
 /**
- * L261 — quinconce. À 1440 px la colonne de la composition fait 280 px : cinq pastilles y laissent ~40 px au nom, et
- * « Çalhanoğlu » descendait à 8 px, « Nakamura » à 10 (QA du 18-11). Plutôt que de rétrécir le nom, dès qu'un morceau
- * de nom ne tient pas à 12 px, toutes les pastilles du bloc s'élargissent à la largeur de ce morceau (même largeur pour
- * toutes, règle L43 R7) et une rangée qui ne tient plus sur une ligne pose ses pastilles une sur deux en bas : grille
- * de c + 1 colonnes, chaque pastille sur deux colonnes, décalée d'une colonne sur sa voisine. Deux voisines ne sont
- * jamais à la même hauteur, l'ordre de gauche à droite est gardé. Largeur bornée à celle qui fait tenir la rangée la
- * plus fournie (n pastilles) en quinconce : 2 (W − 4n) / (n + 1) + 4 px ; un nom plus large encore rétrécit à la
- * mesure (`fitNameFont`, dernier recours, plancher 8 px).
+ * L269 — dernier recours. Rangée par rangée, la place minimale des pastilles (mot le plus large du nom à 12 px, plus
+ * padding et bordures) est mesurée avec la vraie police et la vraie largeur du terrain. Si une rangée ne tient pas sur
+ * une ligne même ainsi, ses noms les plus larges, un à un et seulement ceux qu'il faut (`nomsDeRangee`), reçoivent des
+ * césures syllabiques : le nom passe sur deux lignes avec un trait d'union, toujours à 12 px. Rends les seuls noms
+ * changés, ou null : aucun nom touché.
+ * Mesure refaite quand le terrain change de largeur et quand la police est chargée. Sans mise en page (jsdom) : null.
  */
-export interface Quinconce {
-  /** Largeur commune des pastilles, en px. */
-  largeur: number;
-  /** Largeur utile d'une rangée (terrain moins son padding), en px. */
-  rangee: number;
-}
-
-/** Une rangée de c pastilles tient sur une ligne si c × largeur + (c − 1) × 4 px ≤ largeur de la rangée. */
-export const rangeeDecalee = (count: number, q: Quinconce) => count * q.largeur + (count - 1) * 4 > q.rangee + 0.5;
-
-/** Morceaux d'un nom tels qu'il se coupe : à l'espace, ou après un tiret (le tiret reste au bout du morceau). */
-export const morceaux = (nom: string) => nom.split(/\s+/).flatMap((m) => m.split(/(?<=-)/)).filter(Boolean);
-
-/** Largeur des pastilles en quinconce, ou null si chaque morceau de nom tient à 12 px dans une pastille ordinaire. */
-export function largeurQuinconce(rangee: number, widest: number, bords: number, morceauLePlusLarge: number): number | null {
-  const ordinaire = (rangee - (widest - 1) * 4) / widest;
-  if (morceauLePlusLarge <= ordinaire - bords + 0.5) return null;
-  const plafond = (2 * (rangee - 4 * widest)) / (widest + 1) + 4;
-  return Math.max(ordinaire, Math.min(plafond, Math.ceil(morceauLePlusLarge + bords + 1)));
-}
-
-/**
- * Mesure réelle (police chargée, largeur du terrain), refaite quand le terrain change de largeur. Sans mise en page
- * (jsdom), largeur nulle : pas de quinconce.
- */
-function useQuinconce(pitchRef: RefObject<HTMLDivElement | null>, starters: LiveMatchLineupPlayer[], widest: number): Quinconce | null {
-  const [quinconce, setQuinconce] = useState<Quinconce | null>(null);
-  const noms = starters.map((p) => p.shortName).join(' ');
+function useNomsCoupes(
+  pitchRef: RefObject<HTMLDivElement | null>,
+  rows: LiveMatchLineupPlayer[][],
+  widest: number,
+): Map<number, string> | null {
+  const [coupes, setCoupes] = useState<Map<number, string> | null>(null);
+  const cle = rows.map((r) => r.map((p) => `${p.id}:${p.shortName}`).join(',')).join('|');
+  const rowsRef = useRef(rows);
+  rowsRef.current = rows;
   useLayoutEffect(() => {
     const pitch = pitchRef.current;
     if (!pitch) return;
+    let vivant = true;
     const decide = () => {
+      if (!vivant) return;
       const row = pitch.querySelector<HTMLElement>('[data-testid="rangee-composition"]');
       const chip = row?.firstElementChild as HTMLElement | null;
       const nom = chip?.lastElementChild as HTMLElement | null;
@@ -219,49 +173,49 @@ function useQuinconce(pitchRef: RefObject<HTMLDivElement | null>, starters: Live
       const cs = getComputedStyle(chip);
       const bords = (['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'] as const).reduce((t, k) => t + (parseFloat(cs[k]) || 0), 0);
       const ns = getComputedStyle(nom);
-      const mesure = document.createElement('span');
-      Object.assign(mesure.style, {
+      const sonde = document.createElement('span');
+      Object.assign(sonde.style, {
         position: 'absolute', visibility: 'hidden', whiteSpace: 'nowrap', fontFamily: ns.fontFamily, fontWeight: ns.fontWeight,
         letterSpacing: ns.letterSpacing, fontFeatureSettings: ns.fontFeatureSettings, fontSize: TAILLE.petite,
       });
-      pitch.appendChild(mesure);
-      let large = 0;
-      for (const m of morceaux(noms)) {
-        mesure.textContent = m;
-        large = Math.max(large, mesure.getBoundingClientRect().width);
+      pitch.appendChild(sonde);
+      const largeurs = new Map<string, number>();
+      const mesure = (texte: string) => {
+        let l = largeurs.get(texte);
+        if (l === undefined) {
+          sonde.textContent = texte;
+          l = sonde.getBoundingClientRect().width;
+          largeurs.set(texte, l);
+        }
+        return l;
+      };
+      const rangee = row.clientWidth;
+      const place = (rangee - (widest - 1) * 4) / widest - bords;
+      const changes = new Map<number, string>();
+      for (const r of rowsRef.current) {
+        const noms = nomsDeRangee(r.map((p) => p.shortName), mesure, bords, rangee, place);
+        r.forEach((p, k) => {
+          if (noms[k] !== p.shortName) changes.set(p.id, noms[k]);
+        });
       }
-      mesure.remove();
-      const largeur = largeurQuinconce(row.clientWidth, widest, bords, large);
-      setQuinconce((avant) =>
-        largeur === null ? null : avant && avant.largeur === largeur && avant.rangee === row.clientWidth ? avant : { largeur, rangee: row.clientWidth },
-      );
+      const suivant = changes.size ? changes : null;
+      sonde.remove();
+      setCoupes((avant) => {
+        if (!avant || !suivant) return avant === suivant ? avant : suivant;
+        return [...suivant].every(([id, n]) => avant.get(id) === n) && avant.size === suivant.size ? avant : suivant;
+      });
     };
     decide();
-    if (typeof ResizeObserver === 'undefined') return;
+    document.fonts?.ready.then(decide).catch(() => {});
+    if (typeof ResizeObserver === 'undefined') return () => { vivant = false; };
     const ro = new ResizeObserver(decide);
     ro.observe(pitch);
-    return () => ro.disconnect();
-  }, [pitchRef, noms, widest]);
-  return quinconce;
-}
-
-/** Tailles essayées, de la plus grande à la plus petite ; la dernière est le plancher (thème, L258 : 12 → 8 px, en rem). */
-export const NAME_FONT_SIZES = TAILLES_NOM_PASTILLE;
-
-/**
- * Le nom ne se coupe pas en milieu de mot : on prend la plus grande taille dont le mot le plus
- * long tient dans la pastille (scrollWidth ≤ largeur utile de la pastille), de 12 px (plancher 8 px, seule exception au plancher de 12 px). Mesure réelle, car
- * la largeur dépend de l'écran et de la police (« Omobamidele » déborde de 10 px à 320 px).
- */
-export function fitNameFont(el: HTMLElement): void {
-  // Largeur de la pastille (moins son padding), pas celle du span, qui épouse son contenu.
-  const box = el.parentElement ?? el;
-  const cs = getComputedStyle(box);
-  const room = box.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
-  for (const size of NAME_FONT_SIZES) {
-    el.style.fontSize = size;
-    if (el.scrollWidth <= room) return;
-  }
+    return () => {
+      vivant = false;
+      ro.disconnect();
+    };
+  }, [pitchRef, cle, widest]);
+  return coupes;
 }
 
 const byPitch = (a: LiveMatchLineupPlayer, b: LiveMatchLineupPlayer) => a.yardLine - b.yardLine || a.yardSide - b.yardSide;

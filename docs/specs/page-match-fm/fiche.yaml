@@ -83,7 +83,7 @@ regles:
 
   - id: R6
     etat: charge
-    enonce: "Les deux terrains de composition ont la même hauteur quelle que soit la formation (4-2-3-1 à 5 rangées, 4-4-2 à 4 rangées) : les rangées se répartissent verticalement dans cette hauteur fixe. Les rangées, pastilles, repli « formation inconnue » et banc restent ceux de docs/specs/composition-match (R4 à R8), y compris la réduction de police des noms longs (fitNameFont, lineup-card.tsx) que la maquette ne reproduit pas : à 320-390 px, Frankowski, Lacazette et Tessmann y débordent de leur pastille, ce qui n'est pas à reprendre."
+    enonce: "Les deux terrains de composition ont la même hauteur quelle que soit la formation (4-2-3-1 à 5 rangées, 4-4-2 à 4 rangées) : les rangées se répartissent verticalement dans cette hauteur fixe. Les rangées, pastilles, repli « formation inconnue » et banc restent ceux de docs/specs/composition-match (R4 à R8), y compris la réduction de police des noms longs (fitNameFont, lineup-card.tsx ; remplacée par L269 : noms à 12 px, pastille élargie aux dépens des voisines, rangée sur une ligne, coupure en syllabes en dernier recours) que la maquette ne reproduit pas : à 320-390 px, Frankowski, Lacazette et Tessmann y débordent de leur pastille, ce qui n'est pas à reprendre."
     message: ~
     champs: [terrain-composition, rangee-composition, bloc-composition]
     statut: sourcee

@@ -85,6 +85,7 @@ regles:
     champs: [rangee-composition]
     statut: sourcee
     source: "décision lead du 11-10 (~23 h 50) d'après R6 et la règle de Sylvain (R7) : pastille verticale, coupure au tiret seulement, jamais d'ellipse ; révisée par L127 d'après la QA prod L43 du 12-10 (7 noms débordaient à 320 px) : taille mesurée 11 → 8 px"
+    revision_L269: "2026-11-22, demande D-1 de Sylvain (« on aligne plus 4 joueurs ») et plancher de 12 px (L258/L261). Remplace la réduction 11 → 8 px et le quinconce de L261 : une rangée de la formation tient toujours sur une ligne ; le nom reste à 12 px ; la pastille part de la largeur commune de R7 mais ne descend jamais sous son mot le plus large (flex: 0 1, min-width: auto), les voisines cèdent la place ; si la rangée ne tient pas même ainsi, ses noms les plus larges, un à un, se coupent entre deux syllabes avec un trait d'union visible (césures douces, lib/coupure-nom.ts) — seul cas de coupure en milieu de mot. Tests : lib/coupure-nom.test.ts ; tests-navigateur/plancher-12px-L261.test.ts (L269, Lille – Lyon 4-3-3 et 4-2-3-1 à 320, 390, 1366, 1440 px)."
     tests: ["R8 — 320, 390 et 1440 px : aucun nom coupé ailleurs qu'après un tiret (ni ellipse, ni débordement de la pastille)", "R8 — pastille : le numéro est au-dessus du nom (même axe vertical, numéro plus haut)", "R8 — nom sans tiret trop long : réduit, jamais coupé en milieu de mot", "R8 — mesure : chaque nom prend la plus grande taille qui tient dans la pastille (7 noms de la QA 12-10)"]
 
 actions:

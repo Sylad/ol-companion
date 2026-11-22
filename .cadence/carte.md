@@ -60,10 +60,11 @@
   visible ; AUCUNE exception. Données : réponses réelles de l'API de prod du 18-11 (`tests-navigateur/donnees/api-prod-2026-11-18.json`),
   horloge figée au 18-11 13 h 10. Une page ou un endpoint nouveau s'ajoute à `PAGES` / au fichier de données.
 - `sup`, `sub`, `small` : `font-size: max(0.75rem, 0.83em)` (`index.css`) — le « e » de « 5e » du tracker était à 9 px.
-- Composition de /match : un nom qui ne tient pas à 12 px passe le bloc **en quinconce** (`useQuinconce`, `lineup-card.tsx`,
-  `data-quinconce`) : pastilles toutes élargies à la largeur nécessaire (bornée), rangée trop fournie posée une sur deux en bas
-  (grille, `data-decalee`). Décision (hypothèse du lead à confirmer par Sylvain sur capture) : plutôt que rétrécir sous 12 px
-  ou changer la colonne de 280 px (R4 de L186), on garde 12 px + même largeur (R7) + jamais coupé (L43). Le rétrécissement
-  jusqu'à 8 px ne reste qu'en dernier recours (mot plus large que la pastille élargie). Tests : `lineup-card.quinconce-L261.test.tsx`
-  et le bloc « composition de /match » du test Chromium (320/390/1440 : 12 px, disjointes, dans le terrain, même largeur).
+- Composition de /match (L269, D-1 : le quinconce de L261 coupait la défense à 4 de Lille – Lyon en 2 + 2, refusé par
+  Sylvain) : une rangée de la formation = une ligne, toujours ; noms à 12 px, jamais réduits (`TAILLES_NOM_PASTILLE`
+  supprimé). Pastille `flex: 0 1 <largeur commune>` sans `min-w-0` : elle ne descend pas sous son mot le plus large, les
+  voisines cèdent. Dernier recours (`useNomsCoupes`, `lib/coupure-nom.ts`, `data-coupe`) : si une rangée ne tient pas même
+  ainsi, ses noms les plus larges, un à un, reçoivent des césures syllabiques (trait d'union visible). Tests :
+  `lib/coupure-nom.test.ts` et le bloc L269 du test Chromium (Lille – Lyon 4-3-3 / 4-2-3-1, Brest – Lyon, France – Turquie,
+  320/390/1366/1440 : même haut par rangée à 1 px, 12 px, nom entier, disjointes, dans le terrain).
 - README, puce « Classement Ligue 1 » : ordre bandeau → tableau → tracker et lien « Voir l'OL (Ne) » (suite de L259).
