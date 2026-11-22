@@ -6,6 +6,25 @@
   ],
   "vert": true,
   "empreintes": {
-    "frontend/src/routes/match.composition-L43.test.tsx": "38bf30a94fb113f4d5f38ce2fe4e8ae082fb6cd0"
-  }
+    "frontend/src/routes/match.composition-L43.test.tsx": "ba89bf5248d6d05641f225cb05a1693f14c83956"
+  },
+  "resceaux": [
+    {
+      "test": "frontend/src/routes/match.composition-L43.test.tsx",
+      "raison": "L269 (D-1) : quinconce retirée ; test « R8 — mesure » supprimé, « R8 (L269) » ajouté, deux titres et commentaires R8 mis à jour (aucune assertion changée, revue r1 conforme tmp/revue-ol-L269-r1.md) ; empreinte déjà fausse avant le lot",
+      "date": "2026-11-22",
+      "avant": "38bf30a94fb113f4d5f38ce2fe4e8ae082fb6cd0",
+      "apres": "ba89bf5248d6d05641f225cb05a1693f14c83956",
+      "porteur": "L269",
+      "ficheAmendee": "3234768",
+      "amendements": [
+        {
+          "sha": "a58a129",
+          "lot": "L130",
+          "etat": "done",
+          "raison": "lot L130 fini : son commit de la fiche est publié et ne se réécrit pas, la fiche vivante fait foi"
+        }
+      ]
+    }
+  ]
 }
