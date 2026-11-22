@@ -3080,6 +3080,7 @@ lots:
     status: done
     estimate: 0.1
     visible: true
+    delivered: { date: 2026-11-22, sha: 0ca1f3985244da5de1d17e902ea44964070e2280 }
     created: 2026-11-18
     notes:
       - { date: 2026-11-18, text: remis en attente }
