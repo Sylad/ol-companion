@@ -3077,12 +3077,13 @@ lots:
   - id: L262
     title: "/standings à 320×568 : la ligne de l'OL passe 17 px sous la barre du bas au premier écran ; attendus QA de /standings (1re ligne visible, lien « Voir l'OL ») dans docs/qa/expectations.md (QA de L259)"
     public: "Classement : la ligne de l'OL visible même sur un très petit téléphone"
-    status: todo
+    status: doing
     estimate: 0.1
     visible: true
     created: 2026-11-18
     notes:
       - { date: 2026-11-18, text: remis en attente }
+    started: 2026-11-22
   - id: L263
     title: "Étude (pas de code) : conditions d'utilisation de 365scores lues dans un navigateur ; les en-têtes qui imitent un navigateur envoyés par l'app (403 sans eux) au regard de la règle de Sylvain « aucun contournement anti-robot » ; couverture d'OL Lyonnes, champ diffuseur, contenu des blocs previousMeetings / recentMatches / missingPlayers — un verdict sourcé par question dans docs/etudes/ (P0 de docs/etudes/idees-supporter.md, L237)"
     status: done
