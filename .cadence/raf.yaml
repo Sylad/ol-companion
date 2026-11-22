@@ -3173,6 +3173,7 @@ lots:
     visible: true
     screen: component
     planned: { from: 2026-11-23, to: 2026-11-23 }
+    delivered: { date: 2026-11-22, sha: 3fe93507fdbd73e31d44ebe41433d102c6b88dd6 }
     created: 2026-11-21
     notes:
       - { date: 2026-11-21, text: "D-1 (Sylvain, 21-11) : ligne de 4 défenseurs coupée en 2+2 par le quinconce de L261 (lineup-card.tsx:72-89, rangeeDecalee). Exigence : une ligne de formation = une ligne à l'écran, toujours. Garder le plancher de 12 px (L258/L261) : traiter les noms longs autrement (nom sur deux lignes, abréviation, colonne plus large) ; le quinconce sort ou ne reste qu'en dernier recours explicite. Critères d'acceptation : 4-3-3 et 4-2-3-1 Lille–Lyon du 21-11 à 1440, 1366 et 390 px, chaque rangée sur une seule ligne (même top à 1 px), aucun nom sous 12 px, tests-navigateur plancher-12px-L261 vert." }
