@@ -2609,7 +2609,7 @@ lots:
     finished: 2026-10-25
   - id: L222
     title: Article ol-companion à rafraîchir
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-26
     repos: [ { path: ../claude-code-codex, cite: ol-companion } ]
@@ -2650,7 +2650,8 @@ lots:
       - { date: 2026-11-22, text: "Livraison 0ca1f39 : titres publics livrés « Classement : la ligne de l'OL visible même sur un très petit téléphone », « Compositions : les lignes de la formation de nouveau alignées ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
       - { date: 2026-11-22, text: "Livraison 3fe9350 : titres publics livrés « Compositions : les lignes de la formation de nouveau alignées ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
     started: 2026-11-22
-    review: { date: 2026-11-22, verdict: "non conforme r0 (tmp/revue-ol-L222.md) : majeur versions TanStack Router/Query/Recharts périmées (astro:327-328) ; mineurs : test e2e ne garde que 2 affirmations sur 9, « chacune avec son motif » inexact (victoire sans motif), ≈ 1 970 tests pour 1 947-1 959 comptés ; phrase 365scores « non couvert sans accord écrit » (astro:87-88) retirée en attendant la décision de Sylvain", commit: null, repos: { ../claude-code-codex: 149a5ff487ed3bd8e6556ae21087eff28bd5173a } }
+    review: { date: 2026-11-22, verdict: "conforme r1 — versions alignées sur package.json, phrase 365scores retirée (R12), 11 affirmations testées", commit: 997e975b010f16a903f6c93b0aa8d9f188d33110, repos: { ../claude-code-codex: b59e4118a60d6c92531b65544135fd807ca5ea75 } }
+    finished: 2026-11-22
   - id: L223
     title: "QA L218 26-10 : docs/qa/expectations.md /players, ligne shows du banc (photo chargée, ou initiales du nom complet quand 365scores n'a pas d'image) ; vérifier sur plusieurs athlètes si imageVersion=1 veut dire « pas d'image » et ne pas demander la photo dans ce cas (266757 Angel García : 404 et erreur console, initiales affichées)"
     status: done
