@@ -179,6 +179,53 @@ describe.each([320, 390, 1366, 1440])('L269 — composition de /match à %i px',
   });
 });
 
+// L269 (revue de code, m1) — le dernier recours rendu pour de vrai. Aucune composition réelle ne le déclenche : variante
+// FICTIVE de Lille – Lyon (gameId 4735301), la défense de Lille renommée en quatre noms longs d'un seul mot. Attendu : la
+// rangée reste sur une ligne, les noms gardent 12 px, ne débordent pas, et ceux qu'il faut se coupent entre deux syllabes
+// (césure douce U+00AD, rendue en trait d'union, nom sur plusieurs lignes) ; `data-coupe` sur le terrain.
+const LONGS = ['Papastathopoulos', 'Kristoffersen', 'Omobamidele', 'Abdelhamid'];
+{
+  const vrai = API['/api/live-match/4735207/stats?matchupId=478-523-4735207'];
+  const body = structuredClone(vrai.body) as { gameId: number; lineups: { home: { starters: { shortName: string; yardLine: number }[] } } };
+  body.gameId = 4735301;
+  body.lineups.home.starters.filter((p) => p.yardLine === 2).forEach((p, k) => { p.shortName = LONGS[k]; });
+  API['/api/live-match/4735301/stats?matchupId=478-523-4735301'] = { status: 200, body };
+}
+describe.each([320, 390, 1440])('L269 — dernier recours de la composition à %i px', (largeur) => {
+  it('défense de quatre noms longs : une ligne, 12 px, noms coupés en syllabes sans débordement', async () => {
+    const page = await ouvrir(largeur, '/match/4735301?matchupId=478-523-4735301');
+    try {
+      const terrain = page.locator('[data-testid="terrain-composition"]').filter({ hasText: 'Kristof' });
+      expect(await terrain.getAttribute('data-coupe')).toBe('true');
+      const rangee = terrain.locator('[data-testid="rangee-composition"]').filter({ hasText: 'Kristof' });
+      const pastilles = await rangee.evaluate((r) => [...r.children].map((c) => {
+        const nom = c.lastElementChild as HTMLElement;
+        const cs = getComputedStyle(c);
+        const place = c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        const lignes = new Set([...nom.getClientRects()].map((x) => Math.round(x.top))).size;
+        const range = document.createRange();
+        range.selectNodeContents(nom);
+        return {
+          nom: nom.textContent!.replaceAll('­', ''), coupe: nom.textContent!.includes('­'),
+          lignesTexte: new Set([...range.getClientRects()].map((x) => Math.round(x.top))).size, lignes,
+          police: parseFloat(getComputedStyle(nom).fontSize), haut: c.getBoundingClientRect().top, deborde: nom.scrollWidth > place + 0.5,
+        };
+      }));
+      if (CAPTURES) await terrain.screenshot({ path: `${CAPTURES}/L269-dernier-recours-${largeur}.png` });
+      expect(pastilles.map((p) => p.nom)).toEqual(LONGS);
+      expect(Math.max(...pastilles.map((p) => p.haut)) - Math.min(...pastilles.map((p) => p.haut))).toBeLessThanOrEqual(1);
+      for (const p of pastilles) {
+        expect(p.police, p.nom).toBe(12);
+        expect(p.deborde, p.nom).toBe(false);
+      }
+      const coupes = pastilles.filter((p) => p.coupe);
+      expect(coupes.length).toBeGreaterThan(0);
+      // Un nom coupé passe vraiment à la ligne (le navigateur a utilisé au moins une césure).
+      expect(coupes.some((p) => p.lignesTexte > 1)).toBe(true);
+    } finally { await page.close(); }
+  });
+});
+
 // L265 — le plancher ci-dessus ne vaut pour « Ce que ça change » que si le bloc est rendu : badge « Provisoire »
 // (`text-petite`) et ligne des matchs restants (`text-xs`) sur la page de Brest – Lyon, phrase seule à l'accueil.
 describe.each([390, 1440])('L265 — « Ce que ça change » rendu et mesuré à %i px', (largeur) => {

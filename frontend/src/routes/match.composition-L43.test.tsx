@@ -231,7 +231,10 @@ describe('Page match — blocs Composition (L43)', () => {
     expect(widthSignature(olAll[0])).toBe(widthSignature(all[0]));
   });
 
-  it('R8 — 320, 390 et 1440 px : aucun nom coupé ailleurs qu\'après un tiret (ni ellipse, ni débordement de la pastille)', () => {
+  // L269 : sans mise en page (jsdom), le dernier recours (coupure en syllabes, `useNomsCoupes`) ne se déclenche pas ; il
+  // est exercé par components/lineup-card.coupure-L269.test.tsx (mise en page simulée) et, rendu réel, dans Chromium
+  // (tests-navigateur/plancher-12px-L261.test.ts, « dernier recours »).
+  it('R8 — 320, 390 et 1440 px : ni ellipse, ni troncature, ni coupure déclarée en CSS ; hors dernier recours, un nom ne se coupe qu\'à l\'espace ou après un tiret', () => {
     for (const w of [320, 390, 1440]) {
       setWidth(w);
       loaded();
@@ -242,7 +245,7 @@ describe('Page match — blocs Composition (L43)', () => {
           const d = declared(nameEl) + ' ' + declared(chip);
           expect(d).not.toMatch(/truncate|line-clamp|text-ellipsis|text-clip|break-all|break-words|overflow-wrap:\s*(anywhere|break-word)|word-break:\s*break/);
           expect(nameEl.textContent).not.toMatch(/…|\.\.\./);
-          expect(nameEl.textContent).not.toMatch(/­/); // pas de césure douce insérée
+          expect(nameEl.textContent).not.toMatch(/­/); // jsdom : aucune mesure, donc pas de dernier recours, pas de césure douce
         }
       }
       const mn = screen.getByText('Maitland-Niles');
@@ -269,8 +272,9 @@ describe('Page match — blocs Composition (L43)', () => {
     }
   });
 
-  // L258 : le nom part de 12 px (text-petite, en rem) ; seule la mesure (style) le réduit, par pas du thème jusqu'à 8 px.
-  it('R8 — nom sans tiret trop long : jamais coupé en milieu de mot, taille du thème (12 px) avant mesure', () => {
+  // L269 : le nom reste à 12 px (text-petite, en rem), jamais réduit (la réduction 11 → 8 px de L127/L258 est retirée) ;
+  // un nom long élargit sa pastille, il ne se coupe en syllabes qu'en dernier recours, quand sa rangée ne tient pas.
+  it('R8 — nom sans tiret trop long : à 12 px (taille du thème), entier, sans troncature ni coupure déclarée en CSS', () => {
     const long = [...OPP_4141];
     long[4] = p('Papastathopoulos', 22, 2, 85);
     loaded(lineup('4-1-4-1', long, BENCH_OPP));

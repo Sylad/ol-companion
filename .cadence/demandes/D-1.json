@@ -3,12 +3,13 @@
  "texte": "faudra revoir l'affichage des compo sur les pages de matchs, c'est pas bon on aligne plus 4 joueurs",
  "date": "2026-11-21",
  "etat": "livrée",
- "preuve": "Commit fix(L269) de la branche cadence/run-20261122092740-448653 (non poussé, non déployé). Quinconce retiré de frontend/src/components/lineup-card.tsx : chaque rangée de la formation sur une ligne, noms à 12 px, pastille élargie aux dépens des voisines, coupure en syllabes en dernier recours (frontend/src/lib/coupure-nom.ts). Mesuré dans Chromium sur la vraie réponse de Lille – Lyon du 21-11 (tests-navigateur/donnees/lille-lyon-L269.json) et sa variante 4-2-3-1, à 320, 390, 1366 et 1440 px : `npm run test:navigateur -- plancher-12px-L261 tailles-texte-L258 match-geometrie composition-recouvrement` → 4 fichiers, 113 tests verts (même haut à 1 px par rangée, aucun nom sous 12 px, aucun nom de Lille – Lyon coupé) ; `npm test` → 178 fichiers, 1525 tests verts ; `npm run build` vert.",
+ "preuve": "Commit fix(L269) de la branche cadence/run-20261122092740-448653 (non poussé, non déployé). Quinconce retiré de frontend/src/components/lineup-card.tsx : chaque rangée de la formation sur une ligne, noms à 12 px, pastille élargie aux dépens des voisines, coupure en syllabes en dernier recours (frontend/src/lib/coupure-nom.ts). Mesuré dans Chromium sur la vraie réponse de Lille – Lyon du 21-11 (tests-navigateur/donnees/lille-lyon-L269.json) et sa variante 4-2-3-1, à 320, 390, 1366 et 1440 px : `npm run test:navigateur -- plancher-12px-L261 tailles-texte-L258 match-geometrie composition-recouvrement` → 4 fichiers, 113 tests verts (même haut à 1 px par rangée, aucun nom sous 12 px, aucun nom de Lille – Lyon coupé) ; `npm test` → 178 fichiers, 1525 tests verts ; `npm run build` vert. — 2026-11-22, correction r1 d'après la revue de code (commit fix(L269) de la branche cadence/run-20261122094947-676661, non poussé) : Nouveauté « Compositions : les lignes de la formation de nouveau alignées » avec captures Lille – Lyon à 390 px ; fiche composition-match R8 réécrite selon le comportement livré ; dernier recours (coupure en syllabes) testé : components/lineup-card.coupure-L269.test.tsx (jsdom) et, dans Chromium, `npm run test:navigateur -- plancher-12px-L261 tailles-texte-L258` → 71 tests verts dont « dernier recours » à 320, 390, 1440 px ; `npm test` → 179 fichiers, 1527 tests verts ; `npm run build` vert.",
  "contexte": "Capture du 21-11 (Lille – Lyon, 4-3-3 des deux côtés) : la ligne de 4 défenseurs est rendue en quinconce, 2 en haut et 2 en bas (Perraud/Nianzou au-dessus d'Alexsandro/Ngoy ; Abner/Bacher au-dessus de Niakhate/Z. Athekame). C'est le mode quinconce de L261 (lineup-card.tsx:72-89, rangeeDecalee), déclenché quand un nom ne tient pas dans la pastille.",
  "lots": [
   "L269"
  ],
  "runs": [
-  "20261122092740-448653"
+  "20261122092740-448653",
+  "20261122094947-676661"
  ]
 }
