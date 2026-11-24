@@ -3186,6 +3186,11 @@ lots:
     ux: { date: 2026-11-22, verdict: "conforme — tmp/ux-ol-L269.md : Lille–Lyon réel, 8 rangées alignées (0 px) à 320/390/1366/1440, 22 noms à 12 px sans ellipse, 0 défilement, contrastes ≥ 4,71:1 ; mineurs : Z. Athekame sur 2 lignes (rangée 60 px), noms longs à 2 px du bord ; hors lot : compositions empilées à 1366" }
     review: { date: 2026-11-22, verdict: "conforme r1 — tmp/revue-ol-L269-r1.md : Nouveauté avec 2 captures, fiche R8 à jour (4 titres concordent), useNomsCoupes testé ; acceptation L43 rescellée (fa49ef7)", commit: fa49ef741c4dba64211068af3c69ed20063cd08a }
     finished: 2026-11-22
+  - id: L270
+    title: "D-31 du registre parent : adopter cadence analyse (L801, cadence ≥ 2.0.18) — déclarer analyse: dans cadence.yaml avec les outils de la pile du projet (JS/TS : ESLint + typescript-eslint + eslint-plugin-sonarjs avec les seuils de cadence : max-lines 400, max-lines-per-function 80, max-depth 4, max-params 5, complexity 15, cognitive-complexity 15, plus tsc ; Python : ruff), base figée à l'existant (cadence analyse --init), aucune correction de l'existant ; la porte de cadence run le joue ensuite à chaque lot. Mesurer le temps ajouté à la porte (cible < 1 min) et le nombre de violations figées par outil, à rendre dans le rapport"
+    status: todo
+    estimate: 1
+    created: 2026-11-24
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
