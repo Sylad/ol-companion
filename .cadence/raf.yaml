@@ -1467,7 +1467,7 @@ lots:
     after: [ L120 ]
     created: 2026-10-11
     started: 2026-11-25
-    review: { date: 2026-11-25, verdict: "non conforme : README.md:65 périmé (trois tuiles Bientôt, /fcnoobz/carrieres et import local absents) ; page qui plante sans clubs/saisons (fcnoobz-carrieres.ts:95) ; test R5 vide sans svg ; R4 colonnes sans test — rapport ol-L121-code.md", commit: ff5dbefbb122e81c2208e60425032fc115eba943 }
+    review: { date: 2026-11-25, verdict: "conforme (r2, lead) : 2f28233 traite les 4 points — README, fichier de forme partielle sans plantage (test forme-L121), R5 exige l'icône (resceller), R4 colonnes testée au navigateur", commit: 7bf5ea5fc0f06c7f4d933d7238afe25b834bc599 }
   - id: L122
     title: "FC Noobz — préparer Football Manager 27 (sortie 10/11/2026) : contenu à décider avec Sylvain (basse priorité)"
     status: todo
