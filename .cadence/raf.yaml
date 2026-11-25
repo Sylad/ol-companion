@@ -1460,12 +1460,13 @@ lots:
   - id: L121
     title: "FC Noobz — suivi de mes clubs par édition de Football Manager (FC Noobz, Grenoble, SLA… : saisons, divisions, titres), alimenté par l'import local de l'étude (basse priorité ; forme fixée par la fiche d'écran)"
     public: Mes carrières Football Manager, édition par édition
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     screen: page
     after: [ L120 ]
     created: 2026-10-11
+    started: 2026-11-25
   - id: L122
     title: "FC Noobz — préparer Football Manager 27 (sortie 10/11/2026) : contenu à décider avec Sylvain (basse priorité)"
     status: todo
