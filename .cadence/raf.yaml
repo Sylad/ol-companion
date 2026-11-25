@@ -1468,7 +1468,7 @@ lots:
     created: 2026-10-11
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme (r2, lead) : 2f28233 traite les 4 points — README, fichier de forme partielle sans plantage (test forme-L121), R5 exige l'icône (resceller), R4 colonnes testée au navigateur", commit: 7bf5ea5fc0f06c7f4d933d7238afe25b834bc599 }
-    ux: { date: 2026-11-25, verdict: "non conforme : 1 majeur — focus clavier perdu sur BODY après « Réessayer » (WCAG 2.4.3), même défaut sur Jeux vidéo ; mineurs : prefers-reduced-motion ignoré, état vide sans « quand », place longue à 390 px — rapport ol-L121-ux.md" }
+    ux: { date: 2026-11-25, verdict: "conforme (r2, lead) : 525eac1 — focus rendu au bouton ou à #contenu après Réessayer (test activeElement, Carrières et Jeux vidéo), mouvement réduit respecté, état vide qui dit quand et comment, division sur sa propre ligne à 390 px ; captures du run lues (vide et rempli à 390)" }
   - id: L122
     title: "FC Noobz — préparer Football Manager 27 (sortie 10/11/2026) : contenu à décider avec Sylvain (basse priorité)"
     status: todo
