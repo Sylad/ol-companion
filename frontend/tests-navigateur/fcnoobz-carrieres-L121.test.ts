@@ -137,3 +137,34 @@ describe.each([['320', 320], ['390', 390], ['1440', 1440]] as const)('L121 — /
     } finally { await vide.close(); }
   });
 });
+
+// R4 (fiche) : « Les cartes des clubs sont sur deux colonnes à 1440 px, empilées au téléphone. » Deux colonnes dès
+// lg (1024 px) ; mesuré sur les deux clubs de Football Manager 26 (même ligne, l'un à côté de l'autre / l'un sous l'autre).
+describe.each([
+  ['1440', 1440, 'colonnes'],
+  ['1024', 1024, 'colonnes'],
+  ['840', 840, 'empilées'],
+  ['390', 390, 'empilées'],
+  ['320', 320, 'empilées'],
+] as const)('L121 — R4 cartes des clubs à %s px', (_, largeur, attendu) => {
+  it(`cartes ${attendu}`, async () => {
+    const page = await ouvrir(largeur, 900, '/fcnoobz/carrieres', DEMO);
+    try {
+      const fm26 = page.getByTestId('edition').first();
+      await fm26.waitFor();
+      const clubs = fm26.getByTestId('club');
+      expect(await clubs.count()).toBe(2);
+      const [a, b] = [await clubs.nth(0).boundingBox(), await clubs.nth(1).boundingBox()];
+      if (attendu === 'colonnes') {
+        expect(Math.abs(a!.y - b!.y)).toBeLessThan(1);
+        expect(b!.x).toBeGreaterThanOrEqual(a!.x + a!.width);
+        // Deux colonnes de même largeur.
+        expect(Math.abs(a!.width - b!.width)).toBeLessThan(1);
+      } else {
+        expect(b!.y).toBeGreaterThanOrEqual(a!.y + a!.height);
+        expect(Math.abs(a!.x - b!.x)).toBeLessThan(1);
+        expect(Math.abs(a!.width - b!.width)).toBeLessThan(1);
+      }
+    } finally { await page.close(); }
+  });
+});

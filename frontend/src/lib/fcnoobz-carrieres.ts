@@ -88,12 +88,36 @@ export function provenanceText(releveLe: string | null, editions: CarriereEditio
   return `${debutLigne}, ${parts.join(' et ')}.`;
 }
 
+const estObjet = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+
+/**
+ * Forme minimale que la page sait dessiner (R2) : chaque édition a un numéro et des `clubs`, chaque club des
+ * `saisons`, chaque saison son `saison`. Un fichier d'une autre forme (édité à la main, tronqué) est illisible :
+ * la page montre l'erreur et « Réessayer », jamais une page qui plante au rendu.
+ */
+export function carrieresLisibles(body: unknown): body is Partial<CarrieresData> {
+  if (!estObjet(body)) return false;
+  if (body.editions === undefined) return true;
+  if (!Array.isArray(body.editions)) return false;
+  return body.editions.every(
+    (e) =>
+      estObjet(e) &&
+      typeof e.edition === 'number' &&
+      Array.isArray(e.clubs) &&
+      e.clubs.every(
+        (c) =>
+          estObjet(c) &&
+          typeof c.club === 'string' &&
+          Array.isArray(c.saisons) &&
+          c.saisons.every((s) => estObjet(s) && typeof s.saison === 'string'),
+      ),
+  );
+}
+
 export async function fetchCarrieres(signal?: AbortSignal): Promise<CarrieresData> {
   const res = await fetch(CARRIERES_URL, { signal });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const body = (await res.json()) as Partial<CarrieresData> | null;
-  if (!body || typeof body !== 'object' || (body.editions !== undefined && !Array.isArray(body.editions))) {
-    throw new Error('Données illisibles');
-  }
+  const body: unknown = await res.json();
+  if (!carrieresLisibles(body)) throw new Error('Données illisibles');
   return { releveLe: body.releveLe ?? null, editions: body.editions ?? [] };
 }

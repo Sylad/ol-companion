@@ -176,7 +176,14 @@ describe('R5 — places et titres', () => {
     const titres = within(fm26).getByTestId('saison-titres');
     expect(titres).toHaveTextContent('Coupe Test');
     expect(titres).toHaveTextContent('Super Coupe Test');
-    for (const svg of titres.querySelectorAll('svg')) expect(svg).toHaveAttribute('aria-hidden', 'true');
+    // Une icône de trophée décorative à côté de CHAQUE titre (une boucle sur les svg seuls passerait sans icône).
+    const items = titres.querySelectorAll('li');
+    expect(items).toHaveLength(2);
+    for (const li of items) {
+      const icones = li.querySelectorAll('svg');
+      expect(icones).toHaveLength(1);
+      expect(icones[0]).toHaveAttribute('aria-hidden', 'true');
+    }
   });
 });
 
