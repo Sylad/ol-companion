@@ -1465,6 +1465,7 @@ lots:
     visible: true
     screen: page
     after: [ L120 ]
+    delivered: { date: 2026-11-25, sha: b216fa235c165672aa3d38aea588503ddd9f8a86 }
     created: 2026-10-11
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme (r3 du delta 525eac1..3c8af8c : focus après Réessayer, reduced-motion, état vide ; note mineure : code mort dans l'aide de test fcnoobz-revue-ux-L121.test.tsx:31-48)", commit: 3c8af8c8b8d0cedecc4ecfbf0f8f94e30163acc9 }
@@ -2615,6 +2616,7 @@ lots:
     title: Article ol-companion à rafraîchir
     status: done
     estimate: 0.5
+    delivered: { date: 2026-11-25, sha: b216fa235c165672aa3d38aea588503ddd9f8a86 }
     created: 2026-10-26
     repos: [ { path: ../claude-code-codex, cite: ol-companion } ]
     notes:
@@ -3194,6 +3196,7 @@ lots:
     title: "D-31 du registre parent : adopter cadence analyse (L801, cadence ≥ 2.0.18) — déclarer analyse: dans cadence.yaml avec les outils de la pile du projet (JS/TS : ESLint + typescript-eslint + eslint-plugin-sonarjs avec les seuils de cadence : max-lines 400, max-lines-per-function 80, max-depth 4, max-params 5, complexity 15, cognitive-complexity 15, plus tsc ; Python : ruff), base figée à l'existant (cadence analyse --init), aucune correction de l'existant ; la porte de cadence run le joue ensuite à chaque lot. Mesurer le temps ajouté à la porte (cible < 1 min) et le nombre de violations figées par outil, à rendre dans le rapport"
     status: done
     estimate: 1
+    delivered: { date: 2026-11-25, sha: b216fa235c165672aa3d38aea588503ddd9f8a86 }
     created: 2026-11-24
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme Relu par le lead : 4 outils par sous-projet avec dir:, seuils ajoutés à la config ESLint existante du backend (fichier réécrit en entier : fins de ligne CRLF passées en LF) et config neuve au frontend, devDependencies seules, base figée (eslint-backend 1785, eslint-frontend 427, tsc 0/0) ; remarque : npm run lint du backend signale désormais aussi les seuils (aucune CI ne le joue)", commit: f2342c943832734694bcbe036d85d44cb8fc169e }
