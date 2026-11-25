@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Loader2, Trophy } from 'lucide-react';
+import { Trophy } from 'lucide-react';
+import { FcNoobzEtatChargement } from '@/components/fcnoobz-etat-chargement';
 import { useFcNoobzCarrieres } from '@/hooks/use-fcnoobz-carrieres';
 import {
   clubSummary,
@@ -41,12 +42,23 @@ export function FcNoobzCarrieresPage() {
     >
       <PageHeader />
 
-      {(loading || failed) && <EtatChargement loading={loading} onRetry={() => void refetch()} />}
+      {(loading || failed) && (
+        <FcNoobzEtatChargement
+          loading={loading}
+          messageChargement="Chargement des carrières…"
+          messageErreur="Impossible de charger les carrières."
+          onRetry={() => void refetch()}
+        />
+      )}
 
       {empty && (
-        <p data-testid="message-vide" className="py-8 text-center text-sm text-fg-muted">
-          Aucune carrière importée pour le moment.
-        </p>
+        <div className="py-8 text-center text-sm text-fg-muted">
+          <p data-testid="message-vide">Aucune carrière importée pour le moment.</p>
+          <p data-testid="message-vide-suite" className="mx-auto mt-2 max-w-[60ch]">
+            Elles apparaîtront ici après le prochain import : relevé en local depuis les sauvegardes de Football Manager
+            (ou saisi à la main), puis publié avec le site.
+          </p>
+        </div>
       )}
 
       {editions.length > 0 && data && (
@@ -92,36 +104,6 @@ function PageHeader() {
   );
 }
 
-function EtatChargement({ loading, onRetry }: { loading: boolean; onRetry: () => void }) {
-  return (
-    <section aria-busy={loading}>
-      {loading ? (
-        <div role="status" className="flex flex-col items-center gap-4 py-20 text-center text-fg-muted">
-          <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-          <p data-testid="message-chargement" className="text-sm">
-            Chargement des carrières…
-          </p>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center gap-4 py-20 text-center">
-          <p data-testid="message-erreur" role="alert" className="text-sm text-ol-red-bright">
-            Impossible de charger les carrières.
-          </p>
-          <button
-            type="button"
-            data-testid="bouton-reessayer"
-            onClick={onRetry}
-            className="min-h-[44px] rounded-md border px-5 text-sm font-semibold text-fg-bright"
-            style={{ borderColor: GREEN, background: 'rgba(132, 204, 22, 0.1)' }}
-          >
-            Réessayer
-          </button>
-        </div>
-      )}
-    </section>
-  );
-}
-
 function EditionBlock({ edition }: { edition: CarriereEdition }) {
   const titreId = `edition-${edition.edition}`;
   return (
@@ -153,24 +135,27 @@ function ClubCard({ club }: { club: CarriereClub }) {
       </p>
       <ul>
         {club.saisons.map((s) => (
-          <li key={s.saison} data-testid="saison-ligne" className="border-t border-border py-2.5 first:border-t-0 first:pt-0">
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
-              <span data-testid="saison-annee" className="num whitespace-nowrap font-semibold text-fg-bright">
-                {s.saison}
-              </span>
-              {s.enCours && (
-                <span
-                  data-testid="saison-en-cours"
-                  className="rounded-sm px-1.5 text-petite font-bold uppercase tracking-wider"
-                  style={{ color: GREEN, border: `1px solid ${GREEN}` }}
-                >
-                  En cours
+          <li key={s.saison} data-testid="saison-ligne" className="carriere-saison border-t border-border py-2.5 first:border-t-0 first:pt-0">
+            {/* Revue UX m4 : dans une carte étroite, la division a sa propre ligne sous saison et place (index.css). */}
+            <div className="carriere-saison-ligne text-sm">
+              <span className="carriere-saison-tete">
+                <span data-testid="saison-annee" className="num whitespace-nowrap font-semibold text-fg-bright">
+                  {s.saison}
                 </span>
-              )}
-              <span data-testid="saison-division" className="flex-1 break-words text-fg-muted">
+                {s.enCours && (
+                  <span
+                    data-testid="saison-en-cours"
+                    className="rounded-sm px-1.5 text-petite font-bold uppercase tracking-wider"
+                    style={{ color: GREEN, border: `1px solid ${GREEN}` }}
+                  >
+                    En cours
+                  </span>
+                )}
+              </span>
+              <span data-testid="saison-division" className="carriere-division break-words text-fg-muted">
                 {s.division}
               </span>
-              <span data-testid="saison-place" className="num font-semibold text-fg-bright">
+              <span data-testid="saison-place" className="carriere-place num font-semibold text-fg-bright">
                 {placeText(s)}
               </span>
             </div>

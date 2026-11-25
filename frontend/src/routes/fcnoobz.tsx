@@ -146,7 +146,7 @@ function LinkTile({ to, testId, icon: Icon, title, desc }: LinkTileProps) {
     <Link
       to={to}
       data-testid={testId}
-      className="group flex flex-col rounded-md p-5 transition-all hover:scale-[1.01]"
+      className="group flex flex-col rounded-md p-5 transition-all motion-safe:hover:scale-[1.01]"
       style={{
         background: 'linear-gradient(180deg, rgba(15, 17, 35, 0.85), rgba(5, 7, 20, 0.9))',
         border: `1px solid ${NOOBZ_GREEN}`,

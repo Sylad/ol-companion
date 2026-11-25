@@ -3,6 +3,21 @@
   "generated": "2026-11-22 10:53",
   "entries": [
     {
+      "slug": "2026-11-25-mes-carrieres-saisons-lisibles-sur-telephone-et-reessayer-au-clavier",
+      "title": "Mes carrières : saisons lisibles sur téléphone, « Réessayer » qui garde le clavier",
+      "date": "2026-11-25",
+      "lots": [
+        "L121"
+      ],
+      "captures": [
+        "captures/fcnoobz-carrieres-saisons-telephone-L121.png"
+      ],
+      "alts": [
+        "Page Mes carrières sur téléphone : dans la carte d'un club, chaque saison montre l'année et la place sur une ligne (« 2025-2026 » et « Place non relevée », « 2026-2027 » et « 12e pour l'instant » avec la marque En cours), puis la division seule sur la ligne suivante (« National 2 »)"
+      ],
+      "html": "<p>Sur téléphone, chaque saison de la page Mes carrières se lit en deux lignes : l'année et la place d'abord, la division dessous. Une place longue comme « Place non relevée » ou « 12e pour l'instant » ne coupe plus le nom de la division. Sur grand écran, une saison reste sur une seule ligne.</p>\n<p>Quand le chargement échoue sur Mes carrières ou sur Jeux vidéo, « Réessayer » ne fait plus perdre sa place au clavier : pendant la nouvelle lecture le focus reste dans la page, et si l'erreur revient il retourne sur « Réessayer ».</p>\n<p>Tant qu'aucune carrière n'est importée, la page dit maintenant quand elles apparaîtront : après le prochain import, relevé depuis les sauvegardes de Football Manager ou saisi à la main. Si l'appareil demande moins d'animations, l'indicateur de chargement ne tourne plus et les tuiles de la page FC Noobz ne grossissent plus au survol.</p>"
+    },
+    {
       "slug": "2026-11-25-fc-noobz-mes-carrieres-football-manager-edition-par-edition",
       "title": "FC Noobz : mes carrières Football Manager, édition par édition",
       "date": "2026-11-25",

@@ -140,10 +140,12 @@ interface RetryMessageProps {
   messageTestId: string;
   buttonTestId: string;
   className?: string;
+  /** Couleurs du bouton sur une page à thème propre (FC Noobz, L121) ; défaut : bleu OL. */
+  buttonStyle?: React.CSSProperties;
 }
 
 /** Message d'erreur d'un bloc + « Réessayer » (L85) ; un seul « Réessayer » par page en cas de panne générale (L260). */
-export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, className }: RetryMessageProps) {
+export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, className, buttonStyle }: RetryMessageProps) {
   const boutonRef = useRef<HTMLButtonElement | null>(null);
   const racineRef = useRef<HTMLDivElement>(null);
   const relancer = useRef(onRetry);
@@ -223,6 +225,7 @@ export function RetryMessage({ message, onRetry, messageTestId, buttonTestId, cl
             else onRetry();
           }}
           className="min-h-[44px] rounded-md border border-ol-blue-bright bg-ol-blue-bright/10 px-5 text-sm font-semibold text-fg-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright"
+          style={buttonStyle}
         >
           Réessayer
         </button>

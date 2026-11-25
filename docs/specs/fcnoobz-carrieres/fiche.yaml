@@ -17,6 +17,7 @@ champs:
   - { id: message-erreur, libelle: Message d'erreur de chargement, type: texte, source: statique, obligatoire: true }
   - { id: bouton-reessayer, libelle: Réessayer, type: bouton, source: "action A2", obligatoire: true }
   - { id: message-vide, libelle: Message d'état vide, type: texte, source: statique, obligatoire: true }
+  - { id: message-vide-suite, libelle: Quand des carrières apparaîtront (après l'import local), type: texte, source: statique, obligatoire: true }
   - { id: edition, libelle: Bloc d'une édition de Football Manager, type: carte, source: "GET /fcnoobz-data/carrieres.json → editions[]", obligatoire: true }
   - { id: edition-nom, libelle: Nom de l'édition (« Football Manager 26 »), type: texte, source: "editions[].edition (numéro), nom calculé", obligatoire: true }
   - { id: club, libelle: Carte d'un club dirigé dans l'édition, type: carte, source: "editions[].clubs[]", obligatoire: true }
@@ -35,7 +36,7 @@ champs:
 regles:
   - id: R1
     etat: chargement
-    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun bloc d'édition ; le message est dans un conteneur role="status" et la section porte aria-busy.
+    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun bloc d'édition ; le message est dans un conteneur role="status" et la section porte aria-busy. L'indicateur ne tourne pas quand l'utilisateur demande moins d'animation (prefers-reduced-motion, WCAG 2.3.3, revue UX m1).
     message: "Chargement des carrières…"
     champs: [titre-page, sous-titre-page, message-chargement]
     statut: hypothese
@@ -43,7 +44,7 @@ regles:
     tests: ["R1 — chargement : le message s'affiche dans un role=status, aucun bloc d'édition"]
   - id: R2
     etat: erreur
-    enonce: Si l'appel échoue (HTTP en erreur ou fichier illisible), la page affiche l'erreur et un bouton « Réessayer » qui relit le fichier ; aucun bloc d'édition n'est montré, jamais l'état vide.
+    enonce: Si l'appel échoue (HTTP en erreur ou fichier illisible), la page affiche l'erreur et un bouton « Réessayer » qui relit le fichier ; aucun bloc d'édition n'est montré, jamais l'état vide. Après « Réessayer », le focus ne tombe jamais sur body (WCAG 2.4.3, revue UX M1) ; il va sur le contenu principal pendant la relecture et revient sur « Réessayer » si l'erreur revient, comme les autres « Réessayer » de l'app (RetryMessage).
     message: "Impossible de charger les carrières."
     champs: [message-erreur, bouton-reessayer]
     statut: hypothese
@@ -52,9 +53,9 @@ regles:
   - id: R3
     etat: vide
     enonce: >-
-      Si le fichier ne contient aucune saison (aucune édition, ou des éditions sans club ni saison), la page dit qu'aucune carrière n'est importée, à la place des blocs ; le rappel « parties de jeu vidéo » reste affiché.
+      Si le fichier ne contient aucune saison (aucune édition, ou des éditions sans club ni saison), la page dit qu'aucune carrière n'est importée, à la place des blocs, et quand il y en aura : après le prochain import, relevé en local depuis les sauvegardes (ou saisi à la main) puis publié (revue UX m2) ; le rappel « parties de jeu vidéo » reste affiché.
     message: "Aucune carrière importée pour le moment."
-    champs: [message-vide, avertissement-jeu]
+    champs: [message-vide, message-vide-suite, avertissement-jeu]
     masque: [edition, provenance]
     statut: hypothese
     si_faux: Seul le libellé change ; aucune donnée en jeu.
@@ -62,7 +63,7 @@ regles:
   - id: R4
     etat: charge
     enonce: >-
-      La page, sous FC Noobz et dans son thème (body.theme-fcnoobz), montre un bloc par édition de Football Manager, la plus récente en tête, titré du nom de l'édition (h2) : « Football Manager 21 », « Football Manager 26 »… calculé depuis son numéro, comme sur la page Jeux vidéo. Dans chaque édition, une carte par club dirigé (h3 : nom du club, puis « N saisons · M titres »), et une ligne par saison dans l'ordre chronologique : saison, division, place. Les cartes des clubs sont sur deux colonnes à 1440 px, empilées au téléphone.
+      La page, sous FC Noobz et dans son thème (body.theme-fcnoobz), montre un bloc par édition de Football Manager, la plus récente en tête, titré du nom de l'édition (h2) : « Football Manager 21 », « Football Manager 26 »… calculé depuis son numéro, comme sur la page Jeux vidéo. Dans chaque édition, une carte par club dirigé (h3 : nom du club, puis « N saisons · M titres »), et une ligne par saison dans l'ordre chronologique : saison, division, place ; dans une carte étroite (téléphone), saison et place sur une ligne, la division dessous sur toute la largeur, pour qu'une place longue ne la coupe pas (revue UX m4). Les cartes des clubs sont sur deux colonnes à 1440 px, empilées au téléphone.
     message: ~
     champs: [edition, edition-nom, club, club-nom, club-resume, saison-ligne, saison-annee, saison-division, saison-place]
     statut: sourcee

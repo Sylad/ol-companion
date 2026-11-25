@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Loader2 } from 'lucide-react';
+import { FcNoobzEtatChargement } from '@/components/fcnoobz-etat-chargement';
 import { useJeuxVideo } from '@/hooks/use-jeux-video';
 import { formatSortie, formatVerifie, siteName, type JeuxVideoData } from '@/lib/jeux-video';
 
@@ -52,31 +52,12 @@ export function JeuxVideoPage() {
       </div>
 
       {(loading || failed) && (
-        <section aria-busy={loading}>
-          {loading ? (
-            <div role="status" className="flex flex-col items-center gap-4 py-20 text-center text-fg-muted">
-              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-              <p data-testid="message-chargement" className="text-sm">
-                Chargement de Football Manager…
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-4 py-20 text-center">
-              <p data-testid="message-erreur" role="alert" className="text-sm text-ol-red-bright">
-                Impossible de charger les infos Football Manager.
-              </p>
-              <button
-                type="button"
-                data-testid="bouton-reessayer"
-                onClick={() => void refetch()}
-                className="min-h-[44px] rounded-md border px-5 text-sm font-semibold text-fg-bright"
-                style={{ borderColor: GREEN, background: 'rgba(132, 204, 22, 0.1)' }}
-              >
-                Réessayer
-              </button>
-            </div>
-          )}
-        </section>
+        <FcNoobzEtatChargement
+          loading={loading}
+          messageChargement="Chargement de Football Manager…"
+          messageErreur="Impossible de charger les infos Football Manager."
+          onRetry={() => void refetch()}
+        />
       )}
 
       {empty && (

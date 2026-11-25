@@ -669,6 +669,56 @@
   text-transform: uppercase;
 }
 
+/* ---------- L121 : ligne d'une saison de « Mes carrières » ----------
+   Revue UX m4 : dans une carte étroite (téléphone, deux colonnes à 1024 px, texte agrandi), saison et place sur la
+   première ligne, la division sur toute la largeur dessous : une place longue (« Place non relevée ») ne la coupe
+   plus. Dès 30 rem de carte, une seule ligne : saison, marque, division, place. Ordre du DOM inchangé. */
+.carriere-saison {
+  container-type: inline-size;
+}
+.carriere-saison-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  /* Haut, pas ligne de base : la ligne de base d'une tête enroulée (« En cours » dessous) est sa dernière ligne. */
+  align-items: flex-start;
+  gap: 0.25rem 0.75rem;
+}
+.carriere-saison-tete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  /* Base nulle : la tête prend la place laissée par la place, « En cours » passe sous la saison plutôt que la place
+     sous la ligne ; plancher = mot le plus large (min-width auto), la place ne passe dessous que s'il ne tient pas. */
+  flex: 1 1 0%;
+}
+/* La place se range à droite ; si saison et place ne tiennent pas côte à côte, elle passe dessous, jamais par-dessus. */
+.carriere-place {
+  margin-left: auto;
+  text-align: right;
+}
+.carriere-division {
+  order: 1;
+  flex-basis: 100%;
+  min-width: 0;
+}
+@container (min-width: 30rem) {
+  .carriere-saison-ligne {
+    align-items: baseline;
+  }
+  .carriere-saison-tete {
+    display: contents;
+  }
+  .carriere-division {
+    order: 0;
+    flex: 1 1 0%;
+  }
+  .carriere-place {
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
 /* ---------- prefers-reduced-motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .match-burst-root,

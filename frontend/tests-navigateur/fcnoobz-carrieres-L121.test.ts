@@ -168,3 +168,100 @@ describe.each([
     } finally { await page.close(); }
   });
 });
+
+// Revue UX L121 (m4) : une place longue (« Place non relevée », « 12e pour l'instant ») ne coupe plus la division.
+// Carte étroite (390, 320, deux colonnes à 1024) : saison et place sur la première ligne, la division seule dessous,
+// sur une ligne. Carte large (1440) : une seule ligne, comme la maquette.
+const LONGUES = {
+  releveLe: '2026-11-25',
+  editions: [
+    {
+      edition: 26,
+      clubs: [
+        {
+          club: 'Club d’exemple',
+          saisons: [
+            { saison: '2025-2026', division: 'National 2', place: null, provenance: 'saisie' },
+            { saison: '2026-2027', division: 'National 2', place: 12, enCours: true, provenance: 'saisie' },
+          ],
+        },
+        { club: 'Autre club', saisons: [{ saison: '2024-2025', division: 'National 3', place: 4, provenance: 'saisie' }] },
+      ],
+    },
+  ],
+};
+
+const lignes = (page: Page) => page.evaluate(() => [...document.querySelectorAll('[data-testid="saison-ligne"]')].map((l) => {
+  const r = (id: string) => l.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect();
+  const d = l.querySelector('[data-testid="saison-division"]')!;
+  const hauteurLigne = parseFloat(getComputedStyle(d).lineHeight);
+  return { annee: r('saison-annee'), place: r('saison-place'), division: r('saison-division'), hauteurLigne };
+}));
+
+describe.each([['320', 320, 'étroite'], ['390', 390, 'étroite'], ['1024', 1024, 'étroite'], ['1440', 1440, 'large']] as const)(
+  'L121 m4 — ligne de saison à %s px',
+  (_, largeur, carte) => {
+    it(`division d'une ligne, ${carte === 'étroite' ? 'sous saison et place' : 'à côté de la place'}`, async () => {
+      const page = await ouvrir(largeur, 900, '/fcnoobz/carrieres', LONGUES);
+      try {
+        await page.getByTestId('edition').first().waitFor();
+        expect(await chevauchements(page)).toEqual([]);
+        for (const l of await lignes(page)) {
+          // La division tient sur une ligne : jamais « National » / « 2 ».
+          expect(l.division.height).toBeLessThan(l.hauteurLigne * 1.5);
+          if (carte === 'étroite') {
+            // Saison et place sur la même ligne quand elles y tiennent ; sinon (320 px, « 12e pour l'instant ») la place
+            // passe dessous, à droite. La division vient toujours après, seule.
+            const tiennent = l.annee.width + 12 + l.place.width <= l.division.width;
+            if (tiennent) expect(Math.abs(l.place.top - l.annee.top)).toBeLessThan(4);
+            else expect(l.place.top).toBeGreaterThanOrEqual(l.annee.bottom - 0.5);
+            expect(Math.abs(l.place.right - l.division.right)).toBeLessThan(1);
+            expect(l.division.top).toBeGreaterThanOrEqual(l.place.bottom - 0.5);
+          } else {
+            expect(Math.abs(l.division.top - l.annee.top)).toBeLessThan(4);
+            expect(l.place.left).toBeGreaterThanOrEqual(l.division.right - 0.5);
+          }
+        }
+        if (CAPTURES && (largeur === 390 || largeur === 1440)) await page.screenshot({ path: `${CAPTURES}/L121-m4-${largeur}.png`, fullPage: true });
+      } finally { await page.close(); }
+    });
+  },
+);
+
+// Revue UX L121 (M1, WCAG 2.4.3) : après « Réessayer », le focus ne tombe jamais sur body, dans le vrai navigateur,
+// sur Mes carrières comme sur Jeux vidéo (même gabarit). m1 (WCAG 2.3.3) : en mouvement réduit, l'indicateur ne tourne pas.
+describe.each([
+  ['Mes carrières', '/fcnoobz/carrieres', '**/fcnoobz-data/carrieres.json'],
+  ['Jeux vidéo', '/fcnoobz/jeux-video', '**/jeux-video-data/**'],
+] as const)('L121 M1 — %s : focus après « Réessayer »', (_, chemin, motif) => {
+  it("main pendant la relecture, puis « Réessayer » quand l'erreur revient ; jamais body", async () => {
+    const page = await navigateur.newPage({ viewport: { width: 1440, height: 900 }, locale: 'fr-FR', reducedMotion: 'reduce' });
+    try {
+      await page.route('**/api/**', (route) => route.fulfill({ status: 404, json: {} }));
+      // Les relances automatiques de l'app répondent 500 tout de suite ; une fois « Réessayer » affiché, la relecture
+      // est retenue jusqu'à `liberer()` pour mesurer le focus pendant le chargement.
+      let liberer: () => void = () => {};
+      let retenir = false;
+      await page.route(motif, async (route) => {
+        if (retenir) await new Promise<void>((r) => { liberer = r; });
+        await route.fulfill({ status: 500, body: '' });
+      });
+      await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
+      await page.goto(`${url}${chemin}`);
+      const bouton = page.getByTestId('bouton-reessayer');
+      await bouton.waitFor({ timeout: 60_000 });
+      retenir = true;
+      await bouton.focus();
+      await page.keyboard.press('Enter');
+      await page.getByTestId('message-chargement').waitFor();
+      expect(await page.evaluate(() => document.activeElement?.id)).toBe('contenu');
+      // Mouvement réduit : aucune rotation de l'indicateur.
+      expect(await page.getByTestId('indicateur-chargement').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
+      retenir = false;
+      liberer();
+      await bouton.waitFor();
+      await page.waitForFunction(() => document.activeElement?.getAttribute('data-testid') === 'bouton-reessayer');
+      expect(await page.evaluate(() => document.activeElement === document.body)).toBe(false);
+    } finally { await page.close(); }
+  });
+});
