@@ -1,0 +1,110 @@
+ecran:
+  id: fcnoobz-carrieres
+  titre: Mes carrières Football Manager, édition par édition
+  route: /fcnoobz/carrieres
+  lot: L121
+  largeurs: [1440, 390]
+  maquette: docs/specs/fcnoobz-carrieres/maquette.html
+etats: [vide, chargement, erreur, charge]
+
+champs:
+  - { id: surtitre-page, libelle: Surtitre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: titre-page, libelle: Titre de la page « Mes carrières », type: texte, source: statique, obligatoire: true }
+  - { id: sous-titre-page, libelle: Sous-titre de la page, type: texte, source: statique, obligatoire: true }
+  - { id: lien-retour, libelle: Lien de retour vers FC Noobz, type: lien, source: statique, obligatoire: true }
+  - { id: avertissement-jeu, libelle: Rappel que ce sont des parties de jeu vidéo, type: texte, source: statique, obligatoire: true }
+  - { id: message-chargement, libelle: Message de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: message-erreur, libelle: Message d'erreur de chargement, type: texte, source: statique, obligatoire: true }
+  - { id: bouton-reessayer, libelle: Réessayer, type: bouton, source: "action A2", obligatoire: true }
+  - { id: message-vide, libelle: Message d'état vide, type: texte, source: statique, obligatoire: true }
+  - { id: edition, libelle: Bloc d'une édition de Football Manager, type: carte, source: "GET /fcnoobz-data/carrieres.json → editions[]", obligatoire: true }
+  - { id: edition-nom, libelle: Nom de l'édition (« Football Manager 26 »), type: texte, source: "editions[].edition (numéro), nom calculé", obligatoire: true }
+  - { id: club, libelle: Carte d'un club dirigé dans l'édition, type: carte, source: "editions[].clubs[]", obligatoire: true }
+  - { id: club-nom, libelle: Nom du club, type: texte, source: "editions[].clubs[].club", obligatoire: true }
+  - { id: club-resume, libelle: Résumé du club (saisons et titres), type: texte, source: "editions[].clubs[].saisons (compte)", obligatoire: true }
+  - { id: saison-ligne, libelle: Ligne d'une saison, type: ligne, source: "editions[].clubs[].saisons[]", obligatoire: true }
+  - { id: saison-annee, libelle: Saison (« 2025-2026 »), type: texte, source: "saisons[].saison", obligatoire: true }
+  - { id: saison-division, libelle: Division jouée, type: texte, source: "saisons[].division", obligatoire: true }
+  - { id: saison-place, libelle: Place finale (ou actuelle), type: texte, source: "saisons[].place", obligatoire: true }
+  - { id: saison-en-cours, libelle: Marque « En cours », type: texte, source: "saisons[].enCours", obligatoire: false }
+  - { id: saison-titres, libelle: Titres gagnés dans la saison, type: liste, source: "saisons[].titres", obligatoire: false }
+  - { id: provenance, libelle: Date du relevé et provenance des saisons, type: texte, source: "GET /fcnoobz-data/carrieres.json → releveLe, saisons[].provenance", obligatoire: true }
+  - { id: tuile-carrieres, libelle: Tuile « Mes carrières » de la page /fcnoobz, type: lien, source: statique, obligatoire: true }
+  - { id: entree-navigation, libelle: Entrée « FC Noobz » de la barre latérale, active sur cette page, type: lien, source: statique, obligatoire: true }
+
+regles:
+  - id: R1
+    etat: chargement
+    enonce: Pendant l'appel, la page affiche son titre, un indicateur et le message de chargement, sans aucun bloc d'édition ; le message est dans un conteneur role="status" et la section porte aria-busy.
+    message: "Chargement des carrières…"
+    champs: [titre-page, sous-titre-page, message-chargement]
+    statut: hypothese
+    si_faux: Seul le libellé change (même gabarit que la page Jeux vidéo) ; aucune donnée en jeu.
+    tests: ["R1 — chargement : le message s'affiche dans un role=status, aucun bloc d'édition"]
+  - id: R2
+    etat: erreur
+    enonce: Si l'appel échoue (HTTP en erreur ou fichier illisible), la page affiche l'erreur et un bouton « Réessayer » qui relit le fichier ; aucun bloc d'édition n'est montré, jamais l'état vide.
+    message: "Impossible de charger les carrières."
+    champs: [message-erreur, bouton-reessayer]
+    statut: hypothese
+    si_faux: Seul le libellé change ; aucune donnée en jeu.
+    tests: ["R2 — erreur : message et bouton Réessayer, pas de message vide", "R2 — Réessayer relit le fichier"]
+  - id: R3
+    etat: vide
+    enonce: >-
+      Si le fichier ne contient aucune saison (aucune édition, ou des éditions sans club ni saison), la page dit qu'aucune carrière n'est importée, à la place des blocs ; le rappel « parties de jeu vidéo » reste affiché.
+    message: "Aucune carrière importée pour le moment."
+    champs: [message-vide, avertissement-jeu]
+    masque: [edition, provenance]
+    statut: hypothese
+    si_faux: Seul le libellé change ; aucune donnée en jeu.
+    tests: ["R3 — vide : le message s'affiche, aucun bloc d'édition ni ligne de provenance"]
+  - id: R4
+    etat: charge
+    enonce: >-
+      La page, sous FC Noobz et dans son thème (body.theme-fcnoobz), montre un bloc par édition de Football Manager, la plus récente en tête, titré du nom de l'édition (h2) : « Football Manager 21 », « Football Manager 26 »… calculé depuis son numéro, comme sur la page Jeux vidéo. Dans chaque édition, une carte par club dirigé (h3 : nom du club, puis « N saisons · M titres »), et une ligne par saison dans l'ordre chronologique : saison, division, place. Les cartes des clubs sont sur deux colonnes à 1440 px, empilées au téléphone.
+    message: ~
+    champs: [edition, edition-nom, club, club-nom, club-resume, saison-ligne, saison-annee, saison-division, saison-place]
+    statut: sourcee
+    source: "demande du lot L121 : « suivi de mes clubs par édition de Football Manager (FC Noobz, Grenoble, SLA… : saisons, divisions, titres) » ; noms des éditions : même écriture que /jeux-video-data/football-manager.json (« Football Manager 24 », « Football Manager 26 »)"
+    tests: ["R4 — chargé : un bloc par édition, la plus récente en tête, nommée d'après son numéro", "R4 — une carte par club avec son résumé, saisons dans l'ordre chronologique"]
+  - id: R5
+    etat: charge
+    enonce: >-
+      Une place s'écrit en toutes lettres ordinales (« 1er », « 3e ») ; une place non relevée s'écrit « Place non relevée », jamais un tiret seul. Une saison en cours porte la marque « En cours » et sa place se lit « 3e pour l'instant ». Chaque titre est écrit en toutes lettres à côté d'une icône de trophée décorative : la couleur n'est jamais le seul signe d'un titre. Une saison sans titre n'affiche rien de plus.
+    message: "Place non relevée"
+    champs: [saison-place, saison-en-cours, saison-titres]
+    statut: hypothese
+    si_faux: Seuls les libellés changent ; aucune donnée en jeu.
+    tests: ["R5 — place ordinale, « Place non relevée » sans place", "R5 — saison en cours : marque « En cours » et place provisoire", "R5 — titres écrits en toutes lettres"]
+  - id: R6
+    etat: charge
+    enonce: >-
+      Sous les éditions, une ligne dit la date du relevé et d'où viennent les saisons affichées : « Relevé du JJ/MM/AAAA, importé en local depuis les sauvegardes de Football Manager » et/ou « saisi à la main », selon la provenance des saisons réellement montrées (jamais une provenance absente). En tête de page, un rappel dit que ce sont des parties de Football Manager, pas de vrais résultats.
+    message: "Parties de Football Manager : des résultats de jeu vidéo, pas de vrais matchs."
+    champs: [provenance, avertissement-jeu]
+    statut: hypothese
+    si_faux: "Seuls les libellés changent ; règle globale « chaque donnée affiche sa source » (CLAUDE.md global, invariant 3)."
+    tests: ["R6 — provenance : date du relevé et sources des saisons montrées seulement"]
+  - id: R7
+    etat: charge
+    enonce: >-
+      Les données viennent d'un fichier JSON statique du frontend, /fcnoobz-data/carrieres.json, produit sur Big-Blue par l'import local (frontend/scripts/fcnoobz-import.mjs) puis relu et commité : ni appel au backend ni service externe, jamais une sauvegarde. Le fichier ne contient que les champs de la liste blanche (édition, club, saison, division, place, titres, enCours, provenance, releveLe) ; l'import refuse tout autre champ (aucun nom de joueur, aucune finance).
+    message: ~
+    champs: [provenance]
+    statut: sourcee
+    source: "étude L120 (docs/etudes/fc-noobz-faisabilite.md § 5) : import local qui produit un résumé JSON, versionné sous frontend/public/ comme plan-data, liste blanche de champs ; question 1 de l'étude (champs publics) tranchée au plus restreint : le parcours du club seul"
+    tests: ["R7 — l'import refuse un champ hors liste blanche", "R7 — le fichier publié respecte la liste blanche"]
+  - id: R8
+    etat: charge
+    enonce: >-
+      La page est reliée à FC Noobz : la page /fcnoobz montre, à côté de la tuile « Jeux vidéo », une tuile lien « Mes carrières » (signe « Voir la page → » au repos) vers /fcnoobz/carrieres, qui remplace la tuile « Bientôt » « Palmarès virtuel » (désormais couverte) ; la route étant sous /fcnoobz, l'entrée « FC Noobz » de la barre latérale reste active. Lien de retour « ← FC Noobz » en tête de page. Titre d'onglet « Mes carrières · OL Companion ».
+    message: ~
+    champs: [tuile-carrieres, entree-navigation, lien-retour]
+    statut: hypothese
+    si_faux: Seule la place de la tuile change ; aucune donnée en jeu.
+    tests: ["R8 — la tuile de /fcnoobz mène à la page", "R8 — FC Noobz est l'entrée courante de la barre latérale"]
+
+actions:
+  - { id: A1, declencheur: ~, appel: "GET /fcnoobz-data/carrieres.json", regles: [R1, R2, R3, R4, R5, R6, R7, R8] }
+  - { id: A2, declencheur: bouton-reessayer, appel: "GET /fcnoobz-data/carrieres.json", regles: [R2] }

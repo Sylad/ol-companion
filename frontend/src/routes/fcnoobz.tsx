@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Gamepad2, Trophy, History, Construction } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 const ELECTRIC_BLUE_BRIGHT = '#3aa0ff';
 const NOOBZ_GREEN = '#84cc16';
@@ -87,9 +88,9 @@ export function FcNoobzPage() {
       </section>
 
       {/* FUTURES SECTIONS */}
-      <JeuxVideoTile />
+      <LinkTiles />
 
-      <section data-testid="tuiles-bientot" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <section data-testid="tuiles-bientot" className="grid gap-4 md:grid-cols-2">
         <FeatureTile
           icon={Gamepad2}
           title="Lecteur de sauvegarde FM"
@@ -102,12 +103,6 @@ export function FcNoobzPage() {
           desc="Chronologie complète : promotions, titres, transferts marquants, joueurs légendaires."
           status="À venir"
         />
-        <FeatureTile
-          icon={Trophy}
-          title="Palmarès virtuel"
-          desc="Trophées, statistiques et records accumulés au fil des éditions FM."
-          status="À venir"
-        />
       </section>
 
       <p data-testid="pied-fcnoobz" className="text-center text-xs text-fg-dim">
@@ -117,12 +112,41 @@ export function FcNoobzPage() {
   );
 }
 
-function JeuxVideoTile() {
+function LinkTiles() {
+  return (
+  <div data-testid="tuiles-liens" className="grid gap-4 md:grid-cols-2">
+    <LinkTile
+      to="/fcnoobz/jeux-video"
+      testId="tuile-jeux-video"
+      icon={Gamepad2}
+      title="Jeux vidéo"
+      desc="Football Manager : la série et ses prochaines sorties."
+    />
+    <LinkTile
+      to="/fcnoobz/carrieres"
+      testId="tuile-carrieres"
+      icon={Trophy}
+      title="Mes carrières"
+      desc="Mes clubs dans chaque édition de Football Manager : saisons, divisions et titres."
+    />
+  </div>
+  );
+}
+
+interface LinkTileProps {
+  to: '/fcnoobz/jeux-video' | '/fcnoobz/carrieres';
+  testId: string;
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}
+
+function LinkTile({ to, testId, icon: Icon, title, desc }: LinkTileProps) {
   return (
     <Link
-      to="/fcnoobz/jeux-video"
-      data-testid="tuile-jeux-video"
-      className="group block rounded-md p-5 transition-all hover:scale-[1.01]"
+      to={to}
+      data-testid={testId}
+      className="group flex flex-col rounded-md p-5 transition-all hover:scale-[1.01]"
       style={{
         background: 'linear-gradient(180deg, rgba(15, 17, 35, 0.85), rgba(5, 7, 20, 0.9))',
         border: `1px solid ${NOOBZ_GREEN}`,
@@ -132,13 +156,13 @@ function JeuxVideoTile() {
         className="mb-3 flex h-10 w-10 items-center justify-center rounded-md"
         style={{ background: 'rgba(29, 78, 216, 0.2)', border: `1px solid ${NOOBZ_GREEN}`, color: ELECTRIC_BLUE_BRIGHT }}
       >
-        <Gamepad2 className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
+        <Icon className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
       </div>
       <h3 className="mb-1.5 font-bold" style={{ color: ELECTRIC_BLUE_BRIGHT }}>
-        Jeux vidéo
+        {title}
       </h3>
-      <p className="text-sm leading-relaxed text-fg-muted">Football Manager : la série et ses prochaines sorties.</p>
-      <span className="mt-3 inline-block text-sm font-bold" style={{ color: NOOBZ_GREEN }}>
+      <p className="text-sm leading-relaxed text-fg-muted">{desc}</p>
+      <span className="mt-auto inline-block pt-3 text-sm font-bold" style={{ color: NOOBZ_GREEN }}>
         Voir la page →
       </span>
     </Link>
@@ -146,7 +170,7 @@ function JeuxVideoTile() {
 }
 
 interface FeatureTileProps {
-  icon: typeof Gamepad2;
+  icon: LucideIcon;
   title: string;
   desc: string;
   status: string;

@@ -1,0 +1,11 @@
+{
+  "lot": "L121",
+  "fiche": "docs/specs/fcnoobz-carrieres/fiche.yaml",
+  "fichiers": [
+    "frontend/src/routes/fcnoobz-carrieres.acceptation-L121.test.tsx"
+  ],
+  "vert": true,
+  "empreintes": {
+    "frontend/src/routes/fcnoobz-carrieres.acceptation-L121.test.tsx": "9212e63b66087d3c59e1d3f71055e65fc5556a64"
+  }
+}

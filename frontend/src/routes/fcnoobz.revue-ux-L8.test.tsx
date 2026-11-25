@@ -48,13 +48,14 @@ describe('L8 t2 — tuile Jeux vidéo en tête', () => {
     const grid = screen.getByTestId('tuiles-bientot');
     expect(tile.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(grid.contains(tile)).toBe(false);
-    expect(grid.children).toHaveLength(3);
+    // L121 : « Palmarès virtuel » laisse la place à la tuile lien « Mes carrières ».
+    expect(grid.children).toHaveLength(2);
   });
   it("la tuile montre au repos son signe d'action « Voir la page → »", async () => {
     await renderPage();
     expect(screen.getByTestId('tuile-jeux-video')).toHaveTextContent('Voir la page →');
   });
-  it('les 3 tuiles non cliquables ne grossissent pas au survol', async () => {
+  it('les tuiles non cliquables ne grossissent pas au survol', async () => {
     await renderPage();
     for (const t of screen.getByTestId('tuiles-bientot').children) {
       expect(t.className).not.toMatch(/scale/);

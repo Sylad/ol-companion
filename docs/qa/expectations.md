@@ -123,12 +123,17 @@ dans l'ordre que donne isHome. Pour un match des Bleus : un lien de /equipe-de-f
 - api: /api/france
 
 ## /fcnoobz
-- shows: le titre « FC NOOBZ » ; 4 cartes : la tuile « Jeux vidéo » en tête, en pleine largeur, au-dessus des 3 tuiles « Bientôt » (Lecteur de sauvegarde FM, Histoire du club, Palmarès virtuel) ; la tuile « Jeux vidéo » est un lien vers /fcnoobz/jeux-video (signe « Voir la page → » visible), les 3 autres ne sont pas des liens ; l'image du club (L8, L123)
+- shows: le titre « FC NOOBZ » ; 4 cartes : en tête, en pleine largeur, au-dessus des 2 tuiles « Bientôt » (Lecteur de sauvegarde FM, Histoire du club), deux tuiles liens côte à côte à 1440 px : « Jeux vidéo », lien vers /fcnoobz/jeux-video, et « Mes carrières », lien vers /fcnoobz/carrieres (signe « Voir la page → » visible sur chacune) ; les 2 tuiles « Bientôt » ne sont pas des liens ; plus de tuile « Palmarès virtuel » (remplacée par « Mes carrières », L121) ; l'image du club (L8, L123, L121)
 
 ## /fcnoobz/jeux-video
 - shows: le h1 « Jeux vidéo » ; le lien « ← FC Noobz » ; 4 blocs, chacun non vide : « Prochaine sortie » (nom, date « Jour. JJ/MM/AAAA », plateformes), « Éditions précédentes » (au moins une édition avec sa date), « Nouveautés annoncées » (au moins une, titre et description), « La série » (présentation de Football Manager) ; la ligne « Infos vérifiées le JJ/MM/AAAA sur footballmanager.com. Les dates peuvent changer. » (11/10/2026 le 11-10) ; scrollWidth = clientWidth à 1440 comme à 390
 - never: « Chargement de Football Manager… » ; « Réessayer » (état d'erreur) ; « Aucune info Football Manager pour le moment. » (état vide) ; « Date à confirmer » tant que le fichier porte une date de sortie
 - api: /jeux-video-data/football-manager.json — fichier statique, relu à la main sur les sources en ligne (L25, L123)
+
+## /fcnoobz/carrieres
+- shows: le h1 « Mes carrières » ; le lien « ← FC Noobz » ; la phrase « Parties de Football Manager : des résultats de jeu vidéo, pas de vrais matchs. » ; tant que public/fcnoobz-data/carrieres.json n'a aucune saison (cas du 25-11) : « Aucune carrière importée pour le moment. » ; dès qu'il en a : un bloc par édition (h2 « Football Manager NN », la plus récente en tête), une carte par club (nom, « N saisons · M titres »), une ligne par saison (saison, division, place « 3e » ou « Place non relevée »), et la ligne « Relevé du JJ/MM/AAAA, … » ; scrollWidth = clientWidth à 1440 comme à 390 (L121)
+- never: « Chargement des carrières… » ; « Impossible de charger les carrières. » ; « Réessayer » ; un nom de joueur ou un montant (liste blanche de l'import, R7)
+- api: /fcnoobz-data/carrieres.json — fichier statique, produit par l'import local (frontend/scripts/fcnoobz-import.mjs) et commité à la main (L121)
 
 ## /about
 - shows: le titre « Vibe coded with Claude Code » ; les sections Frontend, Backend, Infra (titres h3, pas h2), chacune non vide ; chaque lien de « Mes autres sites » répond 2xx

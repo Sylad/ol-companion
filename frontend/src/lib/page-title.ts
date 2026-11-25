@@ -15,6 +15,7 @@ const PAGE_TITLES: readonly (readonly [prefix: string, title: string])[] = [
   ['/map', 'Carte L1'],
   ['/equipe-de-france', 'Équipe de France'],
   ['/fcnoobz/jeux-video', 'Jeux vidéo'],
+  ['/fcnoobz/carrieres', 'Mes carrières'],
   ['/fcnoobz', 'FC Noobz'],
   ['/nouveautes', 'Nouveautés'],
   ['/plan', 'Plan de travail'],

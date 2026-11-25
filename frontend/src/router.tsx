@@ -22,6 +22,7 @@ const FcNoobzPage = lazyNamed(() => import('./routes/fcnoobz'), 'FcNoobzPage');
 const AboutPage = lazyNamed(() => import('./routes/about'), 'AboutPage');
 const NouveautesPage = lazyNamed(() => import('./routes/nouveautes'), 'NouveautesPage');
 const JeuxVideoPage = lazyNamed(() => import('./routes/jeux-video'), 'JeuxVideoPage');
+const FcNoobzCarrieresPage = lazyNamed(() => import('./routes/fcnoobz-carrieres'), 'FcNoobzCarrieresPage');
 const PlanPage = lazyNamed(() => import('./routes/plan'), 'PlanPage');
 const MatchPage = lazyNamed(() => import('./routes/match'), 'MatchPage');
 const EquipeDeFrancePage = lazyNamed(() => import('./routes/equipe-de-france'), 'EquipeDeFrancePage');
@@ -118,6 +119,12 @@ const jeuxVideoRoute = createRoute({
   component: withSuspense(JeuxVideoPage),
 });
 
+const carrieresRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/fcnoobz/carrieres',
+  component: withSuspense(FcNoobzCarrieresPage),
+});
+
 const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/about',
@@ -167,6 +174,7 @@ const routeTree = rootRoute.addChildren([
   playerDetailRoute,
   fcnoobzRoute,
   jeuxVideoRoute,
+  carrieresRoute,
   aboutRoute,
   nouveautesRoute,
   planRoute,

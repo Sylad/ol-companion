@@ -91,6 +91,8 @@ PORT=3002
 
 Page `/fcnoobz` activate `body.theme-fcnoobz` → palette verte (lime + bleu électrique cyberpunk). Override des body::before/::after neon strips. Section perso pour Football Manager save.
 
+**Mes carrières (L121)** : `/fcnoobz/carrieres` lit `frontend/public/fcnoobz-data/carrieres.json` (statique, aucun appel backend), produit sur Big-Blue par `cd frontend && node scripts/fcnoobz-import.mjs <relevé.json>…` (saisie à la main ou résumé de sauvegarde, exemple `scripts/fcnoobz-releve-exemple.json`) puis relu et commité. Liste blanche (`scripts/fcnoobz-carrieres-schema.mjs`) : édition, club, saison, division, place, titres, enCours, provenance, releveLe — jamais un nom de joueur ni une finance ; l'import refuse le reste et `fcnoobz-import.test.mjs` revérifie le fichier publié. Fiche : `docs/specs/fcnoobz-carrieres/fiche.yaml`. La lecture des sauvegardes par `fmsave` (étude L120, I1) n'est pas codée.
+
 ## Pièges connus
 
 - **365scores départage** : pour le classement Ligue 1, utiliser 365scores (qui respecte les règles LFP : différence de buts, buts marqués) et pas football-data.org (qui ne fait pas le départage correctement).

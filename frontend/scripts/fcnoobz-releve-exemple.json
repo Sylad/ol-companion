@@ -1,0 +1,16 @@
+{
+  "editions": [
+    {
+      "edition": 26,
+      "clubs": [
+        {
+          "club": "Club d'exemple",
+          "saisons": [
+            { "saison": "2025-2026", "division": "Division d'exemple", "place": 3, "titres": ["Coupe d'exemple"], "provenance": "saisie" },
+            { "saison": "2026-2027", "division": "Division d'exemple", "place": 1, "enCours": true, "provenance": "saisie" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes carrières — maquette L121</title>
+<!-- Maquette statique de l'état « chargé » (R4 à R6 de fiche.yaml). Données fabriquées.
+     États chargement / erreur / vide : même gabarit que docs/specs/jeux-video/maquette.html,
+     libellés de la fiche (R1 à R3). Rendu réel : captures du lot dans le rapport de L121. -->
+<style>
+  body { margin: 0; background: #03040a; color: #cbd5e1; font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 20px; }
+  a { color: #84cc16; }
+  .eyebrow { color: #84cc16; font-size: 12px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+  h1, h2 { color: #3aa0ff; margin: 6px 0; }
+  header { border-bottom: 1px solid rgba(132,204,22,.4); padding-bottom: 24px; margin-bottom: 32px; }
+  .muted { color: #94a3b8; font-size: 14px; }
+  .clubs { display: grid; gap: 24px; }
+  @media (min-width: 1024px) { .clubs { grid-template-columns: 1fr 1fr; align-items: start; } }
+  article { border: 1px solid rgba(132,204,22,.4); border-radius: 6px; padding: 20px; }
+  h3 { color: #f8fafc; margin: 0; }
+  .resume { color: #84cc16; font-size: 14px; margin: 2px 0 12px; }
+  li { list-style: none; border-top: 1px solid #1e293b; padding: 10px 0; }
+  li:first-child { border-top: 0; padding-top: 0; }
+  ul { padding: 0; margin: 0; }
+  .ligne { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px; }
+  .saison, .place { font-family: monospace; font-weight: 700; color: #f8fafc; }
+  .division { flex: 1; color: #94a3b8; }
+  .encours { border: 1px solid #84cc16; color: #84cc16; font-size: 12px; font-weight: 700; padding: 0 6px; text-transform: uppercase; }
+  .titre { font-size: 13px; color: #f8fafc; margin-top: 6px; }
+  section { margin-bottom: 32px; }
+</style>
+</head>
+<body>
+<main>
+  <a href="#">← FC Noobz</a>
+  <header>
+    <div class="eyebrow">FC Noobz</div>
+    <h1>Mes carrières</h1>
+    <p class="muted">Football Manager, édition par édition : clubs, saisons, divisions et titres</p>
+    <p class="muted">Parties de Football Manager : des résultats de jeu vidéo, pas de vrais matchs.</p>
+  </header>
+  <section>
+    <h2>Football Manager 26</h2>
+    <div class="clubs">
+      <article>
+        <h3>Club d'exemple</h3>
+        <p class="resume">2 saisons · 1 titre</p>
+        <ul>
+          <li><div class="ligne"><span class="saison">2025-2026</span><span class="division">Division d'exemple</span><span class="place">3e</span></div>
+            <div class="titre">🏆 Coupe d'exemple</div></li>
+          <li><div class="ligne"><span class="saison">2026-2027</span><span class="encours">En cours</span><span class="division">Division d'exemple</span><span class="place">1er pour l’instant</span></div></li>
+        </ul>
+      </article>
+      <article>
+        <h3>Autre club d'exemple</h3>
+        <p class="resume">1 saison · aucun titre</p>
+        <ul><li><div class="ligne"><span class="saison">2025-2026</span><span class="division">Division d'exemple 2</span><span class="place">Place non relevée</span></div></li></ul>
+      </article>
+    </div>
+  </section>
+  <p class="muted">Relevé du 25/11/2026, importé en local depuis les sauvegardes de Football Manager et saisi à la main.</p>
+</main>
+</body>
+</html>

@@ -49,6 +49,7 @@ const PAGES: { chemin: string; onglets?: string[] }[] = [
   { chemin: '/player/2185' },
   { chemin: '/fcnoobz' },
   { chemin: '/fcnoobz/jeux-video' },
+  { chemin: '/fcnoobz/carrieres' }, // L121 (fichier publié : état vide)
   { chemin: '/about' },
   { chemin: '/nouveautes' },
   { chemin: '/plan' },

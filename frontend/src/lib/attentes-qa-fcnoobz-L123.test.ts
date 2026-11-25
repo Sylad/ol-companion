@@ -23,8 +23,10 @@ describe('Attentes QA — /fcnoobz et /fcnoobz/jeux-video (L123)', () => {
     expect(fc).not.toContain('3 cartes');
     expect(fc).toContain('Jeux vidéo');
     expect(fc).toMatch(/lien vers \/fcnoobz\/jeux-video/);
-    expect(fc).toMatch(/en tête[^;]*pleine largeur[^;]*au-dessus des 3 tuiles/);
-    for (const nom of ['Lecteur de sauvegarde FM', 'Histoire du club', 'Palmarès virtuel']) expect(fc).toContain(nom);
+    // L121 : « Mes carrières » remplace « Palmarès virtuel », à côté de « Jeux vidéo ».
+    expect(fc).toMatch(/en tête[^;]*pleine largeur[^;]*au-dessus des 2 tuiles/);
+    for (const nom of ['Lecteur de sauvegarde FM', 'Histoire du club', 'Mes carrières']) expect(fc).toContain(nom);
+    expect(fc).toMatch(/lien vers \/fcnoobz\/carrieres/);
   });
 
   it('L123 — /fcnoobz/jeux-video existe, juste après /fcnoobz, avec shows, never et api', () => {
