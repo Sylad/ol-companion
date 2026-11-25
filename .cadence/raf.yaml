@@ -1460,7 +1460,7 @@ lots:
   - id: L121
     title: "FC Noobz — suivi de mes clubs par édition de Football Manager (FC Noobz, Grenoble, SLA… : saisons, divisions, titres), alimenté par l'import local de l'étude (basse priorité ; forme fixée par la fiche d'écran)"
     public: Mes carrières Football Manager, édition par édition
-    status: doing
+    status: done
     estimate: 1
     visible: true
     screen: page
@@ -1469,6 +1469,7 @@ lots:
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme (r3 du delta 525eac1..3c8af8c : focus après Réessayer, reduced-motion, état vide ; note mineure : code mort dans l'aide de test fcnoobz-revue-ux-L121.test.tsx:31-48)", commit: 3c8af8c8b8d0cedecc4ecfbf0f8f94e30163acc9 }
     ux: { date: 2026-11-25, verdict: "conforme (r2, lead) : 525eac1 — focus rendu au bouton ou à #contenu après Réessayer (test activeElement, Carrières et Jeux vidéo), mouvement réduit respecté, état vide qui dit quand et comment, division sur sa propre ligne à 390 px ; captures du run lues (vide et rempli à 390)" }
+    finished: 2026-11-25
   - id: L122
     title: "FC Noobz — préparer Football Manager 27 (sortie 10/11/2026) : contenu à décider avec Sylvain (basse priorité)"
     status: todo
