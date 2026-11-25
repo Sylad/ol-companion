@@ -75,3 +75,28 @@ docs:
   articles:
     - repo: ../claude-code-codex
       file: frontend/src/pages/case-studies/ol-companion.astro
+
+# Analyse statique par technologie (cadence analyse, L801 de cadence ; L270 ici, D-31 du registre parent) : ESLint
+# (typescript-eslint + sonarjs, seuils de cadence : 400 lignes par fichier, 80 par fonction, profondeur 4, 5 paramètres,
+# complexité 15, complexité cognitive 15) et tsc, un par sous-projet. L'existant est figé dans .cadence/analyse/<name>.json
+# (cadence analyse --init) ; seules les violations nouvelles font échouer la porte de cadence run. tsc du backend sur
+# tsconfig.build.json (0 erreur ; tsconfig.json compte une erreur de type dans un spec, hors base).
+analyse:
+  - name: eslint-backend
+    dir: backend
+    command: npx eslint -f json .
+    format: eslint-json
+    configs: [backend/eslint.config.mjs]
+  - name: tsc-backend
+    dir: backend
+    command: npx tsc --noEmit -p tsconfig.build.json --pretty false
+    format: tsc
+  - name: eslint-frontend
+    dir: frontend
+    command: npx eslint -f json .
+    format: eslint-json
+    configs: [frontend/eslint.config.mjs]
+  - name: tsc-frontend
+    dir: frontend
+    command: npx tsc --noEmit -p tsconfig.json --pretty false
+    format: tsc
