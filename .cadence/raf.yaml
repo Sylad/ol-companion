@@ -3214,6 +3214,11 @@ lots:
     status: todo
     estimate: 1
     created: 2026-11-26
+  - id: L273
+    title: "D-3 : page du classement de Ligue 1 — ajouter au tableau une colonne avec le logo du prochain adversaire en Ligue 1 de chaque club (donnée : prochain match de championnat programmé, football-data.org, competitionId 2015). Libellé accessible (nom du club en texte alternatif et infobulle), domicile/extérieur indiqué autrement que par la couleur, tableau sans défilement horizontal à 320 et 390 px (colonne repliée ou abrégée sur téléphone), case vide expliquée en fin de saison ou trêve. Mesure : chaque ligne montre le bon adversaire contre le calendrier réel, contrôlé dans le navigateur à 320, 390 et 1440 px ; avis de Sylvain sur la capture."
+    status: todo
+    estimate: 1
+    created: 2026-11-26
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
