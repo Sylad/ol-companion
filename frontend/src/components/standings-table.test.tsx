@@ -41,13 +41,15 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(cell).not.toHaveClass('w-full');
   });
 
-  it('max-w-0 n’annule pas le minimum du nom : la cellule du club garde logo + écart + nom + marges (112 px = 7 rem au téléphone, 116 px = 7,25 rem au-delà)', () => {
+  it('max-w-0 n’annule pas le minimum du nom : la cellule du club garde logo + écart + nom + marges (112 px = 7 rem au téléphone, 128 px = 8 rem au-delà)', () => {
     renderTable();
     const cell = screen.getByText('Paris Saint-Germain Football Club').closest('td')!;
     // 12 (px-1.5 ×2, L273) + 22 (logo) + 6 (gap) + 72 (nom 4,5 rem) : sans ce plancher, max-w-0
     // ramène la cellule sous 100 px sous ~370 px de viewport et le nom chevauche la colonne G.
     // L273 : 4 px de moins au téléphone, le tableau débordait de 2 px à 320 px (mesuré dans Chromium).
-    expect(cell).toHaveClass('min-w-[7rem]', 'md:min-w-[7.25rem]');
+    // Contre-revue UX de L273 (m3) : 8 rem dès 768 px, « Strasbourg » était coupé à 768 et 1024 px avec la colonne
+    // « Prochain » (mesure Chromium : tests-navigateur/classement-prochain-L273.test.ts).
+    expect(cell).toHaveClass('min-w-[7rem]', 'md:min-w-[8rem]');
   });
 
   it('la colonne Pts reste affichée sur mobile (jamais masquée ni hors flux)', () => {

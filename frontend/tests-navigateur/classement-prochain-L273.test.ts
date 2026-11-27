@@ -8,6 +8,8 @@
 //  - revue UX : bulle du match au toucher et au clavier (Échap la ferme), entière à l'écran ; nom de l'adversaire à côté
 //    de l'écusson dès 1024 px ; vue « Prochain » à 360 et 390 px : lignes de la hauteur de la vue « Bilan » ; à 320 × 568,
 //    Lyon au premier écran ; bouton pressé de la bascule à 3:1 au moins contre la carte ; en 503, message près de la bascule.
+//  - contre-revue UX : Échap ferme aussi la bulle ouverte au survol ; la bulle (à gauche de la case) ne couvre la case
+//    d'aucune autre ligne ; « Strasbourg » entier à 768 et 1024 px.
 // Avec CAPTURES_DIR, enregistre les écrans (CAPTURES_NOM : « avant » / « apres »).
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -328,3 +330,79 @@ describe('revue UX de L273 (m1, m3, m4) — bascule et 503 à 390 px', () => {
   });
 });
 
+
+/** Débord d'un nom de club dans sa case (px) : > 0 = coupé (ellipse). */
+const debordNom = (page: Page, club: string) => page.locator(`tbody [title="${club}"]`).first()
+  .evaluate((e) => e.scrollWidth - e.clientWidth);
+
+describe.each([768, 1024])('contre-revue UX de L273 (m3) — noms de club entiers à %i px', (largeur) => {
+  it('« Strasbourg » n’est pas tronqué avec la colonne « Prochain », ni en journée à venir ni en direct', async () => {
+    for (const donnees of [DONNEES, DONNEES_DIRECT]) {
+      const page = await ouvrir(largeur, 900, donnees);
+      try {
+        await capture(page, `strasbourg-${largeur}${donnees === DONNEES ? '' : '-direct'}`);
+        expect(await debordNom(page, 'Strasbourg'), `Strasbourg coupé${donnees === DONNEES ? '' : ' (direct)'}`).toBeLessThanOrEqual(0);
+        const d = await debords(page);
+        expect(d.page).toBeLessThanOrEqual(0);
+        expect(d.tableDroite).toBeLessThanOrEqual(0.5);
+        const lyon = await caseProchain(page, 'Lyon');
+        expect(lyon.dedans).toBe(true);
+      } finally {
+        await page.close();
+      }
+    }
+  });
+});
+
+describe.each([390, 1440])('contre-revue UX de L273 (M1, m1) — bulle à %i px', (largeur) => {
+  it('ouverte, elle ne couvre la case « Prochain » d’aucune autre ligne ; on clique la case du dessous', async () => {
+    const page = await ouvrir(largeur);
+    try {
+      if (largeur < 768) await page.getByRole('button', { name: 'Prochain' }).click();
+      await page.getByRole('button', { name: 'Monaco à domicile' }).click();
+      const bulle = page.locator('[data-testid="prochain-bulle"]:not([hidden])');
+      await bulle.waitFor();
+      await capture(page, `bulle-a-cote-${largeur}`);
+      const bb = (await bulle.boundingBox())!;
+      expect(bb.x, 'bulle coupée à gauche').toBeGreaterThanOrEqual(0);
+      expect(bb.x + bb.width, 'bulle coupée à droite').toBeLessThanOrEqual(largeur);
+      // Centre de chaque case « Prochain » des autres lignes : c'est son bouton qu'on touche, jamais la bulle.
+      const couvertes = await page.evaluate(() => [...document.querySelectorAll('tbody tr')].flatMap((tr) => {
+        const b = tr.querySelector('td:last-child button');
+        if (!b || b.closest('td')!.querySelector('[data-testid="prochain-bulle"]:not([hidden])')) return [];
+        const r = b.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        if (y < 0 || y > window.innerHeight) return [];
+        // Ce qui est au centre de la case : couvert seulement si c'est une bulle (la barre du bas du téléphone n'en est pas une).
+        const el = document.elementFromPoint(x, y);
+        return el?.closest('[role="tooltip"]') ? [tr.querySelector('[title]')?.getAttribute('title')] : [];
+      }));
+      expect(couvertes, 'cases couvertes par la bulle').toEqual([]);
+      // La case du dessous (Marseille, 5e, sous Lyon) se clique d'un coup (Playwright refuse un clic sur un élément couvert).
+      const marseille = page.locator('tbody tr').filter({ has: page.locator('[title="Olympique de Marseille"]') }).first();
+      await marseille.locator('td:last-child button').click({ timeout: 2000 });
+      expect(await marseille.getByRole('tooltip').isVisible()).toBe(true);
+    } finally {
+      await page.close();
+    }
+  });
+
+  it('ouverte au survol (le bouton n’a pas le focus), Échap la ferme (WCAG 1.4.13)', async () => {
+    const page = await ouvrir(largeur);
+    try {
+      if (largeur < 768) await page.getByRole('button', { name: 'Prochain' }).click();
+      await page.mouse.click(5, 5);
+      const bouton = page.getByRole('button', { name: 'Monaco à domicile' });
+      await bouton.hover();
+      const bulle = page.locator('tbody tr').filter({ has: page.locator('[title="Lyon"]') }).first().getByRole('tooltip');
+      await bulle.waitFor();
+      expect(await bouton.evaluate((b) => b === document.activeElement)).toBe(false);
+      expect(await bouton.getAttribute('aria-expanded')).toBeNull();
+      await page.keyboard.press('Escape');
+      expect(await bulle.isVisible()).toBe(false);
+    } finally {
+      await page.close();
+    }
+  });
+});

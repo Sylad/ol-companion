@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { cn } from '@/lib/utils';
 import { formatKickoffLong } from '@/lib/kickoff';
@@ -89,12 +89,23 @@ export function NextOpponentCell({ state }: { state: NextOpponentState }) {
  * se ferme à Échap (le focus reste sur le bouton, WCAG 1.4.13), à la perte du focus ou en quittant la case à la souris.
  * Elle décrit le bouton (`aria-describedby`) même fermée. Dès 1024 px, le nom de l'adversaire est écrit à côté de
  * l'écusson.
+ * Contre-revue UX : Échap est écouté sur le document tant que la bulle est ouverte (ouverte au survol, le bouton n'a pas
+ * le focus) ; la bulle s'ouvre à gauche de la case, à sa hauteur, pour ne pas couvrir la case de la ligne du dessous ;
+ * pas d'`aria-expanded` : le bouton ne déplie rien, il est décrit par l'infobulle.
  */
 function NextOpponentMatch({ next, opponentName }: { next: NextOpponent; opponentName: string }) {
   const [open, setOpen] = useState(false);
   const bulleId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const detail = nextOpponentTitle(next, opponentName);
+  useEffect(() => {
+    if (!open) return;
+    const fermer = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', fermer);
+    return () => document.removeEventListener('keydown', fermer);
+  }, [open]);
   return (
     <span
       className="relative flex"
@@ -108,16 +119,9 @@ function NextOpponentMatch({ next, opponentName }: { next: NextOpponent; opponen
         type="button"
         data-testid="prochain-adversaire"
         aria-describedby={bulleId}
-        aria-expanded={open}
         onClick={() => setOpen(true)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape' && open) {
-            e.stopPropagation();
-            setOpen(false);
-          }
-        }}
         className={cn(
           // Sous 360 px, écusson et lieu l'un sous l'autre : la colonne n'a que 38 px utiles à 320 px. Dès 360 px, sur
           // une ligne (56 px utiles ; écusson 20 + 6 + « Dom. » ≈ 53) : la ligne garde la hauteur de la vue Bilan (m2).
@@ -167,7 +171,7 @@ function NextOpponentMatch({ next, opponentName }: { next: NextOpponent; opponen
         role="tooltip"
         data-testid="prochain-bulle"
         hidden={!open}
-        className="absolute right-0 top-full z-20 mt-1 w-max max-w-[15rem] rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs text-fg shadow-lg"
+        className="absolute right-full top-1/2 z-20 mr-1 -translate-y-1/2 w-max max-w-[13.5rem] sm:max-w-[15rem] rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs text-fg shadow-lg"
       >
         {detail}
       </span>

@@ -60,7 +60,8 @@ describe('<StandingsTable /> — colonne « Prochain » (L273)', () => {
     await user.click(bouton);
     expect(bulle).toBeVisible();
     expect(bulle).toHaveTextContent('Monaco, à domicile — J12, dimanche 29 novembre · 20h45');
-    expect(bouton).toHaveAttribute('aria-expanded', 'true');
+    // Contre-revue UX (m2) : une infobulle ne se « déplie » pas ; le bouton est décrit, sans aria-expanded.
+    expect(bouton).not.toHaveAttribute('aria-expanded');
     await user.keyboard('{Escape}');
     expect(bulle).not.toBeVisible();
     expect(bouton).toHaveFocus();
@@ -69,6 +70,24 @@ describe('<StandingsTable /> — colonne « Prochain » (L273)', () => {
     await user.tab();
     expect(bulle).not.toBeVisible();
     expect(screen.getAllByTestId('prochain-bulle').filter((b) => !b.hidden)).toHaveLength(1);
+  });
+
+  it('contre-revue UX (M1, WCAG 1.4.13) : ouverte au survol, sans focus sur le bouton, Échap la ferme', async () => {
+    const user = userEvent.setup();
+    render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok()} />);
+    const bouton = within(cellOf('Lyon')).getByRole('button', { name: 'Monaco à domicile' });
+    const bulle = within(cellOf('Lyon')).getByTestId('prochain-bulle');
+    await user.hover(bouton);
+    expect(bulle).toBeVisible();
+    expect(bouton).not.toHaveFocus();
+    await user.keyboard('{Escape}');
+    expect(bulle).not.toBeVisible();
+    // La bulle fermée, l'écouteur du document est retiré : Échap ne rouvre ni ne casse rien.
+    await user.keyboard('{Escape}');
+    expect(bulle).not.toBeVisible();
+    await user.unhover(bouton);
+    await user.hover(bouton);
+    expect(bulle).toBeVisible();
   });
 
   it('revue UX M1 : nom de l’adversaire écrit à côté de l’écusson dès 1024 px (masqué au-dessous)', () => {

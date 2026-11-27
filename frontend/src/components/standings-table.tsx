@@ -32,7 +32,7 @@ const COLUMNS = [
   { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-9 md:w-12' },
   { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-10 md:w-14' },
   { key: 'form', label: '5 derniers', align: 'left' as const, w: 'w-[120px]', mobile: false },
-  { key: 'next', label: 'Prochain', align: 'left' as const, w: 'w-16 md:w-20 lg:w-28 xl:w-36' },
+  { key: 'next', label: 'Prochain', align: 'left' as const, w: 'w-16 md:w-[4.5rem] lg:w-[6.25rem] xl:w-36' },
 ];
 
 /** Libellés de l'en-tête « Prochain », repris par la légende (invariant 1 : la légende suit le rendu). */
@@ -145,7 +145,7 @@ export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: 
                   'border-b border-border',
                   // « PROCH. » (55 px en capitales espacées) laissait le tableau 7 px trop large à 320 px : espacement
                   // normal et marge réduite au téléphone pour cet en-tête seul.
-                  col.key === 'next' && 'max-md:px-0.5 max-md:tracking-normal',
+                  col.key === 'next' && 'max-md:px-0.5 max-md:tracking-normal md:px-1 xl:px-2',
                 )}
               >
                 {col.key === 'next' ? <NextHeader /> : col.label}
@@ -157,10 +157,13 @@ export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: 
           {rows.map((row, i) => {
             const prev = i > 0 ? zoneOf(rows[i - 1].position) : undefined;
             const rule = i > 0 && zoneOf(row.position) !== prev ? 'border-t border-border' : '';
+            // Contre-revue UX de L273 (m3) : de 768 à 1279 px le tableau est à sa largeur minimale et la colonne
+            // « Prochain » se règle sur son contenu (en-tête, puis nom court) : marge de 4 px au lieu de 8, rendus au nom
+            // du club (« Strasbourg » était coupé de 5 px dans Chromium).
             return (
               <StandingsRow key={row.teamId} row={row} rule={rule} visibility={visibility}>
                 {nextOpponents && (
-                  <td className={cn('px-1 md:px-2 py-3', rule, visibility('next'))}>
+                  <td className={cn('px-1 xl:px-2 py-3', rule, visibility('next'))}>
                     <NextOpponentCell state={nextOpponentState(row.teamId, nextOpponents, names)} />
                   </td>
                 )}
@@ -196,7 +199,7 @@ function PositionCell({ row, rule, isOL }: { row: StandingEntry; rule: string; i
 
 function ClubCell({ row, rule, isOL }: { row: StandingEntry; rule: string; isOL: boolean }) {
   return (
-    <td className={cn("px-1.5 md:px-2 py-3 max-w-0 min-w-[7rem] md:min-w-[7.25rem]", rule)}>
+    <td className={cn("px-1.5 md:px-2 py-3 max-w-0 min-w-[7rem] md:min-w-[8rem]", rule)}>
       <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
         <TeamLogo teamId={row.teamId} name={row.team} size={22} src={seasonTeamLogoUrl(row.teamId)} />
         <span
