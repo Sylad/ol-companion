@@ -1,11 +1,11 @@
 {
- "id": "D-4",
- "texte": "les momentum ne sont pas bon, quand je compare à sopfascore on voit biern la différence!",
- "date": "2026-11-26",
- "etat": "livrée",
- "preuve": "L274 livré en prod le 2026-11-27 : 72bb579 (cadence deliver, 7/7 vérifications vertes, plan 6c7595d) ; revue de code passe 3 et revue UX conformes. « vérifiée » après la QA sur https://ol.sladoire.dev.",
- "lots": [
-  "L274"
- ],
- "contexte": "Deux captures de Lyon – Lillestrøm du 26-11 : Sofascore montre une aire continue, Lyon (vert) vers le haut et Lillestrøm (bleu) vers le bas, en alternance ; notre graphe montre seulement des barres Lyon vers le haut, rien vers le bas. Troisième capture : la définition de Sofascore (score combiné buts, tirs, possession, grandes occasions…)."
+  "id": "D-4",
+  "texte": "les momentum ne sont pas bon, quand je compare à sopfascore on voit biern la différence!",
+  "date": "2026-11-26",
+  "etat": "vérifiée",
+  "preuve": "L274 livré en prod le 2026-11-27 : 72bb579 (cadence deliver, 7/7 vérifications vertes, plan 6c7595d) ; revue de code passe 3 et revue UX conformes. « vérifiée » après la QA sur https://ol.sladoire.dev. · vérifiée le 2026-11-27 en prod (QA L274) : /match/4828675 Lyon–Lillestrom, barres Lyon vers le haut et Lillestrom vers le bas avec légende ; /api/live-match/<id>/stats sur 4 matchs, 0 % d'actions non attribuées ; captures 1440 et 390, rapport bilans/2026-11-27/L274-qa.md",
+  "lots": [
+    "L274"
+  ],
+  "contexte": "Deux captures de Lyon – Lillestrøm du 26-11 : Sofascore montre une aire continue, Lyon (vert) vers le haut et Lillestrøm (bleu) vers le bas, en alternance ; notre graphe montre seulement des barres Lyon vers le haut, rien vers le bas. Troisième capture : la définition de Sofascore (score combiné buts, tirs, possession, grandes occasions…)."
 }
