@@ -3211,9 +3211,10 @@ lots:
       - { date: 2026-11-25, text: "Livraison b216fa2 : titres publics livrés « Mes carrières Football Manager, édition par édition », « Compositions : les lignes de la formation de nouveau alignées ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
   - id: L272
     title: "D-2 : carte de la Ligue 1 — marqueurs des clubs plus gros pour être lisibles (Sylvain plisse les yeux). Aujourd'hui rond de 18 px et marqueur demi-cercles de 14 px (ligue1-map.tsx:62 et :89) dans une zone de toucher HIT_SIZE_PX. Agrandir sans chevauchement entre clubs proches (Paris, Lyon/Saint-Étienne) à 390 et 1440 px ; la légende suit la nouvelle taille (règle des cartes) ; vérifier aussi la carte des tirs (shot-map) si elle a le même défaut. Mesure : taille rendue des marqueurs relevée avant/après dans Chromium, aucun recouvrement, légende identique au rendu ; avis de Sylvain sur la capture."
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-11-26
+    started: 2026-11-27
   - id: L273
     title: "D-3 : page du classement de Ligue 1 — ajouter au tableau une colonne avec le logo du prochain adversaire en Ligue 1 de chaque club (donnée : prochain match de championnat programmé, football-data.org, competitionId 2015). Libellé accessible (nom du club en texte alternatif et infobulle), domicile/extérieur indiqué autrement que par la couleur, tableau sans défilement horizontal à 320 et 390 px (colonne repliée ou abrégée sur téléphone), case vide expliquée en fin de saison ou trêve. Mesure : chaque ligne montre le bon adversaire contre le calendrier réel, contrôlé dans le navigateur à 320, 390 et 1440 px ; avis de Sylvain sur la capture."
     status: todo
