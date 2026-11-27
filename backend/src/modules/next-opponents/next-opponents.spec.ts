@@ -65,7 +65,44 @@ const NOW = new Date('2026-11-27T16:00:00Z');
 const byTeam = (r: ReturnType<typeof computeNextOpponents>) =>
   new Map(r.next.map((n) => [n.teamId, n]));
 
+/**
+ * Table attendue, écrite à part (jamais relue dans `club-ids.ts`) : identifiants football-data des
+ * 18 clubs vérifiés en prod le 27-11-2026, rangés par nom du classement. Échanger deux valeurs de la
+ * table (ex. Lens 546 / Lorient 525) fait échouer ce test.
+ */
+const EXPECTED_FOOTBALL_DATA_BY_CLUB: Record<string, number> = {
+  Toulouse: 511,
+  Brest: 512,
+  'Olympique de Marseille': 516,
+  Auxerre: 519,
+  Lille: 521,
+  'OGC Nice': 522,
+  Lyon: 523,
+  PSG: 524,
+  Lorient: 525,
+  Rennes: 529,
+  Troyes: 531,
+  Angers: 532,
+  'Le Havre': 533,
+  'Le Mans': 535,
+  Lens: 546,
+  Monaco: 548,
+  Strasbourg: 576,
+  'Paris FC': 1045,
+};
+
 describe('club-ids (L273)', () => {
+  it('chaque club du classement réel a l’identifiant football-data relevé en prod le 27-11', () => {
+    const actual = Object.fromEntries(
+      standings.map((r) => [r.team, standingsIdToFootballData(r.teamId)]),
+    );
+    expect(actual).toEqual(EXPECTED_FOOTBALL_DATA_BY_CLUB);
+    for (const row of standings)
+      expect(
+        footballDataToStandingsId(EXPECTED_FOOTBALL_DATA_BY_CLUB[row.team]),
+      ).toBe(row.teamId);
+  });
+
   it('relie les 18 clubs du classement réel à football-data, sans doublon', () => {
     for (const row of standings)
       expect(standingsIdToFootballData(row.teamId)).toBeDefined();
@@ -155,6 +192,35 @@ describe('computeNextOpponents — heure, fin de saison, club non relié (L273)'
     expect(
       byTeam(computeNextOpponents(fdReal, NOW)).get(OL_TEAM_ID),
     ).toMatchObject({ timeConfirmed: true });
+  });
+
+  it('dernière journée jouée en direct : chaque club garde son match en cours, la saison n’est pas finie', () => {
+    const kickoff = '2026-11-27T19:45:00Z';
+    const lastRound = fdReal
+      .filter((m) => m.matchday === 12)
+      .map((m, i) => ({
+        ...m,
+        utcDate: kickoff,
+        status: ['IN_PLAY', 'PAUSED', 'EXTRA_TIME'][i % 3],
+      }));
+    const during = new Date('2026-11-27T20:30:00Z');
+    const r = computeNextOpponents(lastRound, during);
+    expect(r.seasonOver).toBe(false);
+    expect(r.next).toHaveLength(18);
+    for (const n of r.next) expect(n.live).toBe(true);
+    expect(byTeam(r).get(OL_TEAM_ID)).toMatchObject({
+      opponentId: 471,
+      venue: 'home',
+      live: true,
+    });
+    // Un match programmé n'est pas « en cours ».
+    expect(
+      byTeam(computeNextOpponents(fdReal, NOW)).get(OL_TEAM_ID),
+    ).toMatchObject({ live: false });
+    // Copie restée « en cours » plus de 3 h après le coup d'envoi : le match est fini en vrai.
+    expect(
+      computeNextOpponents(lastRound, new Date('2026-11-27T23:00:00Z')),
+    ).toMatchObject({ seasonOver: true, next: [] });
   });
 
   it('plus aucun match programmé : saison finie, aucune ligne', () => {

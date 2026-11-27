@@ -3,7 +3,8 @@
 //  - aucun défilement horizontal (page ni tableau) à 320, 390, 768, 1024 et 1440 px, dans les deux vues du téléphone ;
 //  - au téléphone, vue « Prochain » : la colonne est entière dans le tableau, G, N, P masqués ;
 //  - au bureau : 18 cases, écusson nommé de 20 px et libellé Dom./Ext. de 12 px au moins, dans la cellule ;
-//  - trois lignes contre le calendrier réel : Lyon – Monaco (Dom.), Monaco (Ext.), Paris FC à Brest (Ext.).
+//  - trois lignes contre le calendrier réel : Lyon – Monaco (Dom.), Monaco (Ext.), Paris FC à Brest (Ext.) ;
+//  - journée jouée en direct (revue de code) : « Direct » dans chaque case, entier, à 12 px, sans débord.
 // Avec CAPTURES_DIR, enregistre les écrans (CAPTURES_NOM : « avant » / « apres »).
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -28,12 +29,12 @@ afterAll(async () => {
   await serveur?.close();
 });
 
-async function ouvrir(largeur: number, hauteur = 900): Promise<Page> {
+async function ouvrir(largeur: number, hauteur = 900, donnees: Reponses = DONNEES): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
   await page.clock.setFixedTime(new Date('2026-11-27T17:00:00+01:00'));
   await page.route('**/api/**', (route) => {
     const u = new URL(route.request().url());
-    const r = DONNEES[u.pathname + u.search];
+    const r = donnees[u.pathname + u.search];
     return r ? route.fulfill({ status: r.status, json: r.body }) : route.fulfill({ status: 404, json: {} });
   });
   // Écussons du CDN 365scores servis par un carré gris (le test ne sort pas sur le réseau).
@@ -133,6 +134,38 @@ describe.each([768, 1024, 1440])('/standings à %i px (L273)', (largeur) => {
       expect(lyon).toMatchObject({ visible: true, adversaire: 'Monaco', libelle: 'Dom.', dedans: true });
       expect(lyon.tailleLogo).toBe(20);
       expect(lyon.taillePolice).toBeGreaterThanOrEqual(12);
+    } finally {
+      await page.close();
+    }
+  });
+});
+
+/** La J12 entière en cours (dernière journée jouée en direct) : chaque case montre son match « Direct ». */
+const DONNEES_DIRECT: Reponses = (() => {
+  const prochains = DONNEES['/api/next-opponents'];
+  const body = prochains.body as { next: { live: boolean }[] };
+  return { ...DONNEES, '/api/next-opponents': { ...prochains, body: { ...body, next: body.next.map((n) => ({ ...n, live: true })) } } };
+})();
+
+describe.each([320, 390, 1440])('/standings à %i px, journée en direct (L273)', (largeur) => {
+  it('chaque case dit « Direct » (12 px au moins, dans la cellule), aucun défilement horizontal, légende « Journée en cours »', async () => {
+    const page = await ouvrir(largeur, 900, DONNEES_DIRECT);
+    try {
+      if (largeur < 768) await page.getByRole('button', { name: 'Prochain' }).click();
+      await page.waitForTimeout(100);
+      await capture(page, `direct-${largeur}`);
+      const d = await debords(page);
+      expect(d.page).toBeLessThanOrEqual(0);
+      expect(d.tableDroite).toBeLessThanOrEqual(0.5);
+      expect(await page.getByTestId('prochain-direct').count()).toBe(18);
+      for (const club of ['Lyon', 'Paris FC', 'Le Havre']) {
+        const c = await caseProchain(page, club);
+        expect(c, club).toMatchObject({ visible: true, libelle: 'Direct', dedans: true });
+        expect(c.taillePolice).toBeGreaterThanOrEqual(12);
+      }
+      const legende = await page.getByTestId('legende-prochain').textContent();
+      expect(legende).toContain('Journée en cours : J12.');
+      expect(legende).not.toContain('Saison terminée');
     } finally {
       await page.close();
     }

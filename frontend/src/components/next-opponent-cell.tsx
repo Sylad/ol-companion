@@ -44,10 +44,14 @@ export function nextOpponentState(
   return { kind: 'match', next, opponentName };
 }
 
-/** « Monaco, à domicile — J12, dimanche 29 novembre · 20h45 » */
+/** Mot affiché sous l'écusson d'un match qui se joue, à la place de Dom. / Ext. (le lieu reste dans l'infobulle). */
+export const LIVE_SHORT = 'Direct';
+
+/** « Monaco, à domicile — J12, dimanche 29 novembre · 20h45 » ; en cours : « Monaco, à domicile — J12, match en cours » */
 export function nextOpponentTitle(next: NextOpponent, opponentName: string): string {
-  const quand = formatKickoffLong({ date: next.utcDate, timeConfirmed: next.timeConfirmed });
   const journee = next.matchday !== null ? `J${next.matchday}, ` : '';
+  if (next.live) return `${opponentName}, ${VENUE_LONG[next.venue]} — ${journee}match en cours`;
+  const quand = formatKickoffLong({ date: next.utcDate, timeConfirmed: next.timeConfirmed });
   return `${opponentName}, ${VENUE_LONG[next.venue]} — ${journee}${quand}`;
 }
 
@@ -77,10 +81,19 @@ export function NextOpponentCell({ state }: { state: NextOpponentState }) {
           <span aria-hidden="true">{opponentName.slice(0, 2)}</span>
         </span>
       )}
-      <span className="text-petite leading-none text-fg-muted">
-        <span aria-hidden="true">{VENUE_SHORT[next.venue]}</span>
-        <span className="sr-only">{VENUE_LONG[next.venue]}</span>
-      </span>
+      {next.live ? (
+        // Match en cours : « Direct » (texte rouge du direct, comme les autres indicateurs LIVE), jamais « Dom. » seul,
+        // qui le ferait lire comme un match à venir.
+        <span className="text-petite leading-none font-semibold text-live" data-testid="prochain-direct">
+          <span aria-hidden="true">{LIVE_SHORT}</span>
+          <span className="sr-only">{VENUE_LONG[next.venue]}, match en cours</span>
+        </span>
+      ) : (
+        <span className="text-petite leading-none text-fg-muted">
+          <span aria-hidden="true">{VENUE_SHORT[next.venue]}</span>
+          <span className="sr-only">{VENUE_LONG[next.venue]}</span>
+        </span>
+      )}
     </span>
   );
 }

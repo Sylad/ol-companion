@@ -10,11 +10,13 @@ export interface NextOpponent {
   utcDate: string;
   timeConfirmed: boolean;
   matchday: number | null;
+  /** Le match se joue (football-data le dit en cours) : la case le dit « en cours », pas « prochain ». */
+  live: boolean;
 }
 
 export interface NextOpponents {
   updatedAt: string;
-  /** Plus aucun match de Ligue 1 programmé : la saison est finie. */
+  /** Plus aucun match de Ligue 1 programmé ni en cours : la saison est finie. */
   seasonOver: boolean;
   /** Clubs du classement reliés à football-data. */
   linkedTeamIds: number[];

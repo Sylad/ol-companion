@@ -421,7 +421,8 @@
      "venue": "home",
      "utcDate": "2026-11-27T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 6075,
@@ -430,7 +431,8 @@
      "venue": "away",
      "utcDate": "2026-11-27T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 493,
@@ -439,7 +441,8 @@
      "venue": "home",
      "utcDate": "2026-11-28T16:15:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 481,
@@ -448,7 +451,8 @@
      "venue": "away",
      "utcDate": "2026-11-28T16:15:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 480,
@@ -457,7 +461,8 @@
      "venue": "home",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 472,
@@ -466,7 +471,8 @@
      "venue": "away",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 470,
@@ -475,7 +481,8 @@
      "venue": "home",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 488,
@@ -484,7 +491,8 @@
      "venue": "away",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 468,
@@ -493,7 +501,8 @@
      "venue": "home",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 478,
@@ -502,7 +511,8 @@
      "venue": "away",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 485,
@@ -511,7 +521,8 @@
      "venue": "home",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 479,
@@ -520,7 +531,8 @@
      "venue": "away",
      "utcDate": "2026-11-28T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 476,
@@ -529,7 +541,8 @@
      "venue": "home",
      "utcDate": "2026-11-29T14:00:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 469,
@@ -538,7 +551,8 @@
      "venue": "away",
      "utcDate": "2026-11-29T14:00:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 482,
@@ -547,7 +561,8 @@
      "venue": "home",
      "utcDate": "2026-11-29T16:15:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 477,
@@ -556,7 +571,8 @@
      "venue": "away",
      "utcDate": "2026-11-29T16:15:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 523,
@@ -565,7 +581,8 @@
      "venue": "home",
      "utcDate": "2026-11-29T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     },
     {
      "teamId": 471,
@@ -574,7 +591,8 @@
      "venue": "away",
      "utcDate": "2026-11-29T19:45:00Z",
      "timeConfirmed": true,
-     "matchday": 12
+     "matchday": 12,
+     "live": false
     }
    ],
    "unlinked": []

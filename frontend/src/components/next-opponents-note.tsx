@@ -1,7 +1,7 @@
 import { formatKickoffLong } from '@/lib/kickoff';
 import type { NextOpponents } from '@/types/next-opponents';
 import { FootballDataAttribution } from './football-data-attribution';
-import { EMPTY_REASON_TEXT, VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
+import { EMPTY_REASON_TEXT, LIVE_SHORT, VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
 import { NEXT_LABEL, type VueTelephone } from './standings-table';
 
 /** Au-delà de cet écart entre maintenant et le premier match programmé, la Ligue 1 est en trêve. */
@@ -21,6 +21,8 @@ function formatReleve(iso: string): string {
 export function prochaineJourneeText(data: NextOpponents, now: Date): string | null {
   const first = [...data.next].sort((a, b) => a.utcDate.localeCompare(b.utcDate))[0];
   if (!first) return null;
+  // Une journée qui se joue n'est ni « prochaine » ni une trêve (revue de code de L273).
+  if (first.live) return `Journée en cours${first.matchday !== null ? ` : J${first.matchday}` : ''}.`;
   const quand = formatKickoffLong({ date: first.utcDate, timeConfirmed: first.timeConfirmed });
   const quandMin = quand.charAt(0).toLowerCase() + quand.slice(1);
   const journee = first.matchday !== null ? `J${first.matchday}, ` : '';
@@ -60,7 +62,13 @@ export function NextOpponentsNote({ query, vueTelephone }: { query: { data?: Nex
           : adversaire du prochain match de Ligue 1 programmé
           {vueTelephone === 'bilan' && <span className="md:hidden"> (vue « Prochain »)</span>} —{' '}
           <span className="text-fg-muted">{VENUE_SHORT.home}</span> {VENUE_LONG.home},{' '}
-          <span className="text-fg-muted">{VENUE_SHORT.away}</span> {VENUE_LONG.away}. {prochaineJourneeText(data, now)}
+          <span className="text-fg-muted">{VENUE_SHORT.away}</span> {VENUE_LONG.away}
+          {data.next.some((n) => n.live) && (
+            <>
+              , <span className="font-semibold text-live">{LIVE_SHORT}</span> match en cours
+            </>
+          )}
+          . {prochaineJourneeText(data, now)}
         </p>
       )}
       <p className="text-petite leading-snug">

@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { StandingsTable } from './standings-table';
-import { VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
+import { LIVE_SHORT, VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
 import type { SeasonStandings } from '@/types/api';
 import type { NextOpponents } from '@/types/next-opponents';
 import donnees from '../../tests-navigateur/donnees/classement-prochain-L273.json';
@@ -98,6 +98,20 @@ describe('<StandingsTable /> — cases vides et vue téléphone (L273)', () => {
     expect(vide).toHaveAttribute('data-raison', 'season-over');
     expect(vide).toHaveTextContent('Saison terminée');
     expect(screen.getByTestId('legende-prochain')).toHaveTextContent('Saison terminée : plus aucun match de Ligue 1 programmé.');
+  });
+
+  it('dernière journée jouée en direct : chaque case dit « Direct » (lieu et « match en cours » en texte), jamais « Saison terminée » ni « reporté »', () => {
+    const direct = { ...PROCHAINS, next: PROCHAINS.next.map((n) => ({ ...n, live: true })) };
+    render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok(direct)} />);
+    const lyon = cellOf('Lyon');
+    expect(within(lyon).getByTestId('prochain-direct')).toHaveTextContent(`${LIVE_SHORT}${VENUE_LONG.home}, match en cours`);
+    expect(within(lyon).getByRole('img', { name: 'Monaco' }).closest('[title]')).toHaveAttribute('title', 'Monaco, à domicile — J12, match en cours');
+    expect(screen.queryAllByTestId('prochain-vide')).toHaveLength(0);
+    const legende = screen.getByTestId('legende-prochain');
+    expect(legende).toHaveTextContent(`${LIVE_SHORT} match en cours`);
+    expect(legende).toHaveTextContent('Journée en cours : J12.');
+    expect(legende).not.toHaveTextContent('Saison terminée');
+    expect(legende).not.toHaveTextContent('Prochaine journée');
   });
 
   it('club sans match programmé (reporté) et club non relié : chacun sa raison, jamais une case muette', () => {
