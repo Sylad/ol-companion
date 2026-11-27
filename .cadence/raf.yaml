@@ -3211,13 +3211,16 @@ lots:
       - { date: 2026-11-25, text: "Livraison b216fa2 : titres publics livrés « Mes carrières Football Manager, édition par édition », « Compositions : les lignes de la formation de nouveau alignées ». Article : ../claude-code-codex/frontend/src/pages/case-studies/ol-companion.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « ol-companion »." }
   - id: L272
     title: "D-2 : carte de la Ligue 1 — marqueurs des clubs plus gros pour être lisibles (Sylvain plisse les yeux). Aujourd'hui rond de 18 px et marqueur demi-cercles de 14 px (ligue1-map.tsx:62 et :89) dans une zone de toucher HIT_SIZE_PX. Agrandir sans chevauchement entre clubs proches (Paris, Lyon/Saint-Étienne) à 390 et 1440 px ; la légende suit la nouvelle taille (règle des cartes) ; vérifier aussi la carte des tirs (shot-map) si elle a le même défaut. Mesure : taille rendue des marqueurs relevée avant/après dans Chromium, aucun recouvrement, légende identique au rendu ; avis de Sylvain sur la capture."
-    status: doing
+    status: done
     estimate: 1
+    delivered: { date: 2026-11-27, sha: 72bb579aaccc867bada8b9e8244df9eee040022d }
     created: 2026-11-26
     started: 2026-11-27
     tasks:
       - { id: t1, title: "Test Chromium : après + + + puis − − − à 390 et 1440, zones des 18 clubs = hitSizesAtZoom du zoom courant, jamais < 24 px ni sécantes, pendant et après l'animation", status: done }
     review: { date: 2026-11-27, verdict: "conforme (passe 2) : test Chromium du suivi du zoom (875ed6f), contre-épreuve rouge pour chaque écouteur retiré", commit: 875ed6f4969340d2b8b109ab0cfbf5542b1c1e53 }
+    ux: { date: 2026-11-27, verdict: "conforme : D-2 satisfaite, cercles 22 px (OL 26), aucun chevauchement à 390/600/1440 même après zoom, légende = rendu, axe 0 violation ; mineurs : capture Nouveautés sans fond de carte, libellé OL décalé de 4 px sous 640 px" }
+    finished: 2026-11-27
   - id: L273
     title: "D-3 : page du classement de Ligue 1 — ajouter au tableau une colonne avec le logo du prochain adversaire en Ligue 1 de chaque club (donnée : prochain match de championnat programmé, football-data.org, competitionId 2015). Libellé accessible (nom du club en texte alternatif et infobulle), domicile/extérieur indiqué autrement que par la couleur, tableau sans défilement horizontal à 320 et 390 px (colonne repliée ou abrégée sur téléphone), case vide expliquée en fin de saison ou trêve. Mesure : chaque ligne montre le bon adversaire contre le calendrier réel, contrôlé dans le navigateur à 320, 390 et 1440 px ; avis de Sylvain sur la capture."
     status: todo
@@ -3236,6 +3239,11 @@ lots:
     review: { date: 2026-11-27, verdict: "conforme lead 27-11, passe 3 relue (cea84d2, df38fbf) : part sans équipe dans l'en-tête (court + sr-only), \\baile\\b testé, commentaire des types aligné, test R16 avec unattributed > 0 ; porte verte au sha df38fbf", commit: df38fbf48c848bc06f6fd1bcbaec01990ff155cd }
     ux: { date: 2026-11-27, verdict: "conforme lead 27-11 : R16 tenu (765 px < 768 à 1366×768), R5 gardée, phrase entière en nom accessible" }
     finished: 2026-11-27
+  - id: L275
+    title: "Carte L1 : la moitié grise « Match nul » des marqueurs mesure 2,25–2,38:1 sur les tuiles OSM claires et le contour blanc 1,3–2,4:1 (WCAG 1.4.11 : 3:1) — couleurs calibrées pour le fond sombre seulement ; vu par la revue UX de L272 le 27-11 (préexistant) ; mesure : ≥ 3:1 sur fond clair et sombre, légende identique"
+    status: todo
+    estimate: 0.5
+    created: 2026-11-27
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
