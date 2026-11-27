@@ -32,11 +32,12 @@ const COLUMNS = [
   { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-9 md:w-12' },
   { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-10 md:w-14' },
   { key: 'form', label: '5 derniers', align: 'left' as const, w: 'w-[120px]', mobile: false },
-  { key: 'next', label: 'Prochain', align: 'left' as const, w: 'w-16 md:w-20' },
+  { key: 'next', label: 'Prochain', align: 'left' as const, w: 'w-16 md:w-20 lg:w-28 xl:w-36' },
 ];
 
 /** Libellés de l'en-tête « Prochain », repris par la légende (invariant 1 : la légende suit le rendu). */
-export const NEXT_LABEL = { phone: 'Adv.', desktop: 'Prochain' } as const;
+// Revue UX de L273 (m4) : « Proch. » au téléphone, le même mot que la bascule « Prochain » (« Adv. » en était un autre).
+export const NEXT_LABEL = { phone: 'Proch.', desktop: 'Prochain' } as const;
 
 /** Colonnes qui cèdent la place à « Prochain » au téléphone, vue « Prochain ». */
 const BILAN_KEYS = new Set(['won', 'draw', 'lost']);
@@ -142,6 +143,9 @@ export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: 
                   col.align === 'center' ? 'text-center' : 'text-left',
                   visibility(col.key, col.mobile),
                   'border-b border-border',
+                  // « PROCH. » (55 px en capitales espacées) laissait le tableau 7 px trop large à 320 px : espacement
+                  // normal et marge réduite au téléphone pour cet en-tête seul.
+                  col.key === 'next' && 'max-md:px-0.5 max-md:tracking-normal',
                 )}
               >
                 {col.key === 'next' ? <NextHeader /> : col.label}
@@ -260,7 +264,7 @@ function StandingsRow({ row, rule, visibility, children }: StandingsRowProps) {
 }
 
 /**
- * En-tête de la colonne : « Adv. » sous 768 px (« PROCHAIN » en capitales prenait 84 px à 320 px, le tableau
+ * En-tête de la colonne : « Proch. » sous 768 px (« PROCHAIN » en capitales prenait 84 px à 320 px, le tableau
  * débordait de 31 px), « Prochain » au-delà ; nom accessible entier dans les deux cas.
  */
 export function NextHeader() {

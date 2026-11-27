@@ -5,6 +5,8 @@ import { KnowledgeHeader } from '@/components/knowledge-header';
 import { StandingsTable, type VueTelephone } from '@/components/standings-table';
 import { PositionTracker } from '@/components/position-tracker';
 import { RetryMessage } from '@/components/retry-message';
+import { EMPTY_REASON_TEXT } from '@/components/next-opponent-cell';
+import { cn } from '@/lib/utils';
 import { OL_TEAM_ID, type StandingEntry } from '@/types/api';
 import { AlertTriangle, ArrowDown, Loader2, RefreshCw } from 'lucide-react';
 
@@ -126,7 +128,10 @@ export function StandingsPage() {
             />
           )}
           {data && data.table.length > 0 && (
-            <BarreTelephone olRow={olRow} vue={vueTelephone} onChange={setVueTelephone} />
+            <>
+              <BarreTelephone olRow={olRow} vue={vueTelephone} onChange={setVueTelephone} />
+              <ProchainIndisponible query={nextOpponents} vue={vueTelephone} />
+            </>
           )}
           {data && data.table.length > 0 && (
             <StandingsTable rows={data.table} nextOpponents={nextOpponents} vueTelephone={vueTelephone} />
@@ -174,6 +179,21 @@ function BarreTelephone({
   );
 }
 
+/** Revue UX de L273 (m3) : en 503, le message est dit près de la bascule (vue « Prochain ») et, dès 768 px, au-dessus
+ *  du tableau ; pas seulement sous la légende, à plus d'un écran des tirets. */
+function ProchainIndisponible({ query, vue }: { query: { data?: unknown; isError: boolean }; vue: VueTelephone }) {
+  if (!query.isError || query.data) return null;
+  return (
+    <p
+      role="status"
+      data-testid="prochain-indisponible-haut"
+      className={cn('mt-2 px-2 text-xs text-fg-muted', vue === 'prochain' ? 'block' : 'hidden md:block')}
+    >
+      {EMPTY_REASON_TEXT.unavailable}.
+    </p>
+  );
+}
+
 const VUES: { vue: VueTelephone; label: string }[] = [
   { vue: 'bilan', label: 'Bilan' },
   { vue: 'prochain', label: 'Prochain' },
@@ -189,11 +209,12 @@ function VueTelephoneChoix({ vue, onChange }: { vue: VueTelephone; onChange: (v:
           type="button"
           aria-pressed={vue === v.vue}
           onClick={() => onChange(v.vue)}
-          className={
-            vue === v.vue
-              ? 'min-h-6 px-2 text-xs bg-surface-2 text-fg-bright font-semibold'
-              : 'min-h-6 px-2 text-xs text-fg-muted hover:text-fg'
-          }
+          className={cn(
+            'min-h-6 px-2 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ol-red-bright',
+            // Revue UX de L273 (m1) : bouton pressé sur fond bleu OL vif (≥ 3:1 contre la carte, WCAG 1.4.11), pas
+            // seulement en gras.
+            vue === v.vue ? 'bg-ol-blue-bright text-white font-semibold' : 'text-fg-muted hover:text-fg',
+          )}
         >
           {v.label}
         </button>

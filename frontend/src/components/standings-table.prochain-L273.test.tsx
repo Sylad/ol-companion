@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { StandingsTable } from './standings-table';
-import { LIVE_SHORT, VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
+import { LIVE_SHORT, VENUE_LONG, VENUE_SHORT, nomCourt } from './next-opponent-cell';
 import type { SeasonStandings } from '@/types/api';
 import type { NextOpponents } from '@/types/next-opponents';
 import donnees from '../../tests-navigateur/donnees/classement-prochain-L273.json';
@@ -41,12 +41,47 @@ describe('<StandingsTable /> — colonne « Prochain » (L273)', () => {
     expect(cellOf('Paris FC')).toHaveTextContent(VENUE_LONG.away);
   });
 
-  it('l’écusson est nommé (texte alternatif) et l’infobulle redit adversaire, lieu, journée et heure de Paris', () => {
+  it('l’écusson est nommé (texte alternatif) et la case, un bouton, est décrite par adversaire, lieu, journée et heure de Paris', () => {
     render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok()} />);
     const logo = within(cellOf('Lyon')).getByRole('img', { name: 'Monaco' });
     expect(logo).toHaveAttribute('alt', 'Monaco');
     expect(logo.getAttribute('src')).toContain('/Competitors/471');
-    expect(logo.closest('[title]')).toHaveAttribute('title', 'Monaco, à domicile — J12, dimanche 29 novembre · 20h45');
+    const bouton = within(cellOf('Lyon')).getByRole('button', { name: 'Monaco à domicile' });
+    expect(bouton).toHaveAccessibleDescription('Monaco, à domicile — J12, dimanche 29 novembre · 20h45');
+    expect(bouton).not.toHaveAttribute('title');
+  });
+
+  it('revue UX M1 : la bulle s’ouvre au toucher (clic) et au focus clavier, Échap la ferme et le focus reste', async () => {
+    const user = userEvent.setup();
+    render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok()} />);
+    const bouton = within(cellOf('Lyon')).getByRole('button', { name: 'Monaco à domicile' });
+    const bulle = within(cellOf('Lyon')).getByTestId('prochain-bulle');
+    expect(bulle).not.toBeVisible();
+    await user.click(bouton);
+    expect(bulle).toBeVisible();
+    expect(bulle).toHaveTextContent('Monaco, à domicile — J12, dimanche 29 novembre · 20h45');
+    expect(bouton).toHaveAttribute('aria-expanded', 'true');
+    await user.keyboard('{Escape}');
+    expect(bulle).not.toBeVisible();
+    expect(bouton).toHaveFocus();
+    // Le focus qui part (toucher ailleurs, Tab) ferme ; la case suivante ouvre la sienne : une seule bulle à la fois.
+    await user.click(bouton);
+    await user.tab();
+    expect(bulle).not.toBeVisible();
+    expect(screen.getAllByTestId('prochain-bulle').filter((b) => !b.hidden)).toHaveLength(1);
+  });
+
+  it('revue UX M1 : nom de l’adversaire écrit à côté de l’écusson dès 1024 px (masqué au-dessous)', () => {
+    render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok()} />);
+    const nom = within(cellOf('Auxerre')).getByTestId('prochain-nom');
+    expect(nom).toHaveTextContent(/^Marseille$/);
+    // Nom entier : texte alternatif de l'écusson et bulle (pas de title : les tests repèrent les lignes par le title du club).
+    expect(within(cellOf('Auxerre')).getByRole('img', { name: 'Olympique de Marseille' })).toBeInTheDocument();
+    expect(within(cellOf('Lyon')).getByTestId('prochain-nom')).toHaveTextContent(/^Monaco$/);
+    expect(nomCourt('OGC Nice')).toBe('Nice');
+    expect(nomCourt('Le Havre')).toBe('Le Havre');
+    expect(nomCourt('PSG')).toBe('PSG');
+    expect(nom).toHaveClass('hidden', 'lg:inline');
   });
 
   it('le nom affiché est celui du classement (mêmes lettres que la ligne du club adverse)', () => {
@@ -73,14 +108,14 @@ describe('<StandingsTable /> — légende de la colonne « Prochain » (L273)', 
     expect(within(legende).getByTestId('attribution-football-data')).toBeInTheDocument();
   });
 
-  it('la légende nomme la colonne comme son en-tête, à chaque largeur (« Adv. » au téléphone, « Prochain » au-delà)', () => {
+  it('la légende nomme la colonne comme son en-tête, à chaque largeur (« Proch. » au téléphone, « Prochain » au-delà)', () => {
     render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok()} vueTelephone="prochain" />);
     const entete = screen.getAllByRole('columnheader').find((h) => h.textContent?.includes('Prochain adversaire'))!;
     const libelles = (el: HTMLElement) =>
       [...el.querySelectorAll('span.md\\:hidden, span.hidden.md\\:inline')].map((e) => `${e.className.includes('md:hidden') ? 'tel' : 'bureau'}=${e.textContent}`);
     const legende = screen.getByTestId('legende-prochain');
     expect(libelles(legende).slice(0, 2)).toEqual(libelles(entete));
-    expect(libelles(entete)).toEqual(['tel=Adv.', 'bureau=Prochain']);
+    expect(libelles(entete)).toEqual(['tel=Proch.', 'bureau=Prochain']);
   });
 
 });
@@ -105,7 +140,7 @@ describe('<StandingsTable /> — cases vides et vue téléphone (L273)', () => {
     render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok(direct)} />);
     const lyon = cellOf('Lyon');
     expect(within(lyon).getByTestId('prochain-direct')).toHaveTextContent(`${LIVE_SHORT}${VENUE_LONG.home}, match en cours`);
-    expect(within(lyon).getByRole('img', { name: 'Monaco' }).closest('[title]')).toHaveAttribute('title', 'Monaco, à domicile — J12, match en cours');
+    expect(within(lyon).getByRole('button')).toHaveAccessibleDescription('Monaco, à domicile — J12, match en cours');
     expect(screen.queryAllByTestId('prochain-vide')).toHaveLength(0);
     const legende = screen.getByTestId('legende-prochain');
     expect(legende).toHaveTextContent(`${LIVE_SHORT} match en cours`);
@@ -128,7 +163,7 @@ describe('<StandingsTable /> — cases vides et vue téléphone (L273)', () => {
   it('football-data en échec : cases « indisponible » et message d’état, sans mention de source', () => {
     render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={{ data: undefined, isError: true }} />);
     expect(within(cellOf('Lyon')).getByTestId('prochain-vide')).toHaveAttribute('data-raison', 'unavailable');
-    expect(screen.getByRole('status')).toHaveTextContent('football-data.org n’a pas répondu');
+    expect(screen.getByTestId('prochain-indisponible')).toHaveTextContent('football-data.org n’a pas répondu');
     expect(screen.queryByTestId('attribution-football-data')).toBeNull();
   });
 
@@ -170,5 +205,38 @@ describe('StandingsPage — choix des colonnes au téléphone (L273)', () => {
     expect(prochain).toHaveAttribute('aria-pressed', 'true');
     const th = screen.getAllByRole('columnheader').find((h) => h.textContent?.includes('Prochain adversaire'))!;
     expect(th).not.toHaveClass('hidden');
+  });
+
+  async function page(prochains: { data?: NextOpponents; isError: boolean }) {
+    vi.resetModules();
+    vi.doMock('@/hooks/use-standings', () => ({
+      useStandings: () => ({ data: CLASSEMENT, isLoading: false, isError: false, isFetching: false, refetch: vi.fn() }),
+    }));
+    vi.doMock('@/hooks/use-next-opponents', () => ({ useNextOpponents: () => prochains }));
+    vi.doMock('@/components/knowledge-header', () => ({ KnowledgeHeader: () => null }));
+    vi.doMock('@/components/position-tracker', () => ({ PositionTracker: () => null }));
+    const { StandingsPage } = await import('@/routes/standings');
+    render(<StandingsPage />);
+  }
+
+  it('revue UX m1 : le bouton pressé se lit par son fond (bleu OL vif), pas au gras seul ; contour de focus rouge de l’app', async () => {
+    await page({ data: PROCHAINS, isError: false });
+    const bilan = screen.getByRole('button', { name: 'Bilan' });
+    const prochain = screen.getByRole('button', { name: 'Prochain' });
+    expect(bilan).toHaveClass('bg-ol-blue-bright', 'focus-visible:outline-ol-red-bright');
+    expect(prochain).not.toHaveClass('bg-ol-blue-bright');
+    expect(prochain).toHaveClass('focus-visible:outline-ol-red-bright');
+  });
+
+  it('revue UX m3 : football-data en échec → message près de la bascule en vue « Prochain » (au-dessus du tableau dès 768 px)', async () => {
+    await page({ data: undefined, isError: true });
+    const haut = screen.getByTestId('prochain-indisponible-haut');
+    expect(haut).toHaveAttribute('role', 'status');
+    expect(haut).toHaveTextContent('Prochain adversaire indisponible (football-data.org n’a pas répondu).');
+    expect(haut).toHaveClass('hidden', 'md:block');
+    await userEvent.click(screen.getByRole('button', { name: 'Prochain' }));
+    expect(haut).not.toHaveClass('hidden');
+    // Avant le tableau dans le document : lu avant les tirets.
+    expect(haut.compareDocumentPosition(screen.getByRole('table')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

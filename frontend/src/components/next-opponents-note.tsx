@@ -42,7 +42,7 @@ export function NextOpponentsNote({ query, vueTelephone }: { query: { data?: Nex
   if (!data) {
     if (!query.isError) return null;
     return (
-      <p role="status" data-testid="prochain-indisponible" className="mt-3 px-2 text-xs text-fg-muted">
+      <p data-testid="prochain-indisponible" className="mt-3 px-2 text-xs text-fg-muted">
         {EMPTY_REASON_TEXT.unavailable}.
       </p>
     );
