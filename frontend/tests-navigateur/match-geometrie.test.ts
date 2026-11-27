@@ -1,9 +1,12 @@
 // L187 — géométrie de la page match (L186) mesurée dans Chromium : jsdom ne calcule aucune mise en page.
 // Match des Bleus à 4 buteurs d'un côté, noms complets (France 5-1 Belgique : 5 buts, 4 buteurs ; le cas le plus haut mesuré par L189), API simulée au
 // niveau du navigateur, serveur Vite démarré par le test.
+import { appendFileSync } from 'node:fs';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { chromium, type Browser, type Page } from 'playwright';
 import { createServer, type ViteDevServer } from 'vite';
+// L274 : réponse réelle du service pour Lyon 0-0 Lillestrøm (vérifiée égale au service côté backend).
+import lillestrom from '../src/test/fixtures/live-match-lyon-lillestrom-L274.json';
 
 const GAME_ID = 4672325;
 const MATCHUP = `5061-2373-${GAME_ID}`;
@@ -18,7 +21,12 @@ const joueur = (id: number, name: string) => ({
   id, name, shortName: name, jerseyNumber: id, positionShort: 'MC', yardLine: 50, yardSide: 2, ranking: 7,
 });
 
-function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, name: 'Belgique' }, competition = { id: 7016, name: 'Ligue des nations' }) {
+type Actions = { home: number; away: number; unattributed: number };
+const TOUTES_ATTRIBUEES: Actions = { home: 40, away: 25, unattributed: 0 };
+// L274 passe 3 : 27 actions sur 71 sans équipe (Lyon – Lillestrøm avant la correction des noms) : la note la plus longue.
+const SANS_EQUIPE: Actions = { home: 44, away: 0, unattributed: 27 };
+
+function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, name: 'Belgique' }, competition = { id: 7016, name: 'Ligue des nations' }, momentumActions = TOUTES_ATTRIBUEES) {
   const side = (id: number, name: string, symbolicName: string, score: number) => ({ id, name, symbolicName, imageVersion: 1, score });
   const lineup = (base: number) => ({
     formation: '4-3-3', starters: Array.from({ length: 11 }, (_, i) => joueur(base + i, `Joueur ${base + i}`)), bench: [],
@@ -47,10 +55,9 @@ function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, n
     })),
     momentum: Array.from({ length: 90 }, (_, i) => ({ minute: i + 1, value: Math.round(Math.sin(i / 6) * 70) })),
     // L274 : phrase sous le graphe avec la liste de la table des poids du backend (`momentumBasis`). Aucune action
-    // sans équipe, comme sur les 4 matchs réels rejoués : avec une note « N actions sans équipe » en plus, le
-    // paragraphe passe à 3 lignes et la rangée descend à 781,5 px à 1366 × 768 (mesuré le 27-11, non résolu).
+    // sans équipe ici ; le cas avec une note « actions sans équipe » est mesuré plus bas sur Lyon – Lillestrøm.
     momentumBasis: ['tirs', 'corners', 'coups francs obtenus', 'hors-jeu'],
-    momentumActions: { home: 40, away: 25, unattributed: 0 },
+    momentumActions,
     lineups: { home: lineup(100), away: lineup(200) },
     updatedAt: '2026-10-05T23:00:00Z',
   };
@@ -78,11 +85,12 @@ type Impact = { competition: { id: number; name: string }; corps: unknown; liber
 async function ouvrir(
   largeur: number, hauteur: number,
   domicile?: { id: number; name: string }, visiteur?: { id: number; name: string }, matchup = MATCHUP, impact?: Impact,
+  actions?: Actions,
 ): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
   await page.route('**/api/**', async (route) => {
     const u = route.request().url();
-    if (u.includes(`/api/live-match/${GAME_ID}/stats`)) return route.fulfill({ json: stats(domicile, visiteur, impact?.competition) });
+    if (u.includes(`/api/live-match/${GAME_ID}/stats`)) return route.fulfill({ json: stats(domicile, visiteur, impact?.competition, actions) });
     if (impact && u.includes('/api/match-impact?at=')) {
       await impact.libererImpact;
       return route.fulfill({ json: impact.corps });
@@ -97,6 +105,11 @@ async function ouvrir(
   await page.evaluate(() => document.fonts.ready);
   return page;
 }
+
+/** Mesures relevées pour le rapport (`MESURES=<fichier>`) : la console de Vitest ne sort pas toujours. */
+const mesure = (ligne: string) => {
+  if (process.env.MESURES) appendFileSync(process.env.MESURES, `${ligne}\n`);
+};
 
 type Boite = { top: number; bottom: number; left: number; right: number; height: number };
 const boite = (page: Page, testId: string): Promise<Boite> =>
@@ -126,6 +139,19 @@ describe.each(ECRANS)('page match à %i × %i', (largeur, hauteur) => {
     await expect(page.getByTestId('message-stats-vide').count()).resolves.toBe(0);
     const rangee = await boite(page, 'rangee-stats-elan');
     expect(rangee.bottom).toBeLessThanOrEqual(hauteur);
+  });
+
+  it('R16 — avec des actions sans équipe (27 sur 71), la note ne fait pas passer la rangée sous le pli (L274)', async () => {
+    // Avant la passe 3 de L274, la note allongeait la phrase sous le graphe d'une ligne : 781,5 px pour 768 à 1366 × 768.
+    const avecNote = await ouvrir(largeur, hauteur, undefined, undefined, MATCHUP, undefined, SANS_EQUIPE);
+    try {
+      await avecNote.getByTestId('elan-non-attribuees').waitFor();
+      const rangee = await boite(avecNote, 'rangee-stats-elan');
+      mesure(`L274 4 buteurs ${largeur} × ${hauteur} sans équipe : bas de la rangée ${rangee.bottom.toFixed(1)} px`);
+      expect(rangee.bottom).toBeLessThanOrEqual(hauteur);
+    } finally {
+      await avecNote.close();
+    }
   });
 
   it('R16 — le tracé du Momentum mesure 96 px de haut', async () => {
@@ -271,6 +297,47 @@ describe.each([...ECRANS, [390, 844]] as const)('match de Ligue 1 de l\'OL termi
         expect(Math.abs(apres.grille - pendant.grille)).toBeLessThanOrEqual(4);
         console.info(`L265 ${largeur} ${cas} : bloc ${pendant.bloc.height.toFixed(1)} → ${apres.bloc.height.toFixed(1)} px, sources ${pendant.sources.toFixed(1)} → ${apres.sources.toFixed(1)}`);
       });
+    });
+  }
+});
+
+// L274 passe 3 : Lyon – Lillestrøm, réponse réelle du service. Avec des actions sans équipe (27 sur 71, le compte du
+// match avant la correction des noms), la phrase sous le graphe passait à 3 lignes et la rangée Statistiques | Momentum
+// descendait à 781,5 px pour 768 à 1366 × 768 (mesuré le 27-11) : R16 l'interdit.
+async function ouvrirLillestrom(largeur: number, hauteur: number, actions: Actions): Promise<Page> {
+  const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
+  await page.route('**/api/**', (route) =>
+    route.request().url().includes(`/api/live-match/${lillestrom.gameId}/stats`)
+      ? route.fulfill({ json: { ...lillestrom, momentumActions: actions } })
+      : route.fulfill({ status: 404, json: {} }));
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
+  await page.goto(`${url}/match/${lillestrom.gameId}?matchupId=${lillestrom.matchupId}`);
+  await page.getByTestId('rangee-stats-elan').waitFor();
+  await page.getByTestId('elan').waitFor();
+  await page.evaluate(() => document.fonts.ready);
+  return page;
+}
+
+describe.each([...ECRANS, [390, 844]] as const)('Lyon – Lillestrøm, Momentum avec et sans actions sans équipe, à %i × %i', (largeur, hauteur) => {
+  for (const [cas, actions] of [
+    ['27 actions sur 71 sans équipe', SANS_EQUIPE],
+    ['toutes attribuées', lillestrom.momentumActions],
+  ] as const) {
+    it(`R16 — ${cas} : le bas de la rangée Statistiques | Momentum est au-dessus du pli`, async () => {
+      const page = await ouvrirLillestrom(largeur, hauteur, actions);
+      try {
+        if (actions.unattributed > 0) await page.getByTestId('elan-non-attribuees').waitFor();
+        else expect(await page.getByTestId('elan-non-attribuees').count()).toBe(0);
+        const rangee = await boite(page, 'rangee-stats-elan');
+        const elan = await boite(page, 'elan');
+        mesure(`L274 Lyon – Lillestrøm ${largeur} × ${hauteur} ${cas} : rangée ${rangee.top.toFixed(1)} → ${rangee.bottom.toFixed(1)} px (${rangee.height.toFixed(1)}), Momentum ${elan.height.toFixed(1)} px`);
+        if (process.env.CAPTURES_DIR) {
+          await page.getByTestId('rangee-stats-elan').screenshot({ path: `${process.env.CAPTURES_DIR}/L274-elan-${largeur}-${actions.unattributed}.png` });
+        }
+        if (largeur >= 1366) expect(rangee.bottom).toBeLessThanOrEqual(hauteur); // R16 vaut pour l'écran de bureau
+      } finally {
+        await page.close();
+      }
     });
   }
 });

@@ -117,7 +117,7 @@ export interface LiveMatchStats extends LiveMatchSummary {
    */
   momentumActions?: LiveMatchMomentumActions;
   /**
-   * Sortes d'actions que le momentum compte (« tirs (buts compris) », « corners »…), tirées de la table
+   * Sortes d'actions que le momentum compte (« tirs », buts compris, « corners »…), tirées de la table
    * des poids (`MOMENTUM_BASIS`) : l'écran les cite sous le graphe, la légende suit le calcul (L274).
    */
   momentumBasis?: string[];

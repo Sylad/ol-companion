@@ -90,6 +90,12 @@ describe('scoreMessage — poids par type', () => {
       w(12, 'coup franc dans la moitié de terrain adverse'),
     ).toBeGreaterThan(w(12, 'coup franc dans sa moitié de terrain'));
   });
+  it("« aile » en mot entier : un « failed » du flux anglais ne fait pas un coup franc dangereux (L274)", () => {
+    const fk = (comment: string) => scoreMessage({ type: 12, comment });
+    expect(fk('Free kick won after a failed clearance, in the defensive half.')).toBe(0.3);
+    expect(fk("Coup franc obtenu sur l'aile droite.")).toBe(1);
+    expect(fk('Coup franc obtenu sur l’aile gauche.')).toBe(1);
+  });
   it('ignore les cartons, remplacements, fautes (déjà comptées côté coup franc obtenu) et bornes de période', () => {
     for (const t of [11, 15, 18, 37, 44, 45])
       expect(scoreMessage({ type: t, comment: '' })).toBe(0);

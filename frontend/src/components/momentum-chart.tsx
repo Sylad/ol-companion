@@ -40,7 +40,10 @@ export function MomentumChart(props: {
   return (
     <section data-testid="elan" className="h-full rounded-md bg-surface border border-border overflow-hidden">
       <header className="px-5 py-2 border-b border-border flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        <h2 className="eyebrow min-w-0">Momentum</h2>
+        <div className="flex min-w-0 items-baseline gap-x-3">
+          <h2 className="eyebrow min-w-0">Momentum</h2>
+          <UnattributedBadge actions={props.actions} />
+        </div>
         <div className="flex items-center gap-3 text-petite uppercase tracking-wider text-fg-dim">
           <span className="inline-flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full" style={{ background: HOME }} />
@@ -91,29 +94,34 @@ export function MomentumChart(props: {
             })}
           </svg>
         </div>
-        <MomentumFootnote homeName={props.homeName} awayName={props.awayName} actions={props.actions} basis={props.basis} />
+        <MomentumFootnote homeName={props.homeName} awayName={props.awayName} basis={props.basis} />
       </div>
     </section>
   );
 }
 
-/** Légende de direction, nature de la courbe et part d'actions sans équipe (L274). */
-function MomentumFootnote(props: { homeName: string; awayName: string; actions?: LiveMatchMomentumActions; basis?: string[] }) {
-  const unattributed = unattributedNote(props.actions);
+/**
+ * Part d'actions sans équipe (L274), dans l'en-tête : sous le graphe, elle ajoutait une ligne à la phrase et la
+ * rangée Statistiques | Momentum passait sous le pli de 1366 × 768 (R16, 781,5 px pour 768). Forme courte à
+ * l'écran, phrase entière pour les lecteurs d'écran.
+ */
+function UnattributedBadge(props: { actions?: LiveMatchMomentumActions }) {
+  const note = unattributedNote(props.actions);
+  if (!note) return null;
   return (
-    <>
-      {/* Un seul paragraphe : sous la rangée Statistiques | Momentum, chaque ligne compte pour le pli de 1366 × 768 (R16). */}
-      <p className="text-petite text-fg-dim mt-1 leading-snug">
-        {basisNote(props.basis)} Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
-        {unattributed && (
-          <>
-            {' '}
-            <span data-testid="elan-non-attribuees" className="text-fg-muted">
-              {unattributed}
-            </span>
-          </>
-        )}
-      </p>
-    </>
+    <p data-testid="elan-non-attribuees" className="text-petite text-fg-muted whitespace-nowrap">
+      <span aria-hidden="true">{note.court}</span>
+      <span className="sr-only">{note.complet}</span>
+    </p>
+  );
+}
+
+/** Nature de la courbe et légende de direction (R5), sous le graphe. */
+function MomentumFootnote(props: { homeName: string; awayName: string; basis?: string[] }) {
+  return (
+    // Un seul paragraphe : sous la rangée Statistiques | Momentum, chaque ligne compte pour le pli de 1366 × 768 (R16).
+    <p className="text-petite text-fg-dim mt-1 leading-snug">
+      {basisNote(props.basis)} Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
+    </p>
   );
 }

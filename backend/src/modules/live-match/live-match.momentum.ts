@@ -172,7 +172,8 @@ function matchSide(
  * Le flux 365scores est en anglais depuis l'automne 2026 (« in the attacking half », « on the right wing »,
  * contre « in the defensive half ») ; l'ancien était en français (« moitié de terrain adverse », « aile »).
  */
-const DANGEROUS_FREE_KICK = /attacking half|\bwing\b|adverse|aile|surface/i;
+// « aile » en mot entier : sans limite, « failed » (flux anglais) passait pour un coup franc sur l'aile.
+const DANGEROUS_FREE_KICK = /attacking half|\bwing\b|adverse|\baile\b|surface/i;
 
 /**
  * Ce que le momentum compte, et combien chaque action pèse pour l'équipe qui l'a produite.
