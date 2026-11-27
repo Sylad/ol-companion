@@ -2,8 +2,8 @@
  "id": "D-2",
  "texte": "a rajouter au plan sur la carte, ca serait bien que les rond/marqueur soit un peu plus gros, pour être plus lisible, je me suis apérçu que je plissais les yeux pour bien voir",
  "date": "2026-11-26",
- "etat": "ouverte",
- "preuve": "",
+ "etat": "vérifiée",
+ "preuve": "L272 livré 6985674 ; QA en prod du 27-11 (/map) : cercles des clubs 22x22 px (17), OL 26x26, zones de toucher 26 à 44 px, 0 chevauchement à 1440 et 390, légende aux mêmes tailles, 18/18 clics ouvrent la fiche ; captures tmp/qa-L272-1440.png et qa-L272-390.png ; rapport bilans/2026-11-27/L272-qa.md",
  "lots": [
   "L272"
  ]
