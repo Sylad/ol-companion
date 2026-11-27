@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { LiveMatchService } from './live-match.service';
 import { EventBusService } from '../events/event-bus.service';
 import { FixturesService } from '../fixtures/fixtures.service';
+import type { LiveMatchStats } from './live-match.types';
 
 /**
  * L274 (D-4) — Lyon 0-0 Lillestrøm (26/11/2026), détail du match et play-by-play réels relevés le 27/11 :
@@ -33,51 +34,49 @@ const REPONSE_FRONT = path.resolve(
   '../../../../frontend/src/test/fixtures/live-match-lyon-lillestrom-L274.json',
 );
 
+const realFetch = globalThis.fetch;
+let warns: string[] = [];
+const json = (body: unknown) =>
+  new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { 'content-type': 'application/json' },
+  });
+
+const newService = () =>
+  new LiveMatchService(
+    { emit: jest.fn() } as unknown as EventBusService,
+    { peekFixtures: () => [] } as unknown as FixturesService,
+  );
+/** `pbp` : corps du play-by-play, ou un statut HTTP d'échec. */
+const serve = (pbp: unknown) => {
+  globalThis.fetch = (input: unknown) => {
+    const url = new URL(String(input));
+    if (url.pathname === '/web/game/') return Promise.resolve(json(GAME));
+    if (url.hostname === 'pbpgenerator.365scores.com')
+      return Promise.resolve(
+        typeof pbp === 'number' ? new Response('', { status: pbp }) : json(pbp),
+      );
+    return Promise.resolve(new Response('', { status: 404 }));
+  };
+};
+const stats = (pbp: unknown, service = newService()) => {
+  serve(pbp);
+  return service.getStats(GAME_ID, 'm1', { force: true });
+};
+
+beforeEach(() => {
+  warns = [];
+  jest.spyOn(Logger.prototype, 'warn').mockImplementation((m: unknown) => {
+    warns.push(String(m));
+  });
+  jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+});
+afterEach(() => {
+  globalThis.fetch = realFetch;
+  jest.restoreAllMocks();
+});
+
 describe('LiveMatchService — momentum de Lyon – Lillestrøm (L274)', () => {
-  const realFetch = globalThis.fetch;
-  let warns: string[];
-  const json = (body: unknown) =>
-    new Response(JSON.stringify(body), {
-      status: 200,
-      headers: { 'content-type': 'application/json' },
-    });
-
-  const newService = () =>
-    new LiveMatchService(
-      { emit: jest.fn() } as unknown as EventBusService,
-      { peekFixtures: () => [] } as unknown as FixturesService,
-    );
-  /** `pbp` : corps du play-by-play, ou un statut HTTP d'échec. */
-  const serve = (pbp: unknown) => {
-    globalThis.fetch = (input: unknown) => {
-      const url = new URL(String(input));
-      if (url.pathname === '/web/game/') return Promise.resolve(json(GAME));
-      if (url.hostname === 'pbpgenerator.365scores.com')
-        return Promise.resolve(
-          typeof pbp === 'number'
-            ? new Response('', { status: pbp })
-            : json(pbp),
-        );
-      return Promise.resolve(new Response('', { status: 404 }));
-    };
-  };
-  const stats = (pbp: unknown, service = newService()) => {
-    serve(pbp);
-    return service.getStats(GAME_ID, 'm1', { force: true });
-  };
-
-  beforeEach(() => {
-    warns = [];
-    jest.spyOn(Logger.prototype, 'warn').mockImplementation((m: unknown) => {
-      warns.push(String(m));
-    });
-    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
-  });
-  afterEach(() => {
-    globalThis.fetch = realFetch;
-    jest.restoreAllMocks();
-  });
-
   it('les deux équipes ont leurs actions, aucune sans équipe, et le graphe va des deux côtés', async () => {
     const out = await stats(PBP);
     expect(out!.away.name).toBe('Lillestrom');
@@ -109,7 +108,9 @@ describe('LiveMatchService — momentum de Lyon – Lillestrøm (L274)', () => {
       warns.some((w) => w.includes('1 action(s) sans équipe sur 72')),
     ).toBe(true);
   });
+});
 
+describe('LiveMatchService — repli du momentum et réponse relue par le frontend (L274)', () => {
   it('play-by-play en échec après une première réponse : points et comptes de la première, repris ensemble', async () => {
     const service = newService();
     const first = await stats(PBP, service);
@@ -136,11 +137,13 @@ describe('LiveMatchService — momentum de Lyon – Lillestrøm (L274)', () => {
     const out = await stats(PBP);
     if (process.env.ECRIRE_REPONSE_L274)
       fs.writeFileSync(REPONSE_FRONT, JSON.stringify(out, null, 2) + '\n');
-    const front = JSON.parse(fs.readFileSync(REPONSE_FRONT, 'utf-8'));
+    const front = JSON.parse(
+      fs.readFileSync(REPONSE_FRONT, 'utf-8'),
+    ) as LiveMatchStats;
     // Forme JSON : ce que le frontend reçoit (-0 y devient 0).
-    const servi = JSON.parse(JSON.stringify(out)) as typeof out;
-    expect(front.momentumBasis).toEqual(servi!.momentumBasis);
-    expect(front.momentumActions).toEqual(servi!.momentumActions);
-    expect(front.momentum).toEqual(servi!.momentum);
+    const servi = JSON.parse(JSON.stringify(out)) as LiveMatchStats;
+    expect(front.momentumBasis).toEqual(servi.momentumBasis);
+    expect(front.momentumActions).toEqual(servi.momentumActions);
+    expect(front.momentum).toEqual(servi.momentum);
   });
 });
