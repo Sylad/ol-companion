@@ -1,16 +1,16 @@
 {
-  "id": "D-3",
-  "texte": "autre idée d'amélioration, dans la page de classement de la ligue1, dans le tableau, je rajouterais bien une colonne avec le logo du futur adversaire en ligue 1.",
-  "date": "2026-11-26",
-  "etat": "ouverte",
-  "preuve": "",
-  "lots": [
-    "L273"
-  ],
-  "precisions": [
-    {
-      "date": "2026-11-27",
-      "texte": "Avis de Sylvain sur les captures de L273 : « très bien l'information domicile/extérieur, je ne l'avais pas demandé, bonne prise d'initiative! »"
-    }
-  ]
+ "id": "D-3",
+ "texte": "autre idée d'amélioration, dans la page de classement de la ligue1, dans le tableau, je rajouterais bien une colonne avec le logo du futur adversaire en ligue 1.",
+ "date": "2026-11-26",
+ "etat": "livrée",
+ "preuve": "L273 livré en prod 96e906a (corrections cffc85a, 6aa6a39) ; QA en prod 27-11 : 18 clubs reliés, adversaires cohérents avec /api/season-matches, aucun débord à 320/390/1440",
+ "lots": [
+  "L273"
+ ],
+ "precisions": [
+  {
+   "date": "2026-11-27",
+   "texte": "Avis de Sylvain sur les captures de L273 : « très bien l'information domicile/extérieur, je ne l'avais pas demandé, bonne prise d'initiative! »"
+  }
+ ]
 }
