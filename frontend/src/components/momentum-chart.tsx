@@ -39,22 +39,7 @@ export function MomentumChart(props: {
 
   return (
     <section data-testid="elan" className="h-full rounded-md bg-surface border border-border overflow-hidden">
-      <header className="px-5 py-2 border-b border-border flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        <div className="flex min-w-0 items-baseline gap-x-3">
-          <h2 className="eyebrow min-w-0">Momentum</h2>
-          <UnattributedBadge actions={props.actions} />
-        </div>
-        <div className="flex items-center gap-3 text-petite uppercase tracking-wider text-fg-dim">
-          <span className="inline-flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full" style={{ background: HOME }} />
-            {props.homeName}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full" style={{ background: AWAY }} />
-            {props.awayName}
-          </span>
-        </div>
-      </header>
+      <MomentumHeader homeName={props.homeName} awayName={props.awayName} homeColor={HOME} awayColor={AWAY} actions={props.actions} />
       <div className="px-4 py-2">
         {/* Hauteur = min(96 px, ancien tracé : svg 700 × 160 sur la largeur de l'écran moins 74 px de marges). */}
         <div className="relative w-full h-[min(96px,calc((100vw_-_74px)*0.22857))]">
@@ -97,6 +82,28 @@ export function MomentumChart(props: {
         <MomentumFootnote homeName={props.homeName} awayName={props.awayName} basis={props.basis} />
       </div>
     </section>
+  );
+}
+
+/** En-tête du bloc : titre, part d'actions sans équipe (L274) et légende des clubs. */
+function MomentumHeader(props: { homeName: string; awayName: string; homeColor: string; awayColor: string; actions?: LiveMatchMomentumActions }) {
+  return (
+    <header className="px-5 py-2 border-b border-border flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+      <div className="flex min-w-0 items-baseline gap-x-3">
+        <h2 className="eyebrow min-w-0">Momentum</h2>
+        <UnattributedBadge actions={props.actions} />
+      </div>
+      <div className="flex items-center gap-3 text-petite uppercase tracking-wider text-fg-dim">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full" style={{ background: props.homeColor }} />
+          {props.homeName}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full" style={{ background: props.awayColor }} />
+          {props.awayName}
+        </span>
+      </div>
+    </header>
   );
 }
 

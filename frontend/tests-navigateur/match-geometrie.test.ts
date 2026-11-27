@@ -26,7 +26,7 @@ const TOUTES_ATTRIBUEES: Actions = { home: 40, away: 25, unattributed: 0 };
 // L274 passe 3 : 27 actions sur 71 sans équipe (Lyon – Lillestrøm avant la correction des noms) : la note la plus longue.
 const SANS_EQUIPE: Actions = { home: 44, away: 0, unattributed: 27 };
 
-function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, name: 'Belgique' }, competition = { id: 7016, name: 'Ligue des nations' }, momentumActions = TOUTES_ATTRIBUEES) {
+function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, name: 'Belgique' }, competition = { id: 7016, name: 'Ligue des nations' }) {
   const side = (id: number, name: string, symbolicName: string, score: number) => ({ id, name, symbolicName, imageVersion: 1, score });
   const lineup = (base: number) => ({
     formation: '4-3-3', starters: Array.from({ length: 11 }, (_, i) => joueur(base + i, `Joueur ${base + i}`)), bench: [],
@@ -57,7 +57,7 @@ function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, n
     // L274 : phrase sous le graphe avec la liste de la table des poids du backend (`momentumBasis`). Aucune action
     // sans équipe ici ; le cas avec une note « actions sans équipe » est mesuré plus bas sur Lyon – Lillestrøm.
     momentumBasis: ['tirs', 'corners', 'coups francs obtenus', 'hors-jeu'],
-    momentumActions,
+    momentumActions: TOUTES_ATTRIBUEES,
     lineups: { home: lineup(100), away: lineup(200) },
     updatedAt: '2026-10-05T23:00:00Z',
   };
@@ -85,12 +85,11 @@ type Impact = { competition: { id: number; name: string }; corps: unknown; liber
 async function ouvrir(
   largeur: number, hauteur: number,
   domicile?: { id: number; name: string }, visiteur?: { id: number; name: string }, matchup = MATCHUP, impact?: Impact,
-  actions?: Actions,
 ): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
   await page.route('**/api/**', async (route) => {
     const u = route.request().url();
-    if (u.includes(`/api/live-match/${GAME_ID}/stats`)) return route.fulfill({ json: stats(domicile, visiteur, impact?.competition, actions) });
+    if (u.includes(`/api/live-match/${GAME_ID}/stats`)) return route.fulfill({ json: stats(domicile, visiteur, impact?.competition) });
     if (impact && u.includes('/api/match-impact?at=')) {
       await impact.libererImpact;
       return route.fulfill({ json: impact.corps });
@@ -143,7 +142,7 @@ describe.each(ECRANS)('page match à %i × %i', (largeur, hauteur) => {
 
   it('R16 — avec des actions sans équipe (27 sur 71), la note ne fait pas passer la rangée sous le pli (L274)', async () => {
     // Avant la passe 3 de L274, la note allongeait la phrase sous le graphe d'une ligne : 781,5 px pour 768 à 1366 × 768.
-    const avecNote = await ouvrir(largeur, hauteur, undefined, undefined, MATCHUP, undefined, SANS_EQUIPE);
+    const avecNote = await ouvrirReponse(largeur, hauteur, { ...stats(), momentumActions: SANS_EQUIPE });
     try {
       await avecNote.getByTestId('elan-non-attribuees').waitFor();
       const rangee = await boite(avecNote, 'rangee-stats-elan');
@@ -304,14 +303,15 @@ describe.each([...ECRANS, [390, 844]] as const)('match de Ligue 1 de l\'OL termi
 // L274 passe 3 : Lyon – Lillestrøm, réponse réelle du service. Avec des actions sans équipe (27 sur 71, le compte du
 // match avant la correction des noms), la phrase sous le graphe passait à 3 lignes et la rangée Statistiques | Momentum
 // descendait à 781,5 px pour 768 à 1366 × 768 (mesuré le 27-11) : R16 l'interdit.
-async function ouvrirLillestrom(largeur: number, hauteur: number, actions: Actions): Promise<Page> {
+/** Ouvre la page d'un match dont `/stats` rend `corps` tel quel (tout autre appel : 404). */
+async function ouvrirReponse(largeur: number, hauteur: number, corps: { gameId: number; matchupId: string }): Promise<Page> {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
   await page.route('**/api/**', (route) =>
-    route.request().url().includes(`/api/live-match/${lillestrom.gameId}/stats`)
-      ? route.fulfill({ json: { ...lillestrom, momentumActions: actions } })
+    route.request().url().includes(`/api/live-match/${corps.gameId}/stats`)
+      ? route.fulfill({ json: corps })
       : route.fulfill({ status: 404, json: {} }));
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
-  await page.goto(`${url}/match/${lillestrom.gameId}?matchupId=${lillestrom.matchupId}`);
+  await page.goto(`${url}/match/${corps.gameId}?matchupId=${corps.matchupId}`);
   await page.getByTestId('rangee-stats-elan').waitFor();
   await page.getByTestId('elan').waitFor();
   await page.evaluate(() => document.fonts.ready);
@@ -324,7 +324,7 @@ describe.each([...ECRANS, [390, 844]] as const)('Lyon – Lillestrøm, Momentum 
     ['toutes attribuées', lillestrom.momentumActions],
   ] as const) {
     it(`R16 — ${cas} : le bas de la rangée Statistiques | Momentum est au-dessus du pli`, async () => {
-      const page = await ouvrirLillestrom(largeur, hauteur, actions);
+      const page = await ouvrirReponse(largeur, hauteur, { ...lillestrom, momentumActions: actions });
       try {
         if (actions.unattributed > 0) await page.getByTestId('elan-non-attribuees').waitFor();
         else expect(await page.getByTestId('elan-non-attribuees').count()).toBe(0);
