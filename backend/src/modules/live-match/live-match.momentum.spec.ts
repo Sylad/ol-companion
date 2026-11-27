@@ -1,9 +1,23 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { attributeTeam, computeMomentum, parsePlayByPlay, scoreMessage } from './live-match.momentum';
+import {
+  attributeTeam,
+  computeMomentum,
+  countMomentumActions,
+  normaliseTeamName,
+  parsePlayByPlay,
+  scoreMessage,
+  type TeamNames,
+} from './live-match.momentum';
 
 const raw = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '../../../test/fixtures/365_pbp_anderlecht_lyon_ended.json'), 'utf-8'),
+  fs.readFileSync(
+    path.resolve(
+      __dirname,
+      '../../../test/fixtures/365_pbp_anderlecht_lyon_ended.json',
+    ),
+    'utf-8',
+  ),
 );
 const TEAMS = { homeName: 'Anderlecht', awayName: 'Lyon' };
 
@@ -23,15 +37,37 @@ describe('parsePlayByPlay', () => {
 
 describe('attributeTeam', () => {
   it("privilégie CompetitorNum quand 365scores l'indique", () => {
-    expect(attributeTeam({ competitorNum: 1, comment: 'But! ... (Lyon) marque' }, TEAMS)).toBe('home');
+    expect(
+      attributeTeam(
+        { competitorNum: 1, comment: 'But! ... (Lyon) marque' },
+        TEAMS,
+      ),
+    ).toBe('home');
   });
   it('lit « (Équipe) » dans le commentaire', () => {
-    expect(attributeTeam({ comment: 'Arrêt. Corentin Tolisso (Lyon) de la tête' }, TEAMS)).toBe('away');
-    expect(attributeTeam({ comment: 'Faute de Enric Llansana (Anderlecht).' }, TEAMS)).toBe('home');
+    expect(
+      attributeTeam(
+        { comment: 'Arrêt. Corentin Tolisso (Lyon) de la tête' },
+        TEAMS,
+      ),
+    ).toBe('away');
+    expect(
+      attributeTeam(
+        { comment: 'Faute de Enric Llansana (Anderlecht).' },
+        TEAMS,
+      ),
+    ).toBe('home');
   });
   it('lit « Corner, Équipe. » / « Hors jeu, Équipe. »', () => {
-    expect(attributeTeam({ comment: 'Corner, Lyon. Corner concédé par X.' }, TEAMS)).toBe('away');
-    expect(attributeTeam({ comment: 'Hors jeu, Anderlecht. Y a tenté une passe' }, TEAMS)).toBe('home');
+    expect(
+      attributeTeam({ comment: 'Corner, Lyon. Corner concédé par X.' }, TEAMS),
+    ).toBe('away');
+    expect(
+      attributeTeam(
+        { comment: 'Hors jeu, Anderlecht. Y a tenté une passe' },
+        TEAMS,
+      ),
+    ).toBe('home');
   });
   it('renvoie null sinon', () => {
     expect(attributeTeam({ comment: 'Mi-Temps 0-2' }, TEAMS)).toBeNull();
@@ -45,11 +81,16 @@ describe('scoreMessage — poids par type', () => {
     expect(w(3)).toBeGreaterThan(w(2));
     expect(w(2)).toBeGreaterThanOrEqual(w(20));
     expect(w(20)).toBeGreaterThan(w(9));
-    expect(w(9)).toBeGreaterThan(w(12, 'coup franc dans la moitié de terrain adverse'));
-    expect(w(12, 'coup franc dans la moitié de terrain adverse')).toBeGreaterThan(w(12, 'coup franc dans sa moitié de terrain'));
+    expect(w(9)).toBeGreaterThan(
+      w(12, 'coup franc dans la moitié de terrain adverse'),
+    );
+    expect(
+      w(12, 'coup franc dans la moitié de terrain adverse'),
+    ).toBeGreaterThan(w(12, 'coup franc dans sa moitié de terrain'));
   });
   it('ignore les cartons, remplacements, fautes (déjà comptées côté coup franc obtenu) et bornes de période', () => {
-    for (const t of [11, 15, 18, 37, 44, 45]) expect(scoreMessage({ type: t, comment: '' })).toBe(0);
+    for (const t of [11, 15, 18, 37, 44, 45])
+      expect(scoreMessage({ type: t, comment: '' })).toBe(0);
   });
 });
 
@@ -78,5 +119,166 @@ describe('computeMomentum (Anderlecht 1-2 Lyon, 16/09/2026)', () => {
 
   it('en cours de match, ne dépasse pas la minute courante', () => {
     expect(computeMomentum(parsePlayByPlay(raw), TEAMS, 30).length).toBe(30);
+  });
+});
+
+/**
+ * L274 (D-4) : Lyon – Lillestrøm (26/11/2026) n'avait que des barres Lyon. Le détail du match nomme
+ * l'équipe « Lillestrom », le play-by-play « Lillestrøm » : les 27 actions de Lillestrøm (tirs, corners, coups francs, hors-jeu) perdues en silence.
+ * Play-by-play réels relevés le 27/11/2026 (pbpgenerator.365scores.com), noms et noms longs du détail du match.
+ */
+const fixture = (name: string) =>
+  parsePlayByPlay(
+    JSON.parse(
+      fs.readFileSync(
+        path.resolve(__dirname, `../../../test/fixtures/${name}`),
+        'utf-8',
+      ),
+    ),
+  );
+
+const REJOUES: { match: string; file: string; teams: TeamNames }[] = [
+  {
+    match: 'Lyon 0-0 Lillestrøm (26/11)',
+    file: '365_pbp_lyon_lillestrom_L274.json',
+    teams: {
+      homeName: 'Lyon',
+      awayName: 'Lillestrom',
+      homeAliases: ['Olympique Lyonnais'],
+      awayAliases: [],
+    },
+  },
+  {
+    match: 'Lille 0-1 Lyon (21/11)',
+    file: '365_pbp_lille_lyon_L274.json',
+    teams: {
+      homeName: 'Lille',
+      awayName: 'Lyon',
+      homeAliases: ['LOSC Lille'],
+      awayAliases: ['Olympique Lyonnais'],
+    },
+  },
+  {
+    match: 'Real Sociedad 1-1 Lyon (05/11)',
+    file: '365_pbp_real_sociedad_lyon_L274.json',
+    teams: {
+      homeName: 'Real Sociedad',
+      awayName: 'Lyon',
+      homeAliases: ['Real Sociedad de Fútbol'],
+      awayAliases: ['Olympique Lyonnais'],
+    },
+  },
+  {
+    match: 'Brest 2-0 Lyon (08/11)',
+    file: '365_pbp_brest_lyon_L274.json',
+    teams: {
+      homeName: 'Brest',
+      awayName: 'Lyon',
+      homeAliases: ['Stade Brestois 29'],
+      awayAliases: ['Olympique Lyonnais'],
+    },
+  },
+];
+
+describe('normaliseTeamName (L274)', () => {
+  it('ignore accents, lettres liées, casse et ponctuation', () => {
+    expect(normaliseTeamName('Lillestrøm')).toBe('lillestrom');
+    expect(normaliseTeamName('  Fenerbahçe SK ')).toBe('fenerbahce sk');
+    expect(normaliseTeamName('Bodø/Glimt')).toBe('bodo glimt');
+    expect(normaliseTeamName('Malmö FF')).toBe('malmo ff');
+    expect(normaliseTeamName('Real Sociedad de Fútbol')).toBe(
+      'real sociedad de futbol',
+    );
+    expect(normaliseTeamName('Æbelø')).toBe('aebelo');
+    expect(normaliseTeamName('Saint-Étienne')).toBe('saint etienne');
+  });
+});
+
+describe('attributeTeam — noms écrits autrement (L274)', () => {
+  const T = REJOUES[0].teams;
+  it('« Lillestrøm » du commentaire = « Lillestrom » du match', () => {
+    expect(
+      attributeTeam(
+        { comment: 'Corner, Lillestrøm. Conceded by Ruben Kluivert.' },
+        T,
+      ),
+    ).toBe('away');
+    expect(
+      attributeTeam(
+        {
+          comment: 'Attempt missed. Gustav Nyheim (Lillestrøm) header misses.',
+        },
+        T,
+      ),
+    ).toBe('away');
+    expect(
+      attributeTeam({ comment: 'Corner, Lyon. Conceded by Sander Foss.' }, T),
+    ).toBe('home');
+  });
+  it("nom long en alias, et nom contenu dans l'autre quand un seul côté correspond", () => {
+    const t: TeamNames = {
+      homeName: 'Lille',
+      awayName: 'Lyon',
+      homeAliases: ['LOSC Lille'],
+      awayAliases: ['Olympique Lyonnais'],
+    };
+    expect(
+      attributeTeam({ comment: 'Corner, LOSC Lille. Conceded by X.' }, t),
+    ).toBe('home');
+    expect(
+      attributeTeam({ comment: 'Foul by X (Olympique Lyonnais).' }, t),
+    ).toBe('away');
+    expect(
+      attributeTeam({ comment: 'Corner, OL Lyon. Conceded by X.' }, t),
+    ).toBe('away');
+  });
+  it('ne parie pas : un nom qui touche les deux côtés, ou aucun, reste sans équipe', () => {
+    const t: TeamNames = {
+      homeName: 'Paris FC',
+      awayName: 'Paris Saint-Germain',
+    };
+    expect(
+      attributeTeam({ comment: 'Corner, Paris. Conceded by X.' }, t),
+    ).toBeNull();
+    expect(
+      attributeTeam({ comment: 'Corner, Marseille. Conceded by X.' }, t),
+    ).toBeNull();
+  });
+});
+
+describe.each(REJOUES)(
+  'play-by-play réel rejoué — $match (L274)',
+  ({ file, teams }) => {
+    const messages = fixture(file);
+    const actions = countMomentumActions(messages, teams);
+    const total = actions.home + actions.away + actions.unattributed;
+
+    it('les deux équipes ont des actions', () => {
+      expect(actions.home).toBeGreaterThan(5);
+      expect(actions.away).toBeGreaterThan(5);
+    });
+
+    it("moins de 5 % d'actions sans équipe", () => {
+      expect(actions.unattributed / total).toBeLessThan(0.05);
+    });
+
+    it('le graphe va des deux côtés', () => {
+      const points = computeMomentum(messages, teams, 90);
+      expect(points.some((p) => p.value > 10)).toBe(true);
+      expect(points.some((p) => p.value < -10)).toBe(true);
+    });
+  },
+);
+
+describe('Lyon – Lillestrøm avant L274 (comparaison exacte des noms)', () => {
+  it('perdait toutes les actions de Lillestrøm', () => {
+    const { teams, file } = REJOUES[0];
+    const sansAlias = countMomentumActions(fixture(file), {
+      homeName: teams.homeName,
+      awayName: teams.awayName,
+    });
+    // Avec la normalisation, plus rien n'est perdu, même sans le nom long.
+    expect(sansAlias.unattributed).toBe(0);
+    expect(sansAlias.away).toBe(27);
   });
 });

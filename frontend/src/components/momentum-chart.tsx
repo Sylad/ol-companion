@@ -1,5 +1,6 @@
-import type { LiveMatchMomentumPoint } from '@/types/api';
+import type { LiveMatchMomentumActions, LiveMatchMomentumPoint } from '@/types/api';
 import { teamColors, type MatchPalette } from '@/lib/match-palette';
+import { unattributedNote } from '@/lib/momentum-note';
 
 /**
  * Momentum minute par minute (backend : play-by-play 365scores pondéré et
@@ -15,6 +16,8 @@ export function MomentumChart(props: {
   homeIsOl: boolean;
   /** `bleus` : France bleue, adversaire blanc (L167 R4). */
   palette?: MatchPalette;
+  /** Actions par équipe et sans équipe (L274) : une part non attribuée se dit sous le graphe. */
+  actions?: LiveMatchMomentumActions;
 }) {
   if (!props.points.length) return null;
 
@@ -34,7 +37,7 @@ export function MomentumChart(props: {
 
   return (
     <section data-testid="elan" className="h-full rounded-md bg-surface border border-border overflow-hidden">
-      <header className="px-5 py-2 border-b border-border flex items-center justify-between">
+      <header className="px-5 py-2 border-b border-border flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <h2 className="eyebrow min-w-0">Momentum</h2>
         <div className="flex items-center gap-3 text-petite uppercase tracking-wider text-fg-dim">
           <span className="inline-flex items-center gap-1.5">
@@ -86,10 +89,25 @@ export function MomentumChart(props: {
             })}
           </svg>
         </div>
-        <p className="text-petite text-fg-dim mt-1 leading-snug">
-          Pression par minute, dérivée du play-by-play (tirs, corners, coups francs). Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
-        </p>
+        <MomentumFootnote homeName={props.homeName} awayName={props.awayName} actions={props.actions} />
       </div>
     </section>
+  );
+}
+
+/** Légende de direction, nature de la courbe et part d'actions sans équipe (L274). */
+function MomentumFootnote(props: { homeName: string; awayName: string; actions?: LiveMatchMomentumActions }) {
+  const unattributed = unattributedNote(props.actions);
+  return (
+    <>
+      <p className="text-petite text-fg-dim mt-1 leading-snug">
+        Reconstruction : tirs, corners, coups francs, sans possession ni occasions franches. Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
+      </p>
+      {unattributed && (
+        <p data-testid="elan-non-attribuees" className="text-petite text-fg-muted mt-1 leading-snug">
+          {unattributed}
+        </p>
+      )}
+    </>
   );
 }

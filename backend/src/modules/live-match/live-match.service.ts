@@ -11,7 +11,14 @@ import {
   type Scores365GameDetailResponse,
 } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
-import { computeMomentum, parsePlayByPlay, type MomentumPoint } from './live-match.momentum';
+import {
+  computeMomentum,
+  countMomentumActions,
+  parsePlayByPlay,
+  type MomentumActions,
+  type MomentumPoint,
+  type TeamNames,
+} from './live-match.momentum';
 import { extractStandingsAround, type LiveStandingRow } from './live-match.standings';
 import { readScores365Standings } from '../standings/scores365-standings';
 import { LIGUE1_365SCORES_ID } from '../../config/constants';
@@ -117,8 +124,14 @@ export class LiveMatchService implements OnModuleInit {
     await this.fillJerseys(raw, payload);
 
     const momentum = await this.fetchMomentum(raw, payload);
-    if (momentum) payload.momentum = momentum;
-    else if (cached?.payload.momentum) payload.momentum = cached.payload.momentum;
+    if (momentum) {
+      payload.momentum = momentum.points;
+      payload.momentumActions = momentum.actions;
+    } else if (cached?.payload.momentum) {
+      payload.momentum = cached.payload.momentum;
+      if (cached.payload.momentumActions)
+        payload.momentumActions = cached.payload.momentumActions;
+    }
 
     // L158 : le seul classement lu est celui de la Ligue 1. Sous un match d'une autre
     // compétition (coupe d'Europe, Coupe de France), pas de bloc plutôt qu'un classement étranger.
@@ -226,7 +239,9 @@ export class LiveMatchService implements OnModuleInit {
   private async fetchMomentum(
     raw: Scores365GameDetailResponse,
     payload: LiveMatchStats,
-  ): Promise<MomentumPoint[] | undefined> {
+  ): Promise<
+    { points: MomentumPoint[]; actions: MomentumActions } | undefined
+  > {
     const feedUrl = raw.game?.playByPlay?.feedURL;
     if (!feedUrl || payload.status === 'upcoming') return undefined;
     try {
@@ -240,7 +255,22 @@ export class LiveMatchService implements OnModuleInit {
       const lastMinute = payload.status === 'ended'
         ? Math.max(90, ...messages.map((m) => m.minute))
         : Math.max(1, Math.floor(payload.gameTime));
-      return computeMomentum(messages, { homeName: payload.home.name, awayName: payload.away.name }, lastMinute);
+      // L274 : le commentaire écrit parfois le club autrement (« Lillestrøm » / « Lillestrom ») ; nom long en alias.
+      const teams: TeamNames = {
+        homeName: payload.home.name,
+        awayName: payload.away.name,
+        homeAliases: competitorAliases(raw.game?.homeCompetitor),
+        awayAliases: competitorAliases(raw.game?.awayCompetitor),
+      };
+      const actions = countMomentumActions(messages, teams);
+      if (actions.unattributed > 0) {
+        const total = actions.home + actions.away + actions.unattributed;
+        this.logger.warn(
+          `momentum ${payload.gameId} : ${actions.unattributed} action(s) sans équipe sur ${total}` +
+            ` (${teams.homeName} / ${teams.awayName})`,
+        );
+      }
+      return { points: computeMomentum(messages, teams, lastMinute), actions };
     } catch (err) {
       this.logger.warn(`play-by-play failed for ${payload.gameId}: ${(err as Error).message}`);
       return undefined;
@@ -472,4 +502,13 @@ function signatureOf(s: LiveMatchStats): string {
     s.events.length,
     s.shots.length,
   ].join('|');
+}
+
+/** Autres noms d'un club chez 365scores (nom long), pour lire le play-by-play (L274). */
+function competitorAliases(
+  c: { longName?: string | null; shortName?: string | null } | undefined,
+): string[] {
+  return [c?.longName, c?.shortName].filter(
+    (n): n is string => typeof n === 'string' && n.trim().length > 0,
+  );
 }

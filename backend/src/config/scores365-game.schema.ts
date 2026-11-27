@@ -115,6 +115,9 @@ const lineupSchema = z
 const detailedCompetitorSchema = competitorSchema
   .extend({
     symbolicName: z.string().optional(),
+    /** Nom long (« Olympique Lyonnais ») : alias pour lire le play-by-play (L274). */
+    longName: z.string().nullish(),
+    shortName: z.string().nullish(),
     imageVersion: z.number().optional(),
     lineups: lineupSchema.optional(),
   })

@@ -631,6 +631,7 @@ export function MatchPage() {
                 goalMinutes={goalMinutes}
                 homeIsOl={trackedIsHome}
                 palette={palette}
+                actions={data.momentumActions}
               />
             )}
           </div>

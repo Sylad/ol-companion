@@ -78,6 +78,12 @@ export interface LiveMatchMomentumPoint {
   value: number;
 }
 
+export interface LiveMatchMomentumActions {
+  home: number;
+  away: number;
+  unattributed: number;
+}
+
 export interface LiveMatchLineupPlayer {
   id: number;                // identifiant de membre 365scores (propre au match)
   athleteId?: number;        // identifiant du joueur (/api/players, route /player) — L209
@@ -105,6 +111,11 @@ export interface LiveMatchStats extends LiveMatchSummary {
   shots: LiveMatchShot[];
   /** Momentum minute par minute dérivé du play-by-play ; absent si le feed est indisponible. */
   momentum?: LiveMatchMomentumPoint[];
+  /**
+   * Actions du play-by-play qui font le momentum (tirs, corners, coups francs, hors-jeu), par équipe,
+   * et celles qu'aucune équipe ne revendique (L274) : l'écran en donne la part. Présent avec `momentum`.
+   */
+  momentumActions?: LiveMatchMomentumActions;
   /** Compositions confirmées des deux équipes ; absent tant que 365scores ne les publie pas. */
   lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
   /** Classement Ligue 1 live autour de l'OL (± 2), absent si 365scores ne répond pas. */

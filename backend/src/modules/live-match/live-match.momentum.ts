@@ -8,7 +8,16 @@
  * minute, on lisse (EMA) et on normalise à ±100. Positif = domicile.
  *
  * Approximation assumée : ce n'est pas le « dangerous attacks » de SportRadar,
- * mais la forme (vagues de pression, bascules autour des buts) est comparable.
+ * ni le momentum de Sofascore (qui mêle possession et grandes occasions) ; le
+ * flux 365scores n'a ni possession par période ni occasions franches. L'écran
+ * le dit sous le graphe (L274).
+ *
+ * Attribution (L274) : le commentaire écrit le nom de l'équipe à sa façon
+ * (« Lillestrøm ») quand le détail du match en donne un autre (« Lillestrom ») ;
+ * les noms sont comparés sans accents ni signes (`normaliseTeamName`), contre
+ * le nom et le nom long du club. Une action qu'on n'attribue pas est comptée
+ * (`countMomentumActions`) et l'écran en donne la part, au lieu d'une moitié
+ * de graphe vide qui ressemblerait à « aucune occasion ».
  */
 
 export interface PlayByPlayMessage {
@@ -25,9 +34,19 @@ export interface MomentumPoint {
   value: number;
 }
 
-interface TeamNames {
+export interface TeamNames {
   homeName: string;
   awayName: string;
+  /** Autres noms du club chez 365scores (nom long : « Olympique Lyonnais », « LOSC Lille »). */
+  homeAliases?: string[];
+  awayAliases?: string[];
+}
+
+/** Actions pesées (tirs, corners, coups francs, hors-jeu) par équipe, et celles qu'on n'a pas su attribuer. */
+export interface MomentumActions {
+  home: number;
+  away: number;
+  unattributed: number;
 }
 
 /** Types 365scores/Opta observés (Anderlecht-Lyon 16/09/2026, Lyon-Rennes 19/09/2026). */
@@ -61,7 +80,8 @@ export function parsePlayByPlay(raw: unknown): PlayByPlayMessage[] {
       minute,
       period: typeof r.Period === 'string' ? parseInt(r.Period, 10) || 1 : 1,
       comment: typeof r.Comment === 'string' ? r.Comment : '',
-      competitorNum: typeof r.CompetitorNum === 'number' ? r.CompetitorNum : undefined,
+      competitorNum:
+        typeof r.CompetitorNum === 'number' ? r.CompetitorNum : undefined,
     });
   }
   return out;
@@ -85,17 +105,64 @@ export function attributeTeam(
   const c = msg.comment;
   const byParen = /\(([^)]+)\)/.exec(c)?.[1];
   const byComma = /^[^,.]+,\s*([^.]+)\./.exec(c)?.[1];
+  const home = [teams.homeName, ...(teams.homeAliases ?? [])];
+  const away = [teams.awayName, ...(teams.awayAliases ?? [])];
   for (const candidate of [byParen, byComma]) {
     if (!candidate) continue;
-    if (sameTeam(candidate, teams.homeName)) return 'home';
-    if (sameTeam(candidate, teams.awayName)) return 'away';
+    const side = matchSide(candidate, home, away);
+    if (side) return side;
   }
   return null;
 }
 
-function sameTeam(a: string, b: string): boolean {
-  const n = (s: string) => s.trim().toLowerCase();
-  return n(a) === n(b);
+/**
+ * Nom comparable : sans accents ni lettres liées (ø → o, æ → ae, ß → ss…),
+ * en minuscules, ponctuation et espaces réduits à un espace.
+ */
+export function normaliseTeamName(s: string): string {
+  return s
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[øǿ]/g, 'o')
+    .replace(/æ/g, 'ae')
+    .replace(/œ/g, 'oe')
+    .replace(/ß/g, 'ss')
+    .replace(/[đð]/g, 'd')
+    .replace(/ł/g, 'l')
+    .replace(/ı/g, 'i')
+    .replace(/þ/g, 'th')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+/**
+ * Le côté dont un nom correspond au candidat : égalité des noms normalisés
+ * d'abord, sinon un nom contenu mot pour mot dans l'autre (« Lille » / « LOSC
+ * Lille ») — seulement si un seul côté correspond, jamais un pari.
+ */
+function matchSide(
+  candidate: string,
+  home: string[],
+  away: string[],
+): 'home' | 'away' | null {
+  const c = normaliseTeamName(candidate);
+  if (!c) return null;
+  const names = (list: string[]) =>
+    list.map(normaliseTeamName).filter((n) => n.length > 0);
+  const h = names(home);
+  const a = names(away);
+  const exactHome = h.includes(c);
+  const exactAway = a.includes(c);
+  if (exactHome !== exactAway) return exactHome ? 'home' : 'away';
+  if (exactHome && exactAway) return null;
+  const words = (x: string) => ` ${x} `;
+  const contains = (n: string) =>
+    words(n).includes(words(c)) || words(c).includes(words(n));
+  const looseHome = h.some(contains);
+  const looseAway = a.some(contains);
+  if (looseHome !== looseAway) return looseHome ? 'home' : 'away';
+  return null;
 }
 
 /** Poids offensif d'un message pour l'équipe qui l'a produit. */
@@ -118,6 +185,21 @@ export function scoreMessage(msg: { type: number; comment: string }): number {
     default:
       return 0;
   }
+}
+
+/** Compte les actions pesées de chaque équipe et celles qu'aucune équipe ne revendique. */
+export function countMomentumActions(
+  messages: PlayByPlayMessage[],
+  teams: TeamNames,
+): MomentumActions {
+  const out: MomentumActions = { home: 0, away: 0, unattributed: 0 };
+  for (const m of messages) {
+    if (scoreMessage(m) === 0) continue;
+    const team = attributeTeam(m, teams);
+    if (team) out[team]++;
+    else out.unattributed++;
+  }
+  return out;
 }
 
 export function computeMomentum(
@@ -144,7 +226,10 @@ export function computeMomentum(
     smoothed.push(ema);
   }
 
-  const peak = Math.max(MIN_NORMALISATION_DENOMINATOR, ...smoothed.map((v) => Math.abs(v)));
+  const peak = Math.max(
+    MIN_NORMALISATION_DENOMINATOR,
+    ...smoothed.map((v) => Math.abs(v)),
+  );
   return smoothed.map((v, i) => ({
     minute: i + 1,
     value: Math.round((v / peak) * 100),

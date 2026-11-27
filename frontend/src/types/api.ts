@@ -301,6 +301,12 @@ export interface LiveMatchShot {
   side: number;
 }
 
+export interface LiveMatchMomentumActions {
+  home: number;
+  away: number;
+  unattributed: number;
+}
+
 export interface LiveMatchMomentumPoint {
   minute: number;
   /** −100 (pression extérieur) … +100 (pression domicile). */
@@ -348,6 +354,8 @@ export interface LiveMatchStats extends LiveMatchSummary {
   topPerformers: LiveMatchTopPerformer[];
   shots: LiveMatchShot[];
   momentum?: LiveMatchMomentumPoint[];
+  /** Actions qui font le momentum, par équipe, et celles qu'aucune équipe ne revendique (L274). */
+  momentumActions?: LiveMatchMomentumActions;
   lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
   standings?: LiveStandingRow[];
   updatedAt: string;
