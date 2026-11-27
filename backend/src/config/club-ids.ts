@@ -36,13 +36,18 @@ export const SCORES365_TO_FOOTBALL_DATA: Readonly<Record<number, number>> = {
 };
 
 /** Identifiant du club dans `/api/standings` (365scores, OL sous 523) → football-data. */
-export function standingsIdToFootballData(standingsId: number): number | undefined {
+export function standingsIdToFootballData(
+  standingsId: number,
+): number | undefined {
   if (standingsId === OL_TEAM_ID) return OL_TEAM_ID;
   return SCORES365_TO_FOOTBALL_DATA[standingsId];
 }
 
 const FOOTBALL_DATA_TO_STANDINGS: ReadonlyMap<number, number> = new Map(
-  Object.entries(SCORES365_TO_FOOTBALL_DATA).map(([s365, fd]) => [fd, Number(s365) === OL_365SCORES_ID ? OL_TEAM_ID : Number(s365)]),
+  Object.entries(SCORES365_TO_FOOTBALL_DATA).map(([s365, fd]) => [
+    fd,
+    Number(s365) === OL_365SCORES_ID ? OL_TEAM_ID : Number(s365),
+  ]),
 );
 
 /** Identifiant football-data → identifiant du club dans `/api/standings` ; `undefined` si non relié. */
@@ -51,4 +56,6 @@ export function footballDataToStandingsId(fdId: number): number | undefined {
 }
 
 /** Les identifiants de `/api/standings` reliés à football-data. */
-export const LINKED_STANDINGS_IDS: readonly number[] = [...FOOTBALL_DATA_TO_STANDINGS.values()];
+export const LINKED_STANDINGS_IDS: readonly number[] = [
+  ...FOOTBALL_DATA_TO_STANDINGS.values(),
+];

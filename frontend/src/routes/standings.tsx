@@ -5,7 +5,7 @@ import { KnowledgeHeader } from '@/components/knowledge-header';
 import { StandingsTable, type VueTelephone } from '@/components/standings-table';
 import { PositionTracker } from '@/components/position-tracker';
 import { RetryMessage } from '@/components/retry-message';
-import { OL_TEAM_ID } from '@/types/api';
+import { OL_TEAM_ID, type StandingEntry } from '@/types/api';
 import { AlertTriangle, ArrowDown, Loader2, RefreshCw } from 'lucide-react';
 
 function formatRelative(iso: string): string {
@@ -125,26 +125,8 @@ export function StandingsPage() {
               buttonTestId="standings-retry"
             />
           )}
-          {/* L262 : lien affiché tant que la barre du bas l'est (sous 1024 px, téléphone couché compris).
-              L273 : sous 768 px, même rangée (aucune hauteur de plus), le choix des colonnes : G, N, P ou le prochain adversaire. */}
           {data && data.table.length > 0 && (
-            <div className="flex items-center gap-2 px-2 lg:hidden">
-              <VueTelephoneChoix vue={vueTelephone} onChange={setVueTelephone} />
-              {olRow && (
-                <a
-                  href="#ligne-ol"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    allerALigneOL();
-                  }}
-                  className="ml-auto inline-flex min-h-6 items-center gap-1 whitespace-nowrap rounded-sm px-1 text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
-                >
-                  Voir l'OL
-                  <span className="num">({olRow.position === 1 ? '1er' : `${olRow.position}e`})</span>
-                  <ArrowDown className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
-                </a>
-              )}
-            </div>
+            <BarreTelephone olRow={olRow} vue={vueTelephone} onChange={setVueTelephone} />
           )}
           {data && data.table.length > 0 && (
             <StandingsTable rows={data.table} nextOpponents={nextOpponents} vueTelephone={vueTelephone} />
@@ -156,6 +138,38 @@ export function StandingsPage() {
       </section>
 
       <PositionTracker />
+    </div>
+  );
+}
+
+/** L262 : lien affiché tant que la barre du bas l'est (sous 1024 px, téléphone couché compris).
+ *  L273 : sous 768 px, même rangée (aucune hauteur de plus), le choix des colonnes : G, N, P ou le prochain adversaire. */
+function BarreTelephone({
+  olRow,
+  vue,
+  onChange,
+}: {
+  olRow: StandingEntry | undefined;
+  vue: VueTelephone;
+  onChange: (v: VueTelephone) => void;
+}) {
+  return (
+    <div className="flex items-center gap-2 px-2 lg:hidden">
+      <VueTelephoneChoix vue={vue} onChange={onChange} />
+      {olRow && (
+        <a
+          href="#ligne-ol"
+          onClick={(e) => {
+            e.preventDefault();
+            allerALigneOL();
+          }}
+          className="ml-auto inline-flex min-h-6 items-center gap-1 whitespace-nowrap rounded-sm px-1 text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
+        >
+          Voir l'OL
+          <span className="num">({olRow.position === 1 ? '1er' : `${olRow.position}e`})</span>
+          <ArrowDown className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
+        </a>
+      )}
     </div>
   );
 }

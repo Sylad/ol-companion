@@ -1,5 +1,5 @@
 import { formatKickoffLong } from '@/lib/kickoff';
-import type { NextOpponents } from '@/types/api';
+import type { NextOpponents } from '@/types/next-opponents';
 import { FootballDataAttribution } from './football-data-attribution';
 import { EMPTY_REASON_TEXT, VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
 import { NEXT_LABEL, type VueTelephone } from './standings-table';

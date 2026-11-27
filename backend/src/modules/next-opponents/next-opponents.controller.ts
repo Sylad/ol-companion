@@ -1,4 +1,9 @@
-import { Controller, Get, Logger, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { LeagueMatchesService } from '../match-impact/league-matches.service';
 import { computeNextOpponents, type NextOpponents } from './next-opponents';
 
@@ -20,11 +25,16 @@ export class NextOpponentsController {
   @Get()
   async get(): Promise<NextOpponentsResponse> {
     const data = await this.league.getMatches();
-    if (!data) throw new ServiceUnavailableException('Prochains adversaires indisponibles : football-data.org n’a pas répondu.');
+    if (!data)
+      throw new ServiceUnavailableException(
+        'Prochains adversaires indisponibles : football-data.org n’a pas répondu.',
+      );
     const result = computeNextOpponents(data.matches, new Date());
     const unlinked = result.unlinked.join(', ');
     if (unlinked && unlinked !== this.lastUnlinked) {
-      this.logger.error(`Clubs de Ligue 1 non reliés à 365scores (config/club-ids.ts) : ${unlinked}`);
+      this.logger.error(
+        `Clubs de Ligue 1 non reliés à 365scores (config/club-ids.ts) : ${unlinked}`,
+      );
     }
     this.lastUnlinked = unlinked;
     return { ...result, updatedAt: new Date(data.fetchedAt).toISOString() };

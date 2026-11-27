@@ -1,6 +1,6 @@
 import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { formatKickoffLong } from '@/lib/kickoff';
-import type { NextOpponent, NextOpponents } from '@/types/api';
+import type { NextOpponent, NextOpponents } from '@/types/next-opponents';
 import { TeamLogo } from './team-logo';
 
 /**

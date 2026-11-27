@@ -5,7 +5,8 @@ import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { StandingsTable } from './standings-table';
 import { VENUE_LONG, VENUE_SHORT } from './next-opponent-cell';
-import type { NextOpponents, SeasonStandings } from '@/types/api';
+import type { SeasonStandings } from '@/types/api';
+import type { NextOpponents } from '@/types/next-opponents';
 import donnees from '../../tests-navigateur/donnees/classement-prochain-L273.json';
 
 // L273 — colonne « Prochain » : prochain adversaire en Ligue 1 de chaque club (football-data.org).
@@ -60,6 +61,9 @@ describe('<StandingsTable /> — colonne « Prochain » (L273)', () => {
     expect(dom.className).toBe(ext.className);
   });
 
+});
+
+describe('<StandingsTable /> — légende de la colonne « Prochain » (L273)', () => {
   it('la légende reprend les libellés des cases, la journée qui vient et la mention football-data', () => {
     render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok()} />);
     const legende = screen.getByTestId('legende-prochain');
@@ -79,6 +83,9 @@ describe('<StandingsTable /> — colonne « Prochain » (L273)', () => {
     expect(libelles(entete)).toEqual(['tel=Adv.', 'bureau=Prochain']);
   });
 
+});
+
+describe('<StandingsTable /> — cases vides et vue téléphone (L273)', () => {
   it('trêve : premier match à plus de 10 jours → « Trêve : reprise … »', () => {
     const treve = { ...PROCHAINS, next: PROCHAINS.next.map((n) => ({ ...n, utcDate: '2027-01-02T19:45:00Z', matchday: 17 })) };
     render(<StandingsTable rows={CLASSEMENT.table} nextOpponents={ok(treve)} />);

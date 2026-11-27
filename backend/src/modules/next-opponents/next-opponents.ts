@@ -1,4 +1,7 @@
-import { footballDataToStandingsId, LINKED_STANDINGS_IDS } from '../../config/club-ids';
+import {
+  footballDataToStandingsId,
+  LINKED_STANDINGS_IDS,
+} from '../../config/club-ids';
 import { footballDataTimeConfirmed } from '../fixtures/kickoff-time';
 import type { FdLeagueMatch } from '../match-impact/match-impact';
 
@@ -44,10 +47,19 @@ export interface NextOpponents {
   unlinked: string[];
 }
 
-export function computeNextOpponents(matches: FdLeagueMatch[], now: Date): NextOpponents {
+export function computeNextOpponents(
+  matches: FdLeagueMatch[],
+  now: Date,
+): NextOpponents {
   const upcoming = matches
-    .filter((m) => UPCOMING.has(m.status) && new Date(m.utcDate).getTime() >= now.getTime() - STARTED_GRACE_MS)
-    .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
+    .filter(
+      (m) =>
+        UPCOMING.has(m.status) &&
+        new Date(m.utcDate).getTime() >= now.getTime() - STARTED_GRACE_MS,
+    )
+    .sort(
+      (a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime(),
+    );
 
   const byTeam = new Map<number, NextOpponent>();
   const unlinked = new Set<string>();

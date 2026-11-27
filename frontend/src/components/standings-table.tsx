@@ -1,8 +1,9 @@
 import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type StandingEntry, type FormOutcome } from '@/types/api';
+import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import type { NextOpponents } from '@/types/api';
+import type { NextOpponents } from '@/types/next-opponents';
 import { NextOpponentCell, nextOpponentState } from './next-opponent-cell';
 import { NextOpponentsNote } from './next-opponents-note';
 
@@ -111,16 +112,20 @@ function PositionDot({ position }: { position: number }) {
   );
 }
 
+/** Classes de visibilité d'une colonne selon la vue du téléphone (`hidden` sous 768 px, `table-cell` au-delà). */
+function columnVisibility(key: string, vue: VueTelephone, withNext: boolean, mobile?: boolean): string | false {
+  if (mobile === false) return 'hidden md:table-cell';
+  if (key === 'next') return vue === 'prochain' ? false : 'hidden md:table-cell';
+  if (withNext && BILAN_KEYS.has(key) && vue === 'prochain') return 'hidden md:table-cell';
+  return false;
+}
+
+type Visibility = (key: string, mobile?: boolean) => string | false;
+
 export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: StandingsTableProps) {
   const withNext = !!nextOpponents;
   const names = new Map(rows.map((r) => [r.teamId, r.team]));
-  /** Classes de visibilité d'une colonne selon la vue du téléphone (`hidden` sous 768 px, `table-cell` au-delà). */
-  const visibility = (key: string, mobile?: boolean): string | false => {
-    if (mobile === false) return 'hidden md:table-cell';
-    if (key === 'next') return vueTelephone === 'prochain' ? false : 'hidden md:table-cell';
-    if (withNext && BILAN_KEYS.has(key) && vueTelephone === 'prochain') return 'hidden md:table-cell';
-    return false;
-  };
+  const visibility: Visibility = (key, mobile) => columnVisibility(key, vueTelephone, withNext, mobile);
   const columns = withNext ? COLUMNS : COLUMNS.filter((c) => c.key !== 'next');
   return (
     <div className="-mx-1">
@@ -148,94 +153,14 @@ export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: 
           {rows.map((row, i) => {
             const prev = i > 0 ? zoneOf(rows[i - 1].position) : undefined;
             const rule = i > 0 && zoneOf(row.position) !== prev ? 'border-t border-border' : '';
-            const isOL = row.teamId === OL_TEAM_ID;
-            const dgSign =
-              row.goalDifference > 0 ? '+' : row.goalDifference < 0 ? '' : '';
-
             return (
-              <tr
-                key={row.teamId}
-                id={isOL ? 'ligne-ol' : undefined}
-                tabIndex={isOL ? -1 : undefined}
-                className={cn(
-                  isOL && 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ol-red',
-                  'group transition-colors',
-                  isOL
-                    ? 'bg-ol-red/5 hover:bg-ol-red/10'
-                    : 'hover:bg-surface-2/50',
-                )}
-              >
-                <td
-                  className={cn(
-                    rule,
-                    'px-1 md:px-2 py-3 text-center num text-fg-muted relative whitespace-nowrap',
-                    isOL && 'text-ol-red-bright font-semibold',
-                  )}
-                >
-                  {isOL && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-[3px] rounded-r-sm bg-ol-red" />
-                  )}
-                  <PositionDot position={row.position} />
-                  <span className="align-middle">{row.position}</span>
-                </td>
-                <td className={cn("px-1.5 md:px-2 py-3 max-w-0 min-w-[7rem] md:min-w-[7.25rem]", rule)}>
-                  <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
-                    <TeamLogo teamId={row.teamId} name={row.team} size={22} src={seasonTeamLogoUrl(row.teamId)} />
-                    <span
-                      title={row.team}
-                      className={cn(
-                        'min-w-[4.5rem] line-clamp-3 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
-                        isOL ? 'text-fg-bright font-semibold' : 'text-fg',
-                      )}
-                    >
-                      {row.team}
-                    </span>
-                  </div>
-                </td>
-                <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
-                  {row.played}
-                </td>
-                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule, visibility('won'))}>{row.won}</td>
-                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule, visibility('draw'))}>{row.draw}</td>
-                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule, visibility('lost'))}>{row.lost}</td>
-                <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
-                  {row.goalsFor}
-                </td>
-                <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
-                  {row.goalsAgainst}
-                </td>
-                <td
-                  className={cn(
-                    rule,
-                    'px-1 md:px-2 py-3 text-center num',
-                    row.goalDifference > 0
-                      ? 'text-win'
-                      : row.goalDifference < 0
-                      ? 'text-loss-fg'
-                      : 'text-fg-muted',
-                  )}
-                >
-                  {dgSign}
-                  {row.goalDifference}
-                </td>
-                <td
-                  className={cn(
-                    rule,
-                    'px-1 md:px-2 py-3 text-center num font-bold',
-                    isOL ? 'text-fg-bright' : 'text-fg',
-                  )}
-                >
-                  {row.points}
-                </td>
-                <td className={cn("hidden md:table-cell px-2 py-3", rule)}>
-                  <FormStrip form={row.recentForm} />
-                </td>
+              <StandingsRow key={row.teamId} row={row} rule={rule} visibility={visibility}>
                 {nextOpponents && (
                   <td className={cn('px-1 md:px-2 py-3', rule, visibility('next'))}>
                     <NextOpponentCell state={nextOpponentState(row.teamId, nextOpponents, names)} />
                   </td>
                 )}
-              </tr>
+              </StandingsRow>
             );
           })}
         </tbody>
@@ -244,6 +169,93 @@ export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: 
       <Legend />
       {nextOpponents && <NextOpponentsNote query={nextOpponents} vueTelephone={vueTelephone} />}
     </div>
+  );
+}
+
+function PositionCell({ row, rule, isOL }: { row: StandingEntry; rule: string; isOL: boolean }) {
+  return (
+    <td
+      className={cn(
+        rule,
+        'px-1 md:px-2 py-3 text-center num text-fg-muted relative whitespace-nowrap',
+        isOL && 'text-ol-red-bright font-semibold',
+      )}
+    >
+      {isOL && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-[3px] rounded-r-sm bg-ol-red" />
+      )}
+      <PositionDot position={row.position} />
+      <span className="align-middle">{row.position}</span>
+    </td>
+  );
+}
+
+function ClubCell({ row, rule, isOL }: { row: StandingEntry; rule: string; isOL: boolean }) {
+  return (
+    <td className={cn("px-1.5 md:px-2 py-3 max-w-0 min-w-[7rem] md:min-w-[7.25rem]", rule)}>
+      <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
+        <TeamLogo teamId={row.teamId} name={row.team} size={22} src={seasonTeamLogoUrl(row.teamId)} />
+        <span
+          title={row.team}
+          className={cn(
+            'min-w-[4.5rem] line-clamp-3 break-words text-xs leading-tight md:text-sm md:line-clamp-none md:truncate',
+            isOL ? 'text-fg-bright font-semibold' : 'text-fg',
+          )}
+        >
+          {row.team}
+        </span>
+      </div>
+    </td>
+  );
+}
+
+function goalDifferenceClass(gd: number): string {
+  if (gd > 0) return 'text-win';
+  return gd < 0 ? 'text-loss-fg' : 'text-fg-muted';
+}
+
+interface StandingsRowProps {
+  row: StandingEntry;
+  rule: string;
+  visibility: Visibility;
+  /** Cellules ajoutées en fin de ligne (colonne « Prochain », L273). */
+  children?: ReactNode;
+}
+
+function StandingsRow({ row, rule, visibility, children }: StandingsRowProps) {
+  const isOL = row.teamId === OL_TEAM_ID;
+  const num = 'px-1 md:px-2 py-3 text-center num text-fg-muted';
+  const numDesktop = 'hidden md:table-cell px-2 py-3 text-center num text-fg-muted';
+  return (
+    <tr
+      id={isOL ? 'ligne-ol' : undefined}
+      tabIndex={isOL ? -1 : undefined}
+      className={cn(
+        isOL && 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ol-red',
+        'group transition-colors',
+        isOL ? 'bg-ol-red/5 hover:bg-ol-red/10' : 'hover:bg-surface-2/50',
+      )}
+    >
+      <PositionCell row={row} rule={rule} isOL={isOL} />
+      <ClubCell row={row} rule={rule} isOL={isOL} />
+      <td className={cn(numDesktop, rule)}>{row.played}</td>
+      <td className={cn(num, rule, visibility('won'))}>{row.won}</td>
+      <td className={cn(num, rule, visibility('draw'))}>{row.draw}</td>
+      <td className={cn(num, rule, visibility('lost'))}>{row.lost}</td>
+      <td className={cn(numDesktop, rule)}>{row.goalsFor}</td>
+      <td className={cn(numDesktop, rule)}>{row.goalsAgainst}</td>
+      <td className={cn(rule, 'px-1 md:px-2 py-3 text-center num', goalDifferenceClass(row.goalDifference))}>
+        {row.goalDifference > 0 ? '+' : ''}
+        {row.goalDifference}
+      </td>
+      <td className={cn(rule, 'px-1 md:px-2 py-3 text-center num font-bold', isOL ? 'text-fg-bright' : 'text-fg')}>
+        {row.points}
+      </td>
+      <td className={cn("hidden md:table-cell px-2 py-3", rule)}>
+        <FormStrip form={row.recentForm} />
+      </td>
+      {children}
+    </tr>
   );
 }
 

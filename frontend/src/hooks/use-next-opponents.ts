@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiGet } from '@/lib/api';
-import type { NextOpponents } from '@/types/api';
+import type { NextOpponents } from '@/types/next-opponents';
 
 /**
  * L273 — prochain adversaire en Ligue 1 de chaque club (football-data.org, un seul appel pour tout le
