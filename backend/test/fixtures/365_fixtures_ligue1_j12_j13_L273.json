@@ -1,0 +1,221 @@
+{
+ "_source": "365scores /web/games/fixtures/?competitions=35 (Ligue 1), relevé le 2026-11-27 à 17 h (heure de Paris), réduit aux champs lus par next-opponents.spec.ts (L273) ; sert à bâtir une réponse au format football-data avec la table config/club-ids.ts.",
+ "games": [
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-27T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 534,
+    "name": "Brest"
+   },
+   "awayCompetitor": {
+    "id": 6075,
+    "name": "Paris FC"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-28T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 493,
+    "name": "Angers"
+   },
+   "awayCompetitor": {
+    "id": 481,
+    "name": "Lens"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-28T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 480,
+    "name": "PSG"
+   },
+   "awayCompetitor": {
+    "id": 472,
+    "name": "Lorient"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-28T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 470,
+    "name": "OGC Nice"
+   },
+   "awayCompetitor": {
+    "id": 488,
+    "name": "Troyes"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-28T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 468,
+    "name": "Le Mans"
+   },
+   "awayCompetitor": {
+    "id": 478,
+    "name": "Lille"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-28T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 485,
+    "name": "Le Havre"
+   },
+   "awayCompetitor": {
+    "id": 479,
+    "name": "Strasbourg"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-29T15:00:00+01:00",
+   "homeCompetitor": {
+    "id": 476,
+    "name": "Auxerre"
+   },
+   "awayCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-29T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 482,
+    "name": "Toulouse"
+   },
+   "awayCompetitor": {
+    "id": 477,
+    "name": "Rennes"
+   }
+  },
+  {
+   "roundNum": 12,
+   "startTime": "2026-11-29T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 465,
+    "name": "Lyon"
+   },
+   "awayCompetitor": {
+    "id": 471,
+    "name": "Monaco"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-04T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 482,
+    "name": "Toulouse"
+   },
+   "awayCompetitor": {
+    "id": 480,
+    "name": "PSG"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-05T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 478,
+    "name": "Lille"
+   },
+   "awayCompetitor": {
+    "id": 476,
+    "name": "Auxerre"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-05T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 479,
+    "name": "Strasbourg"
+   },
+   "awayCompetitor": {
+    "id": 472,
+    "name": "Lorient"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-05T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 6075,
+    "name": "Paris FC"
+   },
+   "awayCompetitor": {
+    "id": 468,
+    "name": "Le Mans"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-05T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 471,
+    "name": "Monaco"
+   },
+   "awayCompetitor": {
+    "id": 493,
+    "name": "Angers"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-05T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 481,
+    "name": "Lens"
+   },
+   "awayCompetitor": {
+    "id": 485,
+    "name": "Le Havre"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-06T15:00:00+01:00",
+   "homeCompetitor": {
+    "id": 488,
+    "name": "Troyes"
+   },
+   "awayCompetitor": {
+    "id": 465,
+    "name": "Lyon"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-06T17:15:00+01:00",
+   "homeCompetitor": {
+    "id": 477,
+    "name": "Rennes"
+   },
+   "awayCompetitor": {
+    "id": 534,
+    "name": "Brest"
+   }
+  },
+  {
+   "roundNum": 13,
+   "startTime": "2026-12-06T20:45:00+01:00",
+   "homeCompetitor": {
+    "id": 469,
+    "name": "Olympique de Marseille"
+   },
+   "awayCompetitor": {
+    "id": 470,
+    "name": "OGC Nice"
+   }
+  }
+ ]
+}

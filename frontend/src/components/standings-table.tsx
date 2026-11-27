@@ -2,9 +2,21 @@ import { seasonTeamLogoUrl } from '@/lib/calendar';
 import { TeamLogo } from './team-logo';
 import { OL_TEAM_ID, type StandingEntry, type FormOutcome } from '@/types/api';
 import { cn } from '@/lib/utils';
+import type { NextOpponents } from '@/types/api';
+import { NextOpponentCell, nextOpponentState } from './next-opponent-cell';
+import { NextOpponentsNote } from './next-opponents-note';
+
+/**
+ * L273 — sous 768 px, le tableau n'a pas la place d'une colonne de plus (4 px de marge à 320 px) :
+ * la colonne « Prochain » y remplace G, N, P au choix (`vueTelephone`). À partir de 768 px, tout est affiché.
+ */
+export type VueTelephone = 'bilan' | 'prochain';
 
 interface StandingsTableProps {
   rows: StandingEntry[];
+  /** Réponse de `/api/next-opponents` ; absente : la colonne n'est pas affichée (tests anciens, usage hors page). */
+  nextOpponents?: { data?: NextOpponents; isError: boolean };
+  vueTelephone?: VueTelephone;
 }
 
 const COLUMNS = [
@@ -19,7 +31,14 @@ const COLUMNS = [
   { key: 'goalDifference', label: 'DB', align: 'center' as const, w: 'w-9 md:w-12' },
   { key: 'points', label: 'Pts', align: 'center' as const, w: 'w-10 md:w-14' },
   { key: 'form', label: '5 derniers', align: 'left' as const, w: 'w-[120px]', mobile: false },
+  { key: 'next', label: 'Prochain', align: 'left' as const, w: 'w-16 md:w-20' },
 ];
+
+/** Libellés de l'en-tête « Prochain », repris par la légende (invariant 1 : la légende suit le rendu). */
+export const NEXT_LABEL = { phone: 'Adv.', desktop: 'Prochain' } as const;
+
+/** Colonnes qui cèdent la place à « Prochain » au téléphone, vue « Prochain ». */
+const BILAN_KEYS = new Set(['won', 'draw', 'lost']);
 
 const FORM_LABEL: Record<FormOutcome, string> = { W: 'Victoire', D: 'Match nul', L: 'Défaite' };
 // L147 — lettres françaises : le « D » anglais (draw) se lisait Défaite.
@@ -92,24 +111,35 @@ function PositionDot({ position }: { position: number }) {
   );
 }
 
-export function StandingsTable({ rows }: StandingsTableProps) {
+export function StandingsTable({ rows, nextOpponents, vueTelephone = 'bilan' }: StandingsTableProps) {
+  const withNext = !!nextOpponents;
+  const names = new Map(rows.map((r) => [r.teamId, r.team]));
+  /** Classes de visibilité d'une colonne selon la vue du téléphone (`hidden` sous 768 px, `table-cell` au-delà). */
+  const visibility = (key: string, mobile?: boolean): string | false => {
+    if (mobile === false) return 'hidden md:table-cell';
+    if (key === 'next') return vueTelephone === 'prochain' ? false : 'hidden md:table-cell';
+    if (withNext && BILAN_KEYS.has(key) && vueTelephone === 'prochain') return 'hidden md:table-cell';
+    return false;
+  };
+  const columns = withNext ? COLUMNS : COLUMNS.filter((c) => c.key !== 'next');
   return (
     <div className="-mx-1">
       <table className="w-full text-sm border-separate border-spacing-0">
         <thead>
           <tr className="text-fg-dim">
-            {COLUMNS.map((col) => (
+            {columns.map((col) => (
               <th
                 key={col.key}
+                title={col.key === 'next' ? 'Prochain adversaire en Ligue 1' : undefined}
                 className={cn(
                   'sticky top-[calc(var(--bandeau-demo-h,0px)+var(--ligne-direct-h,0px))] z-10 bg-surface px-1 md:px-2 py-2 md:py-3 font-semibold uppercase tracking-wider text-petite',
                   col.w,
                   col.align === 'center' ? 'text-center' : 'text-left',
-                  col.mobile === false && 'hidden md:table-cell',
+                  visibility(col.key, col.mobile),
                   'border-b border-border',
                 )}
               >
-                {col.label}
+                {col.key === 'next' ? <NextHeader /> : col.label}
               </th>
             ))}
           </tr>
@@ -148,7 +178,7 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                   <PositionDot position={row.position} />
                   <span className="align-middle">{row.position}</span>
                 </td>
-                <td className={cn("px-2 py-3 max-w-0 min-w-[7.25rem]", rule)}>
+                <td className={cn("px-1.5 md:px-2 py-3 max-w-0 min-w-[7rem] md:min-w-[7.25rem]", rule)}>
                   <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
                     <TeamLogo teamId={row.teamId} name={row.team} size={22} src={seasonTeamLogoUrl(row.teamId)} />
                     <span
@@ -165,9 +195,9 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
                   {row.played}
                 </td>
-                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule)}>{row.won}</td>
-                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule)}>{row.draw}</td>
-                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule)}>{row.lost}</td>
+                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule, visibility('won'))}>{row.won}</td>
+                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule, visibility('draw'))}>{row.draw}</td>
+                <td className={cn("px-1 md:px-2 py-3 text-center num text-fg-muted", rule, visibility('lost'))}>{row.lost}</td>
                 <td className={cn("hidden md:table-cell px-2 py-3 text-center num text-fg-muted", rule)}>
                   {row.goalsFor}
                 </td>
@@ -200,6 +230,11 @@ export function StandingsTable({ rows }: StandingsTableProps) {
                 <td className={cn("hidden md:table-cell px-2 py-3", rule)}>
                   <FormStrip form={row.recentForm} />
                 </td>
+                {nextOpponents && (
+                  <td className={cn('px-1 md:px-2 py-3', rule, visibility('next'))}>
+                    <NextOpponentCell state={nextOpponentState(row.teamId, nextOpponents, names)} />
+                  </td>
+                )}
               </tr>
             );
           })}
@@ -207,7 +242,22 @@ export function StandingsTable({ rows }: StandingsTableProps) {
       </table>
 
       <Legend />
+      {nextOpponents && <NextOpponentsNote query={nextOpponents} vueTelephone={vueTelephone} />}
     </div>
+  );
+}
+
+/**
+ * En-tête de la colonne : « Adv. » sous 768 px (« PROCHAIN » en capitales prenait 84 px à 320 px, le tableau
+ * débordait de 31 px), « Prochain » au-delà ; nom accessible entier dans les deux cas.
+ */
+export function NextHeader() {
+  return (
+    <>
+      <span aria-hidden="true" className="md:hidden">{NEXT_LABEL.phone}</span>
+      <span aria-hidden="true" className="hidden md:inline">{NEXT_LABEL.desktop}</span>
+      <span className="sr-only">Prochain adversaire en Ligue 1</span>
+    </>
   );
 }
 

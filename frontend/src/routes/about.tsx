@@ -173,7 +173,7 @@ export function AboutPage() {
               <Sparkles className="h-3 w-3 text-ol-red-bright" aria-hidden="true" />
               <span>Données en direct via 365scores · Logos via Wikipedia FR · Hébergé sur Kubernetes (k3s).</span>
             </div>
-            <FootballDataSourceNote what="Prochain match et heures des coups d’envoi de Ligue 1" className="mt-2" />
+            <FootballDataSourceNote what="Prochain match et heures des coups d’envoi de Ligue 1, prochains adversaires du classement" className="mt-2" />
           </div>
         </div>
       </section>

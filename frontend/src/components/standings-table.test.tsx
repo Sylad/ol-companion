@@ -41,12 +41,13 @@ describe('<StandingsTable /> — mobile (L37)', () => {
     expect(cell).not.toHaveClass('w-full');
   });
 
-  it('max-w-0 n’annule pas le minimum du nom : la cellule du club garde logo + écart + nom + marges (116 px = 7,25 rem)', () => {
+  it('max-w-0 n’annule pas le minimum du nom : la cellule du club garde logo + écart + nom + marges (112 px = 7 rem au téléphone, 116 px = 7,25 rem au-delà)', () => {
     renderTable();
     const cell = screen.getByText('Paris Saint-Germain Football Club').closest('td')!;
-    // 16 (px-2 ×2) + 22 (logo) + 6 (gap) + 72 (nom 4,5 rem) : sans ce plancher, max-w-0
-    // ramène la cellule sous 100 px sous ~370 px de viewport et le nom chevauche la colonne G
-    expect(cell).toHaveClass('min-w-[7.25rem]');
+    // 12 (px-1.5 ×2, L273) + 22 (logo) + 6 (gap) + 72 (nom 4,5 rem) : sans ce plancher, max-w-0
+    // ramène la cellule sous 100 px sous ~370 px de viewport et le nom chevauche la colonne G.
+    // L273 : 4 px de moins au téléphone, le tableau débordait de 2 px à 320 px (mesuré dans Chromium).
+    expect(cell).toHaveClass('min-w-[7rem]', 'md:min-w-[7.25rem]');
   });
 
   it('la colonne Pts reste affichée sur mobile (jamais masquée ni hors flux)', () => {
@@ -65,11 +66,11 @@ describe('<StandingsTable /> — mobile (L37)', () => {
       .map((m) => Number(m[1]) * 4);
     const fixed = widths.reduce((a, b) => a + b, 0);
     const name = screen.getByText('Paris Saint-Germain Football Club');
-    // cellule du club : px-2 (2 × 8 px) ; contenu : logo 22 px + gap-1.5 (6 px)
-    expect(name.closest('td')).toHaveClass('px-2');
+    // cellule du club : px-1.5 au téléphone (2 × 6 px, L273 : 2 px de débord à 320 px) ; contenu : logo 22 px + gap-1.5 (6 px)
+    expect(name.closest('td')).toHaveClass('px-1.5', 'md:px-2');
     expect(name.parentElement).toHaveClass('gap-1.5');
     // conteneur à 360 px : écran − 50 px (px-5 ×2, bordure ×2, p-2 ×2, moins -mx-1 ×2)
-    const available = 360 - 50 - fixed - 16 - 22 - 6;
+    const available = 360 - 50 - fixed - 12 - 22 - 6;
     expect(available).toBeGreaterThanOrEqual(72);
     // largeur minimale du nom (4,5 rem = 72 px) : en dessous, le tableau défile
     expect(name).toHaveClass('min-w-[4.5rem]');

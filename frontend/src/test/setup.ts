@@ -15,3 +15,11 @@ vi.mock('@/hooks/use-match-impact', async () => {
   const { ApiError } = await import('@/lib/api');
   return { useMatchImpact: () => ({ isPending: false, data: undefined, error: new ApiError(404, 'simulé (setup)') }) };
 });
+
+// L273 — la colonne « Prochain » du classement a sa propre requête (football-data.org). Partout, le hook
+// répond « pas encore de réponse » : aucun appel, cases « — » en chargement, aucune légende. Les tests de
+// /standings écrits avant L273 (rendus sans QueryClient, appels comptés) restent ainsi tels quels. Les tests
+// de la colonne reprennent le vrai hook avec `vi.unmock('@/hooks/use-next-opponents')`.
+vi.mock('@/hooks/use-next-opponents', () => ({
+  useNextOpponents: () => ({ data: undefined, isError: false, isPending: true }),
+}));

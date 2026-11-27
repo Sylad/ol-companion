@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useStandings } from '@/hooks/use-standings';
+import { useNextOpponents } from '@/hooks/use-next-opponents';
 import { KnowledgeHeader } from '@/components/knowledge-header';
-import { StandingsTable } from '@/components/standings-table';
+import { StandingsTable, type VueTelephone } from '@/components/standings-table';
 import { PositionTracker } from '@/components/position-tracker';
 import { RetryMessage } from '@/components/retry-message';
 import { OL_TEAM_ID } from '@/types/api';
@@ -51,6 +53,8 @@ export function StandingsPage() {
     : null;
 
   const olRow = data?.table.find((row) => row.teamId === OL_TEAM_ID);
+  const nextOpponents = useNextOpponents();
+  const [vueTelephone, setVueTelephone] = useState<VueTelephone>('bilan');
 
   return (
     <div className="space-y-4 lg:space-y-8">
@@ -121,24 +125,30 @@ export function StandingsPage() {
               buttonTestId="standings-retry"
             />
           )}
-          {/* L262 : lien affiché tant que la barre du bas l'est (sous 1024 px, téléphone couché compris). */}
-          {olRow && (
-            <div className="flex justify-end px-2 lg:hidden">
-              <a
-                href="#ligne-ol"
-                onClick={(e) => {
-                  e.preventDefault();
-                  allerALigneOL();
-                }}
-                className="inline-flex min-h-6 items-center gap-1 rounded-sm px-1 text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
-              >
-                Voir l'OL
-                <span className="num">({olRow.position === 1 ? '1er' : `${olRow.position}e`})</span>
-                <ArrowDown className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
-              </a>
+          {/* L262 : lien affiché tant que la barre du bas l'est (sous 1024 px, téléphone couché compris).
+              L273 : sous 768 px, même rangée (aucune hauteur de plus), le choix des colonnes : G, N, P ou le prochain adversaire. */}
+          {data && data.table.length > 0 && (
+            <div className="flex items-center gap-2 px-2 lg:hidden">
+              <VueTelephoneChoix vue={vueTelephone} onChange={setVueTelephone} />
+              {olRow && (
+                <a
+                  href="#ligne-ol"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    allerALigneOL();
+                  }}
+                  className="ml-auto inline-flex min-h-6 items-center gap-1 whitespace-nowrap rounded-sm px-1 text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
+                >
+                  Voir l'OL
+                  <span className="num">({olRow.position === 1 ? '1er' : `${olRow.position}e`})</span>
+                  <ArrowDown className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
+                </a>
+              )}
             </div>
           )}
-          {data && data.table.length > 0 && <StandingsTable rows={data.table} />}
+          {data && data.table.length > 0 && (
+            <StandingsTable rows={data.table} nextOpponents={nextOpponents} vueTelephone={vueTelephone} />
+          )}
           {data && data.table.length === 0 && (
             <p className="py-20 text-center text-fg-muted">Aucune donnée disponible.</p>
           )}
@@ -146,6 +156,34 @@ export function StandingsPage() {
       </section>
 
       <PositionTracker />
+    </div>
+  );
+}
+
+const VUES: { vue: VueTelephone; label: string }[] = [
+  { vue: 'bilan', label: 'Bilan' },
+  { vue: 'prochain', label: 'Prochain' },
+];
+
+/** L273 — au téléphone (sous 768 px), colonnes G, N, P (« Bilan ») ou colonne du prochain adversaire (« Prochain »), sur une ligne à 320 px. */
+function VueTelephoneChoix({ vue, onChange }: { vue: VueTelephone; onChange: (v: VueTelephone) => void }) {
+  return (
+    <div role="group" aria-label="Colonnes du tableau" className="inline-flex shrink-0 whitespace-nowrap rounded-sm border border-border-strong md:hidden">
+      {VUES.map((v) => (
+        <button
+          key={v.vue}
+          type="button"
+          aria-pressed={vue === v.vue}
+          onClick={() => onChange(v.vue)}
+          className={
+            vue === v.vue
+              ? 'min-h-6 px-2 text-xs bg-surface-2 text-fg-bright font-semibold'
+              : 'min-h-6 px-2 text-xs text-fg-muted hover:text-fg'
+          }
+        >
+          {v.label}
+        </button>
+      ))}
     </div>
   );
 }
