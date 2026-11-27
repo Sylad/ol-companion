@@ -23,6 +23,16 @@ const PBP = read('365_pbp_lyon_lillestrom_L274.json') as {
 };
 const GAME_ID = 4828675;
 
+/**
+ * Réponse réelle de `getStats` pour ce match, relue par le test du graphe côté frontend
+ * (`momentum-chart.non-attribuees-L274.test.tsx`) : la phrase sous le graphe y est tirée de
+ * `momentumBasis`, donc de la table des poids. Régénérer : `ECRIRE_REPONSE_L274=1 npx jest <ce fichier>`.
+ */
+const REPONSE_FRONT = path.resolve(
+  __dirname,
+  '../../../../frontend/src/test/fixtures/live-match-lyon-lillestrom-L274.json',
+);
+
 describe('LiveMatchService — momentum de Lyon – Lillestrøm (L274)', () => {
   const realFetch = globalThis.fetch;
   let warns: string[];
@@ -32,18 +42,27 @@ describe('LiveMatchService — momentum de Lyon – Lillestrøm (L274)', () => {
       headers: { 'content-type': 'application/json' },
     });
 
-  const stats = (pbp: unknown) => {
-    const service = new LiveMatchService(
+  const newService = () =>
+    new LiveMatchService(
       { emit: jest.fn() } as unknown as EventBusService,
       { peekFixtures: () => [] } as unknown as FixturesService,
     );
+  /** `pbp` : corps du play-by-play, ou un statut HTTP d'échec. */
+  const serve = (pbp: unknown) => {
     globalThis.fetch = (input: unknown) => {
       const url = new URL(String(input));
       if (url.pathname === '/web/game/') return Promise.resolve(json(GAME));
       if (url.hostname === 'pbpgenerator.365scores.com')
-        return Promise.resolve(json(pbp));
+        return Promise.resolve(
+          typeof pbp === 'number'
+            ? new Response('', { status: pbp })
+            : json(pbp),
+        );
       return Promise.resolve(new Response('', { status: 404 }));
     };
+  };
+  const stats = (pbp: unknown, service = newService()) => {
+    serve(pbp);
     return service.getStats(GAME_ID, 'm1', { force: true });
   };
 
@@ -89,5 +108,39 @@ describe('LiveMatchService — momentum de Lyon – Lillestrøm (L274)', () => {
     expect(
       warns.some((w) => w.includes('1 action(s) sans équipe sur 72')),
     ).toBe(true);
+  });
+
+  it('play-by-play en échec après une première réponse : points et comptes de la première, repris ensemble', async () => {
+    const service = newService();
+    const first = await stats(PBP, service);
+    const second = await stats(503, service);
+    expect(second).not.toBe(first);
+    expect(second!.momentum).toEqual(first!.momentum);
+    expect(second!.momentumActions).toEqual({
+      home: 44,
+      away: 27,
+      unattributed: 0,
+    });
+    expect(second!.momentumBasis).toEqual(first!.momentumBasis);
+    expect(warns.some((w) => w.includes('play-by-play HTTP 503'))).toBe(true);
+  });
+
+  it('play-by-play en échec sans réponse précédente : ni graphe ni comptes', async () => {
+    const out = await stats(503);
+    expect(out!.momentum).toBeUndefined();
+    expect(out!.momentumActions).toBeUndefined();
+    expect(out!.momentumBasis).toBeUndefined();
+  });
+
+  it('la réponse relue par le test du graphe (frontend) est celle du service : mêmes points, comptes et sortes', async () => {
+    const out = await stats(PBP);
+    if (process.env.ECRIRE_REPONSE_L274)
+      fs.writeFileSync(REPONSE_FRONT, JSON.stringify(out, null, 2) + '\n');
+    const front = JSON.parse(fs.readFileSync(REPONSE_FRONT, 'utf-8'));
+    // Forme JSON : ce que le frontend reçoit (-0 y devient 0).
+    const servi = JSON.parse(JSON.stringify(out)) as typeof out;
+    expect(front.momentumBasis).toEqual(servi!.momentumBasis);
+    expect(front.momentumActions).toEqual(servi!.momentumActions);
+    expect(front.momentum).toEqual(servi!.momentum);
   });
 });

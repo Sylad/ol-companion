@@ -10,5 +10,16 @@ export function unattributedNote(actions: LiveMatchMomentumActions | undefined):
   const pct = Math.round((actions.unattributed / total) * 100);
   const part = pct < 1 ? 'moins de 1 %' : `${pct} %`;
   const n = actions.unattributed;
-  return `${n} action${n > 1 ? 's' : ''} sur ${total} (${part}) sans équipe reconnue : absente${n > 1 ? 's' : ''} du graphe.`;
+  return `${n} action${n > 1 ? 's' : ''} sur ${total} (${part}) sans équipe, absente${n > 1 ? 's' : ''} du graphe.`;
+}
+
+/**
+ * L274 : la phrase sous le graphe cite exactement ce que le calcul compte. La liste vient du backend
+ * (`momentumBasis`, tirée de sa table des poids) ; sans elle (réponse plus ancienne), rien n'est énuméré.
+ */
+export function basisNote(basis: string[] | undefined): string {
+  const kinds = (basis ?? []).filter((k) => k.trim().length > 0);
+  if (!kinds.length) return 'Reconstruction à partir du fil du match, sans possession ni occasions franches.';
+  // Espace insécable avant « ; » : jamais en début de ligne.
+  return `Reconstruction : ${kinds.join(', ')}\u00a0; sans possession ni occasions franches.`;
 }

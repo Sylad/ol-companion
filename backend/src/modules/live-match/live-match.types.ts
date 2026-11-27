@@ -112,10 +112,15 @@ export interface LiveMatchStats extends LiveMatchSummary {
   /** Momentum minute par minute dérivé du play-by-play ; absent si le feed est indisponible. */
   momentum?: LiveMatchMomentumPoint[];
   /**
-   * Actions du play-by-play qui font le momentum (tirs, corners, coups francs, hors-jeu), par équipe,
+   * Actions du play-by-play qui font le momentum (sortes : `momentumBasis`), par équipe,
    * et celles qu'aucune équipe ne revendique (L274) : l'écran en donne la part. Présent avec `momentum`.
    */
   momentumActions?: LiveMatchMomentumActions;
+  /**
+   * Sortes d'actions que le momentum compte (« tirs (buts compris) », « corners »…), tirées de la table
+   * des poids (`MOMENTUM_BASIS`) : l'écran les cite sous le graphe, la légende suit le calcul (L274).
+   */
+  momentumBasis?: string[];
   /** Compositions confirmées des deux équipes ; absent tant que 365scores ne les publie pas. */
   lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
   /** Classement Ligue 1 live autour de l'OL (± 2), absent si 365scores ne répond pas. */

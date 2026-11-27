@@ -46,6 +46,11 @@ function stats(domicile = { id: 5061, name: 'France' }, visiteur = { id: 2373, n
       outcome: i % 4 === 0 ? 'But' : 'Manqué', line: 20 + i * 5, side: 10 + i * 6,
     })),
     momentum: Array.from({ length: 90 }, (_, i) => ({ minute: i + 1, value: Math.round(Math.sin(i / 6) * 70) })),
+    // L274 : phrase sous le graphe avec la liste de la table des poids du backend (`momentumBasis`). Aucune action
+    // sans équipe, comme sur les 4 matchs réels rejoués : avec une note « N actions sans équipe » en plus, le
+    // paragraphe passe à 3 lignes et la rangée descend à 781,5 px à 1366 × 768 (mesuré le 27-11, non résolu).
+    momentumBasis: ['tirs', 'corners', 'coups francs obtenus', 'hors-jeu'],
+    momentumActions: { home: 40, away: 25, unattributed: 0 },
     lineups: { home: lineup(100), away: lineup(200) },
     updatedAt: '2026-10-05T23:00:00Z',
   };

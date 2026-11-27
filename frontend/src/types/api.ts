@@ -356,6 +356,8 @@ export interface LiveMatchStats extends LiveMatchSummary {
   momentum?: LiveMatchMomentumPoint[];
   /** Actions qui font le momentum, par équipe, et celles qu'aucune équipe ne revendique (L274). */
   momentumActions?: LiveMatchMomentumActions;
+  /** Sortes d'actions que le momentum compte, tirées par le backend de sa table des poids (L274). */
+  momentumBasis?: string[];
   lineups?: { home: LiveMatchLineup; away: LiveMatchLineup };
   standings?: LiveStandingRow[];
   updatedAt: string;

@@ -1,6 +1,6 @@
 import type { LiveMatchMomentumActions, LiveMatchMomentumPoint } from '@/types/api';
 import { teamColors, type MatchPalette } from '@/lib/match-palette';
-import { unattributedNote } from '@/lib/momentum-note';
+import { basisNote, unattributedNote } from '@/lib/momentum-note';
 
 /**
  * Momentum minute par minute (backend : play-by-play 365scores pondéré et
@@ -18,6 +18,8 @@ export function MomentumChart(props: {
   palette?: MatchPalette;
   /** Actions par équipe et sans équipe (L274) : une part non attribuée se dit sous le graphe. */
   actions?: LiveMatchMomentumActions;
+  /** Sortes d'actions comptées, dites par le backend d'après sa table des poids (L274) : la phrase suit le calcul. */
+  basis?: string[];
 }) {
   if (!props.points.length) return null;
 
@@ -89,25 +91,29 @@ export function MomentumChart(props: {
             })}
           </svg>
         </div>
-        <MomentumFootnote homeName={props.homeName} awayName={props.awayName} actions={props.actions} />
+        <MomentumFootnote homeName={props.homeName} awayName={props.awayName} actions={props.actions} basis={props.basis} />
       </div>
     </section>
   );
 }
 
 /** Légende de direction, nature de la courbe et part d'actions sans équipe (L274). */
-function MomentumFootnote(props: { homeName: string; awayName: string; actions?: LiveMatchMomentumActions }) {
+function MomentumFootnote(props: { homeName: string; awayName: string; actions?: LiveMatchMomentumActions; basis?: string[] }) {
   const unattributed = unattributedNote(props.actions);
   return (
     <>
+      {/* Un seul paragraphe : sous la rangée Statistiques | Momentum, chaque ligne compte pour le pli de 1366 × 768 (R16). */}
       <p className="text-petite text-fg-dim mt-1 leading-snug">
-        Reconstruction : tirs, corners, coups francs, sans possession ni occasions franches. Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
+        {basisNote(props.basis)} Vers le haut : {props.homeName}, vers le bas : {props.awayName}.
+        {unattributed && (
+          <>
+            {' '}
+            <span data-testid="elan-non-attribuees" className="text-fg-muted">
+              {unattributed}
+            </span>
+          </>
+        )}
       </p>
-      {unattributed && (
-        <p data-testid="elan-non-attribuees" className="text-petite text-fg-muted mt-1 leading-snug">
-          {unattributed}
-        </p>
-      )}
     </>
   );
 }

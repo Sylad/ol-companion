@@ -44,7 +44,7 @@ export interface TeamNames {
   awayAliases?: string[];
 }
 
-/** Actions pesées (tirs, corners, coups francs, hors-jeu) par équipe, et celles qu'on n'a pas su attribuer. */
+/** Actions pesées (`MOMENTUM_BASIS`) par équipe, et celles qu'on n'a pas su attribuer. */
 export interface MomentumActions {
   home: number;
   away: number;
@@ -167,26 +167,42 @@ function matchSide(
   return null;
 }
 
-/** Poids offensif d'un message pour l'équipe qui l'a produit. */
+/**
+ * Coup franc obtenu près du but adverse (camp adverse, aile) : pèse plus qu'un coup franc dans son camp.
+ * Le flux 365scores est en anglais depuis l'automne 2026 (« in the attacking half », « on the right wing »,
+ * contre « in the defensive half ») ; l'ancien était en français (« moitié de terrain adverse », « aile »).
+ */
+const DANGEROUS_FREE_KICK = /attacking half|\bwing\b|adverse|aile|surface/i;
+
+/**
+ * Ce que le momentum compte, et combien chaque action pèse pour l'équipe qui l'a produite.
+ * Source unique des poids ET de la phrase sous le graphe (`MOMENTUM_BASIS`, L274) : une sorte
+ * d'action ajoutée ici apparaît d'elle-même dans la légende.
+ */
+const MOMENTUM_WEIGHTS: Record<
+  number,
+  { kind: string; weight: (comment: string) => number }
+> = {
+  [TYPE.GOAL]: { kind: 'tirs', weight: () => 6 },
+  [TYPE.ATTEMPT_SAVED]: { kind: 'tirs', weight: () => 3 },
+  [TYPE.ATTEMPT_BLOCKED]: { kind: 'tirs', weight: () => 2 },
+  [TYPE.MISS]: { kind: 'tirs', weight: () => 2 },
+  [TYPE.CORNER]: { kind: 'corners', weight: () => 1.5 },
+  [TYPE.FREE_KICK_WON]: {
+    kind: 'coups francs obtenus',
+    weight: (c) => (DANGEROUS_FREE_KICK.test(c) ? 1 : 0.3),
+  },
+  [TYPE.OFFSIDE]: { kind: 'hors-jeu', weight: () => 0.5 },
+};
+
+/** Sortes d'actions que le momentum compte, dans l'ordre de la table des poids : la phrase sous le graphe. */
+export const MOMENTUM_BASIS: readonly string[] = [
+  ...new Set(Object.values(MOMENTUM_WEIGHTS).map((w) => w.kind)),
+];
+
+/** Poids offensif d'un message pour l'équipe qui l'a produit (0 : non compté). */
 export function scoreMessage(msg: { type: number; comment: string }): number {
-  switch (msg.type) {
-    case TYPE.GOAL:
-      return 6;
-    case TYPE.ATTEMPT_SAVED:
-      return 3;
-    case TYPE.ATTEMPT_BLOCKED:
-      return 2;
-    case TYPE.MISS:
-      return 2;
-    case TYPE.CORNER:
-      return 1.5;
-    case TYPE.OFFSIDE:
-      return 0.5;
-    case TYPE.FREE_KICK_WON:
-      return /adverse|aile|surface/i.test(msg.comment) ? 1 : 0.3;
-    default:
-      return 0;
-  }
+  return MOMENTUM_WEIGHTS[msg.type]?.weight(msg.comment) ?? 0;
 }
 
 /** Compte les actions pesées de chaque équipe et celles qu'aucune équipe ne revendique. */
@@ -252,17 +268,19 @@ export function competitorAliases(
  * Hors de getStats pour ne pas en alourdir la complexité.
  */
 export function applyMomentum(
-  payload: Pick<LiveMatchStats, 'momentum' | 'momentumActions'>,
+  payload: Pick<LiveMatchStats, 'momentum' | 'momentumActions' | 'momentumBasis'>,
   fresh: { points: MomentumPoint[]; actions: MomentumActions } | undefined,
   previous: Pick<LiveMatchStats, 'momentum' | 'momentumActions'> | undefined,
 ): void {
   if (fresh) {
     payload.momentum = fresh.points;
     payload.momentumActions = fresh.actions;
+    payload.momentumBasis = [...MOMENTUM_BASIS];
     return;
   }
   if (!previous?.momentum) return;
   payload.momentum = previous.momentum;
+  payload.momentumBasis = [...MOMENTUM_BASIS];
   if (previous.momentumActions)
     payload.momentumActions = previous.momentumActions;
 }

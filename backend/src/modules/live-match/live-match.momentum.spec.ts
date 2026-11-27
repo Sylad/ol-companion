@@ -1,9 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
+  applyMomentum,
   attributeTeam,
   computeMomentum,
   countMomentumActions,
+  MOMENTUM_BASIS,
   normaliseTeamName,
   parsePlayByPlay,
   scoreMessage,
@@ -270,8 +272,8 @@ describe.each(REJOUES)(
   },
 );
 
-describe('Lyon – Lillestrøm avant L274 (comparaison exacte des noms)', () => {
-  it('perdait toutes les actions de Lillestrøm', () => {
+describe('Lyon – Lillestrøm sans le nom long (L274)', () => {
+  it('la normalisation seule (« Lillestrøm » = « Lillestrom ») attribue les 27 actions de Lillestrøm', () => {
     const { teams, file } = REJOUES[0];
     const sansAlias = countMomentumActions(fixture(file), {
       homeName: teams.homeName,
@@ -280,5 +282,109 @@ describe('Lyon – Lillestrøm avant L274 (comparaison exacte des noms)', () => 
     // Avec la normalisation, plus rien n'est perdu, même sans le nom long.
     expect(sansAlias.unattributed).toBe(0);
     expect(sansAlias.away).toBe(27);
+  });
+});
+
+describe('coups francs obtenus — flux réel en anglais (L274)', () => {
+  const fk = (file: string) => fixture(file).filter((m) => m.type === 12);
+
+  it.each(REJOUES.map((r) => r.file))(
+    '%s : camp adverse et ailes pèsent 1, son propre camp 0,3',
+    (file) => {
+      const msgs = fk(file);
+      expect(msgs.length).toBeGreaterThan(0);
+      for (const m of msgs) {
+        const dangereux = /in the attacking half|on the (left|right) wing/.test(
+          m.comment,
+        );
+        const sonCamp = /in the defensive half/.test(m.comment);
+        // Chaque coup franc du flux est l'un ou l'autre : aucune formulation n'échappe à la règle.
+        expect(dangereux !== sonCamp).toBe(true);
+        expect(scoreMessage(m)).toBe(dangereux ? 1 : 0.3);
+      }
+    },
+  );
+
+  it('Lyon – Lillestrøm : 6 coups francs dangereux sur 23 (17 dans son camp)', () => {
+    const w = fk(REJOUES[0].file).map(scoreMessage);
+    expect(w.filter((x) => x === 1)).toHaveLength(6);
+    expect(w.filter((x) => x === 0.3)).toHaveLength(17);
+  });
+
+  it("l'ancien flux français reste lu (Anderlecht – Lyon)", () => {
+    const w = parsePlayByPlay(raw)
+      .filter((m) => m.type === 12)
+      .map(scoreMessage);
+    expect(w.filter((x) => x === 1)).toHaveLength(10); // 5 adverse + 5 aile
+    expect(w.filter((x) => x === 0.3)).toHaveLength(15); // « dans sa moitié de terrain »
+  });
+});
+
+describe('MOMENTUM_BASIS — ce que la phrase sous le graphe énumère (L274)', () => {
+  it("cite chaque sorte d'action pesée, hors-jeu compris, et rien d'autre", () => {
+    expect(MOMENTUM_BASIS).toEqual([
+      'tirs',
+      'corners',
+      'coups francs obtenus',
+      'hors-jeu',
+    ]);
+  });
+
+  it('les types qui pèsent sont exactement ceux de la table (tirs, but, corner, coup franc, hors-jeu)', () => {
+    // Types 0 à 200 : un poids non nul hors de la table ferait mentir la légende.
+    const pesés = Array.from({ length: 201 }, (_, t) => t).filter(
+      (t) => scoreMessage({ type: t, comment: '' }) > 0,
+    );
+    expect(pesés).toEqual([2, 3, 9, 12, 14, 20, 21]);
+  });
+});
+
+describe('applyMomentum — repli sur la réponse précédente (L274)', () => {
+  const points = [
+    { minute: 1, value: 40 },
+    { minute: 2, value: -20 },
+  ];
+  const actions = { home: 44, away: 27, unattributed: 3 };
+
+  it("momentum frais : points, comptes et sortes d'actions de cet appel", () => {
+    const payload: Parameters<typeof applyMomentum>[0] = {};
+    applyMomentum(
+      payload,
+      { points, actions },
+      {
+        momentum: [{ minute: 1, value: 99 }],
+        momentumActions: { home: 1, away: 1, unattributed: 1 },
+      },
+    );
+    expect(payload).toEqual({
+      momentum: points,
+      momentumActions: actions,
+      momentumBasis: [...MOMENTUM_BASIS],
+    });
+  });
+
+  it('play-by-play en échec : points ET comptes de la réponse précédente, repris ensemble', () => {
+    const payload: Parameters<typeof applyMomentum>[0] = {};
+    applyMomentum(payload, undefined, {
+      momentum: points,
+      momentumActions: actions,
+    });
+    expect(payload.momentum).toBe(points);
+    expect(payload.momentumActions).toBe(actions);
+    expect(payload.momentumBasis).toEqual([...MOMENTUM_BASIS]);
+  });
+
+  it('réponse précédente sans comptes (cache plus ancien) : les points seuls, aucune part inventée', () => {
+    const payload: Parameters<typeof applyMomentum>[0] = {};
+    applyMomentum(payload, undefined, { momentum: points });
+    expect(payload.momentum).toBe(points);
+    expect(payload.momentumActions).toBeUndefined();
+  });
+
+  it('ni frais ni précédent : pas de momentum du tout', () => {
+    const payload: Parameters<typeof applyMomentum>[0] = {};
+    applyMomentum(payload, undefined, undefined);
+    applyMomentum(payload, undefined, { momentumActions: actions });
+    expect(payload).toEqual({});
   });
 });

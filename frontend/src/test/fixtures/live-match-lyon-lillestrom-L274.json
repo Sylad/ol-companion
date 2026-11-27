@@ -1,0 +1,1582 @@
+{
+  "gameId": 4828675,
+  "matchupId": "465-1985-4828675",
+  "competitionId": 573,
+  "competitionName": "Europe, UEFA Europa League",
+  "status": "ended",
+  "statusGroup": 4,
+  "statusText": "Ended",
+  "gameTime": 90,
+  "gameTimeDisplay": "",
+  "startTime": "2026-11-26T21:00:00+01:00",
+  "timeConfirmed": true,
+  "home": {
+    "id": 465,
+    "name": "Lyon",
+    "symbolicName": "",
+    "imageVersion": 11,
+    "score": 0
+  },
+  "away": {
+    "id": 1985,
+    "name": "Lillestrom",
+    "symbolicName": "",
+    "imageVersion": 1,
+    "score": 0
+  },
+  "teamStats": {
+    "home": {
+      "Minutes": 848,
+      "Goalkeeper Saves": 1,
+      "Goals": 0,
+      "Assists": 0,
+      "Goals Conceded": 0,
+      "Total Shots": 13,
+      "Offsides": 0,
+      "Expected Assists": 1.27,
+      "Key Passes": 14,
+      "Passes Into Final Third": 36,
+      "Backward Passes": 70,
+      "Passes Completed": 480,
+      "Long Passes Completed": 12,
+      "Touches": 684,
+      "Was Fouled": 11,
+      "Error Led To Shot": 1,
+      "Expected Goals On Target Conceded": 0.31,
+      "Expected Goals Prevented": 0.31,
+      "Fouls Made": 9,
+      "Possession Lost": 93,
+      "Was Dribbled Past": 2,
+      "Played Sweeper": 1,
+      "Punches": 1,
+      "Clearances": 19,
+      "Interceptions": 6,
+      "Ball Recovery": 31,
+      "Aerial Duels Won": 10,
+      "Expected Goals": 0.72,
+      "Big Chances Created": 1,
+      "Crosses Completed": 3,
+      "Successful Dribbles": 5,
+      "Shots Blocked": 6,
+      "Tackles Won": 7,
+      "Ground Duels Won": 28,
+      "Blocks": 2,
+      "Shots Off Target": 4,
+      "Final Third Possession Won": 2,
+      "Shots On Target": 3,
+      "Expected Goals On Target": 0.52
+    },
+    "away": {
+      "Minutes": 926,
+      "Goalkeeper Saves": 7,
+      "Goals": 0,
+      "Assists": 0,
+      "Goals Conceded": 0,
+      "Total Shots": 9,
+      "Offsides": 0,
+      "Expected Assists": 0.37,
+      "Key Passes": 5,
+      "Passes Into Final Third": 44,
+      "Backward Passes": 57,
+      "Passes Completed": 248,
+      "Long Passes Completed": 17,
+      "Touches": 483,
+      "Was Fouled": 10,
+      "Expected Goals On Target Conceded": 0.97,
+      "Expected Goals Prevented": 0.97,
+      "Fouls Made": 14,
+      "Possession Lost": 109,
+      "Was Dribbled Past": 7,
+      "Punches": 1,
+      "Clearances": 23,
+      "Interceptions": 6,
+      "Ball Recovery": 42,
+      "Ground Duels Won": 29,
+      "Expected Goals": 0.7100000000000001,
+      "Crosses Completed": 3,
+      "Shots Blocked": 2,
+      "Tackles Won": 8,
+      "Aerial Duels Won": 9,
+      "Shots Off Target": 6,
+      "Blocks": 6,
+      "Successful Dribbles": 2,
+      "Final Third Possession Won": 4,
+      "Shots On Target": 1,
+      "Expected Goals On Target": 0.31,
+      "Big Chances Missed": 1,
+      "Error Led To Shot": 1
+    }
+  },
+  "events": [
+    {
+      "competitorId": 1985,
+      "gameTime": 43,
+      "gameTimeDisplay": "43'",
+      "type": "card",
+      "isMajor": false,
+      "playerId": 66151447,
+      "extraPlayerId": null,
+      "playerName": "Felix Va",
+      "playerShortName": "Vá",
+      "extraPlayerName": null,
+      "extraPlayerShortName": null,
+      "description": "Yellow Card"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 46,
+      "gameTimeDisplay": "46'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 4941908,
+      "extraPlayerId": 65776157,
+      "playerName": "Keito Nakamura",
+      "playerShortName": "Nakamura",
+      "extraPlayerName": "Julien Duranville",
+      "extraPlayerShortName": "J. Duranville",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 1985,
+      "gameTime": 49,
+      "gameTimeDisplay": "49'",
+      "type": "card",
+      "isMajor": false,
+      "playerId": 70913130,
+      "extraPlayerId": null,
+      "playerName": "Gustav Nyheim",
+      "playerShortName": "G. Nyheim",
+      "extraPlayerName": null,
+      "extraPlayerShortName": null,
+      "description": "Yellow Card"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 53,
+      "gameTimeDisplay": "53'",
+      "type": "card",
+      "isMajor": false,
+      "playerId": 77803154,
+      "extraPlayerId": null,
+      "playerName": "Steeve Kango",
+      "playerShortName": "Kango",
+      "extraPlayerName": null,
+      "extraPlayerShortName": null,
+      "description": "Yellow Card"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 62,
+      "gameTimeDisplay": "62'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 48501418,
+      "extraPlayerId": 403672,
+      "playerName": "Tanner Tessmann",
+      "playerShortName": "Tessmann",
+      "extraPlayerName": "Corentin Tolisso",
+      "extraPlayerShortName": "Tolisso",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 62,
+      "gameTimeDisplay": "62'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 66430617,
+      "extraPlayerId": 77565705,
+      "playerName": "Ernest Nuamah",
+      "playerShortName": "Nuamah",
+      "extraPlayerName": "Rémi Himbert",
+      "extraPlayerShortName": "Himbert",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 62,
+      "gameTimeDisplay": "62'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 75259442,
+      "extraPlayerId": 77803154,
+      "playerName": "Zachary Athekame",
+      "playerShortName": "Z. Athekame",
+      "extraPlayerName": "Steeve Kango",
+      "extraPlayerShortName": "Kango",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 1985,
+      "gameTime": 68,
+      "gameTimeDisplay": "68'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 15572260,
+      "extraPlayerId": 66087964,
+      "playerName": "Ylldren Ibrahimaj",
+      "playerShortName": "Y. Ibrahimaj",
+      "extraPlayerName": "Henrik Melland",
+      "extraPlayerShortName": "Melland",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 1985,
+      "gameTime": 68,
+      "gameTimeDisplay": "68'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 57917952,
+      "extraPlayerId": 70795186,
+      "playerName": "Gustav Nordh",
+      "playerShortName": "G. Nordh",
+      "extraPlayerName": "Camil Jebara",
+      "extraPlayerShortName": "C. Jebara",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 1985,
+      "gameTime": 74,
+      "gameTimeDisplay": "74'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 52355317,
+      "extraPlayerId": 70879845,
+      "playerName": "Sturla Ottesen",
+      "playerShortName": "S. Ottesen",
+      "extraPlayerName": "Stian Kristiansen",
+      "extraPlayerShortName": "Kristiansen",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 81,
+      "gameTimeDisplay": "81'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 3071299,
+      "extraPlayerId": 77138837,
+      "playerName": "Lois Openda",
+      "playerShortName": "Openda",
+      "extraPlayerName": "Khalis Merah",
+      "extraPlayerShortName": "Merah",
+      "description": "Substitution"
+    },
+    {
+      "competitorId": 465,
+      "gameTime": 86,
+      "gameTimeDisplay": "86'",
+      "type": "card",
+      "isMajor": false,
+      "playerId": 75259442,
+      "extraPlayerId": null,
+      "playerName": "Zachary Athekame",
+      "playerShortName": "Z. Athekame",
+      "extraPlayerName": null,
+      "extraPlayerShortName": null,
+      "description": "Yellow Card"
+    },
+    {
+      "competitorId": 1985,
+      "gameTime": 90,
+      "gameTimeDisplay": "90'",
+      "type": "substitution",
+      "isMajor": false,
+      "playerId": 77347096,
+      "extraPlayerId": 58801377,
+      "playerName": "Linus Alperud",
+      "playerShortName": "Alperud",
+      "extraPlayerName": "Eric Kitolano",
+      "extraPlayerShortName": "Kitolano",
+      "description": "Substitution"
+    }
+  ],
+  "topPerformers": [
+    {
+      "role": "Attacker",
+      "homePlayer": {
+        "id": 66991,
+        "name": "Keito Nakamura",
+        "statName": "Buts attendus (xG)",
+        "statValue": "0.16"
+      },
+      "awayPlayer": {
+        "id": 135754,
+        "name": "Camil Jebara",
+        "statName": "Buts attendus (xG)",
+        "statValue": "0"
+      }
+    },
+    {
+      "role": "Midfielder",
+      "homePlayer": {
+        "id": 219098,
+        "name": "Khalis Merah",
+        "statName": "Buts attendus (xG)",
+        "statValue": "0.09"
+      },
+      "awayPlayer": {
+        "id": 130624,
+        "name": "Filip Ottosson",
+        "statName": "Buts attendus (xG)",
+        "statValue": "0"
+      }
+    },
+    {
+      "role": "Defender",
+      "homePlayer": {
+        "id": 116496,
+        "name": "Ruben Kluivert",
+        "statName": "Interceptions",
+        "statValue": "3"
+      },
+      "awayPlayer": {
+        "id": 77180,
+        "name": "Sander Moen Foss",
+        "statName": "Interceptions",
+        "statValue": "2"
+      }
+    }
+  ],
+  "shots": [
+    {
+      "competitorId": 465,
+      "playerId": 77565705,
+      "time": "4'",
+      "xg": 0.08,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 49.5,
+      "side": 86.1
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77667697,
+      "time": "11'",
+      "xg": 0.09,
+      "xgot": 0,
+      "bodyPart": "Left foot",
+      "outcome": "Blocked",
+      "line": 44.8,
+      "side": 88.9
+    },
+    {
+      "competitorId": 465,
+      "playerId": 403672,
+      "time": "17'",
+      "xg": 0.02,
+      "xgot": 0.03,
+      "bodyPart": "Right Foot",
+      "outcome": "Saved",
+      "line": 67.9,
+      "side": 86.1
+    },
+    {
+      "competitorId": 465,
+      "playerId": 71502222,
+      "time": "27'",
+      "xg": 0.06,
+      "xgot": 0,
+      "bodyPart": "Left foot",
+      "outcome": "Blocked",
+      "line": 60.3,
+      "side": 88.9
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 70913130,
+      "time": "29'",
+      "xg": 0.05,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 64.2,
+      "side": 82.5
+    },
+    {
+      "competitorId": 465,
+      "playerId": 60972902,
+      "time": "31'",
+      "xg": 0.03,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Blocked",
+      "line": 42.5,
+      "side": 74.9
+    },
+    {
+      "competitorId": 465,
+      "playerId": 71502222,
+      "time": "33'",
+      "xg": 0.09,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Blocked",
+      "line": 59.1,
+      "side": 85.5
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 15553038,
+      "time": "38'",
+      "xg": 0.01,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 32.7,
+      "side": 77.7
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77667697,
+      "time": "39'",
+      "xg": 0.02,
+      "xgot": 0.23,
+      "bodyPart": "Left foot",
+      "outcome": "Saved",
+      "line": 31.1,
+      "side": 87.2
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77565705,
+      "time": "39'",
+      "xg": 0.06,
+      "xgot": 0.26,
+      "bodyPart": "Header",
+      "outcome": "Saved",
+      "line": 41.1,
+      "side": 94.9
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77565705,
+      "time": "40'",
+      "xg": 0.07,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 37.4,
+      "side": 87.4
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 70913130,
+      "time": "45'",
+      "xg": 0.07,
+      "xgot": 0,
+      "bodyPart": "Header",
+      "outcome": "Missed",
+      "line": 47.4,
+      "side": 91.7
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 58801377,
+      "time": "45'",
+      "xg": 0.02,
+      "xgot": 0,
+      "bodyPart": "Left foot",
+      "outcome": "Missed",
+      "line": 71.6,
+      "side": 89.5
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 66151447,
+      "time": "48'",
+      "xg": 0.02,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Blocked",
+      "line": 57.3,
+      "side": 72.8
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77138837,
+      "time": "53'",
+      "xg": 0.03,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 62.9,
+      "side": 77.5
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 50086048,
+      "time": "58'",
+      "xg": 0.01,
+      "xgot": 0,
+      "bodyPart": "Left foot",
+      "outcome": "Blocked",
+      "line": 49.7,
+      "side": 75.3
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 70879845,
+      "time": "58'",
+      "xg": 0.04,
+      "xgot": 0,
+      "bodyPart": "Header",
+      "outcome": "Missed",
+      "line": 41.8,
+      "side": 92.4
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 58801377,
+      "time": "58'",
+      "xg": 0.03,
+      "xgot": 0,
+      "bodyPart": "Left foot",
+      "outcome": "Missed",
+      "line": 69.6,
+      "side": 93.9
+    },
+    {
+      "competitorId": 465,
+      "playerId": 4941908,
+      "time": "60'",
+      "xg": 0.05,
+      "xgot": 0.06,
+      "bodyPart": "Right Foot",
+      "outcome": "Saved",
+      "line": 38.2,
+      "side": 75.7
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 66087964,
+      "time": "63'",
+      "xg": 0.47,
+      "xgot": 0.31,
+      "bodyPart": "Right Foot",
+      "outcome": "Saved",
+      "line": 40.2,
+      "side": 90.7
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77667697,
+      "time": "64'",
+      "xg": 0.04,
+      "xgot": 0,
+      "bodyPart": "Left foot",
+      "outcome": "Missed",
+      "line": 36.1,
+      "side": 81.8
+    },
+    {
+      "competitorId": 465,
+      "playerId": 4941908,
+      "time": "67'",
+      "xg": 0.08,
+      "xgot": 0.36,
+      "bodyPart": "Right Foot",
+      "outcome": "Saved",
+      "line": 64.5,
+      "side": 84.4
+    },
+    {
+      "competitorId": 465,
+      "playerId": 75259442,
+      "time": "67'",
+      "xg": 0.01,
+      "xgot": 0.01,
+      "bodyPart": "Right Foot",
+      "outcome": "Saved",
+      "line": 59,
+      "side": 73.3
+    },
+    {
+      "competitorId": 465,
+      "playerId": 66430617,
+      "time": "67'",
+      "xg": 0.08,
+      "xgot": 0,
+      "bodyPart": "Header",
+      "outcome": "Missed",
+      "line": 56.7,
+      "side": 92.8
+    },
+    {
+      "competitorId": 1985,
+      "playerId": 57917952,
+      "time": "69'",
+      "xg": 0.03,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Blocked",
+      "line": 34.9,
+      "side": 95
+    },
+    {
+      "competitorId": 465,
+      "playerId": 77138837,
+      "time": "70'",
+      "xg": 0.06,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Blocked",
+      "line": 34.5,
+      "side": 83.7
+    },
+    {
+      "competitorId": 465,
+      "playerId": 4941908,
+      "time": "72'",
+      "xg": 0.03,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 65.2,
+      "side": 85.5
+    },
+    {
+      "competitorId": 465,
+      "playerId": 48501418,
+      "time": "77'",
+      "xg": 0.03,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Missed",
+      "line": 45.1,
+      "side": 74.9
+    },
+    {
+      "competitorId": 465,
+      "playerId": 3071299,
+      "time": "82'",
+      "xg": 0.05,
+      "xgot": 0,
+      "bodyPart": "Right Foot",
+      "outcome": "Blocked",
+      "line": 67.6,
+      "side": 83.7
+    },
+    {
+      "competitorId": 465,
+      "playerId": 66430617,
+      "time": "82'",
+      "xg": 0.02,
+      "xgot": 0.01,
+      "bodyPart": "Left foot",
+      "outcome": "Saved",
+      "line": 33.7,
+      "side": 74.8
+    },
+    {
+      "competitorId": 465,
+      "playerId": 3071299,
+      "time": "83'",
+      "xg": 0.35,
+      "xgot": 0,
+      "bodyPart": "Header",
+      "outcome": "Missed",
+      "line": 50.7,
+      "side": 92.7
+    },
+    {
+      "competitorId": 465,
+      "playerId": 248404,
+      "time": "90 + 6'",
+      "xg": 0.06,
+      "xgot": 0,
+      "bodyPart": "Header",
+      "outcome": "Blocked",
+      "line": 39.7,
+      "side": 97.1
+    }
+  ],
+  "lineups": {
+    "home": {
+      "formation": "4-3-3",
+      "probable": false,
+      "starters": [
+        {
+          "id": 844534,
+          "athleteId": 70072,
+          "name": "Dominik Greif",
+          "shortName": "Greif",
+          "jerseyNumber": 1,
+          "positionShort": "GK",
+          "yardLine": 1,
+          "yardSide": 50,
+          "ranking": 7
+        },
+        {
+          "id": 248404,
+          "athleteId": 8302,
+          "name": "Nicolas Tagliafico",
+          "shortName": "Tagliafico",
+          "jerseyNumber": 3,
+          "positionShort": "LB",
+          "yardLine": 2,
+          "yardSide": 0,
+          "ranking": 7.5
+        },
+        {
+          "id": 62195479,
+          "athleteId": 116496,
+          "name": "Ruben Kluivert",
+          "shortName": "R. Kluivert",
+          "jerseyNumber": 21,
+          "positionShort": "CB",
+          "yardLine": 2,
+          "yardSide": 33,
+          "ranking": 7.8
+        },
+        {
+          "id": 60972902,
+          "athleteId": 98889,
+          "name": "Felix Bacher",
+          "shortName": "Bacher",
+          "jerseyNumber": 20,
+          "positionShort": "CB",
+          "yardLine": 2,
+          "yardSide": 66,
+          "ranking": 7.1
+        },
+        {
+          "id": 77803154,
+          "athleteId": 234907,
+          "name": "Steeve Kango",
+          "shortName": "Kango",
+          "jerseyNumber": 37,
+          "positionShort": "RB",
+          "yardLine": 2,
+          "yardSide": 100,
+          "ranking": 6.5
+        },
+        {
+          "id": 71502222,
+          "athleteId": 152785,
+          "name": "Noah Nartey",
+          "shortName": "N. Nartey",
+          "jerseyNumber": 99,
+          "positionShort": "AM",
+          "yardLine": 3,
+          "yardSide": 20,
+          "ranking": 7.3
+        },
+        {
+          "id": 77138837,
+          "athleteId": 219098,
+          "name": "Khalis Merah",
+          "shortName": "Merah",
+          "jerseyNumber": 18,
+          "positionShort": "CM",
+          "yardLine": 3,
+          "yardSide": 50,
+          "ranking": 7.6
+        },
+        {
+          "id": 403672,
+          "athleteId": 2185,
+          "name": "Corentin Tolisso",
+          "shortName": "Tolisso",
+          "jerseyNumber": 8,
+          "positionShort": "CM",
+          "yardLine": 3,
+          "yardSide": 80,
+          "ranking": 7.1
+        },
+        {
+          "id": 65776157,
+          "athleteId": 116654,
+          "name": "Julien Duranville",
+          "shortName": "J. Duranville",
+          "jerseyNumber": 24,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 0,
+          "ranking": 6.3
+        },
+        {
+          "id": 77565705,
+          "athleteId": 226950,
+          "name": "Rémi Himbert",
+          "shortName": "Himbert",
+          "jerseyNumber": 45,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 7.1
+        },
+        {
+          "id": 77667697,
+          "athleteId": 231184,
+          "name": "Kaïl Boudache",
+          "shortName": "Boudache",
+          "jerseyNumber": 26,
+          "positionShort": "RW",
+          "yardLine": 4,
+          "yardSide": 100,
+          "ranking": 6.8
+        }
+      ],
+      "bench": [
+        {
+          "id": 75259442,
+          "athleteId": 175726,
+          "name": "Zachary Athekame",
+          "shortName": "Z. Athekame",
+          "jerseyNumber": 13,
+          "positionShort": "RB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 7.2
+        },
+        {
+          "id": 48501418,
+          "athleteId": 74459,
+          "name": "Tanner Tessmann",
+          "shortName": "Tessmann",
+          "jerseyNumber": 6,
+          "positionShort": "",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 7
+        },
+        {
+          "id": 66430617,
+          "athleteId": 115749,
+          "name": "Ernest Nuamah",
+          "shortName": "Nuamah",
+          "jerseyNumber": 7,
+          "positionShort": "RW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 6.5
+        },
+        {
+          "id": 4941908,
+          "athleteId": 66991,
+          "name": "Keito Nakamura",
+          "shortName": "Nakamura",
+          "jerseyNumber": 11,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 7.4
+        },
+        {
+          "id": 3071299,
+          "athleteId": 59868,
+          "name": "Lois Openda",
+          "shortName": "Openda",
+          "jerseyNumber": 17,
+          "positionShort": "CF",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 6.6
+        },
+        {
+          "id": 68071622,
+          "athleteId": 133157,
+          "name": "Justin Bengui",
+          "shortName": "J. Bengui",
+          "jerseyNumber": 25,
+          "positionShort": "GK",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 889649,
+          "athleteId": 45963,
+          "name": "Remy Descamps",
+          "shortName": "Descamps",
+          "jerseyNumber": 40,
+          "positionShort": "GK",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 77133462,
+          "athleteId": 202797,
+          "name": "Noham Kamara",
+          "shortName": "N. Kamara",
+          "jerseyNumber": 85,
+          "positionShort": "CB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 568308,
+          "athleteId": 49112,
+          "name": "Moussa Niakhate",
+          "shortName": "Niakhate",
+          "jerseyNumber": 19,
+          "positionShort": "CB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 12759586,
+          "athleteId": 66440,
+          "name": "Abner",
+          "shortName": "Abner",
+          "jerseyNumber": 16,
+          "positionShort": "LB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 77593880,
+          "athleteId": 227619,
+          "name": "Adil Hamdani",
+          "shortName": "Hamdani",
+          "jerseyNumber": 44,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 75474487,
+          "athleteId": 180571,
+          "name": "Alejandro Rodríguez",
+          "shortName": "A. Rodríguez",
+          "jerseyNumber": 32,
+          "positionShort": "CF",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        }
+      ]
+    },
+    "away": {
+      "formation": "4-3-3",
+      "probable": false,
+      "starters": [
+        {
+          "id": 3056874,
+          "athleteId": 59955,
+          "name": "Pontus Dahlberg",
+          "shortName": "Dahlberg",
+          "jerseyNumber": 12,
+          "positionShort": "GK",
+          "yardLine": 1,
+          "yardSide": 50,
+          "ranking": 8.2
+        },
+        {
+          "id": 50086048,
+          "athleteId": 78718,
+          "name": "Frederik Elkaer",
+          "shortName": "Elkaer",
+          "jerseyNumber": 11,
+          "positionShort": "LB",
+          "yardLine": 2,
+          "yardSide": 0,
+          "ranking": 6.8
+        },
+        {
+          "id": 70879845,
+          "athleteId": 137486,
+          "name": "Stian Kristiansen",
+          "shortName": "Kristiansen",
+          "jerseyNumber": 47,
+          "positionShort": "CB",
+          "yardLine": 2,
+          "yardSide": 33,
+          "ranking": 7.5
+        },
+        {
+          "id": 3082049,
+          "athleteId": 77180,
+          "name": "Sander Moen Foss",
+          "shortName": "S. Foss",
+          "jerseyNumber": 5,
+          "positionShort": "CB",
+          "yardLine": 2,
+          "yardSide": 66,
+          "ranking": 7.6
+        },
+        {
+          "id": 15553038,
+          "athleteId": 66834,
+          "name": "Lars Mogstad Ranger",
+          "shortName": "Lars Ranger",
+          "jerseyNumber": 2,
+          "positionShort": "RB",
+          "yardLine": 2,
+          "yardSide": 100,
+          "ranking": 6.5
+        },
+        {
+          "id": 70913130,
+          "athleteId": 157147,
+          "name": "Gustav Nyheim",
+          "shortName": "G. Nyheim",
+          "jerseyNumber": 14,
+          "positionShort": "AM",
+          "yardLine": 3,
+          "yardSide": 20,
+          "ranking": 6.6
+        },
+        {
+          "id": 67657566,
+          "athleteId": 130624,
+          "name": "Filip Ottosson",
+          "shortName": "F. Ottosson",
+          "jerseyNumber": 21,
+          "positionShort": "",
+          "yardLine": 3,
+          "yardSide": 50,
+          "ranking": 7
+        },
+        {
+          "id": 66087964,
+          "athleteId": 130456,
+          "name": "Henrik Melland",
+          "shortName": "Melland",
+          "jerseyNumber": 16,
+          "positionShort": "AM",
+          "yardLine": 3,
+          "yardSide": 80,
+          "ranking": 6.1
+        },
+        {
+          "id": 66151447,
+          "athleteId": 115553,
+          "name": "Felix Va",
+          "shortName": "Vá",
+          "jerseyNumber": 20,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 0,
+          "ranking": 6
+        },
+        {
+          "id": 58801377,
+          "athleteId": 94642,
+          "name": "Eric Kitolano",
+          "shortName": "Kitolano",
+          "jerseyNumber": 17,
+          "positionShort": "AM",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 6.2
+        },
+        {
+          "id": 70795186,
+          "athleteId": 135754,
+          "name": "Camil Jebara",
+          "shortName": "C. Jebara",
+          "jerseyNumber": 19,
+          "positionShort": "RW",
+          "yardLine": 4,
+          "yardSide": 100,
+          "ranking": 6.7
+        }
+      ],
+      "bench": [
+        {
+          "id": 52355317,
+          "athleteId": 83297,
+          "name": "Sturla Ottesen",
+          "shortName": "S. Ottesen",
+          "jerseyNumber": 3,
+          "positionShort": "RB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 6.8
+        },
+        {
+          "id": 15572260,
+          "athleteId": 77053,
+          "name": "Ylldren Ibrahimaj",
+          "shortName": "Y. Ibrahimaj",
+          "jerseyNumber": 29,
+          "positionShort": "CM",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 6.3
+        },
+        {
+          "id": 77347096,
+          "athleteId": 228298,
+          "name": "Linus Alperud",
+          "shortName": "Alperud",
+          "jerseyNumber": 7,
+          "positionShort": "RW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": -1
+        },
+        {
+          "id": 57917952,
+          "athleteId": 91525,
+          "name": "Gustav Nordh",
+          "shortName": "G. Nordh",
+          "jerseyNumber": 15,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": 6.6
+        },
+        {
+          "id": 67709754,
+          "athleteId": 130466,
+          "name": "Yaw Paintsil",
+          "shortName": "Y. Paintsil",
+          "jerseyNumber": 26,
+          "positionShort": "LB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 71924550,
+          "athleteId": 157198,
+          "name": "Stefan Hagerup",
+          "shortName": "Hagerup",
+          "jerseyNumber": 1,
+          "positionShort": "GK",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 494506,
+          "athleteId": 11584,
+          "name": "Ruben Gabrielsen",
+          "shortName": "Gabrielsen",
+          "jerseyNumber": 28,
+          "positionShort": "CB",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 49450458,
+          "athleteId": 77111,
+          "name": "Kevin Krygård",
+          "shortName": "K. Krygård",
+          "jerseyNumber": 18,
+          "positionShort": "",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 65565620,
+          "athleteId": 116110,
+          "name": "Daniel Bassi",
+          "shortName": "Bassi",
+          "jerseyNumber": 22,
+          "positionShort": "LW",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 95176,
+          "athleteId": 11577,
+          "name": "Fredrik Gulbrandsen",
+          "shortName": "Gulbrandsen",
+          "jerseyNumber": 8,
+          "positionShort": "CF",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        },
+        {
+          "id": 59035521,
+          "athleteId": 94689,
+          "name": "Thomas Olsen",
+          "shortName": "Olsen",
+          "jerseyNumber": 10,
+          "positionShort": "CF",
+          "yardLine": 4,
+          "yardSide": 50,
+          "ranking": null
+        }
+      ]
+    }
+  },
+  "updatedAt": "2026-11-27T08:19:57.461Z",
+  "momentum": [
+    {
+      "minute": 1,
+      "value": 0
+    },
+    {
+      "minute": 2,
+      "value": 5
+    },
+    {
+      "minute": 3,
+      "value": 2
+    },
+    {
+      "minute": 4,
+      "value": 28
+    },
+    {
+      "minute": 5,
+      "value": 15
+    },
+    {
+      "minute": 6,
+      "value": 8
+    },
+    {
+      "minute": 7,
+      "value": 5
+    },
+    {
+      "minute": 8,
+      "value": -9
+    },
+    {
+      "minute": 9,
+      "value": -3
+    },
+    {
+      "minute": 10,
+      "value": -1
+    },
+    {
+      "minute": 11,
+      "value": 14
+    },
+    {
+      "minute": 12,
+      "value": 8
+    },
+    {
+      "minute": 13,
+      "value": 4
+    },
+    {
+      "minute": 14,
+      "value": 2
+    },
+    {
+      "minute": 15,
+      "value": 1
+    },
+    {
+      "minute": 16,
+      "value": 1
+    },
+    {
+      "minute": 17,
+      "value": 23
+    },
+    {
+      "minute": 18,
+      "value": 10
+    },
+    {
+      "minute": 19,
+      "value": 8
+    },
+    {
+      "minute": 20,
+      "value": 7
+    },
+    {
+      "minute": 21,
+      "value": 4
+    },
+    {
+      "minute": 22,
+      "value": 10
+    },
+    {
+      "minute": 23,
+      "value": 5
+    },
+    {
+      "minute": 24,
+      "value": 3
+    },
+    {
+      "minute": 25,
+      "value": 2
+    },
+    {
+      "minute": 26,
+      "value": 1
+    },
+    {
+      "minute": 27,
+      "value": 27
+    },
+    {
+      "minute": 28,
+      "value": 15
+    },
+    {
+      "minute": 29,
+      "value": -7
+    },
+    {
+      "minute": 30,
+      "value": 4
+    },
+    {
+      "minute": 31,
+      "value": 17
+    },
+    {
+      "minute": 32,
+      "value": 9
+    },
+    {
+      "minute": 33,
+      "value": 20
+    },
+    {
+      "minute": 34,
+      "value": 11
+    },
+    {
+      "minute": 35,
+      "value": 6
+    },
+    {
+      "minute": 36,
+      "value": 3
+    },
+    {
+      "minute": 37,
+      "value": 2
+    },
+    {
+      "minute": 38,
+      "value": -14
+    },
+    {
+      "minute": 39,
+      "value": 71
+    },
+    {
+      "minute": 40,
+      "value": 54
+    },
+    {
+      "minute": 41,
+      "value": 30
+    },
+    {
+      "minute": 42,
+      "value": 16
+    },
+    {
+      "minute": 43,
+      "value": 16
+    },
+    {
+      "minute": 44,
+      "value": 9
+    },
+    {
+      "minute": 45,
+      "value": -36
+    },
+    {
+      "minute": 46,
+      "value": -20
+    },
+    {
+      "minute": 47,
+      "value": -13
+    },
+    {
+      "minute": 48,
+      "value": -20
+    },
+    {
+      "minute": 49,
+      "value": -11
+    },
+    {
+      "minute": 50,
+      "value": -8
+    },
+    {
+      "minute": 51,
+      "value": -5
+    },
+    {
+      "minute": 52,
+      "value": 11
+    },
+    {
+      "minute": 53,
+      "value": 19
+    },
+    {
+      "minute": 54,
+      "value": 10
+    },
+    {
+      "minute": 55,
+      "value": 8
+    },
+    {
+      "minute": 56,
+      "value": 4
+    },
+    {
+      "minute": 57,
+      "value": -9
+    },
+    {
+      "minute": 58,
+      "value": -61
+    },
+    {
+      "minute": 59,
+      "value": -36
+    },
+    {
+      "minute": 60,
+      "value": 1
+    },
+    {
+      "minute": 61,
+      "value": -7
+    },
+    {
+      "minute": 62,
+      "value": -4
+    },
+    {
+      "minute": 63,
+      "value": -25
+    },
+    {
+      "minute": 64,
+      "value": 1
+    },
+    {
+      "minute": 65,
+      "value": 1
+    },
+    {
+      "minute": 66,
+      "value": 0
+    },
+    {
+      "minute": 67,
+      "value": 71
+    },
+    {
+      "minute": 68,
+      "value": 28
+    },
+    {
+      "minute": 69,
+      "value": -3
+    },
+    {
+      "minute": 70,
+      "value": 13
+    },
+    {
+      "minute": 71,
+      "value": 7
+    },
+    {
+      "minute": 72,
+      "value": 19
+    },
+    {
+      "minute": 73,
+      "value": 10
+    },
+    {
+      "minute": 74,
+      "value": 6
+    },
+    {
+      "minute": 75,
+      "value": 3
+    },
+    {
+      "minute": 76,
+      "value": 2
+    },
+    {
+      "minute": 77,
+      "value": 16
+    },
+    {
+      "minute": 78,
+      "value": 11
+    },
+    {
+      "minute": 79,
+      "value": 17
+    },
+    {
+      "minute": 80,
+      "value": 10
+    },
+    {
+      "minute": 81,
+      "value": 5
+    },
+    {
+      "minute": 82,
+      "value": 40
+    },
+    {
+      "minute": 83,
+      "value": 37
+    },
+    {
+      "minute": 84,
+      "value": 23
+    },
+    {
+      "minute": 85,
+      "value": 12
+    },
+    {
+      "minute": 86,
+      "value": -1
+    },
+    {
+      "minute": 87,
+      "value": 0
+    },
+    {
+      "minute": 88,
+      "value": 0
+    },
+    {
+      "minute": 89,
+      "value": 0
+    },
+    {
+      "minute": 90,
+      "value": 15
+    }
+  ],
+  "momentumActions": {
+    "home": 44,
+    "away": 27,
+    "unattributed": 0
+  },
+  "momentumBasis": [
+    "tirs",
+    "corners",
+    "coups francs obtenus",
+    "hors-jeu"
+  ]
+}
