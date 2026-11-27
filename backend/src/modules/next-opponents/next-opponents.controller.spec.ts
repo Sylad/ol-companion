@@ -73,7 +73,10 @@ describe('NextOpponentsController (L273)', () => {
     expect((await c.get()).unlinked).toEqual(['Promu FC']);
     await c.get();
     expect(logError).toHaveBeenCalledTimes(1);
-    expect(String(logError.mock.calls[0][0])).toContain('Promu FC');
+    expect(logError).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining('Promu FC'),
+    );
     await c.get(); // plus de club non relié : rien de journalisé
     expect(logError).toHaveBeenCalledTimes(1);
     await c.get(); // il revient : journalisé de nouveau
