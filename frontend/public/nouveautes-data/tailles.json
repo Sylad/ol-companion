@@ -567,6 +567,10 @@
     390,
     844
   ],
+  "captures/carte-l1-marqueurs-plus-gros-L272.png": [
+    1094,
+    765
+  ],
   "captures/carte-l1-ouverte-L192-1440.png": [
     1440,
     900
@@ -588,6 +592,14 @@
     844
   ],
   "captures/classement-bandeau-refetch-L148.png": [
+    1440,
+    900
+  ],
+  "captures/classement-prochain-adversaire-390-L273.png": [
+    390,
+    844
+  ],
+  "captures/classement-prochain-adversaire-L273.png": [
     1440,
     900
   ],
@@ -694,9 +706,5 @@
   "captures/player-badges-L142.png": [
     1126,
     193
-  ],
-  "captures/carte-l1-marqueurs-plus-gros-L272.png": [
-    1094,
-    765
   ]
 }
