@@ -630,8 +630,7 @@ export function MatchPage() {
                 awayName={data.away.name}
                 goalMinutes={goalMinutes}
                 homeIsOl={trackedIsHome}
-                palette={palette}
-                actions={data.momentumActions}
+                palette={palette} actions={data.momentumActions}
               />
             )}
           </div>

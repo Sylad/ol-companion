@@ -12,6 +12,8 @@ import {
 } from '../../config/scores365-game.schema';
 import { parseExternal } from '../../common/zod-validation.pipe';
 import {
+  applyMomentum,
+  competitorAliases,
   computeMomentum,
   countMomentumActions,
   parsePlayByPlay,
@@ -123,15 +125,7 @@ export class LiveMatchService implements OnModuleInit {
 
     await this.fillJerseys(raw, payload);
 
-    const momentum = await this.fetchMomentum(raw, payload);
-    if (momentum) {
-      payload.momentum = momentum.points;
-      payload.momentumActions = momentum.actions;
-    } else if (cached?.payload.momentum) {
-      payload.momentum = cached.payload.momentum;
-      if (cached.payload.momentumActions)
-        payload.momentumActions = cached.payload.momentumActions;
-    }
+    applyMomentum(payload, await this.fetchMomentum(raw, payload), cached?.payload);
 
     // L158 : le seul classement lu est celui de la Ligue 1. Sous un match d'une autre
     // compétition (coupe d'Europe, Coupe de France), pas de bloc plutôt qu'un classement étranger.
@@ -502,13 +496,4 @@ function signatureOf(s: LiveMatchStats): string {
     s.events.length,
     s.shots.length,
   ].join('|');
-}
-
-/** Autres noms d'un club chez 365scores (nom long), pour lire le play-by-play (L274). */
-function competitorAliases(
-  c: { longName?: string | null; shortName?: string | null } | undefined,
-): string[] {
-  return [c?.longName, c?.shortName].filter(
-    (n): n is string => typeof n === 'string' && n.trim().length > 0,
-  );
 }

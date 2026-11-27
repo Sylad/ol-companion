@@ -20,6 +20,8 @@
  * de graphe vide qui ressemblerait à « aucune occasion ».
  */
 
+import type { LiveMatchStats } from './live-match.types';
+
 export interface PlayByPlayMessage {
   type: number;
   minute: number;
@@ -234,4 +236,33 @@ export function computeMomentum(
     minute: i + 1,
     value: Math.round((v / peak) * 100),
   }));
+}
+
+/** Autres noms d'un club chez 365scores (nom long), pour lire le play-by-play (L274). */
+export function competitorAliases(
+  c: { longName?: string | null; shortName?: string | null } | undefined,
+): string[] {
+  return [c?.longName, c?.shortName].filter(
+    (n): n is string => typeof n === 'string' && n.trim().length > 0,
+  );
+}
+
+/**
+ * Momentum frais, sinon celui de la dernière réponse (L274 : avec ses comptes d'actions).
+ * Hors de getStats pour ne pas en alourdir la complexité.
+ */
+export function applyMomentum(
+  payload: Pick<LiveMatchStats, 'momentum' | 'momentumActions'>,
+  fresh: { points: MomentumPoint[]; actions: MomentumActions } | undefined,
+  previous: Pick<LiveMatchStats, 'momentum' | 'momentumActions'> | undefined,
+): void {
+  if (fresh) {
+    payload.momentum = fresh.points;
+    payload.momentumActions = fresh.actions;
+    return;
+  }
+  if (!previous?.momentum) return;
+  payload.momentum = previous.momentum;
+  if (previous.momentumActions)
+    payload.momentumActions = previous.momentumActions;
 }
