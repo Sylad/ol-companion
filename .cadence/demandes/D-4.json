@@ -2,8 +2,8 @@
  "id": "D-4",
  "texte": "les momentum ne sont pas bon, quand je compare à sopfascore on voit biern la différence!",
  "date": "2026-11-26",
- "etat": "ouverte",
- "preuve": "",
+ "etat": "livrée",
+ "preuve": "L274 livré en prod le 2026-11-27 : 72bb579 (cadence deliver, 7/7 vérifications vertes, plan 6c7595d) ; revue de code passe 3 et revue UX conformes. « vérifiée » après la QA sur https://ol.sladoire.dev.",
  "lots": [
   "L274"
  ],
