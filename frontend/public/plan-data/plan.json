@@ -906,8 +906,9 @@
     {
       "id": "L273",
       "title": "Classement : le prochain adversaire de chaque club",
-      "status": "doing",
-      "started": "2026-11-27"
+      "status": "done",
+      "started": "2026-11-27",
+      "finished": "2026-11-27"
     }
   ]
 }
