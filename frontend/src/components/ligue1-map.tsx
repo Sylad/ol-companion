@@ -20,91 +20,36 @@ import {
   olMatchesVsClub,
   type OLMatchResult,
 } from '@/lib/ligue1-club-match';
-import {
-  OL_RED,
-  RESULT_COLORS,
-  RESULT_CHIP_TEXT,
-  RESULT_DARK,
-  RESULT_OUTLINE,
-  resultGlyph,
-  type MapResult,
-} from '@/lib/ligue1-map-colors';
+import { RESULT_CHIP_TEXT, RESULT_DARK, type MapResult } from '@/lib/ligue1-map-colors';
+import { clubMarkerSvg, colorForResult, olMarkerHtml } from '@/lib/ligue1-map-marker';
 import { RetryMessage } from '@/components/retry-message';
 import { formatKickoffDayShort } from '@/lib/kickoff';
-import { HIT_SIZE_PX, markerNudge } from '@/lib/ligue1-map-hit';
+import { HIT_SIZE_PX, hitSizesAtZoom, markerNudge } from '@/lib/ligue1-map-hit';
 import { MAX_ZOOM, ZOOM_SNAP, clubsBounds, followResize, frameFrance, liftMaxBounds, restoreMaxBounds } from '@/lib/ligue1-map-view';
 import { OL_TEAM_ID, type SeasonMatch, type StandingEntry } from '@/types/api';
 
 /**
  * Ligue 1 club map.
  * - Tiles: OpenStreetMap (free, attribution required by ODbL).
- * - Markers: OL in red (HSL 0 73% 50%), others in OL blue (224 64% 33%).
- * - Zone cliquable (L193) : chaque marqueur occupe 24 px, le cercle dessiné en
- *   occupe 14 ou 18 au centre ; les clubs trop proches à l'ouverture (Paris, Nice/Monaco,
- *   Lens/Lille…) sont écartés de quelques pixels, voir ligue1-map-hit.
+ * - Markers: OL in red (HSL 0 73% 50%), others split in two halves by result.
+ * - Taille (L272) : cercle dessiné de 22 px (OL 26 px), zone cliquable de 24 à 44 px selon la place laissée par les
+ *   voisins au zoom courant (`hitSizesAtZoom`) ; les clubs trop proches à l'ouverture (Paris, Nice/Monaco,
+ *   Lens/Lille…) sont écartés de quelques pixels, voir ligue1-map-hit. La légende dessine avec les mêmes fonctions.
  */
 
-/** Gabarit commun des marqueurs : zone cliquable de 24 px, cercle dessiné centré, décalé de `nudge` pixels. */
-function hitIcon(html: string, nudge: readonly [number, number]): L.DivIcon {
+/** Gabarit commun des marqueurs : zone cliquable de `hit` px, cercle dessiné centré, décalé de `nudge` pixels. */
+function hitIcon(html: string, nudge: readonly [number, number], hit: number): L.DivIcon {
   const [dx, dy] = nudge;
-  const demi = HIT_SIZE_PX / 2;
+  const demi = hit / 2;
   return L.divIcon({
     className: 'ligue1-map-marker',
-    iconSize: [HIT_SIZE_PX, HIT_SIZE_PX],
+    iconSize: [hit, hit],
     iconAnchor: [demi - dx, demi - dy],
     // Le popup s'ouvre au-dessus du cercle décalé, pas au-dessus de l'emplacement du stade.
     popupAnchor: [dx, dy - demi],
-    html: `<span style="display:flex;align-items:center;justify-content:center;width:${HIT_SIZE_PX}px;height:${HIT_SIZE_PX}px;">${html}</span>`,
+    html: `<span style="display:flex;align-items:center;justify-content:center;width:${hit}px;height:${hit}px;">${html}</span>`,
   });
 }
-
-function buildOlIcon(): L.DivIcon {
-  const size = 18;
-  const halo = '0 0 0 3px hsla(0, 90%, 60%, 0.35), 0 0 12px hsla(0, 90%, 55%, 0.55)';
-  return hitIcon(`
-      <span style="
-        display:inline-block;
-        width:${size}px;height:${size}px;
-        border-radius:9999px;
-        background:${OL_RED};
-        border:2px solid #fff;
-        box-shadow:${halo};
-      "></span>
-    `, markerNudge(OL_ID_365));
-}
-
-function colorForResult(result: OLMatchResult | null): string {
-  // 'FUTURE' or null (no match recorded) → dark
-  return RESULT_COLORS[(result ?? 'FUTURE') as MapResult];
-}
-
-/**
- * Bicolor SVG marker for non-OL clubs.
- * Left half  = leg A (first chronological OL vs club fixture this season)
- * Right half = leg B (second fixture)
- * Color encodes result vs OL (blue=W, red=L, gray=D, dark=FUTURE/missing) and so does a
- * white pattern per half (none=W, bar=D, slash=L, dot=FUTURE) — see ligue1-map-colors.
- */
-function buildClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null, nudge: readonly [number, number]): L.DivIcon {
-  const size = 14;
-  const stroke = RESULT_OUTLINE;
-  const cA = colorForResult(legA);
-  const cB = colorForResult(legB);
-  // viewBox 28x28, radius 13, center (14,14) — sweep flag 0 (left arc) / 1 (right arc).
-  const html = `
-    <svg viewBox="0 0 28 28" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:block;filter:drop-shadow(0 0 2px rgba(0,0,0,0.45));">
-      <path d="M 14 1 A 13 13 0 0 0 14 27 Z" fill="${cA}" />
-      <path d="M 14 1 A 13 13 0 0 1 14 27 Z" fill="${cB}" />
-      ${resultGlyph(legA ?? 'FUTURE', 7.5)}
-      ${resultGlyph(legB ?? 'FUTURE', 20.5)}
-      <line x1="14" y1="1" x2="14" y2="27" stroke="${stroke}" stroke-width="0.8" />
-      <circle cx="14" cy="14" r="13" fill="none" stroke="${stroke}" stroke-width="1.4" />
-    </svg>
-  `;
-  return hitIcon(html, nudge);
-}
-
-const OL_ICON = buildOlIcon();
 
 // La fiche se recale hors des boutons de zoom (coin haut-gauche : 10 px de marge + 30 de large + 4 d'air) et du bord droit.
 const POPUP_PAN_TOP_LEFT = L.point(44, 10);
@@ -113,14 +58,14 @@ const POPUP_PAN_BOTTOM_RIGHT = L.point(6, 10);
 // Vue de départ du conteneur, aussitôt remplacée par FrameFrance une fois la carte mesurée.
 const FRANCE_CENTER = clubsBounds().getCenter();
 
-/** Cache club icons per (legA, legB, nudge) combo — 25 result combinations × a handful of nudges. */
-const clubIconCache = new Map<string, L.DivIcon>();
-function getClubIcon(legA: OLMatchResult | null, legB: OLMatchResult | null, nudge: readonly [number, number]): L.DivIcon {
-  const key = `${legA ?? 'none'}|${legB ?? 'none'}|${nudge.join(',')}`;
-  let icon = clubIconCache.get(key);
+/** Cache des icônes par (aller, retour, décalage, zone) : 25 combinaisons de résultats × quelques décalages × 11 zones. */
+const iconCache = new Map<string, L.DivIcon>();
+function getMarkerIcon(isOL: boolean, legA: OLMatchResult | null, legB: OLMatchResult | null, nudge: readonly [number, number], hit: number): L.DivIcon {
+  const key = isOL ? `OL|${nudge.join(',')}|${hit}` : `${legA ?? 'none'}|${legB ?? 'none'}|${nudge.join(',')}|${hit}`;
+  let icon = iconCache.get(key);
   if (!icon) {
-    icon = buildClubIcon(legA, legB, nudge);
-    clubIconCache.set(key, icon);
+    icon = hitIcon(isOL ? olMarkerHtml() : clubMarkerSvg(legA, legB), nudge, hit);
+    iconCache.set(key, icon);
   }
   return icon;
 }
@@ -420,6 +365,8 @@ interface ClubMarkerProps {
   ligue1Matches: SeasonMatch[];
   /** Full season — passed through to the popup for the CdF block. */
   allMatches: SeasonMatch[] | undefined;
+  /** Côté de la zone cliquable au zoom courant, en px (L272). */
+  hitSize: number;
 }
 
 /**
@@ -493,15 +440,15 @@ function fermerFiche(map: L.Map, marker: L.Marker) {
   restoreMaxBounds(map);
 }
 
-function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMarkerProps) {
+function ClubMarker({ club, standingEntry, ligue1Matches, allMatches, hitSize }: ClubMarkerProps) {
   const map = useMap();
   const isOL = club.id365 === OL_ID_365;
   const icon = useMemo(() => {
-    if (isOL) return OL_ICON;
+    if (isOL) return getMarkerIcon(true, null, null, markerNudge(club.id365), hitSize);
     // Markers strictly reflect Ligue 1 — never CdF/UEL.
     const season = computeClubH2HSeason(ligue1Matches, club);
-    return getClubIcon(season.legA?.result ?? null, season.legB?.result ?? null, markerNudge(club.id365));
-  }, [isOL, ligue1Matches, club]);
+    return getMarkerIcon(false, season.legA?.result ?? null, season.legB?.result ?? null, markerNudge(club.id365), hitSize);
+  }, [isOL, ligue1Matches, club, hitSize]);
 
   return (
     <Marker
@@ -527,20 +474,44 @@ function ClubMarker({ club, standingEntry, ligue1Matches, allMatches }: ClubMark
 }
 
 /**
+ * Les 18 marqueurs, taillés au zoom courant (L272). Au début d'un zoom animé, la zone suit le plus bas des deux
+ * zooms (départ, arrivée) : les marqueurs ne s'écartent qu'à la fin d'un zoom avant, les zones ne grandissent qu'alors.
+ */
+function ClubMarkers({ findStanding, ...matchs }: Omit<ClubMarkerProps, 'club' | 'standingEntry' | 'hitSize'> & { findStanding: (club: Ligue1Club) => StandingEntry | undefined }) {
+  const map = useMap();
+  const [zoom, setZoom] = useState(() => map.getZoom());
+  useEffect(() => {
+    const auDebut = (e: L.ZoomAnimEvent) => setZoom(Math.min(map.getZoom(), e.zoom));
+    const aLaFin = () => setZoom(map.getZoom());
+    aLaFin();
+    map.on('zoomanim', auDebut);
+    map.on('zoomend', aLaFin);
+    return () => {
+      map.off('zoomanim', auDebut);
+      map.off('zoomend', aLaFin);
+    };
+  }, [map]);
+  const hitSizes = useMemo(() => hitSizesAtZoom(zoom), [zoom]);
+  return LIGUE1_CLUBS_COORDS.map((club) => (
+    <ClubMarker key={club.id365} club={club} standingEntry={findStanding(club)} {...matchs} hitSize={hitSizes.get(club.id365) ?? HIT_SIZE_PX} />
+  ));
+}
+
+/**
  * Légende des marqueurs bicolores : sous la carte, dans le flux, à toute largeur. Posée sur la carte (coin haut
  * droit, L81 puis à partir de sm) elle masquait le × et l'en-tête de la fiche d'un club : le recalage de la fiche
  * connaît les boutons de zoom, pas une légende (L195, WCAG 2.4.11). À partir de sm les rubriques se mettent en ligne.
+ * Chaque pastille est dessinée par la fonction du marqueur, à sa taille (L272) : un club dont les deux matchs ont le
+ * même résultat, puis l'OL.
  */
 export function MapLegend() {
-  const swatch = (result: MapResult, label: string) => (
+  const pastille = (html: string, label: string) => (
     <div className="flex items-center gap-1.5">
-      <svg viewBox="0 0 28 28" width="14" height="14" className="shrink-0" aria-hidden>
-        <rect x="1" y="1" width="26" height="26" rx="4" fill={RESULT_COLORS[result]} stroke={RESULT_OUTLINE} strokeWidth="1.6" />
-        <g dangerouslySetInnerHTML={{ __html: resultGlyph(result, 14) }} />
-      </svg>
+      <span className="flex shrink-0 items-center" aria-hidden dangerouslySetInnerHTML={{ __html: html }} />
       <span className="text-petite text-fg leading-tight">{label}</span>
     </div>
   );
+  const resultat = (result: MapResult, label: string) => pastille(clubMarkerSvg(result, result), label);
   return (
     <div
       className="border-t border-border bg-surface px-2.5 py-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5"
@@ -550,10 +521,11 @@ export function MapLegend() {
         Aller / Retour
       </div>
       <div className="grid grid-cols-1 gap-1 sm:flex sm:flex-wrap sm:gap-x-4">
-        {swatch('W', 'Victoire OL')}
-        {swatch('D', 'Match nul')}
-        {swatch('L', 'Défaite OL')}
-        {swatch('FUTURE', 'Pas encore joué')}
+        {resultat('W', 'Victoire OL')}
+        {resultat('D', 'Match nul')}
+        {resultat('L', 'Défaite OL')}
+        {resultat('FUTURE', 'Pas encore joué')}
+        {pastille(olMarkerHtml(), 'Lyon (OL)')}
       </div>
     </div>
   );
@@ -634,17 +606,7 @@ export function Ligue1Map() {
           <FrameFrance />
           <FicheClavier />
           <RecenterControl />
-          {LIGUE1_CLUBS_COORDS.map((club) => {
-            return (
-              <ClubMarker
-                key={club.id365}
-                club={club}
-                standingEntry={findStandingForClub(club)}
-                ligue1Matches={ligue1Matches}
-                allMatches={seasonMatchesQ.data}
-              />
-            );
-          })}
+          <ClubMarkers findStanding={findStandingForClub} ligue1Matches={ligue1Matches} allMatches={seasonMatchesQ.data} />
         </MapContainer>
       </div>
       <MapLegend />

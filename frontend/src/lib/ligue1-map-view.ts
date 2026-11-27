@@ -7,13 +7,13 @@ import { markerNudge } from '@/lib/ligue1-map-hit';
  * vue ; le zoom arrière s'arrête à ce cadrage et le glisser ne sort pas de la France.
  */
 
-/** Marge intérieure du cadrage en pixels : le marqueur de l'OL (18 px + halo) reste entier. */
+/** Marge intérieure du cadrage en pixels : le marqueur de l'OL (26 px + halo de 15 px, L272) et une zone cliquable de 44 px (demi-côté 22) restent entiers. */
 export const FRAME_PADDING_PX = 36;
 
 /** Le zoom d'ouverture n'est plus un entier : la France occupe la carte au lieu d'un cadre vide. */
 export const ZOOM_SNAP = 0.25;
 
-/** Zoom avant maximal : au-delà, les tuiles OpenStreetMap n'apportent rien aux marqueurs de 14 px. */
+/** Zoom avant maximal : au-delà, les tuiles OpenStreetMap n'apportent rien aux marqueurs. */
 export const MAX_ZOOM = 14;
 
 export function clubsBounds(): L.LatLngBounds {

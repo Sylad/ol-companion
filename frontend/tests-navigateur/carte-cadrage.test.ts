@@ -34,11 +34,14 @@ async function ouvrir(largeur: number, hauteur: number): Promise<Page> {
   return page;
 }
 
-/** Marges (px) entre les 18 marqueurs et les bords de la carte. */
+/**
+ * Marges (px) entre les 18 marqueurs DESSINÉS et les bords de la carte. Depuis L272 la zone cliquable suit la place
+ * laissée par les voisins (24 à 44 px) : sa boîte n'est plus la même d'un club à l'autre, le rond dessiné si.
+ */
 async function marges(page: Page) {
   return page.evaluate(() => {
     const c = document.querySelector('.leaflet-container')!.getBoundingClientRect();
-    const r = [...document.querySelectorAll('.ligue1-map-marker')].map((e) => e.getBoundingClientRect());
+    const r = [...document.querySelectorAll('.ligue1-map-marker > span > *')].map((e) => e.getBoundingClientRect());
     return {
       n: r.length,
       haut: Math.min(...r.map((x) => x.top)) - c.top,

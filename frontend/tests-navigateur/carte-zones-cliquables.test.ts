@@ -31,6 +31,8 @@ describe.each([[1440, 900], [390, 844], [320, 844]])('Carte L1 à %i×%i (L193)'
     await page.goto(`${url}/map`);
     await page.waitForSelector('.leaflet-marker-icon');
     await page.waitForTimeout(500);
+    // elementFromPoint ne voit que la fenêtre : la carte y est mise entière (à 1440×900 son bas, Marseille compris, en dépassait).
+    await page.evaluate(() => document.querySelector('.leaflet-container')!.scrollIntoView({ block: 'center' }));
     const mesures = await page.evaluate(() => {
       const carte = document.querySelector('.leaflet-container')!.getBoundingClientRect();
       return [...document.querySelectorAll<HTMLElement>('.leaflet-marker-icon')].map((el) => {
