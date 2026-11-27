@@ -3226,6 +3226,7 @@ lots:
     created: 2026-11-26
     notes:
       - { date: 2026-11-26, text: "Définition Sofascore (capture de Sylvain, 26-11) : « La hauteur de chaque ligne reflète un score combiné de diverses métriques offensives, comme les buts, les tirs, la possession de balle, les grandes occasions, etc. » ; aire continue, équipe A vers le haut, équipe B vers le bas. Notre calcul n'a ni possession ni grandes occasions : chercher dans le flux 365scores une donnée de possession par période ou d'occasions franches avant de comparer les formes ; sinon le dire sous le graphe." }
+      - { date: 2026-11-27, text: "27-11 09 h 45 : passe 3 au prochain créneau (choix du lead, réversible) — R16 : raccourcir la direction en « ↑ Lyon, ↓ Lillestrom. » et la note en « 27/71 actions (38 %) sans équipe. » (momentum-chart.tsx:106-116), sinon note courte dans l'en-tête et phrase entière en nom accessible ; test R16 avec unattributed > 0 (match-geometrie.test.ts:53) ; mineurs : commentaire live-match.types.ts:120, regex aile → \\baile (live-match.momentum.ts:175)." }
     started: 2026-11-27
     review: { date: 2026-11-27, verdict: "conforme passe 2 : constats 1,2,3,5 corrigés avec tests ; reste R16 (note sans équipe → 781,5 px à 1366×768) → passe 3 courte", commit: e4d57a3091f56e10f9dc7c1b19cd4218b360fc2a }
 acknowledged:
