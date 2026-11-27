@@ -3229,6 +3229,7 @@ lots:
       - { date: 2026-11-27, text: "27-11 09 h 45 : passe 3 au prochain créneau (choix du lead, réversible) — R16 : raccourcir la direction en « ↑ Lyon, ↓ Lillestrom. » et la note en « 27/71 actions (38 %) sans équipe. » (momentum-chart.tsx:106-116), sinon note courte dans l'en-tête et phrase entière en nom accessible ; test R16 avec unattributed > 0 (match-geometrie.test.ts:53) ; mineurs : commentaire live-match.types.ts:120, regex aile → \\baile (live-match.momentum.ts:175)." }
     started: 2026-11-27
     review: { date: 2026-11-27, verdict: "conforme passe 2 : constats 1,2,3,5 corrigés avec tests ; reste R16 (note sans équipe → 781,5 px à 1366×768) → passe 3 courte", commit: e4d57a3091f56e10f9dc7c1b19cd4218b360fc2a }
+    ux: { date: 2026-11-27, verdict: "conforme lead 27-11 : R16 tenu (765 px < 768 à 1366×768, test rouge avant/vert après), part sans équipe dans l'en-tête avec phrase entière en nom accessible ; captures L274-momentum-{1440,390}.png ; R5 gardée" }
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
