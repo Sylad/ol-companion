@@ -3216,8 +3216,8 @@ lots:
     created: 2026-11-26
     started: 2026-11-27
     tasks:
-      - { id: t1, title: "Test Chromium : après + + + puis − − − à 390 et 1440, zones des 18 clubs = hitSizesAtZoom du zoom courant, jamais < 24 px ni sécantes, pendant et après l'animation", status: todo }
-    review: { date: 2026-11-27, verdict: "conforme après 1 correction : le suivi du zoom des zones (ClubMarkers, zoomanim/zoomend) est juste mais sans test", commit: 8fb555587d9014d6bd449401ee889eac9e977b3b }
+      - { id: t1, title: "Test Chromium : après + + + puis − − − à 390 et 1440, zones des 18 clubs = hitSizesAtZoom du zoom courant, jamais < 24 px ni sécantes, pendant et après l'animation", status: done }
+    review: { date: 2026-11-27, verdict: "conforme (passe 2) : test Chromium du suivi du zoom (875ed6f), contre-épreuve rouge pour chaque écouteur retiré", commit: 875ed6f4969340d2b8b109ab0cfbf5542b1c1e53 }
   - id: L273
     title: "D-3 : page du classement de Ligue 1 — ajouter au tableau une colonne avec le logo du prochain adversaire en Ligue 1 de chaque club (donnée : prochain match de championnat programmé, football-data.org, competitionId 2015). Libellé accessible (nom du club en texte alternatif et infobulle), domicile/extérieur indiqué autrement que par la couleur, tableau sans défilement horizontal à 320 et 390 px (colonne repliée ou abrégée sur téléphone), case vide expliquée en fin de saison ou trêve. Mesure : chaque ligne montre le bon adversaire contre le calendrier réel, contrôlé dans le navigateur à 320, 390 et 1440 px ; avis de Sylvain sur la capture."
     status: todo
