@@ -56,7 +56,7 @@ describe('<MapLegend />', () => {
     ] as const;
     const libelles = [...legende.querySelectorAll('span.text-petite')].map((e) => e.textContent);
     for (const [libelle, resultat] of attendu) {
-      const svg = legende.querySelectorAll('svg')[libelles.indexOf(libelle)]!;
+      const svg = legende.querySelectorAll('svg')[libelles.indexOf(libelle)];
       expect(svg, libelle).toBeTruthy();
       const moities = [...svg.querySelectorAll('path')].map((p) => p.getAttribute('fill'));
       expect(moities, libelle).toEqual([RESULT_COLORS[resultat], RESULT_COLORS[resultat]]);

@@ -120,76 +120,93 @@ const FONDS: [string, string | null][] = process.env.TUILES_REELLES
       ['tuile forêt', OSM_TILE_FILLS.foret],
     ];
 
+/** Ouvre /map à cette taille, tuiles servies sur ce fond (null : aucune, « reelles » : OSM), et relève carte et légende. */
+async function releverCarte(largeur: number, hauteur: number, tuile: string | null) {
+  const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
+  // Heure qui avance (pas setFixedTime) : le fondu d'entrée des tuiles de Leaflet suit l'horloge, figée il reste à 0.
+  await page.clock.install({ time: new Date('2026-11-18T13:10:00+01:00') });
+  await page.clock.resume();
+  await page.route('**/api/**', (route) => {
+    const u = new URL(route.request().url());
+    const r = API[u.pathname + u.search];
+    return r ? route.fulfill({ status: r.status, json: r.body }) : route.fulfill({ status: 404, json: {} });
+  });
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => {
+    const estTuile = /tile\.openstreetmap\.org/.test(route.request().url());
+    if (estTuile && tuile === 'reelles') return route.continue();
+    if (estTuile && tuile) return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: tuileSvg(tuile) });
+    return route.abort();
+  });
+  await page.goto(`${url}/map`);
+  await page.waitForSelector('.leaflet-marker-icon');
+  if (tuile) await page.waitForFunction(() => document.querySelectorAll('.leaflet-tile-loaded').length > 4 && !document.querySelector('.leaflet-tile:not(.leaflet-tile-loaded)'));
+  await page.waitForTimeout(800);
+  const carte = await relever(page, '.leaflet-marker-icon');
+  const legende = await relever(page, '[aria-label="Légende des marqueurs"] span[aria-hidden]');
+  const surface = await page.$eval('[aria-label="Légende des marqueurs"]', (e) => getComputedStyle(e).backgroundColor);
+  const dossier = process.env.CAPTURES_L275;
+  if (dossier) {
+    const nom = (tuile === null ? 'sombre' : tuile === 'reelles' ? 'osm' : Object.entries(OSM_TILE_FILLS).find(([, c]) => c === tuile)![0]);
+    await page.screenshot({ path: join(dossier, `carte-${largeur}-${nom}.png`), fullPage: true });
+    // La carte et sa légende seules (capture d'élément : défilée dans la vue, sans la jointure de la capture pleine page).
+    await page.locator('[aria-label="Légende des marqueurs"]').locator('..').screenshot({ path: join(dossier, `carte-seule-${largeur}-${nom}.png`) });
+  }
+  await page.close();
+  return { carte, legende, surface };
+
+}
+
+/** Contour et moitiés de chaque marqueur contre sa tuile voisine ; rend la couleur relevée de chaque résultat. */
+function verifierCarte(carte: Releve[], fond: string, largeur: number): Map<MapResult, Px> {
+  expect(carte).toHaveLength(18);
+  const lignes: string[] = [];
+  const vus = new Map<MapResult, Px>();
+  for (const m of carte) {
+    // Contour : sur chaque rayon qui traverse le bord, un pixel du rond se détache de la tuile à ≥ 3:1.
+    const pireRayon = Math.min(...m.rayons.map((profil) => Math.max(...profil.map((p) => contrastRatio(rgb(p), rgb(m.tuile))))));
+    const moities = m.moities.map(({ source, pixel }) => {
+      const resultat = resultatDe(source)!;
+      expect(resultat, `${m.nom} : couleur ${source} hors de RESULT_COLORS`).toBeDefined();
+      // Le pixel est bien la teinte de la source (pas un mélange avec le motif ou le contour).
+      expect(ecart(pixel, parseHsl(source).map((c) => Math.round(c * 255)) as Px), `${m.nom} ${resultat}`).toBeLessThanOrEqual(3);
+      vus.set(resultat, pixel);
+      return { resultat, ratio: contrastRatio(rgb(pixel), rgb(m.tuile)) };
+    });
+    lignes.push(`${m.nom} tuile rgb(${m.tuile}) contour ${pireRayon.toFixed(2)} ${moities.map((h) => `${h.resultat} ${h.ratio.toFixed(2)}`).join(' ')}`);
+    expect(pireRayon, `${m.nom} : contour sur ${fond}`).toBeGreaterThanOrEqual(3);
+    for (const h of moities) {
+      // « Pas encore joué » est sombre par nature : sur le fond sombre, seul le contour le détache (anneau clair).
+      if (h.resultat !== 'FUTURE') expect(h.ratio, `${m.nom} ${h.resultat} sur ${fond}`).toBeGreaterThanOrEqual(3);
+    }
+  }
+  console.log(`L275 ${largeur} px, ${fond} :\n  ${lignes.join('\n  ')}`);
+
+  return vus;
+}
+
+/** Pastilles de la légende sur son fond, et chaque moitié de la couleur que la carte dessine pour ce résultat. */
+function verifierLegende(legende: Releve[], surface: string, vus: Map<MapResult, Px>) {
+  // Légende : 4 pastilles de club + l'OL, sur le fond de la légende (surface sombre) ; chaque moitié a la couleur
+  // que la carte dessine pour le même résultat.
+  expect(legende).toHaveLength(5);
+  const fondLegende = (surface.match(/\d+/g) ?? []).slice(0, 3).map(Number) as Px;
+  for (const p of legende) {
+    const pireRayon = Math.min(...p.rayons.map((profil) => Math.max(...profil.map((q) => contrastRatio(rgb(q), rgb(fondLegende))))));
+    expect(pireRayon, `légende ${p.nom}`).toBeGreaterThanOrEqual(3);
+    for (const { source, pixel } of p.moities) {
+      const resultat = resultatDe(source)!;
+      expect(resultat, `légende ${p.nom}`).toBeDefined();
+      const surCarte = vus.get(resultat);
+      if (surCarte) expect(ecart(pixel, surCarte), `légende ${p.nom} = carte ${resultat}`).toBeLessThanOrEqual(3);
+    }
+  }
+}
+
 describe.each([[1440, 900], [390, 844]])('Carte L1 à %i×%i : contraste des marqueurs (L275)', (largeur, hauteur) => {
   it.each(FONDS)('%s : contour et moitiés V, N, D à ≥ 3:1 de la tuile voisine, légende de la couleur du rendu', async (fond, tuile) => {
-    const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur }, timezoneId: 'Europe/Paris', locale: 'fr-FR' });
-    // Heure qui avance (pas setFixedTime) : le fondu d'entrée des tuiles de Leaflet suit l'horloge, figée il reste à 0.
-    await page.clock.install({ time: new Date('2026-11-18T13:10:00+01:00') });
-    await page.clock.resume();
-    await page.route('**/api/**', (route) => {
-      const u = new URL(route.request().url());
-      const r = API[u.pathname + u.search];
-      return r ? route.fulfill({ status: r.status, json: r.body }) : route.fulfill({ status: 404, json: {} });
-    });
-    await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => {
-      const estTuile = /tile\.openstreetmap\.org/.test(route.request().url());
-      if (estTuile && tuile === 'reelles') return route.continue();
-      if (estTuile && tuile) return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: tuileSvg(tuile) });
-      return route.abort();
-    });
-    await page.goto(`${url}/map`);
-    await page.waitForSelector('.leaflet-marker-icon');
-    if (tuile) await page.waitForFunction(() => document.querySelectorAll('.leaflet-tile-loaded').length > 4 && !document.querySelector('.leaflet-tile:not(.leaflet-tile-loaded)'));
-    await page.waitForTimeout(800);
-    const carte = await relever(page, '.leaflet-marker-icon');
-    const legende = await relever(page, '[aria-label="Légende des marqueurs"] span[aria-hidden]');
-    const surface = await page.$eval('[aria-label="Légende des marqueurs"]', (e) => getComputedStyle(e).backgroundColor);
-    const dossier = process.env.CAPTURES_L275;
-    if (dossier) {
-      const nom = (tuile === null ? 'sombre' : tuile === 'reelles' ? 'osm' : Object.entries(OSM_TILE_FILLS).find(([, c]) => c === tuile)![0]);
-      await page.screenshot({ path: join(dossier, `carte-${largeur}-${nom}.png`), fullPage: true });
-      // La carte et sa légende seules (capture d'élément : défilée dans la vue, sans la jointure de la capture pleine page).
-      await page.locator('[aria-label="Légende des marqueurs"]').locator('..').screenshot({ path: join(dossier, `carte-seule-${largeur}-${nom}.png`) });
-    }
-    await page.close();
-
-    expect(carte).toHaveLength(18);
-    const lignes: string[] = [];
-    const vus = new Map<MapResult, Px>();
-    for (const m of carte) {
-      // Contour : sur chaque rayon qui traverse le bord, un pixel du rond se détache de la tuile à ≥ 3:1.
-      const pireRayon = Math.min(...m.rayons.map((profil) => Math.max(...profil.map((p) => contrastRatio(rgb(p), rgb(m.tuile))))));
-      const moities = m.moities.map(({ source, pixel }) => {
-        const resultat = resultatDe(source)!;
-        expect(resultat, `${m.nom} : couleur ${source} hors de RESULT_COLORS`).toBeDefined();
-        // Le pixel est bien la teinte de la source (pas un mélange avec le motif ou le contour).
-        expect(ecart(pixel, parseHsl(source).map((c) => Math.round(c * 255)) as Px), `${m.nom} ${resultat}`).toBeLessThanOrEqual(3);
-        vus.set(resultat, pixel);
-        return { resultat, ratio: contrastRatio(rgb(pixel), rgb(m.tuile)) };
-      });
-      lignes.push(`${m.nom} tuile rgb(${m.tuile}) contour ${pireRayon.toFixed(2)} ${moities.map((h) => `${h.resultat} ${h.ratio.toFixed(2)}`).join(' ')}`);
-      expect(pireRayon, `${m.nom} : contour sur ${fond}`).toBeGreaterThanOrEqual(3);
-      for (const h of moities) {
-        // « Pas encore joué » est sombre par nature : sur le fond sombre, seul le contour le détache (anneau clair).
-        if (h.resultat !== 'FUTURE') expect(h.ratio, `${m.nom} ${h.resultat} sur ${fond}`).toBeGreaterThanOrEqual(3);
-      }
-    }
-    console.log(`L275 ${largeur} px, ${fond} :\n  ${lignes.join('\n  ')}`);
-
-    // Légende : 4 pastilles de club + l'OL, sur le fond de la légende (surface sombre) ; chaque moitié a la couleur
-    // que la carte dessine pour le même résultat.
-    expect(legende).toHaveLength(5);
-    const fondLegende = (surface.match(/\d+/g) ?? []).slice(0, 3).map(Number) as Px;
-    for (const p of legende) {
-      const pireRayon = Math.min(...p.rayons.map((profil) => Math.max(...profil.map((q) => contrastRatio(rgb(q), rgb(fondLegende))))));
-      expect(pireRayon, `légende ${p.nom}`).toBeGreaterThanOrEqual(3);
-      for (const { source, pixel } of p.moities) {
-        const resultat = resultatDe(source)!;
-        expect(resultat, `légende ${p.nom}`).toBeDefined();
-        const surCarte = vus.get(resultat);
-        if (surCarte) expect(ecart(pixel, surCarte), `légende ${p.nom} = carte ${resultat}`).toBeLessThanOrEqual(3);
-      }
-    }
+    const { carte, legende, surface } = await releverCarte(largeur, hauteur, tuile);
+    const vus = verifierCarte(carte, fond, largeur);
+    verifierLegende(legende, surface, vus);
     expect([...vus.keys()].sort(), 'résultats présents sur la carte du 18-11').toEqual(['D', 'FUTURE', 'L', 'W']);
     // Le fond sombre mesuré est bien celui de la carte.
     if (tuile === null) {
