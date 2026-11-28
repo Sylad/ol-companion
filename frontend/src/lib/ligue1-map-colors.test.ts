@@ -2,12 +2,15 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  MAP_DARK_BACKGROUND,
+  OSM_TILE_FILLS,
   RESULT_CHIP_TEXT,
   RESULT_COLORS,
   RESULT_OUTLINE,
+  RESULT_OUTLINE_DARK,
   resultGlyph,
 } from './ligue1-map-colors';
-import { contrastRatio, hslTokenToRgb, parseHsl } from './contrast';
+import { contrastRatio, hslTokenToRgb, parseHsl, type Rgb } from './contrast';
 
 // L191 — revue UX L10 : contrastes mesurés de la Carte L1 (WCAG 1.4.3 / 1.4.11) et
 // moitiés de marqueur distinguables sans la couleur (WCAG 1.4.1).
@@ -50,6 +53,41 @@ describe('Carte L1 — contrastes (L191)', () => {
     for (const r of ['W', 'D', 'L'] as const) {
       expect(contrastRatio(parseHsl(RESULT_COLORS[r]), surface), r).toBeGreaterThanOrEqual(3);
     }
+  });
+});
+
+// L275 — revue UX de L272 : les teintes n'étaient calibrées que pour le fond sombre. Sur les tuiles OSM claires, le gris
+// du nul mesurait 2,25 à 2,38:1 et le contour blanc 1,3 à 2,4:1 (WCAG 1.4.11 : ≥ 3:1 avec les couleurs voisines).
+// Mesure sur capture : tests-navigateur/carte-contraste-L275.test.ts.
+const hex = (h: string): Rgb => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255) as Rgb;
+const FONDS: [string, Rgb][] = [
+  ['fond sombre', hex(MAP_DARK_BACKGROUND)],
+  ...Object.entries(OSM_TILE_FILLS).map(([nom, c]): [string, Rgb] => [`tuile ${nom}`, hex(c)]),
+];
+
+describe('Carte L1 — marqueurs sur tuiles claires et fond sombre (L275)', () => {
+  it('chaque teinte pleine (V, N, D) lit ≥ 3:1 sur le fond sombre et sur chaque aplat clair des tuiles OSM', () => {
+    for (const r of ['W', 'D', 'L'] as const) {
+      for (const [nom, fond] of FONDS) {
+        expect(contrastRatio(parseHsl(RESULT_COLORS[r]), fond), `${r} sur ${nom}`).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
+
+  it("sur chaque fond, l'un des deux anneaux du contour lit ≥ 3:1 : le sombre sur les tuiles, le clair sur le fond sombre", () => {
+    for (const [nom, fond] of FONDS) {
+      const meilleur = Math.max(
+        contrastRatio(parseHsl(RESULT_OUTLINE), fond),
+        contrastRatio(parseHsl(RESULT_OUTLINE_DARK), fond),
+      );
+      expect(meilleur, nom).toBeGreaterThanOrEqual(3);
+    }
+    // Les deux anneaux se touchent : l'anneau clair se lit contre le sombre là où ce dernier se fond dans le fond.
+    expect(contrastRatio(parseHsl(RESULT_OUTLINE), parseHsl(RESULT_OUTLINE_DARK))).toBeGreaterThanOrEqual(3);
+  });
+
+  it('le gris du nul ne retombe pas à 55 % (2,09:1 sur la mer OSM)', () => {
+    expect(contrastRatio(parseHsl(RESULT_COLORS.D), hex(OSM_TILE_FILLS.mer))).toBeGreaterThanOrEqual(3);
   });
 });
 

@@ -20,7 +20,7 @@ import {
   olMatchesVsClub,
   type OLMatchResult,
 } from '@/lib/ligue1-club-match';
-import { RESULT_CHIP_TEXT, RESULT_DARK, type MapResult } from '@/lib/ligue1-map-colors';
+import { MAP_DARK_BACKGROUND, RESULT_CHIP_TEXT, RESULT_DARK, type MapResult } from '@/lib/ligue1-map-colors';
 import { clubMarkerSvg, colorForResult, olMarkerHtml } from '@/lib/ligue1-map-marker';
 import { RetryMessage } from '@/components/retry-message';
 import { formatKickoffDayShort } from '@/lib/kickoff';
@@ -596,7 +596,7 @@ export function Ligue1Map() {
           maxBoundsViscosity={1}
           scrollWheelZoom={false}
           className="ligue1-map h-full w-full"
-          style={{ background: '#0e1420' }}
+          style={{ background: MAP_DARK_BACKGROUND }}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
