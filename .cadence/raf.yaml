@@ -3248,9 +3248,10 @@ lots:
     finished: 2026-11-27
   - id: L275
     title: "Carte L1 : la moitié grise « Match nul » des marqueurs mesure 2,25–2,38:1 sur les tuiles OSM claires et le contour blanc 1,3–2,4:1 (WCAG 1.4.11 : 3:1) — couleurs calibrées pour le fond sombre seulement ; vu par la revue UX de L272 le 27-11 (préexistant) ; mesure : ≥ 3:1 sur fond clair et sombre, légende identique"
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-11-27
+    started: 2026-11-28
 acknowledged:
   - { sha: 07222c4db2ec925bef17f0770402ae9031082279, subject: "plan: L69 fait (orchestrate.ux, suite de cadence L95)", date: 2026-10-08, reason: "citation d'un lot cadence (L95), pas d'un lot de ce plan" }
   - { sha: c9ce4840eb33bb05514715bbe22df0684cb71495, subject: "plan: acquitte 07222c4 (citation du lot cadence L95), raf check vert", date: 2026-10-08, reason: commit de plan qui cite l'id d'un autre dépôt dans son message }
