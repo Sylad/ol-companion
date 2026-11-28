@@ -68,3 +68,12 @@
   `lib/coupure-nom.test.ts` et le bloc L269 du test Chromium (Lille – Lyon 4-3-3 / 4-2-3-1, Brest – Lyon, France – Turquie,
   320/390/1366/1440 : même haut par rangée à 1 px, 12 px, nom entier, disjointes, dans le terrain).
 - README, puce « Classement Ligue 1 » : ordre bandeau → tableau → tracker et lien « Voir l'OL (Ne) » (suite de L259).
+
+## Carte L1 — contraste des marqueurs (L275) et halo de l'OL
+- Marqueurs ≥ 3:1 sur les tuiles OSM claires ET sur le fond sombre : contour double (anneau sombre dehors, clair dedans),
+  nul à 41 %, défaite `LOSS_RED`, lettre des pastilles de la fiche blanche partout (`lib/ligue1-map-colors.ts`).
+- Pastille de l'OL (`olMarkerHtml`, carte et légende) : seul l'anneau sombre de 2 px est plein, puis une lueur floue.
+  L'anneau rosé de 3 px ajouté en L275 portait le halo plein à 5 px hors de la boîte, sur « Pas encore joué » à 390/320
+  (4 px d'écart) : retiré plutôt que d'écarter les rangées de la légende (même dessin pour la carte et la légende).
+- Mesures Chromium : `tests-navigateur/legende-halo-ol-L275.test.ts` (1440, 390, 320 : halo plein hors du libellé et des
+  autres rubriques), `carte-contraste-L275.test.ts` (contrastes, légende = carte). README « Carte L1 » à jour.

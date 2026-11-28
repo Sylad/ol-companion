@@ -6,10 +6,12 @@ import type { OLMatchResult } from '@/lib/ligue1-club-match';
 
 /**
  * Pastille de l'OL, rouge plein cerclé de blanc puis d'un anneau sombre (L275 : le blanc seul se perdait sur les
- * tuiles claires), avec halo : marqueur et légende.
+ * tuiles claires), avec une lueur rouge : marqueur et légende. Seul l'anneau sombre est plein (2 px) : l'anneau rosé de
+ * 3 px posé dessous en L275 portait le halo plein à 5 px hors de la pastille, sur la rangée voisine de la légende
+ * (4 px d'écart à 390) ; mesure `tests-navigateur/legende-halo-ol-L275.test.ts`.
  */
 export function olMarkerHtml(size = OL_MARKER_PX): string {
-  const halo = `0 0 0 2px ${RESULT_OUTLINE_DARK}, 0 0 0 5px hsla(0, 90%, 60%, 0.35), 0 0 12px hsla(0, 90%, 55%, 0.55)`;
+  const halo = `0 0 0 2px ${RESULT_OUTLINE_DARK}, 0 0 12px hsla(0, 90%, 55%, 0.55)`;
   return `<span style="display:inline-block;flex-shrink:0;width:${size}px;height:${size}px;border-radius:9999px;background:${OL_RED};border:2px solid #fff;box-shadow:${halo};"></span>`;
 }
 

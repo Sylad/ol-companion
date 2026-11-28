@@ -76,7 +76,7 @@ async function relever(page: import('playwright').Page, selecteur: string): Prom
         y: r.top + r.height / 2 + window.scrollY,
         d: r.width,
         fills: [...dessin.querySelectorAll('path')].map((p) => p.getAttribute('fill') ?? ''),
-        // Le halo de l'OL (anneau sombre de 2 px, anneau rosé de 3 px, lueur de 12 px) fait partie du marqueur : la tuile se
+        // Le halo de l'OL (anneau sombre de 2 px, lueur de 12 px) fait partie du marqueur : la tuile se
         // lit au-delà, et le profil des rayons va jusqu'à l'anneau sombre, posé hors de la pastille.
         halo: dessin.tagName === 'svg' ? 0 : 12,
       };
